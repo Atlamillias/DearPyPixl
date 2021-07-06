@@ -22,7 +22,7 @@ class Application:
         # Registries
         self.fonts = FontRegistry(id=idpg.mvReservedUUID_0)
         self.handlers = HandlerRegistry(id=idpg.mvReservedUUID_1)
-        self.textures = TextureRegistry(id=idpg.mvReservedUUID_2, show=False)
+        self.textures = TextureRegistry(id=idpg.mvReservedUUID_2)
         self.values = ValueRegistry(id=idpg.mvReservedUUID_3)
 
         self.__theme = None
@@ -33,18 +33,21 @@ class Application:
         self.viewport.setup()
         self.viewport.show()
 
-    @staticmethod
-    def stop():
-        idpg.stop_dearpygui()
-
-    def run(self):
+    def register_callbacks(self):
         idpg.set_start_callback(lambda: [f() for f in self.called_on_start])
         idpg.set_exit_callback(lambda: [f() for f in self.called_on_exit])
+
+    def start(self):
+        self.register_callbacks()
 
         while idpg.is_dearpygui_running():
             idpg.render_dearpygui_frame()
 
         idpg.cleanup_dearpygui()
+
+    @staticmethod
+    def stop():
+        idpg.stop_dearpygui()
 
 
     ## Decorators ##
