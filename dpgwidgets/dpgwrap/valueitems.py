@@ -16,6 +16,7 @@ class BoolValue(Item):
         self,
         label: str = None,
         source: int = 0,
+        user_data: Any = None,
         default_value: bool = False,
         parent: int = 13,
         **kwargs
@@ -23,12 +24,14 @@ class BoolValue(Item):
         super().__init__(
         label=label,
         source=source,
+        user_data=user_data,
         default_value=default_value,
         parent=parent,
         **kwargs
         )
         self.label = label
         self.source = source
+        self.user_data = user_data
         self.default_value = default_value
         self.parent = parent
 
@@ -40,6 +43,7 @@ class ColorValue(Item):
         self,
         label: str = None,
         source: int = 0,
+        user_data: Any = None,
         default_value: list[float] = [0.0, 0.0, 0.0, 0.0],
         parent: int = 13,
         **kwargs
@@ -47,12 +51,14 @@ class ColorValue(Item):
         super().__init__(
         label=label,
         source=source,
+        user_data=user_data,
         default_value=default_value,
         parent=parent,
         **kwargs
         )
         self.label = label
         self.source = source
+        self.user_data = user_data
         self.default_value = default_value
         self.parent = parent
 
@@ -64,6 +70,7 @@ class Double4Value(Item):
         self,
         label: str = None,
         source: int = 0,
+        user_data: Any = None,
         default_value: Any = (0.0, 0.0, 0.0, 0.0),
         parent: int = 13,
         **kwargs
@@ -71,12 +78,14 @@ class Double4Value(Item):
         super().__init__(
         label=label,
         source=source,
+        user_data=user_data,
         default_value=default_value,
         parent=parent,
         **kwargs
         )
         self.label = label
         self.source = source
+        self.user_data = user_data
         self.default_value = default_value
         self.parent = parent
 
@@ -88,6 +97,7 @@ class DoubleValue(Item):
         self,
         label: str = None,
         source: int = 0,
+        user_data: Any = None,
         default_value: float = 0.0,
         parent: int = 13,
         **kwargs
@@ -95,12 +105,14 @@ class DoubleValue(Item):
         super().__init__(
         label=label,
         source=source,
+        user_data=user_data,
         default_value=default_value,
         parent=parent,
         **kwargs
         )
         self.label = label
         self.source = source
+        self.user_data = user_data
         self.default_value = default_value
         self.parent = parent
 
@@ -112,6 +124,7 @@ class Float4Value(Item):
         self,
         label: str = None,
         source: int = 0,
+        user_data: Any = None,
         default_value: list[float] = [0.0, 0.0, 0.0, 0.0],
         parent: int = 13,
         **kwargs
@@ -119,12 +132,14 @@ class Float4Value(Item):
         super().__init__(
         label=label,
         source=source,
+        user_data=user_data,
         default_value=default_value,
         parent=parent,
         **kwargs
         )
         self.label = label
         self.source = source
+        self.user_data = user_data
         self.default_value = default_value
         self.parent = parent
 
@@ -136,6 +151,7 @@ class FloatValue(Item):
         self,
         label: str = None,
         source: int = 0,
+        user_data: Any = None,
         default_value: float = 0.0,
         parent: int = 13,
         **kwargs
@@ -143,12 +159,14 @@ class FloatValue(Item):
         super().__init__(
         label=label,
         source=source,
+        user_data=user_data,
         default_value=default_value,
         parent=parent,
         **kwargs
         )
         self.label = label
         self.source = source
+        self.user_data = user_data
         self.default_value = default_value
         self.parent = parent
 
@@ -160,6 +178,7 @@ class FloatVectValue(Item):
         self,
         label: str = None,
         source: int = 0,
+        user_data: Any = None,
         default_value: list[float] = [],
         parent: int = 13,
         **kwargs
@@ -167,12 +186,14 @@ class FloatVectValue(Item):
         super().__init__(
         label=label,
         source=source,
+        user_data=user_data,
         default_value=default_value,
         parent=parent,
         **kwargs
         )
         self.label = label
         self.source = source
+        self.user_data = user_data
         self.default_value = default_value
         self.parent = parent
 
@@ -184,6 +205,7 @@ class Int4Value(Item):
         self,
         label: str = None,
         source: int = 0,
+        user_data: Any = None,
         default_value: list[int] = [0, 0, 0, 0],
         parent: int = 13,
         **kwargs
@@ -191,12 +213,14 @@ class Int4Value(Item):
         super().__init__(
         label=label,
         source=source,
+        user_data=user_data,
         default_value=default_value,
         parent=parent,
         **kwargs
         )
         self.label = label
         self.source = source
+        self.user_data = user_data
         self.default_value = default_value
         self.parent = parent
 
@@ -208,6 +232,7 @@ class IntValue(Item):
         self,
         label: str = None,
         source: int = 0,
+        user_data: Any = None,
         default_value: int = 0,
         parent: int = 13,
         **kwargs
@@ -215,12 +240,14 @@ class IntValue(Item):
         super().__init__(
         label=label,
         source=source,
+        user_data=user_data,
         default_value=default_value,
         parent=parent,
         **kwargs
         )
         self.label = label
         self.source = source
+        self.user_data = user_data
         self.default_value = default_value
         self.parent = parent
 
@@ -232,6 +259,7 @@ class SeriesValue(Item):
         self,
         label: str = None,
         source: int = 0,
+        user_data: Any = None,
         default_value: Any = (),
         parent: int = 13,
         **kwargs
@@ -239,12 +267,14 @@ class SeriesValue(Item):
         super().__init__(
         label=label,
         source=source,
+        user_data=user_data,
         default_value=default_value,
         parent=parent,
         **kwargs
         )
         self.label = label
         self.source = source
+        self.user_data = user_data
         self.default_value = default_value
         self.parent = parent
 
@@ -256,6 +286,7 @@ class StringValue(Item):
         self,
         label: str = None,
         source: int = 0,
+        user_data: Any = None,
         default_value: str = '',
         parent: int = 13,
         **kwargs
@@ -263,11 +294,13 @@ class StringValue(Item):
         super().__init__(
         label=label,
         source=source,
+        user_data=user_data,
         default_value=default_value,
         parent=parent,
         **kwargs
         )
         self.label = label
         self.source = source
+        self.user_data = user_data
         self.default_value = default_value
         self.parent = parent

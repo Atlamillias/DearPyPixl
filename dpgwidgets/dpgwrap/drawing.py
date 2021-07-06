@@ -18,6 +18,7 @@ class ViewportDrawlist(Container):
         show: bool = True,
         filter_key: str = '',
         delay_search: str = False,
+        user_data: Any = None,
         front: bool = True,
         **kwargs
     ):
@@ -26,6 +27,7 @@ class ViewportDrawlist(Container):
         show=show,
         filter_key=filter_key,
         delay_search=delay_search,
+        user_data=user_data,
         front=front,
         **kwargs
         )
@@ -33,6 +35,7 @@ class ViewportDrawlist(Container):
         self.show = show
         self.filter_key = filter_key
         self.delay_search = delay_search
+        self.user_data = user_data
         self.front = front
 
 
@@ -50,13 +53,13 @@ class Drawlist(Container):
         callback: Callable = None,
         drag_callback: Callable = None,
         drop_callback: Callable = None,
-        user_data: Any = None,
         show: bool = True,
         pos: list[int] = [],
         filter_key: str = '',
         delay_search: str = False,
         tracked: bool = False,
         track_offset: float = 0.5,
+        user_data: Any = None,
         **kwargs
     ):
         super().__init__(
@@ -69,13 +72,13 @@ class Drawlist(Container):
         callback=callback,
         drag_callback=drag_callback,
         drop_callback=drop_callback,
-        user_data=user_data,
         show=show,
         pos=pos,
         filter_key=filter_key,
         delay_search=delay_search,
         tracked=tracked,
         track_offset=track_offset,
+        user_data=user_data,
         **kwargs
         )
         self.label = label
@@ -87,13 +90,13 @@ class Drawlist(Container):
         self.callback = callback
         self.drag_callback = drag_callback
         self.drop_callback = drop_callback
-        self.user_data = user_data
         self.show = show
         self.pos = pos
         self.filter_key = filter_key
         self.delay_search = delay_search
         self.tracked = tracked
         self.track_offset = track_offset
+        self.user_data = user_data
 
 
 class DrawLayer(Container):
@@ -105,6 +108,7 @@ class DrawLayer(Container):
         parent: int = 0,
         before: int = 0,
         show: bool = True,
+        user_data: Any = None,
         **kwargs
     ):
         super().__init__(
@@ -112,12 +116,14 @@ class DrawLayer(Container):
         parent=parent,
         before=before,
         show=show,
+        user_data=user_data,
         **kwargs
         )
         self.label = label
         self.parent = parent
         self.before = before
         self.show = show
+        self.user_data = user_data
 
 
 class Arrow(Widget):
@@ -131,6 +137,7 @@ class Arrow(Widget):
         parent: int = 0,
         before: int = 0,
         show: bool = True,
+        user_data: Any = None,
         color: list[int] = [255, 255, 255, 255],
         thickness: float = 1.0,
         size: int = 4,
@@ -143,6 +150,7 @@ class Arrow(Widget):
         parent=parent,
         before=before,
         show=show,
+        user_data=user_data,
         color=color,
         thickness=thickness,
         size=size,
@@ -154,6 +162,7 @@ class Arrow(Widget):
         self.parent = parent
         self.before = before
         self.show = show
+        self.user_data = user_data
         self.color = color
         self.thickness = thickness
         self.size = size
@@ -172,6 +181,7 @@ class BezierCubic(Widget):
         parent: int = 0,
         before: int = 0,
         show: bool = True,
+        user_data: Any = None,
         color: list[int] = [255, 255, 255, 255],
         thickness: float = 1.0,
         segments: int = 0,
@@ -186,6 +196,7 @@ class BezierCubic(Widget):
         parent=parent,
         before=before,
         show=show,
+        user_data=user_data,
         color=color,
         thickness=thickness,
         segments=segments,
@@ -199,6 +210,7 @@ class BezierCubic(Widget):
         self.parent = parent
         self.before = before
         self.show = show
+        self.user_data = user_data
         self.color = color
         self.thickness = thickness
         self.segments = segments
@@ -216,6 +228,7 @@ class BezierQuadratic(Widget):
         parent: int = 0,
         before: int = 0,
         show: bool = True,
+        user_data: Any = None,
         color: list[int] = [255, 255, 255, 255],
         thickness: float = 1.0,
         segments: int = 0,
@@ -229,6 +242,7 @@ class BezierQuadratic(Widget):
         parent=parent,
         before=before,
         show=show,
+        user_data=user_data,
         color=color,
         thickness=thickness,
         segments=segments,
@@ -241,6 +255,7 @@ class BezierQuadratic(Widget):
         self.parent = parent
         self.before = before
         self.show = show
+        self.user_data = user_data
         self.color = color
         self.thickness = thickness
         self.segments = segments
@@ -257,6 +272,7 @@ class Circle(Widget):
         parent: int = 0,
         before: int = 0,
         show: bool = True,
+        user_data: Any = None,
         color: list[int] = [255, 255, 255, 255],
         fill: list[int] = [0, 0, 0, -255],
         thickness: float = 1.0,
@@ -270,6 +286,7 @@ class Circle(Widget):
         parent=parent,
         before=before,
         show=show,
+        user_data=user_data,
         color=color,
         fill=fill,
         thickness=thickness,
@@ -282,6 +299,7 @@ class Circle(Widget):
         self.parent = parent
         self.before = before
         self.show = show
+        self.user_data = user_data
         self.color = color
         self.fill = fill
         self.thickness = thickness
@@ -299,6 +317,7 @@ class Ellipse(Widget):
         parent: int = 0,
         before: int = 0,
         show: bool = True,
+        user_data: Any = None,
         color: list[int] = [255, 255, 255, 255],
         fill: list[int] = [0, 0, 0, -255],
         thickness: float = 1.0,
@@ -312,6 +331,7 @@ class Ellipse(Widget):
         parent=parent,
         before=before,
         show=show,
+        user_data=user_data,
         color=color,
         fill=fill,
         thickness=thickness,
@@ -324,6 +344,7 @@ class Ellipse(Widget):
         self.parent = parent
         self.before = before
         self.show = show
+        self.user_data = user_data
         self.color = color
         self.fill = fill
         self.thickness = thickness
@@ -342,6 +363,7 @@ class Image(Widget):
         parent: int = 0,
         before: int = 0,
         show: bool = True,
+        user_data: Any = None,
         uv_min: list[float] = [0.0, 0.0],
         uv_max: list[float] = [1.0, 1.0],
         color: list[int] = [255, 255, 255, 255],
@@ -355,6 +377,7 @@ class Image(Widget):
         parent=parent,
         before=before,
         show=show,
+        user_data=user_data,
         uv_min=uv_min,
         uv_max=uv_max,
         color=color,
@@ -367,6 +390,7 @@ class Image(Widget):
         self.parent = parent
         self.before = before
         self.show = show
+        self.user_data = user_data
         self.uv_min = uv_min
         self.uv_max = uv_max
         self.color = color
@@ -383,6 +407,7 @@ class Line(Widget):
         parent: int = 0,
         before: int = 0,
         show: bool = True,
+        user_data: Any = None,
         color: list[int] = [255, 255, 255, 255],
         thickness: float = 1.0,
         **kwargs
@@ -394,6 +419,7 @@ class Line(Widget):
         parent=parent,
         before=before,
         show=show,
+        user_data=user_data,
         color=color,
         thickness=thickness,
         **kwargs
@@ -404,6 +430,7 @@ class Line(Widget):
         self.parent = parent
         self.before = before
         self.show = show
+        self.user_data = user_data
         self.color = color
         self.thickness = thickness
 
@@ -418,6 +445,7 @@ class Polygon(Widget):
         parent: int = 0,
         before: int = 0,
         show: bool = True,
+        user_data: Any = None,
         color: list[int] = [255, 255, 255, 255],
         fill: list[int] = [0, 0, 0, -255],
         thickness: float = 1.0,
@@ -429,6 +457,7 @@ class Polygon(Widget):
         parent=parent,
         before=before,
         show=show,
+        user_data=user_data,
         color=color,
         fill=fill,
         thickness=thickness,
@@ -439,6 +468,7 @@ class Polygon(Widget):
         self.parent = parent
         self.before = before
         self.show = show
+        self.user_data = user_data
         self.color = color
         self.fill = fill
         self.thickness = thickness
@@ -454,6 +484,7 @@ class Polyline(Widget):
         parent: int = 0,
         before: int = 0,
         show: bool = True,
+        user_data: Any = None,
         closed: bool = False,
         color: list[int] = [255, 255, 255, 255],
         thickness: float = 1.0,
@@ -465,6 +496,7 @@ class Polyline(Widget):
         parent=parent,
         before=before,
         show=show,
+        user_data=user_data,
         closed=closed,
         color=color,
         thickness=thickness,
@@ -475,6 +507,7 @@ class Polyline(Widget):
         self.parent = parent
         self.before = before
         self.show = show
+        self.user_data = user_data
         self.closed = closed
         self.color = color
         self.thickness = thickness
@@ -493,6 +526,7 @@ class Quad(Widget):
         parent: int = 0,
         before: int = 0,
         show: bool = True,
+        user_data: Any = None,
         color: list[int] = [255, 255, 255, 255],
         fill: list[int] = [0, 0, 0, -255],
         thickness: float = 1.0,
@@ -507,6 +541,7 @@ class Quad(Widget):
         parent=parent,
         before=before,
         show=show,
+        user_data=user_data,
         color=color,
         fill=fill,
         thickness=thickness,
@@ -520,6 +555,7 @@ class Quad(Widget):
         self.parent = parent
         self.before = before
         self.show = show
+        self.user_data = user_data
         self.color = color
         self.fill = fill
         self.thickness = thickness
@@ -536,6 +572,7 @@ class Rectangle(Widget):
         parent: int = 0,
         before: int = 0,
         show: bool = True,
+        user_data: Any = None,
         color: list[int] = [255, 255, 255, 255],
         fill: list[int] = [0, 0, 0, -255],
         rounding: float = 0.0,
@@ -549,6 +586,7 @@ class Rectangle(Widget):
         parent=parent,
         before=before,
         show=show,
+        user_data=user_data,
         color=color,
         fill=fill,
         rounding=rounding,
@@ -561,6 +599,7 @@ class Rectangle(Widget):
         self.parent = parent
         self.before = before
         self.show = show
+        self.user_data = user_data
         self.color = color
         self.fill = fill
         self.rounding = rounding
@@ -578,6 +617,7 @@ class Text(Widget):
         parent: int = 0,
         before: int = 0,
         show: bool = True,
+        user_data: Any = None,
         color: list[int] = [255, 255, 255, 255],
         size: int = 10,
         **kwargs
@@ -589,6 +629,7 @@ class Text(Widget):
         parent=parent,
         before=before,
         show=show,
+        user_data=user_data,
         color=color,
         size=size,
         **kwargs
@@ -599,6 +640,7 @@ class Text(Widget):
         self.parent = parent
         self.before = before
         self.show = show
+        self.user_data = user_data
         self.color = color
         self.size = size
 
@@ -615,6 +657,7 @@ class Triangle(Widget):
         parent: int = 0,
         before: int = 0,
         show: bool = True,
+        user_data: Any = None,
         color: list[int] = [255, 255, 255, 255],
         fill: list[int] = [0, 0, 0, -255],
         thickness: float = 1.0,
@@ -628,6 +671,7 @@ class Triangle(Widget):
         parent=parent,
         before=before,
         show=show,
+        user_data=user_data,
         color=color,
         fill=fill,
         thickness=thickness,
@@ -640,6 +684,7 @@ class Triangle(Widget):
         self.parent = parent
         self.before = before
         self.show = show
+        self.user_data = user_data
         self.color = color
         self.fill = fill
         self.thickness = thickness

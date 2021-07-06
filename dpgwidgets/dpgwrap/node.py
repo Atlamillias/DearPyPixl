@@ -26,6 +26,7 @@ class Node(Container):
         delay_search: str = False,
         tracked: bool = False,
         track_offset: float = 0.5,
+        user_data: Any = None,
         draggable: bool = True,
         **kwargs
     ):
@@ -42,6 +43,7 @@ class Node(Container):
         delay_search=delay_search,
         tracked=tracked,
         track_offset=track_offset,
+        user_data=user_data,
         draggable=draggable,
         **kwargs
         )
@@ -57,6 +59,7 @@ class Node(Container):
         self.delay_search = delay_search
         self.tracked = tracked
         self.track_offset = track_offset
+        self.user_data = user_data
         self.draggable = draggable
 
 
@@ -76,8 +79,10 @@ class NodeAttribute(Container):
         filter_key: str = '',
         tracked: bool = False,
         track_offset: float = 0.5,
+        user_data: Any = None,
         attribute_type: int = 0,
         shape: int = 1,
+        category: str = 'general',
         **kwargs
     ):
         super().__init__(
@@ -92,8 +97,10 @@ class NodeAttribute(Container):
         filter_key=filter_key,
         tracked=tracked,
         track_offset=track_offset,
+        user_data=user_data,
         attribute_type=attribute_type,
         shape=shape,
+        category=category,
         **kwargs
         )
         self.label = label
@@ -107,8 +114,10 @@ class NodeAttribute(Container):
         self.filter_key = filter_key
         self.tracked = tracked
         self.track_offset = track_offset
+        self.user_data = user_data
         self.attribute_type = attribute_type
         self.shape = shape
+        self.category = category
 
 
 class NodeEditor(Container):
@@ -128,6 +137,7 @@ class NodeEditor(Container):
         delay_search: str = False,
         tracked: bool = False,
         track_offset: float = 0.5,
+        user_data: Any = None,
         delink_callback: Callable = None,
         **kwargs
     ):
@@ -144,6 +154,7 @@ class NodeEditor(Container):
         delay_search=delay_search,
         tracked=tracked,
         track_offset=track_offset,
+        user_data=user_data,
         delink_callback=delink_callback,
         **kwargs
         )
@@ -159,6 +170,7 @@ class NodeEditor(Container):
         self.delay_search = delay_search
         self.tracked = tracked
         self.track_offset = track_offset
+        self.user_data = user_data
         self.delink_callback = delink_callback
 
 
@@ -172,6 +184,7 @@ class NodeLink(Widget):
         label: str = None,
         parent: int = 0,
         show: bool = True,
+        user_data: Any = None,
         **kwargs
     ):
         super().__init__(
@@ -180,6 +193,7 @@ class NodeLink(Widget):
         label=label,
         parent=parent,
         show=show,
+        user_data=user_data,
         **kwargs
         )
         self.node_1 = node_1
@@ -187,3 +201,4 @@ class NodeLink(Widget):
         self.label = label
         self.parent = parent
         self.show = show
+        self.user_data = user_data

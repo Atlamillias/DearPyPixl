@@ -212,8 +212,8 @@ class KeyDownHandler(Item):
         key: int = -1,
         label: str = None,
         callback: Callable = None,
-        user_data: Any = None,
         show: bool = True,
+        user_data: Any = None,
         parent: int = 11,
         **kwargs
     ):
@@ -221,16 +221,16 @@ class KeyDownHandler(Item):
         key=key,
         label=label,
         callback=callback,
-        user_data=user_data,
         show=show,
+        user_data=user_data,
         parent=parent,
         **kwargs
         )
         self.key = key
         self.label = label
         self.callback = callback
-        self.user_data = user_data
         self.show = show
+        self.user_data = user_data
         self.parent = parent
 
 
@@ -242,8 +242,8 @@ class KeyPressHandler(Item):
         key: int = -1,
         label: str = None,
         callback: Callable = None,
-        user_data: Any = None,
         show: bool = True,
+        user_data: Any = None,
         parent: int = 11,
         **kwargs
     ):
@@ -251,16 +251,16 @@ class KeyPressHandler(Item):
         key=key,
         label=label,
         callback=callback,
-        user_data=user_data,
         show=show,
+        user_data=user_data,
         parent=parent,
         **kwargs
         )
         self.key = key
         self.label = label
         self.callback = callback
-        self.user_data = user_data
         self.show = show
+        self.user_data = user_data
         self.parent = parent
 
 
@@ -272,8 +272,8 @@ class KeyReleaseHandler(Item):
         key: int = -1,
         label: str = None,
         callback: Callable = None,
-        user_data: Any = None,
         show: bool = True,
+        user_data: Any = None,
         parent: int = 11,
         **kwargs
     ):
@@ -281,16 +281,16 @@ class KeyReleaseHandler(Item):
         key=key,
         label=label,
         callback=callback,
-        user_data=user_data,
         show=show,
+        user_data=user_data,
         parent=parent,
         **kwargs
         )
         self.key = key
         self.label = label
         self.callback = callback
-        self.user_data = user_data
         self.show = show
+        self.user_data = user_data
         self.parent = parent
 
 
@@ -302,8 +302,8 @@ class MouseClickHandler(Item):
         button: int = -1,
         label: str = None,
         callback: Callable = None,
-        user_data: Any = None,
         show: bool = True,
+        user_data: Any = None,
         parent: int = 11,
         **kwargs
     ):
@@ -311,16 +311,16 @@ class MouseClickHandler(Item):
         button=button,
         label=label,
         callback=callback,
-        user_data=user_data,
         show=show,
+        user_data=user_data,
         parent=parent,
         **kwargs
         )
         self.button = button
         self.label = label
         self.callback = callback
-        self.user_data = user_data
         self.show = show
+        self.user_data = user_data
         self.parent = parent
 
 
@@ -332,8 +332,8 @@ class MouseDoubleClickHandler(Item):
         button: int = -1,
         label: str = None,
         callback: Callable = None,
-        user_data: Any = None,
         show: bool = True,
+        user_data: Any = None,
         parent: int = 11,
         **kwargs
     ):
@@ -341,16 +341,16 @@ class MouseDoubleClickHandler(Item):
         button=button,
         label=label,
         callback=callback,
-        user_data=user_data,
         show=show,
+        user_data=user_data,
         parent=parent,
         **kwargs
         )
         self.button = button
         self.label = label
         self.callback = callback
-        self.user_data = user_data
         self.show = show
+        self.user_data = user_data
         self.parent = parent
 
 
@@ -362,8 +362,8 @@ class MouseDownHandler(Item):
         button: int = -1,
         label: str = None,
         callback: Callable = None,
-        user_data: Any = None,
         show: bool = True,
+        user_data: Any = None,
         parent: int = 11,
         **kwargs
     ):
@@ -371,16 +371,16 @@ class MouseDownHandler(Item):
         button=button,
         label=label,
         callback=callback,
-        user_data=user_data,
         show=show,
+        user_data=user_data,
         parent=parent,
         **kwargs
         )
         self.button = button
         self.label = label
         self.callback = callback
-        self.user_data = user_data
         self.show = show
+        self.user_data = user_data
         self.parent = parent
 
 
@@ -393,8 +393,8 @@ class MouseDragHandler(Item):
         threshold: float = 10.0,
         label: str = None,
         callback: Callable = None,
-        user_data: Any = None,
         show: bool = True,
+        user_data: Any = None,
         parent: int = 11,
         **kwargs
     ):
@@ -403,8 +403,8 @@ class MouseDragHandler(Item):
         threshold=threshold,
         label=label,
         callback=callback,
-        user_data=user_data,
         show=show,
+        user_data=user_data,
         parent=parent,
         **kwargs
         )
@@ -412,8 +412,8 @@ class MouseDragHandler(Item):
         self.threshold = threshold
         self.label = label
         self.callback = callback
-        self.user_data = user_data
         self.show = show
+        self.user_data = user_data
         self.parent = parent
 
 
@@ -424,23 +424,23 @@ class MouseMoveHandler(Item):
         self,
         label: str = None,
         callback: Callable = None,
-        user_data: Any = None,
         show: bool = True,
+        user_data: Any = None,
         parent: int = 11,
         **kwargs
     ):
         super().__init__(
         label=label,
         callback=callback,
-        user_data=user_data,
         show=show,
+        user_data=user_data,
         parent=parent,
         **kwargs
         )
         self.label = label
         self.callback = callback
-        self.user_data = user_data
         self.show = show
+        self.user_data = user_data
         self.parent = parent
 
 
@@ -452,8 +452,8 @@ class MouseReleaseHandler(Item):
         button: int = -1,
         label: str = None,
         callback: Callable = None,
-        user_data: Any = None,
         show: bool = True,
+        user_data: Any = None,
         parent: int = 11,
         **kwargs
     ):
@@ -461,16 +461,16 @@ class MouseReleaseHandler(Item):
         button=button,
         label=label,
         callback=callback,
-        user_data=user_data,
         show=show,
+        user_data=user_data,
         parent=parent,
         **kwargs
         )
         self.button = button
         self.label = label
         self.callback = callback
-        self.user_data = user_data
         self.show = show
+        self.user_data = user_data
         self.parent = parent
 
 
@@ -481,23 +481,23 @@ class MouseWheelHandler(Item):
         self,
         label: str = None,
         callback: Callable = None,
-        user_data: Any = None,
         show: bool = True,
+        user_data: Any = None,
         parent: int = 11,
         **kwargs
     ):
         super().__init__(
         label=label,
         callback=callback,
-        user_data=user_data,
         show=show,
+        user_data=user_data,
         parent=parent,
         **kwargs
         )
         self.label = label
         self.callback = callback
-        self.user_data = user_data
         self.show = show
+        self.user_data = user_data
         self.parent = parent
 
 

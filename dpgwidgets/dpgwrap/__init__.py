@@ -1,8 +1,29 @@
-from dearpygui import core as idpg
+from dearpygui import core as idpg, dearpygui as dpg
 
 
 __updated__ = "20210704"
 __dpg_ver__ = "0.8.12"
+
+
+__all__ = [
+    # modules
+    "containers",
+    "widgets",
+    "drawing",
+    "handlers",
+    "node",
+    #"plotting",
+    "registries",
+    "stylize",
+    "valueitems",
+
+    # functions
+    "supports_version_check",
+
+    # other imports
+    "idpg",
+    "dpg",
+]
 
 
 def supports_version_check(show_ver = True):

@@ -24,13 +24,13 @@ class Plot(Container):
         callback: Callable = None,
         drag_callback: Callable = None,
         drop_callback: Callable = None,
-        user_data: Any = None,
         show: bool = True,
         pos: list[int] = [],
         filter_key: str = '',
         delay_search: str = False,
         tracked: bool = False,
         track_offset: float = 0.5,
+        user_data: Any = None,
         no_title: bool = False,
         no_menus: bool = False,
         no_box_select: bool = False,
@@ -54,13 +54,13 @@ class Plot(Container):
         callback=callback,
         drag_callback=drag_callback,
         drop_callback=drop_callback,
-        user_data=user_data,
         show=show,
         pos=pos,
         filter_key=filter_key,
         delay_search=delay_search,
         tracked=tracked,
         track_offset=track_offset,
+        user_data=user_data,
         no_title=no_title,
         no_menus=no_menus,
         no_box_select=no_box_select,
@@ -83,13 +83,13 @@ class Plot(Container):
         self.callback = callback
         self.drag_callback = drag_callback
         self.drop_callback = drop_callback
-        self.user_data = user_data
         self.show = show
         self.pos = pos
         self.filter_key = filter_key
         self.delay_search = delay_search
         self.tracked = tracked
         self.track_offset = track_offset
+        self.user_data = user_data
         self.no_title = no_title
         self.no_menus = no_menus
         self.no_box_select = no_box_select
@@ -113,6 +113,7 @@ class HistogramSeries(Widget):
         before: int = 0,
         source: int = 0,
         show: bool = True,
+        user_data: Any = None,
         bins: int = -1,
         bar_scale: float = 1.0,
         min_range: float = 0.0,
@@ -130,6 +131,7 @@ class HistogramSeries(Widget):
         before=before,
         source=source,
         show=show,
+        user_data=user_data,
         bins=bins,
         bar_scale=bar_scale,
         min_range=min_range,
@@ -146,6 +148,7 @@ class HistogramSeries(Widget):
         self.before = before
         self.source = source
         self.show = show
+        self.user_data = user_data
         self.bins = bins
         self.bar_scale = bar_scale
         self.min_range = min_range
@@ -168,6 +171,7 @@ class AreaSeries(Widget):
         before: int = 0,
         source: int = 0,
         show: bool = True,
+        user_data: Any = None,
         fill: list[int] = [0, 0, 0, -255],
         contribute_to_bounds: bool = True,
         **kwargs
@@ -180,6 +184,7 @@ class AreaSeries(Widget):
         before=before,
         source=source,
         show=show,
+        user_data=user_data,
         fill=fill,
         contribute_to_bounds=contribute_to_bounds,
         **kwargs
@@ -191,6 +196,7 @@ class AreaSeries(Widget):
         self.before = before
         self.source = source
         self.show = show
+        self.user_data = user_data
         self.fill = fill
         self.contribute_to_bounds = contribute_to_bounds
 
@@ -207,9 +213,9 @@ class BarSeries(Widget):
         before: int = 0,
         source: int = 0,
         show: bool = True,
+        user_data: Any = None,
         weight: float = 1.0,
         horizontal: bool = False,
-        contribute_to_bounds: bool = True,
         **kwargs
     ):
         super().__init__(
@@ -220,9 +226,9 @@ class BarSeries(Widget):
         before=before,
         source=source,
         show=show,
+        user_data=user_data,
         weight=weight,
         horizontal=horizontal,
-        contribute_to_bounds=contribute_to_bounds,
         **kwargs
         )
         self.x = x
@@ -232,9 +238,9 @@ class BarSeries(Widget):
         self.before = before
         self.source = source
         self.show = show
+        self.user_data = user_data
         self.weight = weight
         self.horizontal = horizontal
-        self.contribute_to_bounds = contribute_to_bounds
 
 
 class CandleSeries(Widget):
@@ -252,10 +258,10 @@ class CandleSeries(Widget):
         before: int = 0,
         source: int = 0,
         show: bool = True,
+        user_data: Any = None,
         bull_color: list[int] = [0, 255, 113, 255],
         bear_color: list[int] = [218, 13, 79, 255],
         weight: int = 0.25,
-        contribute_to_bounds: bool = True,
         tooltip: bool = True,
         **kwargs
     ):
@@ -270,10 +276,10 @@ class CandleSeries(Widget):
         before=before,
         source=source,
         show=show,
+        user_data=user_data,
         bull_color=bull_color,
         bear_color=bear_color,
         weight=weight,
-        contribute_to_bounds=contribute_to_bounds,
         tooltip=tooltip,
         **kwargs
         )
@@ -287,10 +293,10 @@ class CandleSeries(Widget):
         self.before = before
         self.source = source
         self.show = show
+        self.user_data = user_data
         self.bull_color = bull_color
         self.bear_color = bear_color
         self.weight = weight
-        self.contribute_to_bounds = contribute_to_bounds
         self.tooltip = tooltip
 
 
@@ -308,6 +314,7 @@ class ErrorSeries(Widget):
         before: int = 0,
         source: int = 0,
         show: bool = True,
+        user_data: Any = None,
         contribute_to_bounds: bool = True,
         horizontal: bool = False,
         **kwargs
@@ -322,6 +329,7 @@ class ErrorSeries(Widget):
         before=before,
         source=source,
         show=show,
+        user_data=user_data,
         contribute_to_bounds=contribute_to_bounds,
         horizontal=horizontal,
         **kwargs
@@ -335,6 +343,7 @@ class ErrorSeries(Widget):
         self.before = before
         self.source = source
         self.show = show
+        self.user_data = user_data
         self.contribute_to_bounds = contribute_to_bounds
         self.horizontal = horizontal
 
@@ -352,6 +361,7 @@ class HeatSeries(Widget):
         before: int = 0,
         source: int = 0,
         show: bool = True,
+        user_data: Any = None,
         scale_min: float = 0.0,
         scale_max: float = 1.0,
         bounds_min: Any = (0.0, 0.0),
@@ -369,6 +379,7 @@ class HeatSeries(Widget):
         before=before,
         source=source,
         show=show,
+        user_data=user_data,
         scale_min=scale_min,
         scale_max=scale_max,
         bounds_min=bounds_min,
@@ -385,6 +396,7 @@ class HeatSeries(Widget):
         self.before = before
         self.source = source
         self.show = show
+        self.user_data = user_data
         self.scale_min = scale_min
         self.scale_max = scale_max
         self.bounds_min = bounds_min
@@ -404,6 +416,7 @@ class HlineSeries(Widget):
         before: int = 0,
         source: int = 0,
         show: bool = True,
+        user_data: Any = None,
         contribute_to_bounds: bool = True,
         **kwargs
     ):
@@ -414,6 +427,7 @@ class HlineSeries(Widget):
         before=before,
         source=source,
         show=show,
+        user_data=user_data,
         contribute_to_bounds=contribute_to_bounds,
         **kwargs
         )
@@ -423,6 +437,7 @@ class HlineSeries(Widget):
         self.before = before
         self.source = source
         self.show = show
+        self.user_data = user_data
         self.contribute_to_bounds = contribute_to_bounds
 
 
@@ -439,10 +454,10 @@ class ImageSeries(Widget):
         before: int = 0,
         source: int = 0,
         show: bool = True,
+        user_data: Any = None,
         uv_min: list[float] = [0.0, 0.0],
         uv_max: list[float] = [1.0, 1.0],
         tint_color: list[int] = [255, 255, 255, 255],
-        contribute_to_bounds: bool = True,
         **kwargs
     ):
         super().__init__(
@@ -454,10 +469,10 @@ class ImageSeries(Widget):
         before=before,
         source=source,
         show=show,
+        user_data=user_data,
         uv_min=uv_min,
         uv_max=uv_max,
         tint_color=tint_color,
-        contribute_to_bounds=contribute_to_bounds,
         **kwargs
         )
         self.texture_id = texture_id
@@ -468,10 +483,10 @@ class ImageSeries(Widget):
         self.before = before
         self.source = source
         self.show = show
+        self.user_data = user_data
         self.uv_min = uv_min
         self.uv_max = uv_max
         self.tint_color = tint_color
-        self.contribute_to_bounds = contribute_to_bounds
 
 
 class LineSeries(Widget):
@@ -486,7 +501,7 @@ class LineSeries(Widget):
         before: int = 0,
         source: int = 0,
         show: bool = True,
-        contribute_to_bounds: bool = True,
+        user_data: Any = None,
         **kwargs
     ):
         super().__init__(
@@ -497,7 +512,7 @@ class LineSeries(Widget):
         before=before,
         source=source,
         show=show,
-        contribute_to_bounds=contribute_to_bounds,
+        user_data=user_data,
         **kwargs
         )
         self.x = x
@@ -507,7 +522,7 @@ class LineSeries(Widget):
         self.before = before
         self.source = source
         self.show = show
-        self.contribute_to_bounds = contribute_to_bounds
+        self.user_data = user_data
 
 
 class PieSeries(Widget):
@@ -525,10 +540,10 @@ class PieSeries(Widget):
         before: int = 0,
         source: int = 0,
         show: bool = True,
+        user_data: Any = None,
         format: str = '%0.2f',
         angle: float = 90.0,
         normalize: bool = False,
-        contribute_to_bounds: bool = True,
         **kwargs
     ):
         super().__init__(
@@ -542,10 +557,10 @@ class PieSeries(Widget):
         before=before,
         source=source,
         show=show,
+        user_data=user_data,
         format=format,
         angle=angle,
         normalize=normalize,
-        contribute_to_bounds=contribute_to_bounds,
         **kwargs
         )
         self.x = x
@@ -558,10 +573,10 @@ class PieSeries(Widget):
         self.before = before
         self.source = source
         self.show = show
+        self.user_data = user_data
         self.format = format
         self.angle = angle
         self.normalize = normalize
-        self.contribute_to_bounds = contribute_to_bounds
 
 
 class PlotAnnotation(Widget):
@@ -574,6 +589,7 @@ class PlotAnnotation(Widget):
         before: int = 0,
         source: int = 0,
         show: bool = True,
+        user_data: Any = None,
         default_value: Any = (0.0, 0.0),
         offset: list[float] = [0.0, 0.0],
         color: list[int] = [0, 0, 0, -255],
@@ -586,6 +602,7 @@ class PlotAnnotation(Widget):
         before=before,
         source=source,
         show=show,
+        user_data=user_data,
         default_value=default_value,
         offset=offset,
         color=color,
@@ -597,6 +614,7 @@ class PlotAnnotation(Widget):
         self.before = before
         self.source = source
         self.show = show
+        self.user_data = user_data
         self.default_value = default_value
         self.offset = offset
         self.color = color
@@ -615,6 +633,7 @@ class PlotAxis(Widget):
         drag_callback: Callable = None,
         drop_callback: Callable = None,
         show: bool = True,
+        user_data: Any = None,
         no_gridlines: bool = False,
         no_tick_marks: bool = False,
         no_tick_labels: bool = False,
@@ -633,6 +652,7 @@ class PlotAxis(Widget):
         drag_callback=drag_callback,
         drop_callback=drop_callback,
         show=show,
+        user_data=user_data,
         no_gridlines=no_gridlines,
         no_tick_marks=no_tick_marks,
         no_tick_labels=no_tick_labels,
@@ -650,6 +670,7 @@ class PlotAxis(Widget):
         self.drag_callback = drag_callback
         self.drop_callback = drop_callback
         self.show = show
+        self.user_data = user_data
         self.no_gridlines = no_gridlines
         self.no_tick_marks = no_tick_marks
         self.no_tick_labels = no_tick_labels
@@ -671,6 +692,7 @@ class PlotLegend(Widget):
         drag_callback: Callable = None,
         drop_callback: Callable = None,
         show: bool = True,
+        user_data: Any = None,
         location: int = 5,
         horizontal: bool = False,
         outside: bool = False,
@@ -683,6 +705,7 @@ class PlotLegend(Widget):
         drag_callback=drag_callback,
         drop_callback=drop_callback,
         show=show,
+        user_data=user_data,
         location=location,
         horizontal=horizontal,
         outside=outside,
@@ -694,6 +717,7 @@ class PlotLegend(Widget):
         self.drag_callback = drag_callback
         self.drop_callback = drop_callback
         self.show = show
+        self.user_data = user_data
         self.location = location
         self.horizontal = horizontal
         self.outside = outside
@@ -711,7 +735,7 @@ class ScatterSeries(Widget):
         before: int = 0,
         source: int = 0,
         show: bool = True,
-        contribute_to_bounds: bool = True,
+        user_data: Any = None,
         **kwargs
     ):
         super().__init__(
@@ -722,7 +746,7 @@ class ScatterSeries(Widget):
         before=before,
         source=source,
         show=show,
-        contribute_to_bounds=contribute_to_bounds,
+        user_data=user_data,
         **kwargs
         )
         self.x = x
@@ -732,7 +756,7 @@ class ScatterSeries(Widget):
         self.before = before
         self.source = source
         self.show = show
-        self.contribute_to_bounds = contribute_to_bounds
+        self.user_data = user_data
 
 
 class ShadeSeries(Widget):
@@ -747,8 +771,8 @@ class ShadeSeries(Widget):
         before: int = 0,
         source: int = 0,
         show: bool = True,
+        user_data: Any = None,
         y2: Any = [],
-        contribute_to_bounds: bool = True,
         **kwargs
     ):
         super().__init__(
@@ -759,8 +783,8 @@ class ShadeSeries(Widget):
         before=before,
         source=source,
         show=show,
+        user_data=user_data,
         y2=y2,
-        contribute_to_bounds=contribute_to_bounds,
         **kwargs
         )
         self.x = x
@@ -770,8 +794,8 @@ class ShadeSeries(Widget):
         self.before = before
         self.source = source
         self.show = show
+        self.user_data = user_data
         self.y2 = y2
-        self.contribute_to_bounds = contribute_to_bounds
 
 
 class SimplePlot(Widget):
@@ -793,6 +817,7 @@ class SimplePlot(Widget):
         filter_key: str = '',
         tracked: bool = False,
         track_offset: float = 0.5,
+        user_data: Any = None,
         default_value: list[float] = [],
         overlay: str = '',
         histogram: bool = False,
@@ -816,6 +841,7 @@ class SimplePlot(Widget):
         filter_key=filter_key,
         tracked=tracked,
         track_offset=track_offset,
+        user_data=user_data,
         default_value=default_value,
         overlay=overlay,
         histogram=histogram,
@@ -838,6 +864,7 @@ class SimplePlot(Widget):
         self.filter_key = filter_key
         self.tracked = tracked
         self.track_offset = track_offset
+        self.user_data = user_data
         self.default_value = default_value
         self.overlay = overlay
         self.histogram = histogram
@@ -858,7 +885,7 @@ class StairSeries(Widget):
         before: int = 0,
         source: int = 0,
         show: bool = True,
-        contribute_to_bounds: bool = True,
+        user_data: Any = None,
         **kwargs
     ):
         super().__init__(
@@ -869,7 +896,7 @@ class StairSeries(Widget):
         before=before,
         source=source,
         show=show,
-        contribute_to_bounds=contribute_to_bounds,
+        user_data=user_data,
         **kwargs
         )
         self.x = x
@@ -879,7 +906,7 @@ class StairSeries(Widget):
         self.before = before
         self.source = source
         self.show = show
-        self.contribute_to_bounds = contribute_to_bounds
+        self.user_data = user_data
 
 
 class StemSeries(Widget):
@@ -895,7 +922,7 @@ class StemSeries(Widget):
         before: int = 0,
         source: int = 0,
         show: bool = True,
-        contribute_to_bounds: bool = True,
+        user_data: Any = None,
         **kwargs
     ):
         super().__init__(
@@ -907,7 +934,7 @@ class StemSeries(Widget):
         before=before,
         source=source,
         show=show,
-        contribute_to_bounds=contribute_to_bounds,
+        user_data=user_data,
         **kwargs
         )
         self.x = x
@@ -918,7 +945,7 @@ class StemSeries(Widget):
         self.before = before
         self.source = source
         self.show = show
-        self.contribute_to_bounds = contribute_to_bounds
+        self.user_data = user_data
 
 
 class VlineSeries(Widget):
@@ -932,7 +959,7 @@ class VlineSeries(Widget):
         before: int = 0,
         source: int = 0,
         show: bool = True,
-        contribute_to_bounds: bool = True,
+        user_data: Any = None,
         **kwargs
     ):
         super().__init__(
@@ -942,7 +969,7 @@ class VlineSeries(Widget):
         before=before,
         source=source,
         show=show,
-        contribute_to_bounds=contribute_to_bounds,
+        user_data=user_data,
         **kwargs
         )
         self.x = x
@@ -951,4 +978,4 @@ class VlineSeries(Widget):
         self.before = before
         self.source = source
         self.show = show
-        self.contribute_to_bounds = contribute_to_bounds
+        self.user_data = user_data

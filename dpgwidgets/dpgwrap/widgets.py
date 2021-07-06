@@ -25,12 +25,12 @@ class Slider(Widget):
         callback: Callable = None,
         drag_callback: Callable = None,
         drop_callback: Callable = None,
-        user_data: Any = None,
         show: bool = True,
         pos: list[int] = [],
         filter_key: str = '',
         tracked: bool = False,
         track_offset: float = 0.5,
+        user_data: Any = None,
         default_value: list[float] = [0.0, 0.0, 0.0, 0.0],
         max_x: float = 100.0,
         max_y: float = 100.0,
@@ -53,12 +53,12 @@ class Slider(Widget):
         callback=callback,
         drag_callback=drag_callback,
         drop_callback=drop_callback,
-        user_data=user_data,
         show=show,
         pos=pos,
         filter_key=filter_key,
         tracked=tracked,
         track_offset=track_offset,
+        user_data=user_data,
         default_value=default_value,
         max_x=max_x,
         max_y=max_y,
@@ -80,12 +80,12 @@ class Slider(Widget):
         self.callback = callback
         self.drag_callback = drag_callback
         self.drop_callback = drop_callback
-        self.user_data = user_data
         self.show = show
         self.pos = pos
         self.filter_key = filter_key
         self.tracked = tracked
         self.track_offset = track_offset
+        self.user_data = user_data
         self.default_value = default_value
         self.max_x = max_x
         self.max_y = max_y
@@ -111,13 +111,13 @@ class Button(Widget):
         callback: Callable = None,
         drag_callback: Callable = None,
         drop_callback: Callable = None,
-        user_data: Any = None,
         show: bool = True,
         enabled: bool = True,
         pos: list[int] = [],
         filter_key: str = '',
         tracked: bool = False,
         track_offset: float = 0.5,
+        user_data: Any = None,
         small: bool = False,
         arrow: bool = False,
         direction: int = 0,
@@ -134,13 +134,13 @@ class Button(Widget):
         callback=callback,
         drag_callback=drag_callback,
         drop_callback=drop_callback,
-        user_data=user_data,
         show=show,
         enabled=enabled,
         pos=pos,
         filter_key=filter_key,
         tracked=tracked,
         track_offset=track_offset,
+        user_data=user_data,
         small=small,
         arrow=arrow,
         direction=direction,
@@ -156,13 +156,13 @@ class Button(Widget):
         self.callback = callback
         self.drag_callback = drag_callback
         self.drop_callback = drop_callback
-        self.user_data = user_data
         self.show = show
         self.enabled = enabled
         self.pos = pos
         self.filter_key = filter_key
         self.tracked = tracked
         self.track_offset = track_offset
+        self.user_data = user_data
         self.small = small
         self.arrow = arrow
         self.direction = direction
@@ -177,6 +177,7 @@ class CharRemap(Widget):
         target: int,
         label: str = None,
         parent: int = 0,
+        user_data: Any = None,
         **kwargs
     ):
         super().__init__(
@@ -184,12 +185,14 @@ class CharRemap(Widget):
         target=target,
         label=label,
         parent=parent,
+        user_data=user_data,
         **kwargs
         )
         self.source = source
         self.target = target
         self.label = label
         self.parent = parent
+        self.user_data = user_data
 
 
 class Checkbox(Widget):
@@ -206,13 +209,13 @@ class Checkbox(Widget):
         callback: Callable = None,
         drag_callback: Callable = None,
         drop_callback: Callable = None,
-        user_data: Any = None,
         show: bool = True,
         enabled: bool = True,
         pos: list[int] = [],
         filter_key: str = '',
         tracked: bool = False,
         track_offset: float = 0.5,
+        user_data: Any = None,
         default_value: bool = False,
         **kwargs
     ):
@@ -226,13 +229,13 @@ class Checkbox(Widget):
         callback=callback,
         drag_callback=drag_callback,
         drop_callback=drop_callback,
-        user_data=user_data,
         show=show,
         enabled=enabled,
         pos=pos,
         filter_key=filter_key,
         tracked=tracked,
         track_offset=track_offset,
+        user_data=user_data,
         default_value=default_value,
         **kwargs
         )
@@ -245,13 +248,13 @@ class Checkbox(Widget):
         self.callback = callback
         self.drag_callback = drag_callback
         self.drop_callback = drop_callback
-        self.user_data = user_data
         self.show = show
         self.enabled = enabled
         self.pos = pos
         self.filter_key = filter_key
         self.tracked = tracked
         self.track_offset = track_offset
+        self.user_data = user_data
         self.default_value = default_value
 
 
@@ -271,13 +274,13 @@ class ColorButton(Widget):
         callback: Callable = None,
         drag_callback: Callable = None,
         drop_callback: Callable = None,
-        user_data: Any = None,
         show: bool = True,
         enabled: bool = True,
         pos: list[int] = [],
         filter_key: str = '',
         tracked: bool = False,
         track_offset: float = 0.5,
+        user_data: Any = None,
         no_alpha: bool = False,
         no_border: bool = False,
         no_drag_drop: bool = False,
@@ -295,13 +298,13 @@ class ColorButton(Widget):
         callback=callback,
         drag_callback=drag_callback,
         drop_callback=drop_callback,
-        user_data=user_data,
         show=show,
         enabled=enabled,
         pos=pos,
         filter_key=filter_key,
         tracked=tracked,
         track_offset=track_offset,
+        user_data=user_data,
         no_alpha=no_alpha,
         no_border=no_border,
         no_drag_drop=no_drag_drop,
@@ -318,13 +321,13 @@ class ColorButton(Widget):
         self.callback = callback
         self.drag_callback = drag_callback
         self.drop_callback = drop_callback
-        self.user_data = user_data
         self.show = show
         self.enabled = enabled
         self.pos = pos
         self.filter_key = filter_key
         self.tracked = tracked
         self.track_offset = track_offset
+        self.user_data = user_data
         self.no_alpha = no_alpha
         self.no_border = no_border
         self.no_drag_drop = no_drag_drop
@@ -347,13 +350,13 @@ class ColorEdit(Widget):
         callback: Callable = None,
         drag_callback: Callable = None,
         drop_callback: Callable = None,
-        user_data: Any = None,
         show: bool = True,
         enabled: bool = True,
         pos: list[int] = [],
         filter_key: str = '',
         tracked: bool = False,
         track_offset: float = 0.5,
+        user_data: Any = None,
         no_alpha: bool = False,
         no_picker: bool = False,
         no_options: bool = False,
@@ -382,13 +385,13 @@ class ColorEdit(Widget):
         callback=callback,
         drag_callback=drag_callback,
         drop_callback=drop_callback,
-        user_data=user_data,
         show=show,
         enabled=enabled,
         pos=pos,
         filter_key=filter_key,
         tracked=tracked,
         track_offset=track_offset,
+        user_data=user_data,
         no_alpha=no_alpha,
         no_picker=no_picker,
         no_options=no_options,
@@ -416,13 +419,13 @@ class ColorEdit(Widget):
         self.callback = callback
         self.drag_callback = drag_callback
         self.drop_callback = drop_callback
-        self.user_data = user_data
         self.show = show
         self.enabled = enabled
         self.pos = pos
         self.filter_key = filter_key
         self.tracked = tracked
         self.track_offset = track_offset
+        self.user_data = user_data
         self.no_alpha = no_alpha
         self.no_picker = no_picker
         self.no_options = no_options
@@ -455,13 +458,13 @@ class ColorPicker(Widget):
         callback: Callable = None,
         drag_callback: Callable = None,
         drop_callback: Callable = None,
-        user_data: Any = None,
         show: bool = True,
         enabled: bool = True,
         pos: list[int] = [],
         filter_key: str = '',
         tracked: bool = False,
         track_offset: float = 0.5,
+        user_data: Any = None,
         no_alpha: bool = False,
         no_side_preview: bool = False,
         no_small_preview: bool = False,
@@ -491,13 +494,13 @@ class ColorPicker(Widget):
         callback=callback,
         drag_callback=drag_callback,
         drop_callback=drop_callback,
-        user_data=user_data,
         show=show,
         enabled=enabled,
         pos=pos,
         filter_key=filter_key,
         tracked=tracked,
         track_offset=track_offset,
+        user_data=user_data,
         no_alpha=no_alpha,
         no_side_preview=no_side_preview,
         no_small_preview=no_small_preview,
@@ -526,13 +529,13 @@ class ColorPicker(Widget):
         self.callback = callback
         self.drag_callback = drag_callback
         self.drop_callback = drop_callback
-        self.user_data = user_data
         self.show = show
         self.enabled = enabled
         self.pos = pos
         self.filter_key = filter_key
         self.tracked = tracked
         self.track_offset = track_offset
+        self.user_data = user_data
         self.no_alpha = no_alpha
         self.no_side_preview = no_side_preview
         self.no_small_preview = no_small_preview
@@ -563,6 +566,7 @@ class ColormapScale(Widget):
         source: int = 0,
         show: bool = True,
         pos: list[int] = [],
+        user_data: Any = None,
         default_value: int = 0,
         min_scale: float = 0.0,
         max_scale: float = 1.0,
@@ -578,6 +582,7 @@ class ColormapScale(Widget):
         source=source,
         show=show,
         pos=pos,
+        user_data=user_data,
         default_value=default_value,
         min_scale=min_scale,
         max_scale=max_scale,
@@ -592,6 +597,7 @@ class ColormapScale(Widget):
         self.source = source
         self.show = show
         self.pos = pos
+        self.user_data = user_data
         self.default_value = default_value
         self.min_scale = min_scale
         self.max_scale = max_scale
@@ -613,13 +619,13 @@ class Combo(Widget):
         callback: Callable = None,
         drag_callback: Callable = None,
         drop_callback: Callable = None,
-        user_data: Any = None,
         show: bool = True,
         enabled: bool = True,
         pos: list[int] = [],
         filter_key: str = '',
         tracked: bool = False,
         track_offset: float = 0.5,
+        user_data: Any = None,
         default_value: str = '',
         popup_align_left: bool = False,
         no_arrow_button: bool = False,
@@ -639,13 +645,13 @@ class Combo(Widget):
         callback=callback,
         drag_callback=drag_callback,
         drop_callback=drop_callback,
-        user_data=user_data,
         show=show,
         enabled=enabled,
         pos=pos,
         filter_key=filter_key,
         tracked=tracked,
         track_offset=track_offset,
+        user_data=user_data,
         default_value=default_value,
         popup_align_left=popup_align_left,
         no_arrow_button=no_arrow_button,
@@ -664,13 +670,13 @@ class Combo(Widget):
         self.callback = callback
         self.drag_callback = drag_callback
         self.drop_callback = drop_callback
-        self.user_data = user_data
         self.show = show
         self.enabled = enabled
         self.pos = pos
         self.filter_key = filter_key
         self.tracked = tracked
         self.track_offset = track_offset
+        self.user_data = user_data
         self.default_value = default_value
         self.popup_align_left = popup_align_left
         self.no_arrow_button = no_arrow_button
@@ -691,12 +697,12 @@ class DatePicker(Widget):
         callback: Callable = None,
         drag_callback: Callable = None,
         drop_callback: Callable = None,
-        user_data: Any = None,
         show: bool = True,
         pos: list[int] = [],
         filter_key: str = '',
         tracked: bool = False,
         track_offset: float = 0.5,
+        user_data: Any = None,
         default_value: dict = {'month_day': 14, 'year': 20, 'month': 5},
         level: int = 0,
         **kwargs
@@ -710,12 +716,12 @@ class DatePicker(Widget):
         callback=callback,
         drag_callback=drag_callback,
         drop_callback=drop_callback,
-        user_data=user_data,
         show=show,
         pos=pos,
         filter_key=filter_key,
         tracked=tracked,
         track_offset=track_offset,
+        user_data=user_data,
         default_value=default_value,
         level=level,
         **kwargs
@@ -728,12 +734,12 @@ class DatePicker(Widget):
         self.callback = callback
         self.drag_callback = drag_callback
         self.drop_callback = drop_callback
-        self.user_data = user_data
         self.show = show
         self.pos = pos
         self.filter_key = filter_key
         self.tracked = tracked
         self.track_offset = track_offset
+        self.user_data = user_data
         self.default_value = default_value
         self.level = level
 
@@ -753,13 +759,13 @@ class DragFloat(Widget):
         callback: Callable = None,
         drag_callback: Callable = None,
         drop_callback: Callable = None,
-        user_data: Any = None,
         show: bool = True,
         enabled: bool = True,
         pos: list[int] = [],
         filter_key: str = '',
         tracked: bool = False,
         track_offset: float = 0.5,
+        user_data: Any = None,
         default_value: float = 0.0,
         format: str = '%0.3f',
         speed: float = 1.0,
@@ -780,13 +786,13 @@ class DragFloat(Widget):
         callback=callback,
         drag_callback=drag_callback,
         drop_callback=drop_callback,
-        user_data=user_data,
         show=show,
         enabled=enabled,
         pos=pos,
         filter_key=filter_key,
         tracked=tracked,
         track_offset=track_offset,
+        user_data=user_data,
         default_value=default_value,
         format=format,
         speed=speed,
@@ -806,13 +812,13 @@ class DragFloat(Widget):
         self.callback = callback
         self.drag_callback = drag_callback
         self.drop_callback = drop_callback
-        self.user_data = user_data
         self.show = show
         self.enabled = enabled
         self.pos = pos
         self.filter_key = filter_key
         self.tracked = tracked
         self.track_offset = track_offset
+        self.user_data = user_data
         self.default_value = default_value
         self.format = format
         self.speed = speed
@@ -837,13 +843,13 @@ class DragFloatx(Widget):
         callback: Callable = None,
         drag_callback: Callable = None,
         drop_callback: Callable = None,
-        user_data: Any = None,
         show: bool = True,
         enabled: bool = True,
         pos: list[int] = [],
         filter_key: str = '',
         tracked: bool = False,
         track_offset: float = 0.5,
+        user_data: Any = None,
         default_value: list[float] = [0.0, 0.0, 0.0, 0.0],
         size: int = 4,
         format: str = '%0.3f',
@@ -865,13 +871,13 @@ class DragFloatx(Widget):
         callback=callback,
         drag_callback=drag_callback,
         drop_callback=drop_callback,
-        user_data=user_data,
         show=show,
         enabled=enabled,
         pos=pos,
         filter_key=filter_key,
         tracked=tracked,
         track_offset=track_offset,
+        user_data=user_data,
         default_value=default_value,
         size=size,
         format=format,
@@ -892,13 +898,13 @@ class DragFloatx(Widget):
         self.callback = callback
         self.drag_callback = drag_callback
         self.drop_callback = drop_callback
-        self.user_data = user_data
         self.show = show
         self.enabled = enabled
         self.pos = pos
         self.filter_key = filter_key
         self.tracked = tracked
         self.track_offset = track_offset
+        self.user_data = user_data
         self.default_value = default_value
         self.size = size
         self.format = format
@@ -924,13 +930,13 @@ class DragInt(Widget):
         callback: Callable = None,
         drag_callback: Callable = None,
         drop_callback: Callable = None,
-        user_data: Any = None,
         show: bool = True,
         enabled: bool = True,
         pos: list[int] = [],
         filter_key: str = '',
         tracked: bool = False,
         track_offset: float = 0.5,
+        user_data: Any = None,
         default_value: int = 0,
         format: str = '%d',
         speed: float = 1.0,
@@ -951,13 +957,13 @@ class DragInt(Widget):
         callback=callback,
         drag_callback=drag_callback,
         drop_callback=drop_callback,
-        user_data=user_data,
         show=show,
         enabled=enabled,
         pos=pos,
         filter_key=filter_key,
         tracked=tracked,
         track_offset=track_offset,
+        user_data=user_data,
         default_value=default_value,
         format=format,
         speed=speed,
@@ -977,13 +983,13 @@ class DragInt(Widget):
         self.callback = callback
         self.drag_callback = drag_callback
         self.drop_callback = drop_callback
-        self.user_data = user_data
         self.show = show
         self.enabled = enabled
         self.pos = pos
         self.filter_key = filter_key
         self.tracked = tracked
         self.track_offset = track_offset
+        self.user_data = user_data
         self.default_value = default_value
         self.format = format
         self.speed = speed
@@ -1008,13 +1014,13 @@ class DragIntx(Widget):
         callback: Callable = None,
         drag_callback: Callable = None,
         drop_callback: Callable = None,
-        user_data: Any = None,
         show: bool = True,
         enabled: bool = True,
         pos: list[int] = [],
         filter_key: str = '',
         tracked: bool = False,
         track_offset: float = 0.5,
+        user_data: Any = None,
         default_value: list[int] = [0, 0, 0, 0],
         size: int = 4,
         format: str = '%d',
@@ -1036,13 +1042,13 @@ class DragIntx(Widget):
         callback=callback,
         drag_callback=drag_callback,
         drop_callback=drop_callback,
-        user_data=user_data,
         show=show,
         enabled=enabled,
         pos=pos,
         filter_key=filter_key,
         tracked=tracked,
         track_offset=track_offset,
+        user_data=user_data,
         default_value=default_value,
         size=size,
         format=format,
@@ -1063,13 +1069,13 @@ class DragIntx(Widget):
         self.callback = callback
         self.drag_callback = drag_callback
         self.drop_callback = drop_callback
-        self.user_data = user_data
         self.show = show
         self.enabled = enabled
         self.pos = pos
         self.filter_key = filter_key
         self.tracked = tracked
         self.track_offset = track_offset
+        self.user_data = user_data
         self.default_value = default_value
         self.size = size
         self.format = format
@@ -1090,8 +1096,8 @@ class DragLine(Widget):
         before: int = 0,
         source: int = 0,
         callback: Callable = None,
-        user_data: Any = None,
         show: bool = True,
+        user_data: Any = None,
         default_value: Any = 0.0,
         color: list[int] = [0, 0, 0, -255],
         thickness: float = 1.0,
@@ -1105,8 +1111,8 @@ class DragLine(Widget):
         before=before,
         source=source,
         callback=callback,
-        user_data=user_data,
         show=show,
+        user_data=user_data,
         default_value=default_value,
         color=color,
         thickness=thickness,
@@ -1119,8 +1125,8 @@ class DragLine(Widget):
         self.before = before
         self.source = source
         self.callback = callback
-        self.user_data = user_data
         self.show = show
+        self.user_data = user_data
         self.default_value = default_value
         self.color = color
         self.thickness = thickness
@@ -1138,8 +1144,8 @@ class DragPoint(Widget):
         before: int = 0,
         source: int = 0,
         callback: Callable = None,
-        user_data: Any = None,
         show: bool = True,
+        user_data: Any = None,
         default_value: Any = (0.0, 0.0),
         color: list[int] = [0, 0, 0, -255],
         thickness: float = 1.0,
@@ -1152,8 +1158,8 @@ class DragPoint(Widget):
         before=before,
         source=source,
         callback=callback,
-        user_data=user_data,
         show=show,
+        user_data=user_data,
         default_value=default_value,
         color=color,
         thickness=thickness,
@@ -1165,8 +1171,8 @@ class DragPoint(Widget):
         self.before = before
         self.source = source
         self.callback = callback
-        self.user_data = user_data
         self.show = show
+        self.user_data = user_data
         self.default_value = default_value
         self.color = color
         self.thickness = thickness
@@ -1186,6 +1192,7 @@ class Dummy(Widget):
         before: int = 0,
         show: bool = True,
         pos: list[int] = [],
+        user_data: Any = None,
         **kwargs
     ):
         super().__init__(
@@ -1197,6 +1204,7 @@ class Dummy(Widget):
         before=before,
         show=show,
         pos=pos,
+        user_data=user_data,
         **kwargs
         )
         self.label = label
@@ -1207,6 +1215,7 @@ class Dummy(Widget):
         self.before = before
         self.show = show
         self.pos = pos
+        self.user_data = user_data
 
 
 class DynamicTexture(Widget):
@@ -1218,6 +1227,7 @@ class DynamicTexture(Widget):
         height: int,
         default_value: list[float],
         label: str = None,
+        user_data: Any = None,
         parent: int = 12,
         **kwargs
     ):
@@ -1226,6 +1236,7 @@ class DynamicTexture(Widget):
         height=height,
         default_value=default_value,
         label=label,
+        user_data=user_data,
         parent=parent,
         **kwargs
         )
@@ -1233,6 +1244,7 @@ class DynamicTexture(Widget):
         self.height = height
         self.default_value = default_value
         self.label = label
+        self.user_data = user_data
         self.parent = parent
 
 
@@ -1247,6 +1259,7 @@ class FileExtension(Widget):
         height: int = 0,
         parent: int = 0,
         before: int = 0,
+        user_data: Any = None,
         custom_text: str = '',
         color: list[float] = [-255, 0, 0, 255],
         **kwargs
@@ -1258,6 +1271,7 @@ class FileExtension(Widget):
         height=height,
         parent=parent,
         before=before,
+        user_data=user_data,
         custom_text=custom_text,
         color=color,
         **kwargs
@@ -1268,6 +1282,7 @@ class FileExtension(Widget):
         self.height = height
         self.parent = parent
         self.before = before
+        self.user_data = user_data
         self.custom_text = custom_text
         self.color = color
 
@@ -1293,6 +1308,7 @@ class Image(Widget):
         filter_key: str = '',
         tracked: bool = False,
         track_offset: float = 0.5,
+        user_data: Any = None,
         tint_color: list[float] = [255, 255, 255, 255],
         border_color: list[float] = [0, 0, 0, 0],
         uv_min: list[float] = [0.0, 0.0],
@@ -1316,6 +1332,7 @@ class Image(Widget):
         filter_key=filter_key,
         tracked=tracked,
         track_offset=track_offset,
+        user_data=user_data,
         tint_color=tint_color,
         border_color=border_color,
         uv_min=uv_min,
@@ -1338,6 +1355,7 @@ class Image(Widget):
         self.filter_key = filter_key
         self.tracked = tracked
         self.track_offset = track_offset
+        self.user_data = user_data
         self.tint_color = tint_color
         self.border_color = border_color
         self.uv_min = uv_min
@@ -1361,13 +1379,13 @@ class ImageButton(Widget):
         callback: Callable = None,
         drag_callback: Callable = None,
         drop_callback: Callable = None,
-        user_data: Any = None,
         show: bool = True,
         enabled: bool = True,
         pos: list[int] = [],
         filter_key: str = '',
         tracked: bool = False,
         track_offset: float = 0.5,
+        user_data: Any = None,
         frame_padding: int = -1,
         tint_color: list[float] = [255, 255, 255, 255],
         background_color: list[float] = [0, 0, 0, 0],
@@ -1388,13 +1406,13 @@ class ImageButton(Widget):
         callback=callback,
         drag_callback=drag_callback,
         drop_callback=drop_callback,
-        user_data=user_data,
         show=show,
         enabled=enabled,
         pos=pos,
         filter_key=filter_key,
         tracked=tracked,
         track_offset=track_offset,
+        user_data=user_data,
         frame_padding=frame_padding,
         tint_color=tint_color,
         background_color=background_color,
@@ -1414,13 +1432,13 @@ class ImageButton(Widget):
         self.callback = callback
         self.drag_callback = drag_callback
         self.drop_callback = drop_callback
-        self.user_data = user_data
         self.show = show
         self.enabled = enabled
         self.pos = pos
         self.filter_key = filter_key
         self.tracked = tracked
         self.track_offset = track_offset
+        self.user_data = user_data
         self.frame_padding = frame_padding
         self.tint_color = tint_color
         self.background_color = background_color
@@ -1443,13 +1461,13 @@ class InputFloat(Widget):
         callback: Callable = None,
         drag_callback: Callable = None,
         drop_callback: Callable = None,
-        user_data: Any = None,
         show: bool = True,
         enabled: bool = True,
         pos: list[int] = [],
         filter_key: str = '',
         tracked: bool = False,
         track_offset: float = 0.5,
+        user_data: Any = None,
         default_value: float = 0.0,
         format: str = '%.3f',
         min_value: float = 0.0,
@@ -1473,13 +1491,13 @@ class InputFloat(Widget):
         callback=callback,
         drag_callback=drag_callback,
         drop_callback=drop_callback,
-        user_data=user_data,
         show=show,
         enabled=enabled,
         pos=pos,
         filter_key=filter_key,
         tracked=tracked,
         track_offset=track_offset,
+        user_data=user_data,
         default_value=default_value,
         format=format,
         min_value=min_value,
@@ -1502,13 +1520,13 @@ class InputFloat(Widget):
         self.callback = callback
         self.drag_callback = drag_callback
         self.drop_callback = drop_callback
-        self.user_data = user_data
         self.show = show
         self.enabled = enabled
         self.pos = pos
         self.filter_key = filter_key
         self.tracked = tracked
         self.track_offset = track_offset
+        self.user_data = user_data
         self.default_value = default_value
         self.format = format
         self.min_value = min_value
@@ -1536,13 +1554,13 @@ class InputFloatx(Widget):
         callback: Callable = None,
         drag_callback: Callable = None,
         drop_callback: Callable = None,
-        user_data: Any = None,
         show: bool = True,
         enabled: bool = True,
         pos: list[int] = [],
         filter_key: str = '',
         tracked: bool = False,
         track_offset: float = 0.5,
+        user_data: Any = None,
         default_value: list[float] = [0.0, 0.0, 0.0, 0.0],
         format: str = '%.3f',
         min_value: float = 0.0,
@@ -1565,13 +1583,13 @@ class InputFloatx(Widget):
         callback=callback,
         drag_callback=drag_callback,
         drop_callback=drop_callback,
-        user_data=user_data,
         show=show,
         enabled=enabled,
         pos=pos,
         filter_key=filter_key,
         tracked=tracked,
         track_offset=track_offset,
+        user_data=user_data,
         default_value=default_value,
         format=format,
         min_value=min_value,
@@ -1593,13 +1611,13 @@ class InputFloatx(Widget):
         self.callback = callback
         self.drag_callback = drag_callback
         self.drop_callback = drop_callback
-        self.user_data = user_data
         self.show = show
         self.enabled = enabled
         self.pos = pos
         self.filter_key = filter_key
         self.tracked = tracked
         self.track_offset = track_offset
+        self.user_data = user_data
         self.default_value = default_value
         self.format = format
         self.min_value = min_value
@@ -1626,14 +1644,14 @@ class InputInt(Widget):
         callback: Callable = None,
         drag_callback: Callable = None,
         drop_callback: Callable = None,
-        user_data: Any = None,
         show: bool = True,
         enabled: bool = True,
         pos: list[int] = [],
         filter_key: str = '',
         tracked: bool = False,
         track_offset: float = 0.5,
-        default_value: list[int] = 0,
+        user_data: Any = None,
+        default_value: int = 0,
         min_value: int = 0,
         max_value: int = 100,
         step: int = 1,
@@ -1655,13 +1673,13 @@ class InputInt(Widget):
         callback=callback,
         drag_callback=drag_callback,
         drop_callback=drop_callback,
-        user_data=user_data,
         show=show,
         enabled=enabled,
         pos=pos,
         filter_key=filter_key,
         tracked=tracked,
         track_offset=track_offset,
+        user_data=user_data,
         default_value=default_value,
         min_value=min_value,
         max_value=max_value,
@@ -1683,13 +1701,13 @@ class InputInt(Widget):
         self.callback = callback
         self.drag_callback = drag_callback
         self.drop_callback = drop_callback
-        self.user_data = user_data
         self.show = show
         self.enabled = enabled
         self.pos = pos
         self.filter_key = filter_key
         self.tracked = tracked
         self.track_offset = track_offset
+        self.user_data = user_data
         self.default_value = default_value
         self.min_value = min_value
         self.max_value = max_value
@@ -1716,13 +1734,13 @@ class InputIntx(Widget):
         callback: Callable = None,
         drag_callback: Callable = None,
         drop_callback: Callable = None,
-        user_data: Any = None,
         show: bool = True,
         enabled: bool = True,
         pos: list[int] = [],
         filter_key: str = '',
         tracked: bool = False,
         track_offset: float = 0.5,
+        user_data: Any = None,
         default_value: list[int] = [0, 0, 0, 0],
         min_value: int = 0,
         max_value: int = 100,
@@ -1744,13 +1762,13 @@ class InputIntx(Widget):
         callback=callback,
         drag_callback=drag_callback,
         drop_callback=drop_callback,
-        user_data=user_data,
         show=show,
         enabled=enabled,
         pos=pos,
         filter_key=filter_key,
         tracked=tracked,
         track_offset=track_offset,
+        user_data=user_data,
         default_value=default_value,
         min_value=min_value,
         max_value=max_value,
@@ -1771,13 +1789,13 @@ class InputIntx(Widget):
         self.callback = callback
         self.drag_callback = drag_callback
         self.drop_callback = drop_callback
-        self.user_data = user_data
         self.show = show
         self.enabled = enabled
         self.pos = pos
         self.filter_key = filter_key
         self.tracked = tracked
         self.track_offset = track_offset
+        self.user_data = user_data
         self.default_value = default_value
         self.min_value = min_value
         self.max_value = max_value
@@ -1804,13 +1822,13 @@ class InputText(Widget):
         callback: Callable = None,
         drag_callback: Callable = None,
         drop_callback: Callable = None,
-        user_data: Any = None,
         show: bool = True,
         enabled: bool = True,
         pos: list[int] = [],
         filter_key: str = '',
         tracked: bool = False,
         track_offset: float = 0.5,
+        user_data: Any = None,
         default_value: str = '',
         hint: str = '',
         multiline: bool = False,
@@ -1837,13 +1855,13 @@ class InputText(Widget):
         callback=callback,
         drag_callback=drag_callback,
         drop_callback=drop_callback,
-        user_data=user_data,
         show=show,
         enabled=enabled,
         pos=pos,
         filter_key=filter_key,
         tracked=tracked,
         track_offset=track_offset,
+        user_data=user_data,
         default_value=default_value,
         hint=hint,
         multiline=multiline,
@@ -1869,13 +1887,13 @@ class InputText(Widget):
         self.callback = callback
         self.drag_callback = drag_callback
         self.drop_callback = drop_callback
-        self.user_data = user_data
         self.show = show
         self.enabled = enabled
         self.pos = pos
         self.filter_key = filter_key
         self.tracked = tracked
         self.track_offset = track_offset
+        self.user_data = user_data
         self.default_value = default_value
         self.hint = hint
         self.multiline = multiline
@@ -1906,12 +1924,12 @@ class KnobFloat(Widget):
         callback: Callable = None,
         drag_callback: Callable = None,
         drop_callback: Callable = None,
-        user_data: Any = None,
         show: bool = True,
         pos: list[int] = [],
         filter_key: str = '',
         tracked: bool = False,
         track_offset: float = 0.5,
+        user_data: Any = None,
         default_value: float = 0.0,
         min_value: float = 0.0,
         max_value: float = 100.0,
@@ -1929,12 +1947,12 @@ class KnobFloat(Widget):
         callback=callback,
         drag_callback=drag_callback,
         drop_callback=drop_callback,
-        user_data=user_data,
         show=show,
         pos=pos,
         filter_key=filter_key,
         tracked=tracked,
         track_offset=track_offset,
+        user_data=user_data,
         default_value=default_value,
         min_value=min_value,
         max_value=max_value,
@@ -1951,12 +1969,12 @@ class KnobFloat(Widget):
         self.callback = callback
         self.drag_callback = drag_callback
         self.drop_callback = drop_callback
-        self.user_data = user_data
         self.show = show
         self.pos = pos
         self.filter_key = filter_key
         self.tracked = tracked
         self.track_offset = track_offset
+        self.user_data = user_data
         self.default_value = default_value
         self.min_value = min_value
         self.max_value = max_value
@@ -1978,13 +1996,13 @@ class Listbox(Widget):
         callback: Callable = None,
         drag_callback: Callable = None,
         drop_callback: Callable = None,
-        user_data: Any = None,
         show: bool = True,
         enabled: bool = True,
         pos: list[int] = [],
         filter_key: str = '',
         tracked: bool = False,
         track_offset: float = 0.5,
+        user_data: Any = None,
         default_value: str = '',
         num_items: int = 3,
         **kwargs
@@ -2001,13 +2019,13 @@ class Listbox(Widget):
         callback=callback,
         drag_callback=drag_callback,
         drop_callback=drop_callback,
-        user_data=user_data,
         show=show,
         enabled=enabled,
         pos=pos,
         filter_key=filter_key,
         tracked=tracked,
         track_offset=track_offset,
+        user_data=user_data,
         default_value=default_value,
         num_items=num_items,
         **kwargs
@@ -2023,13 +2041,13 @@ class Listbox(Widget):
         self.callback = callback
         self.drag_callback = drag_callback
         self.drop_callback = drop_callback
-        self.user_data = user_data
         self.show = show
         self.enabled = enabled
         self.pos = pos
         self.filter_key = filter_key
         self.tracked = tracked
         self.track_offset = track_offset
+        self.user_data = user_data
         self.default_value = default_value
         self.num_items = num_items
 
@@ -2047,6 +2065,7 @@ class LoadingIndicator(Widget):
         before: int = 0,
         show: bool = True,
         pos: list[int] = [],
+        user_data: Any = None,
         style: int = 0,
         circle_count: int = 8,
         speed: float = 1.0,
@@ -2065,6 +2084,7 @@ class LoadingIndicator(Widget):
         before=before,
         show=show,
         pos=pos,
+        user_data=user_data,
         style=style,
         circle_count=circle_count,
         speed=speed,
@@ -2082,6 +2102,7 @@ class LoadingIndicator(Widget):
         self.before = before
         self.show = show
         self.pos = pos
+        self.user_data = user_data
         self.style = style
         self.circle_count = circle_count
         self.speed = speed
@@ -2104,12 +2125,12 @@ class MenuItem(Widget):
         callback: Callable = None,
         drag_callback: Callable = None,
         drop_callback: Callable = None,
-        user_data: Any = None,
         show: bool = True,
         enabled: bool = True,
         filter_key: str = '',
         tracked: bool = False,
         track_offset: float = 0.5,
+        user_data: Any = None,
         default_value: bool = False,
         shortcut: str = '',
         check: bool = False,
@@ -2124,12 +2145,12 @@ class MenuItem(Widget):
         callback=callback,
         drag_callback=drag_callback,
         drop_callback=drop_callback,
-        user_data=user_data,
         show=show,
         enabled=enabled,
         filter_key=filter_key,
         tracked=tracked,
         track_offset=track_offset,
+        user_data=user_data,
         default_value=default_value,
         shortcut=shortcut,
         check=check,
@@ -2143,12 +2164,12 @@ class MenuItem(Widget):
         self.callback = callback
         self.drag_callback = drag_callback
         self.drop_callback = drop_callback
-        self.user_data = user_data
         self.show = show
         self.enabled = enabled
         self.filter_key = filter_key
         self.tracked = tracked
         self.track_offset = track_offset
+        self.user_data = user_data
         self.default_value = default_value
         self.shortcut = shortcut
         self.check = check
@@ -2174,6 +2195,7 @@ class ProgressBar(Widget):
         filter_key: str = '',
         tracked: bool = False,
         track_offset: float = 0.5,
+        user_data: Any = None,
         overlay: str = '',
         default_value: float = 0.0,
         **kwargs
@@ -2194,6 +2216,7 @@ class ProgressBar(Widget):
         filter_key=filter_key,
         tracked=tracked,
         track_offset=track_offset,
+        user_data=user_data,
         overlay=overlay,
         default_value=default_value,
         **kwargs
@@ -2213,6 +2236,7 @@ class ProgressBar(Widget):
         self.filter_key = filter_key
         self.tracked = tracked
         self.track_offset = track_offset
+        self.user_data = user_data
         self.overlay = overlay
         self.default_value = default_value
 
@@ -2232,13 +2256,13 @@ class RadioButton(Widget):
         callback: Callable = None,
         drag_callback: Callable = None,
         drop_callback: Callable = None,
-        user_data: Any = None,
         show: bool = True,
         enabled: bool = True,
         pos: list[int] = [],
         filter_key: str = '',
         tracked: bool = False,
         track_offset: float = 0.5,
+        user_data: Any = None,
         default_value: str = '',
         horizontal: bool = False,
         **kwargs
@@ -2254,13 +2278,13 @@ class RadioButton(Widget):
         callback=callback,
         drag_callback=drag_callback,
         drop_callback=drop_callback,
-        user_data=user_data,
         show=show,
         enabled=enabled,
         pos=pos,
         filter_key=filter_key,
         tracked=tracked,
         track_offset=track_offset,
+        user_data=user_data,
         default_value=default_value,
         horizontal=horizontal,
         **kwargs
@@ -2275,13 +2299,13 @@ class RadioButton(Widget):
         self.callback = callback
         self.drag_callback = drag_callback
         self.drop_callback = drop_callback
-        self.user_data = user_data
         self.show = show
         self.enabled = enabled
         self.pos = pos
         self.filter_key = filter_key
         self.tracked = tracked
         self.track_offset = track_offset
+        self.user_data = user_data
         self.default_value = default_value
         self.horizontal = horizontal
 
@@ -2295,6 +2319,7 @@ class RawTexture(Widget):
         height: int,
         default_value: list[float],
         label: str = None,
+        user_data: Any = None,
         format: int = 0,
         parent: int = 12,
         **kwargs
@@ -2304,6 +2329,7 @@ class RawTexture(Widget):
         height=height,
         default_value=default_value,
         label=label,
+        user_data=user_data,
         format=format,
         parent=parent,
         **kwargs
@@ -2312,6 +2338,7 @@ class RawTexture(Widget):
         self.height = height
         self.default_value = default_value
         self.label = label
+        self.user_data = user_data
         self.format = format
         self.parent = parent
 
@@ -2325,6 +2352,7 @@ class SameLine(Widget):
         parent: int = 0,
         before: int = 0,
         show: bool = True,
+        user_data: Any = None,
         xoffset: float = 0.0,
         spacing: float = -1.0,
         **kwargs
@@ -2334,6 +2362,7 @@ class SameLine(Widget):
         parent=parent,
         before=before,
         show=show,
+        user_data=user_data,
         xoffset=xoffset,
         spacing=spacing,
         **kwargs
@@ -2342,6 +2371,7 @@ class SameLine(Widget):
         self.parent = parent
         self.before = before
         self.show = show
+        self.user_data = user_data
         self.xoffset = xoffset
         self.spacing = spacing
 
@@ -2362,13 +2392,13 @@ class Selectable(Widget):
         callback: Callable = None,
         drag_callback: Callable = None,
         drop_callback: Callable = None,
-        user_data: Any = None,
         show: bool = True,
         enabled: bool = True,
         pos: list[int] = [],
         filter_key: str = '',
         tracked: bool = False,
         track_offset: float = 0.5,
+        user_data: Any = None,
         default_value: bool = False,
         span_columns: bool = False,
         **kwargs
@@ -2385,13 +2415,13 @@ class Selectable(Widget):
         callback=callback,
         drag_callback=drag_callback,
         drop_callback=drop_callback,
-        user_data=user_data,
         show=show,
         enabled=enabled,
         pos=pos,
         filter_key=filter_key,
         tracked=tracked,
         track_offset=track_offset,
+        user_data=user_data,
         default_value=default_value,
         span_columns=span_columns,
         **kwargs
@@ -2407,13 +2437,13 @@ class Selectable(Widget):
         self.callback = callback
         self.drag_callback = drag_callback
         self.drop_callback = drop_callback
-        self.user_data = user_data
         self.show = show
         self.enabled = enabled
         self.pos = pos
         self.filter_key = filter_key
         self.tracked = tracked
         self.track_offset = track_offset
+        self.user_data = user_data
         self.default_value = default_value
         self.span_columns = span_columns
 
@@ -2429,6 +2459,7 @@ class Separator(Widget):
         before: int = 0,
         show: bool = True,
         pos: list[int] = [],
+        user_data: Any = None,
         **kwargs
     ):
         super().__init__(
@@ -2438,6 +2469,7 @@ class Separator(Widget):
         before=before,
         show=show,
         pos=pos,
+        user_data=user_data,
         **kwargs
         )
         self.label = label
@@ -2446,6 +2478,7 @@ class Separator(Widget):
         self.before = before
         self.show = show
         self.pos = pos
+        self.user_data = user_data
 
 
 class SliderFloat(Widget):
@@ -2464,13 +2497,13 @@ class SliderFloat(Widget):
         callback: Callable = None,
         drag_callback: Callable = None,
         drop_callback: Callable = None,
-        user_data: Any = None,
         show: bool = True,
         enabled: bool = True,
         pos: list[int] = [],
         filter_key: str = '',
         tracked: bool = False,
         track_offset: float = 0.5,
+        user_data: Any = None,
         default_value: float = 0.0,
         vertical: bool = False,
         no_input: bool = False,
@@ -2492,13 +2525,13 @@ class SliderFloat(Widget):
         callback=callback,
         drag_callback=drag_callback,
         drop_callback=drop_callback,
-        user_data=user_data,
         show=show,
         enabled=enabled,
         pos=pos,
         filter_key=filter_key,
         tracked=tracked,
         track_offset=track_offset,
+        user_data=user_data,
         default_value=default_value,
         vertical=vertical,
         no_input=no_input,
@@ -2519,13 +2552,13 @@ class SliderFloat(Widget):
         self.callback = callback
         self.drag_callback = drag_callback
         self.drop_callback = drop_callback
-        self.user_data = user_data
         self.show = show
         self.enabled = enabled
         self.pos = pos
         self.filter_key = filter_key
         self.tracked = tracked
         self.track_offset = track_offset
+        self.user_data = user_data
         self.default_value = default_value
         self.vertical = vertical
         self.no_input = no_input
@@ -2550,13 +2583,13 @@ class SliderFloatx(Widget):
         callback: Callable = None,
         drag_callback: Callable = None,
         drop_callback: Callable = None,
-        user_data: Any = None,
         show: bool = True,
         enabled: bool = True,
         pos: list[int] = [],
         filter_key: str = '',
         tracked: bool = False,
         track_offset: float = 0.5,
+        user_data: Any = None,
         default_value: list[float] = [0.0, 0.0, 0.0, 0.0],
         size: int = 4,
         no_input: bool = False,
@@ -2577,13 +2610,13 @@ class SliderFloatx(Widget):
         callback=callback,
         drag_callback=drag_callback,
         drop_callback=drop_callback,
-        user_data=user_data,
         show=show,
         enabled=enabled,
         pos=pos,
         filter_key=filter_key,
         tracked=tracked,
         track_offset=track_offset,
+        user_data=user_data,
         default_value=default_value,
         size=size,
         no_input=no_input,
@@ -2603,13 +2636,13 @@ class SliderFloatx(Widget):
         self.callback = callback
         self.drag_callback = drag_callback
         self.drop_callback = drop_callback
-        self.user_data = user_data
         self.show = show
         self.enabled = enabled
         self.pos = pos
         self.filter_key = filter_key
         self.tracked = tracked
         self.track_offset = track_offset
+        self.user_data = user_data
         self.default_value = default_value
         self.size = size
         self.no_input = no_input
@@ -2635,13 +2668,13 @@ class SliderInt(Widget):
         callback: Callable = None,
         drag_callback: Callable = None,
         drop_callback: Callable = None,
-        user_data: Any = None,
         show: bool = True,
         enabled: bool = True,
         pos: list[int] = [],
         filter_key: str = '',
         tracked: bool = False,
         track_offset: float = 0.5,
+        user_data: Any = None,
         default_value: int = 0,
         vertical: bool = False,
         no_input: bool = False,
@@ -2663,13 +2696,13 @@ class SliderInt(Widget):
         callback=callback,
         drag_callback=drag_callback,
         drop_callback=drop_callback,
-        user_data=user_data,
         show=show,
         enabled=enabled,
         pos=pos,
         filter_key=filter_key,
         tracked=tracked,
         track_offset=track_offset,
+        user_data=user_data,
         default_value=default_value,
         vertical=vertical,
         no_input=no_input,
@@ -2690,13 +2723,13 @@ class SliderInt(Widget):
         self.callback = callback
         self.drag_callback = drag_callback
         self.drop_callback = drop_callback
-        self.user_data = user_data
         self.show = show
         self.enabled = enabled
         self.pos = pos
         self.filter_key = filter_key
         self.tracked = tracked
         self.track_offset = track_offset
+        self.user_data = user_data
         self.default_value = default_value
         self.vertical = vertical
         self.no_input = no_input
@@ -2721,13 +2754,13 @@ class SliderIntx(Widget):
         callback: Callable = None,
         drag_callback: Callable = None,
         drop_callback: Callable = None,
-        user_data: Any = None,
         show: bool = True,
         enabled: bool = True,
         pos: list[int] = [],
         filter_key: str = '',
         tracked: bool = False,
         track_offset: float = 0.5,
+        user_data: Any = None,
         default_value: list[int] = [0, 0, 0, 0],
         size: int = 4,
         no_input: bool = False,
@@ -2748,13 +2781,13 @@ class SliderIntx(Widget):
         callback=callback,
         drag_callback=drag_callback,
         drop_callback=drop_callback,
-        user_data=user_data,
         show=show,
         enabled=enabled,
         pos=pos,
         filter_key=filter_key,
         tracked=tracked,
         track_offset=track_offset,
+        user_data=user_data,
         default_value=default_value,
         size=size,
         no_input=no_input,
@@ -2774,13 +2807,13 @@ class SliderIntx(Widget):
         self.callback = callback
         self.drag_callback = drag_callback
         self.drop_callback = drop_callback
-        self.user_data = user_data
         self.show = show
         self.enabled = enabled
         self.pos = pos
         self.filter_key = filter_key
         self.tracked = tracked
         self.track_offset = track_offset
+        self.user_data = user_data
         self.default_value = default_value
         self.size = size
         self.no_input = no_input
@@ -2801,6 +2834,7 @@ class Spacing(Widget):
         before: int = 0,
         show: bool = True,
         pos: list[int] = [],
+        user_data: Any = None,
         count: int = 1,
         **kwargs
     ):
@@ -2811,6 +2845,7 @@ class Spacing(Widget):
         before=before,
         show=show,
         pos=pos,
+        user_data=user_data,
         count=count,
         **kwargs
         )
@@ -2820,6 +2855,7 @@ class Spacing(Widget):
         self.before = before
         self.show = show
         self.pos = pos
+        self.user_data = user_data
         self.count = count
 
 
@@ -2832,6 +2868,7 @@ class StaticTexture(Widget):
         height: int,
         default_value: list[float],
         label: str = None,
+        user_data: Any = None,
         parent: int = 12,
         **kwargs
     ):
@@ -2840,6 +2877,7 @@ class StaticTexture(Widget):
         height=height,
         default_value=default_value,
         label=label,
+        user_data=user_data,
         parent=parent,
         **kwargs
         )
@@ -2847,6 +2885,7 @@ class StaticTexture(Widget):
         self.height = height
         self.default_value = default_value
         self.label = label
+        self.user_data = user_data
         self.parent = parent
 
 
@@ -2863,11 +2902,11 @@ class TabButton(Widget):
         callback: Callable = None,
         drag_callback: Callable = None,
         drop_callback: Callable = None,
-        user_data: Any = None,
         show: bool = True,
         filter_key: str = '',
         tracked: bool = False,
         track_offset: float = 0.5,
+        user_data: Any = None,
         no_reorder: bool = False,
         leading: bool = False,
         trailing: bool = False,
@@ -2883,11 +2922,11 @@ class TabButton(Widget):
         callback=callback,
         drag_callback=drag_callback,
         drop_callback=drop_callback,
-        user_data=user_data,
         show=show,
         filter_key=filter_key,
         tracked=tracked,
         track_offset=track_offset,
+        user_data=user_data,
         no_reorder=no_reorder,
         leading=leading,
         trailing=trailing,
@@ -2902,11 +2941,11 @@ class TabButton(Widget):
         self.callback = callback
         self.drag_callback = drag_callback
         self.drop_callback = drop_callback
-        self.user_data = user_data
         self.show = show
         self.filter_key = filter_key
         self.tracked = tracked
         self.track_offset = track_offset
+        self.user_data = user_data
         self.no_reorder = no_reorder
         self.leading = leading
         self.trailing = trailing
@@ -2923,7 +2962,8 @@ class TableColumn(Widget):
         parent: int = 0,
         before: int = 0,
         show: bool = True,
-        init_width_or_weight: bool = 0.0,
+        user_data: Any = None,
+        init_width_or_weight: float = 0.0,
         default_hide: bool = False,
         default_sort: bool = False,
         width_stretch: bool = False,
@@ -2948,6 +2988,7 @@ class TableColumn(Widget):
         parent=parent,
         before=before,
         show=show,
+        user_data=user_data,
         init_width_or_weight=init_width_or_weight,
         default_hide=default_hide,
         default_sort=default_sort,
@@ -2972,6 +3013,7 @@ class TableColumn(Widget):
         self.parent = parent
         self.before = before
         self.show = show
+        self.user_data = user_data
         self.init_width_or_weight = init_width_or_weight
         self.default_hide = default_hide
         self.default_sort = default_sort
@@ -3000,6 +3042,7 @@ class TableNextColumn(Widget):
         parent: int = 0,
         before: int = 0,
         show: bool = True,
+        user_data: Any = None,
         **kwargs
     ):
         super().__init__(
@@ -3007,12 +3050,14 @@ class TableNextColumn(Widget):
         parent=parent,
         before=before,
         show=show,
+        user_data=user_data,
         **kwargs
         )
         self.label = label
         self.parent = parent
         self.before = before
         self.show = show
+        self.user_data = user_data
 
 
 class Text(Widget):
@@ -3031,6 +3076,7 @@ class Text(Widget):
         filter_key: str = '',
         tracked: bool = False,
         track_offset: float = 0.5,
+        user_data: Any = None,
         wrap: int = -1,
         bullet: bool = False,
         color: list[float] = [-1, -1, -1, -1],
@@ -3049,6 +3095,7 @@ class Text(Widget):
         filter_key=filter_key,
         tracked=tracked,
         track_offset=track_offset,
+        user_data=user_data,
         wrap=wrap,
         bullet=bullet,
         color=color,
@@ -3066,6 +3113,7 @@ class Text(Widget):
         self.filter_key = filter_key
         self.tracked = tracked
         self.track_offset = track_offset
+        self.user_data = user_data
         self.wrap = wrap
         self.bullet = bullet
         self.color = color
@@ -3084,9 +3132,9 @@ class TextPoint(Widget):
         before: int = 0,
         source: int = 0,
         show: bool = True,
+        user_data: Any = None,
         x_offset: int = Ellipsis,
         y_offset: int = Ellipsis,
-        contribute_to_bounds: bool = True,
         vertical: bool = False,
         **kwargs
     ):
@@ -3098,9 +3146,9 @@ class TextPoint(Widget):
         before=before,
         source=source,
         show=show,
+        user_data=user_data,
         x_offset=x_offset,
         y_offset=y_offset,
-        contribute_to_bounds=contribute_to_bounds,
         vertical=vertical,
         **kwargs
         )
@@ -3111,9 +3159,9 @@ class TextPoint(Widget):
         self.before = before
         self.source = source
         self.show = show
+        self.user_data = user_data
         self.x_offset = x_offset
         self.y_offset = y_offset
-        self.contribute_to_bounds = contribute_to_bounds
         self.vertical = vertical
 
 
@@ -3130,12 +3178,12 @@ class TimePicker(Widget):
         callback: Callable = None,
         drag_callback: Callable = None,
         drop_callback: Callable = None,
-        user_data: Any = None,
         show: bool = True,
         pos: list[int] = [],
         filter_key: str = '',
         tracked: bool = False,
         track_offset: float = 0.5,
+        user_data: Any = None,
         default_value: dict = {'hour': 14, 'min': 32, 'sec': 23},
         hour24: bool = False,
         **kwargs
@@ -3149,12 +3197,12 @@ class TimePicker(Widget):
         callback=callback,
         drag_callback=drag_callback,
         drop_callback=drop_callback,
-        user_data=user_data,
         show=show,
         pos=pos,
         filter_key=filter_key,
         tracked=tracked,
         track_offset=track_offset,
+        user_data=user_data,
         default_value=default_value,
         hour24=hour24,
         **kwargs
@@ -3167,11 +3215,41 @@ class TimePicker(Widget):
         self.callback = callback
         self.drag_callback = drag_callback
         self.drop_callback = drop_callback
-        self.user_data = user_data
         self.show = show
         self.pos = pos
         self.filter_key = filter_key
         self.tracked = tracked
         self.track_offset = track_offset
+        self.user_data = user_data
         self.default_value = default_value
         self.hour24 = hour24
+
+
+class ViewportMenuBar(Widget):
+    _command: Callable = idpg.add_viewport_menu_bar
+
+    def __init__(
+        self,
+        label: str = None,
+        indent: int = -1,
+        parent: int = 0,
+        show: bool = True,
+        delay_search: str = False,
+        user_data: Any = None,
+        **kwargs
+    ):
+        super().__init__(
+        label=label,
+        indent=indent,
+        parent=parent,
+        show=show,
+        delay_search=delay_search,
+        user_data=user_data,
+        **kwargs
+        )
+        self.label = label
+        self.indent = indent
+        self.parent = parent
+        self.show = show
+        self.delay_search = delay_search
+        self.user_data = user_data

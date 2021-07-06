@@ -29,6 +29,7 @@ class Child(Container):
         delay_search: str = False,
         tracked: bool = False,
         track_offset: float = 0.5,
+        user_data: Any = None,
         border: bool = True,
         autosize_x: bool = False,
         autosize_y: bool = False,
@@ -53,6 +54,7 @@ class Child(Container):
         delay_search=delay_search,
         tracked=tracked,
         track_offset=track_offset,
+        user_data=user_data,
         border=border,
         autosize_x=autosize_x,
         autosize_y=autosize_y,
@@ -76,6 +78,7 @@ class Child(Container):
         self.delay_search = delay_search
         self.tracked = tracked
         self.track_offset = track_offset
+        self.user_data = user_data
         self.border = border
         self.autosize_x = autosize_x
         self.autosize_y = autosize_y
@@ -96,6 +99,7 @@ class Clipper(Container):
         before: int = 0,
         show: bool = True,
         delay_search: str = False,
+        user_data: Any = None,
         **kwargs
     ):
         super().__init__(
@@ -106,6 +110,7 @@ class Clipper(Container):
         before=before,
         show=show,
         delay_search=delay_search,
+        user_data=user_data,
         **kwargs
         )
         self.label = label
@@ -115,6 +120,7 @@ class Clipper(Container):
         self.before = before
         self.show = show
         self.delay_search = delay_search
+        self.user_data = user_data
 
 
 class CollapsingHeader(Container):
@@ -135,6 +141,7 @@ class CollapsingHeader(Container):
         delay_search: str = False,
         tracked: bool = False,
         track_offset: float = 0.5,
+        user_data: Any = None,
         closable: bool = False,
         default_open: bool = False,
         open_on_double_click: bool = False,
@@ -157,6 +164,7 @@ class CollapsingHeader(Container):
         delay_search=delay_search,
         tracked=tracked,
         track_offset=track_offset,
+        user_data=user_data,
         closable=closable,
         default_open=default_open,
         open_on_double_click=open_on_double_click,
@@ -178,6 +186,7 @@ class CollapsingHeader(Container):
         self.delay_search = delay_search
         self.tracked = tracked
         self.track_offset = track_offset
+        self.user_data = user_data
         self.closable = closable
         self.default_open = default_open
         self.open_on_double_click = open_on_double_click
@@ -194,6 +203,7 @@ class DragPayload(Container):
         label: str = None,
         parent: int = 0,
         show: bool = True,
+        user_data: Any = None,
         drag_data: Any = None,
         payload_type: str = '$$DPG_PAYLOAD',
         **kwargs
@@ -202,6 +212,7 @@ class DragPayload(Container):
         label=label,
         parent=parent,
         show=show,
+        user_data=user_data,
         drag_data=drag_data,
         payload_type=payload_type,
         **kwargs
@@ -209,6 +220,7 @@ class DragPayload(Container):
         self.label = label
         self.parent = parent
         self.show = show
+        self.user_data = user_data
         self.drag_data = drag_data
         self.payload_type = payload_type
 
@@ -222,8 +234,8 @@ class FileDialog(Container):
         width: int = 0,
         height: int = 0,
         callback: Callable = None,
-        user_data: Any = None,
         show: bool = True,
+        user_data: Any = None,
         default_path: str = '',
         default_filename: str = '.',
         file_count: int = 0,
@@ -236,8 +248,8 @@ class FileDialog(Container):
         width=width,
         height=height,
         callback=callback,
-        user_data=user_data,
         show=show,
+        user_data=user_data,
         default_path=default_path,
         default_filename=default_filename,
         file_count=file_count,
@@ -249,8 +261,8 @@ class FileDialog(Container):
         self.width = width
         self.height = height
         self.callback = callback
-        self.user_data = user_data
         self.show = show
+        self.user_data = user_data
         self.default_path = default_path
         self.default_filename = default_filename
         self.file_count = file_count
@@ -270,6 +282,7 @@ class FilterSet(Container):
         before: int = 0,
         show: bool = True,
         delay_search: str = False,
+        user_data: Any = None,
         **kwargs
     ):
         super().__init__(
@@ -280,6 +293,7 @@ class FilterSet(Container):
         before=before,
         show=show,
         delay_search=delay_search,
+        user_data=user_data,
         **kwargs
         )
         self.label = label
@@ -289,6 +303,7 @@ class FilterSet(Container):
         self.before = before
         self.show = show
         self.delay_search = delay_search
+        self.user_data = user_data
 
 
 class Group(Container):
@@ -310,6 +325,7 @@ class Group(Container):
         delay_search: str = False,
         tracked: bool = False,
         track_offset: float = 0.5,
+        user_data: Any = None,
         horizontal: bool = False,
         horizontal_spacing: float = -1,
         **kwargs
@@ -329,6 +345,7 @@ class Group(Container):
         delay_search=delay_search,
         tracked=tracked,
         track_offset=track_offset,
+        user_data=user_data,
         horizontal=horizontal,
         horizontal_spacing=horizontal_spacing,
         **kwargs
@@ -347,6 +364,7 @@ class Group(Container):
         self.delay_search = delay_search
         self.tracked = tracked
         self.track_offset = track_offset
+        self.user_data = user_data
         self.horizontal = horizontal
         self.horizontal_spacing = horizontal_spacing
 
@@ -369,6 +387,7 @@ class Menu(Container):
         delay_search: str = False,
         tracked: bool = False,
         track_offset: float = 0.5,
+        user_data: Any = None,
         **kwargs
     ):
         super().__init__(
@@ -385,6 +404,7 @@ class Menu(Container):
         delay_search=delay_search,
         tracked=tracked,
         track_offset=track_offset,
+        user_data=user_data,
         **kwargs
         )
         self.label = label
@@ -400,6 +420,7 @@ class Menu(Container):
         self.delay_search = delay_search
         self.tracked = tracked
         self.track_offset = track_offset
+        self.user_data = user_data
 
 
 class MenuBar(Container):
@@ -412,6 +433,7 @@ class MenuBar(Container):
         parent: int = 0,
         show: bool = True,
         delay_search: str = False,
+        user_data: Any = None,
         **kwargs
     ):
         super().__init__(
@@ -420,6 +442,7 @@ class MenuBar(Container):
         parent=parent,
         show=show,
         delay_search=delay_search,
+        user_data=user_data,
         **kwargs
         )
         self.label = label
@@ -427,14 +450,16 @@ class MenuBar(Container):
         self.parent = parent
         self.show = show
         self.delay_search = delay_search
+        self.user_data = user_data
 
 
 class StagingContainer(Container):
     _command: Callable = idpg.add_staging_container
 
-    def __init__(self, label: str = None, **kwargs):
-        super().__init__(label=label, **kwargs)
+    def __init__(self, label: str = None, user_data: Any = None, **kwargs):
+        super().__init__(label=label, user_data=user_data, **kwargs)
         self.label = label
+        self.user_data = user_data
 
 
 class Tab(Container):
@@ -454,6 +479,7 @@ class Tab(Container):
         delay_search: str = False,
         tracked: bool = False,
         track_offset: float = 0.5,
+        user_data: Any = None,
         closable: bool = False,
         no_tooltip: bool = False,
         order_mode: bool = 0,
@@ -472,6 +498,7 @@ class Tab(Container):
         delay_search=delay_search,
         tracked=tracked,
         track_offset=track_offset,
+        user_data=user_data,
         closable=closable,
         no_tooltip=no_tooltip,
         order_mode=order_mode,
@@ -489,6 +516,7 @@ class Tab(Container):
         self.delay_search = delay_search
         self.tracked = tracked
         self.track_offset = track_offset
+        self.user_data = user_data
         self.closable = closable
         self.no_tooltip = no_tooltip
         self.order_mode = order_mode
@@ -507,13 +535,13 @@ class TabBar(Container):
         callback: Callable = None,
         drag_callback: Callable = None,
         drop_callback: Callable = None,
-        user_data: Any = None,
         show: bool = True,
         pos: list[int] = [],
         filter_key: str = '',
         delay_search: str = False,
         tracked: bool = False,
         track_offset: float = 0.5,
+        user_data: Any = None,
         reorderable: bool = False,
         **kwargs
     ):
@@ -526,13 +554,13 @@ class TabBar(Container):
         callback=callback,
         drag_callback=drag_callback,
         drop_callback=drop_callback,
-        user_data=user_data,
         show=show,
         pos=pos,
         filter_key=filter_key,
         delay_search=delay_search,
         tracked=tracked,
         track_offset=track_offset,
+        user_data=user_data,
         reorderable=reorderable,
         **kwargs
         )
@@ -544,13 +572,13 @@ class TabBar(Container):
         self.callback = callback
         self.drag_callback = drag_callback
         self.drop_callback = drop_callback
-        self.user_data = user_data
         self.show = show
         self.pos = pos
         self.filter_key = filter_key
         self.delay_search = delay_search
         self.tracked = tracked
         self.track_offset = track_offset
+        self.user_data = user_data
         self.reorderable = reorderable
 
 
@@ -571,6 +599,7 @@ class Table(Container):
         pos: list[int] = [],
         filter_key: str = '',
         delay_search: str = False,
+        user_data: Any = None,
         header_row: bool = True,
         inner_width: int = 0,
         policy: int = 0,
@@ -613,6 +642,7 @@ class Table(Container):
         pos=pos,
         filter_key=filter_key,
         delay_search=delay_search,
+        user_data=user_data,
         header_row=header_row,
         inner_width=inner_width,
         policy=policy,
@@ -654,6 +684,7 @@ class Table(Container):
         self.pos = pos
         self.filter_key = filter_key
         self.delay_search = delay_search
+        self.user_data = user_data
         self.header_row = header_row
         self.inner_width = inner_width
         self.policy = policy
@@ -694,6 +725,7 @@ class TableRow(Container):
         before: int = 0,
         show: bool = True,
         filter_key: str = '',
+        user_data: Any = None,
         **kwargs
     ):
         super().__init__(
@@ -703,6 +735,7 @@ class TableRow(Container):
         before=before,
         show=show,
         filter_key=filter_key,
+        user_data=user_data,
         **kwargs
         )
         self.label = label
@@ -711,16 +744,31 @@ class TableRow(Container):
         self.before = before
         self.show = show
         self.filter_key = filter_key
+        self.user_data = user_data
 
 
 class Tooltip(Container):
     _command: Callable = idpg.add_tooltip
 
-    def __init__(self, parent: str, label: str = None, show: bool = True, **kwargs):
-        super().__init__(parent=parent, label=label, show=show, **kwargs)
+    def __init__(
+        self,
+        parent: str,
+        label: str = None,
+        show: bool = True,
+        user_data: Any = None,
+        **kwargs
+    ):
+        super().__init__(
+        parent=parent,
+        label=label,
+        show=show,
+        user_data=user_data,
+        **kwargs
+        )
         self.parent = parent
         self.label = label
         self.show = show
+        self.user_data = user_data
 
 
 class TreeNode(Container):
@@ -741,6 +789,7 @@ class TreeNode(Container):
         delay_search: str = False,
         tracked: bool = False,
         track_offset: float = 0.5,
+        user_data: Any = None,
         default_open: bool = False,
         open_on_double_click: bool = False,
         open_on_arrow: bool = False,
@@ -763,6 +812,7 @@ class TreeNode(Container):
         delay_search=delay_search,
         tracked=tracked,
         track_offset=track_offset,
+        user_data=user_data,
         default_open=default_open,
         open_on_double_click=open_on_double_click,
         open_on_arrow=open_on_arrow,
@@ -784,6 +834,7 @@ class TreeNode(Container):
         self.delay_search = delay_search
         self.tracked = tracked
         self.track_offset = track_offset
+        self.user_data = user_data
         self.default_open = default_open
         self.open_on_double_click = open_on_double_click
         self.open_on_arrow = open_on_arrow
@@ -801,10 +852,10 @@ class Window(Container):
         width: int = 0,
         height: int = 0,
         indent: int = -1,
-        user_data: Any = None,
         show: bool = True,
         pos: list[int] = [],
         delay_search: str = False,
+        user_data: Any = None,
         min_size: list[int] = [100, 100],
         max_size: list[int] = [30000, 30000],
         menubar: bool = False,
@@ -830,10 +881,10 @@ class Window(Container):
         width=width,
         height=height,
         indent=indent,
-        user_data=user_data,
         show=show,
         pos=pos,
         delay_search=delay_search,
+        user_data=user_data,
         min_size=min_size,
         max_size=max_size,
         menubar=menubar,
@@ -858,10 +909,10 @@ class Window(Container):
         self.width = width
         self.height = height
         self.indent = indent
-        self.user_data = user_data
         self.show = show
         self.pos = pos
         self.delay_search = delay_search
+        self.user_data = user_data
         self.min_size = min_size
         self.max_size = max_size
         self.menubar = menubar

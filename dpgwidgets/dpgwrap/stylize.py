@@ -12,11 +12,25 @@ from ._item import Item, Context
 class FontChars(Item):
     _command: Callable = idpg.add_font_chars
 
-    def __init__(self, chars: list[int], label: str = None, parent: int = 0, **kwargs):
-        super().__init__(chars=chars, label=label, parent=parent, **kwargs)
+    def __init__(
+        self,
+        chars: list[int],
+        label: str = None,
+        parent: int = 0,
+        user_data: Any = None,
+        **kwargs
+    ):
+        super().__init__(
+        chars=chars,
+        label=label,
+        parent=parent,
+        user_data=user_data,
+        **kwargs
+        )
         self.chars = chars
         self.label = label
         self.parent = parent
+        self.user_data = user_data
 
 
 class FontRange(Item):
@@ -28,6 +42,7 @@ class FontRange(Item):
         last_char: int,
         label: str = None,
         parent: int = 0,
+        user_data: Any = None,
         **kwargs
     ):
         super().__init__(
@@ -35,22 +50,38 @@ class FontRange(Item):
         last_char=last_char,
         label=label,
         parent=parent,
+        user_data=user_data,
         **kwargs
         )
         self.first_char = first_char
         self.last_char = last_char
         self.label = label
         self.parent = parent
+        self.user_data = user_data
 
 
 class FontRangeHint(Item):
     _command: Callable = idpg.add_font_range_hint
 
-    def __init__(self, hint: int, label: str = None, parent: int = 0, **kwargs):
-        super().__init__(hint=hint, label=label, parent=parent, **kwargs)
+    def __init__(
+        self,
+        hint: int,
+        label: str = None,
+        parent: int = 0,
+        user_data: Any = None,
+        **kwargs
+    ):
+        super().__init__(
+        hint=hint,
+        label=label,
+        parent=parent,
+        user_data=user_data,
+        **kwargs
+        )
         self.hint = hint
         self.label = label
         self.parent = parent
+        self.user_data = user_data
 
 
 class ThemeColor(Item):
@@ -62,6 +93,7 @@ class ThemeColor(Item):
         value: list[int] = [0, 0, 0, 255],
         label: str = None,
         parent: int = 0,
+        user_data: Any = None,
         category: int = 0,
         **kwargs
     ):
@@ -70,6 +102,7 @@ class ThemeColor(Item):
         value=value,
         label=label,
         parent=parent,
+        user_data=user_data,
         category=category,
         **kwargs
         )
@@ -77,6 +110,7 @@ class ThemeColor(Item):
         self.value = value
         self.label = label
         self.parent = parent
+        self.user_data = user_data
         self.category = category
 
 
@@ -90,6 +124,7 @@ class ThemeStyle(Item):
         y: float = -1.0,
         label: str = None,
         parent: int = 0,
+        user_data: Any = None,
         category: int = 0,
         **kwargs
     ):
@@ -99,6 +134,7 @@ class ThemeStyle(Item):
         y=y,
         label=label,
         parent=parent,
+        user_data=user_data,
         category=category,
         **kwargs
         )
@@ -107,15 +143,17 @@ class ThemeStyle(Item):
         self.y = y
         self.label = label
         self.parent = parent
+        self.user_data = user_data
         self.category = category
 
 
 class Theme(Item, Context):
     _command: Callable = idpg.add_theme
 
-    def __init__(self, label: str = None, default_theme: bool = False, **kwargs):
-        super().__init__(label=label, default_theme=default_theme, **kwargs)
+    def __init__(self, label: str = None, user_data: Any = None, default_theme: bool = False, **kwargs):
+        super().__init__(label=label, user_data=user_data, default_theme=default_theme, **kwargs)
         self.label = label
+        self.user_data = user_data
         self.default_theme = default_theme
 
 
@@ -127,6 +165,7 @@ class Font(Item, Context):
         file: str,
         size: int,
         label: str = None,
+        user_data: Any = None,
         default_font: bool = False,
         parent: int = 10,
         **kwargs
@@ -135,6 +174,7 @@ class Font(Item, Context):
         file=file,
         size=size,
         label=label,
+        user_data=user_data,
         default_font=default_font,
         parent=parent,
         **kwargs
@@ -142,5 +182,6 @@ class Font(Item, Context):
         self.file = file
         self.size = size
         self.label = label
+        self.user_data = user_data
         self.default_font = default_font
         self.parent = parent
