@@ -1,11 +1,10 @@
-from . import idpg
+from enum import Enum
 
-from .tools import Lookup, dataclass
+from . import idpg
 
 
 ## Input ##
-@dataclass
-class Key(Lookup):
+class Key(Enum):
     Key0 = idpg.mvKey_0
     Key1 = idpg.mvKey_1
     Key2 = idpg.mvKey_2
@@ -151,8 +150,7 @@ class Key(Lookup):
     Vol_Up = idpg.mvKey_Volume_Up
 
 
-@dataclass
-class Mouse(Lookup):
+class Mouse(Enum):
     Left = idpg.mvMouseButton_Left
     Right = idpg.mvMouseButton_Right
     Middle = idpg.mvMouseButton_Middle
