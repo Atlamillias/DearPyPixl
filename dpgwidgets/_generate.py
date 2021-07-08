@@ -6,7 +6,7 @@ from inspect import signature
 from dearpygui import dearpygui as dpg, core as idpg
 
 
-DEFAULT_DIRPATH = ".dpgwidgets/dpgwrap"
+DEFAULT_DIRPATH = "./dpgwidgets/dpgwrap"
 
 DPG_CONSTANTS = {}
 

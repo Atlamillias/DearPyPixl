@@ -126,6 +126,8 @@ class NodeEditor(Container):
     def __init__(
         self,
         label: str = None,
+        width: int = 0,
+        height: int = 0,
         parent: int = 0,
         before: int = 0,
         payload_type: str = '$$DPG_PAYLOAD',
@@ -139,10 +141,13 @@ class NodeEditor(Container):
         track_offset: float = 0.5,
         user_data: Any = None,
         delink_callback: Callable = None,
+        menubar: bool = False,
         **kwargs
     ):
         super().__init__(
         label=label,
+        width=width,
+        height=height,
         parent=parent,
         before=before,
         payload_type=payload_type,
@@ -156,9 +161,12 @@ class NodeEditor(Container):
         track_offset=track_offset,
         user_data=user_data,
         delink_callback=delink_callback,
+        menubar=menubar,
         **kwargs
         )
         self.label = label
+        self.width = width
+        self.height = height
         self.parent = parent
         self.before = before
         self.payload_type = payload_type
@@ -172,6 +180,7 @@ class NodeEditor(Container):
         self.track_offset = track_offset
         self.user_data = user_data
         self.delink_callback = delink_callback
+        self.menubar = menubar
 
 
 class NodeLink(Widget):

@@ -9,8 +9,7 @@ __all__ = [
     'registries',
     'stylize',
     'valueitems',
-    'widgets',
-]
+    'widgets',]
 
-__updated__ = '2021-07-06'
-__dpg_ver__ = '0.8.16'
+__updated__ = '2021-07-08'
+__dpg_ver__ = '0.8.21'
