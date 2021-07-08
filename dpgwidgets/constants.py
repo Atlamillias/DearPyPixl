@@ -1,78 +1,11 @@
-from __future__ import annotations
-from enum import Enum
+from . import idpg
 
-from dearpygui import core as idpg
-
-from .tools import Constant, dataclass
-
-# There are a LOT of constants. Using classes to act as
-# pseudo-namespaces is generally un-Pythonic. In this case,
-# the options are "have lots of classes" or "have lots of modules"
-# to contain these. By using classes, the means of lookup are more
-# convenient and can be easily modified without an unsightly mess.
-
-# Note: 99% of the constants here return integers (UUID).
-
-# Note: The only reason the dataclasses aren't Enum
-# is because the values are important and I'm too lazy
-# to type "Enum.value".
+from .tools import Lookup, dataclass
 
 
-
-
-AppHandlerRegistry = idpg.mvHandlerRegistry
-
-# A AppHandlerRegistry item must be the parent for
-# KeyHandler and MouseHandler items.
+## Input ##
 @dataclass
-class KeyHandler(Constant):
-    Down = idpg.add_key_down_handler  # idpg.mvKeyDownHandler | while key is down
-    Press = idpg.add_key_press_handler  # idpg.mvKeyPressHandler
-    Release = idpg.add_key_release_handler  # idpg.mvKeyReleaseHandler
-
-@dataclass
-class MouseHandler(Constant):
-    Down =  idpg.add_mouse_down_handler  # idpg.mvMouseDownHandler | while button is down
-    Click = idpg.add_mouse_click_handler  #  idpg.mvMouseClickHandler
-    DoubleClick = idpg.add_mouse_double_click_handler  # idpg.mvMouseDoubleClickHandler
-    Wheel = idpg.add_mouse_wheel_handler  # idpg.mvMouseWheelHandler
-    Move = idpg.add_mouse_move_handler  # idpg.mvMouseMoveHandler
-    Release = idpg.add_mouse_release_handler  # idpg.mvMouseReleaseHandler
-    Drag = idpg.add_mouse_drag_handler  # idpg.mvMouseDragHandler
-
-# A widget item must be the parent for WidgetHandler items.
-@dataclass
-class WidgetHandler(Constant):
-    Activated = idpg.add_activated_handler  # idpg.mvActivatedHandler | while item is active
-    Active = idpg.add_active_handler  # idpg.mvActiveHandler
-    Clicked = idpg.add_clicked_handler  # idpg.mvClickedHandler
-    DeactivatedAfterEdit = idpg.add_deactivated_after_edit_handler  # idpg.mvDeactivatedAfterEditHandler
-    Deactivated = idpg.add_deactivated_handler  # idpg.mvDeactivatedHandler
-    Edited = idpg.add_edited_handler  # idpg.mvEditedHandler
-    Focus = idpg.add_focus_handler  # idpg.mvFocusHandler
-    Hover = idpg.add_hover_handler  # idpg.mvHoverHandler
-    Resize = idpg.add_resize_handler  # idpg.mvResizeHandler
-    ToggledOpen = idpg.add_toggled_open_handler  # idpg.mvToggledOpenHandler
-    Visible = idpg.add_visible_handler  # idpg.mvVisibleHandler
-
-
-
-
-@dataclass
-class Tool(Constant):  # idpg.show_tool(<tool>)
-    About = idpg.mvTool_About
-    Debug = idpg.mvTool_Debug
-    Doc = idpg.mvTool_Doc
-    ItemRegistry = idpg.mvTool_ItemRegistry
-    Metrics = idpg.mvTool_Metrics
-    Style = idpg.mvTool_Style
-    Font = idpg.mvTool_Font
-
-
-
-
-@dataclass
-class KeyCode(Constant):
+class Key(Lookup):
     Key0 = idpg.mvKey_0
     Key1 = idpg.mvKey_1
     Key2 = idpg.mvKey_2
@@ -217,65 +150,237 @@ class KeyCode(Constant):
     Vol_Mute = idpg.mvKey_Volume_Mute
     Vol_Up = idpg.mvKey_Volume_Up
 
-class Key(Enum):
-    Key0 = "0"
-    Key1 = "1"
-    Key2 = "2"
-    Key3 = "3"
-    Key4 = "4"
-    Key5 = "5"
-    Key6 = "6"
-    Key7 = "7"
-    Key8 = "8"
-    Key9 = "9"
-    Plus = "+"
-    Minus = "-"
-    Multiply = "num*"
-    Add = "num+"
-    Subtract = "num-"
-    Divide = "num/"
-    Backslash = r"\\"
-    Browser_Back = "bback"
-    Browser_Favorites = "bfavorites"
-    Browser_Forward = "bforward"
-    Browser_Home = "bhome"
-    Browser_Refresh = "brefresh"
-    Browser_Search = "bsearch"
-    Browser_Stop = "bstop"
-    Close_Brace = "]"
-    Colon = ":"
-    Comma = ","
-    Control = "ctrl"
-    Delete = "del"
-    Decimal = "num."
-    Escape = "esc"
-    Execute = "exec"
-    Insert = "ins"
-    L_Control = "lctrl"
-    Open_Brace = "["
-    Period = "."
-    Print_Screen = "prtscr"
-    R_Control = "rctrl"
-    Quote = "'"
-    Slash = r"/"
-    Spacebar = "space"
-    Tilde = "~"
-    Launch_App1 = "app1"
-    Launch_App2 = "app2"
-    Launc_hMail = "mail"
-    Launch_Media_Select = "mediaselect"
-    Next_Track = "nexttrack"
-    Play_Pause = "playpause"
-    Prev_Track = "prevtrack"
-    Stop = "stop"
-    Vol_Down = "vol-"
-    Vol_Mute = "mute"
-    Vol_Up = "vol+"
 
 @dataclass
-class Mouse(Constant):
+class Mouse(Lookup):
     Left = idpg.mvMouseButton_Left
     Right = idpg.mvMouseButton_Right
     Middle = idpg.mvMouseButton_Middle
     Button1 = idpg.mvMouseButton_X1
     Button2 = idpg.mvMouseButton_X2
+
+
+## Theming ##
+THEMECOLOR = dict(
+    border = (idpg.mvThemeCol_Border, idpg.mvThemeCat_Core),
+    border_shadow = (idpg.mvThemeCol_BorderShadow, idpg.mvThemeCat_Core),
+    button = (idpg.mvThemeCol_Button, idpg.mvThemeCat_Core),
+    button_active = (idpg.mvThemeCol_ButtonActive, idpg.mvThemeCat_Core),
+    button_hovered = (idpg.mvThemeCol_ButtonHovered, idpg.mvThemeCat_Core),
+    check_mark = (idpg.mvThemeCol_CheckMark, idpg.mvThemeCat_Core),
+    child_bg = (idpg.mvThemeCol_ChildBg, idpg.mvThemeCat_Core),
+    docking_empty_bg = (idpg.mvThemeCol_DockingEmptyBg, idpg.mvThemeCat_Core),
+    docking_preview = (idpg.mvThemeCol_DockingPreview, idpg.mvThemeCat_Core),
+    drag_drop_target = (idpg.mvThemeCol_DragDropTarget, idpg.mvThemeCat_Core),
+    frame_bg = (idpg.mvThemeCol_FrameBg, idpg.mvThemeCat_Core),
+    frame_bg_active = (idpg.mvThemeCol_FrameBgActive, idpg.mvThemeCat_Core),
+    frame_bg_hovered = (idpg.mvThemeCol_FrameBgHovered, idpg.mvThemeCat_Core),
+    header = (idpg.mvThemeCol_Header, idpg.mvThemeCat_Core),
+    header_active = (idpg.mvThemeCol_HeaderActive, idpg.mvThemeCat_Core),
+    header_hovered = (idpg.mvThemeCol_HeaderHovered, idpg.mvThemeCat_Core),
+    menu_bar_bg = (idpg.mvThemeCol_MenuBarBg, idpg.mvThemeCat_Core),
+    modal_window_dim_bg = (
+        idpg.mvThemeCol_ModalWindowDimBg, idpg.mvThemeCat_Core),
+    nav_highlight = (idpg.mvThemeCol_NavHighlight, idpg.mvThemeCat_Core),
+    nav_windowing_dim_bg = (
+        idpg.mvThemeCol_NavWindowingDimBg, idpg.mvThemeCat_Core),
+    nav_windowing_highlight = (
+        idpg.mvThemeCol_NavWindowingHighlight, idpg.mvThemeCat_Core),
+    plot_histogram = (idpg.mvThemeCol_PlotHistogram, idpg.mvThemeCat_Core),
+    plot_histogram_hovered = (
+        idpg.mvThemeCol_PlotHistogramHovered, idpg.mvThemeCat_Core),
+    plot_lines = (idpg.mvThemeCol_PlotLines, idpg.mvThemeCat_Core),
+    plot_lines_hovered = (
+        idpg.mvThemeCol_PlotLinesHovered, idpg.mvThemeCat_Core),
+    popup_bg = (idpg.mvThemeCol_PopupBg, idpg.mvThemeCat_Core),
+    resize_grip = (idpg.mvThemeCol_ResizeGrip, idpg.mvThemeCat_Core),
+    resize_grip_active = (
+        idpg.mvThemeCol_ResizeGripActive, idpg.mvThemeCat_Core),
+    resize_grip_hovered = (
+        idpg.mvThemeCol_ResizeGripHovered, idpg.mvThemeCat_Core),
+    scrollbar_bg = (idpg.mvThemeCol_ScrollbarBg, idpg.mvThemeCat_Core),
+    scrollbar_grab = (idpg.mvThemeCol_ScrollbarGrab, idpg.mvThemeCat_Core),
+    scrollbar_grab_active = (
+        idpg.mvThemeCol_ScrollbarGrabActive, idpg.mvThemeCat_Core),
+    scrollbar_grab_hovered = (
+        idpg.mvThemeCol_ScrollbarGrabHovered, idpg.mvThemeCat_Core),
+    separator = (idpg.mvThemeCol_Separator, idpg.mvThemeCat_Core),
+    separator_active = (idpg.mvThemeCol_SeparatorActive, idpg.mvThemeCat_Core),
+    separator_hovered = (idpg.mvThemeCol_SeparatorHovered,
+                         idpg.mvThemeCat_Core),
+    slider_grab = (idpg.mvThemeCol_SliderGrab, idpg.mvThemeCat_Core),
+    slider_grab_active = (
+        idpg.mvThemeCol_SliderGrabActive, idpg.mvThemeCat_Core),
+    tab = (idpg.mvThemeCol_Tab, idpg.mvThemeCat_Core),
+    tab_active = (idpg.mvThemeCol_TabActive, idpg.mvThemeCat_Core),
+    tab_hovered = (idpg.mvThemeCol_TabHovered, idpg.mvThemeCat_Core),
+    tab_unfocused = (idpg.mvThemeCol_TabUnfocused, idpg.mvThemeCat_Core),
+    tab_unfocused_active = (
+        idpg.mvThemeCol_TabUnfocusedActive, idpg.mvThemeCat_Core),
+    table_border_light = (
+        idpg.mvThemeCol_TableBorderLight, idpg.mvThemeCat_Core),
+    table_border_strong = (
+        idpg.mvThemeCol_TableBorderStrong, idpg.mvThemeCat_Core),
+    table_header_bg = (idpg.mvThemeCol_TableHeaderBg, idpg.mvThemeCat_Core),
+    table_row_bg = (idpg.mvThemeCol_TableRowBg, idpg.mvThemeCat_Core),
+    table_row_bg_alt = (idpg.mvThemeCol_TableRowBgAlt, idpg.mvThemeCat_Core),
+    text = (idpg.mvThemeCol_Text, idpg.mvThemeCat_Core),
+    text_disabled = (idpg.mvThemeCol_TextDisabled, idpg.mvThemeCat_Core),
+    text_selected_bg = (idpg.mvThemeCol_TextSelectedBg, idpg.mvThemeCat_Core),
+    title_bg = (idpg.mvThemeCol_TitleBg, idpg.mvThemeCat_Core),
+    title_bg_active = (idpg.mvThemeCol_TitleBgActive, idpg.mvThemeCat_Core),
+    title_bg_collapsed = (
+        idpg.mvThemeCol_TitleBgCollapsed, idpg.mvThemeCat_Core),
+    window_bg = (idpg.mvThemeCol_WindowBg, idpg.mvThemeCat_Core),
+    plot_crosshairs = (idpg.mvPlotCol_Crosshairs, idpg.mvThemeCat_Plots),
+    plot_error_bar = (idpg.mvPlotCol_ErrorBar, idpg.mvThemeCat_Plots),
+    plot_fill = (idpg.mvPlotCol_Fill, idpg.mvThemeCat_Plots),
+    plot_frame_bg = (idpg.mvPlotCol_FrameBg, idpg.mvThemeCat_Plots),
+    plot_inlay_text = (idpg.mvPlotCol_InlayText, idpg.mvThemeCat_Plots),
+    plot_legend_bg = (idpg.mvPlotCol_LegendBg, idpg.mvThemeCat_Plots),
+    plot_legend_border = (idpg.mvPlotCol_LegendBorder, idpg.mvThemeCat_Plots),
+    plot_legend_text = (idpg.mvPlotCol_LegendText, idpg.mvThemeCat_Plots),
+    plot_line = (idpg.mvPlotCol_Line, idpg.mvThemeCat_Plots),
+    plot_marker_fill = (idpg.mvPlotCol_MarkerFill, idpg.mvThemeCat_Plots),
+    plot_marker_outline = (idpg.mvPlotCol_MarkerOutline, idpg.mvThemeCat_Plots),
+    plot_bg = (idpg.mvPlotCol_PlotBg, idpg.mvThemeCat_Plots),
+    plot_border = (idpg.mvPlotCol_PlotBorder, idpg.mvThemeCat_Plots),
+    plot_query = (idpg.mvPlotCol_Query, idpg.mvThemeCat_Plots),
+    plot_selection = (idpg.mvPlotCol_Selection, idpg.mvThemeCat_Plots),
+    plot_title_text = (idpg.mvPlotCol_TitleText, idpg.mvThemeCat_Plots),
+    plot_x_axis = (idpg.mvPlotCol_XAxis, idpg.mvThemeCat_Plots),
+    plot_x_axis_grid = (idpg.mvPlotCol_XAxisGrid, idpg.mvThemeCat_Plots),
+    plot_y_axis = (idpg.mvPlotCol_YAxis, idpg.mvThemeCat_Plots),
+    plot_y_axis2 = (idpg.mvPlotCol_YAxis2, idpg.mvThemeCat_Plots),
+    plot_y_axis3 = (idpg.mvPlotCol_YAxis3, idpg.mvThemeCat_Plots),
+    plot_y_axis_grid = (idpg.mvPlotCol_YAxisGrid, idpg.mvThemeCat_Plots),
+    plot_y_axis_grid2 = (idpg.mvPlotCol_YAxisGrid2, idpg.mvThemeCat_Plots),
+    plot_y_axis_grid3 = (idpg.mvPlotCol_YAxisGrid3, idpg.mvThemeCat_Plots),
+    node_box_selector = (idpg.mvNodeCol_BoxSelector, idpg.mvThemeCat_Nodes),
+    node_box_selector_outline = (
+        idpg.mvNodeCol_BoxSelectorOutline, idpg.mvThemeCat_Nodes),
+    node_grid_background = (
+        idpg.mvNodeCol_GridBackground, idpg.mvThemeCat_Nodes),
+    node_grid_line = (idpg.mvNodeCol_GridLine, idpg.mvThemeCat_Nodes),
+    node_link = (idpg.mvNodeCol_Link, idpg.mvThemeCat_Nodes),
+    node_link_hovered = (idpg.mvNodeCol_LinkHovered, idpg.mvThemeCat_Nodes),
+    node_link_selected = (idpg.mvNodeCol_LinkSelected, idpg.mvThemeCat_Nodes),
+    node_background = (idpg.mvNodeCol_NodeBackground, idpg.mvThemeCat_Nodes),
+    node_background_hovered = (
+        idpg.mvNodeCol_NodeBackgroundHovered, idpg.mvThemeCat_Nodes),
+    node_background_selected = (
+        idpg.mvNodeCol_NodeBackgroundSelected, idpg.mvThemeCat_Nodes),
+    node_outline = (idpg.mvNodeCol_NodeOutline, idpg.mvThemeCat_Nodes),
+    node_pin = (idpg.mvNodeCol_Pin, idpg.mvThemeCat_Nodes),
+    node_pin_hovered = (idpg.mvNodeCol_PinHovered, idpg.mvThemeCat_Nodes),
+    node_title_bar = (idpg.mvNodeCol_TitleBar, idpg.mvThemeCat_Nodes),
+    node_title_bar_hovered = (
+        idpg.mvNodeCol_TitleBarHovered, idpg.mvThemeCat_Nodes),
+    node_title_bar_selected = (
+        idpg.mvNodeCol_TitleBarSelected, idpg.mvThemeCat_Nodes),
+)
+
+THEMESTYLE = dict(
+    alpha = (idpg.mvStyleVar_Alpha, idpg.mvThemeCat_Core),
+    button_text_align = (idpg.mvStyleVar_ButtonTextAlign, idpg.mvThemeCat_Core),
+    cell_padding = (idpg.mvStyleVar_CellPadding, idpg.mvThemeCat_Core),
+    child_border_size = (idpg.mvStyleVar_ChildBorderSize, idpg.mvThemeCat_Core),
+    child_rounding = (idpg.mvStyleVar_ChildRounding, idpg.mvThemeCat_Core),
+    frame_border_size = (idpg.mvStyleVar_FrameBorderSize, idpg.mvThemeCat_Core),
+    frame_padding = (idpg.mvStyleVar_FramePadding, idpg.mvThemeCat_Core),
+    frame_rounding = (idpg.mvStyleVar_FrameRounding, idpg.mvThemeCat_Core),
+    grab_min_size = (idpg.mvStyleVar_GrabMinSize, idpg.mvThemeCat_Core),
+    grab_rounding = (idpg.mvStyleVar_GrabRounding, idpg.mvThemeCat_Core),
+    indent_spacing = (idpg.mvStyleVar_IndentSpacing, idpg.mvThemeCat_Core),
+    item_inner_spacing = (
+        idpg.mvStyleVar_ItemInnerSpacing, idpg.mvThemeCat_Core),
+    item_spacing = (idpg.mvStyleVar_ItemSpacing, idpg.mvThemeCat_Core),
+    popup_border_size = (idpg.mvStyleVar_PopupBorderSize, idpg.mvThemeCat_Core),
+    popup_rounding = (idpg.mvStyleVar_PopupRounding, idpg.mvThemeCat_Core),
+    scrollbar_rounding = (
+        idpg.mvStyleVar_ScrollbarRounding, idpg.mvThemeCat_Core),
+    scrollbar_size = (idpg.mvStyleVar_ScrollbarSize, idpg.mvThemeCat_Core),
+    selectable_text_align = (
+        idpg.mvStyleVar_SelectableTextAlign, idpg.mvThemeCat_Core),
+    tab_rounding = (idpg.mvStyleVar_TabRounding, idpg.mvThemeCat_Core),
+    window_border_size = (
+        idpg.mvStyleVar_WindowBorderSize, idpg.mvThemeCat_Core),
+    window_min_size = (idpg.mvStyleVar_WindowMinSize, idpg.mvThemeCat_Core),
+    window_padding = (idpg.mvStyleVar_WindowPadding, idpg.mvThemeCat_Core),
+    window_rounding = (idpg.mvStyleVar_WindowRounding, idpg.mvThemeCat_Core),
+    window_title_align = (
+        idpg.mvStyleVar_WindowTitleAlign, idpg.mvThemeCat_Core),
+    plot_annotation_padding = (
+        idpg.mvPlotStyleVar_AnnotationPadding, idpg.mvThemeCat_Plots),
+    plot_digital_bit_gap = (
+        idpg.mvPlotStyleVar_DigitalBitGap, idpg.mvThemeCat_Plots),
+    plot_digital_bit_height = (
+        idpg.mvPlotStyleVar_DigitalBitHeight, idpg.mvThemeCat_Plots),
+    plot_error_bar_size = (
+        idpg.mvPlotStyleVar_ErrorBarSize, idpg.mvThemeCat_Plots),
+    plot_error_bar_weight = (
+        idpg.mvPlotStyleVar_ErrorBarWeight, idpg.mvThemeCat_Plots),
+    plot_fill_alpha = (idpg.mvPlotStyleVar_FillAlpha, idpg.mvThemeCat_Plots),
+    plot_fit_padding = (idpg.mvPlotStyleVar_FitPadding, idpg.mvThemeCat_Plots),
+    plot_label_padding = (
+        idpg.mvPlotStyleVar_LabelPadding, idpg.mvThemeCat_Plots),
+    plot_legend_inner_padding = (
+        idpg.mvPlotStyleVar_LegendInnerPadding, idpg.mvThemeCat_Plots),
+    plot_legend_padding = (
+        idpg.mvPlotStyleVar_LegendPadding, idpg.mvThemeCat_Plots),
+    plot_legend_spacing = (
+        idpg.mvPlotStyleVar_LegendSpacing, idpg.mvThemeCat_Plots),
+    plot_line_weight = (idpg.mvPlotStyleVar_LineWeight, idpg.mvThemeCat_Plots),
+    plot_major_grid_size = (
+        idpg.mvPlotStyleVar_MajorGridSize, idpg.mvThemeCat_Plots),
+    plot_major_tick_len = (
+        idpg.mvPlotStyleVar_MajorTickLen, idpg.mvThemeCat_Plots),
+    plot_major_tick_size = (
+        idpg.mvPlotStyleVar_MajorTickSize, idpg.mvThemeCat_Plots),
+    plot_marker = (idpg.mvPlotStyleVar_Marker, idpg.mvThemeCat_Plots),
+    plot_marker_size = (idpg.mvPlotStyleVar_MarkerSize, idpg.mvThemeCat_Plots),
+    plot_marker_weight = (
+        idpg.mvPlotStyleVar_MarkerWeight, idpg.mvThemeCat_Plots),
+    plot_minor_alpha = (idpg.mvPlotStyleVar_MinorAlpha, idpg.mvThemeCat_Plots),
+    plot_minor_grid_size = (
+        idpg.mvPlotStyleVar_MinorGridSize, idpg.mvThemeCat_Plots),
+    plot_minor_tick_len = (
+        idpg.mvPlotStyleVar_MinorTickLen, idpg.mvThemeCat_Plots),
+    plot_minor_tick_size = (
+        idpg.mvPlotStyleVar_MinorTickSize, idpg.mvThemeCat_Plots),
+    plot_mouse_pos_padding = (
+        idpg.mvPlotStyleVar_MousePosPadding, idpg.mvThemeCat_Plots),
+    plot_border_size = (idpg.mvPlotStyleVar_PlotBorderSize,
+                        idpg.mvThemeCat_Plots),
+    plot_default_size = (
+        idpg.mvPlotStyleVar_PlotDefaultSize, idpg.mvThemeCat_Plots),
+    plot_min_size = (idpg.mvPlotStyleVar_PlotMinSize, idpg.mvThemeCat_Plots),
+    plot_padding = (idpg.mvPlotStyleVar_PlotPadding, idpg.mvThemeCat_Plots),
+    node_grid_spacing = (idpg.mvNodeStyleVar_GridSpacing,
+                         idpg.mvThemeCat_Nodes),
+    node_link_hover_distance = (
+        idpg.mvNodeStyleVar_LinkHoverDistance, idpg.mvThemeCat_Nodes),
+    node_link_line_segments_per_length = (
+        idpg.mvNodeStyleVar_LinkLineSegmentsPerLength, idpg.mvThemeCat_Nodes),
+    node_link_thickness = (
+        idpg.mvNodeStyleVar_LinkThickness, idpg.mvThemeCat_Nodes),
+    node_border_thickness = (
+        idpg.mvNodeStyleVar_NodeBorderThickness, idpg.mvThemeCat_Nodes),
+    node_corner_rounding = (
+        idpg.mvNodeStyleVar_NodeCornerRounding, idpg.mvThemeCat_Nodes),
+    node_padding_horizontal = (
+        idpg.mvNodeStyleVar_NodePaddingHorizontal, idpg.mvThemeCat_Nodes),
+    node_padding_vertical = (
+        idpg.mvNodeStyleVar_NodePaddingVertical, idpg.mvThemeCat_Nodes),
+    node_pin_circle_radius = (
+        idpg.mvNodeStyleVar_PinCircleRadius, idpg.mvThemeCat_Nodes),
+    node_pin_hover_radius = (
+        idpg.mvNodeStyleVar_PinHoverRadius, idpg.mvThemeCat_Nodes),
+    node_pin_line_thickness = (
+        idpg.mvNodeStyleVar_PinLineThickness, idpg.mvThemeCat_Nodes),
+    node_pin_offset = (idpg.mvNodeStyleVar_PinOffset, idpg.mvThemeCat_Nodes),
+    node_pin_quad_side_length = (
+        idpg.mvNodeStyleVar_PinQuadSideLength, idpg.mvThemeCat_Nodes),
+    node_pin_triangle_side_length = (
+        idpg.mvNodeStyleVar_PinTriangleSideLength, idpg.mvThemeCat_Nodes),
+)

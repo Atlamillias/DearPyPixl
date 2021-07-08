@@ -21,5 +21,9 @@ def update_wrappers():
 
     importlib.reload(dpgwrap)
 
-    [importlib.import_module(module, dpgwrap)
-     for module in dpgwrap.__all__]
+    for module in dpgwrap.__all__:
+        try:
+            importlib.import_module(module, dpgwrap)
+        except:
+            continue
+

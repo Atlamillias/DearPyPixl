@@ -2,11 +2,11 @@ from typing import Any
 from contextlib import contextmanager
 
 from . import idpg
+from .handler import AppHandler
 from .dpgwrap.containers import Window
 from .dpgwrap.registries import (
     FontRegistry, 
-    TextureRegistry, 
-    HandlerRegistry, 
+    TextureRegistry,  
     ValueRegistry
 )
 
@@ -21,7 +21,7 @@ class Application:
 
         # Registries
         self.fonts = FontRegistry(id=idpg.mvReservedUUID_0)
-        self.handlers = HandlerRegistry(id=idpg.mvReservedUUID_1)
+        self.handlers = AppHandler(id=idpg.mvReservedUUID_1)
         self.textures = TextureRegistry(id=idpg.mvReservedUUID_2)
         self.values = ValueRegistry(id=idpg.mvReservedUUID_3)
 
