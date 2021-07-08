@@ -12,7 +12,11 @@ from .dpgwrap.registries import (
 )
 
 
-
+# Application and Viewport classes kinda share
+# responsibilities. This is mostly because at the moment
+# DPG only supports 1 viewport. However in the future
+# it may support several, so they will need to be 
+# more de-coupled.
 class Application:
     called_on_start = []
     called_on_exit = []
@@ -122,7 +126,7 @@ class Application:
 
 class Viewport:
     # Note: DPG currently only allows 1 viewport
-    # so only call *once*
+    # so only call once
     __config = {}
     __primary_window = None
     called_on_resize = []
