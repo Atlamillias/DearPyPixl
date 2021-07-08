@@ -1134,51 +1134,6 @@ class DragLine(Widget):
         self.vertical = vertical
 
 
-class DragPoint(Widget):
-    _command: Callable = idpg.add_drag_point
-
-    def __init__(
-        self,
-        label: str = None,
-        parent: int = 0,
-        before: int = 0,
-        source: int = 0,
-        callback: Callable = None,
-        show: bool = True,
-        user_data: Any = None,
-        default_value: Any = (0.0, 0.0),
-        color: list[int] = [0, 0, 0, -255],
-        thickness: float = 1.0,
-        show_label: bool = True,
-        **kwargs
-    ):
-        super().__init__(
-        label=label,
-        parent=parent,
-        before=before,
-        source=source,
-        callback=callback,
-        show=show,
-        user_data=user_data,
-        default_value=default_value,
-        color=color,
-        thickness=thickness,
-        show_label=show_label,
-        **kwargs
-        )
-        self.label = label
-        self.parent = parent
-        self.before = before
-        self.source = source
-        self.callback = callback
-        self.show = show
-        self.user_data = user_data
-        self.default_value = default_value
-        self.color = color
-        self.thickness = thickness
-        self.show_label = show_label
-
-
 class Dummy(Widget):
     _command: Callable = idpg.add_dummy
 
@@ -3120,51 +3075,6 @@ class Text(Widget):
         self.show_label = show_label
 
 
-class TextPoint(Widget):
-    _command: Callable = idpg.add_text_point
-
-    def __init__(
-        self,
-        x: float,
-        y: float,
-        label: str = None,
-        parent: int = 0,
-        before: int = 0,
-        source: int = 0,
-        show: bool = True,
-        user_data: Any = None,
-        x_offset: int = Ellipsis,
-        y_offset: int = Ellipsis,
-        vertical: bool = False,
-        **kwargs
-    ):
-        super().__init__(
-        x=x,
-        y=y,
-        label=label,
-        parent=parent,
-        before=before,
-        source=source,
-        show=show,
-        user_data=user_data,
-        x_offset=x_offset,
-        y_offset=y_offset,
-        vertical=vertical,
-        **kwargs
-        )
-        self.x = x
-        self.y = y
-        self.label = label
-        self.parent = parent
-        self.before = before
-        self.source = source
-        self.show = show
-        self.user_data = user_data
-        self.x_offset = x_offset
-        self.y_offset = y_offset
-        self.vertical = vertical
-
-
 class TimePicker(Widget):
     _command: Callable = idpg.add_time_picker
 
@@ -3223,33 +3133,3 @@ class TimePicker(Widget):
         self.user_data = user_data
         self.default_value = default_value
         self.hour24 = hour24
-
-
-class ViewportMenuBar(Widget):
-    _command: Callable = idpg.add_viewport_menu_bar
-
-    def __init__(
-        self,
-        label: str = None,
-        indent: int = -1,
-        parent: int = 0,
-        show: bool = True,
-        delay_search: str = False,
-        user_data: Any = None,
-        **kwargs
-    ):
-        super().__init__(
-        label=label,
-        indent=indent,
-        parent=parent,
-        show=show,
-        delay_search=delay_search,
-        user_data=user_data,
-        **kwargs
-        )
-        self.label = label
-        self.indent = indent
-        self.parent = parent
-        self.show = show
-        self.delay_search = delay_search
-        self.user_data = user_data

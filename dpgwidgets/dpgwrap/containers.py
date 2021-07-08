@@ -843,6 +843,36 @@ class TreeNode(Container):
         self.selectable = selectable
 
 
+class ViewportMenuBar(Container):
+    _command: Callable = idpg.add_viewport_menu_bar
+
+    def __init__(
+        self,
+        label: str = None,
+        indent: int = -1,
+        parent: int = 0,
+        show: bool = True,
+        delay_search: str = False,
+        user_data: Any = None,
+        **kwargs
+    ):
+        super().__init__(
+        label=label,
+        indent=indent,
+        parent=parent,
+        show=show,
+        delay_search=delay_search,
+        user_data=user_data,
+        **kwargs
+        )
+        self.label = label
+        self.indent = indent
+        self.parent = parent
+        self.show = show
+        self.delay_search = delay_search
+        self.user_data = user_data
+
+
 class Window(Container):
     _command: Callable = idpg.add_window
 

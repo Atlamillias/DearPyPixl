@@ -12,18 +12,11 @@ class Item(metaclass=ABCMeta):
     __config = set()
 
     def __init__(self, **kwargs):
-        if parent:= kwargs.pop("parent", None):
-            if not isinstance(parent, Context):
-                kwargs['parent'] = int(parent)
-                parent = None
-            else:
-                idpg.push_container_stack(int(parent))
+        if parent := kwargs.pop("parent", None):
+            kwargs["parent"] = int(parent)
 
         kwargs["label"] = kwargs.get('label', self.__class__.__name__)
         self.__id = self._command(**kwargs)
-
-        if parent:
-            idpg.pop_container_stack()
 
         [self.__config.add(optn) for optn in kwargs.keys()]
 

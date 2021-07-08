@@ -1,27 +1,29 @@
 from typing import Union, Sequence
 
-from . import idpg, Item, Context
+from . import idpg, Item
 from .dpgwrap.stylize import Theme
 from .constants import THEMECOLOR, THEMESTYLE
 
 
 class WidgetTheme(Theme):
-    # theme_color/style id's are stored in these
-    _color_ids: dict[str,Union[None,int]] = {attr: None for attr in THEMECOLOR}
-    _style_ids: dict[str,Union[None,int]] = {attr: None for attr in THEMESTYLE}
-    
     def __init__(
         self,
-        parent: Union[int,Item] = False,
+        parent: Union[int,Item] = None,
         disabled_theme: bool = False,
+        default_theme: bool = False,
         **kwargs
     ):
-        super().__init__(**kwargs)
-        self.__parent = int(parent)
+        super().__init__(default_theme=default_theme,**kwargs)
+        self.__parent = int(parent) or 0
+
+        # theme_color/style id's are stored in these
+        self.__color_ids = {attr: None for attr in THEMECOLOR}
+        self.__style_ids = {attr: None for attr in THEMESTYLE}
+        
         # helpers store the actual current value of theme items
         # because they can't be fetched after creation
-        self.__color = ColorHelper(self, self._color_ids, "apply_color")
-        self.__style = StyleHelper(self, self._style_ids, "apply_style")
+        self.__color = ColorHelper(self, self.__color_ids, "apply_color")
+        self.__style = StyleHelper(self, self.__style_ids, "apply_style")
 
         if disabled_theme:
             self.__theme_cmd = idpg.set_item_disabled_theme
@@ -36,33 +38,29 @@ class WidgetTheme(Theme):
     def style(self):
         return self.__style
 
-    def apply_color(self, option: str, value: Sequence = (0,0,0,255)):
+    def apply_color(self, option: str, rgba: Sequence = (0,0,0,255)):
         target, category = THEMECOLOR[option]
-        old_theme_item = self._color_ids.pop(option)
+        old_theme_item = self.__color_ids.pop(option)
         new_theme_item = idpg.add_theme_color(
             target, 
-            value, 
+            rgba, 
             category=category,
             parent=self.id
         )
         # need to update helper first because its __setattr__
         # will bork the process if <option> is in _color_ids
-        setattr(self.__style, option, value)
+        setattr(self.__style, option, rgba)
         # applying new item/color
-        self._color_ids[option] = new_theme_item
+        self.__color_ids[option] = new_theme_item
         self.__theme_cmd(self.__parent, self.id)
         # cleanup
         if old_theme_item:
             idpg.delete_item(old_theme_item)
 
-    def apply_style(self, option: str, x: float = 1.0, y: float = -1.0, **kwargs):
-        # kwargs exists to *help* the helper classes -
-        # so "value" is accepted for both "apply_" methods
-        if value := kwargs.get("value", None):
-            x, y = value
-
+    def apply_style(self, option: str, xy: Sequence = (1.0, -1.0)):
+        x, y = xy
         target, category = THEMESTYLE[option]
-        old_theme_item = self._style_ids.pop(option)
+        old_theme_item = self.__style_ids.pop(option)
         new_theme_item = idpg.add_theme_style(
             target,
             x,
@@ -74,32 +72,38 @@ class WidgetTheme(Theme):
         # will bork the process if <option> is in _style_ids
         setattr(self.__style, option, (x, y))
         # applying new item/style
-        self._style_ids[option] = new_theme_item
+        self.__style_ids[option] = new_theme_item
         self.__theme_cmd(self.__parent, self.id)
         # cleanup
         if old_theme_item:
             idpg.delete_item(old_theme_item)
 
     def refresh(self):
-        self._color_ids = {attr: None for attr in THEMECOLOR}
-        self._style_ids = {attr: None for attr in THEMESTYLE}
+        self.__color_ids = {attr: None for attr in THEMECOLOR}
+        self.__style_ids = {attr: None for attr in THEMESTYLE}
         super().refresh()
 
 
 
 
 class TItemBase:
-    __theme_map = {}
+    __item_ids = {}
 
-    def __init__(self, parent: WidgetTheme, theme_map: dict, command: str):
+    def __init__(self, parent: WidgetTheme, item_ids: dict, theme_type: str):
         self.__parent = parent
-        self.__theme_map = theme_map
-        self.__command = command
+        self.__theme_type = theme_type
+
+        if "_color" in theme_type:
+            self.__value_setter = self.__set_color_value
+        elif "_style" in theme_type:
+            self.__value_setter = self.__set_style_value
+
+        self.__item_ids = item_ids
 
     def __setattr__(self, attr, value):
-        if attr in self.__theme_map:
-            getattr(self.__parent, self.__command)(option=attr, value=value)
-
+        if attr in self.__item_ids:
+            self.__value_setter(attr, value)
+    
         super().__setattr__(attr, value)
 
     def __getitem__(self, item):
@@ -107,6 +111,14 @@ class TItemBase:
 
     def __setitem__(self, item, value):
         setattr(self, item, value)
+
+    def __set_color_value(self, attr, value):
+        self.__parent.apply_color(attr, value)
+
+    def __set_style_value(self, attr, value):
+        if isinstance(value, (int, float)):
+            value = value, -1.0
+        self.__parent.apply_style(attr, value)
 
 
 class ColorHelper(TItemBase):
@@ -208,6 +220,8 @@ class ColorHelper(TItemBase):
 
 
 class StyleHelper(TItemBase):
+    # Notes: 
+    #     "*text_align": centered is 0.5, 0.5
     alpha = None
     button_text_align = None
     cell_padding = None

@@ -68,6 +68,7 @@ class ItemMaps:
             "TableRow": ("Container", "add_table_row"),
             "Tooltip": ("Container", "add_tooltip"),
             "TreeNode": ("Container", "add_tree_node"),
+            "ViewportMenuBar": ("Container", "add_viewport_menu_bar"),
             "Window": ("Container", "add_window"),
         }
     )
@@ -162,7 +163,7 @@ def populate():
                 mapping, info = ItemMaps.handlers.mapping, ("Item", attr)
             elif any(kw in attr for kw in ("theme", "font")):
                 mapping, info = ItemMaps.stylize.mapping, ("Item", attr)
-            elif any(kw in attr for kw in ("plot", "series")):
+            elif any(kw in attr for kw in ("plot", "series", "_point")):
                 mapping, info = ItemMaps.plotting.mapping, ("Widget", attr)
             else:
                 mapping, info = ItemMaps.widgets.mapping, ("Widget", attr)

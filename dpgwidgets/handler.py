@@ -97,6 +97,7 @@ class AppHandler(Item, Context, HandlerRegistry):
 
     def __init__(self, show: bool = True, label: str = None, **kwargs):
         super().__init__(show=show, label=label, **kwargs)
+        self.__handlers = {}
         self.show = show
         self.label = label
 
@@ -150,6 +151,7 @@ class WidgetHandler(HandlerRegistry):
     }
 
     def __init__(self, parent: "Widget"):
+        self.__handlers = {}
         self.parent = parent
 
     def while_active(self, callback: Callable = None, *, user_data: Any = None, **kwargs):

@@ -16,7 +16,12 @@ class Application:
     called_on_start = []
     called_on_exit = []
 
-    def __init__(self) -> None:
+    def __init__(
+        self, 
+        enable_docking: bool = False,
+        enable_staging: bool = False, 
+        show_dev_tools:bool = False
+    ):
         self.viewport = Viewport()
 
         # Registries
@@ -27,11 +32,34 @@ class Application:
 
         self.__theme = None
         self.__primary_window = None
-        self.__staging_mode = False
-        self.__docking_mode = False
+        self.__docking_enabled = False
+        self.__staging_mode = enable_staging
+        
+        if enable_docking:
+            idpg.enable_docking(dock_space=True)
+            self.__docking_enabled = True
 
         self.viewport.setup()
         self.viewport.show()
+
+        if show_dev_tools:
+            self._set_dev_mode()
+
+    def _set_dev_mode(self):
+        from .dpgwrap.containers import Menu, ViewportMenuBar
+        from .dpgwrap.widgets import MenuItem
+  
+        with ViewportMenuBar():
+            with Menu("Development") as dev:
+                MenuItem("Documentation", callback=show_documentation)
+                MenuItem("Debug", callback=show_debug)
+                MenuItem("Style Editor", callback=show_style_editor)
+                MenuItem("Metrics", callback=show_metrics)
+                MenuItem("About", callback=show_about)
+                MenuItem("Font Manager", callback=show_font_manager)
+                MenuItem("Item Registry", callback=show_item_registry)
+                MenuItem("Logger", callback=show_logger)
+
 
     def register_callbacks(self):
         idpg.set_start_callback(lambda: [f() for f in self.called_on_start])
@@ -104,17 +132,13 @@ class Application:
         idpg.set_staging_mode(mode=value)
 
     @property
-    def docking_mode(self):
-        return self.__docking_mode
-
-    @docking_mode.setter
-    def docking_mode(self, value: bool):
-        self.__docking_mode = value
-        idpg.enable_docking(dock_space=value)
+    def docking_enabled(self):
+        return self.__docking_enabled
 
 
 class Viewport:
-    # Note: DPG currently only allows 1 viewport per loop
+    # Note: DPG currently only allows 1 viewport
+    # so only call *once*
     __config = {}
     called_on_resize = []
 
@@ -131,7 +155,7 @@ class Viewport:
         max_width: int = 10000,
         min_height: int = 250,
         max_height: int = 10000,
-        resizable: bool = True,
+        resizable: bool = True,  # not working?
         vsync: bool = True,
         always_on_top: bool = False,
         maximized_box: bool = True,
@@ -287,3 +311,8 @@ def show_font_manager(sender: str = "", data: Any = None):
 
 def show_item_registry(sender: str = "", data: Any = None):
     idpg.show_tool(idpg.mvTool_ItemRegistry)
+
+
+def show_logger(sender: str = "", data: Any = None):
+    from dearpygui import logger
+    logger.mvLogger()
