@@ -15,7 +15,7 @@ class Widget(Item, metaclass=ABCMeta):
         super().__init__(**kwargs)
         self.__handler = WidgetHandler(self)
         self.__theme = WidgetTheme(self)
-        self.__disabled_theme = WidgetTheme(self, disabled_theme=True)
+        self.__disabled_theme = WidgetTheme(self, is_disabled_theme=True)
         self.__font = None
         
         

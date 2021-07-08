@@ -9,14 +9,25 @@ class WidgetTheme(Theme):
     def __init__(
         self,
         parent: Union[int,Item] = None,
-        disabled_theme: bool = False,
-        default_theme: bool = False,
+        is_disabled_theme: bool = False,
         **kwargs
     ):
-        super().__init__(default_theme=default_theme,**kwargs)
-        self.__parent = int(parent) or 0
+        # self.__set_theme_cmd doesn't need to exist in this case
+        if parent is None:
+            super().__init__(default_theme=True,**kwargs)
+            self.__set_theme_cmd = lambda *x, **y: None
+            self.__parent = 0
+        # there aren't "default disabled themes" (to my knowledge)
+        elif is_disabled_theme:
+            super().__init__(**kwargs)
+            self.__set_theme_cmd = idpg.set_item_disabled_theme
+            self.__parent = int(parent)
+        else:
+            super().__init__(**kwargs)
+            self.__set_theme_cmd = idpg.set_item_theme
+            self.__parent = int(parent)
 
-        # theme_color/style id's are stored in these
+        # {option: theme_item_id, ...}
         self.__color_ids = {attr: None for attr in THEMECOLOR}
         self.__style_ids = {attr: None for attr in THEMESTYLE}
         
@@ -24,12 +35,7 @@ class WidgetTheme(Theme):
         # because they can't be fetched after creation
         self.__color = ColorHelper(self, self.__color_ids, "apply_color")
         self.__style = StyleHelper(self, self.__style_ids, "apply_style")
-
-        if disabled_theme:
-            self.__theme_cmd = idpg.set_item_disabled_theme
-        else:
-            self.__theme_cmd = idpg.set_item_theme
-
+            
     @property
     def color(self):
         return self.__color
@@ -52,7 +58,7 @@ class WidgetTheme(Theme):
         setattr(self.__style, option, rgba)
         # applying new item/color
         self.__color_ids[option] = new_theme_item
-        self.__theme_cmd(self.__parent, self.id)
+        self.__set_theme_cmd(self.__parent, self.id)
         # cleanup
         if old_theme_item:
             idpg.delete_item(old_theme_item)
@@ -73,7 +79,7 @@ class WidgetTheme(Theme):
         setattr(self.__style, option, (x, y))
         # applying new item/style
         self.__style_ids[option] = new_theme_item
-        self.__theme_cmd(self.__parent, self.id)
+        self.__set_theme_cmd(self.__parent, self.id)
         # cleanup
         if old_theme_item:
             idpg.delete_item(old_theme_item)

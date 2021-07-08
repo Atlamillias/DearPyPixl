@@ -3,6 +3,7 @@ from contextlib import contextmanager
 
 from . import idpg
 from .handler import AppHandler
+from .theme import WidgetTheme as AppTheme
 from .dpgwrap.containers import Window
 from .dpgwrap.registries import (
     FontRegistry, 
@@ -24,15 +25,15 @@ class Application:
     ):
         self.viewport = Viewport()
 
-        # Registries
+        # Registries (WIP)
         self.fonts = FontRegistry(id=idpg.mvReservedUUID_0)
         self.handlers = AppHandler(id=idpg.mvReservedUUID_1)
         self.textures = TextureRegistry(id=idpg.mvReservedUUID_2)
         self.values = ValueRegistry(id=idpg.mvReservedUUID_3)
 
-        self.__theme = None
-        self.__primary_window = None
+        self.__theme = AppTheme()
         self.__docking_enabled = False
+        self.__dev_tools = True if show_dev_tools else False
         self.__staging_mode = enable_staging
         
         if enable_docking:
@@ -42,24 +43,6 @@ class Application:
         self.viewport.setup()
         self.viewport.show()
 
-        if show_dev_tools:
-            self._set_dev_mode()
-
-    def _set_dev_mode(self):
-        from .dpgwrap.containers import Menu, ViewportMenuBar
-        from .dpgwrap.widgets import MenuItem
-  
-        with ViewportMenuBar():
-            with Menu("Development") as dev:
-                MenuItem("Documentation", callback=show_documentation)
-                MenuItem("Debug", callback=show_debug)
-                MenuItem("Style Editor", callback=show_style_editor)
-                MenuItem("Metrics", callback=show_metrics)
-                MenuItem("About", callback=show_about)
-                MenuItem("Font Manager", callback=show_font_manager)
-                MenuItem("Item Registry", callback=show_item_registry)
-                MenuItem("Logger", callback=show_logger)
-
 
     def register_callbacks(self):
         idpg.set_start_callback(lambda: [f() for f in self.called_on_start])
@@ -67,6 +50,8 @@ class Application:
 
     def start(self):
         self.register_callbacks()
+        if self.__dev_tools:
+            self.viewport._show_dev_toolbar()
 
         while idpg.is_dearpygui_running():
             idpg.render_dearpygui_frame()
@@ -81,24 +66,38 @@ class Application:
     ## Decorators ##
     def on_start(self, func):
         """Adds <func> to a list of functions that will be
-        called before the main loop."""
+        called before the main loop (in the order that they are added)."""
         self.called_on_start.append(func)
 
         return func
 
     def on_exit(self, func):
         """Adds <func> to a list of functions that will be
-        called as the main loop ends."""
+        called as the main loop ends (in the order that they are added)."""
         self.called_on_exit.append(func)
 
         return func
 
     
+    ## Theme ##
+    @property
+    def theme(self):
+        return self.__theme
+
+    @property
+    def color(self):
+        return self.__theme.color
+
+    @property
+    def style(self):
+        return self.__theme.style
+
+
     ## Misc. ##
     @property
     def time_elapsed(self):
         return idpg.get_total_time()
-
+    
     @property
     def global_font_scale(self):
         return idpg.get_global_font_scale()
@@ -106,21 +105,6 @@ class Application:
     @global_font_scale.setter
     def global_font_scale(self, value: float):
         idpg.set_global_font_scale(value)
-
-    @property
-    def primary_window(self):
-        return self.__primary_window
-
-    @primary_window.setter
-    def primary_window(self, window):
-        if isinstance(window, (Window, int)):
-            self.__primary_window = window
-            idpg.set_primary_window(int(window),True)
-        elif window is None and self.__primary_window:
-            idpg.set_primary_window(int(self.__primary_window), False)
-            self.__primary_window = window
-        else:
-            raise TypeError("Value must be of type <int>, <Window>.")
 
     @property
     def staging_mode(self):
@@ -140,6 +124,7 @@ class Viewport:
     # Note: DPG currently only allows 1 viewport
     # so only call *once*
     __config = {}
+    __primary_window = None
     called_on_resize = []
 
     def __init__(
@@ -234,6 +219,21 @@ class Viewport:
         else:
             super().__setattr__(attr, value)
 
+    def _show_dev_toolbar(self):
+        from .dpgwrap.containers import Menu, ViewportMenuBar
+        from .dpgwrap.widgets import MenuItem
+
+        with ViewportMenuBar():
+            with Menu("Development") as dev:
+                MenuItem("Documentation", callback=show_documentation)
+                MenuItem("Debug", callback=show_debug)
+                MenuItem("Style Editor", callback=show_style_editor)
+                MenuItem("Metrics", callback=show_metrics)
+                MenuItem("About", callback=show_about)
+                MenuItem("Font Manager", callback=show_font_manager)
+                MenuItem("Item Registry", callback=show_item_registry)
+                MenuItem("Logger", callback=show_logger)
+
     @property
     def id(self):
         return self.__id
@@ -274,6 +274,15 @@ class Viewport:
 
         return func
 
+    @property
+    def primary_window(self):
+        return self.__primary_window
+
+    def set_primary_window(self, state: bool, window: int = None):
+        if window is not None:
+            self.__primary_window = window
+
+        idpg.set_primary_window(int(self.__primary_window), state)
 
 
 ## Misc. (most are copy/paste from dearpygui) ##
