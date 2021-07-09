@@ -1,11 +1,11 @@
 from typing import Union, Sequence
 
-from . import idpg, Item
-from .dpgwrap.stylize import Theme
+from . import dpg, Item
+from .dpgwrap.stylize import Theme as _Theme
 from .constants import THEMECOLOR, THEMESTYLE
 
 
-class WidgetTheme(Theme):
+class Theme(_Theme):
     def __init__(
         self,
         parent: Union[int,Item] = None,
@@ -20,11 +20,11 @@ class WidgetTheme(Theme):
         # there aren't "default disabled themes" (to my knowledge)
         elif is_disabled_theme:
             super().__init__(**kwargs)
-            self.__set_theme_cmd = idpg.set_item_disabled_theme
+            self.__set_theme_cmd = dpg.set_item_disabled_theme
             self.__parent = int(parent)
         else:
             super().__init__(**kwargs)
-            self.__set_theme_cmd = idpg.set_item_theme
+            self.__set_theme_cmd = dpg.set_item_theme
             self.__parent = int(parent)
 
         # {option: theme_item_id, ...}
@@ -47,7 +47,7 @@ class WidgetTheme(Theme):
     def apply_color(self, option: str, rgba: Sequence = (0,0,0,255)):
         target, category = THEMECOLOR[option]
         old_theme_item = self.__color_ids.pop(option)
-        new_theme_item = idpg.add_theme_color(
+        new_theme_item = dpg.add_theme_color(
             target, 
             rgba, 
             category=category,
@@ -61,13 +61,13 @@ class WidgetTheme(Theme):
         self.__set_theme_cmd(self.__parent, self.id)
         # cleanup
         if old_theme_item:
-            idpg.delete_item(old_theme_item)
+            dpg.delete_item(old_theme_item)
 
     def apply_style(self, option: str, xy: Sequence = (1.0, -1.0)):
         x, y = xy
         target, category = THEMESTYLE[option]
         old_theme_item = self.__style_ids.pop(option)
-        new_theme_item = idpg.add_theme_style(
+        new_theme_item = dpg.add_theme_style(
             target,
             x,
             y,
@@ -82,7 +82,7 @@ class WidgetTheme(Theme):
         self.__set_theme_cmd(self.__parent, self.id)
         # cleanup
         if old_theme_item:
-            idpg.delete_item(old_theme_item)
+            dpg.delete_item(old_theme_item)
 
     def refresh(self):
         self.__color_ids = {attr: None for attr in THEMECOLOR}
@@ -95,7 +95,7 @@ class WidgetTheme(Theme):
 class TItemBase:
     __item_ids = {}
 
-    def __init__(self, parent: WidgetTheme, item_ids: dict, theme_type: str):
+    def __init__(self, parent: Theme, item_ids: dict, theme_type: str):
         self.__parent = parent
         self.__theme_type = theme_type
 

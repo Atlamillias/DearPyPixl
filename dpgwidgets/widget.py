@@ -1,10 +1,10 @@
 from abc import ABCMeta, abstractmethod
 from typing import Callable
 
-from dearpygui import core as idpg
+from dearpygui import core as dpg
 from .dpgwrap._item import Item, Context
 from .handler import WidgetHandler
-from .theme import WidgetTheme
+from .theme import Theme
 
 
 class Widget(Item, metaclass=ABCMeta):
@@ -14,8 +14,8 @@ class Widget(Item, metaclass=ABCMeta):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.__handler = WidgetHandler(self)
-        self.__theme = WidgetTheme(self)
-        self.__disabled_theme = WidgetTheme(self, is_disabled_theme=True)
+        self.__theme = Theme(self)
+        self.__disabled_theme = Theme(self, is_disabled_theme=True)
         self.__font = None
         
         
@@ -56,14 +56,14 @@ class Widget(Item, metaclass=ABCMeta):
 
     # Misc
     def move_up(self):
-        idpg.move_item_up(self.id)
+        dpg.move_item_up(self.id)
 
     def move_down(self):
-        idpg.move_item_down(self.id)
+        dpg.move_item_down(self.id)
 
     def move(self, parent: int, before: int):
         """Move a widget to another <parent> before <before>."""
-        idpg.move_item(self.id, parent, before)
+        dpg.move_item(self.id, parent, before)
 
 
 class Container(Widget, Context, metaclass=ABCMeta):

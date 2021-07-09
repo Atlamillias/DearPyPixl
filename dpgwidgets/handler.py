@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING, Callable, Any
 import functools
 import inspect
 
-from . import idpg
+from . import dpg
 from .dpgwrap._item import Item, Context
 
 if TYPE_CHECKING:
@@ -25,7 +25,7 @@ _HANDLER_METHOD = """
 def {mname}(self, callback: Callable = None, *, user_data: Any = None, **kwargs):
     @functools.wraps(callback)
     def wrapper(callback):
-        handler = idpg.{cmd}(
+        handler = dpg.{cmd}(
             self.parent.id,
             callback=callback,
             user_data=user_data,
@@ -39,7 +39,7 @@ def {mname}(self, callback: Callable = None, *, user_data: Any = None, **kwargs)
     if not callback:
         return wrapper
 
-    handler = idpg.{cmd}(
+    handler = dpg.{cmd}(
         self.parent.id,
         callback=callback,
         user_data=user_data,
@@ -61,7 +61,7 @@ class HandlerRegistry:  # Mixin
     def unhandle(self, handler_type: str, callback: Callable):
         handler = self._pop_handler(handler_type, callback)
 
-        idpg.delete_item(handler)
+        dpg.delete_item(handler)
 
     def _pop_handler(self, handler_type: str, callback: Callable):
         key = self.__handlers[handler_type]
@@ -79,7 +79,7 @@ class HandlerRegistry:  # Mixin
 # are actually redefined at runtime using the
 # "HandlerRegistry.__handler_method" code template.
 class AppHandler(Item, Context, HandlerRegistry):
-    _command = idpg.add_handler_registry
+    _command = dpg.add_handler_registry
 
     _HANDLERS = {
         "while_key_down": "add_key_down_handler",  # mvKeyDownHandler

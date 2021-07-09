@@ -1,9 +1,9 @@
 from typing import Any
 from contextlib import contextmanager
 
-from . import idpg
+from . import dpg
 from .handler import AppHandler
-from .theme import WidgetTheme as AppTheme
+from .theme import Theme as AppTheme
 from .dpgwrap.containers import Window
 from .dpgwrap.registries import (
     FontRegistry, 
@@ -23,17 +23,18 @@ class Application:
 
     def __init__(
         self, 
-        enable_docking: bool = False,
         enable_staging: bool = False, 
+        enable_docking: bool = False,
+        dock_space: bool = False,
         show_dev_tools:bool = False
     ):
         self.viewport = Viewport()
 
         # Registries (WIP)
-        self.fonts = FontRegistry(id=idpg.mvReservedUUID_0)
-        self.handlers = AppHandler(id=idpg.mvReservedUUID_1)
-        self.textures = TextureRegistry(id=idpg.mvReservedUUID_2)
-        self.values = ValueRegistry(id=idpg.mvReservedUUID_3)
+        self.fonts = FontRegistry(id=dpg.mvReservedUUID_0)
+        self.handlers = AppHandler(id=dpg.mvReservedUUID_1)
+        self.textures = TextureRegistry(id=dpg.mvReservedUUID_2)
+        self.values = ValueRegistry(id=dpg.mvReservedUUID_3)
 
         self.__theme = AppTheme()
         self.__docking_enabled = False
@@ -41,7 +42,7 @@ class Application:
         self.__staging_mode = enable_staging
         
         if enable_docking:
-            idpg.enable_docking(dock_space=True)
+            dpg.enable_docking(dock_space=dock_space)
             self.__docking_enabled = True
 
         self.viewport.setup()
@@ -49,22 +50,22 @@ class Application:
 
 
     def register_callbacks(self):
-        idpg.set_start_callback(lambda: [f() for f in self.called_on_start])
-        idpg.set_exit_callback(lambda: [f() for f in self.called_on_exit])
+        dpg.set_start_callback(lambda: [f() for f in self.called_on_start])
+        dpg.set_exit_callback(lambda: [f() for f in self.called_on_exit])
 
     def start(self):
         self.register_callbacks()
         if self.__dev_tools:
             self.viewport._show_dev_toolbar()
 
-        while idpg.is_dearpygui_running():
-            idpg.render_dearpygui_frame()
+        while dpg.is_dearpygui_running():
+            dpg.render_dearpygui_frame()
 
-        idpg.cleanup_dearpygui()
+        dpg.cleanup_dearpygui()
 
     @staticmethod
     def stop():
-        idpg.stop_dearpygui()
+        dpg.stop_dearpygui()
 
 
     ## Decorators ##
@@ -100,15 +101,15 @@ class Application:
     ## Misc. ##
     @property
     def time_elapsed(self):
-        return idpg.get_total_time()
+        return dpg.get_total_time()
     
     @property
     def global_font_scale(self):
-        return idpg.get_global_font_scale()
+        return dpg.get_global_font_scale()
 
     @global_font_scale.setter
     def global_font_scale(self, value: float):
-        idpg.set_global_font_scale(value)
+        dpg.set_global_font_scale(value)
 
     @property
     def staging_mode(self):
@@ -117,7 +118,7 @@ class Application:
     @staging_mode.setter
     def staging_mode(self, value: bool):
         self.__staging_mode = value
-        idpg.set_staging_mode(mode=value)
+        dpg.set_staging_mode(mode=value)
 
     @property
     def docking_enabled(self):
@@ -200,7 +201,7 @@ class Viewport:
 
         # __getitem__ will ask dpg for all of the above
         # if this is called before setting instance attrs
-        self.__id = idpg.create_viewport(**self.__config)
+        self.__id = dpg.create_viewport(**self.__config)
 
     def __str__(self):
         return f"{self.__id}"
@@ -211,7 +212,7 @@ class Viewport:
     def __getattr__(self, attr):
         if attr in self.__config:
             try:
-                return idpg.get_viewport_configuration(self.__id)
+                return dpg.get_viewport_configuration(self.__id)
             except KeyError:
                 return super().__getattr__(attr)
 
@@ -219,7 +220,7 @@ class Viewport:
 
     def __setattr__(self, attr, value):
         if attr in self.__config:
-            idpg.configure_viewport(self.__id, **{attr: value})
+            dpg.configure_viewport(self.__id, **{attr: value})
         else:
             super().__setattr__(attr, value)
 
@@ -244,36 +245,36 @@ class Viewport:
 
     def configure(self, **config):
         """Updates the viewport configuration."""
-        idpg.configure_viewport(self.__id, **config)
+        dpg.configure_viewport(self.__id, **config)
 
     def configuration(self, option=None):
         """Returns the entire current viewport configuration, or
         <option> if specified."""
         if option:
-            return idpg.get_viewport_configuration(self.__id)[option]
+            return dpg.get_viewport_configuration(self.__id)[option]
 
-        return idpg.get_viewport_configuration(self.__id)
+        return dpg.get_viewport_configuration(self.__id)
 
     def maximize(self):
         """Maximize the viewport"""
-        idpg.maximize_viewport(self.__id)
+        dpg.maximize_viewport(self.__id)
 
     def minimize(self):
         """Minimize the viewport."""
-        idpg.minimize_viewport(self.__id)
+        dpg.minimize_viewport(self.__id)
 
     def setup(self):
-        idpg.setup_dearpygui(viewport=self.__id)
+        dpg.setup_dearpygui(viewport=self.__id)
 
     def show(self):
         """Display the viewport."""
-        idpg.show_viewport(self.__id)
+        dpg.show_viewport(self.__id)
 
     # Decorator
     def on_resize(self, func):
         """Updates the viewport callback collection."""
         self.called_on_resize.add(func)
-        idpg.set_viewport_resize_callback(lambda: [
+        dpg.set_viewport_resize_callback(lambda: [
             f() for f in self.called_on_resize])
 
         return func
@@ -286,44 +287,44 @@ class Viewport:
         if window is not None:
             self.__primary_window = window
 
-        idpg.set_primary_window(int(self.__primary_window), state)
+        dpg.set_primary_window(int(self.__primary_window), state)
 
 
 ## Misc. (most are copy/paste from dearpygui) ##
 @contextmanager
 def mutex():
    try:
-       yield idpg.lock_mutex()
+       yield dpg.lock_mutex()
    finally:
-       idpg.unlock_mutex()
+       dpg.unlock_mutex()
 
 
 def show_style_editor(sender: str = "", data: Any = None):
-    idpg.show_tool(idpg.mvTool_Style)
+    dpg.show_tool(dpg.mvTool_Style)
 
 
 def show_metrics(sender: str = "", data: Any = None):
-    idpg.show_tool(idpg.mvTool_Metrics)
+    dpg.show_tool(dpg.mvTool_Metrics)
 
 
 def show_about(sender: str = "", data: Any = None):
-    idpg.show_tool(idpg.mvTool_About)
+    dpg.show_tool(dpg.mvTool_About)
 
 
 def show_debug(sender: str = "", data: Any = None):
-    idpg.show_tool(idpg.mvTool_Debug)
+    dpg.show_tool(dpg.mvTool_Debug)
 
 
 def show_documentation(sender: str = "", data: Any = None):
-    idpg.show_tool(idpg.mvTool_Doc)
+    dpg.show_tool(dpg.mvTool_Doc)
 
 
 def show_font_manager(sender: str = "", data: Any = None):
-    idpg.show_tool(idpg.mvTool_Font)
+    dpg.show_tool(dpg.mvTool_Font)
 
 
 def show_item_registry(sender: str = "", data: Any = None):
-    idpg.show_tool(idpg.mvTool_ItemRegistry)
+    dpg.show_tool(dpg.mvTool_ItemRegistry)
 
 
 def show_logger(sender: str = "", data: Any = None):

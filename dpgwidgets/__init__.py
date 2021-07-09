@@ -2,7 +2,7 @@ import sys
 
 sys.path.append("./dpgwrap/")
 
-from dearpygui import core as idpg, dearpygui as dpg
+from dearpygui import dearpygui as dpg
 
 # order is to avoid circular imports
 from dpgwrap._item import Item, Context
