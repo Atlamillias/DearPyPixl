@@ -1,6 +1,6 @@
 from typing import Callable, Any
 
-from . import idpg
+from . import dpg
 from ._item import Item, Context
 
 
@@ -10,7 +10,7 @@ from ._item import Item, Context
 
 
 class FontChars(Item):
-    _command: Callable = idpg.add_font_chars
+    _command: Callable = dpg.add_font_chars
 
     def __init__(
         self,
@@ -34,7 +34,7 @@ class FontChars(Item):
 
 
 class FontRange(Item):
-    _command: Callable = idpg.add_font_range
+    _command: Callable = dpg.add_font_range
 
     def __init__(
         self,
@@ -61,7 +61,7 @@ class FontRange(Item):
 
 
 class FontRangeHint(Item):
-    _command: Callable = idpg.add_font_range_hint
+    _command: Callable = dpg.add_font_range_hint
 
     def __init__(
         self,
@@ -85,7 +85,7 @@ class FontRangeHint(Item):
 
 
 class ThemeColor(Item):
-    _command: Callable = idpg.add_theme_color
+    _command: Callable = dpg.add_theme_color
 
     def __init__(
         self,
@@ -115,7 +115,7 @@ class ThemeColor(Item):
 
 
 class ThemeStyle(Item):
-    _command: Callable = idpg.add_theme_style
+    _command: Callable = dpg.add_theme_style
 
     def __init__(
         self,
@@ -148,7 +148,7 @@ class ThemeStyle(Item):
 
 
 class Theme(Item, Context):
-    _command: Callable = idpg.add_theme
+    _command: Callable = dpg.add_theme
 
     def __init__(self, label: str = None, user_data: Any = None, default_theme: bool = False, **kwargs):
         super().__init__(label=label, user_data=user_data, default_theme=default_theme, **kwargs)
@@ -158,7 +158,7 @@ class Theme(Item, Context):
 
 
 class Font(Item, Context):
-    _command: Callable = idpg.add_font
+    _command: Callable = dpg.add_font
 
     def __init__(
         self,

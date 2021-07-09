@@ -1,6 +1,6 @@
 from typing import Callable, Any
 
-from . import idpg
+from . import dpg
 from ._widget import Container, Widget
 
 
@@ -10,7 +10,7 @@ from ._widget import Container, Widget
 
 
 class ViewportDrawlist(Container):
-    _command: Callable = idpg.add_viewport_drawlist
+    _command: Callable = dpg.add_viewport_drawlist
 
     def __init__(
         self,
@@ -40,7 +40,7 @@ class ViewportDrawlist(Container):
 
 
 class Drawlist(Container):
-    _command: Callable = idpg.add_drawlist
+    _command: Callable = dpg.add_drawlist
 
     def __init__(
         self,
@@ -100,7 +100,7 @@ class Drawlist(Container):
 
 
 class DrawLayer(Container):
-    _command: Callable = idpg.add_draw_layer
+    _command: Callable = dpg.add_draw_layer
 
     def __init__(
         self,
@@ -127,7 +127,7 @@ class DrawLayer(Container):
 
 
 class Arrow(Widget):
-    _command: Callable = idpg.draw_arrow
+    _command: Callable = dpg.draw_arrow
 
     def __init__(
         self,
@@ -169,7 +169,7 @@ class Arrow(Widget):
 
 
 class BezierCubic(Widget):
-    _command: Callable = idpg.draw_bezier_cubic
+    _command: Callable = dpg.draw_bezier_cubic
 
     def __init__(
         self,
@@ -217,7 +217,7 @@ class BezierCubic(Widget):
 
 
 class BezierQuadratic(Widget):
-    _command: Callable = idpg.draw_bezier_quadratic
+    _command: Callable = dpg.draw_bezier_quadratic
 
     def __init__(
         self,
@@ -262,7 +262,7 @@ class BezierQuadratic(Widget):
 
 
 class Circle(Widget):
-    _command: Callable = idpg.draw_circle
+    _command: Callable = dpg.draw_circle
 
     def __init__(
         self,
@@ -307,7 +307,7 @@ class Circle(Widget):
 
 
 class Ellipse(Widget):
-    _command: Callable = idpg.draw_ellipse
+    _command: Callable = dpg.draw_ellipse
 
     def __init__(
         self,
@@ -352,7 +352,7 @@ class Ellipse(Widget):
 
 
 class Image(Widget):
-    _command: Callable = idpg.draw_image
+    _command: Callable = dpg.draw_image
 
     def __init__(
         self,
@@ -396,8 +396,35 @@ class Image(Widget):
         self.color = color
 
 
+class Layer(Widget):
+    _command: Callable = dpg.draw_layer
+
+    def __init__(
+        self,
+        label: str = None,
+        parent: int = 0,
+        before: int = 0,
+        show: bool = True,
+        user_data: Any = None,
+        **kwargs
+    ):
+        super().__init__(
+        label=label,
+        parent=parent,
+        before=before,
+        show=show,
+        user_data=user_data,
+        **kwargs
+        )
+        self.label = label
+        self.parent = parent
+        self.before = before
+        self.show = show
+        self.user_data = user_data
+
+
 class Line(Widget):
-    _command: Callable = idpg.draw_line
+    _command: Callable = dpg.draw_line
 
     def __init__(
         self,
@@ -436,7 +463,7 @@ class Line(Widget):
 
 
 class Polygon(Widget):
-    _command: Callable = idpg.draw_polygon
+    _command: Callable = dpg.draw_polygon
 
     def __init__(
         self,
@@ -475,7 +502,7 @@ class Polygon(Widget):
 
 
 class Polyline(Widget):
-    _command: Callable = idpg.draw_polyline
+    _command: Callable = dpg.draw_polyline
 
     def __init__(
         self,
@@ -514,7 +541,7 @@ class Polyline(Widget):
 
 
 class Quad(Widget):
-    _command: Callable = idpg.draw_quad
+    _command: Callable = dpg.draw_quad
 
     def __init__(
         self,
@@ -562,7 +589,7 @@ class Quad(Widget):
 
 
 class Rectangle(Widget):
-    _command: Callable = idpg.draw_rectangle
+    _command: Callable = dpg.draw_rectangle
 
     def __init__(
         self,
@@ -607,7 +634,7 @@ class Rectangle(Widget):
 
 
 class Text(Widget):
-    _command: Callable = idpg.draw_text
+    _command: Callable = dpg.draw_text
 
     def __init__(
         self,
@@ -646,7 +673,7 @@ class Text(Widget):
 
 
 class Triangle(Widget):
-    _command: Callable = idpg.draw_triangle
+    _command: Callable = dpg.draw_triangle
 
     def __init__(
         self,

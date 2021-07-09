@@ -1,6 +1,6 @@
 from typing import Callable, Any
 
-from . import idpg
+from . import dpg
 from ._item import Item
 
 
@@ -10,7 +10,7 @@ from ._item import Item
 
 
 class BoolValue(Item):
-    _command: Callable = idpg.add_bool_value
+    _command: Callable = dpg.add_bool_value
 
     def __init__(
         self,
@@ -37,7 +37,7 @@ class BoolValue(Item):
 
 
 class ColorValue(Item):
-    _command: Callable = idpg.add_color_value
+    _command: Callable = dpg.add_color_value
 
     def __init__(
         self,
@@ -64,7 +64,7 @@ class ColorValue(Item):
 
 
 class Double4Value(Item):
-    _command: Callable = idpg.add_double4_value
+    _command: Callable = dpg.add_double4_value
 
     def __init__(
         self,
@@ -91,7 +91,7 @@ class Double4Value(Item):
 
 
 class DoubleValue(Item):
-    _command: Callable = idpg.add_double_value
+    _command: Callable = dpg.add_double_value
 
     def __init__(
         self,
@@ -118,7 +118,7 @@ class DoubleValue(Item):
 
 
 class Float4Value(Item):
-    _command: Callable = idpg.add_float4_value
+    _command: Callable = dpg.add_float4_value
 
     def __init__(
         self,
@@ -145,7 +145,7 @@ class Float4Value(Item):
 
 
 class FloatValue(Item):
-    _command: Callable = idpg.add_float_value
+    _command: Callable = dpg.add_float_value
 
     def __init__(
         self,
@@ -172,7 +172,7 @@ class FloatValue(Item):
 
 
 class FloatVectValue(Item):
-    _command: Callable = idpg.add_float_vect_value
+    _command: Callable = dpg.add_float_vect_value
 
     def __init__(
         self,
@@ -199,7 +199,7 @@ class FloatVectValue(Item):
 
 
 class Int4Value(Item):
-    _command: Callable = idpg.add_int4_value
+    _command: Callable = dpg.add_int4_value
 
     def __init__(
         self,
@@ -226,7 +226,7 @@ class Int4Value(Item):
 
 
 class IntValue(Item):
-    _command: Callable = idpg.add_int_value
+    _command: Callable = dpg.add_int_value
 
     def __init__(
         self,
@@ -253,7 +253,7 @@ class IntValue(Item):
 
 
 class SeriesValue(Item):
-    _command: Callable = idpg.add_series_value
+    _command: Callable = dpg.add_series_value
 
     def __init__(
         self,
@@ -280,7 +280,7 @@ class SeriesValue(Item):
 
 
 class StringValue(Item):
-    _command: Callable = idpg.add_string_value
+    _command: Callable = dpg.add_string_value
 
     def __init__(
         self,

@@ -3,7 +3,7 @@ from pathlib import Path
 from dataclasses import dataclass, field, is_dataclass
 from inspect import signature
 
-from dearpygui import dearpygui as dpg, core as idpg
+from dearpygui import dearpygui as dpg
 
 
 DEFAULT_DIRPATH = "./dpgwidgets/dpgwrap"
@@ -143,7 +143,7 @@ def populate():
         return string
 
     # iterating dearpygui
-    for attr in dir(idpg):
+    for attr in dir(dpg):
         # undesirables
         if not any(attr.startswith(kw) for kw in ("add_", "draw_", "mv")):
             continue
@@ -192,7 +192,7 @@ def writefiles(dirpath: str = DEFAULT_DIRPATH):
             importlines = [
                 "from typing import Callable, Any\n",
                 "\n"
-                "from . import idpg\n",
+                "from . import dpg\n",
             ]
             [importlines.append(f"{iline}\n") for iline in ilines]
             importlines += [
@@ -209,14 +209,12 @@ def writefiles(dirpath: str = DEFAULT_DIRPATH):
 
                 clslines = [
                     f"\n\nclass {item}({baseclass}):\n",
-                    f"    _command: Callable = idpg.{cmd}\n"
+                    f"    _command: Callable = dpg.{cmd}\n"
                     "\n",
                 ]
 
-                # Getting params from dearpygui.dearpygui and not
-                # dearpygui.core because objects in core(.pyi) are
-                # considered built-in's and don't yield signatures.
                 params = signature(getattr(dpg, cmd)).parameters
+
                 instance_attrs = [str(attr) for attr in params.keys()]
                 init_params = []
 
@@ -276,7 +274,7 @@ def writefiles(dirpath: str = DEFAULT_DIRPATH):
     # __init__.py
     with open(Path(dirpath, "__init__.py"), "w") as pyfile:
         lines = [
-            "from dearpygui import core as idpg, dearpygui as dpg\n",
+            "from dearpygui import dearpygui as dpg\n",
             "\n",
         ]
 
@@ -288,7 +286,7 @@ def writefiles(dirpath: str = DEFAULT_DIRPATH):
 
         lines += [
             f"__updated__ = '{datetime.today().date()}'\n",
-            f"__dpg_ver__ = '{idpg.get_dearpygui_version()}'\n",
+            f"__dpg_ver__ = '{dpg.get_dearpygui_version()}'\n",
         ]
 
         pyfile.writelines(lines)

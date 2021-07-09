@@ -1,6 +1,6 @@
 from typing import Callable, Any
 
-from . import idpg
+from . import dpg
 from ._item import Item, Context
 
 
@@ -10,7 +10,7 @@ from ._item import Item, Context
 
 
 class FontRegistry(Item, Context):
-    _command: Callable = idpg.add_font_registry
+    _command: Callable = dpg.add_font_registry
 
     def __init__(self, label: str = None, show: bool = True, user_data: Any = None, **kwargs):
         super().__init__(label=label, show=show, user_data=user_data, **kwargs)
@@ -20,7 +20,7 @@ class FontRegistry(Item, Context):
 
 
 class HandlerRegistry(Item, Context):
-    _command: Callable = idpg.add_handler_registry
+    _command: Callable = dpg.add_handler_registry
 
     def __init__(self, label: str = None, show: bool = True, user_data: Any = None, **kwargs):
         super().__init__(label=label, show=show, user_data=user_data, **kwargs)
@@ -30,7 +30,7 @@ class HandlerRegistry(Item, Context):
 
 
 class TextureRegistry(Item, Context):
-    _command: Callable = idpg.add_texture_registry
+    _command: Callable = dpg.add_texture_registry
 
     def __init__(self, label: str = None, user_data: Any = None, show: bool = False, **kwargs):
         super().__init__(label=label, user_data=user_data, show=show, **kwargs)
@@ -40,7 +40,7 @@ class TextureRegistry(Item, Context):
 
 
 class ValueRegistry(Item, Context):
-    _command: Callable = idpg.add_value_registry
+    _command: Callable = dpg.add_value_registry
 
     def __init__(self, label: str = None, user_data: Any = None, **kwargs):
         super().__init__(label=label, user_data=user_data, **kwargs)

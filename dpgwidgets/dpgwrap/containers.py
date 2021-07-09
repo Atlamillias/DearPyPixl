@@ -1,6 +1,6 @@
 from typing import Callable, Any
 
-from . import idpg
+from . import dpg
 from ._widget import Container
 
 
@@ -10,7 +10,7 @@ from ._widget import Container
 
 
 class Child(Container):
-    _command: Callable = idpg.add_child
+    _command: Callable = dpg.add_child
 
     def __init__(
         self,
@@ -88,7 +88,7 @@ class Child(Container):
 
 
 class Clipper(Container):
-    _command: Callable = idpg.add_clipper
+    _command: Callable = dpg.add_clipper
 
     def __init__(
         self,
@@ -124,7 +124,7 @@ class Clipper(Container):
 
 
 class CollapsingHeader(Container):
-    _command: Callable = idpg.add_collapsing_header
+    _command: Callable = dpg.add_collapsing_header
 
     def __init__(
         self,
@@ -196,7 +196,7 @@ class CollapsingHeader(Container):
 
 
 class DragPayload(Container):
-    _command: Callable = idpg.add_drag_payload
+    _command: Callable = dpg.add_drag_payload
 
     def __init__(
         self,
@@ -226,7 +226,7 @@ class DragPayload(Container):
 
 
 class FileDialog(Container):
-    _command: Callable = idpg.add_file_dialog
+    _command: Callable = dpg.add_file_dialog
 
     def __init__(
         self,
@@ -271,7 +271,7 @@ class FileDialog(Container):
 
 
 class FilterSet(Container):
-    _command: Callable = idpg.add_filter_set
+    _command: Callable = dpg.add_filter_set
 
     def __init__(
         self,
@@ -307,7 +307,7 @@ class FilterSet(Container):
 
 
 class Group(Container):
-    _command: Callable = idpg.add_group
+    _command: Callable = dpg.add_group
 
     def __init__(
         self,
@@ -370,7 +370,7 @@ class Group(Container):
 
 
 class Menu(Container):
-    _command: Callable = idpg.add_menu
+    _command: Callable = dpg.add_menu
 
     def __init__(
         self,
@@ -424,7 +424,7 @@ class Menu(Container):
 
 
 class MenuBar(Container):
-    _command: Callable = idpg.add_menu_bar
+    _command: Callable = dpg.add_menu_bar
 
     def __init__(
         self,
@@ -454,7 +454,7 @@ class MenuBar(Container):
 
 
 class StagingContainer(Container):
-    _command: Callable = idpg.add_staging_container
+    _command: Callable = dpg.add_staging_container
 
     def __init__(self, label: str = None, user_data: Any = None, **kwargs):
         super().__init__(label=label, user_data=user_data, **kwargs)
@@ -463,7 +463,7 @@ class StagingContainer(Container):
 
 
 class Tab(Container):
-    _command: Callable = idpg.add_tab
+    _command: Callable = dpg.add_tab
 
     def __init__(
         self,
@@ -523,7 +523,7 @@ class Tab(Container):
 
 
 class TabBar(Container):
-    _command: Callable = idpg.add_tab_bar
+    _command: Callable = dpg.add_tab_bar
 
     def __init__(
         self,
@@ -583,7 +583,7 @@ class TabBar(Container):
 
 
 class Table(Container):
-    _command: Callable = idpg.add_table
+    _command: Callable = dpg.add_table
 
     def __init__(
         self,
@@ -715,7 +715,7 @@ class Table(Container):
 
 
 class TableRow(Container):
-    _command: Callable = idpg.add_table_row
+    _command: Callable = dpg.add_table_row
 
     def __init__(
         self,
@@ -748,7 +748,7 @@ class TableRow(Container):
 
 
 class Tooltip(Container):
-    _command: Callable = idpg.add_tooltip
+    _command: Callable = dpg.add_tooltip
 
     def __init__(
         self,
@@ -772,7 +772,7 @@ class Tooltip(Container):
 
 
 class TreeNode(Container):
-    _command: Callable = idpg.add_tree_node
+    _command: Callable = dpg.add_tree_node
 
     def __init__(
         self,
@@ -844,7 +844,7 @@ class TreeNode(Container):
 
 
 class ViewportMenuBar(Container):
-    _command: Callable = idpg.add_viewport_menu_bar
+    _command: Callable = dpg.add_viewport_menu_bar
 
     def __init__(
         self,
@@ -874,7 +874,7 @@ class ViewportMenuBar(Container):
 
 
 class Window(Container):
-    _command: Callable = idpg.add_window
+    _command: Callable = dpg.add_window
 
     def __init__(
         self,

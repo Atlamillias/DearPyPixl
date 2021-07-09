@@ -1,4 +1,4 @@
-from dearpygui import core as idpg, dearpygui as dpg
+from dearpygui import dearpygui as dpg
 
 __all__ = [
     'containers',
@@ -11,5 +11,5 @@ __all__ = [
     'valueitems',
     'widgets',]
 
-__updated__ = '2021-07-08'
+__updated__ = '2021-07-09'
 __dpg_ver__ = '0.8.21'

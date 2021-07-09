@@ -1,6 +1,6 @@
 from typing import Callable, Any
 
-from . import idpg
+from . import dpg
 from ._widget import Widget
 
 
@@ -10,7 +10,7 @@ from ._widget import Widget
 
 
 class Slider(Widget):
-    _command: Callable = idpg.add_3d_slider
+    _command: Callable = dpg.add_3d_slider
 
     def __init__(
         self,
@@ -97,7 +97,7 @@ class Slider(Widget):
 
 
 class Button(Widget):
-    _command: Callable = idpg.add_button
+    _command: Callable = dpg.add_button
 
     def __init__(
         self,
@@ -169,7 +169,7 @@ class Button(Widget):
 
 
 class CharRemap(Widget):
-    _command: Callable = idpg.add_char_remap
+    _command: Callable = dpg.add_char_remap
 
     def __init__(
         self,
@@ -196,7 +196,7 @@ class CharRemap(Widget):
 
 
 class Checkbox(Widget):
-    _command: Callable = idpg.add_checkbox
+    _command: Callable = dpg.add_checkbox
 
     def __init__(
         self,
@@ -259,7 +259,7 @@ class Checkbox(Widget):
 
 
 class ColorButton(Widget):
-    _command: Callable = idpg.add_color_button
+    _command: Callable = dpg.add_color_button
 
     def __init__(
         self,
@@ -334,7 +334,7 @@ class ColorButton(Widget):
 
 
 class ColorEdit(Widget):
-    _command: Callable = idpg.add_color_edit
+    _command: Callable = dpg.add_color_edit
 
     def __init__(
         self,
@@ -442,7 +442,7 @@ class ColorEdit(Widget):
 
 
 class ColorPicker(Widget):
-    _command: Callable = idpg.add_color_picker
+    _command: Callable = dpg.add_color_picker
 
     def __init__(
         self,
@@ -553,7 +553,7 @@ class ColorPicker(Widget):
 
 
 class ColormapScale(Widget):
-    _command: Callable = idpg.add_colormap_scale
+    _command: Callable = dpg.add_colormap_scale
 
     def __init__(
         self,
@@ -604,7 +604,7 @@ class ColormapScale(Widget):
 
 
 class Combo(Widget):
-    _command: Callable = idpg.add_combo
+    _command: Callable = dpg.add_combo
 
     def __init__(
         self,
@@ -685,7 +685,7 @@ class Combo(Widget):
 
 
 class DatePicker(Widget):
-    _command: Callable = idpg.add_date_picker
+    _command: Callable = dpg.add_date_picker
 
     def __init__(
         self,
@@ -745,7 +745,7 @@ class DatePicker(Widget):
 
 
 class DragFloat(Widget):
-    _command: Callable = idpg.add_drag_float
+    _command: Callable = dpg.add_drag_float
 
     def __init__(
         self,
@@ -829,7 +829,7 @@ class DragFloat(Widget):
 
 
 class DragFloatx(Widget):
-    _command: Callable = idpg.add_drag_floatx
+    _command: Callable = dpg.add_drag_floatx
 
     def __init__(
         self,
@@ -916,7 +916,7 @@ class DragFloatx(Widget):
 
 
 class DragInt(Widget):
-    _command: Callable = idpg.add_drag_int
+    _command: Callable = dpg.add_drag_int
 
     def __init__(
         self,
@@ -1000,7 +1000,7 @@ class DragInt(Widget):
 
 
 class DragIntx(Widget):
-    _command: Callable = idpg.add_drag_intx
+    _command: Callable = dpg.add_drag_intx
 
     def __init__(
         self,
@@ -1087,7 +1087,7 @@ class DragIntx(Widget):
 
 
 class DragLine(Widget):
-    _command: Callable = idpg.add_drag_line
+    _command: Callable = dpg.add_drag_line
 
     def __init__(
         self,
@@ -1135,7 +1135,7 @@ class DragLine(Widget):
 
 
 class Dummy(Widget):
-    _command: Callable = idpg.add_dummy
+    _command: Callable = dpg.add_dummy
 
     def __init__(
         self,
@@ -1174,7 +1174,7 @@ class Dummy(Widget):
 
 
 class DynamicTexture(Widget):
-    _command: Callable = idpg.add_dynamic_texture
+    _command: Callable = dpg.add_dynamic_texture
 
     def __init__(
         self,
@@ -1204,7 +1204,7 @@ class DynamicTexture(Widget):
 
 
 class FileExtension(Widget):
-    _command: Callable = idpg.add_file_extension
+    _command: Callable = dpg.add_file_extension
 
     def __init__(
         self,
@@ -1243,7 +1243,7 @@ class FileExtension(Widget):
 
 
 class Image(Widget):
-    _command: Callable = idpg.add_image
+    _command: Callable = dpg.add_image
 
     def __init__(
         self,
@@ -1318,7 +1318,7 @@ class Image(Widget):
 
 
 class ImageButton(Widget):
-    _command: Callable = idpg.add_image_button
+    _command: Callable = dpg.add_image_button
 
     def __init__(
         self,
@@ -1402,7 +1402,7 @@ class ImageButton(Widget):
 
 
 class InputFloat(Widget):
-    _command: Callable = idpg.add_input_float
+    _command: Callable = dpg.add_input_float
 
     def __init__(
         self,
@@ -1495,7 +1495,7 @@ class InputFloat(Widget):
 
 
 class InputFloatx(Widget):
-    _command: Callable = idpg.add_input_floatx
+    _command: Callable = dpg.add_input_floatx
 
     def __init__(
         self,
@@ -1585,7 +1585,7 @@ class InputFloatx(Widget):
 
 
 class InputInt(Widget):
-    _command: Callable = idpg.add_input_int
+    _command: Callable = dpg.add_input_int
 
     def __init__(
         self,
@@ -1675,7 +1675,7 @@ class InputInt(Widget):
 
 
 class InputIntx(Widget):
-    _command: Callable = idpg.add_input_intx
+    _command: Callable = dpg.add_input_intx
 
     def __init__(
         self,
@@ -1762,7 +1762,7 @@ class InputIntx(Widget):
 
 
 class InputText(Widget):
-    _command: Callable = idpg.add_input_text
+    _command: Callable = dpg.add_input_text
 
     def __init__(
         self,
@@ -1864,7 +1864,7 @@ class InputText(Widget):
 
 
 class KnobFloat(Widget):
-    _command: Callable = idpg.add_knob_float
+    _command: Callable = dpg.add_knob_float
 
     def __init__(
         self,
@@ -1936,7 +1936,7 @@ class KnobFloat(Widget):
 
 
 class Listbox(Widget):
-    _command: Callable = idpg.add_listbox
+    _command: Callable = dpg.add_listbox
 
     def __init__(
         self,
@@ -2008,7 +2008,7 @@ class Listbox(Widget):
 
 
 class LoadingIndicator(Widget):
-    _command: Callable = idpg.add_loading_indicator
+    _command: Callable = dpg.add_loading_indicator
 
     def __init__(
         self,
@@ -2068,7 +2068,7 @@ class LoadingIndicator(Widget):
 
 
 class MenuItem(Widget):
-    _command: Callable = idpg.add_menu_item
+    _command: Callable = dpg.add_menu_item
 
     def __init__(
         self,
@@ -2131,7 +2131,7 @@ class MenuItem(Widget):
 
 
 class ProgressBar(Widget):
-    _command: Callable = idpg.add_progress_bar
+    _command: Callable = dpg.add_progress_bar
 
     def __init__(
         self,
@@ -2197,7 +2197,7 @@ class ProgressBar(Widget):
 
 
 class RadioButton(Widget):
-    _command: Callable = idpg.add_radio_button
+    _command: Callable = dpg.add_radio_button
 
     def __init__(
         self,
@@ -2266,7 +2266,7 @@ class RadioButton(Widget):
 
 
 class RawTexture(Widget):
-    _command: Callable = idpg.add_raw_texture
+    _command: Callable = dpg.add_raw_texture
 
     def __init__(
         self,
@@ -2299,7 +2299,7 @@ class RawTexture(Widget):
 
 
 class SameLine(Widget):
-    _command: Callable = idpg.add_same_line
+    _command: Callable = dpg.add_same_line
 
     def __init__(
         self,
@@ -2332,7 +2332,7 @@ class SameLine(Widget):
 
 
 class Selectable(Widget):
-    _command: Callable = idpg.add_selectable
+    _command: Callable = dpg.add_selectable
 
     def __init__(
         self,
@@ -2404,7 +2404,7 @@ class Selectable(Widget):
 
 
 class Separator(Widget):
-    _command: Callable = idpg.add_separator
+    _command: Callable = dpg.add_separator
 
     def __init__(
         self,
@@ -2437,7 +2437,7 @@ class Separator(Widget):
 
 
 class SliderFloat(Widget):
-    _command: Callable = idpg.add_slider_float
+    _command: Callable = dpg.add_slider_float
 
     def __init__(
         self,
@@ -2524,7 +2524,7 @@ class SliderFloat(Widget):
 
 
 class SliderFloatx(Widget):
-    _command: Callable = idpg.add_slider_floatx
+    _command: Callable = dpg.add_slider_floatx
 
     def __init__(
         self,
@@ -2608,7 +2608,7 @@ class SliderFloatx(Widget):
 
 
 class SliderInt(Widget):
-    _command: Callable = idpg.add_slider_int
+    _command: Callable = dpg.add_slider_int
 
     def __init__(
         self,
@@ -2695,7 +2695,7 @@ class SliderInt(Widget):
 
 
 class SliderIntx(Widget):
-    _command: Callable = idpg.add_slider_intx
+    _command: Callable = dpg.add_slider_intx
 
     def __init__(
         self,
@@ -2779,7 +2779,7 @@ class SliderIntx(Widget):
 
 
 class Spacing(Widget):
-    _command: Callable = idpg.add_spacing
+    _command: Callable = dpg.add_spacing
 
     def __init__(
         self,
@@ -2815,7 +2815,7 @@ class Spacing(Widget):
 
 
 class StaticTexture(Widget):
-    _command: Callable = idpg.add_static_texture
+    _command: Callable = dpg.add_static_texture
 
     def __init__(
         self,
@@ -2845,7 +2845,7 @@ class StaticTexture(Widget):
 
 
 class TabButton(Widget):
-    _command: Callable = idpg.add_tab_button
+    _command: Callable = dpg.add_tab_button
 
     def __init__(
         self,
@@ -2908,7 +2908,7 @@ class TabButton(Widget):
 
 
 class TableColumn(Widget):
-    _command: Callable = idpg.add_table_column
+    _command: Callable = dpg.add_table_column
 
     def __init__(
         self,
@@ -2989,7 +2989,7 @@ class TableColumn(Widget):
 
 
 class TableNextColumn(Widget):
-    _command: Callable = idpg.add_table_next_column
+    _command: Callable = dpg.add_table_next_column
 
     def __init__(
         self,
@@ -3016,7 +3016,7 @@ class TableNextColumn(Widget):
 
 
 class Text(Widget):
-    _command: Callable = idpg.add_text
+    _command: Callable = dpg.add_text
 
     def __init__(
         self,
@@ -3076,7 +3076,7 @@ class Text(Widget):
 
 
 class TimePicker(Widget):
-    _command: Callable = idpg.add_time_picker
+    _command: Callable = dpg.add_time_picker
 
     def __init__(
         self,

@@ -1,6 +1,6 @@
 from typing import Callable, Any
 
-from . import idpg
+from . import dpg
 from ._widget import Container, Widget
 
 
@@ -10,7 +10,7 @@ from ._widget import Container, Widget
 
 
 class Node(Container):
-    _command: Callable = idpg.add_node
+    _command: Callable = dpg.add_node
 
     def __init__(
         self,
@@ -64,7 +64,7 @@ class Node(Container):
 
 
 class NodeAttribute(Container):
-    _command: Callable = idpg.add_node_attribute
+    _command: Callable = dpg.add_node_attribute
 
     def __init__(
         self,
@@ -121,7 +121,7 @@ class NodeAttribute(Container):
 
 
 class NodeEditor(Container):
-    _command: Callable = idpg.add_node_editor
+    _command: Callable = dpg.add_node_editor
 
     def __init__(
         self,
@@ -184,7 +184,7 @@ class NodeEditor(Container):
 
 
 class NodeLink(Widget):
-    _command: Callable = idpg.add_node_link
+    _command: Callable = dpg.add_node_link
 
     def __init__(
         self,

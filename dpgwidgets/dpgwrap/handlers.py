@@ -1,6 +1,6 @@
 from typing import Callable, Any
 
-from . import idpg
+from . import dpg
 from ._item import Item
 
 
@@ -10,7 +10,7 @@ from ._item import Item
 
 
 class ActivatedHandler(Item):
-    _command: Callable = idpg.add_activated_handler
+    _command: Callable = dpg.add_activated_handler
 
     def __init__(
         self,
@@ -34,7 +34,7 @@ class ActivatedHandler(Item):
 
 
 class ActiveHandler(Item):
-    _command: Callable = idpg.add_active_handler
+    _command: Callable = dpg.add_active_handler
 
     def __init__(
         self,
@@ -58,7 +58,7 @@ class ActiveHandler(Item):
 
 
 class ClickedHandler(Item):
-    _command: Callable = idpg.add_clicked_handler
+    _command: Callable = dpg.add_clicked_handler
 
     def __init__(
         self,
@@ -85,7 +85,7 @@ class ClickedHandler(Item):
 
 
 class DeactivatedAfterEditHandler(Item):
-    _command: Callable = idpg.add_deactivated_after_edit_handler
+    _command: Callable = dpg.add_deactivated_after_edit_handler
 
     def __init__(
         self,
@@ -109,7 +109,7 @@ class DeactivatedAfterEditHandler(Item):
 
 
 class DeactivatedHandler(Item):
-    _command: Callable = idpg.add_deactivated_handler
+    _command: Callable = dpg.add_deactivated_handler
 
     def __init__(
         self,
@@ -133,7 +133,7 @@ class DeactivatedHandler(Item):
 
 
 class EditedHandler(Item):
-    _command: Callable = idpg.add_edited_handler
+    _command: Callable = dpg.add_edited_handler
 
     def __init__(
         self,
@@ -157,7 +157,7 @@ class EditedHandler(Item):
 
 
 class FocusHandler(Item):
-    _command: Callable = idpg.add_focus_handler
+    _command: Callable = dpg.add_focus_handler
 
     def __init__(
         self,
@@ -181,7 +181,7 @@ class FocusHandler(Item):
 
 
 class HoverHandler(Item):
-    _command: Callable = idpg.add_hover_handler
+    _command: Callable = dpg.add_hover_handler
 
     def __init__(
         self,
@@ -205,7 +205,7 @@ class HoverHandler(Item):
 
 
 class KeyDownHandler(Item):
-    _command: Callable = idpg.add_key_down_handler
+    _command: Callable = dpg.add_key_down_handler
 
     def __init__(
         self,
@@ -235,7 +235,7 @@ class KeyDownHandler(Item):
 
 
 class KeyPressHandler(Item):
-    _command: Callable = idpg.add_key_press_handler
+    _command: Callable = dpg.add_key_press_handler
 
     def __init__(
         self,
@@ -265,7 +265,7 @@ class KeyPressHandler(Item):
 
 
 class KeyReleaseHandler(Item):
-    _command: Callable = idpg.add_key_release_handler
+    _command: Callable = dpg.add_key_release_handler
 
     def __init__(
         self,
@@ -295,7 +295,7 @@ class KeyReleaseHandler(Item):
 
 
 class MouseClickHandler(Item):
-    _command: Callable = idpg.add_mouse_click_handler
+    _command: Callable = dpg.add_mouse_click_handler
 
     def __init__(
         self,
@@ -325,7 +325,7 @@ class MouseClickHandler(Item):
 
 
 class MouseDoubleClickHandler(Item):
-    _command: Callable = idpg.add_mouse_double_click_handler
+    _command: Callable = dpg.add_mouse_double_click_handler
 
     def __init__(
         self,
@@ -355,7 +355,7 @@ class MouseDoubleClickHandler(Item):
 
 
 class MouseDownHandler(Item):
-    _command: Callable = idpg.add_mouse_down_handler
+    _command: Callable = dpg.add_mouse_down_handler
 
     def __init__(
         self,
@@ -385,7 +385,7 @@ class MouseDownHandler(Item):
 
 
 class MouseDragHandler(Item):
-    _command: Callable = idpg.add_mouse_drag_handler
+    _command: Callable = dpg.add_mouse_drag_handler
 
     def __init__(
         self,
@@ -418,7 +418,7 @@ class MouseDragHandler(Item):
 
 
 class MouseMoveHandler(Item):
-    _command: Callable = idpg.add_mouse_move_handler
+    _command: Callable = dpg.add_mouse_move_handler
 
     def __init__(
         self,
@@ -445,7 +445,7 @@ class MouseMoveHandler(Item):
 
 
 class MouseReleaseHandler(Item):
-    _command: Callable = idpg.add_mouse_release_handler
+    _command: Callable = dpg.add_mouse_release_handler
 
     def __init__(
         self,
@@ -475,7 +475,7 @@ class MouseReleaseHandler(Item):
 
 
 class MouseWheelHandler(Item):
-    _command: Callable = idpg.add_mouse_wheel_handler
+    _command: Callable = dpg.add_mouse_wheel_handler
 
     def __init__(
         self,
@@ -502,7 +502,7 @@ class MouseWheelHandler(Item):
 
 
 class ResizeHandler(Item):
-    _command: Callable = idpg.add_resize_handler
+    _command: Callable = dpg.add_resize_handler
 
     def __init__(
         self,
@@ -526,7 +526,7 @@ class ResizeHandler(Item):
 
 
 class ToggledOpenHandler(Item):
-    _command: Callable = idpg.add_toggled_open_handler
+    _command: Callable = dpg.add_toggled_open_handler
 
     def __init__(
         self,
@@ -550,7 +550,7 @@ class ToggledOpenHandler(Item):
 
 
 class VisibleHandler(Item):
-    _command: Callable = idpg.add_visible_handler
+    _command: Callable = dpg.add_visible_handler
 
     def __init__(
         self,

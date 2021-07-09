@@ -1,6 +1,6 @@
 from typing import Callable, Any
 
-from . import idpg
+from . import dpg
 from ._widget import Container, Widget
 
 
@@ -10,7 +10,7 @@ from ._widget import Container, Widget
 
 
 class Plot(Container):
-    _command: Callable = idpg.add_plot
+    _command: Callable = dpg.add_plot
 
     def __init__(
         self,
@@ -103,7 +103,7 @@ class Plot(Container):
 
 
 class HistogramSeries(Widget):
-    _command: Callable = idpg.add_histogram_series
+    _command: Callable = dpg.add_histogram_series
 
     def __init__(
         self,
@@ -160,7 +160,7 @@ class HistogramSeries(Widget):
 
 
 class AreaSeries(Widget):
-    _command: Callable = idpg.add_area_series
+    _command: Callable = dpg.add_area_series
 
     def __init__(
         self,
@@ -202,7 +202,7 @@ class AreaSeries(Widget):
 
 
 class BarSeries(Widget):
-    _command: Callable = idpg.add_bar_series
+    _command: Callable = dpg.add_bar_series
 
     def __init__(
         self,
@@ -244,7 +244,7 @@ class BarSeries(Widget):
 
 
 class CandleSeries(Widget):
-    _command: Callable = idpg.add_candle_series
+    _command: Callable = dpg.add_candle_series
 
     def __init__(
         self,
@@ -301,7 +301,7 @@ class CandleSeries(Widget):
 
 
 class DragPoint(Widget):
-    _command: Callable = idpg.add_drag_point
+    _command: Callable = dpg.add_drag_point
 
     def __init__(
         self,
@@ -346,7 +346,7 @@ class DragPoint(Widget):
 
 
 class ErrorSeries(Widget):
-    _command: Callable = idpg.add_error_series
+    _command: Callable = dpg.add_error_series
 
     def __init__(
         self,
@@ -394,7 +394,7 @@ class ErrorSeries(Widget):
 
 
 class HeatSeries(Widget):
-    _command: Callable = idpg.add_heat_series
+    _command: Callable = dpg.add_heat_series
 
     def __init__(
         self,
@@ -451,7 +451,7 @@ class HeatSeries(Widget):
 
 
 class HlineSeries(Widget):
-    _command: Callable = idpg.add_hline_series
+    _command: Callable = dpg.add_hline_series
 
     def __init__(
         self,
@@ -487,7 +487,7 @@ class HlineSeries(Widget):
 
 
 class ImageSeries(Widget):
-    _command: Callable = idpg.add_image_series
+    _command: Callable = dpg.add_image_series
 
     def __init__(
         self,
@@ -535,7 +535,7 @@ class ImageSeries(Widget):
 
 
 class LineSeries(Widget):
-    _command: Callable = idpg.add_line_series
+    _command: Callable = dpg.add_line_series
 
     def __init__(
         self,
@@ -571,7 +571,7 @@ class LineSeries(Widget):
 
 
 class PieSeries(Widget):
-    _command: Callable = idpg.add_pie_series
+    _command: Callable = dpg.add_pie_series
 
     def __init__(
         self,
@@ -625,7 +625,7 @@ class PieSeries(Widget):
 
 
 class PlotAnnotation(Widget):
-    _command: Callable = idpg.add_plot_annotation
+    _command: Callable = dpg.add_plot_annotation
 
     def __init__(
         self,
@@ -667,7 +667,7 @@ class PlotAnnotation(Widget):
 
 
 class PlotAxis(Widget):
-    _command: Callable = idpg.add_plot_axis
+    _command: Callable = dpg.add_plot_axis
 
     def __init__(
         self,
@@ -727,7 +727,7 @@ class PlotAxis(Widget):
 
 
 class PlotLegend(Widget):
-    _command: Callable = idpg.add_plot_legend
+    _command: Callable = dpg.add_plot_legend
 
     def __init__(
         self,
@@ -769,7 +769,7 @@ class PlotLegend(Widget):
 
 
 class ScatterSeries(Widget):
-    _command: Callable = idpg.add_scatter_series
+    _command: Callable = dpg.add_scatter_series
 
     def __init__(
         self,
@@ -805,7 +805,7 @@ class ScatterSeries(Widget):
 
 
 class ShadeSeries(Widget):
-    _command: Callable = idpg.add_shade_series
+    _command: Callable = dpg.add_shade_series
 
     def __init__(
         self,
@@ -844,7 +844,7 @@ class ShadeSeries(Widget):
 
 
 class SimplePlot(Widget):
-    _command: Callable = idpg.add_simple_plot
+    _command: Callable = dpg.add_simple_plot
 
     def __init__(
         self,
@@ -919,7 +919,7 @@ class SimplePlot(Widget):
 
 
 class StairSeries(Widget):
-    _command: Callable = idpg.add_stair_series
+    _command: Callable = dpg.add_stair_series
 
     def __init__(
         self,
@@ -955,7 +955,7 @@ class StairSeries(Widget):
 
 
 class StemSeries(Widget):
-    _command: Callable = idpg.add_stem_series
+    _command: Callable = dpg.add_stem_series
 
     def __init__(
         self,
@@ -994,7 +994,7 @@ class StemSeries(Widget):
 
 
 class TextPoint(Widget):
-    _command: Callable = idpg.add_text_point
+    _command: Callable = dpg.add_text_point
 
     def __init__(
         self,
@@ -1039,7 +1039,7 @@ class TextPoint(Widget):
 
 
 class VlineSeries(Widget):
-    _command: Callable = idpg.add_vline_series
+    _command: Callable = dpg.add_vline_series
 
     def __init__(
         self,
