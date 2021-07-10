@@ -53,6 +53,14 @@ class Widget(Item, metaclass=ABCMeta):
     def d_style(self):
         return self.__disabled_theme.style
 
+    @property
+    def font(self):
+        return self.__theme.font
+
+    @font.setter
+    def font(self, value):
+        self.__theme.font = value
+
 
     # Misc
     def move_up(self):

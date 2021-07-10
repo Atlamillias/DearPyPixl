@@ -4,7 +4,6 @@ from contextlib import contextmanager
 from . import dpg
 from .handler import AppHandler
 from .theme import Theme as AppTheme
-from .dpgwrap.containers import Window
 from .dpgwrap.registries import (
     FontRegistry, 
     TextureRegistry,  
@@ -31,10 +30,10 @@ class Application:
         self.viewport = Viewport()
 
         # Registries (WIP)
-        self.fonts = FontRegistry(id=dpg.mvReservedUUID_0)
-        self.handlers = AppHandler(id=dpg.mvReservedUUID_1)
-        self.textures = TextureRegistry(id=dpg.mvReservedUUID_2)
-        self.values = ValueRegistry(id=dpg.mvReservedUUID_3)
+        self.__fonts = FontRegistry(id=dpg.mvReservedUUID_0)
+        self.__handlers = AppHandler(id=dpg.mvReservedUUID_1)
+        self.__textures = TextureRegistry(id=dpg.mvReservedUUID_2)
+        self.__values = ValueRegistry(id=dpg.mvReservedUUID_3)
 
         self.__theme = AppTheme()
         self.__docking_enabled = False

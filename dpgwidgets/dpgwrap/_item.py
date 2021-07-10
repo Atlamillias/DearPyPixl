@@ -21,10 +21,7 @@ class Item(metaclass=ABCMeta):
         self.__config = {optn for optn in kwargs.keys()}
 
     def __str__(self):
-        if label := getattr(self, "label", None):
-            return label
-            
-        return f"{self.__id}"
+        return getattr(self, "label", f"{self.__id}")
 
     def __int__(self):
         return self.__id

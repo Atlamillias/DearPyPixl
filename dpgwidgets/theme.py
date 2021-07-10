@@ -1,7 +1,7 @@
 from typing import Union, Sequence
 
 from . import dpg, Item
-from .dpgwrap.stylize import Theme as _Theme
+from .dpgwrap.stylize import Theme as _Theme, Font as _Font
 from .constants import THEMECOLOR, THEMESTYLE
 
 
@@ -12,21 +12,24 @@ class Theme(_Theme):
         is_disabled_theme: bool = False,
         **kwargs
     ):
-        # self.__set_theme_cmd doesn't need to exist in this case
+        # self.__set_theme_cmd needs to do nothing in this case
+        # and self.__set_font_cmd needs to apply the theme as
+        # default instead of setting it to an item
         if parent is None:
             super().__init__(default_theme=True,**kwargs)
-            self.__set_theme_cmd = lambda *x, **y: None
             self.__parent = 0
-        # there aren't "default disabled themes" (to my knowledge)
-        elif is_disabled_theme:
-            super().__init__(**kwargs)
-            self.__set_theme_cmd = dpg.set_item_disabled_theme
-            self.__parent = int(parent)
+            self.__font_setter = lambda item, font: dpg.configure_item(font,default_font=True)
+            self.__theme_setter = lambda *x, **y: None
         else:
             super().__init__(**kwargs)
-            self.__set_theme_cmd = dpg.set_item_theme
-            self.__parent = int(parent)
-
+            self.__parent = parent
+            self.__font_setter = dpg.set_item_font
+            # there aren't "default disabled themes" (to my knowledge)
+            if is_disabled_theme:
+                self.__theme_setter = dpg.set_item_disabled_theme
+            else:
+                self.__theme_setter = dpg.set_item_theme
+ 
         # {option: theme_item_id, ...}
         self.__color_ids = {attr: None for attr in THEMECOLOR}
         self.__style_ids = {attr: None for attr in THEMESTYLE}
@@ -35,6 +38,7 @@ class Theme(_Theme):
         # because they can't be fetched after creation
         self.__color = ColorHelper(self, self.__color_ids, "apply_color")
         self.__style = StyleHelper(self, self.__style_ids, "apply_style")
+        self.__font = None  # default
             
     @property
     def color(self):
@@ -43,6 +47,14 @@ class Theme(_Theme):
     @property
     def style(self):
         return self.__style
+
+    @property
+    def font(self):
+        return self.__font
+
+    @font.setter
+    def font(self, value):
+        self.apply_font(value)
 
     def apply_color(self, option: str, rgba: Sequence = (0,0,0,255)):
         target, category = THEMECOLOR[option]
@@ -58,7 +70,7 @@ class Theme(_Theme):
         setattr(self.__style, option, rgba)
         # applying new item/color
         self.__color_ids[option] = new_theme_item
-        self.__set_theme_cmd(self.__parent, self.id)
+        self.__theme_setter(int(self.__parent), self.id)
         # cleanup
         if old_theme_item:
             dpg.delete_item(old_theme_item)
@@ -79,10 +91,15 @@ class Theme(_Theme):
         setattr(self.__style, option, (x, y))
         # applying new item/style
         self.__style_ids[option] = new_theme_item
-        self.__set_theme_cmd(self.__parent, self.id)
+        self.__theme_setter(int(self.__parent), self.id)
         # cleanup
         if old_theme_item:
             dpg.delete_item(old_theme_item)
+
+    def apply_font(self, font):
+        self.__font = font
+        self.__font_setter(int(self.__parent),int(font))
+
 
     def refresh(self):
         self.__color_ids = {attr: None for attr in THEMECOLOR}
@@ -90,6 +107,21 @@ class Theme(_Theme):
         super().refresh()
 
 
+class Font(_Font):
+    def __init__(
+        self,
+        label: str,
+        file: str,
+        size: float = 12.0,
+        **kwargs
+    ):
+        super().__init__(
+            label=label,
+            file=file,
+            size=size,
+            parent=dpg.mvReservedUUID_0,
+            **kwargs
+        )
 
 
 class TItemBase:
@@ -125,6 +157,7 @@ class TItemBase:
         if isinstance(value, (int, float)):
             value = value, -1.0
         self.__parent.apply_style(attr, value)
+
 
 
 class ColorHelper(TItemBase):

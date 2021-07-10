@@ -9,7 +9,15 @@ from dpgwrap._item import Item, Context
 from dpgwidgets.widget import Container, Widget
 
 from dpgwidgets.app import Application, Viewport
-from dpgwrap import *
+from dpgwidgets.theme import Font
+from dpgwrap import (
+    containers, 
+    drawing, 
+    node, 
+    plotting, 
+    widgets, 
+    registries
+)
 
 
 def update_wrappers():
