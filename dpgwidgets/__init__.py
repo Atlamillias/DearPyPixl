@@ -35,3 +35,5 @@ def update_wrappers():
         except:
             continue
 
+
+update_wrappers()
