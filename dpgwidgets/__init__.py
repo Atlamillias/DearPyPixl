@@ -20,6 +20,9 @@ from dpgwrap import (
 )
 
 
+update_on_import = True
+
+
 def update_wrappers():
     import importlib
     import dpgwrap
@@ -36,4 +39,5 @@ def update_wrappers():
             continue
 
 
-update_wrappers()
+if update_on_import:
+    update_wrappers()
