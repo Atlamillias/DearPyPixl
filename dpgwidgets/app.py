@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, Callable
 from contextlib import contextmanager
 
 from . import dpg
@@ -31,7 +31,7 @@ class Application:
 
         # Registries (WIP)
         self.__fonts = FontRegistry(id=dpg.mvReservedUUID_0)
-        self.__handlers = AppHandler(id=dpg.mvReservedUUID_1)
+        self.__handler = AppHandler(id=dpg.mvReservedUUID_1)
         self.__textures = TextureRegistry(id=dpg.mvReservedUUID_2)
         self.__values = ValueRegistry(id=dpg.mvReservedUUID_3)
 
@@ -82,6 +82,27 @@ class Application:
 
         return func
 
+    ## Registries ##
+    @property
+    def fonts(self):
+        return self.__fonts
+
+
+    @property
+    def values(self):
+        return self.__values
+
+    @property
+    def textures(self):
+        return self.__textures
+
+    ## Handler ##
+    @property
+    def handle(self):
+        return self.__handler
+
+    def unhandle(self, handler_type: str, callback: Callable):
+        return self.__handler.unhandle(handler_type, callback)
     
     ## Theme ##
     @property

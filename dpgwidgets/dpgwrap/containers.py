@@ -961,3 +961,96 @@ class Window(Container):
         self.modal = modal
         self.popup = popup
         self.on_close = on_close
+
+
+class Subplots(Container):
+    _command: Callable = dpg.add_subplots
+
+    def __init__(
+        self,
+        rows: int,
+        columns: int,
+        label: str = None,
+        width: int = 0,
+        height: int = 0,
+        indent: int = -1,
+        parent: int = 0,
+        before: int = 0,
+        callback: Callable = None,
+        show: bool = True,
+        pos: list[int] = [],
+        filter_key: str = '',
+        delay_search: str = False,
+        tracked: bool = False,
+        track_offset: float = 0.5,
+        user_data: Any = None,
+        row_ratios: list[float] = [],
+        column_ratios: list[float] = [],
+        no_title: bool = False,
+        no_menus: bool = False,
+        no_resize: bool = False,
+        no_align: bool = False,
+        link_rows: bool = False,
+        link_columns: bool = False,
+        link_all_x: bool = False,
+        link_all_y: bool = False,
+        column_major: bool = False,
+        **kwargs
+    ):
+        super().__init__(
+        rows=rows,
+        columns=columns,
+        label=label,
+        width=width,
+        height=height,
+        indent=indent,
+        parent=parent,
+        before=before,
+        callback=callback,
+        show=show,
+        pos=pos,
+        filter_key=filter_key,
+        delay_search=delay_search,
+        tracked=tracked,
+        track_offset=track_offset,
+        user_data=user_data,
+        row_ratios=row_ratios,
+        column_ratios=column_ratios,
+        no_title=no_title,
+        no_menus=no_menus,
+        no_resize=no_resize,
+        no_align=no_align,
+        link_rows=link_rows,
+        link_columns=link_columns,
+        link_all_x=link_all_x,
+        link_all_y=link_all_y,
+        column_major=column_major,
+        **kwargs
+        )
+        self.rows = rows
+        self.columns = columns
+        self.label = label
+        self.width = width
+        self.height = height
+        self.indent = indent
+        self.parent = parent
+        self.before = before
+        self.callback = callback
+        self.show = show
+        self.pos = pos
+        self.filter_key = filter_key
+        self.delay_search = delay_search
+        self.tracked = tracked
+        self.track_offset = track_offset
+        self.user_data = user_data
+        self.row_ratios = row_ratios
+        self.column_ratios = column_ratios
+        self.no_title = no_title
+        self.no_menus = no_menus
+        self.no_resize = no_resize
+        self.no_align = no_align
+        self.link_rows = link_rows
+        self.link_columns = link_columns
+        self.link_all_x = link_all_x
+        self.link_all_y = link_all_y
+        self.column_major = column_major

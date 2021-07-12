@@ -9,7 +9,7 @@ from dearpygui import dearpygui as dpg, core as idpg
 
 
 DEFAULT_DIR = "./dpgwidgets/dpgwrap"
-DEFAULT_BACKUP_DIR = "./backup"
+DEFAULT_BACKUP_DIR = "./_backup"
 
 DPG_CONSTANTS = {}
 

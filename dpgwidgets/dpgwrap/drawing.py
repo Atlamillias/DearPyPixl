@@ -396,33 +396,6 @@ class Image(Widget):
         self.color = color
 
 
-class Layer(Widget):
-    _command: Callable = dpg.draw_layer
-
-    def __init__(
-        self,
-        label: str = None,
-        parent: int = 0,
-        before: int = 0,
-        show: bool = True,
-        user_data: Any = None,
-        **kwargs
-    ):
-        super().__init__(
-        label=label,
-        parent=parent,
-        before=before,
-        show=show,
-        user_data=user_data,
-        **kwargs
-        )
-        self.label = label
-        self.parent = parent
-        self.before = before
-        self.show = show
-        self.user_data = user_data
-
-
 class Line(Widget):
     _command: Callable = dpg.draw_line
 
