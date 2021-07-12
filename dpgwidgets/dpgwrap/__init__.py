@@ -11,5 +11,5 @@ __all__ = [
     'valueitems',
     'widgets',]
 
-__updated__ = '2021-07-09'
-__dpg_ver__ = '0.8.21'
+__updated__ = '2021-07-12'
+__dpg_ver__ = '0.8.26'

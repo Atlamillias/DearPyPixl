@@ -2201,7 +2201,7 @@ class RadioButton(Widget):
 
     def __init__(
         self,
-        items: int = (),
+        items: list[str] = [],
         label: str = None,
         indent: int = -1,
         parent: int = 0,
