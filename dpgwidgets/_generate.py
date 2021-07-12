@@ -39,19 +39,6 @@ class ItemMaps:
 
         return {cmd for filedict in values for _, cmd in filedict.values()}
 
-    # Only container items need to be specifically listed.
-    # Remaining items are inferred from their function
-    # name.
-
-    # The pre-populated items are all "containers". They are
-    # organized into categories. They are populated as:
-    # "Item": ("baseclasses", "dpg_command"). Even though the
-    # items hard-coded below are all containers, some inherit
-    # from "Item, Context" which is basically the "Container"
-    # class without "extras" (handlers, themes, etc). Items that
-    # subclass the Item and Context classes add those extras to
-    # items subclassing Container and Widget.
-
     containers = ItemFile(
         "containers",
         ["from ._widget import Container", ],

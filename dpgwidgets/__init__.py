@@ -20,7 +20,7 @@ from dpgwrap import (
 )
 
 
-update_on_import = True
+update_on_import = False
 
 
 def update_wrappers():
