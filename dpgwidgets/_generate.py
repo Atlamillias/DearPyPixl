@@ -1,12 +1,15 @@
 from datetime import datetime
 from pathlib import Path
 from dataclasses import dataclass, field, is_dataclass
-from inspect import signature
+from inspect import signature, getfile
+import shutil
+import typing
 
-from dearpygui import dearpygui as dpg
+from dearpygui import dearpygui as dpg, core as idpg
 
 
-DEFAULT_DIRPATH = "./dpgwidgets/dpgwrap"
+DEFAULT_DIR = "./dpgwidgets/dpgwrap"
+DEFAULT_BACKUP_DIR = "./backup"
 
 DPG_CONSTANTS = {}
 
@@ -32,8 +35,9 @@ class ItemMaps:
 
     @classmethod
     def commands(cls):
-        cmds = ItemMaps.files()
-        return {cmd[-1] for sublist in cmds for cmd in sublist.mapping.values()}
+        values = [file.mapping for file in cls.files()]
+
+        return {cmd for filedict in values for _, cmd in filedict.values()}
 
     # Only container items need to be specifically listed.
     # Remaining items are inferred from their function
@@ -136,14 +140,41 @@ def _organize(mapping: dict):
     return mapping
 
 
+def _backup_existing():
+    for pyfile in Path(DEFAULT_DIR).iterdir():
+        if pyfile.suffix == ".py":
+            shutil.copy(str(pyfile), DEFAULT_BACKUP_DIR)
+
+
 def populate():
     def name_fix(string):  # if name starts with any number
         if string[0].isdigit():
             return string[2:]
         return string
 
-    # iterating dearpygui
-    for attr in dir(dpg):
+    # fetching containers
+    with open(getfile(dpg), "r") as dpgfile:
+        lines = dpgfile.readlines()
+
+    commands = ItemMaps.commands()  # just for containers
+    core_dir = [attr for attr in dir(idpg) 
+                if not attr.startswith("__") 
+                or attr in typing.__all__]
+
+    for index, line in enumerate(lines):
+        if line.startswith("@contextmanager"):
+            name = lines[index + 1].split("(")[0].replace("def ", "")
+            func_str = f"add_{name}"
+            if func_str in commands or func_str not in core_dir:
+                continue
+
+            name = name.title().replace("_", "")
+
+            ItemMaps.containers.mapping[name] = "Container", func_str
+
+
+    # iterating core
+    for attr in core_dir:
         # undesirables
         if not any(attr.startswith(kw) for kw in ("add_", "draw_", "mv")):
             continue
@@ -152,7 +183,7 @@ def populate():
 
         if attr.startswith("add_"):
             name = attr.replace("add_", "").title().replace("_", "")
-            if attr.startswith("add_node_"):
+            if attr.startswith("add_node"):
                 mapping, info = ItemMaps.node.mapping, ("Widget", attr)
             elif attr.endswith("_registry"):
                 mapping, info = ItemMaps.registries.mapping, (
@@ -168,20 +199,20 @@ def populate():
             else:
                 mapping, info = ItemMaps.widgets.mapping, ("Widget", attr)
             mapping[name_fix(name)] = info
-
         elif attr.startswith("draw_"):
             name = attr.replace("draw_", "").title().replace("_", "")
             ItemMaps.drawing.mapping[name_fix(name)] = "Widget", attr
-
         # currently unused
         elif attr.startswith("mv"):
             DPG_CONSTANTS[attr.replace("mv", "")] = attr
 
 
-def writefiles(dirpath: str = DEFAULT_DIRPATH):
+def writefiles(dirpath: str = DEFAULT_DIR):
     def indent(indents: int = 1):
         ind = "    " * indents
         return ind
+
+    _backup_existing()
 
     files = [[Path(dirpath, f"{ifile.category}.py"),
               ifile.import_lines,
