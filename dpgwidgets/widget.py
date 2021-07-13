@@ -1,23 +1,20 @@
 from abc import ABCMeta, abstractmethod
 from typing import Callable
 
-from dearpygui import core as dpg
-from .dpgwrap._item import Item, Context
-from .handler import WidgetHandler
-from .theme import Theme
+from dpgwrap._item import Item, ContextSupport
+from dpgwidgets import dpg
+from dpgwidgets.handler import WidgetHandler
+from dpgwidgets.theme import ThemeSupport, Theme
 
 
-class Widget(Item, metaclass=ABCMeta):
+class Widget(Item, ThemeSupport, metaclass=ABCMeta):
     @abstractmethod
     def _command() -> Callable: ...
 
-    def __init__(self, **kwargs):
+    def __init__(self, theme: Theme = None, **kwargs):
         super().__init__(**kwargs)
         self.__handler = WidgetHandler(self)
-        self.__theme = Theme(self)
-        self.__disabled_theme = Theme(self, is_disabled_theme=True)
-        self.__font = None
-        
+        self.theme = theme or Theme(f"{self.label}_{self.id}")
         
     # WidgetHandler
     @property
@@ -27,39 +24,6 @@ class Widget(Item, metaclass=ABCMeta):
     def unhandle(self, handler_type: str, callback: Callable):
         return self.__handler.unhandle(handler_type, callback)
 
-
-    # WidgetTheme
-    @property
-    def theme(self):
-        return self.__theme
-    
-    @property
-    def color(self):
-        return self.__theme.color
-
-    @property
-    def style(self):
-        return self.__theme.style
-    
-    @property
-    def d_theme(self):
-        return self.__disabled_theme
-
-    @property
-    def d_color(self):
-        return self.__disabled_theme.color
-
-    @property
-    def d_style(self):
-        return self.__disabled_theme.style
-
-    @property
-    def font(self):
-        return self.__theme.font
-
-    @font.setter
-    def font(self, value):
-        self.__theme.font = value
 
 
     # Misc
@@ -74,6 +38,6 @@ class Widget(Item, metaclass=ABCMeta):
         dpg.move_item(self.id, parent, before)
 
 
-class Container(Widget, Context, metaclass=ABCMeta):
+class Container(Widget, ContextSupport, metaclass=ABCMeta):
     @abstractmethod
     def _command() -> Callable: ...

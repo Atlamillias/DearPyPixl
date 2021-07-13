@@ -1,45 +1,135 @@
+from __future__ import annotations
 from typing import Union, Sequence
 
-from . import dpg, Item
-from .dpgwrap.stylize import Theme as _Theme, Font as _Font
-from .constants import THEMECOLOR, THEMESTYLE
+from dpgwidgets import dpg, Item
+from dpgwidgets.constants import COLOR_OPTN, STYLE_OPTN, Registry as _Reg
 
 
-class Theme(_Theme):
-    def __init__(
-        self,
-        parent: Union[int,Item] = None,
-        is_disabled_theme: bool = False,
-        **kwargs
-    ):
-        # self.__set_theme_cmd needs to do nothing in this case
-        # and self.__set_font_cmd needs to apply the theme as
-        # default instead of setting it to an item
-        if parent is None:
-            super().__init__(default_theme=True,**kwargs)
-            self.__parent = 0
-            self.__font_setter = lambda item, font: dpg.configure_item(font,default_font=True)
-            self.__theme_setter = lambda *x, **y: None
-        else:
-            super().__init__(**kwargs)
-            self.__parent = parent
-            self.__font_setter = dpg.set_item_font
-            # there aren't "default disabled themes" (to my knowledge)
-            if is_disabled_theme:
-                self.__theme_setter = dpg.set_item_disabled_theme
-            else:
-                self.__theme_setter = dpg.set_item_theme
- 
-        # {option: theme_item_id, ...}
-        self.__color_ids = {attr: None for attr in THEMECOLOR}
-        self.__style_ids = {attr: None for attr in THEMESTYLE}
-        
-        # helpers store the actual current value of theme items
-        # because they can't be fetched after creation
-        self.__color = ColorHelper(self, self.__color_ids, "apply_color")
-        self.__style = StyleHelper(self, self.__style_ids, "apply_style")
-        self.__font = None  # default
-            
+
+_FONT_RANGE_HINT = {}
+
+
+def _get_font_range_hints():
+    range_hints = (attr for attr in dir(
+        dpg) if attr.startswith("mvFontRangeHint_"))
+    for var in range_hints:
+        key = var.replace("mvFontRangeHint_", "").lower()
+        _FONT_RANGE_HINT[key] = var
+
+
+_get_font_range_hints()
+
+
+
+##############################
+###  Theme support mixins ####
+##############################
+class ThemeSupport:
+    """Mixin class for the Item class (and subclasses) supporting
+    functionality for the modification of colors, styles, and fonts.
+    """
+    # Note:
+    # deactivated theme = Theme used when an items state is NOT
+    # active.
+    id = None
+    __theme = None
+
+    # active theme
+    @property
+    def theme(self):
+        return self.__theme
+
+    @theme.setter
+    def theme(self, value: Theme):
+        self.__theme = value
+        # If a class inherits ThemeSupport.id (None), then 99% likely
+        # to be app.Application class and so the theme should be
+        # set as default.
+        if self.id is None:
+            dpg.configure_item(int(value), default_theme=True)
+            if value.font:
+                dpg.configure_item(int(value.font), default_font=True)
+        else:  # The class should be a subclass of widget.Widget
+            dpg.set_item_theme(self.id, int(value))
+            if value.font:
+                dpg.set_item_font(self.id, int(value.font))
+
+    @property
+    def color(self):
+        return self.theme.color
+
+    @color.setter
+    def color(self, value):
+        self.theme.color = value
+
+    @property
+    def style(self):
+        return self.theme.style
+
+    @style.setter
+    def style(self, value):
+        self.theme.style = value
+
+    @property
+    def font(self):
+        return self.theme.font
+
+    @font.setter
+    def font(self, value: Font):
+        self.theme.font = value
+        dpg.set_item_font(self.id, value(self.theme.font_size))
+
+    @property
+    def font_size(self):
+        return self.theme.font_size
+
+    @font_size.setter
+    def font_size(self, value: float):
+        self.theme.font_size = value
+        dpg.set_item_font(self.id, self.theme.font(value))
+
+
+class Theme:
+    # Note: DPG seperates font and "theme" (color and style).
+    # The idea here is to unify them.
+    _color_ids = None
+    _style_ids = None
+    _font_id = None
+    __id = None
+
+    __color = None
+    __style = None
+    __font = None
+    
+    __font_size = None
+
+    def __init__(self, label: str, **kwargs):
+        self.__kwargs = kwargs
+        self.__label = label
+
+        self._setup()
+
+    def __int__(self):
+        return int(self.__id)
+
+    def __str__(self):
+        return str(self.label)
+
+    # DPG theme stuff
+    @property
+    def id(self):
+        return self.__id
+
+    @property
+    def label(self):
+        return self.__label
+
+    @label.setter
+    def label(self, value: str):
+        self.__label = value
+        dpg.configure_item(self.__id, label=value)
+
+    # Theme attributes
     @property
     def color(self):
         return self.__color
@@ -48,100 +138,101 @@ class Theme(_Theme):
     def style(self):
         return self.__style
 
+    # Font doesn't have a helper class
     @property
     def font(self):
         return self.__font
 
     @font.setter
-    def font(self, value):
-        self.apply_font(value)
+    def font(self, value: Font):
+        self.__font = value
+        self.__font_size = self.__font_size or value.default_size
+        self._font_id = value(self.__font_size)
 
-    def apply_color(self, option: str, rgba: Sequence = (0,0,0,255)):
-        target, category = THEMECOLOR[option]
-        old_theme_item = self.__color_ids.pop(option)
-        new_theme_item = dpg.add_theme_color(
-            target, 
-            rgba, 
-            category=category,
-            parent=self.id
-        )
-        # need to update helper first because its __setattr__
-        # will bork the process if <option> is in _color_ids
-        setattr(self.__style, option, rgba)
-        # applying new item/color
-        self.__color_ids[option] = new_theme_item
-        self.__theme_setter(int(self.__parent), self.id)
-        # cleanup
-        if old_theme_item:
-            dpg.delete_item(old_theme_item)
+    @property
+    def font_size(self):
+        return self.__font_size
 
-    def apply_style(self, option: str, xy: Sequence = (1.0, -1.0)):
-        x, y = xy
-        target, category = THEMESTYLE[option]
-        old_theme_item = self.__style_ids.pop(option)
-        new_theme_item = dpg.add_theme_style(
-            target,
-            x,
-            y,
-            category=category,
-            parent=self.id
-        )
-        # need to update helper first because its __setattr__
-        # will bork the process if <option> is in _style_ids
-        setattr(self.__style, option, (x, y))
-        # applying new item/style
-        self.__style_ids[option] = new_theme_item
-        self.__theme_setter(int(self.__parent), self.id)
-        # cleanup
-        if old_theme_item:
-            dpg.delete_item(old_theme_item)
+    @font_size.setter
+    def font_size(self, value: float):
+        self.__font_size = value
+        if font := self.__font:
+            self._font_id = font(self.__font_size)
 
-    def apply_font(self, font):
-        self.__font = font
-        self.__font_setter(int(self.__parent),int(font))
-
+    def configure(
+        self, 
+        style: dict = None, 
+        color: dict = None, 
+        font: dict = None
+    ):
+        # **{category: {option: value}, ...}
+        if color:
+            [self.__color.set(optn, rgba) for optn, rgba in color.items()]
+        if style:
+            [self.__style.set(optn, xy) for optn, xy in style.items()]
+        if font:  # font = {font: value, font_size: value}
+            if font := font.get("font", None):
+                self.font = font
+            if ft_size := font.get("font_size", None):
+                self.font_size = ft_size
 
     def refresh(self):
-        self.__color_ids = {attr: None for attr in THEMECOLOR}
-        self.__style_ids = {attr: None for attr in THEMESTYLE}
-        super().refresh()
+        self._setup()
+        dpg.delete_item(self.__id, children_only=True)
+    
+    def _setup(self):
+        # {option: theme_item_id, ...}
+        self._color_ids = {attr: None for attr in COLOR_OPTN}
+        self._style_ids = {attr: None for attr in STYLE_OPTN}
+
+        if not self.__id:
+            with dpg.theme(label=self.__label, **self.__kwargs) as self.__id:
+                pass
+
+        # theme "parts"
+        # helpers store the actual current value of theme items
+        # because the values can't be fetched after creation
+        self.__color = ColorHelper(self, "color")
+        self.__style = StyleHelper(self, "style")
+        self.__font = None
+
+    def _clean(self):
+        dpg.delete_item(self.__id, children_only=True)
 
 
-class Font(_Font):
-    def __init__(
-        self,
-        label: str,
-        file: str,
-        size: float = 12.0,
-        **kwargs
-    ):
-        super().__init__(
-            label=label,
-            file=file,
-            size=size,
-            parent=dpg.mvReservedUUID_0,
-            **kwargs
-        )
 
 
-class TItemBase:
-    __item_ids = {}
+########## Theme helpers ##########
+class THelper:
+    # Note: There's definitely a better way of handling this.
+    # The way this is currently set allows me to make subclasses
+    # containing only the theme options and nothing else. All
+    # functionality is below and doesn't need patching per subclass.
+    # Downside is that its more error-prone and is kinda hell
+    # to extend via subclasses.
+    __theme_ids = {}
 
-    def __init__(self, parent: Theme, item_ids: dict, theme_type: str):
-        self.__parent = parent
-        self.__theme_type = theme_type
-
-        if "_color" in theme_type:
-            self.__value_setter = self.__set_color_value
-        elif "_style" in theme_type:
-            self.__value_setter = self.__set_style_value
-
-        self.__item_ids = item_ids
+    def __init__(self, parent: Theme, theme_type: str):
+        self.__id = int(parent)
+        # The goal is to allow intellisense to help out with
+        # the available colors/styles. These are mangled to avoid
+        # name collisions and to keep intellisense from picking
+        # at internal attributes.
+        if "color" == theme_type:
+            self.__optn_constants = COLOR_OPTN
+            self.__theme_ids = parent._color_ids
+            self.__setter = self.__set_color
+            self.__dpg_cmd = dpg.add_theme_color
+        elif "style" == theme_type:
+            self.__optn_constants = STYLE_OPTN
+            self.__theme_ids = parent._style_ids
+            self.__setter = self.__set_style
+            self.__dpg_cmd = dpg.add_theme_style
 
     def __setattr__(self, attr, value):
-        if attr in self.__item_ids:
-            self.__value_setter(attr, value)
-    
+        if attr in self.__theme_ids:
+            self.set(attr, value)
+
         super().__setattr__(attr, value)
 
     def __getitem__(self, item):
@@ -150,17 +241,43 @@ class TItemBase:
     def __setitem__(self, item, value):
         setattr(self, item, value)
 
-    def __set_color_value(self, attr, value):
-        self.__parent.apply_color(attr, value)
+    def set(self, option, value):
+        old_item, new_item = self.__setter(option, value)
+        # updating appropriate dicts
+        setattr(self, option, value)
+        self.__theme_ids[option] = new_item
+        # cleanup
+        if old_item:
+            dpg.delete_item(old_item)
 
-    def __set_style_value(self, attr, value):
-        if isinstance(value, (int, float)):
-            value = value, -1.0
-        self.__parent.apply_style(attr, value)
+    def __set_color(self, option, value):
+        target, category = self.__optn_constants[option]
+        old_item = self.__theme_ids.pop(option)
+        new_item = self.__dpg_cmd(
+            target,
+            value,
+            category=category,
+            parent=int(self.__id)
+        )
+        return old_item, new_item
 
+    def __set_style(self, option, xy):
+        if isinstance(xy, (int, float)):
+            x, y = xy, -1.0
+        else:
+            x, y = xy
+        target, category = self.__optn_constants[option]
+        old_item = self.__theme_ids.pop(option)
+        new_item = dpg.add_theme_style(
+            target,
+            x,
+            y,
+            category=category,
+            parent=int(self.__id)
+        )
+        return old_item, new_item
 
-
-class ColorHelper(TItemBase):
+class ColorHelper(THelper):
     border = None
     border_shadow = None
     button = None
@@ -257,9 +374,8 @@ class ColorHelper(TItemBase):
     node_title_bar_hovered = None
     node_title_bar_selected = None
 
-
-class StyleHelper(TItemBase):
-    # Notes: 
+class StyleHelper(THelper):
+    # Notes:
     #     "*text_align": centered is 0.5, 0.5
     alpha = None
     button_text_align = None
@@ -326,3 +442,75 @@ class StyleHelper(TItemBase):
     node_pin_offset = None
     node_pin_quad_side_length = None
     node_pin_triangle_side_length = None
+
+
+
+
+##############################
+######### Font stuff #########
+##############################
+class Font:
+    """
+    Returns a callable Font object.
+    """
+
+    def __init__(
+        self,
+        label: str,
+        file: str,
+        size: float = 12.0,
+
+        font_range: tuple[int, int] = None,
+        font_range_hint: int = None,
+        addl_chars: Sequence = None,
+
+        **kwargs
+    ):
+        self.__default_size = size
+        # future font item args
+        self.__label = label
+        self.__file = file
+        self.__kwargs = kwargs
+        # extras
+        self.__font_range = font_range
+        self.__font_range_hint = font_range_hint
+        self.__addl_chars = addl_chars
+
+        self._fonts = {}
+
+    def __str__(self):
+        return self.__label
+
+    def __call__(self, size: float = None) -> int:
+        # returns an existing font item of <size> or
+        # creates a new one and caches it
+        size = size or self.__default_size
+
+        if font := self._fonts.get(size, None):
+            return int(font)
+
+        with dpg.font(self.__file, size, parent=_Reg.FONT.value, **self.__kwargs) as font:
+            if self.__font_range:
+                start, stop = self.__font_range
+                dpg.add_font_range(start, stop)
+            if hint := self.__font_range_hint:
+                dpg.add_font_range_hint(hint)
+            if self.__addl_chars:
+                dpg.add_font_chars(self.__addl_chars)
+
+        self._fonts[size] = font
+
+        return font
+
+    @property
+    def label(self):
+        return self.__label
+
+    @property
+    def default_size(self):
+        return self.__default_size
+
+    @default_size.setter
+    def default_size(self, value: float):
+        self(value)
+        self.__default_size = value
