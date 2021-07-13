@@ -3,10 +3,10 @@ import sys
 sys.path.append("./dpgwrap/")
 
 from dearpygui import dearpygui as dpg
-
 # order is to avoid circular imports
-from dpgwrap._item import Item, Context
+from dpgwrap._item import Item, ContextSupport
 from dpgwidgets.widget import Container, Widget
+from dpgwidgets.constants import Registry as _Registry
 
 from dpgwidgets.app import Application, Viewport
 from dpgwidgets.theme import Font
@@ -15,18 +15,18 @@ from dpgwrap import (
     drawing, 
     node, 
     plotting, 
-    widgets, 
-    registries
+    widgets
 )
 
 
-update_on_import = False
+UPDATE_ON_IMPORT = False
+# registries
 
 
 def update_wrappers():
     import importlib
     import dpgwrap
-    from dpgwidgets import _generate
+    from dpgwrap import _generate
 
     _generate.main()
 
@@ -39,5 +39,6 @@ def update_wrappers():
             continue
 
 
-if update_on_import:
+## Setup ##
+if UPDATE_ON_IMPORT:
     update_wrappers()
