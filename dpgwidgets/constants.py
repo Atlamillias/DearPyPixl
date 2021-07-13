@@ -1,6 +1,13 @@
 from enum import Enum
 
-from . import dpg
+from dpgwidgets import dpg
+
+
+class Registry(Enum):
+    FONT = dpg.mvReservedUUID_0
+    APPHANDLER = dpg.mvReservedUUID_1
+    TEXTURE = dpg.mvReservedUUID_2
+    VALUE = dpg.mvReservedUUID_3
 
 
 ## Input ##
@@ -159,7 +166,7 @@ class Mouse(Enum):
 
 
 ## Theming ##
-THEMECOLOR = dict(
+COLOR_OPTN = dict(
     border = (dpg.mvThemeCol_Border, dpg.mvThemeCat_Core),
     border_shadow = (dpg.mvThemeCol_BorderShadow, dpg.mvThemeCat_Core),
     button = (dpg.mvThemeCol_Button, dpg.mvThemeCat_Core),
@@ -278,7 +285,7 @@ THEMECOLOR = dict(
         dpg.mvNodeCol_TitleBarSelected, dpg.mvThemeCat_Nodes),
 )
 
-THEMESTYLE = dict(
+STYLE_OPTN = dict(
     alpha = (dpg.mvStyleVar_Alpha, dpg.mvThemeCat_Core),
     button_text_align = (dpg.mvStyleVar_ButtonTextAlign, dpg.mvThemeCat_Core),
     cell_padding = (dpg.mvStyleVar_CellPadding, dpg.mvThemeCat_Core),
