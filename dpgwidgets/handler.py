@@ -3,19 +3,14 @@ from typing import TYPE_CHECKING, Callable, Any
 import functools
 import inspect
 
-from . import dpg
-from .dpgwrap._item import Item, Context
+from dpgwrap._item import Item, ContextSupport
+
+from dpgwidgets import dpg
+
 
 if TYPE_CHECKING:
     from .widget import Widget
 
-
-# Even though handlers are also items in DPG, they are
-# the only items that I have treated differently in this package.
-# Instead of exposing the handlers and handler registries seperately
-# (like containers and widgets), only the registry itself is exposed
-# (as the "handler") while the handlers are are exposed as methods 
-# of each registry. 
 
 # Handlers are injected into HandlerRegistry subclasses at runtime.
 # This could have been done using metaclasses and descriptors (probably will)
@@ -77,8 +72,8 @@ class HandlerRegistry:  # Mixin
 # Method "templates" are defined in HandlerRegistry subclasses
 # to allow intellisense and language servers to do its thing. They
 # are actually redefined at runtime using the
-# "HandlerRegistry.__handler_method" code template.
-class AppHandler(Item, Context, HandlerRegistry):
+# __handler_method" code template.
+class AppHandler(Item, ContextSupport, HandlerRegistry):
     _command = dpg.add_handler_registry
 
     _HANDLERS = {
