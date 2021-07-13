@@ -1,14 +1,8 @@
 from typing import Any, Callable
 from contextlib import contextmanager
 
-from . import dpg
-from .handler import AppHandler
-from .theme import Theme as AppTheme
-from .dpgwrap.registries import (
-    FontRegistry, 
-    TextureRegistry,  
-    ValueRegistry
-)
+from dpgwidgets import dpg
+from dpgwidgets.constants import Registry as _Reg
 
 
 # Application and Viewport classes kinda share
@@ -30,12 +24,7 @@ class Application:
         self.viewport = Viewport()
 
         # Registries (WIP)
-        self.__fonts = FontRegistry(id=dpg.mvReservedUUID_0)
-        self.__handler = AppHandler(id=dpg.mvReservedUUID_1)
-        self.__textures = TextureRegistry(id=dpg.mvReservedUUID_2)
-        self.__values = ValueRegistry(id=dpg.mvReservedUUID_3)
-
-        self.__theme = AppTheme()
+        self.__theme = None
         self.__docking_enabled = False
         self.__dev_tools = True if show_dev_tools else False
         self.__staging_mode = enable_staging
@@ -96,6 +85,7 @@ class Application:
     def textures(self):
         return self.__textures
 
+
     ## Handler ##
     @property
     def handle(self):
@@ -104,6 +94,7 @@ class Application:
     def unhandle(self, handler_type: str, callback: Callable):
         return self.__handler.unhandle(handler_type, callback)
     
+
     ## Theme ##
     @property
     def theme(self):
@@ -143,6 +134,15 @@ class Application:
     @property
     def docking_enabled(self):
         return self.__docking_enabled
+
+    with dpg.font_registry(id=_Reg.FONT.value):
+        pass
+    with dpg.handler_registry(id=_Reg.APPHANDLER.value):
+        pass
+    with dpg.texture_registry(id=_Reg.TEXTURE.value):
+        pass
+    with dpg.value_registry(id=_Reg.VALUE.value):
+        pass
 
 
 class Viewport:
@@ -245,8 +245,8 @@ class Viewport:
             super().__setattr__(attr, value)
 
     def _show_dev_toolbar(self):
-        from .dpgwrap.containers import Menu, ViewportMenuBar
-        from .dpgwrap.widgets import MenuItem
+        from dpgwrap.containers import Menu, ViewportMenuBar
+        from dpgwrap.widgets import MenuItem
 
         with ViewportMenuBar():
             with Menu("Development") as dev:
