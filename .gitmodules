@@ -1,0 +1,3 @@
+[submodule "dpgwrap"]
+	path = dpgwrap
+	url = https://github.com/Atlamillias/dpgwrap.git
