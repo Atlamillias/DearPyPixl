@@ -6,14 +6,14 @@ import inspect
 import copy
 
 from dpgwidgets import dpg
-from dpgwidgets.constants import Registry as _Reg
+from dpgwidgets.constants import Registry as _Registry
 
 # Note: Widget-level and global-level handlers are different from
 # each other in DPG. Global handlers (AppHandlerSupport) can be toggled
 # using the "show" keyword and also have their own unique registry (because
 # they lack parenting widgets). Widget handlers can't be toggled in the 
-# same way and must be deleted 
-# 
+# same way and must be deleted. For now, both cases will be handled in
+# the former manner.
 
 class HandlerBase(metaclass=ABCMeta):
     @abstractmethod
@@ -140,7 +140,7 @@ class AppHandlerSupport(HandlerBase):
         @functools.wraps(callback)
         def wrapper(callback):
             handler = self._handler_map[method_name](
-                parent=_Reg.APPHANDLER.value,
+                parent=_Registry.APPHANDLER.value,
                 callback=callback,
                 **kwargs
             )

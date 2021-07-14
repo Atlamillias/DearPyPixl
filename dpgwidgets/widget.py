@@ -1,10 +1,9 @@
 from abc import ABCMeta, abstractmethod
 from typing import Callable
 
-from dpgwrap._item import Item, ContextSupport
-from dpgwidgets import dpg
+from dpgwidgets import dpg, Item, ContextSupport
 from dpgwidgets.handler import HandlerSupport
-from dpgwidgets.theme import ThemeSupport, Theme
+from dpgwidgets.theme import ThemeSupport
 
 
 class Widget(Item, ThemeSupport, HandlerSupport, metaclass=ABCMeta):

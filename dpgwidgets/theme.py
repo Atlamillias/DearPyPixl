@@ -1,9 +1,8 @@
 from __future__ import annotations
-from typing import Union, Sequence
+from typing import Sequence
 
-from dpgwidgets import dpg, Item
-from dpgwidgets.constants import COLOR_OPTN, STYLE_OPTN, Registry as _Reg
-
+from dpgwidgets import dpg, _Registry
+from dpgwidgets.constants import COLOR_OPTN, STYLE_OPTN
 
 
 _FONT_RANGE_HINT = {}
@@ -497,7 +496,7 @@ class Font:
         if font := self._fonts.get(size, None):
             return int(font)
 
-        with dpg.font(self.__file, size, parent=_Reg.FONT.value, **self.__kwargs) as font:
+        with dpg.font(self.__file, size, parent=_Registry.FONT.value, **self.__kwargs) as font:
             if self.__font_range:
                 start, stop = self.__font_range
                 dpg.add_font_range(start, stop)

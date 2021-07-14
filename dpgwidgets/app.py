@@ -1,10 +1,9 @@
 from typing import Any, Callable
 from contextlib import contextmanager
 
-from dpgwidgets import dpg
+from dpgwidgets import dpg, _Registry
 from dpgwidgets.theme import ThemeSupport
 from dpgwidgets.handler import AppHandlerSupport
-from dpgwidgets.constants import Registry as _Reg
 
 
 # Application and Viewport classes kinda share
@@ -60,7 +59,7 @@ class Application(ThemeSupport, AppHandlerSupport):
         dpg.stop_dearpygui()
 
 
-    ## Decorators ##
+    ## Decorators (callbacks)##
     def on_start(self, func):
         """Adds <func> to a list of functions that will be
         called before the main loop (in the order that they are added)."""
@@ -74,17 +73,6 @@ class Application(ThemeSupport, AppHandlerSupport):
         self.called_on_exit.append(func)
 
         return func
-
-
-
-    ## Handler ##
-    @property
-    def handle(self):
-        return self.__handler
-
-    def unhandle(self, handler_type: str, callback: Callable):
-        return self.__handler.unhandle(handler_type, callback)
-
 
 
     ## Misc. ##
@@ -112,15 +100,6 @@ class Application(ThemeSupport, AppHandlerSupport):
     @property
     def docking_enabled(self):
         return self.__docking_enabled
-
-    with dpg.font_registry(id=_Reg.FONT.value):
-        pass
-    with dpg.handler_registry(id=_Reg.APPHANDLER.value):
-        pass
-    with dpg.texture_registry(id=_Reg.TEXTURE.value):
-        pass
-    with dpg.value_registry(id=_Reg.VALUE.value):
-        pass
 
 
 class Viewport:
