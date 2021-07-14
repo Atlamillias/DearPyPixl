@@ -3,13 +3,11 @@ import sys
 sys.path.append("./dpgwrap/")
 
 from dearpygui import dearpygui as dpg
-# order is to avoid circular imports
-from dpgwrap._item import Item, ContextSupport
-from dpgwidgets.widget import Container, Widget
-from dpgwidgets.constants import Registry as _Registry
 
-from dpgwidgets.app import Application, Viewport
-from dpgwidgets.theme import Font
+from dpgwrap._item import Item, ContextSupport  # avoids circular imports
+from dpgwidgets.constants import Registry as _Registry
+from dpgwidgets.app import Application
+from dpgwidgets.theme import Font, Theme
 from dpgwrap import (
     containers, 
     drawing, 
@@ -18,10 +16,22 @@ from dpgwrap import (
     widgets
 )
 
+__all__ = [
+    # high-level objects
+    "Application",
+    "Theme",
+    "Font",
+    # imports
+    "containers",
+    "drawing",
+    "node",
+    "plotting",
+    "widgets",
+    # dearpygui.dearpygui
+    "dpg",
+]
 
 UPDATE_ON_IMPORT = False
-# registries
-
 
 def update_wrappers():
     import importlib
@@ -39,6 +49,16 @@ def update_wrappers():
             continue
 
 
-## Setup ##
 if UPDATE_ON_IMPORT:
     update_wrappers()
+
+
+# registries
+with dpg.font_registry(id=_Registry.FONT.value):
+    pass
+with dpg.handler_registry(id=_Registry.APPHANDLER.value):
+    pass
+with dpg.texture_registry(id=_Registry.TEXTURE.value):
+    pass
+with dpg.value_registry(id=_Registry.VALUE.value):
+    pass
