@@ -25,14 +25,12 @@ _get_font_range_hints()
 ###  Theme support mixins ####
 ##############################
 class ThemeSupport:
-    """Mixin class for the Item class (and subclasses) supporting
-    functionality for the modification of colors, styles, and fonts.
+    """Mixin class for the Widget class supporting functionality 
+    for the modification of colors, styles, and fonts.
     """
-    # Note:
-    # deactivated theme = Theme used when an items state is NOT
-    # active.
-    id = None
-    __theme = None
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.__theme = Theme()
 
     # active theme
     @property
@@ -42,17 +40,18 @@ class ThemeSupport:
     @theme.setter
     def theme(self, value: Theme):
         self.__theme = value
-        # If a class inherits ThemeSupport.id (None), then 99% likely
-        # to be app.Application class and so the theme should be
-        # set as default.
-        if self.id is None:
-            dpg.configure_item(int(value), default_theme=True)
-            if value.font:
-                dpg.configure_item(int(value.font), default_font=True)
-        else:  # The class should be a subclass of widget.Widget
+ 
+        if self.id:
+            # subclass of widget.Widget
             dpg.set_item_theme(self.id, int(value))
             if value.font:
                 dpg.set_item_font(self.id, int(value.font))
+        else:
+            # 99% likely to be app.Application instance and so the 
+            # theme should be set as default
+            dpg.configure_item(int(value), default_theme=True)
+            if value.font:
+                dpg.configure_item(int(value.font), default_font=True)
 
     @property
     def color(self):
@@ -77,7 +76,11 @@ class ThemeSupport:
     @font.setter
     def font(self, value: Font):
         self.theme.font = value
-        dpg.set_item_font(self.id, value(self.theme.font_size))
+
+        if self.id:
+            dpg.set_item_font(self.id, self.theme._font_id)
+        else:
+            dpg.configure_item(self.theme._font_id, default_font=True)
 
     @property
     def font_size(self):
@@ -86,7 +89,12 @@ class ThemeSupport:
     @font_size.setter
     def font_size(self, value: float):
         self.theme.font_size = value
-        dpg.set_item_font(self.id, self.theme.font(value))
+
+        if self.id:
+            dpg.set_item_font(self.id, self.theme._font_id)
+        else:
+            dpg.configure_item(self.theme._font_id, default_font=True)
+
 
 
 class Theme:
@@ -103,7 +111,7 @@ class Theme:
     
     __font_size = None
 
-    def __init__(self, label: str, **kwargs):
+    def __init__(self, label: str = None, **kwargs):
         self.__kwargs = kwargs
         self.__label = label
 
