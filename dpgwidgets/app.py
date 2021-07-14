@@ -2,6 +2,8 @@ from typing import Any, Callable
 from contextlib import contextmanager
 
 from dpgwidgets import dpg
+from dpgwidgets.theme import ThemeSupport
+from dpgwidgets.handler import AppHandlerSupport
 from dpgwidgets.constants import Registry as _Reg
 
 
@@ -10,21 +12,23 @@ from dpgwidgets.constants import Registry as _Reg
 # DPG only supports 1 viewport. However in the future
 # it may support several, so they will need to be 
 # more de-coupled.
-class Application:
+class Application(ThemeSupport, AppHandlerSupport):
     called_on_start = []
     called_on_exit = []
 
+    id = None
+
     def __init__(
-        self, 
+        self,
         enable_staging: bool = False, 
         enable_docking: bool = False,
         dock_space: bool = False,
         show_dev_tools:bool = False
     ):
+        super().__init__()
         self.viewport = Viewport()
 
         # Registries (WIP)
-        self.__theme = None
         self.__docking_enabled = False
         self.__dev_tools = True if show_dev_tools else False
         self.__staging_mode = enable_staging
@@ -71,19 +75,6 @@ class Application:
 
         return func
 
-    ## Registries ##
-    @property
-    def fonts(self):
-        return self.__fonts
-
-
-    @property
-    def values(self):
-        return self.__values
-
-    @property
-    def textures(self):
-        return self.__textures
 
 
     ## Handler ##
@@ -93,20 +84,7 @@ class Application:
 
     def unhandle(self, handler_type: str, callback: Callable):
         return self.__handler.unhandle(handler_type, callback)
-    
 
-    ## Theme ##
-    @property
-    def theme(self):
-        return self.__theme
-
-    @property
-    def color(self):
-        return self.__theme.color
-
-    @property
-    def style(self):
-        return self.__theme.style
 
 
     ## Misc. ##
