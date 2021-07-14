@@ -1,205 +1,192 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING, Callable, Any
+from abc import ABCMeta, abstractmethod
+from typing import Callable, Any
 import functools
 import inspect
-
-from dpgwrap._item import Item, ContextSupport
+import copy
 
 from dpgwidgets import dpg
+from dpgwidgets.constants import Registry as _Reg
 
+# Note: Widget-level and global-level handlers are different from
+# each other in DPG. Global handlers (AppHandlerSupport) can be toggled
+# using the "show" keyword and also have their own unique registry (because
+# they lack parenting widgets). Widget handlers can't be toggled in the 
+# same way and must be deleted 
+# 
 
-if TYPE_CHECKING:
-    from .widget import Widget
+class HandlerBase(metaclass=ABCMeta):
+    @abstractmethod
+    def _handler_map(self): ...
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._registered_handlers = {}
 
-# Handlers are injected into HandlerRegistry subclasses at runtime.
-# This could have been done using metaclasses and descriptors (probably will)
-# but I wanted the code itself to be readable.
+    def registered_handlers(self):
+        """Returns a copied dict of the handlers currently registered to the item."""
+        return copy.deepcopy(self._registered_handlers)
 
-_HANDLER_METHOD = """
-def {mname}(self, callback: Callable = None, *, user_data: Any = None, **kwargs):
-    @functools.wraps(callback)
-    def wrapper(callback):
-        handler = dpg.{cmd}(
-            self.parent.id,
-            callback=callback,
-            user_data=user_data,
-            **kwargs
-        )
-        self.handlers.setdefault(self.{mname}.__name__, []).append(
-            (callback, handler),
-        )
-        return callback
+    def unregister_handler(self, handler: str, callback: Callable):
+        """Unregisters a handler that is currently registered to the item.
 
-    if not callback:
-        return wrapper
-
-    handler = dpg.{cmd}(
-        self.parent.id,
-        callback=callback,
-        user_data=user_data,
-        **kwargs
-        )
-    self.handlers.setdefault(self.{mname}.__name__, []).append(
-        (callback, handler),
-    )
-    return callback
-"""
-
-class HandlerRegistry:  # Mixin
-    __handlers: dict[list[tuple]] = {}
-
-    @property
-    def handlers(self):
-        return self.__handlers
-
-    def unhandle(self, handler_type: str, callback: Callable):
-        handler = self._pop_handler(handler_type, callback)
-
+        Args:
+            handler (str): Name of the handler/method the callback is registered to.
+            callback (Callable): Callable that the handler is registered with.
+        """
+        handler = self._pop_handler(handler, callback)
         dpg.delete_item(handler)
 
     def _pop_handler(self, handler_type: str, callback: Callable):
-        key = self.__handlers[handler_type]
+        key = self._registered_handlers[handler_type]
         for idx, h_info in enumerate(key):
             if h_info[0] == callback:
                 handler = key.pop(idx)[-1]
                 return handler
-
         return None
 
+    def _set_handler(self, callback: Callable = None,**kwargs):
+        @functools.wraps(callback)
+        def wrapper(callback):
+            handler = self._handler_map[method_name](
+                self.id,
+                callback=callback,
+                **kwargs
+            )
+            self._registered_handlers.setdefault(getattr(self, method_name).__name__, []).append(
+                (callback, handler),
+            )
+            return callback
+
+        # Calling str to ensure that there are no references to
+        # the frame itself once the call resolves.
+        method_name = str(inspect.stack()[1].function)
+
+        if not callback:
+            return wrapper
+        
+        return wrapper(callback)
 
 
-# Method "templates" are defined in HandlerRegistry subclasses
-# to allow intellisense and language servers to do its thing. They
-# are actually redefined at runtime using the
-# __handler_method" code template.
-class AppHandler(Item, ContextSupport, HandlerRegistry):
-    _command = dpg.add_handler_registry
-
-    _HANDLERS = {
-        "while_key_down": "add_key_down_handler",  # mvKeyDownHandler
-        "on_key_press": "add_key_press_handler",  # mvKeyPressHandler
-        "on_key_up": "add_key_release_handler",  # mvKeyReleaseHandler
-        "while_mouse_key_down":  "add_mouse_down_handler",  # mvMouseDownHandler
-        "on_mouse_key_click": "add_mouse_click_handler",  # mvMouseClickHandler
-        # mvMouseDoubleClickHandler
-        "on_mouse_key_double_click": "add_mouse_double_click_handler",
-        "on_mouse_key_up": "add_mouse_release_handler",  # mvMouseReleaseHandler
-        "on_mouse_wheel_scroll": "add_mouse_wheel_handler",  # mvMouseWheelHandler
-        "on_mouse_move": "add_mouse_move_handler",  # mvMouseMoveHandler
-        "on_mouse_drag": "add_mouse_drag_handler",  # mvMouseDragHandler
+class HandlerSupport(HandlerBase):
+    """Mixin for the Widget class that supports the addition/removal of handlers.
+    """
+    _handler_map = {
+        "while_active": dpg.add_active_handler,
+        "on_activation": dpg.add_activated_handler,
+        "on_click": dpg.add_clicked_handler,
+        "on_deactivation_after_edit": dpg.add_deactivated_after_edit_handler,
+        "on_deactivation": dpg.add_deactivated_handler,
+        "on_edit": dpg.add_edited_handler,
+        "on_focus": dpg.add_focus_handler,
+        "on_hover": dpg.add_hover_handler,
+        "on_resize": dpg.add_resize_handler,
+        "on_toggle_open": dpg.add_toggled_open_handler,
+        "on_visible": dpg.add_visible_handler,
     }
-
-    def __init__(self, show: bool = True, label: str = None, **kwargs):
-        super().__init__(show=show, label=label, **kwargs)
-        self.__handlers = {}
-        self.show = show
-        self.label = label
-
-    def while_key_down(self, callback: Callable = None, *, user_data: Any = None, **kwargs):
-        ...
-
-    def on_key_press(self, callback: Callable = None, *, user_data: Any = None, **kwargs):
-        ...
-
-    def on_key_up(self, callback: Callable = None, *, user_data: Any = None, **kwargs):
-        ...
-
-    def while_mouse_key_down(self, callback: Callable = None, *, user_data: Any = None, **kwargs):
-        ...
-
-    def on_mouse_key_click(self, callback: Callable = None, *, user_data: Any = None, **kwargs):
-        ...
-
-    def on_mouse_key_double_click(self, callback: Callable = None, *, user_data: Any = None, **kwargs):
-        ...
-
-    def on_mouse_key_up(self, callback: Callable = None, *, user_data: Any = None, **kwargs):
-        ...
-
-    def on_mouse_wheel_scroll(self, callback: Callable = None, *, user_data: Any = None, **kwargs):
-        ...
-
-    def on_mouse_move(self, callback: Callable = None, *, user_data: Any = None, **kwargs):
-        ...
-
-    def on_mouse_drag(self, callback: Callable = None, *, user_data: Any = None, **kwargs):
-        ...
-
-
-# DPG doesn't have a specific widget handler registry item.
-# Probably because there is a parenting widget instead
-class WidgetHandler(HandlerRegistry):
-    _HANDLERS = {
-        "while_active": "add_active_handler",  # mvActivatedHandler
-        "on_activation": "add_activated_handler",  # mvActiveHandler
-        "on_click": "add_clicked_handler",  # mvClickedHandler
-        # mvDeactivatedAfterEditHandler
-        "on_deactivation_after_edit": "add_deactivated_after_edit_handler",
-        "on_deactivation": "add_deactivated_handler",  # mvDeactivatedHandler
-        "on_edit": "add_edited_handler",  # mvEditedHandler
-        "on_focus": "add_focus_handler",  # mvFocusHandler
-        "on_hover": "add_hover_handler",  # mvHoverHandler
-        "on_resize": "add_resize_handler",  # mvResizeHandler
-        "on_toggle_open": "add_toggled_open_handler",  # mvToggledOpenHandler
-        "on_visible": "add_visible_handler",  # mvVisibleHandler
-    }
-
-    def __init__(self, parent: "Widget"):
-        self.__handlers = {}
-        self.parent = parent
 
     def while_active(self, callback: Callable = None, *, user_data: Any = None, **kwargs):
-        ...
+        return self._set_handler(callback=callback, user_data=user_data, **kwargs)
 
     def on_activation(self, callback: Callable = None, *, user_data: Any = None, **kwargs):
-        ...
+        return self._set_handler(callback=callback, user_data=user_data, **kwargs)
     
     def on_deactivation(self, callback: Callable = None, *, user_data: Any = None, **kwargs):
-        ...
+        return self._set_handler(callback=callback, user_data=user_data, **kwargs)
 
     def on_deactivation_after_edit(self, callback: Callable = None, *, user_data: Any = None, **kwargs):
-        ...
+        return self._set_handler(callback=callback, user_data=user_data, **kwargs)
 
     def on_click(self, callback: Callable = None, *, user_data: Any = None, button=-1, **kwargs):
-        ...
+        return self._set_handler(callback=callback, user_data=user_data, button=button, **kwargs)
 
     def on_edit(self, callback: Callable = None, *, user_data: Any = None, **kwargs):
-        ...
+        return self._set_handler(callback=callback, user_data=user_data, **kwargs)
 
     def on_focus(self, callback: Callable = None, *, user_data: Any = None, **kwargs):
-        ...
+        return self._set_handler(callback=callback, user_data=user_data, **kwargs)
 
     def on_hover(self, callback: Callable = None, *, user_data: Any = None, **kwargs):
-        ...
+        return self._set_handler(callback=callback, user_data=user_data, **kwargs)
     
     def on_resize(self, callback: Callable = None, *, user_data: Any = None, **kwargs):
-        ...
+        return self._set_handler(callback=callback, user_data=user_data, **kwargs)
 
     def on_toggle_open(self, callback: Callable = None, *, user_data: Any = None, **kwargs):
-        ...
+        return self._set_handler(callback=callback, user_data=user_data, **kwargs)
 
     def on_visible(self, callback: Callable = None, *, user_data: Any = None, **kwargs):
-        ...
+        return self._set_handler(callback=callback, user_data=user_data, **kwargs)
 
 
-def _patch_handlers():
-    filepath = ""
-    template_str = _HANDLER_METHOD
+class AppHandlerSupport(HandlerBase):
+    """Mixin for the Application class that supports the addition/removal of handlers.
+    """
+    _handler_map = {
+        "while_key_down": dpg.add_key_down_handler,
+        "on_key_down": dpg.add_key_press_handler,
+        "on_key_up": dpg.add_key_release_handler,
+        "while_mouse_key_down":  dpg.add_mouse_down_handler,
+        "on_mouse_key_click": dpg.add_mouse_click_handler,
+        "on_mouse_key_double_click": dpg.add_mouse_double_click_handler,
+        "on_mouse_key_up": dpg.add_mouse_release_handler,
+        "on_mouse_wheel_scroll": dpg.add_mouse_wheel_handler,
+        "on_mouse_move": dpg.add_mouse_move_handler,
+        "on_mouse_drag": dpg.add_mouse_drag_handler,
+    }
 
-    for m_name, cmd in AppHandler._HANDLERS.items():
-        m_template = template_str.format(cmd=cmd, mname=m_name)
-        method = compile(m_template, filename=filepath, mode="exec")
-        exec(method)  # m_name
+    # must use the global registry
+    def _set_handler(self, callback: Callable = None, **kwargs):
+        @functools.wraps(callback)
+        def wrapper(callback):
+            handler = self._handler_map[method_name](
+                parent=_Reg.APPHANDLER.value,
+                callback=callback,
+                **kwargs
+            )
+            self._registered_handlers.setdefault(getattr(self, method_name).__name__, []).append(
+                (callback, handler),
+            )
+            return callback
 
-        setattr(AppHandler, m_name, eval(m_name))
+        # Calling str to ensure that there are no references to
+        # the frame itself once the call resolves.
+        method_name = str(inspect.stack()[1].function)
 
-    for m_name, cmd in WidgetHandler._HANDLERS.items():
-        m_template = template_str.format(cmd=cmd, mname=m_name)
-        method = compile(m_template, filename=filepath, mode="exec")
-        exec(method)  # m_name
+        if not callback:
+            return wrapper
 
-        setattr(WidgetHandler, m_name, eval(m_name))
+        return wrapper(callback)
 
+    def while_key_down(self, callback: Callable = None, *, key: int = -1, user_data: Any = None, **kwargs):
+        return self._set_handler(callback=callback, user_data=user_data, **kwargs)
 
-_patch_handlers()
+    def on_key_down(self, callback: Callable = None, *, key: int = -1, user_data: Any = None, **kwargs):
+        # Note: Most OS have a key-repeat feature for keys that are held down for
+        # a period of time - it will fire off this callback repeatedly
+        # if enabled (not NEARLY as much as "while_key_down").
+        return self._set_handler(callback=callback, user_data=user_data, **kwargs)
+
+    def on_key_up(self, callback: Callable = None, *, key: int = -1, user_data: Any = None, **kwargs):
+        return self._set_handler(callback=callback, user_data=user_data, **kwargs)
+
+    def while_mouse_key_down(self, callback: Callable = None, *, button: int = -1, user_data: Any = None, **kwargs):
+        return self._set_handler(callback=callback, user_data=user_data, **kwargs)
+
+    def on_mouse_key_click(self, callback: Callable = None, *, button: int = -1, user_data: Any = None, **kwargs):
+        return self._set_handler(callback=callback, user_data=user_data, **kwargs)
+
+    def on_mouse_key_double_click(self, callback: Callable = None, *, button: int = -1, user_data: Any = None, **kwargs):
+        return self._set_handler(callback=callback, user_data=user_data, **kwargs)
+
+    def on_mouse_key_up(self, callback: Callable = None, *, button: int = -1, user_data: Any = None, **kwargs):
+        return self._set_handler(callback=callback, user_data=user_data, **kwargs)
+
+    def on_mouse_wheel_scroll(self, callback: Callable = None, *, user_data: Any = None, **kwargs):
+        return self._set_handler(callback=callback, user_data=user_data, **kwargs)
+
+    def on_mouse_move(self, callback: Callable = None, *, user_data: Any = None, **kwargs):
+        return self._set_handler(callback=callback, user_data=user_data, **kwargs)
+
+    def on_mouse_drag(self, callback: Callable = None, *, button: int = -1, threshold: float = 10.0, user_data: Any = None, **kwargs):
+        return self._set_handler(callback=callback, user_data=user_data, **kwargs)
