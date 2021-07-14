@@ -11,12 +11,12 @@ class Item(metaclass=ABCMeta):
     __config = set()
 
     def __init__(self, **kwargs):
+        super().__init__()
         if parent := kwargs.pop("parent", None):
             kwargs["parent"] = int(parent)
 
         kwargs["label"] = kwargs.get('label') or self.__class__.__name__
         self.__id = self.__class__._command(**kwargs)
-
         self.__config = {optn for optn in kwargs.keys()}
 
     def __str__(self):
@@ -35,7 +35,7 @@ class Item(metaclass=ABCMeta):
             try:
                 return dpg.get_item_configuration(self.__id)[attr]
             except KeyError:
-                return super().__getattr__(attr)
+                pass
 
         return super().__getattr__(attr)
 
