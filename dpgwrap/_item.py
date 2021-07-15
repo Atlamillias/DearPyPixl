@@ -11,13 +11,13 @@ class Item(metaclass=ABCMeta):
     __config = set()
 
     def __init__(self, **kwargs):
-        super().__init__()
         if parent := kwargs.pop("parent", None):
             kwargs["parent"] = int(parent)
 
         kwargs["label"] = kwargs.get('label') or self.__class__.__name__
         self.__id = self.__class__._command(**kwargs)
         self.__config = {optn for optn in kwargs.keys()}
+        super().__init__()
 
     def __str__(self):
         return f"{self.__id}"
@@ -42,8 +42,8 @@ class Item(metaclass=ABCMeta):
     def __setattr__(self, attr, value):
         if attr in self.__config:
             dpg.configure_item(self.__id, **{attr: value})
-        else:
-            super().__setattr__(attr, value)
+  
+        super().__setattr__(attr, value)
 
     @property
     def id(self):
