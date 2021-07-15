@@ -20,8 +20,8 @@ class HandlerBase(metaclass=ABCMeta):
     def _handler_map(self): ...
 
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
         self._registered_handlers = {}
+        super().__init__(*args, **kwargs)
 
     def registered_handlers(self):
         """Returns a copied dict of the handlers currently registered to the item."""

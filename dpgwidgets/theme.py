@@ -28,8 +28,9 @@ class ThemeSupport:
     for the modification of colors, styles, and fonts.
     """
     def __init__(self, *args, **kwargs):
+        self.theme = Theme()
         super().__init__(*args, **kwargs)
-        self.__theme = Theme()
+        
 
     # active theme
     @property
@@ -251,7 +252,6 @@ class THelper:
     def set(self, option, value):
         old_item, new_item = self.__setter(option, value)
         # updating appropriate dicts
-        setattr(self, option, value)
         self.__theme_ids[option] = new_item
         # cleanup
         if old_item:
