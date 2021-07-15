@@ -22,14 +22,12 @@ class Application(ThemeSupport, AppHandlerSupport):
         enable_staging: bool = False, 
         enable_docking: bool = False,
         dock_space: bool = False,
-        show_dev_tools:bool = False
     ):
         super().__init__()
         self.viewport = Viewport()
 
         # Registries (WIP)
         self.__docking_enabled = False
-        self.__dev_tools = True if show_dev_tools else False
         self.__staging_mode = enable_staging
         
         if enable_docking:
@@ -43,12 +41,10 @@ class Application(ThemeSupport, AppHandlerSupport):
     def register_callbacks(self):
         dpg.set_start_callback(lambda: [f() for f in self.called_on_start])
         dpg.set_exit_callback(lambda: [f() for f in self.called_on_exit])
+        self.viewport.register_callbacks()
 
     def start(self):
         self.register_callbacks()
-        if self.__dev_tools:
-            self.viewport._show_dev_toolbar()
-
         while dpg.is_dearpygui_running():
             dpg.render_dearpygui_frame()
 
@@ -71,6 +67,12 @@ class Application(ThemeSupport, AppHandlerSupport):
         """Adds <func> to a list of functions that will be
         called as the main loop ends (in the order that they are added)."""
         self.called_on_exit.append(func)
+
+        return func
+
+    def on_resize(self, func):
+        """Updates the viewport callback collection."""
+        self.viewport.called_on_resize.append(func)
 
         return func
 
@@ -176,12 +178,10 @@ class Viewport:
             "clear_color": clear_color,
         }
 
-        # __getitem__ will ask dpg for all of the above
-        # if this is called before setting instance attrs
         self.__id = dpg.create_viewport(**self.__config)
 
     def __str__(self):
-        return f"{self.__id}"
+        return self.title
 
     def __repr__(self):
         return f"{self.__class__.__qualname__}"
@@ -191,7 +191,7 @@ class Viewport:
             try:
                 return dpg.get_viewport_configuration(self.__id)
             except KeyError:
-                return super().__getattr__(attr)
+                pass
 
         return super().__getattr__(attr)
 
@@ -200,21 +200,21 @@ class Viewport:
             dpg.configure_viewport(self.__id, **{attr: value})
         else:
             super().__setattr__(attr, value)
+            
+    def show_dev_window(self):
+        from dpgwrap.containers import Window
+        from dpgwrap.widgets import Button
 
-    def _show_dev_toolbar(self):
-        from dpgwrap.containers import Menu, ViewportMenuBar
-        from dpgwrap.widgets import MenuItem
-
-        with ViewportMenuBar():
-            with Menu("Development") as dev:
-                MenuItem("Documentation", callback=show_documentation)
-                MenuItem("Debug", callback=show_debug)
-                MenuItem("Style Editor", callback=show_style_editor)
-                MenuItem("Metrics", callback=show_metrics)
-                MenuItem("About", callback=show_about)
-                MenuItem("Font Manager", callback=show_font_manager)
-                MenuItem("Item Registry", callback=show_item_registry)
-                MenuItem("Logger", callback=show_logger)
+        with Window("Devtools", no_resize=True, no_close=True) as dev:
+            width = 100
+            Button("Documentation", callback=show_documentation, width=width)
+            Button("Debug", callback=show_debug, width=width)
+            Button("Style Editor", callback=show_style_editor, width=width)
+            Button("Metrics", callback=show_metrics, width=width)
+            Button("About", callback=show_about, width=width)
+            Button("Font Manager", callback=show_font_manager, width=width)
+            Button("Item Registry", callback=show_item_registry, width=width)
+            Button("Logger", callback=show_logger, width=width)
 
     @property
     def id(self):
@@ -247,12 +247,14 @@ class Viewport:
         """Display the viewport."""
         dpg.show_viewport(self.__id)
 
+    def register_callbacks(self):
+        dpg.set_viewport_resize_callback(lambda: [
+            f() for f in self.called_on_resize])
+
     # Decorator
     def on_resize(self, func):
         """Updates the viewport callback collection."""
-        self.called_on_resize.add(func)
-        dpg.set_viewport_resize_callback(lambda: [
-            f() for f in self.called_on_resize])
+        self.called_on_resize.append(func)
 
         return func
 
