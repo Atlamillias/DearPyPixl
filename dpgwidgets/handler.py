@@ -19,9 +19,9 @@ class HandlerBase(metaclass=ABCMeta):
     @abstractmethod
     def _handler_map(self): ...
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self):
+        super().__init__()
         self._registered_handlers = {}
-        super().__init__(*args, **kwargs)
 
     def registered_handlers(self):
         """Returns a copied dict of the handlers currently registered to the item."""
@@ -135,7 +135,7 @@ class AppHandlerSupport(HandlerBase):
         "on_mouse_drag": dpg.add_mouse_drag_handler,
     }
 
-    # must use the global registry
+    # parent is the global registry and NOT the item/app/viewport
     def _set_handler(self, callback: Callable = None, **kwargs):
         @functools.wraps(callback)
         def wrapper(callback):

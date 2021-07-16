@@ -24,14 +24,13 @@ _get_font_range_hints()
 ###  Theme support mixins ####
 ##############################
 class ThemeSupport:
-    """Mixin class for the Widget class supporting functionality 
+    """Mixin class for the Item subclasses supporting functionality 
     for the modification of colors, styles, and fonts.
     """
-    def __init__(self, *args, **kwargs):
+    def __init__(self):
+        super().__init__()
         self.theme = Theme()
-        super().__init__(*args, **kwargs)
         
-
     # active theme
     @property
     def theme(self):
@@ -41,40 +40,31 @@ class ThemeSupport:
     def theme(self, value: Theme):
         self.__theme = value
  
-        if self.id:
-            # subclass of widget.Widget
+        if isinstance(self.id, int):  # <class "Item">
             dpg.set_item_theme(self.id, int(value))
             if value.font:
                 dpg.set_item_font(self.id, int(value.font))
-        else:
-            # 99% likely to be app.Application instance and so the 
-            # theme should be set as default
+        elif isinstance(self.id, str):  # <class "Viewport">
             dpg.configure_item(int(value), default_theme=True)
             if value.font:
                 dpg.configure_item(int(value.font), default_font=True)
+        else:
+            raise Exception(f"{repr(super().__class__)} does not support this mixin.")
 
     @property
-    def color(self):
+    def tcolor(self):
         return self.theme.color
 
-    @color.setter
-    def color(self, value):
-        self.theme.color = value
-
     @property
-    def style(self):
+    def tstyle(self):
         return self.theme.style
 
-    @style.setter
-    def style(self, value):
-        self.theme.style = value
-
     @property
-    def font(self):
+    def tfont(self):
         return self.theme.font
 
-    @font.setter
-    def font(self, value: Font):
+    @tfont.setter
+    def tfont(self, value: Font):
         self.theme.font = value
 
         if self.id:
@@ -83,11 +73,11 @@ class ThemeSupport:
             dpg.configure_item(self.theme._font_id, default_font=True)
 
     @property
-    def font_size(self):
+    def tfont_size(self):
         return self.theme.font_size
 
-    @font_size.setter
-    def font_size(self, value: float):
+    @tfont_size.setter
+    def tfont_size(self, value: float):
         self.theme.font_size = value
 
         if self.id:
