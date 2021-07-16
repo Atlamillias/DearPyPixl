@@ -17,7 +17,7 @@ class ViewportDrawlist(Container):
         label: str = None,
         show: bool = True,
         filter_key: str = '',
-        delay_search: str = False,
+        delay_search: bool = False,
         user_data: Any = None,
         front: bool = True,
         **kwargs
@@ -56,7 +56,7 @@ class Drawlist(Container):
         show: bool = True,
         pos: list[int] = [],
         filter_key: str = '',
-        delay_search: str = False,
+        delay_search: bool = False,
         tracked: bool = False,
         track_offset: float = 0.5,
         user_data: Any = None,
