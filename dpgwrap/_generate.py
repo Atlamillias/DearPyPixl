@@ -8,8 +8,8 @@ import typing
 from dearpygui import dearpygui as dpg, _dearpygui as idpg
 
 
-DEFAULT_DIR = "./"
-DEFAULT_BACKUP_DIR = "./backup"
+DEFAULT_DIR = "./dpgwrap"
+DEFAULT_BACKUP_DIR = "./dpgwrap/backup"
 
 DPG_CONSTANTS = {}
 
