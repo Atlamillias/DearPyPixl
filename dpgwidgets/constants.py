@@ -483,5 +483,7 @@ THEME_IMGUI_DARK = {
         "node_box_selector_outline": (61, 133, 224, 150),
         "node_grid_background": (40, 40, 50, 200),
         "node_grid_line": (200, 200, 200, 40),
-    }
+    },
+    "style": {},
+    "font": {}
 }
