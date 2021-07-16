@@ -6,7 +6,7 @@ from dearpygui import dearpygui as dpg
 
 from dpgwrap._item import Item, ContextSupport  # avoids circular imports
 from dpgwidgets.constants import Registry as _Registry, Key, Mouse
-from dpgwidgets.app import Application
+from dpgwidgets.app import Viewport
 from dpgwidgets.theme import Font, Theme
 from dpgwrap import (
     containers, 
