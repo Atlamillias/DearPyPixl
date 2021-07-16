@@ -13,14 +13,22 @@ class Item(metaclass=ABCMeta):
     def __init__(self, **kwargs):
         if parent := kwargs.pop("parent", None):
             kwargs["parent"] = int(parent)
-
         kwargs["label"] = kwargs.get('label') or self.__class__.__name__
+
         self.__id = self.__class__._command(**kwargs)
-        self.__config = {optn for optn in kwargs.keys()}
+
+        # cache config attrs for future items of the same type
+        if not self.__config:
+            self.__class__.__config = {optn for optn in kwargs.keys()
+                                       if optn != "id"}
+
         super().__init__()
 
     def __str__(self):
-        return f"{self.__id}"
+        try:
+            return self.label
+        except AttributeError:
+            return f"{self.__id}"
 
     def __int__(self):
         return self.__id
@@ -30,20 +38,22 @@ class Item(metaclass=ABCMeta):
         return f"{self.__class__.__qualname__} ({type(self)}) => \
             (<{mVAppType} '{self.__id}'>)"
 
-    def __getattr__(self, attr):
-        if attr in self.__config:
-            try:
-                return dpg.get_item_configuration(self.__id)[attr]
-            except KeyError:
-                pass
+    def __getattribute__(self, attr: str):
+        _getattribute = super().__getattribute__
+        if attr.startswith("_"):
+            return _getattribute(attr)
 
-        return super().__getattr__(attr)
+        elif attr in _getattribute("_Item__config"):
+            id = _getattribute("_Item__id")
+            return dpg.get_item_configuration(id)[attr]
+
+        return _getattribute(attr)
 
     def __setattr__(self, attr, value):
-        if attr in self.__config:
+        if attr in object.__getattribute__(self, "_Item__config"):
             dpg.configure_item(self.__id, **{attr: value})
-  
-        super().__setattr__(attr, value)
+        else:
+            object.__setattr__(self, attr, value)
 
     @property
     def id(self):
@@ -58,6 +68,10 @@ class Item(metaclass=ABCMeta):
     def value(self):
         """Return the widget value (if any)."""
         return dpg.get_value(self.__id)
+
+    @value.setter
+    def value(self, value):
+        dpg.set_value(self.__id, value)
 
     def remove(self):
         """Deletes the widget (and children)."""
@@ -78,6 +92,9 @@ class Item(metaclass=ABCMeta):
             return dpg.get_item_configuration(self.__id)[option]
 
         return dpg.get_item_configuration(self.__id)
+
+    def set_value(self, value):
+        dpg.set_value(self.__id, value)
 
 
 class ContextSupport:  # mixin
