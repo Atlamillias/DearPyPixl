@@ -9,7 +9,7 @@ from dearpygui import dearpygui as dpg, _dearpygui as idpg
 
 
 DEFAULT_DIR = "./dpgwrap"
-DEFAULT_BACKUP_DIR = "./dpgwrap/backup"
+DEFAULT_BACKUP_DIR = "./dpgwrap/_backup"
 
 DPG_CONSTANTS = {}
 
@@ -142,9 +142,6 @@ def _organize(mapping: dict):
 
 def _backup_existing():
     for pyfile in Path(DEFAULT_DIR).iterdir():
-        if pyfile.stem.startswith("_") and pyfile.stem != "__init__":
-            continue
-
         if pyfile.suffix == ".py":
             shutil.copy(str(pyfile), DEFAULT_BACKUP_DIR)
 
