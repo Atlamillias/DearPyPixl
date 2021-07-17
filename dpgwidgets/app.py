@@ -4,7 +4,7 @@ from contextlib import contextmanager
 from dpgwidgets import dpg, Item, _Registry
 from dpgwidgets.theme import ThemeSupport
 from dpgwidgets.handler import AppHandlerSupport
-from dpgwidgets.constants import THEME_IMGUI_DARK
+from dpgwidgets.themes import DEFAULT
 
 
 class Viewport(ThemeSupport, AppHandlerSupport):
@@ -78,7 +78,7 @@ class Viewport(ThemeSupport, AppHandlerSupport):
 
         # app-level config
         self.__staging_mode = staging_mode
-        self.theme.configure(**THEME_IMGUI_DARK)
+        self.theme = DEFAULT
 
         # setup viewport
         self.__config = dict(

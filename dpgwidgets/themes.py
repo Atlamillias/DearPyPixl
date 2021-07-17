@@ -2,8 +2,8 @@ from dpgwidgets.theme import Theme, Font
 
 
 
-ImguiDark = Theme("ImguiDark").configure(
-    color=dict(
+ImguiDark = Theme("ImguiDark").configure(**{
+    "color": dict(
         text=(1.00 * 255, 1.00 * 255, 1.00 * 255, 1.00 * 255),
         text_disabled=(0.50 * 255, 0.50 * 255, 0.50 * 255, 1.00 * 255),
         window_bg=(0.06 * 255, 0.06 * 255, 0.06 * 255, 0.94 * 255),
@@ -59,7 +59,7 @@ ImguiDark = Theme("ImguiDark").configure(
         nav_windowing_highlight=(1.00 * 255, 1.00 * 255, 1.00 * 255, 0.70 * 255),
         nav_windowing_dim_bg=(0.80 * 255, 0.80 * 255, 0.80 * 255, 0.20 * 255),
         modal_window_dim_bg=(0.80 * 255, 0.80 * 255, 0.80 * 255, 0.35 * 255),
-        frame_bg=(1.00 * 255, 1.00 * 255, 1.00 * 255, 0.07 * 255),
+        plot_frame_bg=(1.00 * 255, 1.00 * 255, 1.00 * 255, 0.07 * 255),
         plot_bg=(0.00 * 255, 0.00 * 255, 0.00 * 255, 0.50 * 255),
         plot_border=(0.43 * 255, 0.43 * 255, 0.50 * 255, 0.50 * 255),
         plot_legend_bg=(0.08 * 255, 0.08 * 255, 0.08 * 255, 0.94 * 255),
@@ -95,7 +95,7 @@ ImguiDark = Theme("ImguiDark").configure(
         node_grid_background=(40, 40, 50, 200),
         node_grid_line=(200, 200, 200, 40),
     ),
-    style=dict(
+    "style": dict(
         alpha=None,
         button_text_align=None,
         cell_padding=None,
@@ -162,11 +162,11 @@ ImguiDark = Theme("ImguiDark").configure(
         node_pin_quad_side_length=None,
         node_pin_triangle_side_length=None,
     ),
-    font=dict(
+    "font": dict(
         font=None,
         font_size=None
     )
-)
+})
 
 
 DEFAULT = ImguiDark
