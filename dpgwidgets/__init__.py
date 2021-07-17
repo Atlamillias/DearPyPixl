@@ -1,11 +1,21 @@
 import sys
-
 sys.path.append("./dpgwrap/")
 
 from dearpygui import dearpygui as dpg
 
 from dpgwrap._item import Item, ContextSupport  # avoids circular imports
 from dpgwidgets.constants import Registry as _Registry, Key, Mouse
+
+# registries
+with dpg.font_registry(id=_Registry.FONT.value, label="AppFontRegistry"):
+    pass
+with dpg.handler_registry(id=_Registry.APPHANDLER.value, label="AppHandlerRegistry"):
+    pass
+with dpg.texture_registry(id=_Registry.TEXTURE.value, label="AppTextureRegistry"):
+    pass
+with dpg.value_registry(id=_Registry.VALUE.value, label="AppValueRegistry"):
+    pass
+
 from dpgwidgets.app import Viewport
 from dpgwidgets.theme import Font, Theme
 from dpgwrap import (
@@ -54,12 +64,4 @@ if UPDATE_ON_IMPORT:
     update_wrappers()
 
 
-# registries
-with dpg.font_registry(id=_Registry.FONT.value, label="AppFontRegistry"):
-    pass
-with dpg.handler_registry(id=_Registry.APPHANDLER.value, label="AppHandlerRegistry"):
-    pass
-with dpg.texture_registry(id=_Registry.TEXTURE.value, label="AppTextureRegistry"):
-    pass
-with dpg.value_registry(id=_Registry.VALUE.value, label="AppValueRegistry"):
-    pass
+
