@@ -170,10 +170,12 @@ class Theme:
         if style:
             [self.__style.set(optn, xy) for optn, xy in style.items()]
         if font:  # font = {font: value, font_size: value}
-            if font := font.get("font", None):
-                self.font = font
+            if font_obj := font.get("font", None):
+                self.font = font_obj
             if ft_size := font.get("font_size", None):
                 self.font_size = ft_size
+
+        return self
 
     def refresh(self):
         self._setup()
