@@ -1,10 +1,19 @@
 from typing import Any, Callable
 from contextlib import contextmanager
 
+from dearpygui import _dearpygui as idpg
+from dearpygui.logger import mvLogger as Logger
+from dpgwrap.containers import Window, Child, Group
+from dpgwrap.widgets import Button, Text
+
 from dpgwidgets import dpg, Item, _Registry
 from dpgwidgets.theme import ThemeSupport
 from dpgwidgets.handler import AppHandlerSupport
 from dpgwidgets.themes import DEFAULT
+
+__all__ = [
+    "Viewport",
+]
 
 
 class Viewport(ThemeSupport, AppHandlerSupport):
@@ -19,12 +28,18 @@ class Viewport(ThemeSupport, AppHandlerSupport):
     called_on_start = []  # set on system/application
     called_on_exit = []  # set on system/application
     called_on_resize = []  # set on viewport
+    called_on_render = []
+
+    __primary_window = None
+    __primary_window_enabled = False
+    __docking_enabled = False
 
     def __init__(
         self,
         title: str = "Application",
         *,
         # config passed to dpg
+        # title: str = "Application",
         small_icon: str = '',
         large_icon: str = '',
         width: int = 1280,
@@ -71,10 +86,6 @@ class Viewport(ThemeSupport, AppHandlerSupport):
         self.caption = caption
         self.overlapped = overlapped
         self.clear_color = clear_color
-        
-        # misc. stuff set on viewport
-        self.__docking_enabled = enable_docking  # must be called before vp setup
-        self.__primary_window = None
 
         # app-level config
         self.__staging_mode = staging_mode
@@ -105,9 +116,10 @@ class Viewport(ThemeSupport, AppHandlerSupport):
         )
         self.__class__.__command(**self.__config)
         self.__config = {*self.__config.keys()}
-        if enable_docking:
+        if enable_docking:  # must be called before vp setup
             self.__docking_enabled = True
             dpg.enable_docking(dock_space=dock_space)
+
         dpg.setup_dearpygui(viewport=self.__id)
         dpg.show_viewport(self.__id)
 
@@ -166,42 +178,60 @@ class Viewport(ThemeSupport, AppHandlerSupport):
         dpg.minimize_viewport(self.__id)
 
     def show_dev_window(self):
-        from dpgwrap.containers import Window
-        from dpgwrap.widgets import Button
-
+        """Renders a window that allows users to launch a variety of helpful
+        tools.
+        """
         with Window("Dev Tools", width=300, no_move=True, no_close=True, no_resize=True) as dev:
-            dev.tstyle.window_padding = 0, 0
-            dev.tcolor.title_bg = (
-                0.14 * 255, 0.14 * 255, 0.14 * 255, 1.00 * 255)
-            dev.tcolor.window_bg = (0.06 * 255, 0.06 * 255, 0.06 * 255, 125)
-            dev.tcolor.title_bg_active = (
-                0.14 * 255, 0.14 * 255, 0.14 * 255, 1.00 * 255)
             dev.pos = (self.width - dev.width, 20)
             dev.height = self.height
+
+            dev.tstyle.window_padding = 0, 0
+            dev.tcolor.title_bg = (0.14 * 255, 0.14 * 255, 0.14 * 255, 1.00 * 255)
+            dev.tcolor.window_bg = (0.06 * 255, 0.06 * 255, 0.06 * 255, 125)
+            dev.tcolor.title_bg_active = (0.14 * 255, 0.14 * 255, 0.14 * 255, 1.00 * 255)
+
             btn_width = dev.width
-            Button("Documentation", callback=show_documentation, width=btn_width)
-            Button("Debug", callback=show_debug, width=btn_width)
-            Button("Style Editor", callback=show_style_editor, width=btn_width)
-            Button("Metrics", callback=show_metrics, width=btn_width)
-            Button("About", callback=show_about, width=btn_width)
-            Button("Font Manager", callback=show_font_manager, width=btn_width)
-            Button("Item Registry", callback=show_item_registry, width=btn_width)
-            Button("Logger", callback=show_logger, width=btn_width)
+            Button("Documentation", callback=dpg.show_documentation, width=btn_width)
+            Button("Debug", callback=dpg.show_debug, width=btn_width)
+            Button("Style Editor", callback=dpg.show_style_editor, width=btn_width)
+            Button("Metrics", callback=dpg.show_metrics, width=btn_width)
+            Button("About", callback=dpg.show_about, width=btn_width)
+            Button("Font Manager", callback=dpg.show_font_manager, width=btn_width)
+            Button("Item Registry", callback=dpg.show_item_registry, width=btn_width)
+            Button("Logger", callback=Logger, width=btn_width)
+
+            with Child() as info:
+                info.tstyle.window_padding = 10.0, 0
+                mouse_pos_item = Text("Mouse position: ")
+                frame_cnt = Text("Frames rendered: ")
 
         @self.on_resize
         def devwin_pos():
             dev.pos = (self.width - dev.width, 20)
             dev.height = self.height
 
+        @self.on_render
+        def update_dev():
+            x, y = self.mouse_pos
+            mouse_pos_item.value = f"Mouse position: {x}, {y}"
+            frame_cnt.value = f"Frames rendered: {self.frame_count}"
+
 
     # Addl. handlers/callback stuff
+    # These can be used as decorators just like handler methods
     def on_resize(self, func):
         """Adds <func> to a list of functions that will be
         called when the viewport is resized (in the order that
         they are added).
         """
         self.called_on_resize.append(func)
+        return func
 
+    def on_render(self, func):
+        """Adds <func> to a list of functions that will be
+        called while the main loop is running (in the order that they are added).
+        """
+        self.called_on_render.append(func)
         return func
 
     def on_start(self, func):
@@ -209,7 +239,6 @@ class Viewport(ThemeSupport, AppHandlerSupport):
         called before the main loop (in the order that they are added).
         """
         self.called_on_start.append(func)
-
         return func
 
     def on_exit(self, func):
@@ -217,7 +246,6 @@ class Viewport(ThemeSupport, AppHandlerSupport):
         called as the main loop ends (in the order that they are added).
         """
         self.called_on_exit.append(func)
-
         return func
 
 
@@ -230,13 +258,31 @@ class Viewport(ThemeSupport, AppHandlerSupport):
         dpg.set_viewport_resize_callback(lambda: [
             f() for f in self.called_on_resize])
 
+    def get_render_callable(self):
+        """Returns a callable that calls all functions that are to be called
+        on render (i.e. while the main loop is running)."""
+        return lambda: [f() for f in self.called_on_render]
+
+    @property
+    def is_running(self):
+        return idpg.is_dearpygui_running()
+
+    def render_frame(self):
+        """Renders a frame."""
+        return idpg.render_dearpygui_frame()
+
+    def cleanup(self):
+        idpg.cleanup_dearpygui()
+
     def start(self):
         """Registers callbacks and starts the main render loop.
         """
+        on_render_calls = self.get_render_callable()
         self.register_callbacks()
-        while dpg.is_dearpygui_running():
-            dpg.render_dearpygui_frame()
-        dpg.cleanup_dearpygui()
+        while idpg.is_dearpygui_running():
+            on_render_calls()
+            idpg.render_dearpygui_frame()
+        idpg.cleanup_dearpygui()
 
     @staticmethod
     def stop():
@@ -245,7 +291,51 @@ class Viewport(ThemeSupport, AppHandlerSupport):
         dpg.stop_dearpygui()
 
 
-    # Misc.
+    # primary window
+    @property
+    def primary_window(self) -> Window:
+        return self.__primary_window
+    @primary_window.setter
+    def primary_window(self, value):
+        self.__primary_window = value
+        if self.__primary_window_enabled:
+            dpg.set_primary_window(int(value), True)
+
+    @property
+    def primary_window_enabled(self) -> bool:
+        return self.__primary_window_enabled
+    @primary_window_enabled.setter
+    def primary_window_enabled(self, value: bool):
+        dpg.set_primary_window(int(self.__primary_window), value)
+
+    def set_primary_window(self, window: Window, value: bool = False):
+        self.__primary_window = window
+        self.__primary_window_enabled = value
+        dpg.set_primary_window(int(self.__primary_window), value)
+
+
+    # mouse
+    @property
+    def mouse_drag_delta(self):
+        return idpg.get_mouse_drag_delta()
+    
+    @property
+    def mouse_pos(self):
+        return idpg.get_mouse_pos()
+
+    @property
+    def drawing_mouse_pos(self):
+        return idpg.get_drawing_mouse_pos()
+
+    def get_mouse_pos(self, local: bool = True):
+        return idpg.get_mouse_pos(local=local)
+
+
+    # misc.
+    @property
+    def frame_count(self):
+        return dpg.get_frame_count()
+
     @property
     def time_elapsed(self):
         """Returns the time that has elapsed since the main render loop
@@ -254,9 +344,12 @@ class Viewport(ThemeSupport, AppHandlerSupport):
         return dpg.get_total_time()
 
     @property
+    def docking_enabled(self) -> bool:
+        return self.__docking_enabled
+
+    @property
     def global_font_scale(self):
         return dpg.get_global_font_scale()
-
     @global_font_scale.setter
     def global_font_scale(self, value: float):
         dpg.set_global_font_scale(value)
@@ -264,25 +357,10 @@ class Viewport(ThemeSupport, AppHandlerSupport):
     @property
     def staging_mode(self):
         return self.__staging_mode
-
     @staging_mode.setter
     def staging_mode(self, value: bool):
         self.__staging_mode = value
         dpg.set_staging_mode(mode=value)
-
-    @property
-    def docking_enabled(self):
-        return self.__docking_enabled
-
-    @property
-    def primary_window(self):
-        return self.__primary_window
-
-    def set_primary_window(self, state: bool, window: int = None):
-        if window is not None:
-            self.__primary_window = window
-
-        dpg.set_primary_window(int(self.__primary_window), state)
 
 
 
