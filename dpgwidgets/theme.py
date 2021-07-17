@@ -468,6 +468,7 @@ class Font:
     """
     Returns a callable Font object.
     """
+    _registered_fonts = []
 
     def __init__(
         self,
@@ -492,9 +493,13 @@ class Font:
         self.__addl_chars = addl_chars
 
         self._fonts = {}
+        self.__class__._registered_fonts.append(self)
 
     def __str__(self):
         return self.__label
+
+    def __repr__(self):
+        return f"{self.__class__.__name__}(label={self.__label}, file={self.__file}, default_size={self.__default_size})"
 
     def __call__(self, size: float = None) -> int:
         # returns an existing font item of <size> or

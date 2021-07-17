@@ -25,32 +25,10 @@ from dpgwrap import (
     plotting, 
     widgets,
 )
-# end of imports/setup
-
-
-__all__ = [
-    # high-level objects
-    "Application",
-    "Theme",
-    "Font",
-    # imports
-    "containers",
-    "drawing",
-    "node",
-    "plotting",
-    "widgets",
-    "themes",
-    # dearpygui.dearpygui
-    "dpg",
-]
-
-
-
-
 
 UPDATE_ON_IMPORT = False
 
-def update_wrappers():
+def _update_wrappers():
     import importlib
     import dpgwrap
     from dpgwrap import _generate
@@ -67,4 +45,31 @@ def update_wrappers():
 
 
 if UPDATE_ON_IMPORT:
-    update_wrappers()
+    _update_wrappers()
+
+# end of imports/setup
+
+
+
+__all__ = [
+    # high-level objects
+    "Viewport",
+    "Theme",
+    "Font",
+    "Key",
+    "Mouse",
+    "registered_fonts"
+    # imports
+    "containers",
+    "drawing",
+    "node",
+    "plotting",
+    "widgets",
+    "themes",
+    # dearpygui.dearpygui
+    "dpg",
+]
+
+
+def registered_fonts():
+    return Font._registered_fonts
