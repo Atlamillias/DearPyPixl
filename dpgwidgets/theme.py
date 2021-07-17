@@ -475,7 +475,7 @@ class Font:
         self,
         label: str,
         file: str,
-        size: float = 12.0,
+        size: float = 13.0,
 
         font_range: tuple[int, int] = None,
         font_range_hint: int = None,
