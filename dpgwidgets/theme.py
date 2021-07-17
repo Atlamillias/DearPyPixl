@@ -43,11 +43,11 @@ class ThemeSupport:
         if isinstance(self.id, int):  # <class "Item">
             dpg.set_item_theme(self.id, int(value))
             if value.font:
-                dpg.set_item_font(self.id, int(value.font))
+                dpg.set_item_font(self.id, value._font_id)
         elif isinstance(self.id, str):  # <class "Viewport">
             dpg.configure_item(int(value), default_theme=True)
             if value.font:
-                dpg.configure_item(int(value.font), default_font=True)
+                dpg.configure_item(value._font_id, default_font=True)
         else:
             raise Exception(f"{repr(super().__class__)} does not support this mixin.")
 
@@ -98,8 +98,9 @@ class Theme:
     __color = None
     __style = None
     __font = None
-    
     __font_size = None
+
+
 
     def __init__(self, label: str = None, **kwargs):
         self.__kwargs = kwargs
@@ -192,7 +193,10 @@ class Theme:
         # because the values can't be fetched after creation
         self.__color = ColorHelper(self, "color")
         self.__style = StyleHelper(self, "style")
-        self.__font = None
+        self.__font = _DEFAULT_FONT
+        self.__font_size = _DEFAULT_FONT.default_size
+        self._font_id = _DEFAULT_FONT()
+  
 
     def _clean(self):
         dpg.delete_item(self.__id, children_only=True)
@@ -250,28 +254,40 @@ class THelper:
     def __set_color(self, option, value):
         target, category = self.__optn_constants[option]
         old_item = self.__theme_ids.pop(option)
-        new_item = self.__dpg_cmd(
-            target,
-            value,
-            category=category,
-            parent=int(self.__id)
-        )
+        if value is None:
+            # back to using the default theme
+            # or inheriting a parent theme
+            new_item = None
+        else:
+            new_item = self.__dpg_cmd(
+                target,
+                value,
+                category=category,
+                parent=int(self.__id)
+            )
         return old_item, new_item
 
     def __set_style(self, option, xy):
-        if isinstance(xy, (int, float)):
-            x, y = xy, -1.0
+        if xy is not None:
+            if isinstance(xy, (int, float)):
+                x, y = xy, -1.0
+            else:
+                x, y = xy
+            target, category = self.__optn_constants[option]
+            old_item = self.__theme_ids.pop(option)
+            new_item = dpg.add_theme_style(
+                target,
+                x,
+                y,
+                category=category,
+                parent=int(self.__id)
+            )
         else:
-            x, y = xy
-        target, category = self.__optn_constants[option]
-        old_item = self.__theme_ids.pop(option)
-        new_item = dpg.add_theme_style(
-            target,
-            x,
-            y,
-            category=category,
-            parent=int(self.__id)
-        )
+            # back to using the default theme
+            # or inheriting a parent theme
+            old_item = self.__theme_ids.pop(option)
+            new_item = None
+
         return old_item, new_item
 
 class ColorHelper(THelper):
@@ -511,3 +527,6 @@ class Font:
     def default_size(self, value: float):
         self(value)
         self.__default_size = value
+
+
+_DEFAULT_FONT = Font("ProggyCleanSZ", "ProggyCleanSZ.ttf", 13.0)
