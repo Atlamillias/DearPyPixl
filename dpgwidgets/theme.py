@@ -499,8 +499,10 @@ class Font:
         return self.__label
 
     def __repr__(self):
-        return f"{self.__class__.__name__}(label={self.__label}, \
-            file={self.__file}, default_size={self.__default_size})"
+        return (f"{self.__class__.__name__}" +
+               f"(label={self.__label}, " +
+               f"file={self.__file}, " +
+               f"default_size={self.__default_size})")
 
     def __call__(self, size: float = None) -> int:
         # returns an existing font item of <size> or

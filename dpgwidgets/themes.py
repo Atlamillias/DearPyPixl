@@ -1,7 +1,6 @@
 from dpgwidgets.theme import Theme, Font
 
 
-
 ImguiDark = Theme("ImguiDark").configure(**{
     "color": dict(
         text=(1.00 * 255, 1.00 * 255, 1.00 * 255, 1.00 * 255),
