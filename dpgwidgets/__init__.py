@@ -19,7 +19,7 @@ with dpg.value_registry(id=_Registry.VALUE.value, label="AppValueRegistry"):
 from dpgwidgets.app import Viewport
 from dpgwidgets.theme import Font, Theme
 from dpgwrap import (
-    containers, 
+    containers,
     drawing, 
     node, 
     plotting, 
@@ -58,7 +58,7 @@ __all__ = [
     "Font",
     "Key",
     "Mouse",
-    "registered_fonts"
+    "registered_fonts",
     # imports
     "containers",
     "drawing",
