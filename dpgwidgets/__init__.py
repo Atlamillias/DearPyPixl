@@ -13,7 +13,7 @@ from dpgwrap import (
     drawing, 
     node, 
     plotting, 
-    widgets
+    widgets,
 )
 
 __all__ = [
@@ -27,6 +27,7 @@ __all__ = [
     "node",
     "plotting",
     "widgets",
+    "themes",
     # dearpygui.dearpygui
     "dpg",
 ]
