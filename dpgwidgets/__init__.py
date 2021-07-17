@@ -25,6 +25,8 @@ from dpgwrap import (
     plotting, 
     widgets,
 )
+# end of imports/setup
+
 
 __all__ = [
     # high-level objects
@@ -41,6 +43,10 @@ __all__ = [
     # dearpygui.dearpygui
     "dpg",
 ]
+
+
+
+
 
 UPDATE_ON_IMPORT = False
 
@@ -62,6 +68,3 @@ def update_wrappers():
 
 if UPDATE_ON_IMPORT:
     update_wrappers()
-
-
-
