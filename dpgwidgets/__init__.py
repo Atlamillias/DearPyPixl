@@ -72,4 +72,4 @@ __all__ = [
 
 
 def registered_fonts():
-    return Font._registered_fonts
+    return Font.registered_fonts

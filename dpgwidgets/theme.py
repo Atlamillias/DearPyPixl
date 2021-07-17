@@ -1,5 +1,6 @@
 from __future__ import annotations
 from typing import Sequence
+from pathlib import Path
 
 from dpgwidgets import dpg, _Registry
 from dpgwidgets.constants import COLOR_OPTN, STYLE_OPTN
@@ -468,7 +469,7 @@ class Font:
     """
     Returns a callable Font object.
     """
-    _registered_fonts = []
+    registered_fonts = []
 
     def __init__(
         self,
@@ -493,7 +494,9 @@ class Font:
         self.__addl_chars = addl_chars
 
         self._fonts = {}
-        self.__class__._registered_fonts.append(self)
+
+        self.__class__.registered_fonts.append(self)
+        self._get_font_item()
 
     def __str__(self):
         return self.__label
@@ -505,6 +508,22 @@ class Font:
                f"default_size={self.__default_size})")
 
     def __call__(self, size: float = None) -> int:
+        return self._get_font_item(size)
+
+    @property
+    def label(self):
+        return self.__label
+
+    @property
+    def default_size(self):
+        return self.__default_size
+
+    @default_size.setter
+    def default_size(self, value: float):
+        self(value)
+        self.__default_size = value
+
+    def _get_font_item(self, size: float = None):
         # returns an existing font item of <size> or
         # creates a new one and caches it
         size = size or self.__default_size
@@ -525,18 +544,25 @@ class Font:
 
         return font
 
-    @property
-    def label(self):
-        return self.__label
+    @classmethod
+    def fonts(cls):
+        """Returns a list of registered fonts."""
+        return cls.registered_fonts
 
-    @property
-    def default_size(self):
-        return self.__default_size
+    @classmethod
+    def load_font_directory(cls, dir_path: str):
+        """Attempts to load and register all .otf and .ttf files
+        in <dir_path>, and return a list of all font objects created.
 
-    @default_size.setter
-    def default_size(self, value: float):
-        self(value)
-        self.__default_size = value
+        Note: You will notice a sizable lag when loading several at once.
+        """
+        fonts = []
+        for ffile in Path(dir_path).iterdir():
+            if ffile.suffix in (".ttf", ".otf"):
+                try:
+                    fonts.append(cls(ffile.stem, str(ffile)))
+                except Exception as e:
+                    print(e)
 
 
 _DEFAULT_FONT = Font("ProggyCleanSZ", "ProggyCleanSZ.ttf", 13.0)
