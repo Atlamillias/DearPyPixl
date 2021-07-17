@@ -123,7 +123,7 @@ class Viewport(ThemeSupport, AppHandlerSupport):
 
     def __getattribute__(self, attr: str):
         _getattribute = super().__getattribute__
-        if attr.startswith("_"):
+        if attr.startswith("_") or attr == "id":
             return _getattribute(attr)
         elif attr in _getattribute("_Viewport__config"):
             id = _getattribute("_Viewport__id")
