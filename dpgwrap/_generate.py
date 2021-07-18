@@ -255,7 +255,7 @@ def writefiles(dirpath: str = DEFAULT_DIR):
                     para = str(para)
                     # Some type hints are unnecessarily used from the
                     # typing module. Python 3.9 supports using
-                    # the built-in types as hints.
+                    # built-in types as typehints.
                     for t in ("List", "Tuple", "Dict", "Set"):
                         para = para.replace(t, t.lower())
                     init_params.append(para)

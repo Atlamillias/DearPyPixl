@@ -39,15 +39,12 @@ class Item(metaclass=ABCMeta):
             (<{mVAppType} '{self.__id}'>)"
 
     def __getattribute__(self, attr: str):
-        _getattribute = super().__getattribute__
         if attr.startswith("_") or attr == "id":
-            return _getattribute(attr)
-
-        elif attr in _getattribute("_Item__config"):
-            id = _getattribute("_Item__id")
+            return super().__getattribute__(attr)
+        elif attr in super().__getattribute__("_Item__config"):
+            id = super().__getattribute__("_Item__id")
             return dpg.get_item_configuration(id)[attr]
-
-        return _getattribute(attr)
+        return super().__getattribute__(attr)
 
     def __setattr__(self, attr, value):
         if attr in object.__getattribute__(self, "_Item__config"):

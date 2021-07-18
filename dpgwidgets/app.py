@@ -134,14 +134,13 @@ class Viewport(ThemeSupport, AppHandlerSupport):
         return self.title
 
     def __getattribute__(self, attr: str):
-        _getattribute = super().__getattribute__
         if attr.startswith("_") or attr == "id":
-            return _getattribute(attr)
-        elif attr in _getattribute("_Viewport__config"):
-            id = _getattribute("_Viewport__id")
+            return super().__getattribute__(attr)
+        elif attr in super().__getattribute__("_Viewport__config"):
+            id = super().__getattribute__("_Viewport__id")
             return dpg.get_viewport_configuration(id)[attr]
 
-        return _getattribute(attr)
+        return super().__getattribute__(attr)
 
     def __setattr__(self, attr, value):
         if attr in object.__getattribute__(self, "_Viewport__config"):
