@@ -26,28 +26,9 @@ from dpgwrap import (
     widgets,
 )
 
-
-def _update_wrappers():
-    import importlib
-    import dpgwrap
-    from dpgwrap import _generate
-
-    _generate.main()
-
-    importlib.reload(dpgwrap)
-
-    for module in dpgwrap.__all__:
-        try:
-            importlib.import_module(module, dpgwrap)
-        except:
-            continue
-
-# end of imports/setup
-
-
-
 __all__ = [
     # high-level objects
+    "Application",
     "Viewport",
     "Theme",
     "Font",
@@ -64,6 +45,25 @@ __all__ = [
     # dearpygui.dearpygui
     "dpg",
 ]
+
+
+Application = Viewport()
+
+
+def _update_wrappers():
+    import importlib
+    import dpgwrap
+    from dpgwrap import _generate
+
+    _generate.main()
+
+    importlib.reload(dpgwrap)
+
+    for module in dpgwrap.__all__:
+        try:
+            importlib.import_module(module, dpgwrap)
+        except:
+            continue
 
 
 def registered_fonts():
