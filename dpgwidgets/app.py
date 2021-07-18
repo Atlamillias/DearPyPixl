@@ -6,6 +6,7 @@ from dearpygui.logger import mvLogger as Logger
 from dpgwrap.containers import Window, Child, Group
 from dpgwrap.widgets import Button, Text
 
+import dpgwidgets
 from dpgwidgets import dpg, Item, _Registry
 from dpgwidgets.theme import ThemeSupport
 from dpgwidgets.handler import AppHandlerSupport
@@ -23,6 +24,7 @@ class Viewport(ThemeSupport, AppHandlerSupport):
     # The overall structure is identical.
     __command = dpg.create_viewport
     __id = "DPG_NOT_USED_YET"
+    __exists = False
     __config = set()
     # callbacks to register during setup
     called_on_start = []  # set on system/application
@@ -63,6 +65,8 @@ class Viewport(ThemeSupport, AppHandlerSupport):
         staging_mode: bool = False,
         enable_docking: bool = False,
         dock_space: bool = False,
+        **kwargs,
+
     ):
         super().__init__()
         # viewport config
@@ -89,6 +93,7 @@ class Viewport(ThemeSupport, AppHandlerSupport):
 
         # app-level config
         self.__staging_mode = staging_mode
+        self.__docking_enabled = enable_docking
         self.theme = DEFAULT
 
         # setup viewport
@@ -114,14 +119,17 @@ class Viewport(ThemeSupport, AppHandlerSupport):
             overlapped=overlapped,
             clear_color=clear_color,
         )
-        self.__class__.__command(**self.__config)
-        self.__config = {*self.__config.keys()}
-        if enable_docking:  # must be called before vp setup
-            self.__docking_enabled = True
-            dpg.enable_docking(dock_space=dock_space)
 
-        dpg.setup_dearpygui(viewport=self.__id)
-        dpg.show_viewport(self.__id)
+        if "is_dummy" not in kwargs:
+            self.__class__.__command(**self.__config)
+            self.__config = {*self.__config.keys()}
+            if enable_docking:  # must be called before dpg.setup_dearpygui
+                dpg.enable_docking(dock_space=dock_space)
+
+            dpg.setup_dearpygui(viewport=self.__id)
+            dpg.show_viewport(self.__id)
+
+            dpgwidgets.Application = self
 
     def __repr__(self):
         return f"{self.__class__.__qualname__} ({type(self)}) =>"

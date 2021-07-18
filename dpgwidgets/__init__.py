@@ -47,7 +47,7 @@ __all__ = [
 ]
 
 
-Application = Viewport()
+Application = Viewport(is_dummy=True)
 
 
 def _update_wrappers():
