@@ -258,11 +258,6 @@ def writefiles(dirpath: str = DEFAULT_DIR):
                     # the built-in types as hints.
                     for t in ("List", "Tuple", "Dict", "Set"):
                         para = para.replace(t, t.lower())
-                    # For some reason if the hint is list and the default
-                    # value isn't falsy, that value will be a tuple and
-                    # not a list...? Maybe a bug in mvPythonParser.
-                    if "list" in para:
-                        para = para.replace("(", "[").replace(")", "]")
                     init_params.append(para)
                 if "id" in instance_attrs:
                     idx = instance_attrs.index("id")
