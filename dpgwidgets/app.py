@@ -254,18 +254,20 @@ class Viewport(ThemeSupport, AppHandlerSupport):
 
 
     # High-level setup, start/stop
-    def register_callbacks(self):
+    @classmethod
+    def register_callbacks(cls):
         """Register all callbacks.
         """
-        dpg.set_start_callback(lambda: [f() for f in self.called_on_start])
-        dpg.set_exit_callback(lambda: [f() for f in self.called_on_exit])
+        dpg.set_start_callback(lambda: [f() for f in cls.called_on_start])
+        dpg.set_exit_callback(lambda: [f() for f in cls.called_on_exit])
         dpg.set_viewport_resize_callback(lambda: [
-            f() for f in self.called_on_resize])
+            f() for f in cls.called_on_resize])
 
-    def get_render_callable(self):
+    @classmethod
+    def get_render_callable(cls):
         """Returns a callable that calls all functions that are to be called
         on render (i.e. while the main loop is running)."""
-        return lambda: [f() for f in self.called_on_render]
+        return lambda: [f() for f in cls.called_on_render]
 
     @property
     def is_running(self):

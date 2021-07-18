@@ -90,7 +90,7 @@ class ThemeColor(Item):
     def __init__(
         self,
         target: int = 0,
-        value: list[int] = [0, 0, 0, 255],
+        value: list[int] = (0, 0, 0, 255),
         label: str = None,
         parent: int = 0,
         user_data: Any = None,

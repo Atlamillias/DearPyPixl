@@ -172,7 +172,7 @@ class AreaSeries(Widget):
         source: int = 0,
         show: bool = True,
         user_data: Any = None,
-        fill: list[int] = [0, 0, 0, -255],
+        fill: list[int] = (0, 0, 0, -255),
         contribute_to_bounds: bool = True,
         **kwargs
     ):
@@ -259,8 +259,8 @@ class CandleSeries(Widget):
         source: int = 0,
         show: bool = True,
         user_data: Any = None,
-        bull_color: list[int] = [0, 255, 113, 255],
-        bear_color: list[int] = [218, 13, 79, 255],
+        bull_color: list[int] = (0, 255, 113, 255),
+        bear_color: list[int] = (218, 13, 79, 255),
         weight: int = 0.25,
         tooltip: bool = True,
         **kwargs
@@ -313,7 +313,7 @@ class DragPoint(Widget):
         show: bool = True,
         user_data: Any = None,
         default_value: Any = (0.0, 0.0),
-        color: list[int] = [0, 0, 0, -255],
+        color: list[int] = (0, 0, 0, -255),
         thickness: float = 1.0,
         show_label: bool = True,
         **kwargs
@@ -500,9 +500,9 @@ class ImageSeries(Widget):
         source: int = 0,
         show: bool = True,
         user_data: Any = None,
-        uv_min: list[float] = [0.0, 0.0],
-        uv_max: list[float] = [1.0, 1.0],
-        tint_color: list[int] = [255, 255, 255, 255],
+        uv_min: list[float] = (0.0, 0.0),
+        uv_max: list[float] = (1.0, 1.0),
+        tint_color: list[int] = (255, 255, 255, 255),
         **kwargs
     ):
         super().__init__(
@@ -636,8 +636,8 @@ class PlotAnnotation(Widget):
         show: bool = True,
         user_data: Any = None,
         default_value: Any = (0.0, 0.0),
-        offset: list[float] = [0.0, 0.0],
-        color: list[int] = [0, 0, 0, -255],
+        offset: list[float] = (0.0, 0.0),
+        color: list[int] = (0, 0, 0, -255),
         clamped: bool = True,
         **kwargs
     ):
@@ -863,7 +863,7 @@ class SimplePlot(Widget):
         tracked: bool = False,
         track_offset: float = 0.5,
         user_data: Any = None,
-        default_value: list[float] = [],
+        default_value: list[float] = (),
         overlay: str = '',
         histogram: bool = False,
         autosize: bool = True,

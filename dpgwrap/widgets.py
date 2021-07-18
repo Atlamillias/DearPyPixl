@@ -31,7 +31,7 @@ class Slider(Widget):
         tracked: bool = False,
         track_offset: float = 0.5,
         user_data: Any = None,
-        default_value: list[float] = [0.0, 0.0, 0.0, 0.0],
+        default_value: list[float] = (0.0, 0.0, 0.0, 0.0),
         max_x: float = 100.0,
         max_y: float = 100.0,
         max_z: float = 100.0,
@@ -263,7 +263,7 @@ class ColorButton(Widget):
 
     def __init__(
         self,
-        default_value: list[int] = [0, 0, 0, 255],
+        default_value: list[int] = (0, 0, 0, 255),
         label: str = None,
         width: int = 0,
         height: int = 0,
@@ -338,7 +338,7 @@ class ColorEdit(Widget):
 
     def __init__(
         self,
-        default_value: list[int] = [0, 0, 0, 255],
+        default_value: list[int] = (0, 0, 0, 255),
         label: str = None,
         width: int = 0,
         height: int = 0,
@@ -446,7 +446,7 @@ class ColorPicker(Widget):
 
     def __init__(
         self,
-        default_value: list[int] = [0, 0, 0, 255],
+        default_value: list[int] = (0, 0, 0, 255),
         label: str = None,
         width: int = 0,
         height: int = 0,
@@ -608,7 +608,7 @@ class Combo(Widget):
 
     def __init__(
         self,
-        items: list[str] = [],
+        items: list[str] = (),
         label: str = None,
         width: int = 0,
         indent: int = -1,
@@ -850,7 +850,7 @@ class DragFloatx(Widget):
         tracked: bool = False,
         track_offset: float = 0.5,
         user_data: Any = None,
-        default_value: list[float] = [0.0, 0.0, 0.0, 0.0],
+        default_value: list[float] = (0.0, 0.0, 0.0, 0.0),
         size: int = 4,
         format: str = '%0.3f',
         speed: float = 1.0,
@@ -1021,7 +1021,7 @@ class DragIntx(Widget):
         tracked: bool = False,
         track_offset: float = 0.5,
         user_data: Any = None,
-        default_value: list[int] = [0, 0, 0, 0],
+        default_value: list[int] = (0, 0, 0, 0),
         size: int = 4,
         format: str = '%d',
         speed: float = 1.0,
@@ -1099,7 +1099,7 @@ class DragLine(Widget):
         show: bool = True,
         user_data: Any = None,
         default_value: Any = 0.0,
-        color: list[int] = [0, 0, 0, -255],
+        color: list[int] = (0, 0, 0, -255),
         thickness: float = 1.0,
         show_label: bool = True,
         vertical: bool = True,
@@ -1216,7 +1216,7 @@ class FileExtension(Widget):
         before: int = 0,
         user_data: Any = None,
         custom_text: str = '',
-        color: list[float] = [-255, 0, 0, 255],
+        color: list[float] = (-255, 0, 0, 255),
         **kwargs
     ):
         super().__init__(
@@ -1264,10 +1264,10 @@ class Image(Widget):
         tracked: bool = False,
         track_offset: float = 0.5,
         user_data: Any = None,
-        tint_color: list[float] = [255, 255, 255, 255],
-        border_color: list[float] = [0, 0, 0, 0],
-        uv_min: list[float] = [0.0, 0.0],
-        uv_max: list[float] = [1.0, 1.0],
+        tint_color: list[float] = (255, 255, 255, 255),
+        border_color: list[float] = (0, 0, 0, 0),
+        uv_min: list[float] = (0.0, 0.0),
+        uv_max: list[float] = (1.0, 1.0),
         **kwargs
     ):
         super().__init__(
@@ -1342,10 +1342,10 @@ class ImageButton(Widget):
         track_offset: float = 0.5,
         user_data: Any = None,
         frame_padding: int = -1,
-        tint_color: list[float] = [255, 255, 255, 255],
-        background_color: list[float] = [0, 0, 0, 0],
-        uv_min: list[float] = [0.0, 0.0],
-        uv_max: list[float] = [1.0, 1.0],
+        tint_color: list[float] = (255, 255, 255, 255),
+        background_color: list[float] = (0, 0, 0, 0),
+        uv_min: list[float] = (0.0, 0.0),
+        uv_max: list[float] = (1.0, 1.0),
         **kwargs
     ):
         super().__init__(
@@ -1516,7 +1516,7 @@ class InputFloatx(Widget):
         tracked: bool = False,
         track_offset: float = 0.5,
         user_data: Any = None,
-        default_value: list[float] = [0.0, 0.0, 0.0, 0.0],
+        default_value: list[float] = (0.0, 0.0, 0.0, 0.0),
         format: str = '%.3f',
         min_value: float = 0.0,
         max_value: float = 100.0,
@@ -1696,7 +1696,7 @@ class InputIntx(Widget):
         tracked: bool = False,
         track_offset: float = 0.5,
         user_data: Any = None,
-        default_value: list[int] = [0, 0, 0, 0],
+        default_value: list[int] = (0, 0, 0, 0),
         min_value: int = 0,
         max_value: int = 100,
         size: int = 4,
@@ -1940,7 +1940,7 @@ class Listbox(Widget):
 
     def __init__(
         self,
-        items: list[str] = [],
+        items: list[str] = (),
         label: str = None,
         width: int = 0,
         indent: int = -1,
@@ -2026,8 +2026,8 @@ class LoadingIndicator(Widget):
         speed: float = 1.0,
         radius: float = 3.0,
         thickness: float = 1.0,
-        color: list[int] = [51, 51, 55, 255],
-        secondary_color: list[int] = [29, 151, 236, 103],
+        color: list[int] = (51, 51, 55, 255),
+        secondary_color: list[int] = (29, 151, 236, 103),
         **kwargs
     ):
         super().__init__(
@@ -2201,7 +2201,7 @@ class RadioButton(Widget):
 
     def __init__(
         self,
-        items: list[str] = [],
+        items: list[str] = (),
         label: str = None,
         indent: int = -1,
         parent: int = 0,
@@ -2545,7 +2545,7 @@ class SliderFloatx(Widget):
         tracked: bool = False,
         track_offset: float = 0.5,
         user_data: Any = None,
-        default_value: list[float] = [0.0, 0.0, 0.0, 0.0],
+        default_value: list[float] = (0.0, 0.0, 0.0, 0.0),
         size: int = 4,
         no_input: bool = False,
         clamped: bool = False,
@@ -2716,7 +2716,7 @@ class SliderIntx(Widget):
         tracked: bool = False,
         track_offset: float = 0.5,
         user_data: Any = None,
-        default_value: list[int] = [0, 0, 0, 0],
+        default_value: list[int] = (0, 0, 0, 0),
         size: int = 4,
         no_input: bool = False,
         clamped: bool = False,
@@ -3034,7 +3034,7 @@ class Text(Widget):
         user_data: Any = None,
         wrap: int = -1,
         bullet: bool = False,
-        color: list[float] = [-1, -1, -1, -1],
+        color: list[float] = (-1, -1, -1, -1),
         show_label: bool = False,
         **kwargs
     ):

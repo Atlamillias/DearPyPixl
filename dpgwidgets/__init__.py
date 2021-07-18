@@ -26,7 +26,6 @@ from dpgwrap import (
     widgets,
 )
 
-UPDATE_ON_IMPORT = False
 
 def _update_wrappers():
     import importlib
@@ -42,10 +41,6 @@ def _update_wrappers():
             importlib.import_module(module, dpgwrap)
         except:
             continue
-
-
-if UPDATE_ON_IMPORT:
-    _update_wrappers()
 
 # end of imports/setup
 

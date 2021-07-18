@@ -44,7 +44,7 @@ class ColorValue(Item):
         label: str = None,
         source: int = 0,
         user_data: Any = None,
-        default_value: list[float] = [0.0, 0.0, 0.0, 0.0],
+        default_value: list[float] = (0.0, 0.0, 0.0, 0.0),
         parent: int = 13,
         **kwargs
     ):
@@ -125,7 +125,7 @@ class Float4Value(Item):
         label: str = None,
         source: int = 0,
         user_data: Any = None,
-        default_value: list[float] = [0.0, 0.0, 0.0, 0.0],
+        default_value: list[float] = (0.0, 0.0, 0.0, 0.0),
         parent: int = 13,
         **kwargs
     ):
@@ -179,7 +179,7 @@ class FloatVectValue(Item):
         label: str = None,
         source: int = 0,
         user_data: Any = None,
-        default_value: list[float] = [],
+        default_value: list[float] = (),
         parent: int = 13,
         **kwargs
     ):
@@ -206,7 +206,7 @@ class Int4Value(Item):
         label: str = None,
         source: int = 0,
         user_data: Any = None,
-        default_value: list[int] = [0, 0, 0, 0],
+        default_value: list[int] = (0, 0, 0, 0),
         parent: int = 13,
         **kwargs
     ):
