@@ -53,35 +53,44 @@ class ThemeSupport:
             raise Exception(f"{repr(super().__class__)} does not support this mixin.")
 
     @property
-    def tcolor(self):
+    def theme_color(self):
         return self.theme.color
 
     @property
-    def tstyle(self):
+    def theme_style(self):
         return self.theme.style
 
     @property
-    def tfont(self):
+    def theme_font(self):
         return self.theme.font
 
-    @tfont.setter
-    def tfont(self, value: Font):
-        self.theme.font = value
-
-        if self.id:
+    @theme_font.setter
+    def theme_font(self, value: Font):
+        if isinstance(self.id, int):
+            self.theme.font = value
             dpg.set_item_font(self.id, self.theme._font_id)
-        else:
+        # If unsetting the default font (i.e. value is None), *when* self.theme.font
+        # is set matters since the original references are needed to configure it.
+        elif value is not None:
+            self.theme.font = value
             dpg.configure_item(self.theme._font_id, default_font=True)
+        elif value is None and self.theme.font is None:
+            return
+        else:
+            dpg.configure_item(self.theme._font_id, default_font=False)
+            self.theme.font = value
 
     @property
-    def tfont_size(self):
+    def theme_ft_size(self):
         return self.theme.font_size
 
-    @tfont_size.setter
-    def tfont_size(self, value: float):
+    @theme_ft_size.setter
+    def theme_ft_size(self, value: float):
         self.theme.font_size = value
+        if value is None:
+            raise ValueError(f"value must be <float>.")
 
-        if self.id:
+        if isinstance(self.id, int):
             dpg.set_item_font(self.id, self.theme._font_id)
         else:
             dpg.configure_item(self.theme._font_id, default_font=True)
@@ -146,8 +155,11 @@ class Theme:
     @font.setter
     def font(self, value: Font):
         self.__font = value
-        self.__font_size = self.__font_size or value.default_size
-        self._font_id = value(self.__font_size)
+        if value is None:
+            self._font_id = 0
+        else:
+            self.__font_size = self.__font_size or value.default_size
+            self._font_id = value(self.__font_size)
 
     @property
     def font_size(self):
@@ -156,7 +168,9 @@ class Theme:
     @font_size.setter
     def font_size(self, value: float):
         self.__font_size = value
-        if font := self.__font:
+        if value is None:
+            self._font_id = None
+        elif font := self.__font:
             self._font_id = font(self.__font_size)
 
     def configure(
@@ -196,9 +210,9 @@ class Theme:
         # because the values can't be fetched after creation
         self.__color = ColorHelper(self, "color")
         self.__style = StyleHelper(self, "style")
-        self.__font = _DEFAULT_FONT
-        self.__font_size = _DEFAULT_FONT.default_size
-        self._font_id = _DEFAULT_FONT()
+        self.__font = None
+        self.__font_size = None
+        self._font_id = None
   
 
     def _clean(self):
@@ -562,7 +576,7 @@ class Font:
                 try:
                     fonts.append(cls(ffile.stem, str(ffile)))
                 except Exception as e:
-                    print(e)
+                    pass
 
+        return fonts
 
-_DEFAULT_FONT = Font("ProggyCleanSZ", "ProggyCleanSZ.ttf", 13.0)
