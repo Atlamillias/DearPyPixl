@@ -185,10 +185,10 @@ class Viewport(ThemeSupport, AppHandlerSupport):
             dev.pos = (self.width - dev.width, 20)
             dev.height = self.height
 
-            dev.tstyle.window_padding = 0, 0
-            dev.tcolor.title_bg = (0.14 * 255, 0.14 * 255, 0.14 * 255, 1.00 * 255)
-            dev.tcolor.window_bg = (0.06 * 255, 0.06 * 255, 0.06 * 255, 125)
-            dev.tcolor.title_bg_active = (0.14 * 255, 0.14 * 255, 0.14 * 255, 1.00 * 255)
+            dev.theme_style.window_padding = 0, 0
+            dev.theme_color.title_bg = (0.14 * 255, 0.14 * 255, 0.14 * 255, 1.00 * 255)
+            dev.theme_color.window_bg = (0.06 * 255, 0.06 * 255, 0.06 * 255, 125)
+            dev.theme_color.title_bg_active = (0.14 * 255, 0.14 * 255, 0.14 * 255, 1.00 * 255)
 
             btn_width = dev.width
             Button("Documentation", callback=dpg.show_documentation, width=btn_width)
@@ -201,7 +201,7 @@ class Viewport(ThemeSupport, AppHandlerSupport):
             Button("Logger", callback=Logger, width=btn_width)
 
             with Child() as info:
-                info.tstyle.window_padding = 10.0, 0
+                info.theme_style.window_padding = 10.0, 0
                 mouse_pos_item = Text("Mouse position: ")
                 frame_cnt = Text("Frames rendered: ")
 
@@ -212,40 +212,44 @@ class Viewport(ThemeSupport, AppHandlerSupport):
 
         @self.on_render
         def update_dev():
-            x, y = self.mouse_pos
+            x, y = self.get_mouse_pos(local=False)
             mouse_pos_item.value = f"Mouse position: {x}, {y}"
             frame_cnt.value = f"Frames rendered: {self.frame_count}"
 
 
     # Addl. handlers/callback stuff
     # These can be used as decorators just like handler methods
-    def on_resize(self, func):
+    @classmethod
+    def on_resize(cls, func):
         """Adds <func> to a list of functions that will be
         called when the viewport is resized (in the order that
         they are added).
         """
-        self.called_on_resize.append(func)
+        cls.called_on_resize.append(func)
         return func
 
-    def on_render(self, func):
+    @classmethod
+    def on_render(cls, func):
         """Adds <func> to a list of functions that will be
         called while the main loop is running (in the order that they are added).
         """
-        self.called_on_render.append(func)
+        cls.called_on_render.append(func)
         return func
 
-    def on_start(self, func):
+    @classmethod
+    def on_start(cls, func):
         """Adds <func> to a list of functions that will be
         called before the main loop (in the order that they are added).
         """
-        self.called_on_start.append(func)
+        cls.called_on_start.append(func)
         return func
 
-    def on_exit(self, func):
+    @classmethod
+    def on_exit(cls, func):
         """Adds <func> to a list of functions that will be
         called as the main loop ends (in the order that they are added).
         """
-        self.called_on_exit.append(func)
+        cls.called_on_exit.append(func)
         return func
 
 
@@ -320,8 +324,12 @@ class Viewport(ThemeSupport, AppHandlerSupport):
         return idpg.get_mouse_drag_delta()
     
     @property
-    def mouse_pos(self):
+    def local_mouse_pos(self):
         return idpg.get_mouse_pos()
+
+    @property
+    def global_mouse_pos(self):
+        return idpg.get_mouse_pos(local=False)
 
     @property
     def drawing_mouse_pos(self):
