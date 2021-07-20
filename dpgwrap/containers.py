@@ -627,6 +627,7 @@ class Table(Container):
         no_pad_innerX: bool = False,
         scrollX: bool = False,
         scrollY: bool = False,
+        no_saved_settings: bool = False,
         **kwargs
     ):
         super().__init__(
@@ -670,6 +671,7 @@ class Table(Container):
         no_pad_innerX=no_pad_innerX,
         scrollX=scrollX,
         scrollY=scrollY,
+        no_saved_settings=no_saved_settings,
         **kwargs
         )
         self.label = label
@@ -712,6 +714,7 @@ class Table(Container):
         self.no_pad_innerX = no_pad_innerX
         self.scrollX = scrollX
         self.scrollY = scrollY
+        self.no_saved_settings = no_saved_settings
 
 
 class TableRow(Container):
@@ -903,6 +906,7 @@ class Window(Container):
         no_background: bool = False,
         modal: bool = False,
         popup: bool = False,
+        no_saved_settings: bool = False,
         on_close: Callable = None,
         **kwargs
     ):
@@ -932,6 +936,7 @@ class Window(Container):
         no_background=no_background,
         modal=modal,
         popup=popup,
+        no_saved_settings=no_saved_settings,
         on_close=on_close,
         **kwargs
         )
@@ -960,4 +965,5 @@ class Window(Container):
         self.no_background = no_background
         self.modal = modal
         self.popup = popup
+        self.no_saved_settings = no_saved_settings
         self.on_close = on_close
