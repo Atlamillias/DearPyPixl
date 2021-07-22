@@ -1,2 +1,1 @@
 dearpygui >= 0.8.39
-screeninfo >= 0.6.7
