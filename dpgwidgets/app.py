@@ -1,13 +1,13 @@
-from typing import Any, Callable
+import ctypes
+import sys
+from typing import Any
 from contextlib import contextmanager
 
 from dearpygui import _dearpygui as idpg
-from dearpygui.logger import mvLogger as Logger
-from dpgwrap.containers import Window, Child, Group
-from dpgwrap.widgets import Button, Text
+from dpgwrap.containers import Window
 
 import dpgwidgets
-from dpgwidgets import dpg, Item, _Registry
+from dpgwidgets import dpg
 from dpgwidgets.theme import ThemeSupport
 from dpgwidgets.handler import AppHandlerSupport
 from dpgwidgets.themes import DEFAULT
@@ -184,45 +184,6 @@ class Viewport(ThemeSupport, AppHandlerSupport):
         """
         dpg.minimize_viewport(self.__id)
 
-    def show_dev_window(self):
-        """Renders a window that allows users to launch a variety of helpful
-        tools.
-        """
-        with Window("Dev Tools", width=300, no_move=True, no_close=True, no_resize=True) as dev:
-            dev.pos = (self.width - dev.width, 20)
-            dev.height = self.height
-
-            dev.theme_style.window_padding = 0, 0
-            dev.theme_color.title_bg = (0.14 * 255, 0.14 * 255, 0.14 * 255, 1.00 * 255)
-            dev.theme_color.window_bg = (0.06 * 255, 0.06 * 255, 0.06 * 255, 125)
-            dev.theme_color.title_bg_active = (0.14 * 255, 0.14 * 255, 0.14 * 255, 1.00 * 255)
-
-            btn_width = dev.width
-            Button("Documentation", callback=dpg.show_documentation, width=btn_width)
-            Button("Debug", callback=dpg.show_debug, width=btn_width)
-            Button("Style Editor", callback=dpg.show_style_editor, width=btn_width)
-            Button("Metrics", callback=dpg.show_metrics, width=btn_width)
-            Button("About", callback=dpg.show_about, width=btn_width)
-            Button("Font Manager", callback=dpg.show_font_manager, width=btn_width)
-            Button("Item Registry", callback=dpg.show_item_registry, width=btn_width)
-            Button("Logger", callback=Logger, width=btn_width)
-
-            with Child() as info:
-                info.theme_style.window_padding = 10.0, 0
-                mouse_pos_item = Text("Mouse position: ")
-                frame_cnt = Text("Frames rendered: ")
-
-        @self.on_resize
-        def devwin_pos():
-            dev.pos = (self.width - dev.width, 20)
-            dev.height = self.height
-
-        @self.on_render
-        def update_dev():
-            x, y = self.get_mouse_pos(local=False)
-            mouse_pos_item.value = f"Mouse position: {x}, {y}"
-            frame_cnt.value = f"Frames rendered: {self.frame_count}"
-
 
     # Addl. handlers/callback stuff
     # These can be used as decorators just like handler methods
@@ -290,10 +251,9 @@ class Viewport(ThemeSupport, AppHandlerSupport):
     def start(self):
         """Registers callbacks and starts the main render loop.
         """
-        on_render_calls = self.get_render_callable()
         self.register_callbacks()
         while idpg.is_dearpygui_running():
-            on_render_calls()
+            self.get_render_callable()()
             idpg.render_dearpygui_frame()
         idpg.cleanup_dearpygui()
 
@@ -349,16 +309,22 @@ class Viewport(ThemeSupport, AppHandlerSupport):
 
 
     # misc.
-    @property
     def frame_count(self):
         return dpg.get_frame_count()
 
-    @property
-    def time_elapsed(self):
+    def runtime(self):
         """Returns the time that has elapsed since the main render loop
         was started.
         """
         return dpg.get_total_time()
+
+    def framerate(self):
+        """Returns the average frames per second (independant of
+        the display's refresh rate).
+        """
+        frames = idpg.get_frame_count() or 1
+        t = idpg.get_total_time() or 1
+        return round(frames / t)
 
     @property
     def docking_enabled(self) -> bool:
@@ -382,7 +348,28 @@ class Viewport(ThemeSupport, AppHandlerSupport):
 
 
 
-## Useful commands (most are copy/paste from dearpygui) ##
+## Windows-only ##
+def use_hardware_resolution():
+    """Ignore the 'Scale and layout' display setting in Windows
+    for this process (Windows only). Does nothing on other platforms.
+    """
+    if sys.platform != "win32":
+        return
+
+    ctypes.windll.shcore.SetProcessDpiAwareness(2)
+
+
+def use_virtualized_resolution():
+    """Uses the selected 'Scale and layout' display setting in Windows
+    for this process (Windows only). Does nothing on other platforms.
+    """
+    if sys.platform != "win32":
+        return
+
+    ctypes.windll.shcore.SetProcessDpiAwareness(0)
+
+
+## Useful commands from dearpygui ##
 @contextmanager
 def mutex():
    try:
