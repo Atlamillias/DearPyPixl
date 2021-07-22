@@ -1,7 +1,7 @@
 import sys
 sys.path.append("./dpgwrap/")
 
-from dearpygui import dearpygui as dpg
+from dearpygui import dearpygui as dpg, _dearpygui as idpg
 
 from dpgwrap._item import Item, ContextSupport  # avoids circular imports
 from dpgwidgets.constants import Registry as _Registry, Key, Mouse
