@@ -41,6 +41,18 @@ class Plot(Container):
         crosshairs: bool = False,
         anti_aliased: bool = False,
         equal_aspects: bool = False,
+        pan_button: int = 0,
+        pan_mod: int = -1,
+        fit_button: int = 0,
+        context_menu_button: int = 1,
+        box_select_button: int = 1,
+        box_select_mod: int = -1,
+        box_select_cancel_button: int = 0,
+        query_button: int = 2,
+        query_mod: int = -1,
+        query_toggle_mod: int = 17,
+        horizontal_mod: int = 18,
+        vertical_mod: int = 16,
         **kwargs
     ):
         super().__init__(
@@ -71,6 +83,18 @@ class Plot(Container):
         crosshairs=crosshairs,
         anti_aliased=anti_aliased,
         equal_aspects=equal_aspects,
+        pan_button=pan_button,
+        pan_mod=pan_mod,
+        fit_button=fit_button,
+        context_menu_button=context_menu_button,
+        box_select_button=box_select_button,
+        box_select_mod=box_select_mod,
+        box_select_cancel_button=box_select_cancel_button,
+        query_button=query_button,
+        query_mod=query_mod,
+        query_toggle_mod=query_toggle_mod,
+        horizontal_mod=horizontal_mod,
+        vertical_mod=vertical_mod,
         **kwargs
         )
         self.label = label
@@ -100,6 +124,18 @@ class Plot(Container):
         self.crosshairs = crosshairs
         self.anti_aliased = anti_aliased
         self.equal_aspects = equal_aspects
+        self.pan_button = pan_button
+        self.pan_mod = pan_mod
+        self.fit_button = fit_button
+        self.context_menu_button = context_menu_button
+        self.box_select_button = box_select_button
+        self.box_select_mod = box_select_mod
+        self.box_select_cancel_button = box_select_cancel_button
+        self.query_button = query_button
+        self.query_mod = query_mod
+        self.query_toggle_mod = query_toggle_mod
+        self.horizontal_mod = horizontal_mod
+        self.vertical_mod = vertical_mod
 
 
 class HistogramSeries(Widget):
