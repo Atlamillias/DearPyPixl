@@ -20,7 +20,8 @@ class Item(metaclass=ABCMeta):
         # cache config attrs for future items of the same type
         if not self.__config:
             self.__class__.__config = {optn for optn in kwargs.keys()
-                                       if optn != "id"}
+                                       if optn != "id" and
+                                       optn != "default_value"}
 
         super().__init__()
 
