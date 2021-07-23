@@ -16,7 +16,10 @@ class Item(metaclass=ABCMeta):
             kwargs["parent"] = int(parent)
         kwargs["label"] = kwargs.get('label') or self.__class__.__name__
 
-        self.__id = self.__class__._command(**kwargs)
+        if (id:=kwargs.get("id", None)) and kwargs.pop("existing_item", None):
+            self.__id = id
+        else:
+            self.__id = self.__class__._command(**kwargs)
 
         # cache config attrs for future items of the same type
         if not self.__config:

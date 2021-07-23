@@ -24,7 +24,6 @@ class Viewport(ThemeSupport, AppHandlerSupport):
     # The overall structure is identical.
     __command = dpg.create_viewport
     __id = "DPG_NOT_USED_YET"
-    __exists = False
     __config = set()
     # callbacks to register during setup
     called_on_start = []  # set on system/application
