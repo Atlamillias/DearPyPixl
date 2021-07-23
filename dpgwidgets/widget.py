@@ -13,6 +13,9 @@ class Widget(Item, ThemeSupport, HandlerSupport, metaclass=ABCMeta):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
+    def focus(self):
+        idpg.focus_item(self.id)
+
     def move_up(self) -> None:
         idpg.move_item_up(self.id)
 
@@ -31,51 +34,51 @@ class Widget(Item, ThemeSupport, HandlerSupport, metaclass=ABCMeta):
     ## State-getters ##
     @property
     def is_container(self):
-        return idpg.get_item_info(self.__id)["container"]
+        return idpg.get_item_info(self.id)["container"]
 
     @property
     def is_hovered(self):
-        return idpg.get_item_state(self.__id)["hovered"]
+        return idpg.get_item_state(self.id)["hovered"]
 
     @property
     def is_active(self):
-        return idpg.get_item_state(self.__id)["active"]
+        return idpg.get_item_state(self.id)["active"]
 
     @property
     def is_focused(self):
-        return idpg.get_item_state(self.__id)["focused"]
+        return idpg.get_item_state(self.id)["focused"]
 
     @property
     def is_clicked(self):
-        return idpg.get_item_state(self.__id)["clicked"]
+        return idpg.get_item_state(self.id)["clicked"]
 
     @property
     def is_visible(self):
-        return idpg.get_item_state(self.__id)["visible"]
+        return idpg.get_item_state(self.id)["visible"]
 
     @property
     def is_edited(self):
-        return idpg.get_item_state(self.__id)["edited"]
+        return idpg.get_item_state(self.id)["edited"]
 
     @property
     def is_activated(self):
-        return idpg.get_item_state(self.__id)["activated"]
+        return idpg.get_item_state(self.id)["activated"]
 
     @property
     def is_deactivated(self):
-        return idpg.get_item_state(self.__id)["deactivated"]
+        return idpg.get_item_state(self.id)["deactivated"]
 
     @property
     def is_deactivated_after_edit(self):
-        return idpg.get_item_state(self.__id)["deactivated_after_edit"]
+        return idpg.get_item_state(self.id)["deactivated_after_edit"]
 
     @property
     def is_toggled_open(self):
-        return idpg.get_item_state(self.__id)["toggled_open"]
+        return idpg.get_item_state(self.id)["toggled_open"]
 
     @property
     def is_ok(self):
-        return idpg.get_item_state(self.__id)["ok"]
+        return idpg.get_item_state(self.id)["ok"]
 
 
 
