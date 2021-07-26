@@ -188,8 +188,8 @@ class NodeLink(Widget):
 
     def __init__(
         self,
-        node_1: int,
-        node_2: int,
+        attr_1: int,
+        attr_2: int,
         label: str = None,
         parent: int = 0,
         show: bool = True,
@@ -197,16 +197,16 @@ class NodeLink(Widget):
         **kwargs
     ):
         super().__init__(
-        node_1=node_1,
-        node_2=node_2,
+        attr_1=attr_1,
+        attr_2=attr_2,
         label=label,
         parent=parent,
         show=show,
         user_data=user_data,
         **kwargs
         )
-        self.node_1 = node_1
-        self.node_2 = node_2
+        self.attr_1 = attr_1
+        self.attr_2 = attr_2
         self.label = label
         self.parent = parent
         self.show = show

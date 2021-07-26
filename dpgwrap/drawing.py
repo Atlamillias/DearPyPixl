@@ -619,7 +619,7 @@ class Text(Widget):
         show: bool = True,
         user_data: Any = None,
         color: list[int] = (255, 255, 255, 255),
-        size: int = 10,
+        size: float = 10.0,
         **kwargs
     ):
         super().__init__(
