@@ -6,6 +6,18 @@ from dpgwidgets import dpg, _Registry
 from dpgwidgets.constants import COLOR_OPTN, STYLE_OPTN
 
 
+# NOTE: DearPyGui seperates "Theme" and "Font". The process
+# of marrying the two (below) is not straight-forward and have
+# different implementations. Where the Theme class (below) has
+# helper classes for color and styles (which are basically
+# dictionaries) the Font class (even further below) manages itself
+# and is not made nor does it work in the same way. The
+# ThemeSupport mixin class serves as the middle-man for making the
+# API more streamlined for the end-user.
+#
+# TL/DR: Managing this in the future might *suck* depending how DPG
+# manages fonts/themes going forward.
+
 _FONT_RANGE_HINT = {}
 
 
@@ -25,7 +37,7 @@ _get_font_range_hints()
 ###  Theme support mixins ####
 ##############################
 class ThemeSupport:
-    """Mixin class for the Item subclasses supporting functionality 
+    """Mixin class for Item subclasses supporting functionality 
     for the modification of colors, styles, and fonts.
     """
     def __init__(self):
@@ -60,12 +72,17 @@ class ThemeSupport:
     def theme_style(self):
         return self.theme.style
 
+    # NOTE: See the Font class for comments regarding how this works.
     @property
     def theme_font(self):
         return self.theme.font
 
     @theme_font.setter
     def theme_font(self, value: Font):
+        # All that is needed to be done by the end-user is
+        # instantiate an instance (binding it to a variable), and setting
+        # an item's theme_font to that variable (item.theme_font = Font(...)).
+        # See the Font class comments for more context.
         if isinstance(self.id, int):
             self.theme.font = value
             dpg.set_item_font(self.id, self.theme._font_id)
@@ -86,6 +103,10 @@ class ThemeSupport:
 
     @theme_ft_size.setter
     def theme_ft_size(self, value: float):
+        # The current DPG API disallows getting/setting
+        # the font size from an existing font item.
+        # Since fonts are rendered as bitmaps, they wouldn't
+        # scale well even if they could be directly resized.
         self.theme.font_size = value
         if value is None:
             raise ValueError(f"value must be <float>.")
@@ -102,7 +123,7 @@ class Theme:
     # The idea here is to unify them.
     _color_ids = None
     _style_ids = None
-    _font_id = None
+    _font_id = None  # id of the font item that matches the set size
     __id = None
 
     __color = None
@@ -147,7 +168,7 @@ class Theme:
     def style(self):
         return self.__style
 
-    # Font doesn't have a helper class
+    # NOTE: See the Font class for comments regarding how this works.
     @property
     def font(self):
         return self.__font
@@ -170,8 +191,11 @@ class Theme:
         self.__font_size = value
         if value is None:
             self._font_id = None
-        elif font := self.__font:
-            self._font_id = font(self.__font_size)
+        elif font_obj := self.__font:
+            # Calling the set Font instance returns a font item
+            # with the matching size.
+            # See the Font class for more context.
+            self._font_id = font_obj(self.__font_size)
 
     def configure(
         self, 
@@ -223,7 +247,7 @@ class Theme:
 
 ########## Theme helpers ##########
 class THelper:
-    # Note: There's definitely a better way of handling this.
+    # NOTE: There's definitely a better way of handling this.
     # The way this is currently set allows me to make subclasses
     # containing only the theme options and nothing else. All
     # functionality is below and doesn't need patching per subclass.
@@ -235,8 +259,7 @@ class THelper:
         self.__id = int(parent)
         # The goal is to allow intellisense to help out with
         # the available colors/styles. These are mangled to avoid
-        # name collisions and to keep intellisense from picking
-        # at internal attributes.
+        # name collisions because there are SO MANY OPTIONS.
         if "color" == theme_type:
             self.__optn_constants = COLOR_OPTN
             self.__theme_ids = parent._color_ids
@@ -405,10 +428,8 @@ class ColorHelper(THelper):
     node_title_bar_selected = None
 
 class StyleHelper(THelper):
-    # Notes:
-    #     "*text_align": centered is 0.5, 0.5
     alpha = None
-    button_text_align = None
+    button_text_align = None  # centered is 0.5, 0.5
     cell_padding = None
     child_border_size = None
     child_rounding = None
@@ -424,13 +445,13 @@ class StyleHelper(THelper):
     popup_rounding = None
     scrollbar_rounding = None
     scrollbar_size = None
-    selectable_text_align = None
+    selectable_text_align = None  # centered is 0.5, 0.5
     tab_rounding = None
     window_border_size = None
     window_min_size = None
     window_padding = None
     window_rounding = None
-    window_title_align = None
+    window_title_align = None  # centered is 0.5, 0.5
     plot_annotation_padding = None
     plot_digital_bit_gap = None
     plot_digital_bit_height = None
@@ -480,9 +501,14 @@ class StyleHelper(THelper):
 ######### Font stuff #########
 ##############################
 class Font:
+    """Returns a callable Font object and adds the font to the 
+    global font registry.
     """
-    Returns a callable Font object.
-    """
+    # NOTE: When DPG creates a font, they are rendered as bitmaps.
+    # This means they don't scale very well when resized. At this
+    # time, an existing font item cannot have its size fetched or
+    # changed through the DPG API. This class solves both of these
+    # problems. 
     registered_fonts = []
 
     def __init__(
@@ -497,6 +523,10 @@ class Font:
 
         **kwargs
     ):
+        # When instantiated, a font item is created, the size id are 
+        # added to self._fonts as {size: font_id} via _get_font_item,
+        # and the instance is appended to Font.registered_fonts.
+
         self.__default_size = size
         # future font item args
         self.__label = label
@@ -538,13 +568,19 @@ class Font:
         self.__default_size = value
 
     def _get_font_item(self, size: float = None):
-        # returns an existing font item of <size> or
-        # creates a new one and caches it
         size = size or self.__default_size
-
+        # Creating font items internally stalls the running thread
+        # (this is quite severe when creating many font items).
+        # To avoid re-creating the same item for different widgets,
+        # any font id created is cached in self._fonts as {size: id}.
+        # The cache is checked first for an item with the requested
+        # size and returns it if it exists.
         if font := self._fonts.get(size, None):
             return int(font)
-
+        
+        # If a font with that size doesn't exist, then we create one
+        # and add it to the cache using the parameters passed when 
+        # the Font instance was created.
         with dpg.font(self.__file, size, parent=_Registry.FONT.value, **self.__kwargs) as font:
             if self.__font_range:
                 start, stop = self.__font_range
@@ -564,12 +600,15 @@ class Font:
         return cls.registered_fonts
 
     @classmethod
-    def load_font_directory(cls, dir_path: str):
+    def load_fonts(cls, dir_path: str):
         """Attempts to load and register all .otf and .ttf files
         in <dir_path>, and return a list of all font objects created.
 
         Note: You will notice a sizable lag when loading several at once.
         """
+        # NOTE: This is something you would want to do early on,
+        # before even calling a Viewport instance. Definitely one
+        # of those "Loading, please wait..." moments.
         fonts = []
         for ffile in Path(dir_path).iterdir():
             if ffile.suffix in (".ttf", ".otf"):

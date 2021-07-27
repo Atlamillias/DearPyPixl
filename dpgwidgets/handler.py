@@ -8,16 +8,17 @@ import copy
 from dpgwidgets import dpg
 from dpgwidgets.constants import Registry as _Registry
 
-# Note: Widget-level and global-level handlers are different from
+# NOTE: Widget-level and global-level handlers are different from
 # each other in DPG. Global handlers (AppHandlerSupport) can be toggled
 # using the "show" keyword and also have their own unique registry (because
 # they lack parenting widgets). Widget handlers can't be toggled in the 
 # same way and must be deleted. For now, both cases will be handled in
-# the former manner.
+# the former manner. The classes below try not to expose the handler
+# items directly and manages them internally.
 
 class HandlerBase(metaclass=ABCMeta):
     @abstractmethod
-    def _handler_map(self): ...
+    def _handler_map(self): ...  # {method_name_str: dpg.handler_callable}
 
     def __init__(self):
         super().__init__()
@@ -38,6 +39,7 @@ class HandlerBase(metaclass=ABCMeta):
         dpg.delete_item(handler)
 
     def _pop_handler(self, handler_type: str, callback: Callable):
+        # Removes <callback> from <handler_type> in self._registered_handlers.
         key = self._registered_handlers[handler_type]
         for idx, h_info in enumerate(key):
             if h_info[0] == callback:
@@ -46,6 +48,7 @@ class HandlerBase(metaclass=ABCMeta):
         return None
 
     def _set_handler(self, callback: Callable = None,**kwargs):
+        # Generic handler. This should be called in every handler method.
         @functools.wraps(callback)
         def wrapper(callback):
             handler = self._handler_map[method_name](
@@ -58,8 +61,10 @@ class HandlerBase(metaclass=ABCMeta):
             )
             return callback
 
-        # Calling str to ensure that there are no references to
-        # the frame itself once the call resolves.
+        # Calling str creating a "copy" to ensure that there
+        # are no references to the frame itself once the call
+        # resolves. See "Note" in
+        # https://docs.python.org/3/library/inspect.html#the-interpreter-stack.
         method_name = str(inspect.stack()[1].function)
 
         if not callback:
@@ -135,7 +140,8 @@ class AppHandlerSupport(HandlerBase):
         "on_mouse_drag": dpg.add_mouse_drag_handler,
     }
 
-    # parent is the global registry and NOT the item/app/viewport
+    # Global-level handlers use a handler registry parent and
+    # not a typical widget.
     def _set_handler(self, callback: Callable = None, **kwargs):
         @functools.wraps(callback)
         def wrapper(callback):
@@ -149,8 +155,10 @@ class AppHandlerSupport(HandlerBase):
             )
             return callback
 
-        # Calling str to ensure that there are no references to
-        # the frame itself once the call resolves.
+        # Calling str creating a "copy" to ensure that there
+        # are no references to the frame itself once the call
+        # resolves. See "Note" in
+        # https://docs.python.org/3/library/inspect.html#the-interpreter-stack.
         method_name = str(inspect.stack()[1].function)
 
         if not callback:
@@ -162,9 +170,10 @@ class AppHandlerSupport(HandlerBase):
         return self._set_handler(callback=callback, user_data=user_data, **kwargs)
 
     def on_key_down(self, callback: Callable = None, *, key: int = -1, user_data: Any = None, **kwargs):
-        # Note: Most OS have a key-repeat feature for keys that are held down for
-        # a period of time - it will fire off this callback repeatedly
-        # if enabled (not NEARLY as much as "while_key_down").
+        # NOTE: Most OS have a key-repeat feature for keys that
+        # are held down for a period of time - it will fire this
+        # callback repeatedly if enabled (not NEARLY as much as
+        # "while_key_down").
         return self._set_handler(callback=callback, user_data=user_data, **kwargs)
 
     def on_key_up(self, callback: Callable = None, *, key: int = -1, user_data: Any = None, **kwargs):

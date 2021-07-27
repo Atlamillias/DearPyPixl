@@ -7,6 +7,9 @@ from dpgwidgets.theme import ThemeSupport
 
 
 class Widget(Item, ThemeSupport, HandlerSupport, metaclass=ABCMeta):
+    """Base class for all end-user items. Supports themes and handlers.
+    Subclass this if creating your own widgets.
+    """
     @abstractmethod
     def _command() -> Callable: ...
 
@@ -83,9 +86,11 @@ class Widget(Item, ThemeSupport, HandlerSupport, metaclass=ABCMeta):
 
 
 class Container(Widget, ContextSupport, metaclass=ABCMeta):
+    """Base class for all end-user container items. Supports themes and
+    handlers. Subclass this if creating your own container widgets.
+    """
     @abstractmethod
     def _command() -> Callable: ...
-
 
     # x_scroll
     @property
@@ -126,6 +131,3 @@ class Container(Widget, ContextSupport, metaclass=ABCMeta):
                 idpg.get_item_children(self.id, -1).items()
                 for child in childs 
                 if any(slot == i for i in (1, 2))]
-        
-    
-

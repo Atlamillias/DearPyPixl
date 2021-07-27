@@ -7,6 +7,7 @@ import typing
 
 from dearpygui import dearpygui as dpg, _dearpygui as idpg
 
+# TODO: Generate constants.py.
 
 DEFAULT_DIR = "./dpgwrap"
 DEFAULT_BACKUP_DIR = "./dpgwrap/_backup"

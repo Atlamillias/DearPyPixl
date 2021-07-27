@@ -14,16 +14,86 @@ from dpgwidgets.themes import DEFAULT
 
 __all__ = [
     "Viewport",
+
+    "use_hardware_resulution",
+    "use_virtualized_resolution",
+
+    "mutex",
+    # these are mostly copy/paste from DPG
+    # need to make my own implementations of these tools
+    "show_about",
+    "show_documentation",
+    "show_metrics",
+    "show_debug",
+    "show_font_manager",
+    "show_item_registry",
+    "show_logger",
 ]
 
 
 class Viewport(ThemeSupport, AppHandlerSupport):
+    """Creates and performs setup on a DearPyGui viewport. A Viewport
+    instance represents the application itself, and only one instance 
+    should exist per-process. Creating more than once instance will
+    result in an error or segfault.
+
+    Dummy instances can be created by passing <is_dummy=True>. This is
+    useful for splitting a large UI across multiple modules and to avoid
+    importing your Viewport instance across all of them (see comments 
+    in __init__.py near "Application"). You could also just import your
+    modules into your top-level module after instantiating Viewport, but
+    IDE language servers will be yelling at you for reference errors (
+    intellisense obviously can't help in these modules either without 
+    a reference).
+
+        Args:
+            title (str, optional): Text displayed in the viewport title bar.
+        Defaults to "Application".
+            small_icon (str, optional): Path to an image to be displayed on the left
+        in the viewport title bar. Defaults to ''.
+            large_icon (str, optional): Path to an image to be displayed on, for example,
+        the Windows taskbar while the application is running. Defaults to ''.
+            width (int, optional): Starting horizontal size in pixels. Defaults to 1280.
+            height (int, optional): Starting vertical size in pixels. Defaults to 800.
+            x_pos (int, optional): Starting position on the x-axis. Defaults to 100.
+            y_pos (int, optional): Starting position on the y_axis. Defaults to 100.
+            min_width (int, optional): The minimum width that the viewport can
+        be sized to. Defaults to 250.
+            max_width (int, optional): The maximum width that the viewport can be sized
+        to. Defaults to 10000.
+            min_height (int, optional): The minimum height that the viewport can
+        be sized to. Defaults to 250.
+            max_height (int, optional): The maximum height that the viewport can be sized
+        to. Defaults to 10000.
+            resizable (bool, optional): If False, the viewport cannot be resized through
+        the interface. Defaults to True.
+            vsync (bool, optional): Enables vertical sync - synchronizes the application
+        framerate with your monitor's refresh rate. Defaults to True.
+            always_on_top (bool, optional): If True, the application will always be "in front"
+        of any other application. Useful for games, etc. Defaults to False.
+            maximized_box (bool, optional): If False, the maximize/restore down button in the
+        title bar will be disabled. Defaults to True.
+            minimized_box (bool, optional): If False, the minimize button in the title bar will
+        be disabled. Defaults to True.
+            border (bool, optional): Shows application window border. Defaults to True.
+            caption (bool, optional): [UNDOCUMENTED]. Defaults to True.
+            overlapped (bool, optional): [UNDOCUMENTED]. Defaults to True.
+            clear_color (list[float], optional): [UNDOCUMENTED - Sets viewport background color?].
+        Defaults to [0, 0, 0, 255].
+            staging_mode (bool, optional): Enables staging mode. Defaults to False.
+            enable_docking (bool, optional): Enables docking - drag and dropping windows in other
+        windows will "nest" them into each other where you can tab back and forth between them.
+        Defaults to False.
+            dock_space (bool, optional): If True and <enable_docking> is also True, windows can also
+        be docked on the viewport. Defaults to False.
+    
+    """
     # This class doesn't subclass <class "Item"> because
     # everything needs to be re-defined regardless.
     # Whatever isn't re-defined would just raise an error.
     # The overall structure is identical.
     __command = dpg.create_viewport
-    __id = "DPG_NOT_USED_YET"
+    __id = "DPG_NOT_USED_YET"  # 
     __config = set()
     # callbacks to register during setup
     called_on_start = []  # set on system/application
@@ -65,8 +135,8 @@ class Viewport(ThemeSupport, AppHandlerSupport):
         enable_docking: bool = False,
         dock_space: bool = False,
         **kwargs,
-
     ):
+
         super().__init__()
         # viewport config
         self.title = title
@@ -119,7 +189,7 @@ class Viewport(ThemeSupport, AppHandlerSupport):
             clear_color=clear_color,
         )
 
-        if "is_dummy" not in kwargs:
+        if not kwargs.get("is_dummy", False):
             self.__class__.__command(**self.__config)
             self.__config = {*self.__config.keys()}
             if enable_docking:  # must be called before dpg.setup_dearpygui
@@ -248,7 +318,20 @@ class Viewport(ThemeSupport, AppHandlerSupport):
         idpg.cleanup_dearpygui()
 
     def start(self):
-        """Registers callbacks and starts the main render loop.
+        """Registers callbacks and starts the main render loop. For
+        complex/detailed UI, you may wish to create this loop manually:
+
+            ...
+            app = Viewport()
+            app.register_callbacks() 
+            while app.is_running:
+                # do stuff
+                app.get_render_callable()()
+                # do more stuff
+                app.render_frame()
+            app.cleanup()
+
+
         """
         self.register_callbacks()
         while idpg.is_dearpygui_running():

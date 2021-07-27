@@ -6,17 +6,31 @@ from dearpygui import _dearpygui as idpg
 
 
 class Item(metaclass=ABCMeta):
+    """Base class for all wrapped DearPyGui items.
+
+    Args:
+        *flags (str, optional): Changes instantiation.
+        **kwargs (optional): Configuration options used to create
+    a DPG item.
+
+        Flag options:
+            '-s', '--staging': The item itself (and item id) is not created
+        on instantiation and will instead assume it has already been created.
+        This is useful for creating compound widgets (widgets that are composed
+        of several other widgets).
+    
+    """
     @abstractmethod
     def _command() -> Callable: ...
 
     __config = set()
 
-    def __init__(self, **kwargs):
+    def __init__(self, *flags, **kwargs):
         if parent := kwargs.pop("parent", None):
             kwargs["parent"] = int(parent)
         kwargs["label"] = kwargs.get('label') or self.__class__.__name__
 
-        if (id:=kwargs.get("id", None)) and kwargs.pop("existing_item", None):
+        if (id:=kwargs.get("id", None)) and "-s" in flags or "--staging" in flags:
             self.__id = id
         else:
             self.__id = self.__class__._command(**kwargs)
@@ -99,6 +113,12 @@ class Item(metaclass=ABCMeta):
 
 
 class ContextSupport:  # mixin
+    """Mixin class for Item subclasses that are intended to act
+    as containers. Containers need to be set as the "parent" -
+    the item that will be holding any new items created within the
+    context of their **with** statement.
+     
+    """
     def __enter__(self):
         dpg.push_container_stack(self.id)
         return self
