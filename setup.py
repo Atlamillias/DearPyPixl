@@ -1,8 +1,4 @@
-from setuptools import setup
+import setuptools
 
+setuptools.setup()
 
-with open("README.md", "r") as file:
-    desc = file.read()
-
-
-# need to add setup

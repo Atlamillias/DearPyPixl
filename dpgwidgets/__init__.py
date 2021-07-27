@@ -35,6 +35,8 @@ from dpgwrap import (
     widgets,
 )
 
+__version__ = "0.0.1"
+
 __all__ = [
     # high-level objects
     "Application",
@@ -43,7 +45,6 @@ __all__ = [
     "Font",
     "Key",
     "Mouse",
-    "registered_fonts",
     # imports
     "containers",
     "drawing",
