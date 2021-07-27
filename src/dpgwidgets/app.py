@@ -17,17 +17,7 @@ __all__ = [
 
     "use_hardware_resulution",
     "use_virtualized_resolution",
-
     "mutex",
-    # these are mostly copy/paste from DPG
-    # need to make my own implementations of these tools
-    "show_about",
-    "show_documentation",
-    "show_metrics",
-    "show_debug",
-    "show_font_manager",
-    "show_item_registry",
-    "show_logger",
 ]
 
 
@@ -451,43 +441,10 @@ def use_virtualized_resolution():
     ctypes.windll.shcore.SetProcessDpiAwareness(0)
 
 
-## Useful commands from dearpygui ##
+
 @contextmanager
 def mutex():
    try:
        yield dpg.lock_mutex()
    finally:
        dpg.unlock_mutex()
-
-
-def show_style_editor(sender: str = "", data: Any = None):
-    dpg.show_tool(dpg.mvTool_Style)
-
-
-def show_metrics(sender: str = "", data: Any = None):
-    dpg.show_tool(dpg.mvTool_Metrics)
-
-
-def show_about(sender: str = "", data: Any = None):
-    dpg.show_tool(dpg.mvTool_About)
-
-
-def show_debug(sender: str = "", data: Any = None):
-    dpg.show_tool(dpg.mvTool_Debug)
-
-
-def show_documentation(sender: str = "", data: Any = None):
-    dpg.show_tool(dpg.mvTool_Doc)
-
-
-def show_font_manager(sender: str = "", data: Any = None):
-    dpg.show_tool(dpg.mvTool_Font)
-
-
-def show_item_registry(sender: str = "", data: Any = None):
-    dpg.show_tool(dpg.mvTool_ItemRegistry)
-
-
-def show_logger(sender: str = "", data: Any = None):
-    from dearpygui import logger
-    logger.mvLogger()
