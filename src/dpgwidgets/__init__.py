@@ -27,7 +27,7 @@ with dpg.texture_registry(id=_Registry.TEXTURE.value, label="AppTextureRegistry"
 with dpg.value_registry(id=_Registry.VALUE.value, label="AppValueRegistry"):
     pass
 
-from dpgwidgets.app import Viewport
+from dpgwidgets.app import Viewport, _Viewport
 from dpgwidgets.theme import Font, Theme
 from dpgwrap import (
     containers,
@@ -37,7 +37,7 @@ from dpgwrap import (
     widgets
 )
 
-__version__ = "0.1.1"
+__version__ = "0.1.16"
 
 __all__ = [
     # high-level objects
@@ -61,12 +61,15 @@ __all__ = [
 
 
 # Typically, UI code is in main.py and not split across other
-# modules. For larger projects it's almost impossible to avoid.
+# modules. For larger projects though it is better for organization.
 # "Application" exists to make it easier to split a UI across
 # multiple files. Instead of creating a Viewport instance in
 # one file and having every other file import it, they can import
 # Application instead.
-Application = Viewport(is_dummy=True)
+#
+# When an instance of the real Viewport class is created, the
+# variable below is re-bound to the real one.
+Application = _Viewport()
 
 
 def _update_wrappers():
