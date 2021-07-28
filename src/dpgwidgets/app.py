@@ -1,6 +1,6 @@
 import ctypes
 import sys
-from typing import Any
+import inspect
 from contextlib import contextmanager
 
 from dearpygui import _dearpygui as idpg
@@ -11,6 +11,8 @@ from dpgwidgets import dpg
 from dpgwidgets.theme import ThemeSupport
 from dpgwidgets.handler import AppHandlerSupport
 from dpgwidgets.themes import DEFAULT
+from dpgwidgets.error import ViewportError
+
 
 __all__ = [
     "Viewport",
@@ -24,17 +26,7 @@ __all__ = [
 class Viewport(ThemeSupport, AppHandlerSupport):
     """Creates and performs setup on a DearPyGui viewport. A Viewport
     instance represents the application itself, and only one instance 
-    should exist per-process. Creating more than once instance will
-    result in an error or segfault.
-
-    Dummy instances can be created by passing <is_dummy=True>. This is
-    useful for splitting a large UI across multiple modules and to avoid
-    importing your Viewport instance across all of them (see comments 
-    in __init__.py near "Application"). You could also just import your
-    modules into your top-level module after instantiating Viewport, but
-    IDE language servers will be yelling at you for reference errors (
-    intellisense obviously can't help in these modules either without 
-    a reference).
+    should exist per-process.
 
         Args:
             title (str, optional): Text displayed in the viewport title bar.
@@ -85,6 +77,7 @@ class Viewport(ThemeSupport, AppHandlerSupport):
     __command = dpg.create_viewport
     __id = "DPG_NOT_USED_YET"  # 
     __config = set()
+    __exists = False
     # callbacks to register during setup
     called_on_start = []  # set on system/application
     called_on_exit = []  # set on system/application
@@ -126,7 +119,6 @@ class Viewport(ThemeSupport, AppHandlerSupport):
         dock_space: bool = False,
         **kwargs,
     ):
-
         super().__init__()
         # viewport config
         self.title = title
@@ -179,16 +171,20 @@ class Viewport(ThemeSupport, AppHandlerSupport):
             clear_color=clear_color,
         )
 
-        if not kwargs.get("is_dummy", False):
-            self.__class__.__command(**self.__config)
-            self.__config = {*self.__config.keys()}
-            if enable_docking:  # must be called before dpg.setup_dearpygui
-                dpg.enable_docking(dock_space=dock_space)
+        cls = self.__class__
+        if cls.__exists:
+            raise ViewportError("Instance already exists - only 1 instance is allowed.")
+        cls.__exists = True
+        cls.__command(**self.__config)
+        self.__config = {*self.__config.keys()}
+        if enable_docking:  # must be called before dpg.setup_dearpygui
+            dpg.enable_docking(dock_space=dock_space)
 
-            dpg.setup_dearpygui(viewport=self.__id)
-            dpg.show_viewport(self.__id)
+        dpg.setup_dearpygui(viewport=self.__id)
+        dpg.show_viewport(self.__id)
 
-            dpgwidgets.Application = self
+        # Re-binding the global reference to the real viewport
+        dpgwidgets.Application = self
 
     def __repr__(self):
         return f"{self.__class__.__qualname__} ({type(self)}) =>"
@@ -293,7 +289,8 @@ class Viewport(ThemeSupport, AppHandlerSupport):
     @classmethod
     def get_render_callable(cls):
         """Returns a callable that calls all functions that are to be called
-        on render (i.e. while the main loop is running)."""
+        on render (i.e. while the main loop is running).
+        """
         return lambda: [f() for f in cls.called_on_render]
 
     @property
@@ -301,7 +298,8 @@ class Viewport(ThemeSupport, AppHandlerSupport):
         return idpg.is_dearpygui_running()
 
     def render_frame(self):
-        """Renders a frame."""
+        """Renders a frame.
+        """
         return idpg.render_dearpygui_frame()
 
     def cleanup(self):
@@ -320,7 +318,6 @@ class Viewport(ThemeSupport, AppHandlerSupport):
                 # do more stuff
                 app.render_frame()
             app.cleanup()
-
 
         """
         self.register_callbacks()
@@ -418,6 +415,43 @@ class Viewport(ThemeSupport, AppHandlerSupport):
         dpg.set_staging_mode(mode=value)
 
 
+class _Viewport(Viewport):
+    """Creates a dummy viewport instance. Intended to be bound to
+    'dpgwidgets.__init__.Application'.
+    """
+    def __init__(self):
+        # Initializing mixins
+        [super(c, self).__init__() for c in Viewport.mro()
+         if c.__name__.endswith("Support")]
+
+        # Fetching parameters
+        vp_attrs = inspect.signature(Viewport).parameters.values()
+        vp_attrs = {p.name: p.default for p in
+                      vp_attrs if p.name != "kwargs"}
+
+        # Hard-coded for intellisense/language servers...
+        self.title = vp_attrs["title"]
+        self.small_icon = vp_attrs["small_icon"]
+        self.large_icon = vp_attrs["large_icon"]
+        self.width = vp_attrs["width"]
+        self.height = vp_attrs["height"]
+        self.x_pos = vp_attrs["x_pos"]
+        self.y_pos = vp_attrs["y_pos"]
+        self.min_width = vp_attrs["min_width"]
+        self.max_width = vp_attrs["max_width"]
+        self.min_height = vp_attrs["min_height"]
+        self.max_height = vp_attrs["max_height"]
+        self.resizable = vp_attrs["resizable"]
+        self.vsync = vp_attrs["vsync"]
+        self.always_on_top = vp_attrs["always_on_top"]
+        self.maximized_box = vp_attrs["maximized_box"]
+        self.minimized_box = vp_attrs["minimized_box"]
+        self.border = vp_attrs["border"]
+        self.caption = vp_attrs["caption"]
+        self.overlapped = vp_attrs["overlapped"]
+        self.clear_color = vp_attrs["clear_color"]
+
+
 
 
 ## Windows-only ##
@@ -441,7 +475,7 @@ def use_virtualized_resolution():
     ctypes.windll.shcore.SetProcessDpiAwareness(0)
 
 
-
+## Misc stuff ##
 @contextmanager
 def mutex():
    try:
