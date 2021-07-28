@@ -1,0 +1,1 @@
+**DPGWidgets** is an object-oriented wrap around the [DearPyGui](https://github.com/hoffstadt/DearPyGui) graphical interface framework. 
