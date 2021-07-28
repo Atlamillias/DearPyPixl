@@ -4,12 +4,9 @@ import datetime
 from dearpygui.logger import mvLogger as Logger
 
 from dpgwidgets import Application, dpg
+from dpgwidgets.tools.pyconsole import PyConsole
 from dpgwrap.containers import Window, Child, Group
 from dpgwrap.widgets import Button, Text
-
-from dpgwidgets.tools.pyconsole import PyConsole
-
-# TODO: Tools probably needs to be a subpackage.
 
 
 __all__ = [

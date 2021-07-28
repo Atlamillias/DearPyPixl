@@ -1,4 +1,5 @@
-"""This package serves to wrap DearPyGui into an object-oriented
+"""
+This package serves to wrap DearPyGui into an object-oriented
 interface. Much of this is still undocumented, but I'm working on it!
 DPGwidgets tries to preserve the overall feel of the existing DearPyGui
 framework - most of that documentation is applicable to this package.
@@ -10,12 +11,11 @@ all of their hard work in creating DearPyGui
 """
 import sys
 sys.path.append("./dpgwrap/")
-sys.path.append("/dpgwrap/tools/")
+sys.path.append("./dpgwrap/tools/")
 
 from dearpygui import dearpygui as dpg, _dearpygui as idpg
 from dpgwrap._item import Item, ContextSupport  # avoids circular imports
 from dpgwidgets.constants import Registry as _Registry, Key, Mouse
-import dpgwrap
 
 # registries
 with dpg.font_registry(id=_Registry.FONT.value, label="AppFontRegistry"):
@@ -31,13 +31,13 @@ from dpgwidgets.app import Viewport
 from dpgwidgets.theme import Font, Theme
 from dpgwrap import (
     containers,
-    drawing, 
-    node, 
-    plotting, 
-    widgets,
+    drawing,
+    node,
+    plotting,
+    widgets
 )
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 
 __all__ = [
     # high-level objects
@@ -54,6 +54,7 @@ __all__ = [
     "plotting",
     "widgets",
     "themes",
+    "tools",
     # dearpygui.dearpygui
     "dpg",
 ]
@@ -81,16 +82,15 @@ def _update_wrappers():
     'C:\Program Files' on Windows).
     """
     import importlib
-    import dpgwrap
     from dpgwrap import _generate
 
     _generate.main()
 
-    importlib.reload(dpgwrap)
+    modules = [containers, drawing, widgets, node, plotting]
 
-    for module in dpgwrap.__all__:
+    for module in modules:
         try:
-            importlib.import_module(module, dpgwrap)
+            importlib.reload(module)
         except:
             continue
 
