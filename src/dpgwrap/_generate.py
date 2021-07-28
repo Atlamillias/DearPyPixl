@@ -9,8 +9,8 @@ from dearpygui import dearpygui as dpg, _dearpygui as idpg
 
 # TODO: Generate constants.py.
 
-DEFAULT_DIR = "./dpgwrap"
-DEFAULT_BACKUP_DIR = "./dpgwrap/_backup"
+DEFAULT_DIR = "./src/dpgwrap"
+DEFAULT_BACKUP_DIR = "./src/dpgwrap/_backup"
 
 DPG_CONSTANTS = {}
 

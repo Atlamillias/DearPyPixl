@@ -10,10 +10,12 @@ all of their hard work in creating DearPyGui
 """
 import sys
 sys.path.append("./dpgwrap/")
+sys.path.append("/dpgwrap/tools/")
 
 from dearpygui import dearpygui as dpg, _dearpygui as idpg
 from dpgwrap._item import Item, ContextSupport  # avoids circular imports
 from dpgwidgets.constants import Registry as _Registry, Key, Mouse
+import dpgwrap
 
 # registries
 with dpg.font_registry(id=_Registry.FONT.value, label="AppFontRegistry"):

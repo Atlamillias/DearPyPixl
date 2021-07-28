@@ -7,10 +7,13 @@ from dpgwidgets import Application, dpg
 from dpgwrap.containers import Window, Child, Group
 from dpgwrap.widgets import Button, Text
 
+from dpgwidgets.tools.pyconsole import PyConsole
+
 # TODO: Tools probably needs to be a subpackage.
 
 
 __all__ = [
+    "PyConsole",
     "show_developer_window",
     # these are mostly copy/paste from DPG
     # need to make my own implementations of these tools
@@ -22,6 +25,7 @@ __all__ = [
     "show_item_registry",
     "show_logger",
 ]
+
 
 def show_developer_window():
     """Renders a window that allows users to launch a variety of helpful
@@ -41,7 +45,7 @@ def show_developer_window():
         with Child(height=130):
             fields = ("Mouse pos", "Runtime",
                       "Frames (all)", "Frames (/s)")
-            with Group(width = 50) as headers:
+            with Group(width=50) as headers:
                 [Text(f) for f in fields]
             dpg.add_same_line(spacing=5)
             with Group():
