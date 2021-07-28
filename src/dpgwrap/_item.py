@@ -1,3 +1,4 @@
+import inspect
 from abc import ABCMeta, abstractmethod
 from typing import Callable
 
@@ -9,15 +10,8 @@ class Item(metaclass=ABCMeta):
     """Base class for all wrapped DearPyGui items.
 
     Args:
-        *flags (str, optional): Changes instantiation.
         **kwargs (optional): Configuration options used to create
     a DPG item.
-
-        Flag options:
-            '-s', '--staging': The item itself (and item id) is not created
-        on instantiation and will instead assume it has already been created.
-        This is useful for creating compound widgets (widgets that are composed
-        of several other widgets).
     
     """
     @abstractmethod
@@ -25,15 +19,13 @@ class Item(metaclass=ABCMeta):
 
     __config = set()
 
-    def __init__(self, *flags, **kwargs):
+    def __init__(self, **kwargs):
         if parent := kwargs.pop("parent", None):
             kwargs["parent"] = int(parent)
         kwargs["label"] = kwargs.get('label') or self.__class__.__name__
 
-        if (id:=kwargs.get("id", None)) and "-s" in flags or "--staging" in flags:
-            self.__id = id
-        else:
-            self.__id = self.__class__._command(**kwargs)
+
+        self.__id = self.__class__._command(**kwargs)
 
         # cache config attrs for future items of the same type
         if not self.__config:
@@ -42,6 +34,60 @@ class Item(metaclass=ABCMeta):
                                        optn != "default_value"}
 
         super().__init__()
+
+    @classmethod
+    def staged_init(cls, **kwargs):
+        """Alternative constructor. <class "Item"> is initialized but
+        cls._command is not called. It is assumed that the item already
+        exists or will exist later. Mixin classes are initialized
+        normally.
+        
+        Notes:
+            - <id> MUST be provided in <kwargs> to initialize this way.
+            - In the <class "Item"> subclass tree, only <class "Item">
+            is technically initialized. All other classes are NOT.
+            Default parameters are fetched from the highest-level class
+            , are merged with <kwargs>, and then are set as instance
+            attributes.
+            - If a keyword in <kwargs> is not in the fetched parameters
+            for the item, a TypeError will be raised.
+        """
+        # Doing this feels awful w/multiple inheritance but
+        # its better than passing documented arguments to
+        # __init__ and running code on conditionals.
+
+        # NOTE: We're only calling __init__ on mixins, and 
+        # pseudo-initializing <class "Item">.
+
+        # Item.__init__
+        item = cls.__new__(cls)
+        item_cls = item.__class__
+
+        if parent := kwargs.pop("parent", None):
+            kwargs["parent"] = int(parent)
+        kwargs["label"] = kwargs.get('label') or item_cls.__name__
+
+        item.__id = kwargs.pop("id")
+        # cache config attrs for future items of the same type
+        if not item.__config:
+            item_cls.__config = {optn for optn in kwargs.keys() if 
+                                 optn != "id" and optn != "default_value"}
+
+        # Initializing mixins
+        [super(c, item).__init__() for c in
+         item_cls.mro() if c.__name__.endswith("Support")]
+
+        # Fetching default parameters from type(item)
+        item_attrs = inspect.signature(item_cls).parameters.values()
+        item_attrs = {p.name:p.default for p in
+                      item_attrs if p.name != "kwargs"}
+        for kw in kwargs:
+            if not item_attrs.get(kw, None):
+                raise TypeError(f"{item_cls} got an unexpected keyword argument {kw}.")
+
+        [setattr(item, attr, val) for attr, val in item_attrs.items()]
+
+        return item
 
     def __str__(self):
         try:
