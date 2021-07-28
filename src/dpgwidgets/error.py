@@ -1,0 +1,2 @@
+class ViewportError(Exception):
+    pass
