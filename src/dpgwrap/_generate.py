@@ -8,6 +8,7 @@ import typing
 from dearpygui import dearpygui as dpg, _dearpygui as idpg
 
 # TODO: Generate constants.py.
+# TODO: Include dogstrings.
 
 DEFAULT_DIR = "./src/dpgwrap"
 DEFAULT_BACKUP_DIR = "./src/dpgwrap/_backup"
@@ -164,7 +165,7 @@ def populate():
                 or attr in typing.__all__]
 
     for index, line in enumerate(lines):
-        if line.startswith("@ContextSupportmanager"):
+        if line.startswith("@contextmanager"):
             name = lines[index + 1].split("(")[0].replace("def ", "")
             func_str = f"add_{name}"
             if func_str in commands or func_str not in core_dir:
