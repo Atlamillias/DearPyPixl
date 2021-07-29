@@ -72,7 +72,7 @@ __all__ = [
 Application = _Viewport()
 
 
-def _update_wrappers():
+def _update_dpgwrap():
     """Generates an object-oriented framework (dpgwrap) for 
     DearPyGui and writes it to files based on the currently
     installed DPG version. The existing (overwritten) files 
