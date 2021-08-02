@@ -2,8 +2,9 @@ from __future__ import annotations
 from typing import Sequence
 from pathlib import Path
 
-from dpgwidgets import dpg, _Registry
-from dpgwidgets.constants import COLOR_OPTN, STYLE_OPTN
+from dearpygui import dearpygui as dpg
+
+from dpgwidgets.constants import COLOR_OPTN, STYLE_OPTN, Registry
 
 
 # NOTE: DearPyGui seperates "Theme" and "Font". The process
@@ -581,7 +582,7 @@ class Font:
         # If a font with that size doesn't exist, then we create one
         # and add it to the cache using the parameters passed when 
         # the Font instance was created.
-        with dpg.font(self.__file, size, parent=_Registry.FONT.value, **self.__kwargs) as font:
+        with dpg.font(self.__file, size, parent=Registry.FONT.value, **self.__kwargs) as font:
             if self.__font_range:
                 start, stop = self.__font_range
                 dpg.add_font_range(start, stop)

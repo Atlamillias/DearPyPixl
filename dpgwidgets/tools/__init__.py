@@ -1,12 +1,13 @@
 from typing import Any
 import datetime
 
+from dearpygui import dearpygui as dpg
 from dearpygui.logger import mvLogger as Logger
 
-from dpgwidgets import Application, dpg
+from dpgwidgets import Application
 from dpgwidgets.tools.pyconsole import PyConsole
-from dpgwrap.containers import Window, Child, Group
-from dpgwrap.widgets import Button, Text
+from dpgwidgets.libsrc.containers import Window, Group, Child
+from dpgwidgets.libsrc.widgets import Button, Text
 
 
 __all__ = [

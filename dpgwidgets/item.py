@@ -2,8 +2,7 @@ import inspect
 from abc import ABCMeta, abstractmethod
 from typing import Callable
 
-from . import dpg
-from dearpygui import _dearpygui as idpg
+from dearpygui import dearpygui as dpg, _dearpygui as idpg
 
 
 class Item(metaclass=ABCMeta):
@@ -23,7 +22,6 @@ class Item(metaclass=ABCMeta):
         if parent := kwargs.pop("parent", None):
             kwargs["parent"] = int(parent)
         kwargs["label"] = kwargs.get('label') or self.__class__.__name__
-
 
         self.__id = self.__class__._command(**kwargs)
 
@@ -53,10 +51,10 @@ class Item(metaclass=ABCMeta):
             for the item, a TypeError will be raised.
         """
         # Doing this feels awful w/multiple inheritance but
-        # its better than passing documented arguments to
+        # its better than passing undocumented arguments to
         # __init__ and running code on conditionals.
 
-        # NOTE: We're only calling __init__ on mixins, and 
+        # NOTE: We're only calling __init__ on mixins, and
         # pseudo-initializing <class "Item">.
 
         # Item.__init__
@@ -70,7 +68,7 @@ class Item(metaclass=ABCMeta):
         item.__id = kwargs.pop("id")
         # cache config attrs for future items of the same type
         if not item.__config:
-            item_cls.__config = {optn for optn in kwargs.keys() if 
+            item_cls.__config = {optn for optn in kwargs.keys() if
                                  optn != "id" and optn != "default_value"}
 
         # Initializing mixins
@@ -79,11 +77,12 @@ class Item(metaclass=ABCMeta):
 
         # Fetching default parameters from type(item)
         item_attrs = inspect.signature(item_cls).parameters.values()
-        item_attrs = {p.name:p.default for p in
+        item_attrs = {p.name: p.default for p in
                       item_attrs if p.name != "kwargs"}
         for kw in kwargs:
             if not item_attrs.get(kw, None):
-                raise TypeError(f"{item_cls} got an unexpected keyword argument {kw}.")
+                raise TypeError(
+                    f"{item_cls} got an unexpected keyword argument {kw}.")
 
         [setattr(item, attr, val) for attr, val in item_attrs.items()]
 
@@ -165,6 +164,7 @@ class ContextSupport:  # mixin
     context of their **with** statement.
      
     """
+
     def __enter__(self):
         dpg.push_container_stack(self.id)
         return self

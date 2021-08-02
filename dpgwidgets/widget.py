@@ -1,7 +1,9 @@
 from abc import ABCMeta, abstractmethod
 from typing import Callable
 
-from dpgwidgets import idpg, Item, ContextSupport
+from dearpygui import _dearpygui as idpg
+
+from dpgwidgets.item import Item, ContextSupport
 from dpgwidgets.handler import HandlerSupport
 from dpgwidgets.theme import ThemeSupport
 

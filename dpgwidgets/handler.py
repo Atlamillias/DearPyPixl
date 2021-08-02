@@ -5,8 +5,9 @@ import functools
 import inspect
 import copy
 
-from dpgwidgets import dpg
-from dpgwidgets.constants import Registry as _Registry
+from dearpygui import dearpygui as dpg
+
+from dpgwidgets.constants import Registry as Registry
 
 # NOTE: Widget-level and global-level handlers are different from
 # each other in DPG. Global handlers (AppHandlerSupport) can be toggled
@@ -146,7 +147,7 @@ class AppHandlerSupport(HandlerBase):
         @functools.wraps(callback)
         def wrapper(callback):
             handler = self._handler_map[method_name](
-                parent=_Registry.APPHANDLER.value,
+                parent=Registry.APPHANDLER.value,
                 callback=callback,
                 **kwargs
             )

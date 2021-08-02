@@ -4,10 +4,12 @@ import contextlib
 import traceback
 import sys
 
-from dpgwidgets import dpg, widget
+from dearpygui import dearpygui as dpg
+
 from dpgwidgets import widget
-from dpgwrap.containers import Child, Group
-from dpgwrap.widgets import Text, InputText
+from dpgwidgets import widget
+from dpgwidgets.libsrc.containers import Child, Group
+from dpgwidgets.libsrc.widgets import Text, InputText
 
 
 __all__ = [

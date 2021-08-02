@@ -1,6 +1,6 @@
 from enum import Enum
 
-from dpgwidgets import dpg
+from dearpygui import dearpygui as dpg
 
 
 class Registry(Enum):
