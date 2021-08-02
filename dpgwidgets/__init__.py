@@ -41,10 +41,7 @@ with dearpygui.value_registry(id=Registry.VALUE.value, label="AppValueRegistry")
 
 
 
-
-import dpgwidgets.libsrc.containers
-# from dpgwidgets.libsrc import containers, widgets, node, drawing, plotting
-containers = dpgwidgets.libsrc.containers
+from dpgwidgets.libsrc import containers, widgets, node, drawing, plotting
 
 from dpgwidgets.app import Viewport, _Viewport
 from dpgwidgets.theme import Font, Theme
