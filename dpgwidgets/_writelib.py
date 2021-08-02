@@ -7,11 +7,11 @@ from pathlib import Path
 import dearpygui.dearpygui as dearpygui
 import dearpygui._dearpygui as _dearpygui
 
-import item as _item
-import widget as _widget
-from item import Item, ContextSupport
-from widget import Widget, Container
-from _pyfiletext import (
+import dpgwidgets.item as _item
+import dpgwidgets.widget as _widget
+from dpgwidgets.item import Item, ContextSupport
+from dpgwidgets.widget import Widget, Container
+from dpgwidgets._pyfiletext import (
     PyTextNamespace, 
     PyTextObject, 
     PyFile, 

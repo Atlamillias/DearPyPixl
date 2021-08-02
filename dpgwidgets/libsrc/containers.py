@@ -1,6 +1,6 @@
 from typing import Any, Callable
 import dearpygui.dearpygui
-from widget import Container
+from dpgwidgets.widget import Container
 
 ##################################################
 ####### NOTE: This file is auto-generated. #######

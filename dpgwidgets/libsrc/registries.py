@@ -1,6 +1,6 @@
 from typing import Any, Callable
 import dearpygui.dearpygui
-from item import Item, ContextSupport
+from dpgwidgets.item import Item, ContextSupport
 
 ##################################################
 ####### NOTE: This file is auto-generated. #######

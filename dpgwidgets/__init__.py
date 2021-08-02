@@ -14,7 +14,7 @@ sys.path.extend(["./libsrc", "./tools"])
 
 import warnings
 import dearpygui.dearpygui as dearpygui
-import _writelib
+from . import _writelib
 
 AUTO_UPDATE = True
 
