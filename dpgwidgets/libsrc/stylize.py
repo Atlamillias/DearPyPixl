@@ -18,6 +18,19 @@ __all__ = [
 
 
 class Font(Item, ContextSupport):
+    """Undocumented function
+    Args:
+            file (str): 
+            size (int): 
+            **label (str): Overrides 'name' as label.
+            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **user_data (Any): User data for callbacks.
+            **default_font (bool): 
+            **parent (int): Parent to add this item to. (runtime adding)
+    Returns:
+            int
+    
+    """
     _command = dearpygui.dearpygui.add_font
 
     def __init__(
@@ -48,6 +61,16 @@ class Font(Item, ContextSupport):
 
 
 class Theme(Item, ContextSupport):
+    """Undocumented function
+    Args:
+            **label (str): Overrides 'name' as label.
+            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **user_data (Any): User data for callbacks.
+            **default_theme (bool): 
+    Returns:
+            int
+    
+    """
     _command = dearpygui.dearpygui.add_theme
 
     def __init__(
@@ -69,6 +92,17 @@ class Theme(Item, ContextSupport):
 
 
 class FontChars(Item):
+    """Undocumented function
+    Args:
+            chars (List[int]): 
+            **label (str): Overrides 'name' as label.
+            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **parent (int): Parent to add this item to. (runtime adding)
+            **user_data (Any): User data for callbacks.
+    Returns:
+            int
+    
+    """
     _command = dearpygui.dearpygui.add_font_chars
 
     def __init__(
@@ -93,6 +127,18 @@ class FontChars(Item):
 
 
 class FontRange(Item):
+    """Undocumented function
+    Args:
+            first_char (int): 
+            last_char (int): 
+            **label (str): Overrides 'name' as label.
+            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **parent (int): Parent to add this item to. (runtime adding)
+            **user_data (Any): User data for callbacks.
+    Returns:
+            int
+    
+    """
     _command = dearpygui.dearpygui.add_font_range
 
     def __init__(
@@ -120,6 +166,17 @@ class FontRange(Item):
 
 
 class FontRangeHint(Item):
+    """Undocumented function
+    Args:
+            hint (int): 
+            **label (str): Overrides 'name' as label.
+            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **parent (int): Parent to add this item to. (runtime adding)
+            **user_data (Any): User data for callbacks.
+    Returns:
+            int
+    
+    """
     _command = dearpygui.dearpygui.add_font_range_hint
 
     def __init__(
@@ -144,6 +201,19 @@ class FontRangeHint(Item):
 
 
 class ThemeColor(Item):
+    """Undocumented function
+    Args:
+            *target (int): 
+            *value (List[int]): 
+            **label (str): Overrides 'name' as label.
+            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **parent (int): Parent to add this item to. (runtime adding)
+            **user_data (Any): User data for callbacks.
+            **category (int): Options include mvThemeCat_Core, mvThemeCat_Plots, mvThemeCat_Nodes.
+    Returns:
+            int
+    
+    """
     _command = dearpygui.dearpygui.add_theme_color
 
     def __init__(
@@ -174,6 +244,20 @@ class ThemeColor(Item):
 
 
 class ThemeStyle(Item):
+    """Undocumented function
+    Args:
+            *target (int): 
+            *x (float): 
+            *y (float): 
+            **label (str): Overrides 'name' as label.
+            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **parent (int): Parent to add this item to. (runtime adding)
+            **user_data (Any): User data for callbacks.
+            **category (int): Options include mvThemeCat_Core, mvThemeCat_Plots, mvThemeCat_Nodes.
+    Returns:
+            int
+    
+    """
     _command = dearpygui.dearpygui.add_theme_style
 
     def __init__(

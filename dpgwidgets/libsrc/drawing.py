@@ -27,6 +27,18 @@ __all__ = [
 
 
 class DrawLayer(Container):
+    """Creates a layer that can be drawn to. Useful for grouping drawing items.
+    Args:
+            **label (str): Overrides 'name' as label.
+            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **parent (int): Parent to add this item to. (runtime adding)
+            **before (int): This item will be displayed before the specified item in the parent.
+            **show (bool): Attempt to render widget.
+            **user_data (Any): User data for callbacks.
+    Returns:
+            int
+    
+    """
     _command = dearpygui.dearpygui.add_draw_layer
 
     def __init__(
@@ -54,6 +66,29 @@ class DrawLayer(Container):
 
 
 class Drawlist(Container):
+    """A container widget that is used to present draw items or layers. Layers and draw items should be added to this widget as children.
+    Args:
+            **label (str): Overrides 'name' as label.
+            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **width (int): Width of the item.
+            **height (int): Height of the item.
+            **parent (int): Parent to add this item to. (runtime adding)
+            **before (int): This item will be displayed before the specified item in the parent.
+            **payload_type (str): Sender string type must be the same as the target for the target to run the payload_callback.
+            **callback (Callable): Registers a callback.
+            **drag_callback (Callable): Registers a drag callback for drag and drop.
+            **drop_callback (Callable): Registers a drop callback for drag and drop.
+            **show (bool): Attempt to render widget.
+            **pos (List[int]): Places the item relative to window coordinates, [0,0] is top left.
+            **filter_key (str): Used by filter widget.
+            **delay_search (bool): Delays searching container for specified items until the end of the app. Possible optimization when a container has many children that are not accessed often.
+            **tracked (bool): Scroll tracking
+            **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
+            **user_data (Any): User data for callbacks.
+    Returns:
+            int
+    
+    """
     _command = dearpygui.dearpygui.add_drawlist
 
     def __init__(
@@ -114,6 +149,19 @@ class Drawlist(Container):
 
 
 class ViewportDrawlist(Container):
+    """A container that is used to present draw items or layers directly to the viewport. By default this will draw to the back of teh viewport. Layers and draw items should be added to this widget as children.
+    Args:
+            **label (str): Overrides 'name' as label.
+            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **show (bool): Attempt to render widget.
+            **filter_key (str): Used by filter widget.
+            **delay_search (bool): Delays searching container for specified items until the end of the app. Possible optimization when a container has many children that are not accessed often.
+            **user_data (Any): User data for callbacks.
+            **front (bool): Draws to the front of the view port instead of the back.
+    Returns:
+            int
+    
+    """
     _command = dearpygui.dearpygui.add_viewport_drawlist
 
     def __init__(
@@ -144,6 +192,23 @@ class ViewportDrawlist(Container):
 
 
 class Arrow(Widget):
+    """Draws an arrow on a drawing.
+    Args:
+            p1 (List[float]): Arrow tip.
+            p2 (List[float]): Arrow tail.
+            **label (str): Overrides 'name' as label.
+            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **parent (int): Parent to add this item to. (runtime adding)
+            **before (int): This item will be displayed before the specified item in the parent.
+            **show (bool): Attempt to render widget.
+            **user_data (Any): User data for callbacks.
+            **color (List[int]): 
+            **thickness (float): 
+            **size (int): 
+    Returns:
+            int
+    
+    """
     _command = dearpygui.dearpygui.draw_arrow
 
     def __init__(
@@ -186,6 +251,25 @@ class Arrow(Widget):
 
 
 class BezierCubic(Widget):
+    """Draws a cubic bezier curve on a drawing.
+    Args:
+            p1 (List[float]): First point in curve.
+            p2 (List[float]): Second point in curve.
+            p3 (List[float]): Third point in curve.
+            p4 (List[float]): Fourth point in curve.
+            **label (str): Overrides 'name' as label.
+            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **parent (int): Parent to add this item to. (runtime adding)
+            **before (int): This item will be displayed before the specified item in the parent.
+            **show (bool): Attempt to render widget.
+            **user_data (Any): User data for callbacks.
+            **color (List[int]): 
+            **thickness (float): 
+            **segments (int): Number of segments to approximate bezier curve.
+    Returns:
+            int
+    
+    """
     _command = dearpygui.dearpygui.draw_bezier_cubic
 
     def __init__(
@@ -234,6 +318,24 @@ class BezierCubic(Widget):
 
 
 class BezierQuadratic(Widget):
+    """Draws a quadratic bezier curve on a drawing.
+    Args:
+            p1 (List[float]): First point in curve.
+            p2 (List[float]): Second point in curve.
+            p3 (List[float]): Third point in curve.
+            **label (str): Overrides 'name' as label.
+            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **parent (int): Parent to add this item to. (runtime adding)
+            **before (int): This item will be displayed before the specified item in the parent.
+            **show (bool): Attempt to render widget.
+            **user_data (Any): User data for callbacks.
+            **color (List[int]): 
+            **thickness (float): 
+            **segments (int): Number of segments to approximate bezier curve.
+    Returns:
+            int
+    
+    """
     _command = dearpygui.dearpygui.draw_bezier_quadratic
 
     def __init__(
@@ -279,6 +381,24 @@ class BezierQuadratic(Widget):
 
 
 class Circle(Widget):
+    """Draws a circle on a drawing.
+    Args:
+            center (List[float]): 
+            radius (float): 
+            **label (str): Overrides 'name' as label.
+            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **parent (int): Parent to add this item to. (runtime adding)
+            **before (int): This item will be displayed before the specified item in the parent.
+            **show (bool): Attempt to render widget.
+            **user_data (Any): User data for callbacks.
+            **color (List[int]): 
+            **fill (List[int]): 
+            **thickness (float): 
+            **segments (int): Number of segments to approximate circle.
+    Returns:
+            int
+    
+    """
     _command = dearpygui.dearpygui.draw_circle
 
     def __init__(
@@ -324,6 +444,24 @@ class Circle(Widget):
 
 
 class Ellipse(Widget):
+    """Draws an ellipse on a drawing.
+    Args:
+            pmin (List[float]): Min point of bounding rectangle.
+            pmax (List[float]): Max point of bounding rectangle.
+            **label (str): Overrides 'name' as label.
+            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **parent (int): Parent to add this item to. (runtime adding)
+            **before (int): This item will be displayed before the specified item in the parent.
+            **show (bool): Attempt to render widget.
+            **user_data (Any): User data for callbacks.
+            **color (List[int]): 
+            **fill (List[int]): 
+            **thickness (float): 
+            **segments (int): Number of segments to approximate bezier curve.
+    Returns:
+            int
+    
+    """
     _command = dearpygui.dearpygui.draw_ellipse
 
     def __init__(
@@ -369,6 +507,24 @@ class Ellipse(Widget):
 
 
 class Image(Widget):
+    """Draws an image on a drawing. p_min (top-left) and p_max (bottom-right) represent corners of the rectangle the image will be drawn to.Setting the p_min equal to the p_max will sraw the image to with 1:1 scale.uv_min and uv_max represent the normalized texture coordinates of the original image that will be shown. Using (0.0,0.0)->(1.0,1.0) texturecoordinates will generally display the entire texture.
+    Args:
+            texture_id (int): 
+            pmin (List[float]): Point of to start drawing texture.
+            pmax (List[float]): Point to complete drawing texture.
+            **label (str): Overrides 'name' as label.
+            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **parent (int): Parent to add this item to. (runtime adding)
+            **before (int): This item will be displayed before the specified item in the parent.
+            **show (bool): Attempt to render widget.
+            **user_data (Any): User data for callbacks.
+            **uv_min (List[float]): Normalized coordinates on texture that will be drawn.
+            **uv_max (List[float]): Normalized coordinates on texture that will be drawn.
+            **color (List[int]): 
+    Returns:
+            int
+    
+    """
     _command = dearpygui.dearpygui.draw_image
 
     def __init__(
@@ -414,6 +570,22 @@ class Image(Widget):
 
 
 class Line(Widget):
+    """Draws a line on a drawing.
+    Args:
+            p1 (List[float]): Start of line.
+            p2 (List[float]): End of line.
+            **label (str): Overrides 'name' as label.
+            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **parent (int): Parent to add this item to. (runtime adding)
+            **before (int): This item will be displayed before the specified item in the parent.
+            **show (bool): Attempt to render widget.
+            **user_data (Any): User data for callbacks.
+            **color (List[int]): 
+            **thickness (float): 
+    Returns:
+            int
+    
+    """
     _command = dearpygui.dearpygui.draw_line
 
     def __init__(
@@ -453,6 +625,22 @@ class Line(Widget):
 
 
 class Polygon(Widget):
+    """Draws a polygon on a drawing. First and and last point should be the same to close teh polygone.
+    Args:
+            points (List[List[float]]): 
+            **label (str): Overrides 'name' as label.
+            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **parent (int): Parent to add this item to. (runtime adding)
+            **before (int): This item will be displayed before the specified item in the parent.
+            **show (bool): Attempt to render widget.
+            **user_data (Any): User data for callbacks.
+            **color (List[int]): 
+            **fill (List[int]): 
+            **thickness (float): 
+    Returns:
+            int
+    
+    """
     _command = dearpygui.dearpygui.draw_polygon
 
     def __init__(
@@ -492,6 +680,22 @@ class Polygon(Widget):
 
 
 class Polyline(Widget):
+    """Draws connected lines on a drawing from points.
+    Args:
+            points (List[List[float]]): 
+            **label (str): Overrides 'name' as label.
+            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **parent (int): Parent to add this item to. (runtime adding)
+            **before (int): This item will be displayed before the specified item in the parent.
+            **show (bool): Attempt to render widget.
+            **user_data (Any): User data for callbacks.
+            **closed (bool): Will close the polyline by returning to the first point.
+            **color (List[int]): 
+            **thickness (float): 
+    Returns:
+            int
+    
+    """
     _command = dearpygui.dearpygui.draw_polyline
 
     def __init__(
@@ -531,6 +735,25 @@ class Polyline(Widget):
 
 
 class Quad(Widget):
+    """Draws a quad on a drawing.
+    Args:
+            p1 (List[float]): 
+            p2 (List[float]): 
+            p3 (List[float]): 
+            p4 (List[float]): 
+            **label (str): Overrides 'name' as label.
+            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **parent (int): Parent to add this item to. (runtime adding)
+            **before (int): This item will be displayed before the specified item in the parent.
+            **show (bool): Attempt to render widget.
+            **user_data (Any): User data for callbacks.
+            **color (List[int]): 
+            **fill (List[int]): 
+            **thickness (float): 
+    Returns:
+            int
+    
+    """
     _command = dearpygui.dearpygui.draw_quad
 
     def __init__(
@@ -579,6 +802,24 @@ class Quad(Widget):
 
 
 class Rectangle(Widget):
+    """Draws a rectangle on a drawing.
+    Args:
+            pmin (List[float]): Min point of bounding rectangle.
+            pmax (List[float]): Max point of bounding rectangle.
+            **label (str): Overrides 'name' as label.
+            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **parent (int): Parent to add this item to. (runtime adding)
+            **before (int): This item will be displayed before the specified item in the parent.
+            **show (bool): Attempt to render widget.
+            **user_data (Any): User data for callbacks.
+            **color (List[int]): 
+            **fill (List[int]): 
+            **rounding (float): Number of pixels of the radius that will round the corners of the rectangle.
+            **thickness (float): 
+    Returns:
+            int
+    
+    """
     _command = dearpygui.dearpygui.draw_rectangle
 
     def __init__(
@@ -624,6 +865,22 @@ class Rectangle(Widget):
 
 
 class Text(Widget):
+    """Draws a text on a drawing.
+    Args:
+            pos (List[float]): Top left point of bounding text rectangle.
+            text (str): Text to draw.
+            **label (str): Overrides 'name' as label.
+            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **parent (int): Parent to add this item to. (runtime adding)
+            **before (int): This item will be displayed before the specified item in the parent.
+            **show (bool): Attempt to render widget.
+            **user_data (Any): User data for callbacks.
+            **color (List[int]): 
+            **size (float): 
+    Returns:
+            int
+    
+    """
     _command = dearpygui.dearpygui.draw_text
 
     def __init__(
@@ -663,6 +920,24 @@ class Text(Widget):
 
 
 class Triangle(Widget):
+    """Draws a triangle on a drawing.
+    Args:
+            p1 (List[float]): 
+            p2 (List[float]): 
+            p3 (List[float]): 
+            **label (str): Overrides 'name' as label.
+            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **parent (int): Parent to add this item to. (runtime adding)
+            **before (int): This item will be displayed before the specified item in the parent.
+            **show (bool): Attempt to render widget.
+            **user_data (Any): User data for callbacks.
+            **color (List[int]): 
+            **fill (List[int]): 
+            **thickness (float): 
+    Returns:
+            int
+    
+    """
     _command = dearpygui.dearpygui.draw_triangle
 
     def __init__(

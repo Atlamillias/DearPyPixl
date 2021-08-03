@@ -15,6 +15,16 @@ __all__ = [
 
 
 class FontRegistry(Item, ContextSupport):
+    """Undocumented function
+    Args:
+            **label (str): Overrides 'name' as label.
+            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **show (bool): Attempt to render widget.
+            **user_data (Any): User data for callbacks.
+    Returns:
+            int
+    
+    """
     _command = dearpygui.dearpygui.add_font_registry
 
     def __init__(
@@ -36,6 +46,16 @@ class FontRegistry(Item, ContextSupport):
 
 
 class HandlerRegistry(Item, ContextSupport):
+    """Adds a handler registry.
+    Args:
+            **label (str): Overrides 'name' as label.
+            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **show (bool): Attempt to render widget.
+            **user_data (Any): User data for callbacks.
+    Returns:
+            int
+    
+    """
     _command = dearpygui.dearpygui.add_handler_registry
 
     def __init__(
@@ -57,6 +77,16 @@ class HandlerRegistry(Item, ContextSupport):
 
 
 class TextureRegistry(Item, ContextSupport):
+    """Undocumented function
+    Args:
+            **label (str): Overrides 'name' as label.
+            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **user_data (Any): User data for callbacks.
+            **show (bool): Attempt to render widget.
+    Returns:
+            int
+    
+    """
     _command = dearpygui.dearpygui.add_texture_registry
 
     def __init__(
@@ -78,6 +108,15 @@ class TextureRegistry(Item, ContextSupport):
 
 
 class ValueRegistry(Item, ContextSupport):
+    """Undocumented function
+    Args:
+            **label (str): Overrides 'name' as label.
+            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **user_data (Any): User data for callbacks.
+    Returns:
+            int
+    
+    """
     _command = dearpygui.dearpygui.add_value_registry
 
     def __init__(

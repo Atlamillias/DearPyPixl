@@ -22,6 +22,18 @@ __all__ = [
 
 
 class BoolValue(Item):
+    """Undocumented
+    Args:
+            **label (str): Overrides 'name' as label.
+            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **source (int): Overrides 'id' as value storage key.
+            **user_data (Any): User data for callbacks.
+            **default_value (bool): 
+            **parent (int): Parent to add this item to. (runtime adding)
+    Returns:
+            int
+    
+    """
     _command = dearpygui.dearpygui.add_bool_value
 
     def __init__(
@@ -49,6 +61,18 @@ class BoolValue(Item):
 
 
 class ColorValue(Item):
+    """Undocumented
+    Args:
+            **label (str): Overrides 'name' as label.
+            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **source (int): Overrides 'id' as value storage key.
+            **user_data (Any): User data for callbacks.
+            **default_value (List[float]): 
+            **parent (int): Parent to add this item to. (runtime adding)
+    Returns:
+            int
+    
+    """
     _command = dearpygui.dearpygui.add_color_value
 
     def __init__(
@@ -76,6 +100,18 @@ class ColorValue(Item):
 
 
 class Double4Value(Item):
+    """Undocumented
+    Args:
+            **label (str): Overrides 'name' as label.
+            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **source (int): Overrides 'id' as value storage key.
+            **user_data (Any): User data for callbacks.
+            **default_value (Any): 
+            **parent (int): Parent to add this item to. (runtime adding)
+    Returns:
+            int
+    
+    """
     _command = dearpygui.dearpygui.add_double4_value
 
     def __init__(
@@ -103,6 +139,18 @@ class Double4Value(Item):
 
 
 class DoubleValue(Item):
+    """Undocumented
+    Args:
+            **label (str): Overrides 'name' as label.
+            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **source (int): Overrides 'id' as value storage key.
+            **user_data (Any): User data for callbacks.
+            **default_value (float): 
+            **parent (int): Parent to add this item to. (runtime adding)
+    Returns:
+            int
+    
+    """
     _command = dearpygui.dearpygui.add_double_value
 
     def __init__(
@@ -130,6 +178,18 @@ class DoubleValue(Item):
 
 
 class Float4Value(Item):
+    """Undocumented
+    Args:
+            **label (str): Overrides 'name' as label.
+            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **source (int): Overrides 'id' as value storage key.
+            **user_data (Any): User data for callbacks.
+            **default_value (List[float]): 
+            **parent (int): Parent to add this item to. (runtime adding)
+    Returns:
+            int
+    
+    """
     _command = dearpygui.dearpygui.add_float4_value
 
     def __init__(
@@ -157,6 +217,18 @@ class Float4Value(Item):
 
 
 class FloatValue(Item):
+    """Undocumented
+    Args:
+            **label (str): Overrides 'name' as label.
+            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **source (int): Overrides 'id' as value storage key.
+            **user_data (Any): User data for callbacks.
+            **default_value (float): 
+            **parent (int): Parent to add this item to. (runtime adding)
+    Returns:
+            int
+    
+    """
     _command = dearpygui.dearpygui.add_float_value
 
     def __init__(
@@ -184,6 +256,18 @@ class FloatValue(Item):
 
 
 class FloatVectValue(Item):
+    """Undocumented
+    Args:
+            **label (str): Overrides 'name' as label.
+            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **source (int): Overrides 'id' as value storage key.
+            **user_data (Any): User data for callbacks.
+            **default_value (List[float]): 
+            **parent (int): Parent to add this item to. (runtime adding)
+    Returns:
+            int
+    
+    """
     _command = dearpygui.dearpygui.add_float_vect_value
 
     def __init__(
@@ -211,6 +295,18 @@ class FloatVectValue(Item):
 
 
 class Int4Value(Item):
+    """Undocumented
+    Args:
+            **label (str): Overrides 'name' as label.
+            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **source (int): Overrides 'id' as value storage key.
+            **user_data (Any): User data for callbacks.
+            **default_value (List[int]): 
+            **parent (int): Parent to add this item to. (runtime adding)
+    Returns:
+            int
+    
+    """
     _command = dearpygui.dearpygui.add_int4_value
 
     def __init__(
@@ -238,6 +334,18 @@ class Int4Value(Item):
 
 
 class IntValue(Item):
+    """Undocumented
+    Args:
+            **label (str): Overrides 'name' as label.
+            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **source (int): Overrides 'id' as value storage key.
+            **user_data (Any): User data for callbacks.
+            **default_value (int): 
+            **parent (int): Parent to add this item to. (runtime adding)
+    Returns:
+            int
+    
+    """
     _command = dearpygui.dearpygui.add_int_value
 
     def __init__(
@@ -265,6 +373,18 @@ class IntValue(Item):
 
 
 class SeriesValue(Item):
+    """Undocumented
+    Args:
+            **label (str): Overrides 'name' as label.
+            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **source (int): Overrides 'id' as value storage key.
+            **user_data (Any): User data for callbacks.
+            **default_value (Any): 
+            **parent (int): Parent to add this item to. (runtime adding)
+    Returns:
+            int
+    
+    """
     _command = dearpygui.dearpygui.add_series_value
 
     def __init__(
@@ -292,6 +412,18 @@ class SeriesValue(Item):
 
 
 class StringValue(Item):
+    """Undocumented
+    Args:
+            **label (str): Overrides 'name' as label.
+            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **source (int): Overrides 'id' as value storage key.
+            **user_data (Any): User data for callbacks.
+            **default_value (str): 
+            **parent (int): Parent to add this item to. (runtime adding)
+    Returns:
+            int
+    
+    """
     _command = dearpygui.dearpygui.add_string_value
 
     def __init__(

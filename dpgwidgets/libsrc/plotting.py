@@ -35,6 +35,52 @@ __all__ = [
 
 
 class Plot(Container):
+    """Adds a plot which is used to hold series, and can be drawn to with draw commands.
+    Args:
+            **label (str): Overrides 'name' as label.
+            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **width (int): Width of the item.
+            **height (int): Height of the item.
+            **indent (int): Offsets the widget to the right the specified number multiplied by the indent style.
+            **parent (int): Parent to add this item to. (runtime adding)
+            **before (int): This item will be displayed before the specified item in the parent.
+            **payload_type (str): Sender string type must be the same as the target for the target to run the payload_callback.
+            **callback (Callable): Registers a callback.
+            **drag_callback (Callable): Registers a drag callback for drag and drop.
+            **drop_callback (Callable): Registers a drop callback for drag and drop.
+            **show (bool): Attempt to render widget.
+            **pos (List[int]): Places the item relative to window coordinates, [0,0] is top left.
+            **filter_key (str): Used by filter widget.
+            **delay_search (bool): Delays searching container for specified items until the end of the app. Possible optimization when a container has many children that are not accessed often.
+            **tracked (bool): Scroll tracking
+            **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
+            **user_data (Any): User data for callbacks.
+            **no_title (bool): 
+            **no_menus (bool): 
+            **no_box_select (bool): 
+            **no_mouse_pos (bool): 
+            **no_highlight (bool): 
+            **no_child (bool): 
+            **query (bool): 
+            **crosshairs (bool): 
+            **anti_aliased (bool): 
+            **equal_aspects (bool): 
+            **pan_button (int): enables panning when held
+            **pan_mod (int): optional modifier that must be held for panning
+            **fit_button (int): fits visible data when double clicked
+            **context_menu_button (int): opens plot context menu (if enabled) when clicked
+            **box_select_button (int): begins box selection when pressed and confirms selection when released
+            **box_select_mod (int): begins box selection when pressed and confirms selection when released
+            **box_select_cancel_button (int): cancels active box selection when pressed
+            **query_button (int): begins query selection when pressed and end query selection when released
+            **query_mod (int): optional modifier that must be held for query selection
+            **query_toggle_mod (int): when held, active box selections turn into queries
+            **horizontal_mod (int): expands active box selection/query horizontally to plot edge when held
+            **vertical_mod (int): expands active box selection/query vertically to plot edge when held
+    Returns:
+            int
+    
+    """
     _command = dearpygui.dearpygui.add_plot
 
     def __init__(
@@ -164,6 +210,40 @@ class Plot(Container):
 
 
 class Subplots(Container):
+    """Adds a plot which is used to hold series, and can be drawn to with draw commands.
+    Args:
+            rows (int): 
+            columns (int): 
+            **label (str): Overrides 'name' as label.
+            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **width (int): Width of the item.
+            **height (int): Height of the item.
+            **indent (int): Offsets the widget to the right the specified number multiplied by the indent style.
+            **parent (int): Parent to add this item to. (runtime adding)
+            **before (int): This item will be displayed before the specified item in the parent.
+            **callback (Callable): Registers a callback.
+            **show (bool): Attempt to render widget.
+            **pos (List[int]): Places the item relative to window coordinates, [0,0] is top left.
+            **filter_key (str): Used by filter widget.
+            **delay_search (bool): Delays searching container for specified items until the end of the app. Possible optimization when a container has many children that are not accessed often.
+            **tracked (bool): Scroll tracking
+            **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
+            **user_data (Any): User data for callbacks.
+            **row_ratios (List[float]): 
+            **column_ratios (List[float]): 
+            **no_title (bool): 
+            **no_menus (bool): the user will not be able to open context menus with right-click
+            **no_resize (bool): resize splitters between subplot cells will be not be provided
+            **no_align (bool): subplot edges will not be aligned vertically or horizontally
+            **link_rows (bool): link the y-axis limits of all plots in each row (does not apply auxiliary y-axes)
+            **link_columns (bool): link the x-axis limits of all plots in each column
+            **link_all_x (bool): link the x-axis limits in every plot in the subplot
+            **link_all_y (bool): link the y-axis limits in every plot in the subplot (does not apply to auxiliary y-axes)
+            **column_major (bool): subplots are added in column major order instead of the default row major order
+    Returns:
+            int
+    
+    """
     _command = dearpygui.dearpygui.add_subplots
 
     def __init__(
@@ -257,6 +337,29 @@ class Subplots(Container):
 
 
 class HistograSeries(Widget):
+    """Undocumented function
+    Args:
+            x (Any): 
+            y (Any): 
+            **label (str): Overrides 'name' as label.
+            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **parent (int): Parent to add this item to. (runtime adding)
+            **before (int): This item will be displayed before the specified item in the parent.
+            **source (int): Overrides 'id' as value storage key.
+            **show (bool): Attempt to render widget.
+            **user_data (Any): User data for callbacks.
+            **xbins (int): 
+            **ybins (int): 
+            **xmin_range (float): 
+            **xmax_range (float): 
+            **ymin_range (float): 
+            **ymax_range (float): 
+            **density (bool): 
+            **outliers (bool): 
+    Returns:
+            int
+    
+    """
     _command = dearpygui.dearpygui.add_2d_histogra_series
 
     def __init__(
@@ -317,6 +420,23 @@ class HistograSeries(Widget):
 
 
 class AreaSeries(Widget):
+    """Adds an area series to a plot.
+    Args:
+            x (Any): 
+            y (Any): 
+            **label (str): Overrides 'name' as label.
+            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **parent (int): Parent to add this item to. (runtime adding)
+            **before (int): This item will be displayed before the specified item in the parent.
+            **source (int): Overrides 'id' as value storage key.
+            **show (bool): Attempt to render widget.
+            **user_data (Any): User data for callbacks.
+            **fill (List[int]): 
+            **contribute_to_bounds (bool): 
+    Returns:
+            int
+    
+    """
     _command = dearpygui.dearpygui.add_area_series
 
     def __init__(
@@ -359,6 +479,23 @@ class AreaSeries(Widget):
 
 
 class BarSeries(Widget):
+    """Adds a bar series to a plot.
+    Args:
+            x (Any): 
+            y (Any): 
+            **label (str): Overrides 'name' as label.
+            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **parent (int): Parent to add this item to. (runtime adding)
+            **before (int): This item will be displayed before the specified item in the parent.
+            **source (int): Overrides 'id' as value storage key.
+            **show (bool): Attempt to render widget.
+            **user_data (Any): User data for callbacks.
+            **weight (float): 
+            **horizontal (bool): 
+    Returns:
+            int
+    
+    """
     _command = dearpygui.dearpygui.add_bar_series
 
     def __init__(
@@ -401,6 +538,28 @@ class BarSeries(Widget):
 
 
 class CandleSeries(Widget):
+    """Adds a candle series to a plot.
+    Args:
+            dates (Any): 
+            opens (Any): 
+            closes (Any): 
+            lows (Any): 
+            highs (Any): 
+            **label (str): Overrides 'name' as label.
+            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **parent (int): Parent to add this item to. (runtime adding)
+            **before (int): This item will be displayed before the specified item in the parent.
+            **source (int): Overrides 'id' as value storage key.
+            **show (bool): Attempt to render widget.
+            **user_data (Any): User data for callbacks.
+            **bull_color (List[int]): 
+            **bear_color (List[int]): 
+            **weight (int): 
+            **tooltip (bool): 
+    Returns:
+            int
+    
+    """
     _command = dearpygui.dearpygui.add_candle_series
 
     def __init__(
@@ -458,6 +617,24 @@ class CandleSeries(Widget):
 
 
 class DragPoint(Widget):
+    """Adds a drag point to a plot.
+    Args:
+            **label (str): Overrides 'name' as label.
+            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **parent (int): Parent to add this item to. (runtime adding)
+            **before (int): This item will be displayed before the specified item in the parent.
+            **source (int): Overrides 'id' as value storage key.
+            **callback (Callable): Registers a callback.
+            **show (bool): Attempt to render widget.
+            **user_data (Any): User data for callbacks.
+            **default_value (Any): 
+            **color (List[int]): 
+            **thickness (float): 
+            **show_label (bool): 
+    Returns:
+            int
+    
+    """
     _command = dearpygui.dearpygui.add_drag_point
 
     def __init__(
@@ -503,6 +680,25 @@ class DragPoint(Widget):
 
 
 class ErrorSeries(Widget):
+    """Adds an error series to a plot.
+    Args:
+            x (Any): 
+            y (Any): 
+            negative (Any): 
+            positive (Any): 
+            **label (str): Overrides 'name' as label.
+            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **parent (int): Parent to add this item to. (runtime adding)
+            **before (int): This item will be displayed before the specified item in the parent.
+            **source (int): Overrides 'id' as value storage key.
+            **show (bool): Attempt to render widget.
+            **user_data (Any): User data for callbacks.
+            **contribute_to_bounds (bool): 
+            **horizontal (bool): 
+    Returns:
+            int
+    
+    """
     _command = dearpygui.dearpygui.add_error_series
 
     def __init__(
@@ -551,6 +747,28 @@ class ErrorSeries(Widget):
 
 
 class HeatSeries(Widget):
+    """Adds a heat series to a plot. Typically a color scale widget is also added to show the legend.
+    Args:
+            x (Any): 
+            rows (int): 
+            cols (int): 
+            **label (str): Overrides 'name' as label.
+            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **parent (int): Parent to add this item to. (runtime adding)
+            **before (int): This item will be displayed before the specified item in the parent.
+            **source (int): Overrides 'id' as value storage key.
+            **show (bool): Attempt to render widget.
+            **user_data (Any): User data for callbacks.
+            **scale_min (float): Sets the color scale min. Typically paired with the color scale widget scale_min.
+            **scale_max (float): Sets the color scale max. Typically paired with the color scale widget scale_max.
+            **bounds_min (Any): 
+            **bounds_max (Any): 
+            **format (str): 
+            **contribute_to_bounds (bool): 
+    Returns:
+            int
+    
+    """
     _command = dearpygui.dearpygui.add_heat_series
 
     def __init__(
@@ -608,6 +826,28 @@ class HeatSeries(Widget):
 
 
 class HistograSeries(Widget):
+    """Adds a histogram series to a plot.
+    Args:
+            x (Any): 
+            **label (str): Overrides 'name' as label.
+            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **parent (int): Parent to add this item to. (runtime adding)
+            **before (int): This item will be displayed before the specified item in the parent.
+            **source (int): Overrides 'id' as value storage key.
+            **show (bool): Attempt to render widget.
+            **user_data (Any): User data for callbacks.
+            **bins (int): 
+            **bar_scale (float): 
+            **min_range (float): 
+            **max_range (float): 
+            **cumlative (bool): 
+            **density (bool): 
+            **outliers (bool): 
+            **contribute_to_bounds (bool): 
+    Returns:
+            int
+    
+    """
     _command = dearpygui.dearpygui.add_histogra_series
 
     def __init__(
@@ -665,6 +905,21 @@ class HistograSeries(Widget):
 
 
 class HlineSeries(Widget):
+    """Adds a infinite horizontal line series to a plot.
+    Args:
+            x (Any): 
+            **label (str): Overrides 'name' as label.
+            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **parent (int): Parent to add this item to. (runtime adding)
+            **before (int): This item will be displayed before the specified item in the parent.
+            **source (int): Overrides 'id' as value storage key.
+            **show (bool): Attempt to render widget.
+            **user_data (Any): User data for callbacks.
+            **contribute_to_bounds (bool): 
+    Returns:
+            int
+    
+    """
     _command = dearpygui.dearpygui.add_hline_series
 
     def __init__(
@@ -701,6 +956,25 @@ class HlineSeries(Widget):
 
 
 class ImageSeries(Widget):
+    """Adds a image series to a plot.
+    Args:
+            texture_id (int): 
+            bounds_min (Any): 
+            bounds_max (Any): 
+            **label (str): Overrides 'name' as label.
+            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **parent (int): Parent to add this item to. (runtime adding)
+            **before (int): This item will be displayed before the specified item in the parent.
+            **source (int): Overrides 'id' as value storage key.
+            **show (bool): Attempt to render widget.
+            **user_data (Any): User data for callbacks.
+            **uv_min (List[float]): normalized texture coordinates
+            **uv_max (List[float]): normalized texture coordinates
+            **tint_color (List[int]): 
+    Returns:
+            int
+    
+    """
     _command = dearpygui.dearpygui.add_image_series
 
     def __init__(
@@ -749,6 +1023,21 @@ class ImageSeries(Widget):
 
 
 class LineSeries(Widget):
+    """Adds a line series to a plot.
+    Args:
+            x (Any): 
+            y (Any): 
+            **label (str): Overrides 'name' as label.
+            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **parent (int): Parent to add this item to. (runtime adding)
+            **before (int): This item will be displayed before the specified item in the parent.
+            **source (int): Overrides 'id' as value storage key.
+            **show (bool): Attempt to render widget.
+            **user_data (Any): User data for callbacks.
+    Returns:
+            int
+    
+    """
     _command = dearpygui.dearpygui.add_line_series
 
     def __init__(
@@ -785,6 +1074,27 @@ class LineSeries(Widget):
 
 
 class PieSeries(Widget):
+    """Adds a pie series to a plot.
+    Args:
+            x (float): 
+            y (float): 
+            radius (float): 
+            values (Any): 
+            labels (List[str]): 
+            **label (str): Overrides 'name' as label.
+            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **parent (int): Parent to add this item to. (runtime adding)
+            **before (int): This item will be displayed before the specified item in the parent.
+            **source (int): Overrides 'id' as value storage key.
+            **show (bool): Attempt to render widget.
+            **user_data (Any): User data for callbacks.
+            **format (str): 
+            **angle (float): 
+            **normalize (bool): 
+    Returns:
+            int
+    
+    """
     _command = dearpygui.dearpygui.add_pie_series
 
     def __init__(
@@ -839,6 +1149,23 @@ class PieSeries(Widget):
 
 
 class PlotAnnotation(Widget):
+    """Adds an annotation to a plot.
+    Args:
+            **label (str): Overrides 'name' as label.
+            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **parent (int): Parent to add this item to. (runtime adding)
+            **before (int): This item will be displayed before the specified item in the parent.
+            **source (int): Overrides 'id' as value storage key.
+            **show (bool): Attempt to render widget.
+            **user_data (Any): User data for callbacks.
+            **default_value (Any): 
+            **offset (List[float]): 
+            **color (List[int]): 
+            **clamped (bool): 
+    Returns:
+            int
+    
+    """
     _command = dearpygui.dearpygui.add_plot_annotation
 
     def __init__(
@@ -881,6 +1208,29 @@ class PlotAnnotation(Widget):
 
 
 class PlotAxis(Widget):
+    """Adds a plot legend to a plot.
+    Args:
+            axis (int): 
+            **label (str): Overrides 'name' as label.
+            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **parent (int): Parent to add this item to. (runtime adding)
+            **payload_type (str): Sender string type must be the same as the target for the target to run the payload_callback.
+            **drag_callback (Callable): Registers a drag callback for drag and drop.
+            **drop_callback (Callable): Registers a drop callback for drag and drop.
+            **show (bool): Attempt to render widget.
+            **user_data (Any): User data for callbacks.
+            **no_gridlines (bool): 
+            **no_tick_marks (bool): 
+            **no_tick_labels (bool): 
+            **log_scale (bool): 
+            **invert (bool): 
+            **lock_min (bool): 
+            **lock_max (bool): 
+            **time (bool): 
+    Returns:
+            int
+    
+    """
     _command = dearpygui.dearpygui.add_plot_axis
 
     def __init__(
@@ -941,6 +1291,23 @@ class PlotAxis(Widget):
 
 
 class PlotLegend(Widget):
+    """Adds a plot legend to a plot.
+    Args:
+            **label (str): Overrides 'name' as label.
+            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **parent (int): Parent to add this item to. (runtime adding)
+            **payload_type (str): Sender string type must be the same as the target for the target to run the payload_callback.
+            **drag_callback (Callable): Registers a drag callback for drag and drop.
+            **drop_callback (Callable): Registers a drop callback for drag and drop.
+            **show (bool): Attempt to render widget.
+            **user_data (Any): User data for callbacks.
+            **location (int): location, mvPlot_Location_*
+            **horizontal (bool): 
+            **outside (bool): 
+    Returns:
+            int
+    
+    """
     _command = dearpygui.dearpygui.add_plot_legend
 
     def __init__(
@@ -983,6 +1350,21 @@ class PlotLegend(Widget):
 
 
 class ScatterSeries(Widget):
+    """Adds a scatter series to a plot.
+    Args:
+            x (Any): 
+            y (Any): 
+            **label (str): Overrides 'name' as label.
+            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **parent (int): Parent to add this item to. (runtime adding)
+            **before (int): This item will be displayed before the specified item in the parent.
+            **source (int): Overrides 'id' as value storage key.
+            **show (bool): Attempt to render widget.
+            **user_data (Any): User data for callbacks.
+    Returns:
+            int
+    
+    """
     _command = dearpygui.dearpygui.add_scatter_series
 
     def __init__(
@@ -1019,6 +1401,22 @@ class ScatterSeries(Widget):
 
 
 class ShadeSeries(Widget):
+    """Adds a shade series to a plot.
+    Args:
+            x (Any): 
+            y1 (Any): 
+            **label (str): Overrides 'name' as label.
+            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **parent (int): Parent to add this item to. (runtime adding)
+            **before (int): This item will be displayed before the specified item in the parent.
+            **source (int): Overrides 'id' as value storage key.
+            **show (bool): Attempt to render widget.
+            **user_data (Any): User data for callbacks.
+            **y2 (Any): 
+    Returns:
+            int
+    
+    """
     _command = dearpygui.dearpygui.add_shade_series
 
     def __init__(
@@ -1058,6 +1456,34 @@ class ShadeSeries(Widget):
 
 
 class SimplePlot(Widget):
+    """A simple plot for visualization of a 1 dimensional set of values.
+    Args:
+            **label (str): Overrides 'name' as label.
+            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **width (int): Width of the item.
+            **height (int): Height of the item.
+            **indent (int): Offsets the widget to the right the specified number multiplied by the indent style.
+            **parent (int): Parent to add this item to. (runtime adding)
+            **before (int): This item will be displayed before the specified item in the parent.
+            **source (int): Overrides 'id' as value storage key.
+            **payload_type (str): Sender string type must be the same as the target for the target to run the payload_callback.
+            **drag_callback (Callable): Registers a drag callback for drag and drop.
+            **drop_callback (Callable): Registers a drop callback for drag and drop.
+            **show (bool): Attempt to render widget.
+            **filter_key (str): Used by filter widget.
+            **tracked (bool): Scroll tracking
+            **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
+            **user_data (Any): User data for callbacks.
+            **default_value (List[float]): 
+            **overlay (str): overlays text (similar to a plot title)
+            **histogram (bool): 
+            **autosize (bool): 
+            **min_scale (float): 
+            **max_scale (float): 
+    Returns:
+            int
+    
+    """
     _command = dearpygui.dearpygui.add_simple_plot
 
     def __init__(
@@ -1133,6 +1559,21 @@ class SimplePlot(Widget):
 
 
 class StairSeries(Widget):
+    """Adds a stair series to a plot.
+    Args:
+            x (Any): 
+            y (Any): 
+            **label (str): Overrides 'name' as label.
+            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **parent (int): Parent to add this item to. (runtime adding)
+            **before (int): This item will be displayed before the specified item in the parent.
+            **source (int): Overrides 'id' as value storage key.
+            **show (bool): Attempt to render widget.
+            **user_data (Any): User data for callbacks.
+    Returns:
+            int
+    
+    """
     _command = dearpygui.dearpygui.add_stair_series
 
     def __init__(
@@ -1169,6 +1610,22 @@ class StairSeries(Widget):
 
 
 class StemSeries(Widget):
+    """Adds a stem series to a plot.
+    Args:
+            x (Any): 
+            y (Any): 
+            **label (str): Overrides 'name' as label.
+            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **indent (int): Offsets the widget to the right the specified number multiplied by the indent style.
+            **parent (int): Parent to add this item to. (runtime adding)
+            **before (int): This item will be displayed before the specified item in the parent.
+            **source (int): Overrides 'id' as value storage key.
+            **show (bool): Attempt to render widget.
+            **user_data (Any): User data for callbacks.
+    Returns:
+            int
+    
+    """
     _command = dearpygui.dearpygui.add_stem_series
 
     def __init__(
@@ -1208,6 +1665,24 @@ class StemSeries(Widget):
 
 
 class TextPoint(Widget):
+    """Adds a labels series to a plot.
+    Args:
+            x (float): 
+            y (float): 
+            **label (str): Overrides 'name' as label.
+            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **parent (int): Parent to add this item to. (runtime adding)
+            **before (int): This item will be displayed before the specified item in the parent.
+            **source (int): Overrides 'id' as value storage key.
+            **show (bool): Attempt to render widget.
+            **user_data (Any): User data for callbacks.
+            **x_offset (int): 
+            **y_offset (int): 
+            **vertical (bool): 
+    Returns:
+            int
+    
+    """
     _command = dearpygui.dearpygui.add_text_point
 
     def __init__(
@@ -1253,6 +1728,20 @@ class TextPoint(Widget):
 
 
 class VlineSeries(Widget):
+    """Adds a infinite vertical line series to a plot.
+    Args:
+            x (Any): 
+            **label (str): Overrides 'name' as label.
+            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **parent (int): Parent to add this item to. (runtime adding)
+            **before (int): This item will be displayed before the specified item in the parent.
+            **source (int): Overrides 'id' as value storage key.
+            **show (bool): Attempt to render widget.
+            **user_data (Any): User data for callbacks.
+    Returns:
+            int
+    
+    """
     _command = dearpygui.dearpygui.add_vline_series
 
     def __init__(

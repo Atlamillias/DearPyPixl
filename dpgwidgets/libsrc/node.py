@@ -15,6 +15,27 @@ __all__ = [
 
 
 class Node(Container):
+    """Adds a node to a node editor.
+    Args:
+            **label (str): Overrides 'name' as label.
+            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **parent (int): Parent to add this item to. (runtime adding)
+            **before (int): This item will be displayed before the specified item in the parent.
+            **payload_type (str): Sender string type must be the same as the target for the target to run the payload_callback.
+            **drag_callback (Callable): Registers a drag callback for drag and drop.
+            **drop_callback (Callable): Registers a drop callback for drag and drop.
+            **show (bool): Attempt to render widget.
+            **pos (List[int]): Places the item relative to window coordinates, [0,0] is top left.
+            **filter_key (str): Used by filter widget.
+            **delay_search (bool): Delays searching container for specified items until the end of the app. Possible optimization when a container has many children that are not accessed often.
+            **tracked (bool): Scroll tracking
+            **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
+            **user_data (Any): User data for callbacks.
+            **draggable (bool): Allow node to be draggable.
+    Returns:
+            int
+    
+    """
     _command = dearpygui.dearpygui.add_node
 
     def __init__(
@@ -69,6 +90,28 @@ class Node(Container):
 
 
 class NodeAttribute(Container):
+    """Adds a node attribute.
+    Args:
+            **label (str): Overrides 'name' as label.
+            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **indent (int): Offsets the widget to the right the specified number multiplied by the indent style.
+            **parent (int): Parent to add this item to. (runtime adding)
+            **before (int): This item will be displayed before the specified item in the parent.
+            **payload_type (str): Sender string type must be the same as the target for the target to run the payload_callback.
+            **drag_callback (Callable): Registers a drag callback for drag and drop.
+            **drop_callback (Callable): Registers a drop callback for drag and drop.
+            **show (bool): Attempt to render widget.
+            **filter_key (str): Used by filter widget.
+            **tracked (bool): Scroll tracking
+            **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
+            **user_data (Any): User data for callbacks.
+            **attribute_type (int): mvNode_Attr_Input, mvNode_Attr_Output, or mvNode_Attr_Static.
+            **shape (int): Pin shape.
+            **category (str): Category
+    Returns:
+            int
+    
+    """
     _command = dearpygui.dearpygui.add_node_attribute
 
     def __init__(
@@ -126,6 +169,30 @@ class NodeAttribute(Container):
 
 
 class NodeEditor(Container):
+    """Adds a node editor.
+    Args:
+            **label (str): Overrides 'name' as label.
+            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **width (int): Width of the item.
+            **height (int): Height of the item.
+            **parent (int): Parent to add this item to. (runtime adding)
+            **before (int): This item will be displayed before the specified item in the parent.
+            **payload_type (str): Sender string type must be the same as the target for the target to run the payload_callback.
+            **callback (Callable): Registers a callback.
+            **drag_callback (Callable): Registers a drag callback for drag and drop.
+            **drop_callback (Callable): Registers a drop callback for drag and drop.
+            **show (bool): Attempt to render widget.
+            **filter_key (str): Used by filter widget.
+            **delay_search (bool): Delays searching container for specified items until the end of the app. Possible optimization when a container has many children that are not accessed often.
+            **tracked (bool): Scroll tracking
+            **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
+            **user_data (Any): User data for callbacks.
+            **delink_callback (Callable): Callback ran when a link is detached.
+            **menubar (bool): Shows or hides the menubar.
+    Returns:
+            int
+    
+    """
     _command = dearpygui.dearpygui.add_node_editor
 
     def __init__(
@@ -189,6 +256,19 @@ class NodeEditor(Container):
 
 
 class NodeLink(Widget):
+    """Adds a node link between nodes.
+    Args:
+            attr_1 (int): 
+            attr_2 (int): 
+            **label (str): Overrides 'name' as label.
+            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **parent (int): Parent to add this item to. (runtime adding)
+            **show (bool): Attempt to render widget.
+            **user_data (Any): User data for callbacks.
+    Returns:
+            int
+    
+    """
     _command = dearpygui.dearpygui.add_node_link
 
     def __init__(

@@ -16,6 +16,8 @@ import warnings
 import dearpygui.dearpygui as dearpygui
 from . import _writelib
 
+# NOTE: For releases/distributions that include this library, I'd
+# advise you to set AUTO_UPDATE to False.
 AUTO_UPDATE = True
 
 def update_library():
@@ -27,28 +29,29 @@ def update_library():
 if AUTO_UPDATE and __name__ != "__main__":
     update_library()
 
+# setting up registries
+from dpgwidgets.constants import Registry as _Registry, Key, Mouse
 
-from dpgwidgets.constants import Registry as Registry, Key, Mouse
-# registries
-with dearpygui.font_registry(id=Registry.FONT.value, label="AppFontRegistry"):
+with dearpygui.font_registry(id=_Registry.FONT.value, label="AppFontRegistry"):
     pass
-with dearpygui.handler_registry(id=Registry.APPHANDLER.value, label="AppHandlerRegistry"):
+with dearpygui.handler_registry(id=_Registry.APPHANDLER.value, label="AppHandlerRegistry"):
     pass
-with dearpygui.texture_registry(id=Registry.TEXTURE.value, label="AppTextureRegistry"):
+with dearpygui.texture_registry(id=_Registry.TEXTURE.value, label="AppTextureRegistry"):
     pass
-with dearpygui.value_registry(id=Registry.VALUE.value, label="AppValueRegistry"):
+with dearpygui.value_registry(id=_Registry.VALUE.value, label="AppValueRegistry"):
     pass
 
 
 
-from dpgwidgets.libsrc import containers, widgets, node, drawing, plotting
+
+import dpgwidgets.libsrc as dpglib  # formerly dpgwrap
 
 from dpgwidgets.app import Viewport, _Viewport
 from dpgwidgets.theme import Font, Theme
-from dpgwidgets import constants
+from dpgwidgets.constants import Key, Mouse
 
 
-__version__ = "0.2.11"
+__version__ = "0.2.12"
 
 __all__ = [
     # high-level objects
@@ -64,8 +67,11 @@ __all__ = [
     "node",
     "plotting",
     "widgets",
+    "theme",
     "themes",
     "tools",
+    # wrapped lib
+    "dpglib",
 ]
 
 

@@ -29,6 +29,35 @@ __all__ = [
 
 
 class Child(Container):
+    """Adds an embedded child window. Will show scrollbars when items do not fit. Must be followed by a call to end.
+    Args:
+            **label (str): Overrides 'name' as label.
+            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **width (int): Width of the item.
+            **height (int): Height of the item.
+            **indent (int): Offsets the widget to the right the specified number multiplied by the indent style.
+            **parent (int): Parent to add this item to. (runtime adding)
+            **before (int): This item will be displayed before the specified item in the parent.
+            **payload_type (str): Sender string type must be the same as the target for the target to run the payload_callback.
+            **drag_callback (Callable): Registers a drag callback for drag and drop.
+            **drop_callback (Callable): Registers a drop callback for drag and drop.
+            **show (bool): Attempt to render widget.
+            **pos (List[int]): Places the item relative to window coordinates, [0,0] is top left.
+            **filter_key (str): Used by filter widget.
+            **delay_search (bool): Delays searching container for specified items until the end of the app. Possible optimization when a container has many children that are not accessed often.
+            **tracked (bool): Scroll tracking
+            **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
+            **user_data (Any): User data for callbacks.
+            **border (bool): Shows/Hides the border around the sides.
+            **autosize_x (bool): Autosize the window to fit it's items in the x.
+            **autosize_y (bool): Autosize the window to fit it's items in the y.
+            **no_scrollbar (bool):  Disable scrollbars (window can still scroll with mouse or programmatically).
+            **horizontal_scrollbar (bool): Allow horizontal scrollbar to appear (off by default).
+            **menubar (bool): Shows/Hides the menubar at the top.
+    Returns:
+            int
+    
+    """
     _command = dearpygui.dearpygui.add_child
 
     def __init__(
@@ -107,6 +136,21 @@ class Child(Container):
 
 
 class Clipper(Container):
+    """Helper to manually clip large list of items. Increases performance by not searching or drawing widgets outside of the clipped region.
+    Args:
+            **label (str): Overrides 'name' as label.
+            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **width (int): Width of the item.
+            **indent (int): Offsets the widget to the right the specified number multiplied by the indent style.
+            **parent (int): Parent to add this item to. (runtime adding)
+            **before (int): This item will be displayed before the specified item in the parent.
+            **show (bool): Attempt to render widget.
+            **delay_search (bool): Delays searching container for specified items until the end of the app. Possible optimization when a container has many children that are not accessed often.
+            **user_data (Any): User data for callbacks.
+    Returns:
+            int
+    
+    """
     _command = dearpygui.dearpygui.add_clipper
 
     def __init__(
@@ -143,6 +187,33 @@ class Clipper(Container):
 
 
 class CollapsingHeader(Container):
+    """Adds a collapsing header to add items to. Must be closed with the end command.
+    Args:
+            **label (str): Overrides 'name' as label.
+            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **indent (int): Offsets the widget to the right the specified number multiplied by the indent style.
+            **parent (int): Parent to add this item to. (runtime adding)
+            **before (int): This item will be displayed before the specified item in the parent.
+            **payload_type (str): Sender string type must be the same as the target for the target to run the payload_callback.
+            **drag_callback (Callable): Registers a drag callback for drag and drop.
+            **drop_callback (Callable): Registers a drop callback for drag and drop.
+            **show (bool): Attempt to render widget.
+            **pos (List[int]): Places the item relative to window coordinates, [0,0] is top left.
+            **filter_key (str): Used by filter widget.
+            **delay_search (bool): Delays searching container for specified items until the end of the app. Possible optimization when a container has many children that are not accessed often.
+            **tracked (bool): Scroll tracking
+            **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
+            **user_data (Any): User data for callbacks.
+            **closable (bool): Adds the ability to hide this widget by pressing the (x) in the top right of widget.
+            **default_open (bool): Sets the collapseable header open by default.
+            **open_on_double_click (bool): Need double-click to open node.
+            **open_on_arrow (bool): Only open when clicking on the arrow part.
+            **leaf (bool): No collapsing, no arrow (use as a convenience for leaf nodes).
+            **bullet (bool): Display a bullet instead of arrow.
+    Returns:
+            int
+    
+    """
     _command = dearpygui.dearpygui.add_collapsing_header
 
     def __init__(
@@ -215,6 +286,19 @@ class CollapsingHeader(Container):
 
 
 class DragPayload(Container):
+    """User data payload for drag and drop operations.
+    Args:
+            **label (str): Overrides 'name' as label.
+            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **parent (int): Parent to add this item to. (runtime adding)
+            **show (bool): Attempt to render widget.
+            **user_data (Any): User data for callbacks.
+            **drag_data (Any): Drag data
+            **payload_type (str): 
+    Returns:
+            int
+    
+    """
     _command = dearpygui.dearpygui.add_drag_payload
 
     def __init__(
@@ -245,6 +329,24 @@ class DragPayload(Container):
 
 
 class FileDialog(Container):
+    """Displays a file or directory selector depending on keywords. Displays a file dialog by default.
+    Args:
+            **label (str): Overrides 'name' as label.
+            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **width (int): Width of the item.
+            **height (int): Height of the item.
+            **callback (Callable): Registers a callback.
+            **show (bool): Attempt to render widget.
+            **user_data (Any): User data for callbacks.
+            **default_path (str): Path that the file dialog will default to when opened.
+            **default_filename (str): Default name that will show in the file name input.
+            **file_count (int): Number of visible files in the dialog.
+            **modal (bool): Forces user interaction with the file selector.
+            **directory_selector (bool): Shows only directory/paths as options. Allows selection of directory/paths only.
+    Returns:
+            int
+    
+    """
     _command = dearpygui.dearpygui.add_file_dialog
 
     def __init__(
@@ -290,6 +392,21 @@ class FileDialog(Container):
 
 
 class FilterSet(Container):
+    """Helper to parse and apply text filters (e.g. aaaaa[, bbbbb][, ccccc])
+    Args:
+            **label (str): Overrides 'name' as label.
+            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **width (int): Width of the item.
+            **indent (int): Offsets the widget to the right the specified number multiplied by the indent style.
+            **parent (int): Parent to add this item to. (runtime adding)
+            **before (int): This item will be displayed before the specified item in the parent.
+            **show (bool): Attempt to render widget.
+            **delay_search (bool): Delays searching container for specified items until the end of the app. Possible optimization when a container has many children that are not accessed often.
+            **user_data (Any): User data for callbacks.
+    Returns:
+            int
+    
+    """
     _command = dearpygui.dearpygui.add_filter_set
 
     def __init__(
@@ -326,6 +443,30 @@ class FilterSet(Container):
 
 
 class Group(Container):
+    """Creates a group that other widgets can belong to. The group allows item commands to be issued for all of its members. Must be closed with the end command.
+    Args:
+            **label (str): Overrides 'name' as label.
+            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **width (int): Width of the item.
+            **indent (int): Offsets the widget to the right the specified number multiplied by the indent style.
+            **parent (int): Parent to add this item to. (runtime adding)
+            **before (int): This item will be displayed before the specified item in the parent.
+            **payload_type (str): Sender string type must be the same as the target for the target to run the payload_callback.
+            **drag_callback (Callable): Registers a drag callback for drag and drop.
+            **drop_callback (Callable): Registers a drop callback for drag and drop.
+            **show (bool): Attempt to render widget.
+            **pos (List[int]): Places the item relative to window coordinates, [0,0] is top left.
+            **filter_key (str): Used by filter widget.
+            **delay_search (bool): Delays searching container for specified items until the end of the app. Possible optimization when a container has many children that are not accessed often.
+            **tracked (bool): Scroll tracking
+            **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
+            **user_data (Any): User data for callbacks.
+            **horizontal (bool): Forces child widgets to be added in a horizontal layout.
+            **horizontal_spacing (float): Spacing for the horizontal layout.
+    Returns:
+            int
+    
+    """
     _command = dearpygui.dearpygui.add_group
 
     def __init__(
@@ -389,6 +530,27 @@ class Group(Container):
 
 
 class Menu(Container):
+    """Adds a menu to an existing menu bar. Must be followed by a call to end.
+    Args:
+            **label (str): Overrides 'name' as label.
+            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **indent (int): Offsets the widget to the right the specified number multiplied by the indent style.
+            **parent (int): Parent to add this item to. (runtime adding)
+            **before (int): This item will be displayed before the specified item in the parent.
+            **payload_type (str): Sender string type must be the same as the target for the target to run the payload_callback.
+            **drag_callback (Callable): Registers a drag callback for drag and drop.
+            **drop_callback (Callable): Registers a drop callback for drag and drop.
+            **show (bool): Attempt to render widget.
+            **enabled (bool): Turns off functionality of widget and applies the disabled theme.
+            **filter_key (str): Used by filter widget.
+            **delay_search (bool): Delays searching container for specified items until the end of the app. Possible optimization when a container has many children that are not accessed often.
+            **tracked (bool): Scroll tracking
+            **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
+            **user_data (Any): User data for callbacks.
+    Returns:
+            int
+    
+    """
     _command = dearpygui.dearpygui.add_menu
 
     def __init__(
@@ -443,6 +605,19 @@ class Menu(Container):
 
 
 class MenuBar(Container):
+    """Adds a menu bar to a window.
+    Args:
+            **label (str): Overrides 'name' as label.
+            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **indent (int): Offsets the widget to the right the specified number multiplied by the indent style.
+            **parent (int): Parent to add this item to. (runtime adding)
+            **show (bool): Attempt to render widget.
+            **delay_search (bool): Delays searching container for specified items until the end of the app. Possible optimization when a container has many children that are not accessed often.
+            **user_data (Any): User data for callbacks.
+    Returns:
+            int
+    
+    """
     _command = dearpygui.dearpygui.add_menu_bar
 
     def __init__(
@@ -473,6 +648,15 @@ class MenuBar(Container):
 
 
 class StagingContainer(Container):
+    """Undocumented function
+    Args:
+            **label (str): Overrides 'name' as label.
+            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **user_data (Any): User data for callbacks.
+    Returns:
+            int
+    
+    """
     _command = dearpygui.dearpygui.add_staging_container
 
     def __init__(
@@ -491,6 +675,29 @@ class StagingContainer(Container):
 
 
 class Tab(Container):
+    """Adds a tab to a tab bar. Must be closed with thes end command.
+    Args:
+            **label (str): Overrides 'name' as label.
+            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **indent (int): Offsets the widget to the right the specified number multiplied by the indent style.
+            **parent (int): Parent to add this item to. (runtime adding)
+            **before (int): This item will be displayed before the specified item in the parent.
+            **payload_type (str): Sender string type must be the same as the target for the target to run the payload_callback.
+            **drag_callback (Callable): Registers a drag callback for drag and drop.
+            **drop_callback (Callable): Registers a drop callback for drag and drop.
+            **show (bool): Attempt to render widget.
+            **filter_key (str): Used by filter widget.
+            **delay_search (bool): Delays searching container for specified items until the end of the app. Possible optimization when a container has many children that are not accessed often.
+            **tracked (bool): Scroll tracking
+            **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
+            **user_data (Any): User data for callbacks.
+            **closable (bool): Creates a button on the tab that can hide the tab.
+            **no_tooltip (bool): Disable tooltip for the given tab.
+            **order_mode (bool): set using a constant: mvTabOrder_Reorderable: allows reordering, mvTabOrder_Fixed: fixed ordering, mvTabOrder_Leading: adds tab to front, mvTabOrder_Trailing: adds tab to back
+    Returns:
+            int
+    
+    """
     _command = dearpygui.dearpygui.add_tab
 
     def __init__(
@@ -551,6 +758,29 @@ class Tab(Container):
 
 
 class TabBar(Container):
+    """Adds a tab bar.
+    Args:
+            **label (str): Overrides 'name' as label.
+            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **indent (int): Offsets the widget to the right the specified number multiplied by the indent style.
+            **parent (int): Parent to add this item to. (runtime adding)
+            **before (int): This item will be displayed before the specified item in the parent.
+            **payload_type (str): Sender string type must be the same as the target for the target to run the payload_callback.
+            **callback (Callable): Registers a callback.
+            **drag_callback (Callable): Registers a drag callback for drag and drop.
+            **drop_callback (Callable): Registers a drop callback for drag and drop.
+            **show (bool): Attempt to render widget.
+            **pos (List[int]): Places the item relative to window coordinates, [0,0] is top left.
+            **filter_key (str): Used by filter widget.
+            **delay_search (bool): Delays searching container for specified items until the end of the app. Possible optimization when a container has many children that are not accessed often.
+            **tracked (bool): Scroll tracking
+            **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
+            **user_data (Any): User data for callbacks.
+            **reorderable (bool): Allows for the user to change the order of the tabs.
+    Returns:
+            int
+    
+    """
     _command = dearpygui.dearpygui.add_tab_bar
 
     def __init__(
@@ -611,6 +841,54 @@ class TabBar(Container):
 
 
 class Table(Container):
+    """Undocumented function
+    Args:
+            **label (str): Overrides 'name' as label.
+            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **width (int): Width of the item.
+            **height (int): Height of the item.
+            **indent (int): Offsets the widget to the right the specified number multiplied by the indent style.
+            **parent (int): Parent to add this item to. (runtime adding)
+            **before (int): This item will be displayed before the specified item in the parent.
+            **source (int): Overrides 'id' as value storage key.
+            **callback (Callable): Registers a callback.
+            **show (bool): Attempt to render widget.
+            **pos (List[int]): Places the item relative to window coordinates, [0,0] is top left.
+            **filter_key (str): Used by filter widget.
+            **delay_search (bool): Delays searching container for specified items until the end of the app. Possible optimization when a container has many children that are not accessed often.
+            **user_data (Any): User data for callbacks.
+            **header_row (bool): show headers at the top of the columns
+            **inner_width (int): 
+            **policy (int): 
+            **freeze_rows (int): 
+            **freeze_columns (int): 
+            **sort_multi (bool): Hold shift when clicking headers to sort on multiple column.
+            **sort_tristate (bool): Allow no sorting, disable default sorting.
+            **resizable (bool): Enable resizing columns
+            **reorderable (bool): Enable reordering columns in header row (need calling TableSetupColumn() + TableHeadersRow() to display headers)
+            **hideable (bool): Enable hiding/disabling columns in context menu.
+            **sortable (bool): Enable sorting. Call TableGetSortSpecs() to obtain sort specs. Also see ImGuiTableFlags_SortMulti and ImGuiTableFlags_SortTristate.
+            **context_menu_in_body (bool): Right-click on columns body/contents will display table context menu. By default it is available in TableHeadersRow().
+            **row_background (bool): Set each RowBg color with ImGuiCol_TableRowBg or ImGuiCol_TableRowBgAlt (equivalent of calling TableSetBgColor with ImGuiTableBgFlags_RowBg0 on each row manually)
+            **borders_innerH (bool): Draw horizontal borders between rows.
+            **borders_outerH (bool): Draw horizontal borders at the top and bottom.
+            **borders_innerV (bool): Draw vertical borders between columns.
+            **borders_outerV (bool): Draw vertical borders on the left and right sides.
+            **no_host_extendX (bool): Make outer width auto-fit to columns, overriding outer_size.x value. Only available when ScrollX/ScrollY are disabled and Stretch columns are not used.
+            **no_host_extendY (bool): Make outer height stop exactly at outer_size.y (prevent auto-extending table past the limit). Only available when ScrollX/ScrollY are disabled. Data below the limit will be clipped and not visible.
+            **no_keep_columns_visible (bool): Disable keeping column always minimally visible when ScrollX is off and table gets too small. Not recommended if columns are resizable.
+            **precise_widths (bool): Disable distributing remainder width to stretched columns (width allocation on a 100-wide table with 3 columns: Without this flag: 33,33,34. With this flag: 33,33,33). With larger number of columns, resizing will appear to be less smooth.
+            **no_clip (bool): Disable clipping rectangle for every individual columns.
+            **pad_outerX (bool): Default if BordersOuterV is on. Enable outer-most padding. Generally desirable if you have headers.
+            **no_pad_outerX (bool): Default if BordersOuterV is off. Disable outer-most padding.
+            **no_pad_innerX (bool): Disable inner padding between columns (double inner padding if BordersOuterV is on, single inner padding if BordersOuterV is off).
+            **scrollX (bool): Enable horizontal scrolling. Require 'outer_size' parameter of BeginTable() to specify the container size. Changes default sizing policy. Because this create a child window, ScrollY is currently generally recommended when using ScrollX.
+            **scrollY (bool): Enable vertical scrolling.
+            **no_saved_settings (bool): Never load/save settings in .ini file.
+    Returns:
+            int
+    
+    """
     _command = dearpygui.dearpygui.add_table
 
     def __init__(
@@ -746,6 +1024,20 @@ class Table(Container):
 
 
 class TableRow(Container):
+    """Undocumented function
+    Args:
+            **label (str): Overrides 'name' as label.
+            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **height (int): Height of the item.
+            **parent (int): Parent to add this item to. (runtime adding)
+            **before (int): This item will be displayed before the specified item in the parent.
+            **show (bool): Attempt to render widget.
+            **filter_key (str): Used by filter widget.
+            **user_data (Any): User data for callbacks.
+    Returns:
+            int
+    
+    """
     _command = dearpygui.dearpygui.add_table_row
 
     def __init__(
@@ -779,6 +1071,17 @@ class TableRow(Container):
 
 
 class Tooltip(Container):
+    """Adds an advanced tool tip for an item. This command must come immediately after the item the tip is for.
+    Args:
+            parent (int): 
+            **label (str): Overrides 'name' as label.
+            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **show (bool): Attempt to render widget.
+            **user_data (Any): User data for callbacks.
+    Returns:
+            int
+    
+    """
     _command = dearpygui.dearpygui.add_tooltip
 
     def __init__(
@@ -803,6 +1106,33 @@ class Tooltip(Container):
 
 
 class TreeNode(Container):
+    """Adds a tree node to add items to. Must be closed with the end command.
+    Args:
+            **label (str): Overrides 'name' as label.
+            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **indent (int): Offsets the widget to the right the specified number multiplied by the indent style.
+            **parent (int): Parent to add this item to. (runtime adding)
+            **before (int): This item will be displayed before the specified item in the parent.
+            **payload_type (str): Sender string type must be the same as the target for the target to run the payload_callback.
+            **drag_callback (Callable): Registers a drag callback for drag and drop.
+            **drop_callback (Callable): Registers a drop callback for drag and drop.
+            **show (bool): Attempt to render widget.
+            **pos (List[int]): Places the item relative to window coordinates, [0,0] is top left.
+            **filter_key (str): Used by filter widget.
+            **delay_search (bool): Delays searching container for specified items until the end of the app. Possible optimization when a container has many children that are not accessed often.
+            **tracked (bool): Scroll tracking
+            **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
+            **user_data (Any): User data for callbacks.
+            **default_open (bool): Sets the tree node open by default.
+            **open_on_double_click (bool): Need double-click to open node.
+            **open_on_arrow (bool): Only open when clicking on the arrow part.
+            **leaf (bool): No collapsing, no arrow (use as a convenience for leaf nodes).
+            **bullet (bool): Display a bullet instead of arrow.
+            **selectable (bool): Makes the tree selectable.
+    Returns:
+            int
+    
+    """
     _command = dearpygui.dearpygui.add_tree_node
 
     def __init__(
@@ -875,6 +1205,19 @@ class TreeNode(Container):
 
 
 class ViewportMenuBar(Container):
+    """Adds a menu bar to the viewport.
+    Args:
+            **label (str): Overrides 'name' as label.
+            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **indent (int): Offsets the widget to the right the specified number multiplied by the indent style.
+            **parent (int): Parent to add this item to. (runtime adding)
+            **show (bool): Attempt to render widget.
+            **delay_search (bool): Delays searching container for specified items until the end of the app. Possible optimization when a container has many children that are not accessed often.
+            **user_data (Any): User data for callbacks.
+    Returns:
+            int
+    
+    """
     _command = dearpygui.dearpygui.add_viewport_menu_bar
 
     def __init__(
@@ -905,6 +1248,40 @@ class ViewportMenuBar(Container):
 
 
 class Window(Container):
+    """Creates a new window for following items to be added to.
+    Args:
+            **label (str): Overrides 'name' as label.
+            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **width (int): Width of the item.
+            **height (int): Height of the item.
+            **indent (int): Offsets the widget to the right the specified number multiplied by the indent style.
+            **show (bool): Attempt to render widget.
+            **pos (List[int]): Places the item relative to window coordinates, [0,0] is top left.
+            **delay_search (bool): Delays searching container for specified items until the end of the app. Possible optimization when a container has many children that are not accessed often.
+            **user_data (Any): User data for callbacks.
+            **min_size (List[int]): Minimum window size.
+            **max_size (List[int]): Maximum window size.
+            **menubar (bool): Shows or hides the menubar.
+            **collapsed (bool): Collapse the window.
+            **autosize (bool): Autosized the window to fit it's items.
+            **no_resize (bool): Allows for the window size to be changed or fixed.
+            **no_title_bar (bool): Title name for the title bar of the window.
+            **no_move (bool): Allows for the window's position to be changed or fixed.
+            **no_scrollbar (bool):  Disable scrollbars. (window can still scroll with mouse or programmatically)
+            **no_collapse (bool): Disable user collapsing window by double-clicking on it.
+            **horizontal_scrollbar (bool): Allow horizontal scrollbar to appear. (off by default)
+            **no_focus_on_appearing (bool): Disable taking focus when transitioning from hidden to visible state.
+            **no_bring_to_front_on_focus (bool): Disable bringing window to front when taking focus. (e.g. clicking on it or programmatically giving it focus)
+            **no_close (bool): Disable user closing the window by removing the close button.
+            **no_background (bool): Sets Background and border alpha to transparent.
+            **modal (bool): Fills area behind window according to the theme and disables user ability to interact with anything except the window.
+            **popup (bool): Fills area behind window according to the theme, removes title bar, collapse and close. Window can be closed by selecting area in the background behind the window.
+            **no_saved_settings (bool): Never load/save settings in .ini file.
+            **on_close (Callable): Callback ran when window is closed.
+    Returns:
+            int
+    
+    """
     _command = dearpygui.dearpygui.add_window
 
     def __init__(

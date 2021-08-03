@@ -159,7 +159,9 @@ class PyTextClass(_PyTextObject):
         c_text.write(text)
 
         ## docstring  ##
-        doc = self.doc
+        doc = f'\n"""{self.doc}\n\n"""'
+        doc = doc.replace("\n", "\n    ")
+        c_text.write(doc)
 
         ## class attributes ##
         for var, value in self.class_attribs:
