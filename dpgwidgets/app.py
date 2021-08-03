@@ -213,12 +213,12 @@ class Viewport(ThemeSupport, AppHandlerSupport):
     def maximize(self):
         """Maximizes the viewport.
         """
-        dpg.maximize_viewport(self.__id)
+        dpg.maximize_viewport()
 
     def minimize(self):
         """Minimizes the viewport.
         """
-        dpg.minimize_viewport(self.__id)
+        dpg.minimize_viewport()
 
 
     # Addl. handlers/callback stuff
