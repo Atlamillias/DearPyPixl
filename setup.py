@@ -12,6 +12,7 @@ class Cleanup(setuptools.Command):
 
     def run(self):
         shutil.rmtree("./build")
+        shutil.rmtree("./dist")
         shutil.rmtree("./dpgwidgets.egg-info")
 
 
