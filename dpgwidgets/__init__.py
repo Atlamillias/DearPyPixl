@@ -48,7 +48,7 @@ from dpgwidgets.theme import Font, Theme
 from dpgwidgets import constants
 
 
-__version__ = "0.2.01"
+__version__ = "0.2.11"
 
 __all__ = [
     # high-level objects
