@@ -50,7 +50,7 @@ class PyConsole(InteractiveInterpreter):
     ):
         super().__init__(locals)
         self.parent = parent
-        self.locals = locals
+        self.locals = locals or vars(__import__(__name__.split(".")[0]))
         self.filename = filename or self.__class__.__name__
         self.banner_msg = banner_msg or (
             f'Python ({self.__class__.__name__}) {sys.version} on {sys.platform}.\n'
