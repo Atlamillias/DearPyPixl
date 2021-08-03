@@ -11,9 +11,12 @@ class Cleanup(setuptools.Command):
         pass
 
     def run(self):
-        shutil.rmtree("./build")
-        shutil.rmtree("./dist")
-        shutil.rmtree("./dpgwidgets.egg-info")
+        dirs = ("./build", "./dist", "./dpgwidgets.egg-info")
+        for dir in dirs:
+            try:
+                shutil.rmtree(dir)
+            except OSError:
+                pass
 
 
 setuptools.setup(cmdclass = {"clean": Cleanup})
