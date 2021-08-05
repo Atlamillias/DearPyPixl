@@ -1,7 +1,10 @@
+from __future__ import annotations
 from abc import ABCMeta, abstractmethod
-from typing import Callable
+from typing import Callable, Any
+import re
+import inspect
 
-from dearpygui import _dearpygui as idpg
+from dearpygui import _dearpygui as idpg, dearpygui
 
 from dpgwidgets.item import Item, ContextSupport
 from dpgwidgets.handler import HandlerSupport
@@ -9,8 +12,8 @@ from dpgwidgets.theme import ThemeSupport
 
 
 class Widget(Item, ThemeSupport, HandlerSupport, metaclass=ABCMeta):
-    """Base class for all end-user items. Supports themes and handlers.
-    Subclass this if creating your own widgets.
+    """Base class for all high-level items. Supports themes and
+    handlers.
     """
     @abstractmethod
     def _command() -> Callable: ...
@@ -19,77 +22,181 @@ class Widget(Item, ThemeSupport, HandlerSupport, metaclass=ABCMeta):
         super().__init__(**kwargs)
 
     def focus(self):
+        """Brings the widget into focus.
+        """
         idpg.focus_item(self.id)
 
     def move_up(self) -> None:
-        idpg.move_item_up(self.id)
+        """If the widget is a child, it is placed above the item
+        that immediately precedes it. Nothing happens if the widget
+        is not a child or if there is no preceding item.
+        """
+        try:
+            idpg.move_item_up(self.id)
+        except SystemError:
+            pass
 
     def move_down(self) -> None:
-        idpg.move_item_down(self.id)
+        """If the widget is a child, it is placed above the item
+        that immediately precedes it. Nothing happens if the widget
+        is not a child or if there is no preceding item.
+        """
+        try:
+            idpg.move_item_down(self.id)
+        except SystemError:
+            pass
 
-    def move(self, parent: int, before: int) -> None:
-        """Move a widget to another <parent> before <before>."""
-        idpg.move_item(self.id, parent, before)
+    def move(self, parent: int, before: int = 0) -> None:
+        """If the widget is a child, it will be moved to another
+        parent and placed above/before another item.
 
-    def slots(self, slot: int = -1) -> dict:
-        """Returns the item's slots and the list of children (id) in each
-        as a dict ({slot: [],...})."""
+        Args:
+            parent (int): id of the new parent.
+            before (int, optional): id of the child item that the widget 
+            will be placed above/before.
+        """
+        try:
+            idpg.move_item(self.id, parent, before)
+        except SystemError:
+            pass
 
 
-    ## State-getters ##
+    ## Value ##
+    def set_value(self, value: Any):
+        """Sets the value of a widget.
+        """
+        idpg.set_value(self.__id, value)
+
     @property
-    def is_container(self):
+    def value(self) -> Any:
+        """Return the widget value (if any).
+        """
+        return idpg.get_value(self.__id)
+    @value.setter
+    def value(self, value: Any):
+        idpg.set_value(self.__id, value)
+
+
+    ## Info ##
+    def get_info(self) -> dict:
+        """Returns various information about the widget.
+        """
+        return idpg.get_item_info(self.id)
+
+    @property
+    def is_container(self) -> bool:
+        """Checks if the widget is a container item.
+        """
         return idpg.get_item_info(self.id)["container"]
 
+
+    ## State ##
+    def get_states(self, state: str = None) -> dict:
+        """Return the current state of a widget. If <state> is
+        included, only the value of that state will be returned.
+        """
+        states = idpg.get_item_state(self.__id)
+        return states.get(state, states)
+
     @property
-    def is_hovered(self):
+    def is_hovered(self) -> bool:
         return idpg.get_item_state(self.id)["hovered"]
 
     @property
-    def is_active(self):
+    def is_active(self) -> bool:
         return idpg.get_item_state(self.id)["active"]
 
     @property
-    def is_focused(self):
+    def is_focused(self) -> bool:
         return idpg.get_item_state(self.id)["focused"]
 
     @property
-    def is_clicked(self):
+    def is_clicked(self) -> bool:
         return idpg.get_item_state(self.id)["clicked"]
 
     @property
-    def is_visible(self):
+    def is_visible(self) -> bool:
         return idpg.get_item_state(self.id)["visible"]
 
     @property
-    def is_edited(self):
+    def is_edited(self) -> bool:
         return idpg.get_item_state(self.id)["edited"]
 
     @property
-    def is_activated(self):
+    def is_activated(self) -> bool:
         return idpg.get_item_state(self.id)["activated"]
 
     @property
-    def is_deactivated(self):
+    def is_deactivated(self) -> bool:
         return idpg.get_item_state(self.id)["deactivated"]
 
     @property
-    def is_deactivated_after_edit(self):
+    def is_deactivated_after_edit(self) -> bool:
         return idpg.get_item_state(self.id)["deactivated_after_edit"]
 
     @property
-    def is_toggled_open(self):
+    def is_toggled_open(self) -> bool:
         return idpg.get_item_state(self.id)["toggled_open"]
 
     @property
-    def is_ok(self):
+    def is_ok(self) -> bool:
         return idpg.get_item_state(self.id)["ok"]
 
+    ## Misc ##
+    def duplicate(self, **config) -> Widget:
+        """ (WIP) Creates and returns a "shallow" copy of the widget. The
+        configuration can be altered by passing configuration options
+        and values.
 
+        NOTE: In development. Handlers currently aren't duplicated in
+        this process, and may also exclude some widgets. Currently
+        only duplicates one level of "depth" for children.
+
+        Args:
+            config (optional): configuration options and values 
+            that will overwrite the duplicated configuration.
+        """ 
+        parameters = [p.name for p in
+                      inspect.signature(type(self)).parameters.values()]
+        config = self.configuration() | config
+        config = {optn: val for optn, val in config.items() if
+                  optn in parameters}
+        copy_parent = type(self)(**config)
+        if self.theme:
+            copy_parent.theme = self.theme
+        # We don't have access to Python references to know if the
+        # children are wrapped, so the internal API needs to be used.
+        capwords = re.compile(r'[A-Z][^A-Z]*')
+        children = idpg.get_item_info(self.id)["children"]
+        children = [*children[1], *children[2]]
+        for child_id in children:
+            child_info = idpg.get_item_info(child_id)
+            child_config = idpg.get_item_configuration(child_id)
+            child_config["parent"] = copy_parent.id
+
+            # determining and trying to create item
+            item_type = child_info["type"].split("::")[-1].replace("AppItem","")
+            item_type = re.findall(capwords, item_type)
+            item_type = "add_" + "_".join((w.lower() for w in item_type)).rstrip("_")
+
+            if command := getattr(dearpygui, item_type):
+                parameters = [p.name for p in
+                              inspect.signature(command).parameters.values()]
+                cmd_params = {optn:val for optn, val in child_config.items() if
+                              optn in parameters}
+                c_child_id = command(**cmd_params)
+                if theme_info := child_info.get("theme", None):
+                    dearpygui.set_item_theme(c_child_id, theme_info)
+                if dtheme_info := child_info.get("disabled_theme", None):
+                     dearpygui.set_item_disabled_theme(c_child_id, dtheme_info)
+                if font_info := child_info.get("font", None):
+                    dearpygui.set_item_font(c_child_id, font_info)        
+
+        return copy_parent
 
 class Container(Widget, ContextSupport, metaclass=ABCMeta):
-    """Base class for all end-user container items. Supports themes and
-    handlers. Subclass this if creating your own container widgets.
+    """Base class for all high-level container items. Supports themes
+    and handlers.
     """
     @abstractmethod
     def _command() -> Callable: ...
@@ -120,10 +227,14 @@ class Container(Widget, ContextSupport, metaclass=ABCMeta):
         return idpg.get_x_scroll_max(self.id)
 
 
-    def reset_pos(self):
+    def reset_pos(self) -> None:
         idpg.reset_pos(self.id)
 
-    def children(self) -> list:
+    def renew(self) -> None:
+        """Deletes all children in the widget, if any."""
+        idpg.delete_item(self.id, children_only=True)
+
+    def children(self) -> list[int]:
         """Returns a list containing the id of all *high-level children
         within a container.
 
