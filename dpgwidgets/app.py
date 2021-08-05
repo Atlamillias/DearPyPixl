@@ -1,23 +1,25 @@
-import ctypes
-import sys
 import inspect
+import sys
+from typing import Callable
 from contextlib import contextmanager
 
 from dearpygui import _dearpygui as idpg, dearpygui as dpg
-from dpgwidgets.libsrc.containers import Window
+from dearpygui._dearpygui import (
+    configure_viewport, 
+    get_viewport_configuration,
+)
 
 import dpgwidgets
-from dpgwidgets.theme import ThemeSupport
-from dpgwidgets.handler import AppHandlerSupport
-from dpgwidgets.themes import DEFAULT
+from dpgwidgets import _c_types
+from dpgwidgets.containers import Window
 from dpgwidgets.error import ViewportError
+from dpgwidgets.handler import AppHandlerSupport
+from dpgwidgets.theme import ThemeSupport, Theme
+from dpgwidgets.themes import DEFAULT
 
 
 __all__ = [
     "Viewport",
-
-    "use_hardware_resulution",
-    "use_virtualized_resolution",
     "mutex",
 ]
 
@@ -64,30 +66,15 @@ class Viewport(ThemeSupport, AppHandlerSupport):
         be docked on the viewport. Defaults to False.
     
     """
-    # This class doesn't subclass <class "Item"> because
-    # everything needs to be re-defined regardless.
-    # Whatever isn't re-defined would just raise an error.
-    # The overall structure is identical.
-    __command = dpg.create_viewport
-    __id = "DPG_NOT_USED_YET"  # 
-    __config = set()
-    __exists = False
-    # callbacks to register during setup
-    called_on_start = []  # set on system/application
-    called_on_exit = []  # set on system/application
-    called_on_resize = []  # set on viewport
-    called_on_render = []
-
-    __primary_window = None
-    __primary_window_enabled = False
-    __docking_enabled = False
+    called_on_start: list[Callable] = []  # registered before main loop
+    called_on_exit: list[Callable] = []
+    called_on_render: list[Callable] = []
+    called_on_resize: list[Callable] = []
 
     def __init__(
         self,
         title: str = "Application",
         *,
-        # config passed to dpg
-        # title: str = "Application",
         small_icon: str = '',
         large_icon: str = '',
         width: int = 1280,
@@ -101,15 +88,27 @@ class Viewport(ThemeSupport, AppHandlerSupport):
         resizable: bool = True,
         vsync: bool = True,
         always_on_top: bool = False,
-        clear_color: list[float] = [0, 0, 0, 255],
+        clear_color: list[float] = (0, 0, 0, 255),
         decorated: bool = True,
-        # addl. settings
+
         staging_mode: bool = False,
         enable_docking: bool = False,
         dock_space: bool = False,
+        theme: Theme = None
     ):
         super().__init__()
-        # viewport config
+        cls = self.__class__
+        # setting `self.__config` as empty prevents __getattribute__ from
+        # making calls that would raise internal errors (since the viewport
+        # hasn't been created yet). `self.__config` is deleted later in 
+        # _setup_viewport.
+        self.__config = ()
+        self.__staging_mode = staging_mode
+        self.__docking_enabled = enable_docking
+        self.__dock_space = dock_space
+        self.__primary_window = None
+        self.__primary_window_enabled = False
+
         self.title = title
         self.small_icon = small_icon
         self.large_icon = large_icon
@@ -127,68 +126,36 @@ class Viewport(ThemeSupport, AppHandlerSupport):
         self.clear_color = clear_color
         self.decorated = decorated
 
-        # app-level config
-        self.__staging_mode = staging_mode
-        self.__docking_enabled = enable_docking
-        self.theme = DEFAULT
+        self.theme = theme or DEFAULT
 
-        # setup viewport
-        self.__config = dict(
-            title=title,
-            small_icon=small_icon,
-            large_icon=large_icon,
-            width=width,
-            height=height,
-            x_pos=x_pos,
-            y_pos=y_pos,
-            min_width=min_width,
-            max_width=max_width,
-            min_height=min_height,
-            max_height=max_height,
-            resizable=resizable,
-            vsync=vsync,
-            always_on_top=always_on_top,
-            clear_color=clear_color,
-            decorated=decorated
-        )
 
-        cls = self.__class__
-        if cls.__exists:
-            raise ViewportError("Instance already exists - only 1 instance is allowed.")
-        cls.__exists = True
-        cls.__command(**self.__config)
-        self.__config = {*self.__config.keys()}
-        if enable_docking:  # must be called before dpg.setup_dearpygui
-            dpg.enable_docking(dock_space=dock_space)
+        if sys.platform == "win32":
+            # This lets the application use the real resolution of your
+            # display(s) instead of a virtual one that Windows might be set
+            # to use.
+            self.disable_virtual_scaling()
 
-        dpg.setup_dearpygui(viewport=self.__id)
-        dpg.show_viewport(self.__id)
+        self._setup_viewport()
 
-        # Re-binding the global reference to the real viewport
-        dpgwidgets.Application = self
 
     def __repr__(self):
         return f"{self.__class__.__qualname__} ({type(self)}) =>"
 
     def __int__(self):
-        # viewport id is currently a string literal in dpg
         return str(self.__id)
 
     def __str__(self):
         return self.title
 
     def __getattribute__(self, attr: str):
-        if attr.startswith("_") or attr == "id":
-            return super().__getattribute__(attr)
-        elif attr in super().__getattribute__("_Viewport__config"):
-            id = super().__getattribute__("_Viewport__id")
-            return dpg.get_viewport_configuration(id)[attr]
+        if attr in object.__getattribute__(self, "_Viewport__config"):
+            return get_viewport_configuration()[attr]
 
-        return super().__getattribute__(attr)
+        return object.__getattribute__(self, attr)
 
     def __setattr__(self, attr, value):
         if attr in object.__getattribute__(self, "_Viewport__config"):
-            dpg.configure_viewport(self.__id, **{attr: value})
+            configure_viewport(self.__id, **{attr: value})
         else:
             object.__setattr__(self, attr, value)
 
@@ -196,8 +163,13 @@ class Viewport(ThemeSupport, AppHandlerSupport):
     def id(self):
         return self.__id
 
+    @property
+    def exists(self):
+        return self.__exists
+
     def configure(self, **config):
         """Updates the viewport configuration.
+        
         """
         dpg.configure_viewport(self.__id, **config)
 
@@ -221,8 +193,9 @@ class Viewport(ThemeSupport, AppHandlerSupport):
         dpg.minimize_viewport()
 
 
-    # Addl. handlers/callback stuff
-    # These can be used as decorators just like handler methods
+    ##########################################
+    ########## Callback Decorators ###########
+    ##########################################
     @classmethod
     def on_resize(cls, func):
         """Adds <func> to a list of functions that will be
@@ -256,8 +229,9 @@ class Viewport(ThemeSupport, AppHandlerSupport):
         cls.called_on_exit.append(func)
         return func
 
-
-    # High-level setup, start/stop
+    ##########################################
+    ############### Main Loop ################
+    ##########################################
     @classmethod
     def register_callbacks(cls):
         """Register all callbacks.
@@ -268,11 +242,12 @@ class Viewport(ThemeSupport, AppHandlerSupport):
             f() for f in cls.called_on_resize])
 
     @classmethod
-    def get_render_callable(cls):
-        """Returns a callable that calls all functions that are to be called
-        on render (i.e. while the main loop is running).
+    def call_render_callbacks(cls):
+        """Calls all on-render callbacks.
+
         """
-        return lambda: [f() for f in cls.called_on_render]
+        [f() for f in cls.called_on_render]
+        #return lambda: [f() for f in cls.called_on_render]
 
     @property
     def is_running(self):
@@ -280,6 +255,7 @@ class Viewport(ThemeSupport, AppHandlerSupport):
 
     def render_frame(self):
         """Renders a frame.
+
         """
         return idpg.render_dearpygui_frame()
 
@@ -295,15 +271,16 @@ class Viewport(ThemeSupport, AppHandlerSupport):
             app.register_callbacks() 
             while app.is_running:
                 # do stuff
-                app.get_render_callable()()
+                app.call_render_callbacks()
                 # do more stuff
                 app.render_frame()
             app.cleanup()
 
         """
         self.register_callbacks()
+        render_callbacks = self.call_render_callbacks
         while idpg.is_dearpygui_running():
-            self.get_render_callable()()
+            render_callbacks()
             idpg.render_dearpygui_frame()
         idpg.cleanup_dearpygui()
 
@@ -314,7 +291,6 @@ class Viewport(ThemeSupport, AppHandlerSupport):
         dpg.stop_dearpygui()
 
 
-    # primary window
     @property
     def primary_window(self) -> Window:
         return self.__primary_window
@@ -358,7 +334,6 @@ class Viewport(ThemeSupport, AppHandlerSupport):
         return idpg.get_mouse_pos(local=local)
 
 
-    # misc.
     def frame_count(self):
         return dpg.get_frame_count()
 
@@ -395,6 +370,107 @@ class Viewport(ThemeSupport, AppHandlerSupport):
         self.__staging_mode = value
         dpg.set_staging_mode(mode=value)
 
+    ##########################################
+    ############# Windows-only  ##############
+    ##########################################
+    if sys.platform == "win32":
+        @staticmethod
+        def set_transparent_color(rgb: tuple[int, int, int]):
+            """Sets a color to be transparent. Anything painted that color
+            will be transparent instead. Transparent parts of items can
+            be clicked through. Only one color can be set as transparent
+            at a time - the old one will be unset for subsequent calls.
+
+            NOTE: If this is called, you will lose ALL functionality of the
+            viewport title bar, including dragging the window, and the 'close'
+            button. It is strongly advised to set the instance attribute
+            `decorated` to False, and implement a way of correctly stopping
+            the main loop using the `stop` method within the application.
+
+            Args:
+                rgb (tuple[int, int, int]): The color that will be transparent.
+
+            """
+            return _c_types.set_transparent_color(rgb)
+
+        @staticmethod
+        def restore_color():
+            """Removes the transparency from the set transparent color
+            i.e. color is no longer transparent. Functionality to the
+            application title bar might not be restored.
+
+            """
+            return _c_types.restore_color()
+
+        @staticmethod
+        def enable_virtual_scaling():
+            """Use the current 'Scale and layout' display setting in Windows
+            for this process. Renders may suffer from quality loss (from being
+            stretched), and may also affect how well items scale within the
+            application window.
+
+            """
+            return _c_types.enable_virtual_scaling()
+
+        @staticmethod
+        def disable_virtual_scaling():
+            """Ignore the 'Scale and layout' display setting in Windows
+            for this process.
+
+            """
+            return _c_types.disable_virtual_scaling()
+
+    ##########################################
+    ########### Internal-use Only ############
+    ##########################################
+    __command = dpg.create_viewport
+    __id = "DPG_NOT_USED_YET"
+    __exists = False
+    __config = (
+        "title",
+        "small_icon",
+        "large_icon",
+        "width",
+        "height",
+        "x_pos",
+        "y_pos",
+        "min_width",
+        "max_width",
+        "min_height",
+        "max_height",
+        "resizable",
+        "vsync",
+        "always_on_top",
+        "clear_color",
+        "decorated",
+    )
+
+    def _setup_viewport(self):
+        cls = self.__class__
+
+        if cls.__exists:
+            raise ViewportError("Instance already exists, and only 1 instance can exist.")
+
+        cls.__exists = True
+
+        config = {option:getattr(self, option) for option in cls.__config}
+        cls.__command(**config)
+        # Now __getattribute__ can properly set configuration
+        # options with the viewport made.
+        del self.__config
+
+        # must be called before dpg.setup_dearpygui
+        if self.__docking_enabled:  
+            dpg.enable_docking(dock_space=self.__dock_space)
+
+        dpg.setup_dearpygui(viewport=self.__id)
+        dpg.show_viewport(self.__id)
+
+        # Re-binding the global reference to the real viewport
+        dpgwidgets.Application = self
+    
+
+
 
 class _Viewport(Viewport):
     """Creates a dummy viewport instance. Intended to be bound to
@@ -410,6 +486,7 @@ class _Viewport(Viewport):
         vp_attrs = {p.name: p.default for p in
                       vp_attrs if p.name != "kwargs"}
 
+        self.__config = ()
         # Hard-coded for intellisense/language servers...
         self.title = vp_attrs["title"]
         self.small_icon = vp_attrs["small_icon"]
@@ -427,27 +504,6 @@ class _Viewport(Viewport):
         self.always_on_top = vp_attrs["always_on_top"]
         self.clear_color = vp_attrs["clear_color"]
         self.decorated = vp_attrs["decorated"]
-
-
-## Windows-only ##
-def use_hardware_resolution():
-    """Ignore the 'Scale and layout' display setting in Windows
-    for this process (Windows only). Does nothing on other platforms.
-    """
-    if sys.platform != "win32":
-        return
-
-    ctypes.windll.shcore.SetProcessDpiAwareness(2)
-
-
-def use_virtualized_resolution():
-    """Uses the selected 'Scale and layout' display setting in Windows
-    for this process (Windows only). Does nothing on other platforms.
-    """
-    if sys.platform != "win32":
-        return
-
-    ctypes.windll.shcore.SetProcessDpiAwareness(0)
 
 
 ## Misc stuff ##
