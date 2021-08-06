@@ -26,6 +26,13 @@ def on_window1_resize():
 app.start()
 ```
 
+## Installation
+**DPGWidgets** is available [here](https://test.pypi.org/project/dpgwidgets/) on **testpypi**.
+
+```
+python -m pip install -i https://test.pypi.org/simple/ dpgwidgets
+```
+
 
 ## License
 DPGWidgets and DearPyGui are both licensed under the [MIT License](https://github.com/Atlamillias/DPG-Widgets/blob/main/LICENSE).
