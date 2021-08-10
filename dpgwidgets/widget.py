@@ -13,8 +13,10 @@ from dpgwidgets.theme import ThemeSupport
 
 class Widget(Item, ThemeSupport, HandlerSupport, metaclass=ABCMeta):
     """Base class for all high-level items. Supports themes and
-    handlers.
+    handlers. Should not be instantiated directly.
     """
+    __value = None
+
     @abstractmethod
     def _command() -> Callable: ...
 
@@ -64,40 +66,46 @@ class Widget(Item, ThemeSupport, HandlerSupport, metaclass=ABCMeta):
     ## Value ##
     def set_value(self, value: Any):
         """Sets the value of a widget.
+
+        NOTE: A SystemError should be thrown if the widget
+        isn't capable of having a value set on it. But it
+        is currently supressed internally. If you try
+        setting a value, but the value doesn't "stick", 
         """
-        idpg.set_value(self.__id, value)
+        idpg.set_value(self.id, value)
 
     @property
     def value(self) -> Any:
         """Return the widget value (if any).
         """
-        return idpg.get_value(self.__id)
+        # See setter comments.
+        if self.__value:
+            return self.value
+ 
+        return idpg.get_value(self.id)
+
     @value.setter
     def value(self, value: Any):
-        idpg.set_value(self.__id, value)
-
+        try:
+            idpg.set_value(self.id, value)
+        # A SystemError should be thrown if the widget
+        # isn't capable of having a value set on it.
+        except SystemError:
+            self.__value = value
+        # 2021-08-06 - The error is being supressed internally,
+        # so the `except` code will never actually run. As a
+        # workaround, we check to see if the value "sticks".
+        if idpg.get_value(self.id) != value:
+            self.__value
 
     ## Info ##
-    def get_info(self) -> dict:
-        """Returns various information about the widget.
-        """
-        return idpg.get_item_info(self.id)
-
     @property
     def is_container(self) -> bool:
         """Checks if the widget is a container item.
         """
         return idpg.get_item_info(self.id)["container"]
 
-
-    ## State ##
-    def get_states(self, state: str = None) -> dict:
-        """Return the current state of a widget. If <state> is
-        included, only the value of that state will be returned.
-        """
-        states = idpg.get_item_state(self.__id)
-        return states.get(state, states)
-
+    ## States ##
     @property
     def is_hovered(self) -> bool:
         return idpg.get_item_state(self.id)["hovered"]
@@ -196,42 +204,19 @@ class Widget(Item, ThemeSupport, HandlerSupport, metaclass=ABCMeta):
 
 class Container(Widget, ContextSupport, metaclass=ABCMeta):
     """Base class for all high-level container items. Supports themes
-    and handlers.
+    and handlers. Should not be instantiated directly.
     """
     @abstractmethod
     def _command() -> Callable: ...
 
-    # x_scroll
-    @property
-    def y_scroll_pos(self):
-        return idpg.get_y_scroll(self.id)
-    @y_scroll_pos.setter
-    def y_scroll_pos(self, value):  # -1.0 will set it to max/end
-        idpg.set_y_scroll(self.id, value)
-
-    @property
-    def y_scroll_max(self):
-        return idpg.get_y_scroll_max(self.id)
-
-
-    # y_scroll
-    @property
-    def x_scroll_pos(self):
-        return idpg.get_x_scroll(self.id)
-    @x_scroll_pos.setter
-    def x_scroll_pos(self, value: float):  # -1.0 will set it to max/end
-        return idpg.set_x_scroll(self.id, value)
-
-    @property
-    def x_scroll_max(self):
-        return idpg.get_x_scroll_max(self.id)
-
-
     def reset_pos(self) -> None:
+        """Sets the container's position to the default.
+        """
         idpg.reset_pos(self.id)
 
     def renew(self) -> None:
-        """Deletes all children in the widget, if any."""
+        """Deletes all children in the widget, if any.
+        """
         idpg.delete_item(self.id, children_only=True)
 
     def children(self) -> list[int]:
@@ -240,7 +225,45 @@ class Container(Widget, ContextSupport, metaclass=ABCMeta):
 
         *Slots 1 and 2 in idpg.get_item_children(self.id, slot)
         """
-        return [child for slot, childs in 
+        return [child for slot, childs in
                 idpg.get_item_children(self.id, -1).items()
-                for child in childs 
+                for child in childs
                 if any(slot == i for i in (1, 2))]
+
+
+    # x_scroll
+    @property
+    def y_scroll_pos(self):
+        """Vertical scroll position of the container. If set to -1.0,
+        its position will be set to the end.
+        """
+        return idpg.get_y_scroll(self.id)
+    @y_scroll_pos.setter
+    def y_scroll_pos(self, value):  # -1.0 will set it to max/end
+        idpg.set_y_scroll(self.id, value)
+
+    @property
+    def y_scroll_max(self):
+        """Maximum vertical scroll position.
+        """
+        return idpg.get_y_scroll_max(self.id)
+
+
+    # y_scroll
+    @property
+    def x_scroll_pos(self):
+        """Horizontal scroll position of the container. If set to -1.0,
+        its position will be set to the end.
+        """
+        return idpg.get_x_scroll(self.id)
+    @x_scroll_pos.setter
+    def x_scroll_pos(self, value: float):  # -1.0 will set it to max/end
+        return idpg.set_x_scroll(self.id, value)
+
+    @property
+    def x_scroll_max(self):
+        """Maximum horizontal scroll position.
+        """
+        return idpg.get_x_scroll_max(self.id)
+
+
