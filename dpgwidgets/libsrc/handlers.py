@@ -40,6 +40,7 @@ class ActivatedHandler(Item):
             **callback (Callable): Registers a callback.
             **show (bool): Attempt to render widget.
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
     Returns:
             int
     
@@ -53,6 +54,7 @@ class ActivatedHandler(Item):
         callback: Callable = None, 
         show: bool = True, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         **kwargs, 
     ):
         super().__init__(
@@ -61,6 +63,7 @@ class ActivatedHandler(Item):
             callback=callback,
             show=show,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             **kwargs,
         )
         self.parent = parent
@@ -68,6 +71,7 @@ class ActivatedHandler(Item):
         self.callback = callback
         self.show = show
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
 
 
 class ActiveHandler(Item):
@@ -79,6 +83,7 @@ class ActiveHandler(Item):
             **callback (Callable): Registers a callback.
             **show (bool): Attempt to render widget.
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
     Returns:
             int
     
@@ -92,6 +97,7 @@ class ActiveHandler(Item):
         callback: Callable = None, 
         show: bool = True, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         **kwargs, 
     ):
         super().__init__(
@@ -100,6 +106,7 @@ class ActiveHandler(Item):
             callback=callback,
             show=show,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             **kwargs,
         )
         self.parent = parent
@@ -107,6 +114,7 @@ class ActiveHandler(Item):
         self.callback = callback
         self.show = show
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
 
 
 class ClickedHandler(Item):
@@ -119,6 +127,7 @@ class ClickedHandler(Item):
             **callback (Callable): Registers a callback.
             **show (bool): Attempt to render widget.
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
     Returns:
             int
     
@@ -133,6 +142,7 @@ class ClickedHandler(Item):
         callback: Callable = None, 
         show: bool = True, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         **kwargs, 
     ):
         super().__init__(
@@ -142,6 +152,7 @@ class ClickedHandler(Item):
             callback=callback,
             show=show,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             **kwargs,
         )
         self.parent = parent
@@ -150,6 +161,7 @@ class ClickedHandler(Item):
         self.callback = callback
         self.show = show
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
 
 
 class DeactivatedAfterEditHandler(Item):
@@ -161,6 +173,7 @@ class DeactivatedAfterEditHandler(Item):
             **callback (Callable): Registers a callback.
             **show (bool): Attempt to render widget.
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
     Returns:
             int
     
@@ -174,6 +187,7 @@ class DeactivatedAfterEditHandler(Item):
         callback: Callable = None, 
         show: bool = True, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         **kwargs, 
     ):
         super().__init__(
@@ -182,6 +196,7 @@ class DeactivatedAfterEditHandler(Item):
             callback=callback,
             show=show,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             **kwargs,
         )
         self.parent = parent
@@ -189,6 +204,7 @@ class DeactivatedAfterEditHandler(Item):
         self.callback = callback
         self.show = show
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
 
 
 class DeactivatedHandler(Item):
@@ -200,6 +216,7 @@ class DeactivatedHandler(Item):
             **callback (Callable): Registers a callback.
             **show (bool): Attempt to render widget.
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
     Returns:
             int
     
@@ -213,6 +230,7 @@ class DeactivatedHandler(Item):
         callback: Callable = None, 
         show: bool = True, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         **kwargs, 
     ):
         super().__init__(
@@ -221,6 +239,7 @@ class DeactivatedHandler(Item):
             callback=callback,
             show=show,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             **kwargs,
         )
         self.parent = parent
@@ -228,6 +247,7 @@ class DeactivatedHandler(Item):
         self.callback = callback
         self.show = show
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
 
 
 class EditedHandler(Item):
@@ -239,6 +259,7 @@ class EditedHandler(Item):
             **callback (Callable): Registers a callback.
             **show (bool): Attempt to render widget.
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
     Returns:
             int
     
@@ -252,6 +273,7 @@ class EditedHandler(Item):
         callback: Callable = None, 
         show: bool = True, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         **kwargs, 
     ):
         super().__init__(
@@ -260,6 +282,7 @@ class EditedHandler(Item):
             callback=callback,
             show=show,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             **kwargs,
         )
         self.parent = parent
@@ -267,6 +290,7 @@ class EditedHandler(Item):
         self.callback = callback
         self.show = show
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
 
 
 class FocusHandler(Item):
@@ -278,6 +302,7 @@ class FocusHandler(Item):
             **callback (Callable): Registers a callback.
             **show (bool): Attempt to render widget.
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
     Returns:
             int
     
@@ -291,6 +316,7 @@ class FocusHandler(Item):
         callback: Callable = None, 
         show: bool = True, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         **kwargs, 
     ):
         super().__init__(
@@ -299,6 +325,7 @@ class FocusHandler(Item):
             callback=callback,
             show=show,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             **kwargs,
         )
         self.parent = parent
@@ -306,6 +333,7 @@ class FocusHandler(Item):
         self.callback = callback
         self.show = show
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
 
 
 class HoverHandler(Item):
@@ -317,6 +345,7 @@ class HoverHandler(Item):
             **callback (Callable): Registers a callback.
             **show (bool): Attempt to render widget.
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
     Returns:
             int
     
@@ -330,6 +359,7 @@ class HoverHandler(Item):
         callback: Callable = None, 
         show: bool = True, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         **kwargs, 
     ):
         super().__init__(
@@ -338,6 +368,7 @@ class HoverHandler(Item):
             callback=callback,
             show=show,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             **kwargs,
         )
         self.parent = parent
@@ -345,6 +376,7 @@ class HoverHandler(Item):
         self.callback = callback
         self.show = show
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
 
 
 class KeyDownHandler(Item):
@@ -356,6 +388,7 @@ class KeyDownHandler(Item):
             **callback (Callable): Registers a callback.
             **show (bool): Attempt to render widget.
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **parent (int): Parent to add this item to. (runtime adding)
     Returns:
             int
@@ -370,6 +403,7 @@ class KeyDownHandler(Item):
         callback: Callable = None, 
         show: bool = True, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         parent: int = 11, 
         **kwargs, 
     ):
@@ -379,6 +413,7 @@ class KeyDownHandler(Item):
             callback=callback,
             show=show,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             parent=parent,
             **kwargs,
         )
@@ -387,6 +422,7 @@ class KeyDownHandler(Item):
         self.callback = callback
         self.show = show
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.parent = parent
 
 
@@ -399,6 +435,7 @@ class KeyPressHandler(Item):
             **callback (Callable): Registers a callback.
             **show (bool): Attempt to render widget.
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **parent (int): Parent to add this item to. (runtime adding)
     Returns:
             int
@@ -413,6 +450,7 @@ class KeyPressHandler(Item):
         callback: Callable = None, 
         show: bool = True, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         parent: int = 11, 
         **kwargs, 
     ):
@@ -422,6 +460,7 @@ class KeyPressHandler(Item):
             callback=callback,
             show=show,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             parent=parent,
             **kwargs,
         )
@@ -430,6 +469,7 @@ class KeyPressHandler(Item):
         self.callback = callback
         self.show = show
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.parent = parent
 
 
@@ -442,6 +482,7 @@ class KeyReleaseHandler(Item):
             **callback (Callable): Registers a callback.
             **show (bool): Attempt to render widget.
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **parent (int): Parent to add this item to. (runtime adding)
     Returns:
             int
@@ -456,6 +497,7 @@ class KeyReleaseHandler(Item):
         callback: Callable = None, 
         show: bool = True, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         parent: int = 11, 
         **kwargs, 
     ):
@@ -465,6 +507,7 @@ class KeyReleaseHandler(Item):
             callback=callback,
             show=show,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             parent=parent,
             **kwargs,
         )
@@ -473,6 +516,7 @@ class KeyReleaseHandler(Item):
         self.callback = callback
         self.show = show
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.parent = parent
 
 
@@ -485,6 +529,7 @@ class MouseClickHandler(Item):
             **callback (Callable): Registers a callback.
             **show (bool): Attempt to render widget.
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **parent (int): Parent to add this item to. (runtime adding)
     Returns:
             int
@@ -499,6 +544,7 @@ class MouseClickHandler(Item):
         callback: Callable = None, 
         show: bool = True, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         parent: int = 11, 
         **kwargs, 
     ):
@@ -508,6 +554,7 @@ class MouseClickHandler(Item):
             callback=callback,
             show=show,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             parent=parent,
             **kwargs,
         )
@@ -516,6 +563,7 @@ class MouseClickHandler(Item):
         self.callback = callback
         self.show = show
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.parent = parent
 
 
@@ -528,6 +576,7 @@ class MouseDoubleClickHandler(Item):
             **callback (Callable): Registers a callback.
             **show (bool): Attempt to render widget.
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **parent (int): Parent to add this item to. (runtime adding)
     Returns:
             int
@@ -542,6 +591,7 @@ class MouseDoubleClickHandler(Item):
         callback: Callable = None, 
         show: bool = True, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         parent: int = 11, 
         **kwargs, 
     ):
@@ -551,6 +601,7 @@ class MouseDoubleClickHandler(Item):
             callback=callback,
             show=show,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             parent=parent,
             **kwargs,
         )
@@ -559,6 +610,7 @@ class MouseDoubleClickHandler(Item):
         self.callback = callback
         self.show = show
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.parent = parent
 
 
@@ -571,6 +623,7 @@ class MouseDownHandler(Item):
             **callback (Callable): Registers a callback.
             **show (bool): Attempt to render widget.
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **parent (int): Parent to add this item to. (runtime adding)
     Returns:
             int
@@ -585,6 +638,7 @@ class MouseDownHandler(Item):
         callback: Callable = None, 
         show: bool = True, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         parent: int = 11, 
         **kwargs, 
     ):
@@ -594,6 +648,7 @@ class MouseDownHandler(Item):
             callback=callback,
             show=show,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             parent=parent,
             **kwargs,
         )
@@ -602,6 +657,7 @@ class MouseDownHandler(Item):
         self.callback = callback
         self.show = show
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.parent = parent
 
 
@@ -615,6 +671,7 @@ class MouseDragHandler(Item):
             **callback (Callable): Registers a callback.
             **show (bool): Attempt to render widget.
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **parent (int): Parent to add this item to. (runtime adding)
     Returns:
             int
@@ -630,6 +687,7 @@ class MouseDragHandler(Item):
         callback: Callable = None, 
         show: bool = True, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         parent: int = 11, 
         **kwargs, 
     ):
@@ -640,6 +698,7 @@ class MouseDragHandler(Item):
             callback=callback,
             show=show,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             parent=parent,
             **kwargs,
         )
@@ -649,6 +708,7 @@ class MouseDragHandler(Item):
         self.callback = callback
         self.show = show
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.parent = parent
 
 
@@ -660,6 +720,7 @@ class MouseMoveHandler(Item):
             **callback (Callable): Registers a callback.
             **show (bool): Attempt to render widget.
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **parent (int): Parent to add this item to. (runtime adding)
     Returns:
             int
@@ -673,6 +734,7 @@ class MouseMoveHandler(Item):
         callback: Callable = None, 
         show: bool = True, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         parent: int = 11, 
         **kwargs, 
     ):
@@ -681,6 +743,7 @@ class MouseMoveHandler(Item):
             callback=callback,
             show=show,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             parent=parent,
             **kwargs,
         )
@@ -688,6 +751,7 @@ class MouseMoveHandler(Item):
         self.callback = callback
         self.show = show
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.parent = parent
 
 
@@ -700,6 +764,7 @@ class MouseReleaseHandler(Item):
             **callback (Callable): Registers a callback.
             **show (bool): Attempt to render widget.
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **parent (int): Parent to add this item to. (runtime adding)
     Returns:
             int
@@ -714,6 +779,7 @@ class MouseReleaseHandler(Item):
         callback: Callable = None, 
         show: bool = True, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         parent: int = 11, 
         **kwargs, 
     ):
@@ -723,6 +789,7 @@ class MouseReleaseHandler(Item):
             callback=callback,
             show=show,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             parent=parent,
             **kwargs,
         )
@@ -731,6 +798,7 @@ class MouseReleaseHandler(Item):
         self.callback = callback
         self.show = show
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.parent = parent
 
 
@@ -742,6 +810,7 @@ class MouseWheelHandler(Item):
             **callback (Callable): Registers a callback.
             **show (bool): Attempt to render widget.
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **parent (int): Parent to add this item to. (runtime adding)
     Returns:
             int
@@ -755,6 +824,7 @@ class MouseWheelHandler(Item):
         callback: Callable = None, 
         show: bool = True, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         parent: int = 11, 
         **kwargs, 
     ):
@@ -763,6 +833,7 @@ class MouseWheelHandler(Item):
             callback=callback,
             show=show,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             parent=parent,
             **kwargs,
         )
@@ -770,6 +841,7 @@ class MouseWheelHandler(Item):
         self.callback = callback
         self.show = show
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.parent = parent
 
 
@@ -782,6 +854,7 @@ class ResizeHandler(Item):
             **callback (Callable): Registers a callback.
             **show (bool): Attempt to render widget.
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
     Returns:
             int
     
@@ -795,6 +868,7 @@ class ResizeHandler(Item):
         callback: Callable = None, 
         show: bool = True, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         **kwargs, 
     ):
         super().__init__(
@@ -803,6 +877,7 @@ class ResizeHandler(Item):
             callback=callback,
             show=show,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             **kwargs,
         )
         self.parent = parent
@@ -810,6 +885,7 @@ class ResizeHandler(Item):
         self.callback = callback
         self.show = show
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
 
 
 class ToggledOpenHandler(Item):
@@ -821,6 +897,7 @@ class ToggledOpenHandler(Item):
             **callback (Callable): Registers a callback.
             **show (bool): Attempt to render widget.
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
     Returns:
             int
     
@@ -834,6 +911,7 @@ class ToggledOpenHandler(Item):
         callback: Callable = None, 
         show: bool = True, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         **kwargs, 
     ):
         super().__init__(
@@ -842,6 +920,7 @@ class ToggledOpenHandler(Item):
             callback=callback,
             show=show,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             **kwargs,
         )
         self.parent = parent
@@ -849,6 +928,7 @@ class ToggledOpenHandler(Item):
         self.callback = callback
         self.show = show
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
 
 
 class VisibleHandler(Item):
@@ -860,6 +940,7 @@ class VisibleHandler(Item):
             **callback (Callable): Registers a callback.
             **show (bool): Attempt to render widget.
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
     Returns:
             int
     
@@ -873,6 +954,7 @@ class VisibleHandler(Item):
         callback: Callable = None, 
         show: bool = True, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         **kwargs, 
     ):
         super().__init__(
@@ -881,6 +963,7 @@ class VisibleHandler(Item):
             callback=callback,
             show=show,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             **kwargs,
         )
         self.parent = parent
@@ -888,3 +971,4 @@ class VisibleHandler(Item):
         self.callback = callback
         self.show = show
         self.user_data = user_data
+        self.use_internal_label = use_internal_label

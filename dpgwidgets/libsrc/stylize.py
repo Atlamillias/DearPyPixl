@@ -25,6 +25,7 @@ class Font(Item, ContextSupport):
             **label (str): Overrides 'name' as label.
             **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **default_font (bool): 
             **parent (int): Parent to add this item to. (runtime adding)
     Returns:
@@ -39,6 +40,7 @@ class Font(Item, ContextSupport):
         size: int, 
         label: str = None, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         default_font: bool = False, 
         parent: int = 10, 
         **kwargs, 
@@ -48,6 +50,7 @@ class Font(Item, ContextSupport):
             size=size,
             label=label,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             default_font=default_font,
             parent=parent,
             **kwargs,
@@ -56,6 +59,7 @@ class Font(Item, ContextSupport):
         self.size = size
         self.label = label
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.default_font = default_font
         self.parent = parent
 
@@ -66,6 +70,7 @@ class Theme(Item, ContextSupport):
             **label (str): Overrides 'name' as label.
             **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **default_theme (bool): 
     Returns:
             int
@@ -77,17 +82,20 @@ class Theme(Item, ContextSupport):
         self, 
         label: str = None, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         default_theme: bool = False, 
         **kwargs, 
     ):
         super().__init__(
             label=label,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             default_theme=default_theme,
             **kwargs,
         )
         self.label = label
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.default_theme = default_theme
 
 
@@ -99,6 +107,7 @@ class FontChars(Item):
             **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
             **parent (int): Parent to add this item to. (runtime adding)
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
     Returns:
             int
     
@@ -111,6 +120,7 @@ class FontChars(Item):
         label: str = None, 
         parent: int = 0, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         **kwargs, 
     ):
         super().__init__(
@@ -118,12 +128,14 @@ class FontChars(Item):
             label=label,
             parent=parent,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             **kwargs,
         )
         self.chars = chars
         self.label = label
         self.parent = parent
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
 
 
 class FontRange(Item):
@@ -135,6 +147,7 @@ class FontRange(Item):
             **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
             **parent (int): Parent to add this item to. (runtime adding)
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
     Returns:
             int
     
@@ -148,6 +161,7 @@ class FontRange(Item):
         label: str = None, 
         parent: int = 0, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         **kwargs, 
     ):
         super().__init__(
@@ -156,6 +170,7 @@ class FontRange(Item):
             label=label,
             parent=parent,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             **kwargs,
         )
         self.first_char = first_char
@@ -163,6 +178,7 @@ class FontRange(Item):
         self.label = label
         self.parent = parent
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
 
 
 class FontRangeHint(Item):
@@ -173,6 +189,7 @@ class FontRangeHint(Item):
             **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
             **parent (int): Parent to add this item to. (runtime adding)
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
     Returns:
             int
     
@@ -185,6 +202,7 @@ class FontRangeHint(Item):
         label: str = None, 
         parent: int = 0, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         **kwargs, 
     ):
         super().__init__(
@@ -192,12 +210,14 @@ class FontRangeHint(Item):
             label=label,
             parent=parent,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             **kwargs,
         )
         self.hint = hint
         self.label = label
         self.parent = parent
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
 
 
 class ThemeColor(Item):
@@ -209,6 +229,7 @@ class ThemeColor(Item):
             **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
             **parent (int): Parent to add this item to. (runtime adding)
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **category (int): Options include mvThemeCat_Core, mvThemeCat_Plots, mvThemeCat_Nodes.
     Returns:
             int
@@ -223,6 +244,7 @@ class ThemeColor(Item):
         label: str = None, 
         parent: int = 0, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         category: int = 0, 
         **kwargs, 
     ):
@@ -232,6 +254,7 @@ class ThemeColor(Item):
             label=label,
             parent=parent,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             category=category,
             **kwargs,
         )
@@ -240,6 +263,7 @@ class ThemeColor(Item):
         self.label = label
         self.parent = parent
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.category = category
 
 
@@ -253,6 +277,7 @@ class ThemeStyle(Item):
             **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
             **parent (int): Parent to add this item to. (runtime adding)
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **category (int): Options include mvThemeCat_Core, mvThemeCat_Plots, mvThemeCat_Nodes.
     Returns:
             int
@@ -268,6 +293,7 @@ class ThemeStyle(Item):
         label: str = None, 
         parent: int = 0, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         category: int = 0, 
         **kwargs, 
     ):
@@ -278,6 +304,7 @@ class ThemeStyle(Item):
             label=label,
             parent=parent,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             category=category,
             **kwargs,
         )
@@ -287,4 +314,5 @@ class ThemeStyle(Item):
         self.label = label
         self.parent = parent
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.category = category

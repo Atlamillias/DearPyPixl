@@ -48,6 +48,7 @@ class Child(Container):
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **border (bool): Shows/Hides the border around the sides.
             **autosize_x (bool): Autosize the window to fit it's items in the x.
             **autosize_y (bool): Autosize the window to fit it's items in the y.
@@ -78,6 +79,7 @@ class Child(Container):
         tracked: bool = False, 
         track_offset: float = 0.5, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         border: bool = True, 
         autosize_x: bool = False, 
         autosize_y: bool = False, 
@@ -103,6 +105,7 @@ class Child(Container):
             tracked=tracked,
             track_offset=track_offset,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             border=border,
             autosize_x=autosize_x,
             autosize_y=autosize_y,
@@ -127,6 +130,7 @@ class Child(Container):
         self.tracked = tracked
         self.track_offset = track_offset
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.border = border
         self.autosize_x = autosize_x
         self.autosize_y = autosize_y
@@ -147,6 +151,7 @@ class Clipper(Container):
             **show (bool): Attempt to render widget.
             **delay_search (bool): Delays searching container for specified items until the end of the app. Possible optimization when a container has many children that are not accessed often.
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
     Returns:
             int
     
@@ -163,6 +168,7 @@ class Clipper(Container):
         show: bool = True, 
         delay_search: bool = False, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         **kwargs, 
     ):
         super().__init__(
@@ -174,6 +180,7 @@ class Clipper(Container):
             show=show,
             delay_search=delay_search,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             **kwargs,
         )
         self.label = label
@@ -184,6 +191,7 @@ class Clipper(Container):
         self.show = show
         self.delay_search = delay_search
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
 
 
 class CollapsingHeader(Container):
@@ -204,6 +212,7 @@ class CollapsingHeader(Container):
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **closable (bool): Adds the ability to hide this widget by pressing the (x) in the top right of widget.
             **default_open (bool): Sets the collapseable header open by default.
             **open_on_double_click (bool): Need double-click to open node.
@@ -232,6 +241,7 @@ class CollapsingHeader(Container):
         tracked: bool = False, 
         track_offset: float = 0.5, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         closable: bool = False, 
         default_open: bool = False, 
         open_on_double_click: bool = False, 
@@ -255,6 +265,7 @@ class CollapsingHeader(Container):
             tracked=tracked,
             track_offset=track_offset,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             closable=closable,
             default_open=default_open,
             open_on_double_click=open_on_double_click,
@@ -277,6 +288,7 @@ class CollapsingHeader(Container):
         self.tracked = tracked
         self.track_offset = track_offset
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.closable = closable
         self.default_open = default_open
         self.open_on_double_click = open_on_double_click
@@ -293,6 +305,7 @@ class DragPayload(Container):
             **parent (int): Parent to add this item to. (runtime adding)
             **show (bool): Attempt to render widget.
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **drag_data (Any): Drag data
             **payload_type (str): 
     Returns:
@@ -307,6 +320,7 @@ class DragPayload(Container):
         parent: int = 0, 
         show: bool = True, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         drag_data: Any = None, 
         payload_type: str = '$$DPG_PAYLOAD', 
         **kwargs, 
@@ -316,6 +330,7 @@ class DragPayload(Container):
             parent=parent,
             show=show,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             drag_data=drag_data,
             payload_type=payload_type,
             **kwargs,
@@ -324,6 +339,7 @@ class DragPayload(Container):
         self.parent = parent
         self.show = show
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.drag_data = drag_data
         self.payload_type = payload_type
 
@@ -338,6 +354,7 @@ class FileDialog(Container):
             **callback (Callable): Registers a callback.
             **show (bool): Attempt to render widget.
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **default_path (str): Path that the file dialog will default to when opened.
             **default_filename (str): Default name that will show in the file name input.
             **file_count (int): Number of visible files in the dialog.
@@ -357,6 +374,7 @@ class FileDialog(Container):
         callback: Callable = None, 
         show: bool = True, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         default_path: str = '', 
         default_filename: str = '.', 
         file_count: int = 0, 
@@ -371,6 +389,7 @@ class FileDialog(Container):
             callback=callback,
             show=show,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             default_path=default_path,
             default_filename=default_filename,
             file_count=file_count,
@@ -384,6 +403,7 @@ class FileDialog(Container):
         self.callback = callback
         self.show = show
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.default_path = default_path
         self.default_filename = default_filename
         self.file_count = file_count
@@ -403,6 +423,7 @@ class FilterSet(Container):
             **show (bool): Attempt to render widget.
             **delay_search (bool): Delays searching container for specified items until the end of the app. Possible optimization when a container has many children that are not accessed often.
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
     Returns:
             int
     
@@ -419,6 +440,7 @@ class FilterSet(Container):
         show: bool = True, 
         delay_search: bool = False, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         **kwargs, 
     ):
         super().__init__(
@@ -430,6 +452,7 @@ class FilterSet(Container):
             show=show,
             delay_search=delay_search,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             **kwargs,
         )
         self.label = label
@@ -440,6 +463,7 @@ class FilterSet(Container):
         self.show = show
         self.delay_search = delay_search
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
 
 
 class Group(Container):
@@ -461,6 +485,7 @@ class Group(Container):
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **horizontal (bool): Forces child widgets to be added in a horizontal layout.
             **horizontal_spacing (float): Spacing for the horizontal layout.
     Returns:
@@ -486,6 +511,7 @@ class Group(Container):
         tracked: bool = False, 
         track_offset: float = 0.5, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         horizontal: bool = False, 
         horizontal_spacing: float = -1, 
         **kwargs, 
@@ -506,6 +532,7 @@ class Group(Container):
             tracked=tracked,
             track_offset=track_offset,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             horizontal=horizontal,
             horizontal_spacing=horizontal_spacing,
             **kwargs,
@@ -525,6 +552,7 @@ class Group(Container):
         self.tracked = tracked
         self.track_offset = track_offset
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.horizontal = horizontal
         self.horizontal_spacing = horizontal_spacing
 
@@ -547,6 +575,7 @@ class Menu(Container):
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
     Returns:
             int
     
@@ -569,6 +598,7 @@ class Menu(Container):
         tracked: bool = False, 
         track_offset: float = 0.5, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         **kwargs, 
     ):
         super().__init__(
@@ -586,6 +616,7 @@ class Menu(Container):
             tracked=tracked,
             track_offset=track_offset,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             **kwargs,
         )
         self.label = label
@@ -602,6 +633,7 @@ class Menu(Container):
         self.tracked = tracked
         self.track_offset = track_offset
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
 
 
 class MenuBar(Container):
@@ -614,6 +646,7 @@ class MenuBar(Container):
             **show (bool): Attempt to render widget.
             **delay_search (bool): Delays searching container for specified items until the end of the app. Possible optimization when a container has many children that are not accessed often.
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
     Returns:
             int
     
@@ -628,6 +661,7 @@ class MenuBar(Container):
         show: bool = True, 
         delay_search: bool = False, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         **kwargs, 
     ):
         super().__init__(
@@ -637,6 +671,7 @@ class MenuBar(Container):
             show=show,
             delay_search=delay_search,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             **kwargs,
         )
         self.label = label
@@ -645,6 +680,7 @@ class MenuBar(Container):
         self.show = show
         self.delay_search = delay_search
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
 
 
 class StagingContainer(Container):
@@ -653,6 +689,7 @@ class StagingContainer(Container):
             **label (str): Overrides 'name' as label.
             **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
     Returns:
             int
     
@@ -663,15 +700,18 @@ class StagingContainer(Container):
         self, 
         label: str = None, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         **kwargs, 
     ):
         super().__init__(
             label=label,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             **kwargs,
         )
         self.label = label
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
 
 
 class Tab(Container):
@@ -691,6 +731,7 @@ class Tab(Container):
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **closable (bool): Creates a button on the tab that can hide the tab.
             **no_tooltip (bool): Disable tooltip for the given tab.
             **order_mode (bool): set using a constant: mvTabOrder_Reorderable: allows reordering, mvTabOrder_Fixed: fixed ordering, mvTabOrder_Leading: adds tab to front, mvTabOrder_Trailing: adds tab to back
@@ -715,6 +756,7 @@ class Tab(Container):
         tracked: bool = False, 
         track_offset: float = 0.5, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         closable: bool = False, 
         no_tooltip: bool = False, 
         order_mode: bool = 0, 
@@ -734,6 +776,7 @@ class Tab(Container):
             tracked=tracked,
             track_offset=track_offset,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             closable=closable,
             no_tooltip=no_tooltip,
             order_mode=order_mode,
@@ -752,6 +795,7 @@ class Tab(Container):
         self.tracked = tracked
         self.track_offset = track_offset
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.closable = closable
         self.no_tooltip = no_tooltip
         self.order_mode = order_mode
@@ -776,6 +820,7 @@ class TabBar(Container):
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **reorderable (bool): Allows for the user to change the order of the tabs.
     Returns:
             int
@@ -800,6 +845,7 @@ class TabBar(Container):
         tracked: bool = False, 
         track_offset: float = 0.5, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         reorderable: bool = False, 
         **kwargs, 
     ):
@@ -819,6 +865,7 @@ class TabBar(Container):
             tracked=tracked,
             track_offset=track_offset,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             reorderable=reorderable,
             **kwargs,
         )
@@ -837,6 +884,7 @@ class TabBar(Container):
         self.tracked = tracked
         self.track_offset = track_offset
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.reorderable = reorderable
 
 
@@ -857,6 +905,7 @@ class Table(Container):
             **filter_key (str): Used by filter widget.
             **delay_search (bool): Delays searching container for specified items until the end of the app. Possible optimization when a container has many children that are not accessed often.
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **header_row (bool): show headers at the top of the columns
             **inner_width (int): 
             **policy (int): 
@@ -906,6 +955,7 @@ class Table(Container):
         filter_key: str = '', 
         delay_search: bool = False, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         header_row: bool = True, 
         inner_width: int = 0, 
         policy: int = 0, 
@@ -950,6 +1000,7 @@ class Table(Container):
             filter_key=filter_key,
             delay_search=delay_search,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             header_row=header_row,
             inner_width=inner_width,
             policy=policy,
@@ -993,6 +1044,7 @@ class Table(Container):
         self.filter_key = filter_key
         self.delay_search = delay_search
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.header_row = header_row
         self.inner_width = inner_width
         self.policy = policy
@@ -1034,6 +1086,7 @@ class TableRow(Container):
             **show (bool): Attempt to render widget.
             **filter_key (str): Used by filter widget.
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
     Returns:
             int
     
@@ -1049,6 +1102,7 @@ class TableRow(Container):
         show: bool = True, 
         filter_key: str = '', 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         **kwargs, 
     ):
         super().__init__(
@@ -1059,6 +1113,7 @@ class TableRow(Container):
             show=show,
             filter_key=filter_key,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             **kwargs,
         )
         self.label = label
@@ -1068,6 +1123,7 @@ class TableRow(Container):
         self.show = show
         self.filter_key = filter_key
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
 
 
 class Tooltip(Container):
@@ -1078,6 +1134,7 @@ class Tooltip(Container):
             **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
             **show (bool): Attempt to render widget.
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
     Returns:
             int
     
@@ -1090,6 +1147,7 @@ class Tooltip(Container):
         label: str = None, 
         show: bool = True, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         **kwargs, 
     ):
         super().__init__(
@@ -1097,12 +1155,14 @@ class Tooltip(Container):
             label=label,
             show=show,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             **kwargs,
         )
         self.parent = parent
         self.label = label
         self.show = show
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
 
 
 class TreeNode(Container):
@@ -1123,6 +1183,7 @@ class TreeNode(Container):
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **default_open (bool): Sets the tree node open by default.
             **open_on_double_click (bool): Need double-click to open node.
             **open_on_arrow (bool): Only open when clicking on the arrow part.
@@ -1151,6 +1212,7 @@ class TreeNode(Container):
         tracked: bool = False, 
         track_offset: float = 0.5, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         default_open: bool = False, 
         open_on_double_click: bool = False, 
         open_on_arrow: bool = False, 
@@ -1174,6 +1236,7 @@ class TreeNode(Container):
             tracked=tracked,
             track_offset=track_offset,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             default_open=default_open,
             open_on_double_click=open_on_double_click,
             open_on_arrow=open_on_arrow,
@@ -1196,6 +1259,7 @@ class TreeNode(Container):
         self.tracked = tracked
         self.track_offset = track_offset
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.default_open = default_open
         self.open_on_double_click = open_on_double_click
         self.open_on_arrow = open_on_arrow
@@ -1214,6 +1278,7 @@ class ViewportMenuBar(Container):
             **show (bool): Attempt to render widget.
             **delay_search (bool): Delays searching container for specified items until the end of the app. Possible optimization when a container has many children that are not accessed often.
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
     Returns:
             int
     
@@ -1228,6 +1293,7 @@ class ViewportMenuBar(Container):
         show: bool = True, 
         delay_search: bool = False, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         **kwargs, 
     ):
         super().__init__(
@@ -1237,6 +1303,7 @@ class ViewportMenuBar(Container):
             show=show,
             delay_search=delay_search,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             **kwargs,
         )
         self.label = label
@@ -1245,6 +1312,7 @@ class ViewportMenuBar(Container):
         self.show = show
         self.delay_search = delay_search
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
 
 
 class Window(Container):
@@ -1259,6 +1327,7 @@ class Window(Container):
             **pos (List[int]): Places the item relative to window coordinates, [0,0] is top left.
             **delay_search (bool): Delays searching container for specified items until the end of the app. Possible optimization when a container has many children that are not accessed often.
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **min_size (List[int]): Minimum window size.
             **max_size (List[int]): Maximum window size.
             **menubar (bool): Shows or hides the menubar.
@@ -1294,6 +1363,7 @@ class Window(Container):
         pos: list[int] = [], 
         delay_search: bool = False, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         min_size: list[int] = [100, 100], 
         max_size: list[int] = [30000, 30000], 
         menubar: bool = False, 
@@ -1324,6 +1394,7 @@ class Window(Container):
             pos=pos,
             delay_search=delay_search,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             min_size=min_size,
             max_size=max_size,
             menubar=menubar,
@@ -1353,6 +1424,7 @@ class Window(Container):
         self.pos = pos
         self.delay_search = delay_search
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.min_size = min_size
         self.max_size = max_size
         self.menubar = menubar

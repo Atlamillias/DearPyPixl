@@ -31,6 +31,7 @@ class Node(Container):
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **draggable (bool): Allow node to be draggable.
     Returns:
             int
@@ -53,6 +54,7 @@ class Node(Container):
         tracked: bool = False, 
         track_offset: float = 0.5, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         draggable: bool = True, 
         **kwargs, 
     ):
@@ -70,6 +72,7 @@ class Node(Container):
             tracked=tracked,
             track_offset=track_offset,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             draggable=draggable,
             **kwargs,
         )
@@ -86,6 +89,7 @@ class Node(Container):
         self.tracked = tracked
         self.track_offset = track_offset
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.draggable = draggable
 
 
@@ -105,6 +109,7 @@ class NodeAttribute(Container):
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **attribute_type (int): mvNode_Attr_Input, mvNode_Attr_Output, or mvNode_Attr_Static.
             **shape (int): Pin shape.
             **category (str): Category
@@ -128,6 +133,7 @@ class NodeAttribute(Container):
         tracked: bool = False, 
         track_offset: float = 0.5, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         attribute_type: int = 0, 
         shape: int = 1, 
         category: str = 'general', 
@@ -146,6 +152,7 @@ class NodeAttribute(Container):
             tracked=tracked,
             track_offset=track_offset,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             attribute_type=attribute_type,
             shape=shape,
             category=category,
@@ -163,6 +170,7 @@ class NodeAttribute(Container):
         self.tracked = tracked
         self.track_offset = track_offset
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.attribute_type = attribute_type
         self.shape = shape
         self.category = category
@@ -187,6 +195,7 @@ class NodeEditor(Container):
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **delink_callback (Callable): Callback ran when a link is detached.
             **menubar (bool): Shows or hides the menubar.
     Returns:
@@ -212,6 +221,7 @@ class NodeEditor(Container):
         tracked: bool = False, 
         track_offset: float = 0.5, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         delink_callback: Callable = None, 
         menubar: bool = False, 
         **kwargs, 
@@ -232,6 +242,7 @@ class NodeEditor(Container):
             tracked=tracked,
             track_offset=track_offset,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             delink_callback=delink_callback,
             menubar=menubar,
             **kwargs,
@@ -251,6 +262,7 @@ class NodeEditor(Container):
         self.tracked = tracked
         self.track_offset = track_offset
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.delink_callback = delink_callback
         self.menubar = menubar
 
@@ -265,6 +277,7 @@ class NodeLink(Widget):
             **parent (int): Parent to add this item to. (runtime adding)
             **show (bool): Attempt to render widget.
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
     Returns:
             int
     
@@ -279,6 +292,7 @@ class NodeLink(Widget):
         parent: int = 0, 
         show: bool = True, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         **kwargs, 
     ):
         super().__init__(
@@ -288,6 +302,7 @@ class NodeLink(Widget):
             parent=parent,
             show=show,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             **kwargs,
         )
         self.attr_1 = attr_1
@@ -296,3 +311,4 @@ class NodeLink(Widget):
         self.parent = parent
         self.show = show
         self.user_data = user_data
+        self.use_internal_label = use_internal_label

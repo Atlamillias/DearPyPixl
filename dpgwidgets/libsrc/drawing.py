@@ -35,6 +35,7 @@ class DrawLayer(Container):
             **before (int): This item will be displayed before the specified item in the parent.
             **show (bool): Attempt to render widget.
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
     Returns:
             int
     
@@ -48,6 +49,7 @@ class DrawLayer(Container):
         before: int = 0, 
         show: bool = True, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         **kwargs, 
     ):
         super().__init__(
@@ -56,6 +58,7 @@ class DrawLayer(Container):
             before=before,
             show=show,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             **kwargs,
         )
         self.label = label
@@ -63,6 +66,7 @@ class DrawLayer(Container):
         self.before = before
         self.show = show
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
 
 
 class Drawlist(Container):
@@ -85,6 +89,7 @@ class Drawlist(Container):
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
     Returns:
             int
     
@@ -109,6 +114,7 @@ class Drawlist(Container):
         tracked: bool = False, 
         track_offset: float = 0.5, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         **kwargs, 
     ):
         super().__init__(
@@ -128,6 +134,7 @@ class Drawlist(Container):
             tracked=tracked,
             track_offset=track_offset,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             **kwargs,
         )
         self.label = label
@@ -146,6 +153,7 @@ class Drawlist(Container):
         self.tracked = tracked
         self.track_offset = track_offset
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
 
 
 class ViewportDrawlist(Container):
@@ -157,6 +165,7 @@ class ViewportDrawlist(Container):
             **filter_key (str): Used by filter widget.
             **delay_search (bool): Delays searching container for specified items until the end of the app. Possible optimization when a container has many children that are not accessed often.
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **front (bool): Draws to the front of the view port instead of the back.
     Returns:
             int
@@ -171,6 +180,7 @@ class ViewportDrawlist(Container):
         filter_key: str = '', 
         delay_search: bool = False, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         front: bool = True, 
         **kwargs, 
     ):
@@ -180,6 +190,7 @@ class ViewportDrawlist(Container):
             filter_key=filter_key,
             delay_search=delay_search,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             front=front,
             **kwargs,
         )
@@ -188,6 +199,7 @@ class ViewportDrawlist(Container):
         self.filter_key = filter_key
         self.delay_search = delay_search
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.front = front
 
 
@@ -202,6 +214,7 @@ class Arrow(Widget):
             **before (int): This item will be displayed before the specified item in the parent.
             **show (bool): Attempt to render widget.
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **color (List[int]): 
             **thickness (float): 
             **size (int): 
@@ -220,6 +233,7 @@ class Arrow(Widget):
         before: int = 0, 
         show: bool = True, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         color: list[int] = (255, 255, 255, 255), 
         thickness: float = 1.0, 
         size: int = 4, 
@@ -233,6 +247,7 @@ class Arrow(Widget):
             before=before,
             show=show,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             color=color,
             thickness=thickness,
             size=size,
@@ -245,6 +260,7 @@ class Arrow(Widget):
         self.before = before
         self.show = show
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.color = color
         self.thickness = thickness
         self.size = size
@@ -263,6 +279,7 @@ class BezierCubic(Widget):
             **before (int): This item will be displayed before the specified item in the parent.
             **show (bool): Attempt to render widget.
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **color (List[int]): 
             **thickness (float): 
             **segments (int): Number of segments to approximate bezier curve.
@@ -283,6 +300,7 @@ class BezierCubic(Widget):
         before: int = 0, 
         show: bool = True, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         color: list[int] = (255, 255, 255, 255), 
         thickness: float = 1.0, 
         segments: int = 0, 
@@ -298,6 +316,7 @@ class BezierCubic(Widget):
             before=before,
             show=show,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             color=color,
             thickness=thickness,
             segments=segments,
@@ -312,6 +331,7 @@ class BezierCubic(Widget):
         self.before = before
         self.show = show
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.color = color
         self.thickness = thickness
         self.segments = segments
@@ -329,6 +349,7 @@ class BezierQuadratic(Widget):
             **before (int): This item will be displayed before the specified item in the parent.
             **show (bool): Attempt to render widget.
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **color (List[int]): 
             **thickness (float): 
             **segments (int): Number of segments to approximate bezier curve.
@@ -348,6 +369,7 @@ class BezierQuadratic(Widget):
         before: int = 0, 
         show: bool = True, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         color: list[int] = (255, 255, 255, 255), 
         thickness: float = 1.0, 
         segments: int = 0, 
@@ -362,6 +384,7 @@ class BezierQuadratic(Widget):
             before=before,
             show=show,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             color=color,
             thickness=thickness,
             segments=segments,
@@ -375,6 +398,7 @@ class BezierQuadratic(Widget):
         self.before = before
         self.show = show
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.color = color
         self.thickness = thickness
         self.segments = segments
@@ -391,6 +415,7 @@ class Circle(Widget):
             **before (int): This item will be displayed before the specified item in the parent.
             **show (bool): Attempt to render widget.
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **color (List[int]): 
             **fill (List[int]): 
             **thickness (float): 
@@ -410,6 +435,7 @@ class Circle(Widget):
         before: int = 0, 
         show: bool = True, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         color: list[int] = (255, 255, 255, 255), 
         fill: list[int] = (0, 0, 0, -255), 
         thickness: float = 1.0, 
@@ -424,6 +450,7 @@ class Circle(Widget):
             before=before,
             show=show,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             color=color,
             fill=fill,
             thickness=thickness,
@@ -437,6 +464,7 @@ class Circle(Widget):
         self.before = before
         self.show = show
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.color = color
         self.fill = fill
         self.thickness = thickness
@@ -454,6 +482,7 @@ class Ellipse(Widget):
             **before (int): This item will be displayed before the specified item in the parent.
             **show (bool): Attempt to render widget.
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **color (List[int]): 
             **fill (List[int]): 
             **thickness (float): 
@@ -473,6 +502,7 @@ class Ellipse(Widget):
         before: int = 0, 
         show: bool = True, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         color: list[int] = (255, 255, 255, 255), 
         fill: list[int] = (0, 0, 0, -255), 
         thickness: float = 1.0, 
@@ -487,6 +517,7 @@ class Ellipse(Widget):
             before=before,
             show=show,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             color=color,
             fill=fill,
             thickness=thickness,
@@ -500,6 +531,7 @@ class Ellipse(Widget):
         self.before = before
         self.show = show
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.color = color
         self.fill = fill
         self.thickness = thickness
@@ -518,6 +550,7 @@ class Image(Widget):
             **before (int): This item will be displayed before the specified item in the parent.
             **show (bool): Attempt to render widget.
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **uv_min (List[float]): Normalized coordinates on texture that will be drawn.
             **uv_max (List[float]): Normalized coordinates on texture that will be drawn.
             **color (List[int]): 
@@ -537,6 +570,7 @@ class Image(Widget):
         before: int = 0, 
         show: bool = True, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         uv_min: list[float] = (0.0, 0.0), 
         uv_max: list[float] = (1.0, 1.0), 
         color: list[int] = (255, 255, 255, 255), 
@@ -551,6 +585,7 @@ class Image(Widget):
             before=before,
             show=show,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             uv_min=uv_min,
             uv_max=uv_max,
             color=color,
@@ -564,6 +599,7 @@ class Image(Widget):
         self.before = before
         self.show = show
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.uv_min = uv_min
         self.uv_max = uv_max
         self.color = color
@@ -580,6 +616,7 @@ class Line(Widget):
             **before (int): This item will be displayed before the specified item in the parent.
             **show (bool): Attempt to render widget.
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **color (List[int]): 
             **thickness (float): 
     Returns:
@@ -597,6 +634,7 @@ class Line(Widget):
         before: int = 0, 
         show: bool = True, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         color: list[int] = (255, 255, 255, 255), 
         thickness: float = 1.0, 
         **kwargs, 
@@ -609,6 +647,7 @@ class Line(Widget):
             before=before,
             show=show,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             color=color,
             thickness=thickness,
             **kwargs,
@@ -620,6 +659,7 @@ class Line(Widget):
         self.before = before
         self.show = show
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.color = color
         self.thickness = thickness
 
@@ -634,6 +674,7 @@ class Polygon(Widget):
             **before (int): This item will be displayed before the specified item in the parent.
             **show (bool): Attempt to render widget.
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **color (List[int]): 
             **fill (List[int]): 
             **thickness (float): 
@@ -651,6 +692,7 @@ class Polygon(Widget):
         before: int = 0, 
         show: bool = True, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         color: list[int] = (255, 255, 255, 255), 
         fill: list[int] = (0, 0, 0, -255), 
         thickness: float = 1.0, 
@@ -663,6 +705,7 @@ class Polygon(Widget):
             before=before,
             show=show,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             color=color,
             fill=fill,
             thickness=thickness,
@@ -674,6 +717,7 @@ class Polygon(Widget):
         self.before = before
         self.show = show
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.color = color
         self.fill = fill
         self.thickness = thickness
@@ -689,6 +733,7 @@ class Polyline(Widget):
             **before (int): This item will be displayed before the specified item in the parent.
             **show (bool): Attempt to render widget.
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **closed (bool): Will close the polyline by returning to the first point.
             **color (List[int]): 
             **thickness (float): 
@@ -706,6 +751,7 @@ class Polyline(Widget):
         before: int = 0, 
         show: bool = True, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         closed: bool = False, 
         color: list[int] = (255, 255, 255, 255), 
         thickness: float = 1.0, 
@@ -718,6 +764,7 @@ class Polyline(Widget):
             before=before,
             show=show,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             closed=closed,
             color=color,
             thickness=thickness,
@@ -729,6 +776,7 @@ class Polyline(Widget):
         self.before = before
         self.show = show
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.closed = closed
         self.color = color
         self.thickness = thickness
@@ -747,6 +795,7 @@ class Quad(Widget):
             **before (int): This item will be displayed before the specified item in the parent.
             **show (bool): Attempt to render widget.
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **color (List[int]): 
             **fill (List[int]): 
             **thickness (float): 
@@ -767,6 +816,7 @@ class Quad(Widget):
         before: int = 0, 
         show: bool = True, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         color: list[int] = (255, 255, 255, 255), 
         fill: list[int] = (0, 0, 0, -255), 
         thickness: float = 1.0, 
@@ -782,6 +832,7 @@ class Quad(Widget):
             before=before,
             show=show,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             color=color,
             fill=fill,
             thickness=thickness,
@@ -796,6 +847,7 @@ class Quad(Widget):
         self.before = before
         self.show = show
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.color = color
         self.fill = fill
         self.thickness = thickness
@@ -812,9 +864,15 @@ class Rectangle(Widget):
             **before (int): This item will be displayed before the specified item in the parent.
             **show (bool): Attempt to render widget.
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **color (List[int]): 
+            **color_upper_left (List[int]): 'multicolor' must be set to 'True'
+            **color_upper_right (List[int]): 'multicolor' must be set to 'True'
+            **color_bottom_right (List[int]): 'multicolor' must be set to 'True'
+            **color_bottom_left (List[int]): 'multicolor' must be set to 'True'
             **fill (List[int]): 
-            **rounding (float): Number of pixels of the radius that will round the corners of the rectangle.
+            **multicolor (bool): 
+            **rounding (float): Number of pixels of the radius that will round the corners of the rectangle. Note: doesn't work with multicolor
             **thickness (float): 
     Returns:
             int
@@ -831,8 +889,14 @@ class Rectangle(Widget):
         before: int = 0, 
         show: bool = True, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         color: list[int] = (255, 255, 255, 255), 
+        color_upper_left: list[int] = (255, 255, 255, 255), 
+        color_upper_right: list[int] = (255, 255, 255, 255), 
+        color_bottom_right: list[int] = (255, 255, 255, 255), 
+        color_bottom_left: list[int] = (255, 255, 255, 255), 
         fill: list[int] = (0, 0, 0, -255), 
+        multicolor: bool = False, 
         rounding: float = 0.0, 
         thickness: float = 1.0, 
         **kwargs, 
@@ -845,8 +909,14 @@ class Rectangle(Widget):
             before=before,
             show=show,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             color=color,
+            color_upper_left=color_upper_left,
+            color_upper_right=color_upper_right,
+            color_bottom_right=color_bottom_right,
+            color_bottom_left=color_bottom_left,
             fill=fill,
+            multicolor=multicolor,
             rounding=rounding,
             thickness=thickness,
             **kwargs,
@@ -858,8 +928,14 @@ class Rectangle(Widget):
         self.before = before
         self.show = show
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.color = color
+        self.color_upper_left = color_upper_left
+        self.color_upper_right = color_upper_right
+        self.color_bottom_right = color_bottom_right
+        self.color_bottom_left = color_bottom_left
         self.fill = fill
+        self.multicolor = multicolor
         self.rounding = rounding
         self.thickness = thickness
 
@@ -875,6 +951,7 @@ class Text(Widget):
             **before (int): This item will be displayed before the specified item in the parent.
             **show (bool): Attempt to render widget.
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **color (List[int]): 
             **size (float): 
     Returns:
@@ -892,6 +969,7 @@ class Text(Widget):
         before: int = 0, 
         show: bool = True, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         color: list[int] = (255, 255, 255, 255), 
         size: float = 10.0, 
         **kwargs, 
@@ -904,6 +982,7 @@ class Text(Widget):
             before=before,
             show=show,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             color=color,
             size=size,
             **kwargs,
@@ -915,6 +994,7 @@ class Text(Widget):
         self.before = before
         self.show = show
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.color = color
         self.size = size
 
@@ -931,6 +1011,7 @@ class Triangle(Widget):
             **before (int): This item will be displayed before the specified item in the parent.
             **show (bool): Attempt to render widget.
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **color (List[int]): 
             **fill (List[int]): 
             **thickness (float): 
@@ -950,6 +1031,7 @@ class Triangle(Widget):
         before: int = 0, 
         show: bool = True, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         color: list[int] = (255, 255, 255, 255), 
         fill: list[int] = (0, 0, 0, -255), 
         thickness: float = 1.0, 
@@ -964,6 +1046,7 @@ class Triangle(Widget):
             before=before,
             show=show,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             color=color,
             fill=fill,
             thickness=thickness,
@@ -977,6 +1060,7 @@ class Triangle(Widget):
         self.before = before
         self.show = show
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.color = color
         self.fill = fill
         self.thickness = thickness

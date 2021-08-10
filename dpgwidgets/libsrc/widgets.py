@@ -14,7 +14,10 @@ __all__ = [
     "ColorButton",
     "ColorEdit",
     "ColorPicker",
+    "Colormap",
+    "ColormapButton",
     "ColormapScale",
+    "ColormapSlider",
     "Combo",
     "DatePicker",
     "DragFloat",
@@ -77,6 +80,7 @@ class Slider(Widget):
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **default_value (List[float]): 
             **max_x (float): Applies upper limit to slider.
             **max_y (float): Applies upper limit to slider.
@@ -110,6 +114,7 @@ class Slider(Widget):
         tracked: bool = False, 
         track_offset: float = 0.5, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         default_value: list[float] = (0.0, 0.0, 0.0, 0.0), 
         max_x: float = 100.0, 
         max_y: float = 100.0, 
@@ -138,6 +143,7 @@ class Slider(Widget):
             tracked=tracked,
             track_offset=track_offset,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             default_value=default_value,
             max_x=max_x,
             max_y=max_y,
@@ -165,6 +171,7 @@ class Slider(Widget):
         self.tracked = tracked
         self.track_offset = track_offset
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.default_value = default_value
         self.max_x = max_x
         self.max_y = max_y
@@ -196,6 +203,7 @@ class Button(Widget):
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **small (bool): Small button, useful for embedding in text.
             **arrow (bool): Arrow button, requires the direction keyword.
             **direction (int): A cardinal direction for arrow.
@@ -224,6 +232,7 @@ class Button(Widget):
         tracked: bool = False, 
         track_offset: float = 0.5, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         small: bool = False, 
         arrow: bool = False, 
         direction: int = 0, 
@@ -247,6 +256,7 @@ class Button(Widget):
             tracked=tracked,
             track_offset=track_offset,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             small=small,
             arrow=arrow,
             direction=direction,
@@ -269,6 +279,7 @@ class Button(Widget):
         self.tracked = tracked
         self.track_offset = track_offset
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.small = small
         self.arrow = arrow
         self.direction = direction
@@ -283,6 +294,7 @@ class CharRemap(Widget):
             **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
             **parent (int): Parent to add this item to. (runtime adding)
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
     Returns:
             int
     
@@ -296,6 +308,7 @@ class CharRemap(Widget):
         label: str = None, 
         parent: int = 0, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         **kwargs, 
     ):
         super().__init__(
@@ -304,6 +317,7 @@ class CharRemap(Widget):
             label=label,
             parent=parent,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             **kwargs,
         )
         self.source = source
@@ -311,6 +325,7 @@ class CharRemap(Widget):
         self.label = label
         self.parent = parent
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
 
 
 class Checkbox(Widget):
@@ -333,6 +348,7 @@ class Checkbox(Widget):
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **default_value (bool): 
     Returns:
             int
@@ -358,6 +374,7 @@ class Checkbox(Widget):
         tracked: bool = False, 
         track_offset: float = 0.5, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         default_value: bool = False, 
         **kwargs, 
     ):
@@ -378,6 +395,7 @@ class Checkbox(Widget):
             tracked=tracked,
             track_offset=track_offset,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             default_value=default_value,
             **kwargs,
         )
@@ -397,6 +415,7 @@ class Checkbox(Widget):
         self.tracked = tracked
         self.track_offset = track_offset
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.default_value = default_value
 
 
@@ -422,6 +441,7 @@ class ColorButton(Widget):
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **no_alpha (bool): Ignore Alpha component.
             **no_border (bool): Disable border around the image.
             **no_drag_drop (bool): Disable display of inline text label.
@@ -451,6 +471,7 @@ class ColorButton(Widget):
         tracked: bool = False, 
         track_offset: float = 0.5, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         no_alpha: bool = False, 
         no_border: bool = False, 
         no_drag_drop: bool = False, 
@@ -475,6 +496,7 @@ class ColorButton(Widget):
             tracked=tracked,
             track_offset=track_offset,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             no_alpha=no_alpha,
             no_border=no_border,
             no_drag_drop=no_drag_drop,
@@ -498,6 +520,7 @@ class ColorButton(Widget):
         self.tracked = tracked
         self.track_offset = track_offset
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.no_alpha = no_alpha
         self.no_border = no_border
         self.no_drag_drop = no_drag_drop
@@ -526,6 +549,7 @@ class ColorEdit(Widget):
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **no_alpha (bool): Disable Alpha component.
             **no_picker (bool): Disable picker popup when color square is clicked.
             **no_options (bool): Disable toggling options menu when right-clicking on inputs/small preview.
@@ -566,6 +590,7 @@ class ColorEdit(Widget):
         tracked: bool = False, 
         track_offset: float = 0.5, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         no_alpha: bool = False, 
         no_picker: bool = False, 
         no_options: bool = False, 
@@ -601,6 +626,7 @@ class ColorEdit(Widget):
             tracked=tracked,
             track_offset=track_offset,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             no_alpha=no_alpha,
             no_picker=no_picker,
             no_options=no_options,
@@ -635,6 +661,7 @@ class ColorEdit(Widget):
         self.tracked = tracked
         self.track_offset = track_offset
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.no_alpha = no_alpha
         self.no_picker = no_picker
         self.no_options = no_options
@@ -673,6 +700,7 @@ class ColorPicker(Widget):
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **no_alpha (bool): Ignore Alpha component.
             **no_side_preview (bool): Disable bigger color preview on right side of the picker, use small colored square preview instead , unless small preview is also hidden.
             **no_small_preview (bool): Disable colored square preview next to the inputs. (e.g. to show only the inputs). This only displays if the side preview is not shown.
@@ -714,6 +742,7 @@ class ColorPicker(Widget):
         tracked: bool = False, 
         track_offset: float = 0.5, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         no_alpha: bool = False, 
         no_side_preview: bool = False, 
         no_small_preview: bool = False, 
@@ -750,6 +779,7 @@ class ColorPicker(Widget):
             tracked=tracked,
             track_offset=track_offset,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             no_alpha=no_alpha,
             no_side_preview=no_side_preview,
             no_small_preview=no_small_preview,
@@ -785,6 +815,7 @@ class ColorPicker(Widget):
         self.tracked = tracked
         self.track_offset = track_offset
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.no_alpha = no_alpha
         self.no_side_preview = no_side_preview
         self.no_small_preview = no_small_preview
@@ -801,6 +832,160 @@ class ColorPicker(Widget):
         self.input_mode = input_mode
 
 
+class Colormap(Widget):
+    """Adds a legend that pairs values with colors. This is typically used with a heat series. 
+    Args:
+            colors (Any): 
+            qualitative (bool): 
+            **label (str): Overrides 'name' as label.
+            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **show (bool): Attempt to render widget.
+            **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
+            **parent (int): Parent to add this item to. (runtime adding)
+    Returns:
+            int
+    
+    """
+    _command = dearpygui.dearpygui.add_colormap
+
+    def __init__(
+        self, 
+        colors: list[list[int]], 
+        qualitative: bool, 
+        label: str = None, 
+        show: bool = True, 
+        user_data: Any = None, 
+        use_internal_label: bool = True, 
+        parent: int = 14, 
+        **kwargs, 
+    ):
+        super().__init__(
+            colors=colors,
+            qualitative=qualitative,
+            label=label,
+            show=show,
+            user_data=user_data,
+            use_internal_label=use_internal_label,
+            parent=parent,
+            **kwargs,
+        )
+        self.colors = colors
+        self.qualitative = qualitative
+        self.label = label
+        self.show = show
+        self.user_data = user_data
+        self.use_internal_label = use_internal_label
+        self.parent = parent
+
+
+class ColormapButton(Widget):
+    """Adds a color button.
+    Args:
+            *default_value (List[int]): 
+            **label (str): Overrides 'name' as label.
+            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **width (int): Width of the item.
+            **height (int): Height of the item.
+            **indent (int): Offsets the widget to the right the specified number multiplied by the indent style.
+            **parent (int): Parent to add this item to. (runtime adding)
+            **before (int): This item will be displayed before the specified item in the parent.
+            **payload_type (str): Sender string type must be the same as the target for the target to run the payload_callback.
+            **callback (Callable): Registers a callback.
+            **drag_callback (Callable): Registers a drag callback for drag and drop.
+            **drop_callback (Callable): Registers a drop callback for drag and drop.
+            **show (bool): Attempt to render widget.
+            **enabled (bool): Turns off functionality of widget and applies the disabled theme.
+            **pos (List[int]): Places the item relative to window coordinates, [0,0] is top left.
+            **filter_key (str): Used by filter widget.
+            **tracked (bool): Scroll tracking
+            **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
+            **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
+            **no_alpha (bool): Ignore Alpha component.
+            **no_border (bool): Disable border around the image.
+            **no_drag_drop (bool): Disable display of inline text label.
+    Returns:
+            int
+    
+    """
+    _command = dearpygui.dearpygui.add_colormap_button
+
+    def __init__(
+        self, 
+        default_value: list[int] = (0, 0, 0, 255), 
+        label: str = None, 
+        width: int = 0, 
+        height: int = 0, 
+        indent: int = -1, 
+        parent: int = 0, 
+        before: int = 0, 
+        payload_type: str = '$$DPG_PAYLOAD', 
+        callback: Callable = None, 
+        drag_callback: Callable = None, 
+        drop_callback: Callable = None, 
+        show: bool = True, 
+        enabled: bool = True, 
+        pos: list[int] = [], 
+        filter_key: str = '', 
+        tracked: bool = False, 
+        track_offset: float = 0.5, 
+        user_data: Any = None, 
+        use_internal_label: bool = True, 
+        no_alpha: bool = False, 
+        no_border: bool = False, 
+        no_drag_drop: bool = False, 
+        **kwargs, 
+    ):
+        super().__init__(
+            default_value=default_value,
+            label=label,
+            width=width,
+            height=height,
+            indent=indent,
+            parent=parent,
+            before=before,
+            payload_type=payload_type,
+            callback=callback,
+            drag_callback=drag_callback,
+            drop_callback=drop_callback,
+            show=show,
+            enabled=enabled,
+            pos=pos,
+            filter_key=filter_key,
+            tracked=tracked,
+            track_offset=track_offset,
+            user_data=user_data,
+            use_internal_label=use_internal_label,
+            no_alpha=no_alpha,
+            no_border=no_border,
+            no_drag_drop=no_drag_drop,
+            **kwargs,
+        )
+        self.default_value = default_value
+        self.label = label
+        self.width = width
+        self.height = height
+        self.indent = indent
+        self.parent = parent
+        self.before = before
+        self.payload_type = payload_type
+        self.callback = callback
+        self.drag_callback = drag_callback
+        self.drop_callback = drop_callback
+        self.show = show
+        self.enabled = enabled
+        self.pos = pos
+        self.filter_key = filter_key
+        self.tracked = tracked
+        self.track_offset = track_offset
+        self.user_data = user_data
+        self.use_internal_label = use_internal_label
+        self.no_alpha = no_alpha
+        self.no_border = no_border
+        self.no_drag_drop = no_drag_drop
+
+
 class ColormapScale(Widget):
     """Adds a legend that pairs values with colors. This is typically used with a heat series. 
     Args:
@@ -815,7 +1000,8 @@ class ColormapScale(Widget):
             **show (bool): Attempt to render widget.
             **pos (List[int]): Places the item relative to window coordinates, [0,0] is top left.
             **user_data (Any): User data for callbacks.
-            **default_value (int): 
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
+            **colormap (int): mvPlotColormap_* constants or mvColorMap uuid
             **min_scale (float): Sets the min number of the color scale. Typically is the same as the min scale from the heat series.
             **max_scale (float): Sets the max number of the color scale. Typically is the same as the max scale from the heat series.
     Returns:
@@ -836,7 +1022,8 @@ class ColormapScale(Widget):
         show: bool = True, 
         pos: list[int] = [], 
         user_data: Any = None, 
-        default_value: int = 0, 
+        use_internal_label: bool = True, 
+        colormap: int = 0, 
         min_scale: float = 0.0, 
         max_scale: float = 1.0, 
         **kwargs, 
@@ -852,7 +1039,8 @@ class ColormapScale(Widget):
             show=show,
             pos=pos,
             user_data=user_data,
-            default_value=default_value,
+            use_internal_label=use_internal_label,
+            colormap=colormap,
             min_scale=min_scale,
             max_scale=max_scale,
             **kwargs,
@@ -867,9 +1055,101 @@ class ColormapScale(Widget):
         self.show = show
         self.pos = pos
         self.user_data = user_data
-        self.default_value = default_value
+        self.use_internal_label = use_internal_label
+        self.colormap = colormap
         self.min_scale = min_scale
         self.max_scale = max_scale
+
+
+class ColormapSlider(Widget):
+    """Adds a color button.
+    Args:
+            **label (str): Overrides 'name' as label.
+            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **width (int): Width of the item.
+            **height (int): Height of the item.
+            **indent (int): Offsets the widget to the right the specified number multiplied by the indent style.
+            **parent (int): Parent to add this item to. (runtime adding)
+            **before (int): This item will be displayed before the specified item in the parent.
+            **payload_type (str): Sender string type must be the same as the target for the target to run the payload_callback.
+            **callback (Callable): Registers a callback.
+            **drag_callback (Callable): Registers a drag callback for drag and drop.
+            **drop_callback (Callable): Registers a drop callback for drag and drop.
+            **show (bool): Attempt to render widget.
+            **pos (List[int]): Places the item relative to window coordinates, [0,0] is top left.
+            **filter_key (str): Used by filter widget.
+            **tracked (bool): Scroll tracking
+            **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
+            **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
+            **default_value (float): 
+    Returns:
+            int
+    
+    """
+    _command = dearpygui.dearpygui.add_colormap_slider
+
+    def __init__(
+        self, 
+        label: str = None, 
+        width: int = 0, 
+        height: int = 0, 
+        indent: int = -1, 
+        parent: int = 0, 
+        before: int = 0, 
+        payload_type: str = '$$DPG_PAYLOAD', 
+        callback: Callable = None, 
+        drag_callback: Callable = None, 
+        drop_callback: Callable = None, 
+        show: bool = True, 
+        pos: list[int] = [], 
+        filter_key: str = '', 
+        tracked: bool = False, 
+        track_offset: float = 0.5, 
+        user_data: Any = None, 
+        use_internal_label: bool = True, 
+        default_value: float = 0.0, 
+        **kwargs, 
+    ):
+        super().__init__(
+            label=label,
+            width=width,
+            height=height,
+            indent=indent,
+            parent=parent,
+            before=before,
+            payload_type=payload_type,
+            callback=callback,
+            drag_callback=drag_callback,
+            drop_callback=drop_callback,
+            show=show,
+            pos=pos,
+            filter_key=filter_key,
+            tracked=tracked,
+            track_offset=track_offset,
+            user_data=user_data,
+            use_internal_label=use_internal_label,
+            default_value=default_value,
+            **kwargs,
+        )
+        self.label = label
+        self.width = width
+        self.height = height
+        self.indent = indent
+        self.parent = parent
+        self.before = before
+        self.payload_type = payload_type
+        self.callback = callback
+        self.drag_callback = drag_callback
+        self.drop_callback = drop_callback
+        self.show = show
+        self.pos = pos
+        self.filter_key = filter_key
+        self.tracked = tracked
+        self.track_offset = track_offset
+        self.user_data = user_data
+        self.use_internal_label = use_internal_label
+        self.default_value = default_value
 
 
 class Combo(Widget):
@@ -894,6 +1174,7 @@ class Combo(Widget):
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **default_value (str): 
             **popup_align_left (bool): Align the popup toward the left.
             **no_arrow_button (bool): Display the preview box without the square arrow button.
@@ -925,6 +1206,7 @@ class Combo(Widget):
         tracked: bool = False, 
         track_offset: float = 0.5, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         default_value: str = '', 
         popup_align_left: bool = False, 
         no_arrow_button: bool = False, 
@@ -951,6 +1233,7 @@ class Combo(Widget):
             tracked=tracked,
             track_offset=track_offset,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             default_value=default_value,
             popup_align_left=popup_align_left,
             no_arrow_button=no_arrow_button,
@@ -976,6 +1259,7 @@ class Combo(Widget):
         self.tracked = tracked
         self.track_offset = track_offset
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.default_value = default_value
         self.popup_align_left = popup_align_left
         self.no_arrow_button = no_arrow_button
@@ -1001,6 +1285,7 @@ class DatePicker(Widget):
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **default_value (dict): 
             **level (int): Use avaliable constants. mvDatePickerLevel_Day, mvDatePickerLevel_Month, mvDatePickerLevel_Year
     Returns:
@@ -1025,6 +1310,7 @@ class DatePicker(Widget):
         tracked: bool = False, 
         track_offset: float = 0.5, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         default_value: dict = {'month_day': 14, 'year': 20, 'month': 5}, 
         level: int = 0, 
         **kwargs, 
@@ -1044,6 +1330,7 @@ class DatePicker(Widget):
             tracked=tracked,
             track_offset=track_offset,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             default_value=default_value,
             level=level,
             **kwargs,
@@ -1062,6 +1349,7 @@ class DatePicker(Widget):
         self.tracked = tracked
         self.track_offset = track_offset
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.default_value = default_value
         self.level = level
 
@@ -1087,6 +1375,7 @@ class DragFloat(Widget):
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **default_value (float): 
             **format (str): 
             **speed (float): 
@@ -1119,6 +1408,7 @@ class DragFloat(Widget):
         tracked: bool = False, 
         track_offset: float = 0.5, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         default_value: float = 0.0, 
         format: str = '%0.3f', 
         speed: float = 1.0, 
@@ -1146,6 +1436,7 @@ class DragFloat(Widget):
             tracked=tracked,
             track_offset=track_offset,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             default_value=default_value,
             format=format,
             speed=speed,
@@ -1172,6 +1463,7 @@ class DragFloat(Widget):
         self.tracked = tracked
         self.track_offset = track_offset
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.default_value = default_value
         self.format = format
         self.speed = speed
@@ -1202,6 +1494,7 @@ class DragFloatx(Widget):
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **default_value (List[float]): 
             **size (int): Number of components
             **format (str): 
@@ -1235,6 +1528,7 @@ class DragFloatx(Widget):
         tracked: bool = False, 
         track_offset: float = 0.5, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         default_value: list[float] = (0.0, 0.0, 0.0, 0.0), 
         size: int = 4, 
         format: str = '%0.3f', 
@@ -1263,6 +1557,7 @@ class DragFloatx(Widget):
             tracked=tracked,
             track_offset=track_offset,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             default_value=default_value,
             size=size,
             format=format,
@@ -1290,6 +1585,7 @@ class DragFloatx(Widget):
         self.tracked = tracked
         self.track_offset = track_offset
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.default_value = default_value
         self.size = size
         self.format = format
@@ -1321,6 +1617,7 @@ class DragInt(Widget):
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **default_value (int): 
             **format (str): 
             **speed (float): 
@@ -1353,6 +1650,7 @@ class DragInt(Widget):
         tracked: bool = False, 
         track_offset: float = 0.5, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         default_value: int = 0, 
         format: str = '%d', 
         speed: float = 1.0, 
@@ -1380,6 +1678,7 @@ class DragInt(Widget):
             tracked=tracked,
             track_offset=track_offset,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             default_value=default_value,
             format=format,
             speed=speed,
@@ -1406,6 +1705,7 @@ class DragInt(Widget):
         self.tracked = tracked
         self.track_offset = track_offset
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.default_value = default_value
         self.format = format
         self.speed = speed
@@ -1436,6 +1736,7 @@ class DragIntx(Widget):
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **default_value (List[int]): 
             **size (int): Number of components.
             **format (str): 
@@ -1469,6 +1770,7 @@ class DragIntx(Widget):
         tracked: bool = False, 
         track_offset: float = 0.5, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         default_value: list[int] = (0, 0, 0, 0), 
         size: int = 4, 
         format: str = '%d', 
@@ -1497,6 +1799,7 @@ class DragIntx(Widget):
             tracked=tracked,
             track_offset=track_offset,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             default_value=default_value,
             size=size,
             format=format,
@@ -1524,6 +1827,7 @@ class DragIntx(Widget):
         self.tracked = tracked
         self.track_offset = track_offset
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.default_value = default_value
         self.size = size
         self.format = format
@@ -1545,6 +1849,7 @@ class DragLine(Widget):
             **callback (Callable): Registers a callback.
             **show (bool): Attempt to render widget.
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **default_value (Any): 
             **color (List[int]): 
             **thickness (float): 
@@ -1565,6 +1870,7 @@ class DragLine(Widget):
         callback: Callable = None, 
         show: bool = True, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         default_value: Any = 0.0, 
         color: list[int] = (0, 0, 0, -255), 
         thickness: float = 1.0, 
@@ -1580,6 +1886,7 @@ class DragLine(Widget):
             callback=callback,
             show=show,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             default_value=default_value,
             color=color,
             thickness=thickness,
@@ -1594,6 +1901,7 @@ class DragLine(Widget):
         self.callback = callback
         self.show = show
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.default_value = default_value
         self.color = color
         self.thickness = thickness
@@ -1614,6 +1922,7 @@ class Dummy(Widget):
             **show (bool): Attempt to render widget.
             **pos (List[int]): Places the item relative to window coordinates, [0,0] is top left.
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
     Returns:
             int
     
@@ -1631,6 +1940,7 @@ class Dummy(Widget):
         show: bool = True, 
         pos: list[int] = [], 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         **kwargs, 
     ):
         super().__init__(
@@ -1643,6 +1953,7 @@ class Dummy(Widget):
             show=show,
             pos=pos,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             **kwargs,
         )
         self.label = label
@@ -1654,6 +1965,7 @@ class Dummy(Widget):
         self.show = show
         self.pos = pos
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
 
 
 class DynamicTexture(Widget):
@@ -1665,6 +1977,7 @@ class DynamicTexture(Widget):
             **label (str): Overrides 'name' as label.
             **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **parent (int): Parent to add this item to. (runtime adding)
     Returns:
             int
@@ -1679,6 +1992,7 @@ class DynamicTexture(Widget):
         default_value: list[float], 
         label: str = None, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         parent: int = 12, 
         **kwargs, 
     ):
@@ -1688,6 +2002,7 @@ class DynamicTexture(Widget):
             default_value=default_value,
             label=label,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             parent=parent,
             **kwargs,
         )
@@ -1696,6 +2011,7 @@ class DynamicTexture(Widget):
         self.default_value = default_value
         self.label = label
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.parent = parent
 
 
@@ -1710,6 +2026,7 @@ class FileExtension(Widget):
             **parent (int): Parent to add this item to. (runtime adding)
             **before (int): This item will be displayed before the specified item in the parent.
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **custom_text (str): Replaces the displayed text in the drop down for this extension.
             **color (List[float]): 
     Returns:
@@ -1727,6 +2044,7 @@ class FileExtension(Widget):
         parent: int = 0, 
         before: int = 0, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         custom_text: str = '', 
         color: list[float] = (-255, 0, 0, 255), 
         **kwargs, 
@@ -1739,6 +2057,7 @@ class FileExtension(Widget):
             parent=parent,
             before=before,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             custom_text=custom_text,
             color=color,
             **kwargs,
@@ -1750,6 +2069,7 @@ class FileExtension(Widget):
         self.parent = parent
         self.before = before
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.custom_text = custom_text
         self.color = color
 
@@ -1775,6 +2095,7 @@ class Image(Widget):
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **tint_color (List[float]): Applies a color tint to the entire texture.
             **border_color (List[float]): Displays a border of the specified color around the texture.
             **uv_min (List[float]): Normalized texture coordinates min point.
@@ -1804,6 +2125,7 @@ class Image(Widget):
         tracked: bool = False, 
         track_offset: float = 0.5, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         tint_color: list[float] = (255, 255, 255, 255), 
         border_color: list[float] = (0, 0, 0, 0), 
         uv_min: list[float] = (0.0, 0.0), 
@@ -1828,6 +2150,7 @@ class Image(Widget):
             tracked=tracked,
             track_offset=track_offset,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             tint_color=tint_color,
             border_color=border_color,
             uv_min=uv_min,
@@ -1851,6 +2174,7 @@ class Image(Widget):
         self.tracked = tracked
         self.track_offset = track_offset
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.tint_color = tint_color
         self.border_color = border_color
         self.uv_min = uv_min
@@ -1880,6 +2204,7 @@ class ImageButton(Widget):
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **frame_padding (int): 
             **tint_color (List[float]): Applies a color tint to the entire texture.
             **background_color (List[float]): Displays a border of the specified color around the texture.
@@ -1912,6 +2237,7 @@ class ImageButton(Widget):
         tracked: bool = False, 
         track_offset: float = 0.5, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         frame_padding: int = -1, 
         tint_color: list[float] = (255, 255, 255, 255), 
         background_color: list[float] = (0, 0, 0, 0), 
@@ -1939,6 +2265,7 @@ class ImageButton(Widget):
             tracked=tracked,
             track_offset=track_offset,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             frame_padding=frame_padding,
             tint_color=tint_color,
             background_color=background_color,
@@ -1965,6 +2292,7 @@ class ImageButton(Widget):
         self.tracked = tracked
         self.track_offset = track_offset
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.frame_padding = frame_padding
         self.tint_color = tint_color
         self.background_color = background_color
@@ -1993,6 +2321,7 @@ class InputFloat(Widget):
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **default_value (float): 
             **format (str): 
             **min_value (float): Value for lower limit of input. By default this limits the step buttons. Use clamped to limit manual input.
@@ -2028,6 +2357,7 @@ class InputFloat(Widget):
         tracked: bool = False, 
         track_offset: float = 0.5, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         default_value: float = 0.0, 
         format: str = '%.3f', 
         min_value: float = 0.0, 
@@ -2058,6 +2388,7 @@ class InputFloat(Widget):
             tracked=tracked,
             track_offset=track_offset,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             default_value=default_value,
             format=format,
             min_value=min_value,
@@ -2087,6 +2418,7 @@ class InputFloat(Widget):
         self.tracked = tracked
         self.track_offset = track_offset
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.default_value = default_value
         self.format = format
         self.min_value = min_value
@@ -2120,6 +2452,7 @@ class InputFloatx(Widget):
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **default_value (List[float]): 
             **format (str): 
             **min_value (float): Value for lower limit of input for each cell. Use clamped to turn on.
@@ -2154,6 +2487,7 @@ class InputFloatx(Widget):
         tracked: bool = False, 
         track_offset: float = 0.5, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         default_value: list[float] = (0.0, 0.0, 0.0, 0.0), 
         format: str = '%.3f', 
         min_value: float = 0.0, 
@@ -2183,6 +2517,7 @@ class InputFloatx(Widget):
             tracked=tracked,
             track_offset=track_offset,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             default_value=default_value,
             format=format,
             min_value=min_value,
@@ -2211,6 +2546,7 @@ class InputFloatx(Widget):
         self.tracked = tracked
         self.track_offset = track_offset
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.default_value = default_value
         self.format = format
         self.min_value = min_value
@@ -2243,6 +2579,7 @@ class InputInt(Widget):
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **default_value (int): 
             **min_value (int): Value for lower limit of input. By default this limits the step buttons. Use clamped to limit manual input.
             **max_value (int): Value for upper limit of input. By default this limits the step buttons. Use clamped to limit manual input.
@@ -2277,6 +2614,7 @@ class InputInt(Widget):
         tracked: bool = False, 
         track_offset: float = 0.5, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         default_value: int = 0, 
         min_value: int = 0, 
         max_value: int = 100, 
@@ -2306,6 +2644,7 @@ class InputInt(Widget):
             tracked=tracked,
             track_offset=track_offset,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             default_value=default_value,
             min_value=min_value,
             max_value=max_value,
@@ -2334,6 +2673,7 @@ class InputInt(Widget):
         self.tracked = tracked
         self.track_offset = track_offset
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.default_value = default_value
         self.min_value = min_value
         self.max_value = max_value
@@ -2366,6 +2706,7 @@ class InputIntx(Widget):
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **default_value (List[int]): 
             **min_value (int): Value for lower limit of input for each cell. Use clamped to turn on.
             **max_value (int): Value for upper limit of input for each cell. Use clamped to turn on.
@@ -2399,6 +2740,7 @@ class InputIntx(Widget):
         tracked: bool = False, 
         track_offset: float = 0.5, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         default_value: list[int] = (0, 0, 0, 0), 
         min_value: int = 0, 
         max_value: int = 100, 
@@ -2427,6 +2769,7 @@ class InputIntx(Widget):
             tracked=tracked,
             track_offset=track_offset,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             default_value=default_value,
             min_value=min_value,
             max_value=max_value,
@@ -2454,6 +2797,7 @@ class InputIntx(Widget):
         self.tracked = tracked
         self.track_offset = track_offset
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.default_value = default_value
         self.min_value = min_value
         self.max_value = max_value
@@ -2486,6 +2830,7 @@ class InputText(Widget):
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **default_value (str): 
             **hint (str): Displayed only when value is empty string. Will reappear if input value is set to empty string. Will not show if default value is anything other than default empty string.
             **multiline (bool): Allows for multiline text input.
@@ -2524,6 +2869,7 @@ class InputText(Widget):
         tracked: bool = False, 
         track_offset: float = 0.5, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         default_value: str = '', 
         hint: str = '', 
         multiline: bool = False, 
@@ -2557,6 +2903,7 @@ class InputText(Widget):
             tracked=tracked,
             track_offset=track_offset,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             default_value=default_value,
             hint=hint,
             multiline=multiline,
@@ -2589,6 +2936,7 @@ class InputText(Widget):
         self.tracked = tracked
         self.track_offset = track_offset
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.default_value = default_value
         self.hint = hint
         self.multiline = multiline
@@ -2624,6 +2972,7 @@ class KnobFloat(Widget):
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **default_value (float): 
             **min_value (float): Applies lower limit to value.
             **max_value (float): Applies upper limit to value.
@@ -2652,6 +3001,7 @@ class KnobFloat(Widget):
         tracked: bool = False, 
         track_offset: float = 0.5, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         default_value: float = 0.0, 
         min_value: float = 0.0, 
         max_value: float = 100.0, 
@@ -2675,6 +3025,7 @@ class KnobFloat(Widget):
             tracked=tracked,
             track_offset=track_offset,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             default_value=default_value,
             min_value=min_value,
             max_value=max_value,
@@ -2697,6 +3048,7 @@ class KnobFloat(Widget):
         self.tracked = tracked
         self.track_offset = track_offset
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.default_value = default_value
         self.min_value = min_value
         self.max_value = max_value
@@ -2724,6 +3076,7 @@ class Listbox(Widget):
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **default_value (str): 
             **num_items (int): Expands the height of the listbox to show specified number of items.
     Returns:
@@ -2752,6 +3105,7 @@ class Listbox(Widget):
         tracked: bool = False, 
         track_offset: float = 0.5, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         default_value: str = '', 
         num_items: int = 3, 
         **kwargs, 
@@ -2775,6 +3129,7 @@ class Listbox(Widget):
             tracked=tracked,
             track_offset=track_offset,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             default_value=default_value,
             num_items=num_items,
             **kwargs,
@@ -2797,6 +3152,7 @@ class Listbox(Widget):
         self.tracked = tracked
         self.track_offset = track_offset
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.default_value = default_value
         self.num_items = num_items
 
@@ -2814,6 +3170,7 @@ class LoadingIndicator(Widget):
             **show (bool): Attempt to render widget.
             **pos (List[int]): Places the item relative to window coordinates, [0,0] is top left.
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **style (int): 0 is rotating dots style, 1 is rotating bar style.
             **circle_count (int): Number of dots show if dots or size of circle if circle.
             **speed (float): Speed the anamation will rotate.
@@ -2838,6 +3195,7 @@ class LoadingIndicator(Widget):
         show: bool = True, 
         pos: list[int] = [], 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         style: int = 0, 
         circle_count: int = 8, 
         speed: float = 1.0, 
@@ -2857,6 +3215,7 @@ class LoadingIndicator(Widget):
             show=show,
             pos=pos,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             style=style,
             circle_count=circle_count,
             speed=speed,
@@ -2875,6 +3234,7 @@ class LoadingIndicator(Widget):
         self.show = show
         self.pos = pos
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.style = style
         self.circle_count = circle_count
         self.speed = speed
@@ -2902,6 +3262,7 @@ class MenuItem(Widget):
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **default_value (bool): 
             **shortcut (str): Displays text on the menu item. Typically used to show a shortcut key command.
             **check (bool): Displays a checkmark on the menu item when it is selected.
@@ -2927,6 +3288,7 @@ class MenuItem(Widget):
         tracked: bool = False, 
         track_offset: float = 0.5, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         default_value: bool = False, 
         shortcut: str = '', 
         check: bool = False, 
@@ -2947,6 +3309,7 @@ class MenuItem(Widget):
             tracked=tracked,
             track_offset=track_offset,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             default_value=default_value,
             shortcut=shortcut,
             check=check,
@@ -2966,6 +3329,7 @@ class MenuItem(Widget):
         self.tracked = tracked
         self.track_offset = track_offset
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.default_value = default_value
         self.shortcut = shortcut
         self.check = check
@@ -2991,6 +3355,7 @@ class ProgressBar(Widget):
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **overlay (str): Overlayed text.
             **default_value (float): Normalized value to fill the bar from 0.0 to 1.0.
     Returns:
@@ -3017,6 +3382,7 @@ class ProgressBar(Widget):
         tracked: bool = False, 
         track_offset: float = 0.5, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         overlay: str = '', 
         default_value: float = 0.0, 
         **kwargs, 
@@ -3038,6 +3404,7 @@ class ProgressBar(Widget):
             tracked=tracked,
             track_offset=track_offset,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             overlay=overlay,
             default_value=default_value,
             **kwargs,
@@ -3058,6 +3425,7 @@ class ProgressBar(Widget):
         self.tracked = tracked
         self.track_offset = track_offset
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.overlay = overlay
         self.default_value = default_value
 
@@ -3083,6 +3451,7 @@ class RadioButton(Widget):
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **default_value (str): 
             **horizontal (bool): Displays the radio options horizontally.
     Returns:
@@ -3110,6 +3479,7 @@ class RadioButton(Widget):
         tracked: bool = False, 
         track_offset: float = 0.5, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         default_value: str = '', 
         horizontal: bool = False, 
         **kwargs, 
@@ -3132,6 +3502,7 @@ class RadioButton(Widget):
             tracked=tracked,
             track_offset=track_offset,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             default_value=default_value,
             horizontal=horizontal,
             **kwargs,
@@ -3153,6 +3524,7 @@ class RadioButton(Widget):
         self.tracked = tracked
         self.track_offset = track_offset
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.default_value = default_value
         self.horizontal = horizontal
 
@@ -3166,6 +3538,7 @@ class RawTexture(Widget):
             **label (str): Overrides 'name' as label.
             **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **format (int): Data format.
             **parent (int): Parent to add this item to. (runtime adding)
     Returns:
@@ -3181,6 +3554,7 @@ class RawTexture(Widget):
         default_value: list[float], 
         label: str = None, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         format: int = 0, 
         parent: int = 12, 
         **kwargs, 
@@ -3191,6 +3565,7 @@ class RawTexture(Widget):
             default_value=default_value,
             label=label,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             format=format,
             parent=parent,
             **kwargs,
@@ -3200,6 +3575,7 @@ class RawTexture(Widget):
         self.default_value = default_value
         self.label = label
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.format = format
         self.parent = parent
 
@@ -3213,6 +3589,7 @@ class SameLine(Widget):
             **before (int): This item will be displayed before the specified item in the parent.
             **show (bool): Attempt to render widget.
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **xoffset (float): Offset from containing window.
             **spacing (float): Offset from previous widget.
     Returns:
@@ -3228,6 +3605,7 @@ class SameLine(Widget):
         before: int = 0, 
         show: bool = True, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         xoffset: float = 0.0, 
         spacing: float = -1.0, 
         **kwargs, 
@@ -3238,6 +3616,7 @@ class SameLine(Widget):
             before=before,
             show=show,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             xoffset=xoffset,
             spacing=spacing,
             **kwargs,
@@ -3247,6 +3626,7 @@ class SameLine(Widget):
         self.before = before
         self.show = show
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.xoffset = xoffset
         self.spacing = spacing
 
@@ -3273,6 +3653,7 @@ class Selectable(Widget):
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **default_value (bool): 
             **span_columns (bool): Span the width of all columns if placed in a table.
     Returns:
@@ -3301,6 +3682,7 @@ class Selectable(Widget):
         tracked: bool = False, 
         track_offset: float = 0.5, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         default_value: bool = False, 
         span_columns: bool = False, 
         **kwargs, 
@@ -3324,6 +3706,7 @@ class Selectable(Widget):
             tracked=tracked,
             track_offset=track_offset,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             default_value=default_value,
             span_columns=span_columns,
             **kwargs,
@@ -3346,6 +3729,7 @@ class Selectable(Widget):
         self.tracked = tracked
         self.track_offset = track_offset
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.default_value = default_value
         self.span_columns = span_columns
 
@@ -3361,6 +3745,7 @@ class Separator(Widget):
             **show (bool): Attempt to render widget.
             **pos (List[int]): Places the item relative to window coordinates, [0,0] is top left.
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
     Returns:
             int
     
@@ -3376,6 +3761,7 @@ class Separator(Widget):
         show: bool = True, 
         pos: list[int] = [], 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         **kwargs, 
     ):
         super().__init__(
@@ -3386,6 +3772,7 @@ class Separator(Widget):
             show=show,
             pos=pos,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             **kwargs,
         )
         self.label = label
@@ -3395,6 +3782,7 @@ class Separator(Widget):
         self.show = show
         self.pos = pos
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
 
 
 class SliderFloat(Widget):
@@ -3419,6 +3807,7 @@ class SliderFloat(Widget):
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **default_value (float): 
             **vertical (bool): Sets orientation to vertical.
             **no_input (bool): Disable direct entry methods or Enter key allowing to input text directly into the widget.
@@ -3452,6 +3841,7 @@ class SliderFloat(Widget):
         tracked: bool = False, 
         track_offset: float = 0.5, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         default_value: float = 0.0, 
         vertical: bool = False, 
         no_input: bool = False, 
@@ -3480,6 +3870,7 @@ class SliderFloat(Widget):
             tracked=tracked,
             track_offset=track_offset,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             default_value=default_value,
             vertical=vertical,
             no_input=no_input,
@@ -3507,6 +3898,7 @@ class SliderFloat(Widget):
         self.tracked = tracked
         self.track_offset = track_offset
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.default_value = default_value
         self.vertical = vertical
         self.no_input = no_input
@@ -3537,6 +3929,7 @@ class SliderFloatx(Widget):
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **default_value (List[float]): 
             **size (int): Number of components.
             **no_input (bool): Disable direct entry methods or Enter key allowing to input text directly into the widget.
@@ -3569,6 +3962,7 @@ class SliderFloatx(Widget):
         tracked: bool = False, 
         track_offset: float = 0.5, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         default_value: list[float] = (0.0, 0.0, 0.0, 0.0), 
         size: int = 4, 
         no_input: bool = False, 
@@ -3596,6 +3990,7 @@ class SliderFloatx(Widget):
             tracked=tracked,
             track_offset=track_offset,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             default_value=default_value,
             size=size,
             no_input=no_input,
@@ -3622,6 +4017,7 @@ class SliderFloatx(Widget):
         self.tracked = tracked
         self.track_offset = track_offset
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.default_value = default_value
         self.size = size
         self.no_input = no_input
@@ -3653,6 +4049,7 @@ class SliderInt(Widget):
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **default_value (int): 
             **vertical (bool): Sets orientation to vertical.
             **no_input (bool): Disable direct entry methods or Enter key allowing to input text directly into the widget.
@@ -3686,6 +4083,7 @@ class SliderInt(Widget):
         tracked: bool = False, 
         track_offset: float = 0.5, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         default_value: int = 0, 
         vertical: bool = False, 
         no_input: bool = False, 
@@ -3714,6 +4112,7 @@ class SliderInt(Widget):
             tracked=tracked,
             track_offset=track_offset,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             default_value=default_value,
             vertical=vertical,
             no_input=no_input,
@@ -3741,6 +4140,7 @@ class SliderInt(Widget):
         self.tracked = tracked
         self.track_offset = track_offset
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.default_value = default_value
         self.vertical = vertical
         self.no_input = no_input
@@ -3771,6 +4171,7 @@ class SliderIntx(Widget):
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **default_value (List[int]): 
             **size (int): number of components
             **no_input (bool): Disable direct entry methods or Enter key allowing to input text directly into the widget.
@@ -3803,6 +4204,7 @@ class SliderIntx(Widget):
         tracked: bool = False, 
         track_offset: float = 0.5, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         default_value: list[int] = (0, 0, 0, 0), 
         size: int = 4, 
         no_input: bool = False, 
@@ -3830,6 +4232,7 @@ class SliderIntx(Widget):
             tracked=tracked,
             track_offset=track_offset,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             default_value=default_value,
             size=size,
             no_input=no_input,
@@ -3856,6 +4259,7 @@ class SliderIntx(Widget):
         self.tracked = tracked
         self.track_offset = track_offset
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.default_value = default_value
         self.size = size
         self.no_input = no_input
@@ -3876,6 +4280,7 @@ class Spacing(Widget):
             **show (bool): Attempt to render widget.
             **pos (List[int]): Places the item relative to window coordinates, [0,0] is top left.
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **count (int): Number of spacings to add the size is dependant on the curret style.
     Returns:
             int
@@ -3892,6 +4297,7 @@ class Spacing(Widget):
         show: bool = True, 
         pos: list[int] = [], 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         count: int = 1, 
         **kwargs, 
     ):
@@ -3903,6 +4309,7 @@ class Spacing(Widget):
             show=show,
             pos=pos,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             count=count,
             **kwargs,
         )
@@ -3913,6 +4320,7 @@ class Spacing(Widget):
         self.show = show
         self.pos = pos
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.count = count
 
 
@@ -3925,6 +4333,7 @@ class StaticTexture(Widget):
             **label (str): Overrides 'name' as label.
             **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **parent (int): Parent to add this item to. (runtime adding)
     Returns:
             int
@@ -3939,6 +4348,7 @@ class StaticTexture(Widget):
         default_value: list[float], 
         label: str = None, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         parent: int = 12, 
         **kwargs, 
     ):
@@ -3948,6 +4358,7 @@ class StaticTexture(Widget):
             default_value=default_value,
             label=label,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             parent=parent,
             **kwargs,
         )
@@ -3956,6 +4367,7 @@ class StaticTexture(Widget):
         self.default_value = default_value
         self.label = label
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.parent = parent
 
 
@@ -3976,6 +4388,7 @@ class TabButton(Widget):
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **no_reorder (bool): Disable reordering this tab or having another tab cross over this tab.
             **leading (bool): Enforce the tab position to the left of the tab bar (after the tab list popup button).
             **trailing (bool): Enforce the tab position to the right of the tab bar (before the scrolling buttons).
@@ -4001,6 +4414,7 @@ class TabButton(Widget):
         tracked: bool = False, 
         track_offset: float = 0.5, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         no_reorder: bool = False, 
         leading: bool = False, 
         trailing: bool = False, 
@@ -4021,6 +4435,7 @@ class TabButton(Widget):
             tracked=tracked,
             track_offset=track_offset,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             no_reorder=no_reorder,
             leading=leading,
             trailing=trailing,
@@ -4040,6 +4455,7 @@ class TabButton(Widget):
         self.tracked = tracked
         self.track_offset = track_offset
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.no_reorder = no_reorder
         self.leading = leading
         self.trailing = trailing
@@ -4056,6 +4472,7 @@ class TableColumn(Widget):
             **before (int): This item will be displayed before the specified item in the parent.
             **show (bool): Attempt to render widget.
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **init_width_or_weight (float): 
             **default_hide (bool): Default as a hidden/disabled column.
             **default_sort (bool): Default as a sorting column.
@@ -4087,6 +4504,7 @@ class TableColumn(Widget):
         before: int = 0, 
         show: bool = True, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         init_width_or_weight: float = 0.0, 
         default_hide: bool = False, 
         default_sort: bool = False, 
@@ -4113,6 +4531,7 @@ class TableColumn(Widget):
             before=before,
             show=show,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             init_width_or_weight=init_width_or_weight,
             default_hide=default_hide,
             default_sort=default_sort,
@@ -4138,6 +4557,7 @@ class TableColumn(Widget):
         self.before = before
         self.show = show
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.init_width_or_weight = init_width_or_weight
         self.default_hide = default_hide
         self.default_sort = default_sort
@@ -4166,6 +4586,7 @@ class TableNextColumn(Widget):
             **before (int): This item will be displayed before the specified item in the parent.
             **show (bool): Attempt to render widget.
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
     Returns:
             int
     
@@ -4179,6 +4600,7 @@ class TableNextColumn(Widget):
         before: int = 0, 
         show: bool = True, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         **kwargs, 
     ):
         super().__init__(
@@ -4187,6 +4609,7 @@ class TableNextColumn(Widget):
             before=before,
             show=show,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             **kwargs,
         )
         self.label = label
@@ -4194,6 +4617,7 @@ class TableNextColumn(Widget):
         self.before = before
         self.show = show
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
 
 
 class Text(Widget):
@@ -4212,6 +4636,7 @@ class Text(Widget):
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **wrap (int): Number of pixels until wrapping starts.
             **bullet (bool): Makes the text bulleted.
             **color (List[float]): Color of the text (rgba).
@@ -4236,6 +4661,7 @@ class Text(Widget):
         tracked: bool = False, 
         track_offset: float = 0.5, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         wrap: int = -1, 
         bullet: bool = False, 
         color: list[float] = (-1, -1, -1, -1), 
@@ -4255,6 +4681,7 @@ class Text(Widget):
             tracked=tracked,
             track_offset=track_offset,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             wrap=wrap,
             bullet=bullet,
             color=color,
@@ -4273,6 +4700,7 @@ class Text(Widget):
         self.tracked = tracked
         self.track_offset = track_offset
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.wrap = wrap
         self.bullet = bullet
         self.color = color
@@ -4297,6 +4725,7 @@ class TimePicker(Widget):
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **default_value (dict): 
             **hour24 (bool): Show 24 hour clock instead of 12 hour.
     Returns:
@@ -4321,6 +4750,7 @@ class TimePicker(Widget):
         tracked: bool = False, 
         track_offset: float = 0.5, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         default_value: dict = {'hour': 14, 'min': 32, 'sec': 23}, 
         hour24: bool = False, 
         **kwargs, 
@@ -4340,6 +4770,7 @@ class TimePicker(Widget):
             tracked=tracked,
             track_offset=track_offset,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             default_value=default_value,
             hour24=hour24,
             **kwargs,
@@ -4358,5 +4789,6 @@ class TimePicker(Widget):
         self.tracked = tracked
         self.track_offset = track_offset
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.default_value = default_value
         self.hour24 = hour24

@@ -1,8 +1,8 @@
 __all__ = [
     'containers',
+    'registries',
     'drawing',
     'stylize',
-    'registries',
     'node',
     'plotting',
     'widgets',
@@ -11,4 +11,4 @@ __all__ = [
     'constants',
 ]
 
-__version__ = '0.8.54'
+__version__ = '0.8.58'

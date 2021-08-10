@@ -28,6 +28,7 @@ class BoolValue(Item):
             **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
             **source (int): Overrides 'id' as value storage key.
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **default_value (bool): 
             **parent (int): Parent to add this item to. (runtime adding)
     Returns:
@@ -41,6 +42,7 @@ class BoolValue(Item):
         label: str = None, 
         source: int = 0, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         default_value: bool = False, 
         parent: int = 13, 
         **kwargs, 
@@ -49,6 +51,7 @@ class BoolValue(Item):
             label=label,
             source=source,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             default_value=default_value,
             parent=parent,
             **kwargs,
@@ -56,6 +59,7 @@ class BoolValue(Item):
         self.label = label
         self.source = source
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.default_value = default_value
         self.parent = parent
 
@@ -67,6 +71,7 @@ class ColorValue(Item):
             **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
             **source (int): Overrides 'id' as value storage key.
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **default_value (List[float]): 
             **parent (int): Parent to add this item to. (runtime adding)
     Returns:
@@ -80,6 +85,7 @@ class ColorValue(Item):
         label: str = None, 
         source: int = 0, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         default_value: list[float] = (0.0, 0.0, 0.0, 0.0), 
         parent: int = 13, 
         **kwargs, 
@@ -88,6 +94,7 @@ class ColorValue(Item):
             label=label,
             source=source,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             default_value=default_value,
             parent=parent,
             **kwargs,
@@ -95,6 +102,7 @@ class ColorValue(Item):
         self.label = label
         self.source = source
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.default_value = default_value
         self.parent = parent
 
@@ -106,6 +114,7 @@ class Double4Value(Item):
             **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
             **source (int): Overrides 'id' as value storage key.
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **default_value (Any): 
             **parent (int): Parent to add this item to. (runtime adding)
     Returns:
@@ -119,6 +128,7 @@ class Double4Value(Item):
         label: str = None, 
         source: int = 0, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         default_value: Any = (0.0, 0.0, 0.0, 0.0), 
         parent: int = 13, 
         **kwargs, 
@@ -127,6 +137,7 @@ class Double4Value(Item):
             label=label,
             source=source,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             default_value=default_value,
             parent=parent,
             **kwargs,
@@ -134,6 +145,7 @@ class Double4Value(Item):
         self.label = label
         self.source = source
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.default_value = default_value
         self.parent = parent
 
@@ -145,6 +157,7 @@ class DoubleValue(Item):
             **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
             **source (int): Overrides 'id' as value storage key.
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **default_value (float): 
             **parent (int): Parent to add this item to. (runtime adding)
     Returns:
@@ -158,6 +171,7 @@ class DoubleValue(Item):
         label: str = None, 
         source: int = 0, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         default_value: float = 0.0, 
         parent: int = 13, 
         **kwargs, 
@@ -166,6 +180,7 @@ class DoubleValue(Item):
             label=label,
             source=source,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             default_value=default_value,
             parent=parent,
             **kwargs,
@@ -173,6 +188,7 @@ class DoubleValue(Item):
         self.label = label
         self.source = source
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.default_value = default_value
         self.parent = parent
 
@@ -184,6 +200,7 @@ class Float4Value(Item):
             **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
             **source (int): Overrides 'id' as value storage key.
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **default_value (List[float]): 
             **parent (int): Parent to add this item to. (runtime adding)
     Returns:
@@ -197,6 +214,7 @@ class Float4Value(Item):
         label: str = None, 
         source: int = 0, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         default_value: list[float] = (0.0, 0.0, 0.0, 0.0), 
         parent: int = 13, 
         **kwargs, 
@@ -205,6 +223,7 @@ class Float4Value(Item):
             label=label,
             source=source,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             default_value=default_value,
             parent=parent,
             **kwargs,
@@ -212,6 +231,7 @@ class Float4Value(Item):
         self.label = label
         self.source = source
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.default_value = default_value
         self.parent = parent
 
@@ -223,6 +243,7 @@ class FloatValue(Item):
             **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
             **source (int): Overrides 'id' as value storage key.
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **default_value (float): 
             **parent (int): Parent to add this item to. (runtime adding)
     Returns:
@@ -236,6 +257,7 @@ class FloatValue(Item):
         label: str = None, 
         source: int = 0, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         default_value: float = 0.0, 
         parent: int = 13, 
         **kwargs, 
@@ -244,6 +266,7 @@ class FloatValue(Item):
             label=label,
             source=source,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             default_value=default_value,
             parent=parent,
             **kwargs,
@@ -251,6 +274,7 @@ class FloatValue(Item):
         self.label = label
         self.source = source
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.default_value = default_value
         self.parent = parent
 
@@ -262,6 +286,7 @@ class FloatVectValue(Item):
             **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
             **source (int): Overrides 'id' as value storage key.
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **default_value (List[float]): 
             **parent (int): Parent to add this item to. (runtime adding)
     Returns:
@@ -275,6 +300,7 @@ class FloatVectValue(Item):
         label: str = None, 
         source: int = 0, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         default_value: list[float] = (), 
         parent: int = 13, 
         **kwargs, 
@@ -283,6 +309,7 @@ class FloatVectValue(Item):
             label=label,
             source=source,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             default_value=default_value,
             parent=parent,
             **kwargs,
@@ -290,6 +317,7 @@ class FloatVectValue(Item):
         self.label = label
         self.source = source
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.default_value = default_value
         self.parent = parent
 
@@ -301,6 +329,7 @@ class Int4Value(Item):
             **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
             **source (int): Overrides 'id' as value storage key.
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **default_value (List[int]): 
             **parent (int): Parent to add this item to. (runtime adding)
     Returns:
@@ -314,6 +343,7 @@ class Int4Value(Item):
         label: str = None, 
         source: int = 0, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         default_value: list[int] = (0, 0, 0, 0), 
         parent: int = 13, 
         **kwargs, 
@@ -322,6 +352,7 @@ class Int4Value(Item):
             label=label,
             source=source,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             default_value=default_value,
             parent=parent,
             **kwargs,
@@ -329,6 +360,7 @@ class Int4Value(Item):
         self.label = label
         self.source = source
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.default_value = default_value
         self.parent = parent
 
@@ -340,6 +372,7 @@ class IntValue(Item):
             **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
             **source (int): Overrides 'id' as value storage key.
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **default_value (int): 
             **parent (int): Parent to add this item to. (runtime adding)
     Returns:
@@ -353,6 +386,7 @@ class IntValue(Item):
         label: str = None, 
         source: int = 0, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         default_value: int = 0, 
         parent: int = 13, 
         **kwargs, 
@@ -361,6 +395,7 @@ class IntValue(Item):
             label=label,
             source=source,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             default_value=default_value,
             parent=parent,
             **kwargs,
@@ -368,6 +403,7 @@ class IntValue(Item):
         self.label = label
         self.source = source
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.default_value = default_value
         self.parent = parent
 
@@ -379,6 +415,7 @@ class SeriesValue(Item):
             **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
             **source (int): Overrides 'id' as value storage key.
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **default_value (Any): 
             **parent (int): Parent to add this item to. (runtime adding)
     Returns:
@@ -392,6 +429,7 @@ class SeriesValue(Item):
         label: str = None, 
         source: int = 0, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         default_value: Any = (), 
         parent: int = 13, 
         **kwargs, 
@@ -400,6 +438,7 @@ class SeriesValue(Item):
             label=label,
             source=source,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             default_value=default_value,
             parent=parent,
             **kwargs,
@@ -407,6 +446,7 @@ class SeriesValue(Item):
         self.label = label
         self.source = source
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.default_value = default_value
         self.parent = parent
 
@@ -418,6 +458,7 @@ class StringValue(Item):
             **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
             **source (int): Overrides 'id' as value storage key.
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **default_value (str): 
             **parent (int): Parent to add this item to. (runtime adding)
     Returns:
@@ -431,6 +472,7 @@ class StringValue(Item):
         label: str = None, 
         source: int = 0, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         default_value: str = '', 
         parent: int = 13, 
         **kwargs, 
@@ -439,6 +481,7 @@ class StringValue(Item):
             label=label,
             source=source,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             default_value=default_value,
             parent=parent,
             **kwargs,
@@ -446,5 +489,6 @@ class StringValue(Item):
         self.label = label
         self.source = source
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.default_value = default_value
         self.parent = parent

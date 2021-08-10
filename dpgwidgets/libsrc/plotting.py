@@ -9,14 +9,14 @@ from dpgwidgets.widget import Container, Widget
 __all__ = [
     "Plot",
     "Subplots",
-    "HistograSeries",
+    "HistogramSeries",
     "AreaSeries",
     "BarSeries",
     "CandleSeries",
     "DragPoint",
     "ErrorSeries",
     "HeatSeries",
-    "HistograSeries",
+    "HistogramSeries",
     "HlineSeries",
     "ImageSeries",
     "LineSeries",
@@ -55,6 +55,7 @@ class Plot(Container):
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **no_title (bool): 
             **no_menus (bool): 
             **no_box_select (bool): 
@@ -102,6 +103,7 @@ class Plot(Container):
         tracked: bool = False, 
         track_offset: float = 0.5, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         no_title: bool = False, 
         no_menus: bool = False, 
         no_box_select: bool = False, 
@@ -144,6 +146,7 @@ class Plot(Container):
             tracked=tracked,
             track_offset=track_offset,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             no_title=no_title,
             no_menus=no_menus,
             no_box_select=no_box_select,
@@ -185,6 +188,7 @@ class Plot(Container):
         self.tracked = tracked
         self.track_offset = track_offset
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.no_title = no_title
         self.no_menus = no_menus
         self.no_box_select = no_box_select
@@ -229,6 +233,7 @@ class Subplots(Container):
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **row_ratios (List[float]): 
             **column_ratios (List[float]): 
             **no_title (bool): 
@@ -264,6 +269,7 @@ class Subplots(Container):
         tracked: bool = False, 
         track_offset: float = 0.5, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         row_ratios: list[float] = [], 
         column_ratios: list[float] = [], 
         no_title: bool = False, 
@@ -294,6 +300,7 @@ class Subplots(Container):
             tracked=tracked,
             track_offset=track_offset,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             row_ratios=row_ratios,
             column_ratios=column_ratios,
             no_title=no_title,
@@ -323,6 +330,7 @@ class Subplots(Container):
         self.tracked = tracked
         self.track_offset = track_offset
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.row_ratios = row_ratios
         self.column_ratios = column_ratios
         self.no_title = no_title
@@ -336,7 +344,7 @@ class Subplots(Container):
         self.column_major = column_major
 
 
-class HistograSeries(Widget):
+class HistogramSeries(Widget):
     """Undocumented function
     Args:
             x (Any): 
@@ -348,6 +356,7 @@ class HistograSeries(Widget):
             **source (int): Overrides 'id' as value storage key.
             **show (bool): Attempt to render widget.
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **xbins (int): 
             **ybins (int): 
             **xmin_range (float): 
@@ -360,7 +369,7 @@ class HistograSeries(Widget):
             int
     
     """
-    _command = dearpygui.dearpygui.add_2d_histogra_series
+    _command = dearpygui.dearpygui.add_2d_histogram_series
 
     def __init__(
         self, 
@@ -372,6 +381,7 @@ class HistograSeries(Widget):
         source: int = 0, 
         show: bool = True, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         xbins: int = -1, 
         ybins: int = -1, 
         xmin_range: float = 0.0, 
@@ -391,6 +401,7 @@ class HistograSeries(Widget):
             source=source,
             show=show,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             xbins=xbins,
             ybins=ybins,
             xmin_range=xmin_range,
@@ -409,6 +420,7 @@ class HistograSeries(Widget):
         self.source = source
         self.show = show
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.xbins = xbins
         self.ybins = ybins
         self.xmin_range = xmin_range
@@ -431,6 +443,7 @@ class AreaSeries(Widget):
             **source (int): Overrides 'id' as value storage key.
             **show (bool): Attempt to render widget.
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **fill (List[int]): 
             **contribute_to_bounds (bool): 
     Returns:
@@ -449,6 +462,7 @@ class AreaSeries(Widget):
         source: int = 0, 
         show: bool = True, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         fill: list[int] = (0, 0, 0, -255), 
         contribute_to_bounds: bool = True, 
         **kwargs, 
@@ -462,6 +476,7 @@ class AreaSeries(Widget):
             source=source,
             show=show,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             fill=fill,
             contribute_to_bounds=contribute_to_bounds,
             **kwargs,
@@ -474,6 +489,7 @@ class AreaSeries(Widget):
         self.source = source
         self.show = show
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.fill = fill
         self.contribute_to_bounds = contribute_to_bounds
 
@@ -490,6 +506,7 @@ class BarSeries(Widget):
             **source (int): Overrides 'id' as value storage key.
             **show (bool): Attempt to render widget.
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **weight (float): 
             **horizontal (bool): 
     Returns:
@@ -508,6 +525,7 @@ class BarSeries(Widget):
         source: int = 0, 
         show: bool = True, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         weight: float = 1.0, 
         horizontal: bool = False, 
         **kwargs, 
@@ -521,6 +539,7 @@ class BarSeries(Widget):
             source=source,
             show=show,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             weight=weight,
             horizontal=horizontal,
             **kwargs,
@@ -533,6 +552,7 @@ class BarSeries(Widget):
         self.source = source
         self.show = show
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.weight = weight
         self.horizontal = horizontal
 
@@ -552,6 +572,7 @@ class CandleSeries(Widget):
             **source (int): Overrides 'id' as value storage key.
             **show (bool): Attempt to render widget.
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **bull_color (List[int]): 
             **bear_color (List[int]): 
             **weight (int): 
@@ -575,6 +596,7 @@ class CandleSeries(Widget):
         source: int = 0, 
         show: bool = True, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         bull_color: list[int] = (0, 255, 113, 255), 
         bear_color: list[int] = (218, 13, 79, 255), 
         weight: int = 0.25, 
@@ -593,6 +615,7 @@ class CandleSeries(Widget):
             source=source,
             show=show,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             bull_color=bull_color,
             bear_color=bear_color,
             weight=weight,
@@ -610,6 +633,7 @@ class CandleSeries(Widget):
         self.source = source
         self.show = show
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.bull_color = bull_color
         self.bear_color = bear_color
         self.weight = weight
@@ -627,6 +651,7 @@ class DragPoint(Widget):
             **callback (Callable): Registers a callback.
             **show (bool): Attempt to render widget.
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **default_value (Any): 
             **color (List[int]): 
             **thickness (float): 
@@ -646,6 +671,7 @@ class DragPoint(Widget):
         callback: Callable = None, 
         show: bool = True, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         default_value: Any = (0.0, 0.0), 
         color: list[int] = (0, 0, 0, -255), 
         thickness: float = 1.0, 
@@ -660,6 +686,7 @@ class DragPoint(Widget):
             callback=callback,
             show=show,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             default_value=default_value,
             color=color,
             thickness=thickness,
@@ -673,6 +700,7 @@ class DragPoint(Widget):
         self.callback = callback
         self.show = show
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.default_value = default_value
         self.color = color
         self.thickness = thickness
@@ -693,6 +721,7 @@ class ErrorSeries(Widget):
             **source (int): Overrides 'id' as value storage key.
             **show (bool): Attempt to render widget.
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **contribute_to_bounds (bool): 
             **horizontal (bool): 
     Returns:
@@ -713,6 +742,7 @@ class ErrorSeries(Widget):
         source: int = 0, 
         show: bool = True, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         contribute_to_bounds: bool = True, 
         horizontal: bool = False, 
         **kwargs, 
@@ -728,6 +758,7 @@ class ErrorSeries(Widget):
             source=source,
             show=show,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             contribute_to_bounds=contribute_to_bounds,
             horizontal=horizontal,
             **kwargs,
@@ -742,6 +773,7 @@ class ErrorSeries(Widget):
         self.source = source
         self.show = show
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.contribute_to_bounds = contribute_to_bounds
         self.horizontal = horizontal
 
@@ -759,6 +791,7 @@ class HeatSeries(Widget):
             **source (int): Overrides 'id' as value storage key.
             **show (bool): Attempt to render widget.
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **scale_min (float): Sets the color scale min. Typically paired with the color scale widget scale_min.
             **scale_max (float): Sets the color scale max. Typically paired with the color scale widget scale_max.
             **bounds_min (Any): 
@@ -782,6 +815,7 @@ class HeatSeries(Widget):
         source: int = 0, 
         show: bool = True, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         scale_min: float = 0.0, 
         scale_max: float = 1.0, 
         bounds_min: Any = (0.0, 0.0), 
@@ -800,6 +834,7 @@ class HeatSeries(Widget):
             source=source,
             show=show,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             scale_min=scale_min,
             scale_max=scale_max,
             bounds_min=bounds_min,
@@ -817,6 +852,7 @@ class HeatSeries(Widget):
         self.source = source
         self.show = show
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.scale_min = scale_min
         self.scale_max = scale_max
         self.bounds_min = bounds_min
@@ -825,7 +861,7 @@ class HeatSeries(Widget):
         self.contribute_to_bounds = contribute_to_bounds
 
 
-class HistograSeries(Widget):
+class HistogramSeries(Widget):
     """Adds a histogram series to a plot.
     Args:
             x (Any): 
@@ -836,6 +872,7 @@ class HistograSeries(Widget):
             **source (int): Overrides 'id' as value storage key.
             **show (bool): Attempt to render widget.
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **bins (int): 
             **bar_scale (float): 
             **min_range (float): 
@@ -848,7 +885,7 @@ class HistograSeries(Widget):
             int
     
     """
-    _command = dearpygui.dearpygui.add_histogra_series
+    _command = dearpygui.dearpygui.add_histogram_series
 
     def __init__(
         self, 
@@ -859,6 +896,7 @@ class HistograSeries(Widget):
         source: int = 0, 
         show: bool = True, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         bins: int = -1, 
         bar_scale: float = 1.0, 
         min_range: float = 0.0, 
@@ -877,6 +915,7 @@ class HistograSeries(Widget):
             source=source,
             show=show,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             bins=bins,
             bar_scale=bar_scale,
             min_range=min_range,
@@ -894,6 +933,7 @@ class HistograSeries(Widget):
         self.source = source
         self.show = show
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.bins = bins
         self.bar_scale = bar_scale
         self.min_range = min_range
@@ -915,6 +955,7 @@ class HlineSeries(Widget):
             **source (int): Overrides 'id' as value storage key.
             **show (bool): Attempt to render widget.
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **contribute_to_bounds (bool): 
     Returns:
             int
@@ -931,6 +972,7 @@ class HlineSeries(Widget):
         source: int = 0, 
         show: bool = True, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         contribute_to_bounds: bool = True, 
         **kwargs, 
     ):
@@ -942,6 +984,7 @@ class HlineSeries(Widget):
             source=source,
             show=show,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             contribute_to_bounds=contribute_to_bounds,
             **kwargs,
         )
@@ -952,6 +995,7 @@ class HlineSeries(Widget):
         self.source = source
         self.show = show
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.contribute_to_bounds = contribute_to_bounds
 
 
@@ -968,6 +1012,7 @@ class ImageSeries(Widget):
             **source (int): Overrides 'id' as value storage key.
             **show (bool): Attempt to render widget.
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **uv_min (List[float]): normalized texture coordinates
             **uv_max (List[float]): normalized texture coordinates
             **tint_color (List[int]): 
@@ -988,6 +1033,7 @@ class ImageSeries(Widget):
         source: int = 0, 
         show: bool = True, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         uv_min: list[float] = (0.0, 0.0), 
         uv_max: list[float] = (1.0, 1.0), 
         tint_color: list[int] = (255, 255, 255, 255), 
@@ -1003,6 +1049,7 @@ class ImageSeries(Widget):
             source=source,
             show=show,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             uv_min=uv_min,
             uv_max=uv_max,
             tint_color=tint_color,
@@ -1017,6 +1064,7 @@ class ImageSeries(Widget):
         self.source = source
         self.show = show
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.uv_min = uv_min
         self.uv_max = uv_max
         self.tint_color = tint_color
@@ -1034,6 +1082,7 @@ class LineSeries(Widget):
             **source (int): Overrides 'id' as value storage key.
             **show (bool): Attempt to render widget.
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
     Returns:
             int
     
@@ -1050,6 +1099,7 @@ class LineSeries(Widget):
         source: int = 0, 
         show: bool = True, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         **kwargs, 
     ):
         super().__init__(
@@ -1061,6 +1111,7 @@ class LineSeries(Widget):
             source=source,
             show=show,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             **kwargs,
         )
         self.x = x
@@ -1071,6 +1122,7 @@ class LineSeries(Widget):
         self.source = source
         self.show = show
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
 
 
 class PieSeries(Widget):
@@ -1088,6 +1140,7 @@ class PieSeries(Widget):
             **source (int): Overrides 'id' as value storage key.
             **show (bool): Attempt to render widget.
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **format (str): 
             **angle (float): 
             **normalize (bool): 
@@ -1110,6 +1163,7 @@ class PieSeries(Widget):
         source: int = 0, 
         show: bool = True, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         format: str = '%0.2f', 
         angle: float = 90.0, 
         normalize: bool = False, 
@@ -1127,6 +1181,7 @@ class PieSeries(Widget):
             source=source,
             show=show,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             format=format,
             angle=angle,
             normalize=normalize,
@@ -1143,6 +1198,7 @@ class PieSeries(Widget):
         self.source = source
         self.show = show
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.format = format
         self.angle = angle
         self.normalize = normalize
@@ -1158,6 +1214,7 @@ class PlotAnnotation(Widget):
             **source (int): Overrides 'id' as value storage key.
             **show (bool): Attempt to render widget.
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **default_value (Any): 
             **offset (List[float]): 
             **color (List[int]): 
@@ -1176,6 +1233,7 @@ class PlotAnnotation(Widget):
         source: int = 0, 
         show: bool = True, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         default_value: Any = (0.0, 0.0), 
         offset: list[float] = (0.0, 0.0), 
         color: list[int] = (0, 0, 0, -255), 
@@ -1189,6 +1247,7 @@ class PlotAnnotation(Widget):
             source=source,
             show=show,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             default_value=default_value,
             offset=offset,
             color=color,
@@ -1201,6 +1260,7 @@ class PlotAnnotation(Widget):
         self.source = source
         self.show = show
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.default_value = default_value
         self.offset = offset
         self.color = color
@@ -1219,6 +1279,7 @@ class PlotAxis(Widget):
             **drop_callback (Callable): Registers a drop callback for drag and drop.
             **show (bool): Attempt to render widget.
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **no_gridlines (bool): 
             **no_tick_marks (bool): 
             **no_tick_labels (bool): 
@@ -1243,6 +1304,7 @@ class PlotAxis(Widget):
         drop_callback: Callable = None, 
         show: bool = True, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         no_gridlines: bool = False, 
         no_tick_marks: bool = False, 
         no_tick_labels: bool = False, 
@@ -1262,6 +1324,7 @@ class PlotAxis(Widget):
             drop_callback=drop_callback,
             show=show,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             no_gridlines=no_gridlines,
             no_tick_marks=no_tick_marks,
             no_tick_labels=no_tick_labels,
@@ -1280,6 +1343,7 @@ class PlotAxis(Widget):
         self.drop_callback = drop_callback
         self.show = show
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.no_gridlines = no_gridlines
         self.no_tick_marks = no_tick_marks
         self.no_tick_labels = no_tick_labels
@@ -1301,6 +1365,7 @@ class PlotLegend(Widget):
             **drop_callback (Callable): Registers a drop callback for drag and drop.
             **show (bool): Attempt to render widget.
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **location (int): location, mvPlot_Location_*
             **horizontal (bool): 
             **outside (bool): 
@@ -1319,6 +1384,7 @@ class PlotLegend(Widget):
         drop_callback: Callable = None, 
         show: bool = True, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         location: int = 5, 
         horizontal: bool = False, 
         outside: bool = False, 
@@ -1332,6 +1398,7 @@ class PlotLegend(Widget):
             drop_callback=drop_callback,
             show=show,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             location=location,
             horizontal=horizontal,
             outside=outside,
@@ -1344,6 +1411,7 @@ class PlotLegend(Widget):
         self.drop_callback = drop_callback
         self.show = show
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.location = location
         self.horizontal = horizontal
         self.outside = outside
@@ -1361,6 +1429,7 @@ class ScatterSeries(Widget):
             **source (int): Overrides 'id' as value storage key.
             **show (bool): Attempt to render widget.
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
     Returns:
             int
     
@@ -1377,6 +1446,7 @@ class ScatterSeries(Widget):
         source: int = 0, 
         show: bool = True, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         **kwargs, 
     ):
         super().__init__(
@@ -1388,6 +1458,7 @@ class ScatterSeries(Widget):
             source=source,
             show=show,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             **kwargs,
         )
         self.x = x
@@ -1398,6 +1469,7 @@ class ScatterSeries(Widget):
         self.source = source
         self.show = show
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
 
 
 class ShadeSeries(Widget):
@@ -1412,6 +1484,7 @@ class ShadeSeries(Widget):
             **source (int): Overrides 'id' as value storage key.
             **show (bool): Attempt to render widget.
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **y2 (Any): 
     Returns:
             int
@@ -1429,6 +1502,7 @@ class ShadeSeries(Widget):
         source: int = 0, 
         show: bool = True, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         y2: Any = [], 
         **kwargs, 
     ):
@@ -1441,6 +1515,7 @@ class ShadeSeries(Widget):
             source=source,
             show=show,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             y2=y2,
             **kwargs,
         )
@@ -1452,6 +1527,7 @@ class ShadeSeries(Widget):
         self.source = source
         self.show = show
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.y2 = y2
 
 
@@ -1474,6 +1550,7 @@ class SimplePlot(Widget):
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **default_value (List[float]): 
             **overlay (str): overlays text (similar to a plot title)
             **histogram (bool): 
@@ -1503,6 +1580,7 @@ class SimplePlot(Widget):
         tracked: bool = False, 
         track_offset: float = 0.5, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         default_value: list[float] = (), 
         overlay: str = '', 
         histogram: bool = False, 
@@ -1527,6 +1605,7 @@ class SimplePlot(Widget):
             tracked=tracked,
             track_offset=track_offset,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             default_value=default_value,
             overlay=overlay,
             histogram=histogram,
@@ -1550,6 +1629,7 @@ class SimplePlot(Widget):
         self.tracked = tracked
         self.track_offset = track_offset
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.default_value = default_value
         self.overlay = overlay
         self.histogram = histogram
@@ -1570,6 +1650,7 @@ class StairSeries(Widget):
             **source (int): Overrides 'id' as value storage key.
             **show (bool): Attempt to render widget.
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
     Returns:
             int
     
@@ -1586,6 +1667,7 @@ class StairSeries(Widget):
         source: int = 0, 
         show: bool = True, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         **kwargs, 
     ):
         super().__init__(
@@ -1597,6 +1679,7 @@ class StairSeries(Widget):
             source=source,
             show=show,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             **kwargs,
         )
         self.x = x
@@ -1607,6 +1690,7 @@ class StairSeries(Widget):
         self.source = source
         self.show = show
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
 
 
 class StemSeries(Widget):
@@ -1622,6 +1706,7 @@ class StemSeries(Widget):
             **source (int): Overrides 'id' as value storage key.
             **show (bool): Attempt to render widget.
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
     Returns:
             int
     
@@ -1639,6 +1724,7 @@ class StemSeries(Widget):
         source: int = 0, 
         show: bool = True, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         **kwargs, 
     ):
         super().__init__(
@@ -1651,6 +1737,7 @@ class StemSeries(Widget):
             source=source,
             show=show,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             **kwargs,
         )
         self.x = x
@@ -1662,6 +1749,7 @@ class StemSeries(Widget):
         self.source = source
         self.show = show
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
 
 
 class TextPoint(Widget):
@@ -1676,6 +1764,7 @@ class TextPoint(Widget):
             **source (int): Overrides 'id' as value storage key.
             **show (bool): Attempt to render widget.
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **x_offset (int): 
             **y_offset (int): 
             **vertical (bool): 
@@ -1695,6 +1784,7 @@ class TextPoint(Widget):
         source: int = 0, 
         show: bool = True, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         x_offset: int = Ellipsis, 
         y_offset: int = Ellipsis, 
         vertical: bool = False, 
@@ -1709,6 +1799,7 @@ class TextPoint(Widget):
             source=source,
             show=show,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             x_offset=x_offset,
             y_offset=y_offset,
             vertical=vertical,
@@ -1722,6 +1813,7 @@ class TextPoint(Widget):
         self.source = source
         self.show = show
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.x_offset = x_offset
         self.y_offset = y_offset
         self.vertical = vertical
@@ -1738,6 +1830,7 @@ class VlineSeries(Widget):
             **source (int): Overrides 'id' as value storage key.
             **show (bool): Attempt to render widget.
             **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
     Returns:
             int
     
@@ -1753,6 +1846,7 @@ class VlineSeries(Widget):
         source: int = 0, 
         show: bool = True, 
         user_data: Any = None, 
+        use_internal_label: bool = True, 
         **kwargs, 
     ):
         super().__init__(
@@ -1763,6 +1857,7 @@ class VlineSeries(Widget):
             source=source,
             show=show,
             user_data=user_data,
+            use_internal_label=use_internal_label,
             **kwargs,
         )
         self.x = x
@@ -1772,3 +1867,4 @@ class VlineSeries(Widget):
         self.source = source
         self.show = show
         self.user_data = user_data
+        self.use_internal_label = use_internal_label
