@@ -7,7 +7,8 @@ import copy
 
 from dearpygui import dearpygui as dpg
 
-from dpgwidgets.constants import Registry as _Registry
+from dpgwidgets.libsrc.handlers import *
+
 
 # NOTE: Widget-level and global-level handlers are different from
 # each other in DPG. Global handlers (AppHandlerSupport) can be toggled
@@ -23,11 +24,7 @@ class HandlerBase(metaclass=ABCMeta):
 
     def __init__(self):
         super().__init__()
-        self._registered_handlers = {}
-
-    def registered_handlers(self):
-        """Returns a copied dict of the handlers currently registered to the item."""
-        return copy.deepcopy(self._registered_handlers)
+        self._registered_handlers: dict[str,tuple] = {}
 
     def unregister_handler(self, handler: str, callback: Callable):
         """Unregisters a handler that is currently registered to the item.
@@ -37,7 +34,7 @@ class HandlerBase(metaclass=ABCMeta):
             callback (Callable): Callable that the handler is registered with.
         """
         handler = self._pop_handler(handler, callback)
-        dpg.delete_item(handler)
+        handler.delete()
 
     def _pop_handler(self, handler_type: str, callback: Callable):
         # Removes <callback> from <handler_type> in self._registered_handlers.
@@ -66,7 +63,7 @@ class HandlerBase(metaclass=ABCMeta):
         # are no references to the frame itself once the call
         # resolves. See "Note" in
         # https://docs.python.org/3/library/inspect.html#the-interpreter-stack.
-        method_name = str(inspect.stack()[1].function)
+        method_name = f"{inspect.stack()[1].function}"
 
         if not callback:
             return wrapper
@@ -75,20 +72,20 @@ class HandlerBase(metaclass=ABCMeta):
 
 
 class HandlerSupport(HandlerBase):
-    """Mixin for the Widget class that supports the addition/removal of handlers.
+    """Mixin for the Widget class that supports the addition/removal of 
     """
     _handler_map = {
-        "while_active": dpg.add_active_handler,
-        "on_activation": dpg.add_activated_handler,
-        "on_click": dpg.add_clicked_handler,
-        "on_deactivation_after_edit": dpg.add_deactivated_after_edit_handler,
-        "on_deactivation": dpg.add_deactivated_handler,
-        "on_edit": dpg.add_edited_handler,
-        "on_focus": dpg.add_focus_handler,
-        "on_hover": dpg.add_hover_handler,
-        "on_resize": dpg.add_resize_handler,
-        "on_toggle_open": dpg.add_toggled_open_handler,
-        "on_visible": dpg.add_visible_handler,
+        "while_active": ActiveHandler,
+        "on_activation": ActivatedHandler,
+        "on_click": ClickedHandler,
+        "on_deactivation_after_edit": DeactivatedAfterEditHandler,
+        "on_deactivation": DeactivatedHandler,
+        "on_edit": EditedHandler,
+        "on_focus": FocusHandler,
+        "on_hover": HoverHandler,
+        "on_resize": ResizeHandler,
+        "on_toggle_open": ToggledOpenHandler,
+        "on_visible": VisibleHandler,
     }
 
     def while_active(self, callback: Callable = None, *, user_data: Any = None, **kwargs):
@@ -126,19 +123,19 @@ class HandlerSupport(HandlerBase):
 
 
 class AppHandlerSupport(HandlerBase):
-    """Mixin for the Application class that supports the addition/removal of handlers.
+    """Mixin for the Application class that supports the addition/removal of 
     """
     _handler_map = {
-        "while_key_down": dpg.add_key_down_handler,
-        "on_key_down": dpg.add_key_press_handler,
-        "on_key_up": dpg.add_key_release_handler,
-        "while_mouse_key_down":  dpg.add_mouse_down_handler,
-        "on_mouse_key_click": dpg.add_mouse_click_handler,
-        "on_mouse_key_double_click": dpg.add_mouse_double_click_handler,
-        "on_mouse_key_up": dpg.add_mouse_release_handler,
-        "on_mouse_wheel_scroll": dpg.add_mouse_wheel_handler,
-        "on_mouse_move": dpg.add_mouse_move_handler,
-        "on_mouse_drag": dpg.add_mouse_drag_handler,
+        "while_key_down": KeyDownHandler, 
+        "on_key_down": KeyPressHandler,
+        "on_key_up": KeyReleaseHandler,
+        "while_mouse_key_down":  MouseDownHandler,
+        "on_mouse_key_click": MouseClickHandler,
+        "on_mouse_key_double_click": MouseDoubleClickHandler,
+        "on_mouse_key_up": MouseReleaseHandler,
+        "on_mouse_wheel_scroll": MouseWheelHandler,
+        "on_mouse_move": MouseMoveHandler,
+        "on_mouse_drag": MouseDragHandler,
     }
 
     # Global-level handlers use a handler registry parent and
@@ -147,7 +144,7 @@ class AppHandlerSupport(HandlerBase):
         @functools.wraps(callback)
         def wrapper(callback):
             handler = self._handler_map[method_name](
-                parent=_Registry.APPHANDLER.value,
+                parent=dpg.mvReservedUUID_1,
                 callback=callback,
                 **kwargs
             )
@@ -160,7 +157,7 @@ class AppHandlerSupport(HandlerBase):
         # are no references to the frame itself once the call
         # resolves. See "Note" in
         # https://docs.python.org/3/library/inspect.html#the-interpreter-stack.
-        method_name = str(inspect.stack()[1].function)
+        method_name = f"{inspect.stack()[1].function}"
 
         if not callback:
             return wrapper
