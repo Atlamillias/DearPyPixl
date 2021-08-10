@@ -1,17 +1,23 @@
 from abc import ABCMeta, abstractmethod
 from typing import Callable
-import inspect
 
-from dearpygui import dearpygui as dpg, _dearpygui as idpg
+
+from dearpygui import dearpygui as dpg
 from dearpygui._dearpygui import (
     configure_item,
     get_item_configuration,
-    get_item_info,
     set_value,
     delete_item,
 )
 
 
+__all__ = [
+    "Item",
+    "ContextSupport"
+]
+
+
+_APPITEMS = {}
 # This is called a lot (or called *enough*, rather)
 _OBJ_GET_ATTRIBUTE = object.__getattribute__
 
@@ -50,8 +56,11 @@ class Item(metaclass=ABCMeta):
             # provided, we don't want it in here.
             kwargs.pop("id", None)
             cls.__config = {option for option in kwargs.keys()}
-                                       
+
+        # Registering new item
+        _APPITEMS[self.__id] = self
         super().__init__()
+        
 
     def __str__(self):
         try:
@@ -63,9 +72,7 @@ class Item(metaclass=ABCMeta):
         return self.__id
 
     def __repr__(self):
-        mVAppType = get_item_info(self.id)["type"].lstrip('::')[-1]
-        return f"{self.__class__.__qualname__} ({type(self)}) => \
-            (<{mVAppType} '{self.__id}'>)"
+        return f"{self.__class__.__qualname__}"
 
     def __getattribute__(self, attr: str):
         if attr in _OBJ_GET_ATTRIBUTE(self, "_Item__config"):
@@ -86,15 +93,19 @@ class Item(metaclass=ABCMeta):
 
     def delete(self):
         """Deletes the item and any child items it may have.
+
+        NOTE: Because of how `del`, `__del__`, and garbage
+        collection work in Python, it is STRONGLY advised
+        to call this method to delete items and not `del` to guarantee
+        cleanup is ran. The `del` statement doesn't always call `__del__`,
+        so cleanup might not run even if it were defined (which it's not).
         """
-        # NOTE: __del__ is not defined because it's not always called
-        # when `del` is, and therefore wouldn't always call `delete_item`.
-        # However this method will obviously always call `delete_item`
-        # and `del`.
         try:
             delete_item(self.__id)
         except SystemError:
             pass
+
+        _APPITEMS.pop(self.__id, None)
 
         del self
 
