@@ -127,12 +127,12 @@ class AppHandlerSupport(HandlerBase):
     """
     _handler_map = {
         "while_key_down": KeyDownHandler, 
-        "on_key_down": KeyPressHandler,
+        "on_key_press": KeyPressHandler,
         "on_key_up": KeyReleaseHandler,
-        "while_mouse_key_down":  MouseDownHandler,
-        "on_mouse_key_click": MouseClickHandler,
-        "on_mouse_key_double_click": MouseDoubleClickHandler,
-        "on_mouse_key_up": MouseReleaseHandler,
+        "while_mouse_down":  MouseDownHandler,
+        "on_mouse_click": MouseClickHandler,
+        "on_mouse_double_click": MouseDoubleClickHandler,
+        "on_mouse_up": MouseReleaseHandler,
         "on_mouse_wheel_scroll": MouseWheelHandler,
         "on_mouse_move": MouseMoveHandler,
         "on_mouse_drag": MouseDragHandler,
@@ -167,7 +167,7 @@ class AppHandlerSupport(HandlerBase):
     def while_key_down(self, callback: Callable = None, *, key: int = -1, user_data: Any = None, **kwargs):
         return self._set_handler(callback=callback, user_data=user_data, **kwargs)
 
-    def on_key_down(self, callback: Callable = None, *, key: int = -1, user_data: Any = None, **kwargs):
+    def on_key_press(self, callback: Callable = None, *, key: int = -1, user_data: Any = None, **kwargs):
         # NOTE: Most OS have a key-repeat feature for keys that
         # are held down for a period of time - it will fire this
         # callback repeatedly if enabled (not NEARLY as much as
@@ -177,16 +177,16 @@ class AppHandlerSupport(HandlerBase):
     def on_key_up(self, callback: Callable = None, *, key: int = -1, user_data: Any = None, **kwargs):
         return self._set_handler(callback=callback, user_data=user_data, **kwargs)
 
-    def while_mouse_key_down(self, callback: Callable = None, *, button: int = -1, user_data: Any = None, **kwargs):
+    def while_mouse_down(self, callback: Callable = None, *, button: int = -1, user_data: Any = None, **kwargs):
         return self._set_handler(callback=callback, user_data=user_data, **kwargs)
 
-    def on_mouse_key_click(self, callback: Callable = None, *, button: int = -1, user_data: Any = None, **kwargs):
+    def on_mouse_click(self, callback: Callable = None, *, button: int = -1, user_data: Any = None, **kwargs):
         return self._set_handler(callback=callback, user_data=user_data, **kwargs)
 
-    def on_mouse_key_double_click(self, callback: Callable = None, *, button: int = -1, user_data: Any = None, **kwargs):
+    def on_mouse_double_click(self, callback: Callable = None, *, button: int = -1, user_data: Any = None, **kwargs):
         return self._set_handler(callback=callback, user_data=user_data, **kwargs)
 
-    def on_mouse_key_up(self, callback: Callable = None, *, button: int = -1, user_data: Any = None, **kwargs):
+    def on_mouse_up(self, callback: Callable = None, *, button: int = -1, user_data: Any = None, **kwargs):
         return self._set_handler(callback=callback, user_data=user_data, **kwargs)
 
     def on_mouse_wheel_scroll(self, callback: Callable = None, *, user_data: Any = None, **kwargs):
