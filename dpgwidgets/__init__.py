@@ -12,7 +12,7 @@ all of their hard work in creating DearPyGui
 import sys
 sys.path.extend(["./libsrc", "./tools"])
 import warnings
-from . import _writelib
+from dpgwidgets import _writelib
 
 # NOTE: For releases/distributions that include this library, I'd
 # advise you to set AUTO_UPDATE to False.
@@ -34,12 +34,13 @@ _setup_registries()
 
 
 import dpgwidgets.libsrc as dpglib
+
 from dpgwidgets.app import Viewport, _Viewport
 from dpgwidgets.theme import Font, Theme
 from dpgwidgets.constants import Key, Mouse
 
 
-__version__ = "0.2.39"
+__version__ = "0.2.42"
 
 __all__ = [
     # high-level objects
