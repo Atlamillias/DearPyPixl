@@ -175,8 +175,6 @@ class PyTextClass(_PyTextObject):
         if len(self.instance_parameters) < 4:
             for parameter in self.instance_parameters:
                 p = str(parameter)
-                if any(f": {tType}" in p for tType in ("List", "Tuple", "Set", "Dict")):
-                    p = p.lower()
                 text += p
             text = f'{text.rstrip(", ")}):'
             c_text.write(text)
@@ -184,8 +182,6 @@ class PyTextClass(_PyTextObject):
             c_text.write(text)
             for parameter in self.instance_parameters:
                 p = str(parameter)
-                if any(f": {tType}" in p for tType in ("List", "Tuple", "Set", "Dict")):
-                    p = p.lower()
                 text = f"\n        {p}"
                 text += ", "
                 c_text.write(text)
