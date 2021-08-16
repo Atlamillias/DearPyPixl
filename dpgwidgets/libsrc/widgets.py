@@ -1,4 +1,12 @@
-from typing import Any, Callable
+from typing import (
+    Any,
+    Callable,
+    Union,
+    Dict,
+    Tuple,
+    Set,
+    List,
+)
 import dearpygui.dearpygui
 from dpgwidgets.widget import Widget
 
@@ -8,6 +16,7 @@ from dpgwidgets.widget import Widget
 
 __all__ = [
     "Slider",
+    "Alias",
     "Button",
     "CharRemap",
     "Checkbox",
@@ -63,25 +72,25 @@ class Slider(Widget):
     """Adds a 3D box slider that allows a 3d point to be show in 2d represented cube space.
     Args:
             **label (str): Overrides 'name' as label.
-            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
+            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
             **width (int): Width of the item.
             **height (int): Height of the item.
             **indent (int): Offsets the widget to the right the specified number multiplied by the indent style.
-            **parent (int): Parent to add this item to. (runtime adding)
-            **before (int): This item will be displayed before the specified item in the parent.
-            **source (int): Overrides 'id' as value storage key.
+            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
+            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
+            **source (Union[int, str]): Overrides 'id' as value storage key.
             **payload_type (str): Sender string type must be the same as the target for the target to run the payload_callback.
             **callback (Callable): Registers a callback.
             **drag_callback (Callable): Registers a drag callback for drag and drop.
             **drop_callback (Callable): Registers a drop callback for drag and drop.
             **show (bool): Attempt to render widget.
-            **pos (List[int]): Places the item relative to window coordinates, [0,0] is top left.
+            **pos (Union[List[int], Tuple[int]]): Places the item relative to window coordinates, [0,0] is top left.
             **filter_key (str): Used by filter widget.
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
-            **user_data (Any): User data for callbacks.
-            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
-            **default_value (List[float]): 
+            **default_value (Union[List[float], Tuple[float]]): 
             **max_x (float): Applies upper limit to slider.
             **max_y (float): Applies upper limit to slider.
             **max_z (float): Applies upper limit to slider.
@@ -90,7 +99,7 @@ class Slider(Widget):
             **min_z (float): Applies lower limit to slider.
             **scale (float): Size of the widget.
     Returns:
-            int
+            Union[int, str]
     
     """
     _command = dearpygui.dearpygui.add_3d_slider
@@ -98,24 +107,24 @@ class Slider(Widget):
     def __init__(
         self, 
         label: str = None, 
+        user_data: Any = None, 
+        use_internal_label: bool = True, 
         width: int = 0, 
         height: int = 0, 
         indent: int = -1, 
-        parent: int = 0, 
-        before: int = 0, 
-        source: int = 0, 
+        parent: Union[int, str] = 0, 
+        before: Union[int, str] = 0, 
+        source: Union[int, str] = 0, 
         payload_type: str = '$$DPG_PAYLOAD', 
         callback: Callable = None, 
         drag_callback: Callable = None, 
         drop_callback: Callable = None, 
         show: bool = True, 
-        pos: list[int] = [], 
+        pos: Union[List[int], Tuple[int]] = [], 
         filter_key: str = '', 
         tracked: bool = False, 
         track_offset: float = 0.5, 
-        user_data: Any = None, 
-        use_internal_label: bool = True, 
-        default_value: list[float] = (0.0, 0.0, 0.0, 0.0), 
+        default_value: Union[List[float], Tuple[float]] = (0.0, 0.0, 0.0, 0.0), 
         max_x: float = 100.0, 
         max_y: float = 100.0, 
         max_z: float = 100.0, 
@@ -127,6 +136,8 @@ class Slider(Widget):
     ):
         super().__init__(
             label=label,
+            user_data=user_data,
+            use_internal_label=use_internal_label,
             width=width,
             height=height,
             indent=indent,
@@ -142,8 +153,6 @@ class Slider(Widget):
             filter_key=filter_key,
             tracked=tracked,
             track_offset=track_offset,
-            user_data=user_data,
-            use_internal_label=use_internal_label,
             default_value=default_value,
             max_x=max_x,
             max_y=max_y,
@@ -155,6 +164,8 @@ class Slider(Widget):
             **kwargs,
         )
         self.label = label
+        self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.width = width
         self.height = height
         self.indent = indent
@@ -170,8 +181,6 @@ class Slider(Widget):
         self.filter_key = filter_key
         self.tracked = tracked
         self.track_offset = track_offset
-        self.user_data = user_data
-        self.use_internal_label = use_internal_label
         self.default_value = default_value
         self.max_x = max_x
         self.max_y = max_y
@@ -182,33 +191,59 @@ class Slider(Widget):
         self.scale = scale
 
 
+class Alias(Widget):
+    """Undocumented
+    Args:
+            alias (str): 
+            item (Union[int, str]): 
+    Returns:
+            None
+    
+    """
+    _command = dearpygui.dearpygui.add_alias
+
+    def __init__(
+        self, 
+        alias: str, 
+        item: Union[int, str], 
+        **kwargs, 
+    ):
+        super().__init__(
+            alias=alias,
+            item=item,
+            **kwargs,
+        )
+        self.alias = alias
+        self.item = item
+
+
 class Button(Widget):
     """Adds a button.
     Args:
             **label (str): Overrides 'name' as label.
-            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
+            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
             **width (int): Width of the item.
             **height (int): Height of the item.
             **indent (int): Offsets the widget to the right the specified number multiplied by the indent style.
-            **parent (int): Parent to add this item to. (runtime adding)
-            **before (int): This item will be displayed before the specified item in the parent.
+            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
+            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
             **payload_type (str): Sender string type must be the same as the target for the target to run the payload_callback.
             **callback (Callable): Registers a callback.
             **drag_callback (Callable): Registers a drag callback for drag and drop.
             **drop_callback (Callable): Registers a drop callback for drag and drop.
             **show (bool): Attempt to render widget.
             **enabled (bool): Turns off functionality of widget and applies the disabled theme.
-            **pos (List[int]): Places the item relative to window coordinates, [0,0] is top left.
+            **pos (Union[List[int], Tuple[int]]): Places the item relative to window coordinates, [0,0] is top left.
             **filter_key (str): Used by filter widget.
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
-            **user_data (Any): User data for callbacks.
-            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **small (bool): Small button, useful for embedding in text.
             **arrow (bool): Arrow button, requires the direction keyword.
             **direction (int): A cardinal direction for arrow.
     Returns:
-            int
+            Union[int, str]
     
     """
     _command = dearpygui.dearpygui.add_button
@@ -216,23 +251,23 @@ class Button(Widget):
     def __init__(
         self, 
         label: str = None, 
+        user_data: Any = None, 
+        use_internal_label: bool = True, 
         width: int = 0, 
         height: int = 0, 
         indent: int = -1, 
-        parent: int = 0, 
-        before: int = 0, 
+        parent: Union[int, str] = 0, 
+        before: Union[int, str] = 0, 
         payload_type: str = '$$DPG_PAYLOAD', 
         callback: Callable = None, 
         drag_callback: Callable = None, 
         drop_callback: Callable = None, 
         show: bool = True, 
         enabled: bool = True, 
-        pos: list[int] = [], 
+        pos: Union[List[int], Tuple[int]] = [], 
         filter_key: str = '', 
         tracked: bool = False, 
         track_offset: float = 0.5, 
-        user_data: Any = None, 
-        use_internal_label: bool = True, 
         small: bool = False, 
         arrow: bool = False, 
         direction: int = 0, 
@@ -240,6 +275,8 @@ class Button(Widget):
     ):
         super().__init__(
             label=label,
+            user_data=user_data,
+            use_internal_label=use_internal_label,
             width=width,
             height=height,
             indent=indent,
@@ -255,14 +292,14 @@ class Button(Widget):
             filter_key=filter_key,
             tracked=tracked,
             track_offset=track_offset,
-            user_data=user_data,
-            use_internal_label=use_internal_label,
             small=small,
             arrow=arrow,
             direction=direction,
             **kwargs,
         )
         self.label = label
+        self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.width = width
         self.height = height
         self.indent = indent
@@ -278,8 +315,6 @@ class Button(Widget):
         self.filter_key = filter_key
         self.tracked = tracked
         self.track_offset = track_offset
-        self.user_data = user_data
-        self.use_internal_label = use_internal_label
         self.small = small
         self.arrow = arrow
         self.direction = direction
@@ -291,12 +326,12 @@ class CharRemap(Widget):
             source (int): 
             target (int): 
             **label (str): Overrides 'name' as label.
-            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-            **parent (int): Parent to add this item to. (runtime adding)
             **user_data (Any): User data for callbacks.
             **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
+            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
     Returns:
-            int
+            Union[int, str]
     
     """
     _command = dearpygui.dearpygui.add_char_remap
@@ -306,52 +341,52 @@ class CharRemap(Widget):
         source: int, 
         target: int, 
         label: str = None, 
-        parent: int = 0, 
         user_data: Any = None, 
         use_internal_label: bool = True, 
+        parent: Union[int, str] = 0, 
         **kwargs, 
     ):
         super().__init__(
             source=source,
             target=target,
             label=label,
-            parent=parent,
             user_data=user_data,
             use_internal_label=use_internal_label,
+            parent=parent,
             **kwargs,
         )
         self.source = source
         self.target = target
         self.label = label
-        self.parent = parent
         self.user_data = user_data
         self.use_internal_label = use_internal_label
+        self.parent = parent
 
 
 class Checkbox(Widget):
     """Adds a checkbox.
     Args:
             **label (str): Overrides 'name' as label.
-            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
+            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
             **indent (int): Offsets the widget to the right the specified number multiplied by the indent style.
-            **parent (int): Parent to add this item to. (runtime adding)
-            **before (int): This item will be displayed before the specified item in the parent.
-            **source (int): Overrides 'id' as value storage key.
+            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
+            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
+            **source (Union[int, str]): Overrides 'id' as value storage key.
             **payload_type (str): Sender string type must be the same as the target for the target to run the payload_callback.
             **callback (Callable): Registers a callback.
             **drag_callback (Callable): Registers a drag callback for drag and drop.
             **drop_callback (Callable): Registers a drop callback for drag and drop.
             **show (bool): Attempt to render widget.
             **enabled (bool): Turns off functionality of widget and applies the disabled theme.
-            **pos (List[int]): Places the item relative to window coordinates, [0,0] is top left.
+            **pos (Union[List[int], Tuple[int]]): Places the item relative to window coordinates, [0,0] is top left.
             **filter_key (str): Used by filter widget.
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
-            **user_data (Any): User data for callbacks.
-            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **default_value (bool): 
     Returns:
-            int
+            Union[int, str]
     
     """
     _command = dearpygui.dearpygui.add_checkbox
@@ -359,27 +394,29 @@ class Checkbox(Widget):
     def __init__(
         self, 
         label: str = None, 
+        user_data: Any = None, 
+        use_internal_label: bool = True, 
         indent: int = -1, 
-        parent: int = 0, 
-        before: int = 0, 
-        source: int = 0, 
+        parent: Union[int, str] = 0, 
+        before: Union[int, str] = 0, 
+        source: Union[int, str] = 0, 
         payload_type: str = '$$DPG_PAYLOAD', 
         callback: Callable = None, 
         drag_callback: Callable = None, 
         drop_callback: Callable = None, 
         show: bool = True, 
         enabled: bool = True, 
-        pos: list[int] = [], 
+        pos: Union[List[int], Tuple[int]] = [], 
         filter_key: str = '', 
         tracked: bool = False, 
         track_offset: float = 0.5, 
-        user_data: Any = None, 
-        use_internal_label: bool = True, 
         default_value: bool = False, 
         **kwargs, 
     ):
         super().__init__(
             label=label,
+            user_data=user_data,
+            use_internal_label=use_internal_label,
             indent=indent,
             parent=parent,
             before=before,
@@ -394,12 +431,12 @@ class Checkbox(Widget):
             filter_key=filter_key,
             tracked=tracked,
             track_offset=track_offset,
-            user_data=user_data,
-            use_internal_label=use_internal_label,
             default_value=default_value,
             **kwargs,
         )
         self.label = label
+        self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.indent = indent
         self.parent = parent
         self.before = before
@@ -414,64 +451,62 @@ class Checkbox(Widget):
         self.filter_key = filter_key
         self.tracked = tracked
         self.track_offset = track_offset
-        self.user_data = user_data
-        self.use_internal_label = use_internal_label
         self.default_value = default_value
 
 
 class ColorButton(Widget):
     """Adds a color button.
     Args:
-            *default_value (List[int]): 
+            *default_value (Union[List[int], Tuple[int]]): 
             **label (str): Overrides 'name' as label.
-            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
+            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
             **width (int): Width of the item.
             **height (int): Height of the item.
             **indent (int): Offsets the widget to the right the specified number multiplied by the indent style.
-            **parent (int): Parent to add this item to. (runtime adding)
-            **before (int): This item will be displayed before the specified item in the parent.
+            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
+            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
             **payload_type (str): Sender string type must be the same as the target for the target to run the payload_callback.
             **callback (Callable): Registers a callback.
             **drag_callback (Callable): Registers a drag callback for drag and drop.
             **drop_callback (Callable): Registers a drop callback for drag and drop.
             **show (bool): Attempt to render widget.
             **enabled (bool): Turns off functionality of widget and applies the disabled theme.
-            **pos (List[int]): Places the item relative to window coordinates, [0,0] is top left.
+            **pos (Union[List[int], Tuple[int]]): Places the item relative to window coordinates, [0,0] is top left.
             **filter_key (str): Used by filter widget.
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
-            **user_data (Any): User data for callbacks.
-            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **no_alpha (bool): Ignore Alpha component.
             **no_border (bool): Disable border around the image.
             **no_drag_drop (bool): Disable display of inline text label.
     Returns:
-            int
+            Union[int, str]
     
     """
     _command = dearpygui.dearpygui.add_color_button
 
     def __init__(
         self, 
-        default_value: list[int] = (0, 0, 0, 255), 
+        default_value: Union[List[int], Tuple[int]] = (0, 0, 0, 255), 
         label: str = None, 
+        user_data: Any = None, 
+        use_internal_label: bool = True, 
         width: int = 0, 
         height: int = 0, 
         indent: int = -1, 
-        parent: int = 0, 
-        before: int = 0, 
+        parent: Union[int, str] = 0, 
+        before: Union[int, str] = 0, 
         payload_type: str = '$$DPG_PAYLOAD', 
         callback: Callable = None, 
         drag_callback: Callable = None, 
         drop_callback: Callable = None, 
         show: bool = True, 
         enabled: bool = True, 
-        pos: list[int] = [], 
+        pos: Union[List[int], Tuple[int]] = [], 
         filter_key: str = '', 
         tracked: bool = False, 
         track_offset: float = 0.5, 
-        user_data: Any = None, 
-        use_internal_label: bool = True, 
         no_alpha: bool = False, 
         no_border: bool = False, 
         no_drag_drop: bool = False, 
@@ -480,6 +515,8 @@ class ColorButton(Widget):
         super().__init__(
             default_value=default_value,
             label=label,
+            user_data=user_data,
+            use_internal_label=use_internal_label,
             width=width,
             height=height,
             indent=indent,
@@ -495,8 +532,6 @@ class ColorButton(Widget):
             filter_key=filter_key,
             tracked=tracked,
             track_offset=track_offset,
-            user_data=user_data,
-            use_internal_label=use_internal_label,
             no_alpha=no_alpha,
             no_border=no_border,
             no_drag_drop=no_drag_drop,
@@ -504,6 +539,8 @@ class ColorButton(Widget):
         )
         self.default_value = default_value
         self.label = label
+        self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.width = width
         self.height = height
         self.indent = indent
@@ -519,8 +556,6 @@ class ColorButton(Widget):
         self.filter_key = filter_key
         self.tracked = tracked
         self.track_offset = track_offset
-        self.user_data = user_data
-        self.use_internal_label = use_internal_label
         self.no_alpha = no_alpha
         self.no_border = no_border
         self.no_drag_drop = no_drag_drop
@@ -529,27 +564,27 @@ class ColorButton(Widget):
 class ColorEdit(Widget):
     """Adds an RGBA color editor. Click the small color preview will provide a color picker. Click and draging the small color preview will copy the color to be applied on any other color widget.
     Args:
-            *default_value (List[int]): 
+            *default_value (Union[List[int], Tuple[int]]): 
             **label (str): Overrides 'name' as label.
-            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
+            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
             **width (int): Width of the item.
             **height (int): Height of the item.
             **indent (int): Offsets the widget to the right the specified number multiplied by the indent style.
-            **parent (int): Parent to add this item to. (runtime adding)
-            **before (int): This item will be displayed before the specified item in the parent.
-            **source (int): Overrides 'id' as value storage key.
+            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
+            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
+            **source (Union[int, str]): Overrides 'id' as value storage key.
             **payload_type (str): Sender string type must be the same as the target for the target to run the payload_callback.
             **callback (Callable): Registers a callback.
             **drag_callback (Callable): Registers a drag callback for drag and drop.
             **drop_callback (Callable): Registers a drop callback for drag and drop.
             **show (bool): Attempt to render widget.
             **enabled (bool): Turns off functionality of widget and applies the disabled theme.
-            **pos (List[int]): Places the item relative to window coordinates, [0,0] is top left.
+            **pos (Union[List[int], Tuple[int]]): Places the item relative to window coordinates, [0,0] is top left.
             **filter_key (str): Used by filter widget.
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
-            **user_data (Any): User data for callbacks.
-            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **no_alpha (bool): Disable Alpha component.
             **no_picker (bool): Disable picker popup when color square is clicked.
             **no_options (bool): Disable toggling options menu when right-clicking on inputs/small preview.
@@ -564,33 +599,33 @@ class ColorEdit(Widget):
             **display_type (int): mvColorEdit_uint8 or mvColorEdit_float
             **input_mode (int): mvColorEdit_input_rgb or mvColorEdit_input_hsv
     Returns:
-            int
+            Union[int, str]
     
     """
     _command = dearpygui.dearpygui.add_color_edit
 
     def __init__(
         self, 
-        default_value: list[int] = (0, 0, 0, 255), 
+        default_value: Union[List[int], Tuple[int]] = (0, 0, 0, 255), 
         label: str = None, 
+        user_data: Any = None, 
+        use_internal_label: bool = True, 
         width: int = 0, 
         height: int = 0, 
         indent: int = -1, 
-        parent: int = 0, 
-        before: int = 0, 
-        source: int = 0, 
+        parent: Union[int, str] = 0, 
+        before: Union[int, str] = 0, 
+        source: Union[int, str] = 0, 
         payload_type: str = '$$DPG_PAYLOAD', 
         callback: Callable = None, 
         drag_callback: Callable = None, 
         drop_callback: Callable = None, 
         show: bool = True, 
         enabled: bool = True, 
-        pos: list[int] = [], 
+        pos: Union[List[int], Tuple[int]] = [], 
         filter_key: str = '', 
         tracked: bool = False, 
         track_offset: float = 0.5, 
-        user_data: Any = None, 
-        use_internal_label: bool = True, 
         no_alpha: bool = False, 
         no_picker: bool = False, 
         no_options: bool = False, 
@@ -609,6 +644,8 @@ class ColorEdit(Widget):
         super().__init__(
             default_value=default_value,
             label=label,
+            user_data=user_data,
+            use_internal_label=use_internal_label,
             width=width,
             height=height,
             indent=indent,
@@ -625,8 +662,6 @@ class ColorEdit(Widget):
             filter_key=filter_key,
             tracked=tracked,
             track_offset=track_offset,
-            user_data=user_data,
-            use_internal_label=use_internal_label,
             no_alpha=no_alpha,
             no_picker=no_picker,
             no_options=no_options,
@@ -644,6 +679,8 @@ class ColorEdit(Widget):
         )
         self.default_value = default_value
         self.label = label
+        self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.width = width
         self.height = height
         self.indent = indent
@@ -660,8 +697,6 @@ class ColorEdit(Widget):
         self.filter_key = filter_key
         self.tracked = tracked
         self.track_offset = track_offset
-        self.user_data = user_data
-        self.use_internal_label = use_internal_label
         self.no_alpha = no_alpha
         self.no_picker = no_picker
         self.no_options = no_options
@@ -680,27 +715,27 @@ class ColorEdit(Widget):
 class ColorPicker(Widget):
     """Adds an RGB color picker. Right click the color picker for options. Click and drag the color preview to copy the color and drop on any other color widget to apply. Right Click allows the style of the color picker to be changed.
     Args:
-            *default_value (List[int]): 
+            *default_value (Union[List[int], Tuple[int]]): 
             **label (str): Overrides 'name' as label.
-            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
+            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
             **width (int): Width of the item.
             **height (int): Height of the item.
             **indent (int): Offsets the widget to the right the specified number multiplied by the indent style.
-            **parent (int): Parent to add this item to. (runtime adding)
-            **before (int): This item will be displayed before the specified item in the parent.
-            **source (int): Overrides 'id' as value storage key.
+            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
+            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
+            **source (Union[int, str]): Overrides 'id' as value storage key.
             **payload_type (str): Sender string type must be the same as the target for the target to run the payload_callback.
             **callback (Callable): Registers a callback.
             **drag_callback (Callable): Registers a drag callback for drag and drop.
             **drop_callback (Callable): Registers a drop callback for drag and drop.
             **show (bool): Attempt to render widget.
             **enabled (bool): Turns off functionality of widget and applies the disabled theme.
-            **pos (List[int]): Places the item relative to window coordinates, [0,0] is top left.
+            **pos (Union[List[int], Tuple[int]]): Places the item relative to window coordinates, [0,0] is top left.
             **filter_key (str): Used by filter widget.
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
-            **user_data (Any): User data for callbacks.
-            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **no_alpha (bool): Ignore Alpha component.
             **no_side_preview (bool): Disable bigger color preview on right side of the picker, use small colored square preview instead , unless small preview is also hidden.
             **no_small_preview (bool): Disable colored square preview next to the inputs. (e.g. to show only the inputs). This only displays if the side preview is not shown.
@@ -716,33 +751,33 @@ class ColorPicker(Widget):
             **display_type (int): mvColorEdit_uint8 or mvColorEdit_float
             **input_mode (int): mvColorEdit_input_rgb or mvColorEdit_input_hsv
     Returns:
-            int
+            Union[int, str]
     
     """
     _command = dearpygui.dearpygui.add_color_picker
 
     def __init__(
         self, 
-        default_value: list[int] = (0, 0, 0, 255), 
+        default_value: Union[List[int], Tuple[int]] = (0, 0, 0, 255), 
         label: str = None, 
+        user_data: Any = None, 
+        use_internal_label: bool = True, 
         width: int = 0, 
         height: int = 0, 
         indent: int = -1, 
-        parent: int = 0, 
-        before: int = 0, 
-        source: int = 0, 
+        parent: Union[int, str] = 0, 
+        before: Union[int, str] = 0, 
+        source: Union[int, str] = 0, 
         payload_type: str = '$$DPG_PAYLOAD', 
         callback: Callable = None, 
         drag_callback: Callable = None, 
         drop_callback: Callable = None, 
         show: bool = True, 
         enabled: bool = True, 
-        pos: list[int] = [], 
+        pos: Union[List[int], Tuple[int]] = [], 
         filter_key: str = '', 
         tracked: bool = False, 
         track_offset: float = 0.5, 
-        user_data: Any = None, 
-        use_internal_label: bool = True, 
         no_alpha: bool = False, 
         no_side_preview: bool = False, 
         no_small_preview: bool = False, 
@@ -762,6 +797,8 @@ class ColorPicker(Widget):
         super().__init__(
             default_value=default_value,
             label=label,
+            user_data=user_data,
+            use_internal_label=use_internal_label,
             width=width,
             height=height,
             indent=indent,
@@ -778,8 +815,6 @@ class ColorPicker(Widget):
             filter_key=filter_key,
             tracked=tracked,
             track_offset=track_offset,
-            user_data=user_data,
-            use_internal_label=use_internal_label,
             no_alpha=no_alpha,
             no_side_preview=no_side_preview,
             no_small_preview=no_small_preview,
@@ -798,6 +833,8 @@ class ColorPicker(Widget):
         )
         self.default_value = default_value
         self.label = label
+        self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.width = width
         self.height = height
         self.indent = indent
@@ -814,8 +851,6 @@ class ColorPicker(Widget):
         self.filter_key = filter_key
         self.tracked = tracked
         self.track_offset = track_offset
-        self.user_data = user_data
-        self.use_internal_label = use_internal_label
         self.no_alpha = no_alpha
         self.no_side_preview = no_side_preview
         self.no_small_preview = no_small_preview
@@ -838,100 +873,100 @@ class Colormap(Widget):
             colors (Any): 
             qualitative (bool): 
             **label (str): Overrides 'name' as label.
-            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-            **show (bool): Attempt to render widget.
             **user_data (Any): User data for callbacks.
             **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
-            **parent (int): Parent to add this item to. (runtime adding)
+            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **show (bool): Attempt to render widget.
+            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
     Returns:
-            int
+            Union[int, str]
     
     """
     _command = dearpygui.dearpygui.add_colormap
 
     def __init__(
         self, 
-        colors: list[list[int]], 
+        colors: List[List[int]], 
         qualitative: bool, 
         label: str = None, 
-        show: bool = True, 
         user_data: Any = None, 
         use_internal_label: bool = True, 
-        parent: int = 14, 
+        show: bool = True, 
+        parent: Union[int, str] = 14, 
         **kwargs, 
     ):
         super().__init__(
             colors=colors,
             qualitative=qualitative,
             label=label,
-            show=show,
             user_data=user_data,
             use_internal_label=use_internal_label,
+            show=show,
             parent=parent,
             **kwargs,
         )
         self.colors = colors
         self.qualitative = qualitative
         self.label = label
-        self.show = show
         self.user_data = user_data
         self.use_internal_label = use_internal_label
+        self.show = show
         self.parent = parent
 
 
 class ColormapButton(Widget):
     """Adds a color button.
     Args:
-            *default_value (List[int]): 
+            *default_value (Union[List[int], Tuple[int]]): 
             **label (str): Overrides 'name' as label.
-            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
+            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
             **width (int): Width of the item.
             **height (int): Height of the item.
             **indent (int): Offsets the widget to the right the specified number multiplied by the indent style.
-            **parent (int): Parent to add this item to. (runtime adding)
-            **before (int): This item will be displayed before the specified item in the parent.
+            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
+            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
             **payload_type (str): Sender string type must be the same as the target for the target to run the payload_callback.
             **callback (Callable): Registers a callback.
             **drag_callback (Callable): Registers a drag callback for drag and drop.
             **drop_callback (Callable): Registers a drop callback for drag and drop.
             **show (bool): Attempt to render widget.
             **enabled (bool): Turns off functionality of widget and applies the disabled theme.
-            **pos (List[int]): Places the item relative to window coordinates, [0,0] is top left.
+            **pos (Union[List[int], Tuple[int]]): Places the item relative to window coordinates, [0,0] is top left.
             **filter_key (str): Used by filter widget.
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
-            **user_data (Any): User data for callbacks.
-            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **no_alpha (bool): Ignore Alpha component.
             **no_border (bool): Disable border around the image.
             **no_drag_drop (bool): Disable display of inline text label.
     Returns:
-            int
+            Union[int, str]
     
     """
     _command = dearpygui.dearpygui.add_colormap_button
 
     def __init__(
         self, 
-        default_value: list[int] = (0, 0, 0, 255), 
+        default_value: Union[List[int], Tuple[int]] = (0, 0, 0, 255), 
         label: str = None, 
+        user_data: Any = None, 
+        use_internal_label: bool = True, 
         width: int = 0, 
         height: int = 0, 
         indent: int = -1, 
-        parent: int = 0, 
-        before: int = 0, 
+        parent: Union[int, str] = 0, 
+        before: Union[int, str] = 0, 
         payload_type: str = '$$DPG_PAYLOAD', 
         callback: Callable = None, 
         drag_callback: Callable = None, 
         drop_callback: Callable = None, 
         show: bool = True, 
         enabled: bool = True, 
-        pos: list[int] = [], 
+        pos: Union[List[int], Tuple[int]] = [], 
         filter_key: str = '', 
         tracked: bool = False, 
         track_offset: float = 0.5, 
-        user_data: Any = None, 
-        use_internal_label: bool = True, 
         no_alpha: bool = False, 
         no_border: bool = False, 
         no_drag_drop: bool = False, 
@@ -940,6 +975,8 @@ class ColormapButton(Widget):
         super().__init__(
             default_value=default_value,
             label=label,
+            user_data=user_data,
+            use_internal_label=use_internal_label,
             width=width,
             height=height,
             indent=indent,
@@ -955,8 +992,6 @@ class ColormapButton(Widget):
             filter_key=filter_key,
             tracked=tracked,
             track_offset=track_offset,
-            user_data=user_data,
-            use_internal_label=use_internal_label,
             no_alpha=no_alpha,
             no_border=no_border,
             no_drag_drop=no_drag_drop,
@@ -964,6 +999,8 @@ class ColormapButton(Widget):
         )
         self.default_value = default_value
         self.label = label
+        self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.width = width
         self.height = height
         self.indent = indent
@@ -979,8 +1016,6 @@ class ColormapButton(Widget):
         self.filter_key = filter_key
         self.tracked = tracked
         self.track_offset = track_offset
-        self.user_data = user_data
-        self.use_internal_label = use_internal_label
         self.no_alpha = no_alpha
         self.no_border = no_border
         self.no_drag_drop = no_drag_drop
@@ -990,22 +1025,22 @@ class ColormapScale(Widget):
     """Adds a legend that pairs values with colors. This is typically used with a heat series. 
     Args:
             **label (str): Overrides 'name' as label.
-            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
+            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
             **width (int): Width of the item.
             **height (int): Height of the item.
             **indent (int): Offsets the widget to the right the specified number multiplied by the indent style.
-            **parent (int): Parent to add this item to. (runtime adding)
-            **before (int): This item will be displayed before the specified item in the parent.
-            **source (int): Overrides 'id' as value storage key.
+            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
+            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
+            **source (Union[int, str]): Overrides 'id' as value storage key.
             **show (bool): Attempt to render widget.
-            **pos (List[int]): Places the item relative to window coordinates, [0,0] is top left.
-            **user_data (Any): User data for callbacks.
-            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
-            **colormap (int): mvPlotColormap_* constants or mvColorMap uuid
+            **pos (Union[List[int], Tuple[int]]): Places the item relative to window coordinates, [0,0] is top left.
+            **colormap (Union[int, str]): mvPlotColormap_* constants or mvColorMap uuid
             **min_scale (float): Sets the min number of the color scale. Typically is the same as the min scale from the heat series.
             **max_scale (float): Sets the max number of the color scale. Typically is the same as the max scale from the heat series.
     Returns:
-            int
+            Union[int, str]
     
     """
     _command = dearpygui.dearpygui.add_colormap_scale
@@ -1013,23 +1048,25 @@ class ColormapScale(Widget):
     def __init__(
         self, 
         label: str = None, 
+        user_data: Any = None, 
+        use_internal_label: bool = True, 
         width: int = 0, 
         height: int = 0, 
         indent: int = -1, 
-        parent: int = 0, 
-        before: int = 0, 
-        source: int = 0, 
+        parent: Union[int, str] = 0, 
+        before: Union[int, str] = 0, 
+        source: Union[int, str] = 0, 
         show: bool = True, 
-        pos: list[int] = [], 
-        user_data: Any = None, 
-        use_internal_label: bool = True, 
-        colormap: int = 0, 
+        pos: Union[List[int], Tuple[int]] = [], 
+        colormap: Union[int, str] = 0, 
         min_scale: float = 0.0, 
         max_scale: float = 1.0, 
         **kwargs, 
     ):
         super().__init__(
             label=label,
+            user_data=user_data,
+            use_internal_label=use_internal_label,
             width=width,
             height=height,
             indent=indent,
@@ -1038,14 +1075,14 @@ class ColormapScale(Widget):
             source=source,
             show=show,
             pos=pos,
-            user_data=user_data,
-            use_internal_label=use_internal_label,
             colormap=colormap,
             min_scale=min_scale,
             max_scale=max_scale,
             **kwargs,
         )
         self.label = label
+        self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.width = width
         self.height = height
         self.indent = indent
@@ -1054,8 +1091,6 @@ class ColormapScale(Widget):
         self.source = source
         self.show = show
         self.pos = pos
-        self.user_data = user_data
-        self.use_internal_label = use_internal_label
         self.colormap = colormap
         self.min_scale = min_scale
         self.max_scale = max_scale
@@ -1065,26 +1100,26 @@ class ColormapSlider(Widget):
     """Adds a color button.
     Args:
             **label (str): Overrides 'name' as label.
-            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
+            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
             **width (int): Width of the item.
             **height (int): Height of the item.
             **indent (int): Offsets the widget to the right the specified number multiplied by the indent style.
-            **parent (int): Parent to add this item to. (runtime adding)
-            **before (int): This item will be displayed before the specified item in the parent.
+            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
+            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
             **payload_type (str): Sender string type must be the same as the target for the target to run the payload_callback.
             **callback (Callable): Registers a callback.
             **drag_callback (Callable): Registers a drag callback for drag and drop.
             **drop_callback (Callable): Registers a drop callback for drag and drop.
             **show (bool): Attempt to render widget.
-            **pos (List[int]): Places the item relative to window coordinates, [0,0] is top left.
+            **pos (Union[List[int], Tuple[int]]): Places the item relative to window coordinates, [0,0] is top left.
             **filter_key (str): Used by filter widget.
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
-            **user_data (Any): User data for callbacks.
-            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **default_value (float): 
     Returns:
-            int
+            Union[int, str]
     
     """
     _command = dearpygui.dearpygui.add_colormap_slider
@@ -1092,27 +1127,29 @@ class ColormapSlider(Widget):
     def __init__(
         self, 
         label: str = None, 
+        user_data: Any = None, 
+        use_internal_label: bool = True, 
         width: int = 0, 
         height: int = 0, 
         indent: int = -1, 
-        parent: int = 0, 
-        before: int = 0, 
+        parent: Union[int, str] = 0, 
+        before: Union[int, str] = 0, 
         payload_type: str = '$$DPG_PAYLOAD', 
         callback: Callable = None, 
         drag_callback: Callable = None, 
         drop_callback: Callable = None, 
         show: bool = True, 
-        pos: list[int] = [], 
+        pos: Union[List[int], Tuple[int]] = [], 
         filter_key: str = '', 
         tracked: bool = False, 
         track_offset: float = 0.5, 
-        user_data: Any = None, 
-        use_internal_label: bool = True, 
         default_value: float = 0.0, 
         **kwargs, 
     ):
         super().__init__(
             label=label,
+            user_data=user_data,
+            use_internal_label=use_internal_label,
             width=width,
             height=height,
             indent=indent,
@@ -1127,12 +1164,12 @@ class ColormapSlider(Widget):
             filter_key=filter_key,
             tracked=tracked,
             track_offset=track_offset,
-            user_data=user_data,
-            use_internal_label=use_internal_label,
             default_value=default_value,
             **kwargs,
         )
         self.label = label
+        self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.width = width
         self.height = height
         self.indent = indent
@@ -1147,66 +1184,64 @@ class ColormapSlider(Widget):
         self.filter_key = filter_key
         self.tracked = tracked
         self.track_offset = track_offset
-        self.user_data = user_data
-        self.use_internal_label = use_internal_label
         self.default_value = default_value
 
 
 class Combo(Widget):
     """Adds a combo dropdown that allows a user to select a single option from a drop down window.
     Args:
-            *items (List[str]): A tuple of items to be shown in the drop down window. Can consist of any combination of types.
+            *items (Union[List[str], Tuple[str]]): A tuple of items to be shown in the drop down window. Can consist of any combination of types.
             **label (str): Overrides 'name' as label.
-            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
+            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
             **width (int): Width of the item.
             **indent (int): Offsets the widget to the right the specified number multiplied by the indent style.
-            **parent (int): Parent to add this item to. (runtime adding)
-            **before (int): This item will be displayed before the specified item in the parent.
-            **source (int): Overrides 'id' as value storage key.
+            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
+            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
+            **source (Union[int, str]): Overrides 'id' as value storage key.
             **payload_type (str): Sender string type must be the same as the target for the target to run the payload_callback.
             **callback (Callable): Registers a callback.
             **drag_callback (Callable): Registers a drag callback for drag and drop.
             **drop_callback (Callable): Registers a drop callback for drag and drop.
             **show (bool): Attempt to render widget.
             **enabled (bool): Turns off functionality of widget and applies the disabled theme.
-            **pos (List[int]): Places the item relative to window coordinates, [0,0] is top left.
+            **pos (Union[List[int], Tuple[int]]): Places the item relative to window coordinates, [0,0] is top left.
             **filter_key (str): Used by filter widget.
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
-            **user_data (Any): User data for callbacks.
-            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **default_value (str): 
             **popup_align_left (bool): Align the popup toward the left.
             **no_arrow_button (bool): Display the preview box without the square arrow button.
             **no_preview (bool): Display only the square arrow button.
             **height_mode (int): mvComboHeight_Small, _Regular, _Large, _Largest
     Returns:
-            int
+            Union[int, str]
     
     """
     _command = dearpygui.dearpygui.add_combo
 
     def __init__(
         self, 
-        items: list[str] = (), 
+        items: Union[List[str], Tuple[str]] = (), 
         label: str = None, 
+        user_data: Any = None, 
+        use_internal_label: bool = True, 
         width: int = 0, 
         indent: int = -1, 
-        parent: int = 0, 
-        before: int = 0, 
-        source: int = 0, 
+        parent: Union[int, str] = 0, 
+        before: Union[int, str] = 0, 
+        source: Union[int, str] = 0, 
         payload_type: str = '$$DPG_PAYLOAD', 
         callback: Callable = None, 
         drag_callback: Callable = None, 
         drop_callback: Callable = None, 
         show: bool = True, 
         enabled: bool = True, 
-        pos: list[int] = [], 
+        pos: Union[List[int], Tuple[int]] = [], 
         filter_key: str = '', 
         tracked: bool = False, 
         track_offset: float = 0.5, 
-        user_data: Any = None, 
-        use_internal_label: bool = True, 
         default_value: str = '', 
         popup_align_left: bool = False, 
         no_arrow_button: bool = False, 
@@ -1217,6 +1252,8 @@ class Combo(Widget):
         super().__init__(
             items=items,
             label=label,
+            user_data=user_data,
+            use_internal_label=use_internal_label,
             width=width,
             indent=indent,
             parent=parent,
@@ -1232,8 +1269,6 @@ class Combo(Widget):
             filter_key=filter_key,
             tracked=tracked,
             track_offset=track_offset,
-            user_data=user_data,
-            use_internal_label=use_internal_label,
             default_value=default_value,
             popup_align_left=popup_align_left,
             no_arrow_button=no_arrow_button,
@@ -1243,6 +1278,8 @@ class Combo(Widget):
         )
         self.items = items
         self.label = label
+        self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.width = width
         self.indent = indent
         self.parent = parent
@@ -1258,8 +1295,6 @@ class Combo(Widget):
         self.filter_key = filter_key
         self.tracked = tracked
         self.track_offset = track_offset
-        self.user_data = user_data
-        self.use_internal_label = use_internal_label
         self.default_value = default_value
         self.popup_align_left = popup_align_left
         self.no_arrow_button = no_arrow_button
@@ -1271,25 +1306,25 @@ class DatePicker(Widget):
     """Creates a date picker.
     Args:
             **label (str): Overrides 'name' as label.
-            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
+            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
             **indent (int): Offsets the widget to the right the specified number multiplied by the indent style.
-            **parent (int): Parent to add this item to. (runtime adding)
-            **before (int): This item will be displayed before the specified item in the parent.
+            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
+            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
             **payload_type (str): Sender string type must be the same as the target for the target to run the payload_callback.
             **callback (Callable): Registers a callback.
             **drag_callback (Callable): Registers a drag callback for drag and drop.
             **drop_callback (Callable): Registers a drop callback for drag and drop.
             **show (bool): Attempt to render widget.
-            **pos (List[int]): Places the item relative to window coordinates, [0,0] is top left.
+            **pos (Union[List[int], Tuple[int]]): Places the item relative to window coordinates, [0,0] is top left.
             **filter_key (str): Used by filter widget.
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
-            **user_data (Any): User data for callbacks.
-            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **default_value (dict): 
             **level (int): Use avaliable constants. mvDatePickerLevel_Day, mvDatePickerLevel_Month, mvDatePickerLevel_Year
     Returns:
-            int
+            Union[int, str]
     
     """
     _command = dearpygui.dearpygui.add_date_picker
@@ -1297,26 +1332,28 @@ class DatePicker(Widget):
     def __init__(
         self, 
         label: str = None, 
+        user_data: Any = None, 
+        use_internal_label: bool = True, 
         indent: int = -1, 
-        parent: int = 0, 
-        before: int = 0, 
+        parent: Union[int, str] = 0, 
+        before: Union[int, str] = 0, 
         payload_type: str = '$$DPG_PAYLOAD', 
         callback: Callable = None, 
         drag_callback: Callable = None, 
         drop_callback: Callable = None, 
         show: bool = True, 
-        pos: list[int] = [], 
+        pos: Union[List[int], Tuple[int]] = [], 
         filter_key: str = '', 
         tracked: bool = False, 
         track_offset: float = 0.5, 
-        user_data: Any = None, 
-        use_internal_label: bool = True, 
         default_value: dict = {'month_day': 14, 'year': 20, 'month': 5}, 
         level: int = 0, 
         **kwargs, 
     ):
         super().__init__(
             label=label,
+            user_data=user_data,
+            use_internal_label=use_internal_label,
             indent=indent,
             parent=parent,
             before=before,
@@ -1329,13 +1366,13 @@ class DatePicker(Widget):
             filter_key=filter_key,
             tracked=tracked,
             track_offset=track_offset,
-            user_data=user_data,
-            use_internal_label=use_internal_label,
             default_value=default_value,
             level=level,
             **kwargs,
         )
         self.label = label
+        self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.indent = indent
         self.parent = parent
         self.before = before
@@ -1348,8 +1385,6 @@ class DatePicker(Widget):
         self.filter_key = filter_key
         self.tracked = tracked
         self.track_offset = track_offset
-        self.user_data = user_data
-        self.use_internal_label = use_internal_label
         self.default_value = default_value
         self.level = level
 
@@ -1358,24 +1393,24 @@ class DragFloat(Widget):
     """Adds drag for a single float value. Directly entry can be done with double click or CTRL+Click. Min and Max alone are a soft limit for the drag. Use clamped keyword to also apply limits to the direct entry modes.
     Args:
             **label (str): Overrides 'name' as label.
-            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
+            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
             **width (int): Width of the item.
             **indent (int): Offsets the widget to the right the specified number multiplied by the indent style.
-            **parent (int): Parent to add this item to. (runtime adding)
-            **before (int): This item will be displayed before the specified item in the parent.
-            **source (int): Overrides 'id' as value storage key.
+            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
+            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
+            **source (Union[int, str]): Overrides 'id' as value storage key.
             **payload_type (str): Sender string type must be the same as the target for the target to run the payload_callback.
             **callback (Callable): Registers a callback.
             **drag_callback (Callable): Registers a drag callback for drag and drop.
             **drop_callback (Callable): Registers a drop callback for drag and drop.
             **show (bool): Attempt to render widget.
             **enabled (bool): Turns off functionality of widget and applies the disabled theme.
-            **pos (List[int]): Places the item relative to window coordinates, [0,0] is top left.
+            **pos (Union[List[int], Tuple[int]]): Places the item relative to window coordinates, [0,0] is top left.
             **filter_key (str): Used by filter widget.
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
-            **user_data (Any): User data for callbacks.
-            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **default_value (float): 
             **format (str): 
             **speed (float): 
@@ -1384,7 +1419,7 @@ class DragFloat(Widget):
             **no_input (bool): Disable direct entry methods or Enter key allowing to input text directly into the widget.
             **clamped (bool): Applies the min and max limits to direct entry methods also such as double click and CTRL+Click.
     Returns:
-            int
+            Union[int, str]
     
     """
     _command = dearpygui.dearpygui.add_drag_float
@@ -1392,23 +1427,23 @@ class DragFloat(Widget):
     def __init__(
         self, 
         label: str = None, 
+        user_data: Any = None, 
+        use_internal_label: bool = True, 
         width: int = 0, 
         indent: int = -1, 
-        parent: int = 0, 
-        before: int = 0, 
-        source: int = 0, 
+        parent: Union[int, str] = 0, 
+        before: Union[int, str] = 0, 
+        source: Union[int, str] = 0, 
         payload_type: str = '$$DPG_PAYLOAD', 
         callback: Callable = None, 
         drag_callback: Callable = None, 
         drop_callback: Callable = None, 
         show: bool = True, 
         enabled: bool = True, 
-        pos: list[int] = [], 
+        pos: Union[List[int], Tuple[int]] = [], 
         filter_key: str = '', 
         tracked: bool = False, 
         track_offset: float = 0.5, 
-        user_data: Any = None, 
-        use_internal_label: bool = True, 
         default_value: float = 0.0, 
         format: str = '%0.3f', 
         speed: float = 1.0, 
@@ -1420,6 +1455,8 @@ class DragFloat(Widget):
     ):
         super().__init__(
             label=label,
+            user_data=user_data,
+            use_internal_label=use_internal_label,
             width=width,
             indent=indent,
             parent=parent,
@@ -1435,8 +1472,6 @@ class DragFloat(Widget):
             filter_key=filter_key,
             tracked=tracked,
             track_offset=track_offset,
-            user_data=user_data,
-            use_internal_label=use_internal_label,
             default_value=default_value,
             format=format,
             speed=speed,
@@ -1447,6 +1482,8 @@ class DragFloat(Widget):
             **kwargs,
         )
         self.label = label
+        self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.width = width
         self.indent = indent
         self.parent = parent
@@ -1462,8 +1499,6 @@ class DragFloat(Widget):
         self.filter_key = filter_key
         self.tracked = tracked
         self.track_offset = track_offset
-        self.user_data = user_data
-        self.use_internal_label = use_internal_label
         self.default_value = default_value
         self.format = format
         self.speed = speed
@@ -1477,25 +1512,25 @@ class DragFloatx(Widget):
     """Adds drag input for a set of int values up to 4. Directly entry can be done with double click or CTRL+Click. Min and Max alone are a soft limit for the drag. Use clamped keyword to also apply limits to the direct entry modes.
     Args:
             **label (str): Overrides 'name' as label.
-            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
+            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
             **width (int): Width of the item.
             **indent (int): Offsets the widget to the right the specified number multiplied by the indent style.
-            **parent (int): Parent to add this item to. (runtime adding)
-            **before (int): This item will be displayed before the specified item in the parent.
-            **source (int): Overrides 'id' as value storage key.
+            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
+            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
+            **source (Union[int, str]): Overrides 'id' as value storage key.
             **payload_type (str): Sender string type must be the same as the target for the target to run the payload_callback.
             **callback (Callable): Registers a callback.
             **drag_callback (Callable): Registers a drag callback for drag and drop.
             **drop_callback (Callable): Registers a drop callback for drag and drop.
             **show (bool): Attempt to render widget.
             **enabled (bool): Turns off functionality of widget and applies the disabled theme.
-            **pos (List[int]): Places the item relative to window coordinates, [0,0] is top left.
+            **pos (Union[List[int], Tuple[int]]): Places the item relative to window coordinates, [0,0] is top left.
             **filter_key (str): Used by filter widget.
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
-            **user_data (Any): User data for callbacks.
-            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
-            **default_value (List[float]): 
+            **default_value (Union[List[float], Tuple[float]]): 
             **size (int): Number of components
             **format (str): 
             **speed (float): 
@@ -1504,7 +1539,7 @@ class DragFloatx(Widget):
             **no_input (bool): Disable direct entry methods or Enter key allowing to input text directly into the widget.
             **clamped (bool): Applies the min and max limits to direct entry methods also such as double click and CTRL+Click.
     Returns:
-            int
+            Union[int, str]
     
     """
     _command = dearpygui.dearpygui.add_drag_floatx
@@ -1512,24 +1547,24 @@ class DragFloatx(Widget):
     def __init__(
         self, 
         label: str = None, 
+        user_data: Any = None, 
+        use_internal_label: bool = True, 
         width: int = 0, 
         indent: int = -1, 
-        parent: int = 0, 
-        before: int = 0, 
-        source: int = 0, 
+        parent: Union[int, str] = 0, 
+        before: Union[int, str] = 0, 
+        source: Union[int, str] = 0, 
         payload_type: str = '$$DPG_PAYLOAD', 
         callback: Callable = None, 
         drag_callback: Callable = None, 
         drop_callback: Callable = None, 
         show: bool = True, 
         enabled: bool = True, 
-        pos: list[int] = [], 
+        pos: Union[List[int], Tuple[int]] = [], 
         filter_key: str = '', 
         tracked: bool = False, 
         track_offset: float = 0.5, 
-        user_data: Any = None, 
-        use_internal_label: bool = True, 
-        default_value: list[float] = (0.0, 0.0, 0.0, 0.0), 
+        default_value: Union[List[float], Tuple[float]] = (0.0, 0.0, 0.0, 0.0), 
         size: int = 4, 
         format: str = '%0.3f', 
         speed: float = 1.0, 
@@ -1541,6 +1576,8 @@ class DragFloatx(Widget):
     ):
         super().__init__(
             label=label,
+            user_data=user_data,
+            use_internal_label=use_internal_label,
             width=width,
             indent=indent,
             parent=parent,
@@ -1556,8 +1593,6 @@ class DragFloatx(Widget):
             filter_key=filter_key,
             tracked=tracked,
             track_offset=track_offset,
-            user_data=user_data,
-            use_internal_label=use_internal_label,
             default_value=default_value,
             size=size,
             format=format,
@@ -1569,6 +1604,8 @@ class DragFloatx(Widget):
             **kwargs,
         )
         self.label = label
+        self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.width = width
         self.indent = indent
         self.parent = parent
@@ -1584,8 +1621,6 @@ class DragFloatx(Widget):
         self.filter_key = filter_key
         self.tracked = tracked
         self.track_offset = track_offset
-        self.user_data = user_data
-        self.use_internal_label = use_internal_label
         self.default_value = default_value
         self.size = size
         self.format = format
@@ -1600,24 +1635,24 @@ class DragInt(Widget):
     """Adds drag for a single int value. Directly entry can be done with double click or CTRL+Click. Min and Max alone are a soft limit for the drag. Use clamped keyword to also apply limits to the direct entry modes.
     Args:
             **label (str): Overrides 'name' as label.
-            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
+            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
             **width (int): Width of the item.
             **indent (int): Offsets the widget to the right the specified number multiplied by the indent style.
-            **parent (int): Parent to add this item to. (runtime adding)
-            **before (int): This item will be displayed before the specified item in the parent.
-            **source (int): Overrides 'id' as value storage key.
+            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
+            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
+            **source (Union[int, str]): Overrides 'id' as value storage key.
             **payload_type (str): Sender string type must be the same as the target for the target to run the payload_callback.
             **callback (Callable): Registers a callback.
             **drag_callback (Callable): Registers a drag callback for drag and drop.
             **drop_callback (Callable): Registers a drop callback for drag and drop.
             **show (bool): Attempt to render widget.
             **enabled (bool): Turns off functionality of widget and applies the disabled theme.
-            **pos (List[int]): Places the item relative to window coordinates, [0,0] is top left.
+            **pos (Union[List[int], Tuple[int]]): Places the item relative to window coordinates, [0,0] is top left.
             **filter_key (str): Used by filter widget.
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
-            **user_data (Any): User data for callbacks.
-            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **default_value (int): 
             **format (str): 
             **speed (float): 
@@ -1626,7 +1661,7 @@ class DragInt(Widget):
             **no_input (bool): Disable direct entry methods or Enter key allowing to input text directly into the widget.
             **clamped (bool): Applies the min and max limits to direct entry methods also such as double click and CTRL+Click.
     Returns:
-            int
+            Union[int, str]
     
     """
     _command = dearpygui.dearpygui.add_drag_int
@@ -1634,23 +1669,23 @@ class DragInt(Widget):
     def __init__(
         self, 
         label: str = None, 
+        user_data: Any = None, 
+        use_internal_label: bool = True, 
         width: int = 0, 
         indent: int = -1, 
-        parent: int = 0, 
-        before: int = 0, 
-        source: int = 0, 
+        parent: Union[int, str] = 0, 
+        before: Union[int, str] = 0, 
+        source: Union[int, str] = 0, 
         payload_type: str = '$$DPG_PAYLOAD', 
         callback: Callable = None, 
         drag_callback: Callable = None, 
         drop_callback: Callable = None, 
         show: bool = True, 
         enabled: bool = True, 
-        pos: list[int] = [], 
+        pos: Union[List[int], Tuple[int]] = [], 
         filter_key: str = '', 
         tracked: bool = False, 
         track_offset: float = 0.5, 
-        user_data: Any = None, 
-        use_internal_label: bool = True, 
         default_value: int = 0, 
         format: str = '%d', 
         speed: float = 1.0, 
@@ -1662,6 +1697,8 @@ class DragInt(Widget):
     ):
         super().__init__(
             label=label,
+            user_data=user_data,
+            use_internal_label=use_internal_label,
             width=width,
             indent=indent,
             parent=parent,
@@ -1677,8 +1714,6 @@ class DragInt(Widget):
             filter_key=filter_key,
             tracked=tracked,
             track_offset=track_offset,
-            user_data=user_data,
-            use_internal_label=use_internal_label,
             default_value=default_value,
             format=format,
             speed=speed,
@@ -1689,6 +1724,8 @@ class DragInt(Widget):
             **kwargs,
         )
         self.label = label
+        self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.width = width
         self.indent = indent
         self.parent = parent
@@ -1704,8 +1741,6 @@ class DragInt(Widget):
         self.filter_key = filter_key
         self.tracked = tracked
         self.track_offset = track_offset
-        self.user_data = user_data
-        self.use_internal_label = use_internal_label
         self.default_value = default_value
         self.format = format
         self.speed = speed
@@ -1719,25 +1754,25 @@ class DragIntx(Widget):
     """Adds drag input for a set of int values up to 4. Directly entry can be done with double click or CTRL+Click. Min and Max alone are a soft limit for the drag. Use clamped keyword to also apply limits to the direct entry modes.
     Args:
             **label (str): Overrides 'name' as label.
-            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
+            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
             **width (int): Width of the item.
             **indent (int): Offsets the widget to the right the specified number multiplied by the indent style.
-            **parent (int): Parent to add this item to. (runtime adding)
-            **before (int): This item will be displayed before the specified item in the parent.
-            **source (int): Overrides 'id' as value storage key.
+            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
+            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
+            **source (Union[int, str]): Overrides 'id' as value storage key.
             **payload_type (str): Sender string type must be the same as the target for the target to run the payload_callback.
             **callback (Callable): Registers a callback.
             **drag_callback (Callable): Registers a drag callback for drag and drop.
             **drop_callback (Callable): Registers a drop callback for drag and drop.
             **show (bool): Attempt to render widget.
             **enabled (bool): Turns off functionality of widget and applies the disabled theme.
-            **pos (List[int]): Places the item relative to window coordinates, [0,0] is top left.
+            **pos (Union[List[int], Tuple[int]]): Places the item relative to window coordinates, [0,0] is top left.
             **filter_key (str): Used by filter widget.
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
-            **user_data (Any): User data for callbacks.
-            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
-            **default_value (List[int]): 
+            **default_value (Union[List[int], Tuple[int]]): 
             **size (int): Number of components.
             **format (str): 
             **speed (float): 
@@ -1746,7 +1781,7 @@ class DragIntx(Widget):
             **no_input (bool): Disable direct entry methods or Enter key allowing to input text directly into the widget.
             **clamped (bool): Applies the min and max limits to direct entry methods also such as double click and CTRL+Click.
     Returns:
-            int
+            Union[int, str]
     
     """
     _command = dearpygui.dearpygui.add_drag_intx
@@ -1754,24 +1789,24 @@ class DragIntx(Widget):
     def __init__(
         self, 
         label: str = None, 
+        user_data: Any = None, 
+        use_internal_label: bool = True, 
         width: int = 0, 
         indent: int = -1, 
-        parent: int = 0, 
-        before: int = 0, 
-        source: int = 0, 
+        parent: Union[int, str] = 0, 
+        before: Union[int, str] = 0, 
+        source: Union[int, str] = 0, 
         payload_type: str = '$$DPG_PAYLOAD', 
         callback: Callable = None, 
         drag_callback: Callable = None, 
         drop_callback: Callable = None, 
         show: bool = True, 
         enabled: bool = True, 
-        pos: list[int] = [], 
+        pos: Union[List[int], Tuple[int]] = [], 
         filter_key: str = '', 
         tracked: bool = False, 
         track_offset: float = 0.5, 
-        user_data: Any = None, 
-        use_internal_label: bool = True, 
-        default_value: list[int] = (0, 0, 0, 0), 
+        default_value: Union[List[int], Tuple[int]] = (0, 0, 0, 0), 
         size: int = 4, 
         format: str = '%d', 
         speed: float = 1.0, 
@@ -1783,6 +1818,8 @@ class DragIntx(Widget):
     ):
         super().__init__(
             label=label,
+            user_data=user_data,
+            use_internal_label=use_internal_label,
             width=width,
             indent=indent,
             parent=parent,
@@ -1798,8 +1835,6 @@ class DragIntx(Widget):
             filter_key=filter_key,
             tracked=tracked,
             track_offset=track_offset,
-            user_data=user_data,
-            use_internal_label=use_internal_label,
             default_value=default_value,
             size=size,
             format=format,
@@ -1811,6 +1846,8 @@ class DragIntx(Widget):
             **kwargs,
         )
         self.label = label
+        self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.width = width
         self.indent = indent
         self.parent = parent
@@ -1826,8 +1863,6 @@ class DragIntx(Widget):
         self.filter_key = filter_key
         self.tracked = tracked
         self.track_offset = track_offset
-        self.user_data = user_data
-        self.use_internal_label = use_internal_label
         self.default_value = default_value
         self.size = size
         self.format = format
@@ -1842,21 +1877,21 @@ class DragLine(Widget):
     """Adds a drag line to a plot.
     Args:
             **label (str): Overrides 'name' as label.
-            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-            **parent (int): Parent to add this item to. (runtime adding)
-            **before (int): This item will be displayed before the specified item in the parent.
-            **source (int): Overrides 'id' as value storage key.
-            **callback (Callable): Registers a callback.
-            **show (bool): Attempt to render widget.
             **user_data (Any): User data for callbacks.
             **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
+            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
+            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
+            **source (Union[int, str]): Overrides 'id' as value storage key.
+            **callback (Callable): Registers a callback.
+            **show (bool): Attempt to render widget.
             **default_value (Any): 
-            **color (List[int]): 
+            **color (Union[List[int], Tuple[int]]): 
             **thickness (float): 
             **show_label (bool): 
             **vertical (bool): 
     Returns:
-            int
+            Union[int, str]
     
     """
     _command = dearpygui.dearpygui.add_drag_line
@@ -1864,15 +1899,15 @@ class DragLine(Widget):
     def __init__(
         self, 
         label: str = None, 
-        parent: int = 0, 
-        before: int = 0, 
-        source: int = 0, 
-        callback: Callable = None, 
-        show: bool = True, 
         user_data: Any = None, 
         use_internal_label: bool = True, 
+        parent: Union[int, str] = 0, 
+        before: Union[int, str] = 0, 
+        source: Union[int, str] = 0, 
+        callback: Callable = None, 
+        show: bool = True, 
         default_value: Any = 0.0, 
-        color: list[int] = (0, 0, 0, -255), 
+        color: Union[List[int], Tuple[int]] = (0, 0, 0, -255), 
         thickness: float = 1.0, 
         show_label: bool = True, 
         vertical: bool = True, 
@@ -1880,13 +1915,13 @@ class DragLine(Widget):
     ):
         super().__init__(
             label=label,
+            user_data=user_data,
+            use_internal_label=use_internal_label,
             parent=parent,
             before=before,
             source=source,
             callback=callback,
             show=show,
-            user_data=user_data,
-            use_internal_label=use_internal_label,
             default_value=default_value,
             color=color,
             thickness=thickness,
@@ -1895,13 +1930,13 @@ class DragLine(Widget):
             **kwargs,
         )
         self.label = label
+        self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.parent = parent
         self.before = before
         self.source = source
         self.callback = callback
         self.show = show
-        self.user_data = user_data
-        self.use_internal_label = use_internal_label
         self.default_value = default_value
         self.color = color
         self.thickness = thickness
@@ -1913,18 +1948,18 @@ class Dummy(Widget):
     """Adds a spacer or 'dummy' object.
     Args:
             **label (str): Overrides 'name' as label.
-            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
+            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
             **width (int): Width of the item.
             **height (int): Height of the item.
             **indent (int): Offsets the widget to the right the specified number multiplied by the indent style.
-            **parent (int): Parent to add this item to. (runtime adding)
-            **before (int): This item will be displayed before the specified item in the parent.
+            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
+            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
             **show (bool): Attempt to render widget.
-            **pos (List[int]): Places the item relative to window coordinates, [0,0] is top left.
-            **user_data (Any): User data for callbacks.
-            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
+            **pos (Union[List[int], Tuple[int]]): Places the item relative to window coordinates, [0,0] is top left.
     Returns:
-            int
+            Union[int, str]
     
     """
     _command = dearpygui.dearpygui.add_dummy
@@ -1932,19 +1967,21 @@ class Dummy(Widget):
     def __init__(
         self, 
         label: str = None, 
+        user_data: Any = None, 
+        use_internal_label: bool = True, 
         width: int = 0, 
         height: int = 0, 
         indent: int = -1, 
-        parent: int = 0, 
-        before: int = 0, 
+        parent: Union[int, str] = 0, 
+        before: Union[int, str] = 0, 
         show: bool = True, 
-        pos: list[int] = [], 
-        user_data: Any = None, 
-        use_internal_label: bool = True, 
+        pos: Union[List[int], Tuple[int]] = [], 
         **kwargs, 
     ):
         super().__init__(
             label=label,
+            user_data=user_data,
+            use_internal_label=use_internal_label,
             width=width,
             height=height,
             indent=indent,
@@ -1952,11 +1989,11 @@ class Dummy(Widget):
             before=before,
             show=show,
             pos=pos,
-            user_data=user_data,
-            use_internal_label=use_internal_label,
             **kwargs,
         )
         self.label = label
+        self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.width = width
         self.height = height
         self.indent = indent
@@ -1964,8 +2001,6 @@ class Dummy(Widget):
         self.before = before
         self.show = show
         self.pos = pos
-        self.user_data = user_data
-        self.use_internal_label = use_internal_label
 
 
 class DynamicTexture(Widget):
@@ -1973,14 +2008,14 @@ class DynamicTexture(Widget):
     Args:
             width (int): 
             height (int): 
-            default_value (List[float]): 
+            default_value (Union[List[float], Tuple[float]]): 
             **label (str): Overrides 'name' as label.
-            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
             **user_data (Any): User data for callbacks.
             **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
-            **parent (int): Parent to add this item to. (runtime adding)
+            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
     Returns:
-            int
+            Union[int, str]
     
     """
     _command = dearpygui.dearpygui.add_dynamic_texture
@@ -1989,11 +2024,11 @@ class DynamicTexture(Widget):
         self, 
         width: int, 
         height: int, 
-        default_value: list[float], 
+        default_value: Union[List[float], Tuple[float]], 
         label: str = None, 
         user_data: Any = None, 
         use_internal_label: bool = True, 
-        parent: int = 12, 
+        parent: Union[int, str] = 12, 
         **kwargs, 
     ):
         super().__init__(
@@ -2020,17 +2055,17 @@ class FileExtension(Widget):
     Args:
             extension (str): Extension that will show as an when the parent is a file dialog.
             **label (str): Overrides 'name' as label.
-            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-            **width (int): Width of the item.
-            **height (int): Height of the item.
-            **parent (int): Parent to add this item to. (runtime adding)
-            **before (int): This item will be displayed before the specified item in the parent.
             **user_data (Any): User data for callbacks.
             **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
+            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **width (int): Width of the item.
+            **height (int): Height of the item.
+            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
+            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
             **custom_text (str): Replaces the displayed text in the drop down for this extension.
-            **color (List[float]): 
+            **color (Union[List[float], Tuple[float]]): 
     Returns:
-            int
+            Union[int, str]
     
     """
     _command = dearpygui.dearpygui.add_file_extension
@@ -2039,37 +2074,37 @@ class FileExtension(Widget):
         self, 
         extension: str, 
         label: str = None, 
-        width: int = 0, 
-        height: int = 0, 
-        parent: int = 0, 
-        before: int = 0, 
         user_data: Any = None, 
         use_internal_label: bool = True, 
+        width: int = 0, 
+        height: int = 0, 
+        parent: Union[int, str] = 0, 
+        before: Union[int, str] = 0, 
         custom_text: str = '', 
-        color: list[float] = (-255, 0, 0, 255), 
+        color: Union[List[float], Tuple[float]] = (-255, 0, 0, 255), 
         **kwargs, 
     ):
         super().__init__(
             extension=extension,
             label=label,
+            user_data=user_data,
+            use_internal_label=use_internal_label,
             width=width,
             height=height,
             parent=parent,
             before=before,
-            user_data=user_data,
-            use_internal_label=use_internal_label,
             custom_text=custom_text,
             color=color,
             **kwargs,
         )
         self.extension = extension
         self.label = label
+        self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.width = width
         self.height = height
         self.parent = parent
         self.before = before
-        self.user_data = user_data
-        self.use_internal_label = use_internal_label
         self.custom_text = custom_text
         self.color = color
 
@@ -2077,64 +2112,66 @@ class FileExtension(Widget):
 class Image(Widget):
     """Adds an image from a specified texture. uv_min and uv_max represent the normalized texture coordinates of the original image that will be shown. Using range (0.0,0.0)->(1.0,1.0) for texture coordinates will generally display the entire texture.
     Args:
-            texture_id (int): 
+            texture_id (Union[int, str]): 
             **label (str): Overrides 'name' as label.
-            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
+            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
             **width (int): Width of the item.
             **height (int): Height of the item.
             **indent (int): Offsets the widget to the right the specified number multiplied by the indent style.
-            **parent (int): Parent to add this item to. (runtime adding)
-            **before (int): This item will be displayed before the specified item in the parent.
-            **source (int): Overrides 'id' as value storage key.
+            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
+            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
+            **source (Union[int, str]): Overrides 'id' as value storage key.
             **payload_type (str): Sender string type must be the same as the target for the target to run the payload_callback.
             **drag_callback (Callable): Registers a drag callback for drag and drop.
             **drop_callback (Callable): Registers a drop callback for drag and drop.
             **show (bool): Attempt to render widget.
-            **pos (List[int]): Places the item relative to window coordinates, [0,0] is top left.
+            **pos (Union[List[int], Tuple[int]]): Places the item relative to window coordinates, [0,0] is top left.
             **filter_key (str): Used by filter widget.
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
-            **user_data (Any): User data for callbacks.
-            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
-            **tint_color (List[float]): Applies a color tint to the entire texture.
-            **border_color (List[float]): Displays a border of the specified color around the texture.
-            **uv_min (List[float]): Normalized texture coordinates min point.
-            **uv_max (List[float]): Normalized texture coordinates max point.
+            **tint_color (Union[List[float], Tuple[float]]): Applies a color tint to the entire texture.
+            **border_color (Union[List[float], Tuple[float]]): Displays a border of the specified color around the texture.
+            **uv_min (Union[List[float], Tuple[float]]): Normalized texture coordinates min point.
+            **uv_max (Union[List[float], Tuple[float]]): Normalized texture coordinates max point.
     Returns:
-            int
+            Union[int, str]
     
     """
     _command = dearpygui.dearpygui.add_image
 
     def __init__(
         self, 
-        texture_id: int, 
+        texture_id: Union[int, str], 
         label: str = None, 
+        user_data: Any = None, 
+        use_internal_label: bool = True, 
         width: int = 0, 
         height: int = 0, 
         indent: int = -1, 
-        parent: int = 0, 
-        before: int = 0, 
-        source: int = 0, 
+        parent: Union[int, str] = 0, 
+        before: Union[int, str] = 0, 
+        source: Union[int, str] = 0, 
         payload_type: str = '$$DPG_PAYLOAD', 
         drag_callback: Callable = None, 
         drop_callback: Callable = None, 
         show: bool = True, 
-        pos: list[int] = [], 
+        pos: Union[List[int], Tuple[int]] = [], 
         filter_key: str = '', 
         tracked: bool = False, 
         track_offset: float = 0.5, 
-        user_data: Any = None, 
-        use_internal_label: bool = True, 
-        tint_color: list[float] = (255, 255, 255, 255), 
-        border_color: list[float] = (0, 0, 0, 0), 
-        uv_min: list[float] = (0.0, 0.0), 
-        uv_max: list[float] = (1.0, 1.0), 
+        tint_color: Union[List[float], Tuple[float]] = (255, 255, 255, 255), 
+        border_color: Union[List[float], Tuple[float]] = (0, 0, 0, 0), 
+        uv_min: Union[List[float], Tuple[float]] = (0.0, 0.0), 
+        uv_max: Union[List[float], Tuple[float]] = (1.0, 1.0), 
         **kwargs, 
     ):
         super().__init__(
             texture_id=texture_id,
             label=label,
+            user_data=user_data,
+            use_internal_label=use_internal_label,
             width=width,
             height=height,
             indent=indent,
@@ -2149,8 +2186,6 @@ class Image(Widget):
             filter_key=filter_key,
             tracked=tracked,
             track_offset=track_offset,
-            user_data=user_data,
-            use_internal_label=use_internal_label,
             tint_color=tint_color,
             border_color=border_color,
             uv_min=uv_min,
@@ -2159,6 +2194,8 @@ class Image(Widget):
         )
         self.texture_id = texture_id
         self.label = label
+        self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.width = width
         self.height = height
         self.indent = indent
@@ -2173,8 +2210,6 @@ class Image(Widget):
         self.filter_key = filter_key
         self.tracked = tracked
         self.track_offset = track_offset
-        self.user_data = user_data
-        self.use_internal_label = use_internal_label
         self.tint_color = tint_color
         self.border_color = border_color
         self.uv_min = uv_min
@@ -2184,70 +2219,72 @@ class Image(Widget):
 class ImageButton(Widget):
     """Adds an button with a texture. uv_min and uv_max represent the normalized texture coordinates of the original image that will be shown. Using range (0.0,0.0)->(1.0,1.0) texture coordinates will generally display the entire texture
     Args:
-            texture_id (int): 
+            texture_id (Union[int, str]): 
             **label (str): Overrides 'name' as label.
-            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
+            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
             **width (int): Width of the item.
             **height (int): Height of the item.
             **indent (int): Offsets the widget to the right the specified number multiplied by the indent style.
-            **parent (int): Parent to add this item to. (runtime adding)
-            **before (int): This item will be displayed before the specified item in the parent.
-            **source (int): Overrides 'id' as value storage key.
+            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
+            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
+            **source (Union[int, str]): Overrides 'id' as value storage key.
             **payload_type (str): Sender string type must be the same as the target for the target to run the payload_callback.
             **callback (Callable): Registers a callback.
             **drag_callback (Callable): Registers a drag callback for drag and drop.
             **drop_callback (Callable): Registers a drop callback for drag and drop.
             **show (bool): Attempt to render widget.
             **enabled (bool): Turns off functionality of widget and applies the disabled theme.
-            **pos (List[int]): Places the item relative to window coordinates, [0,0] is top left.
+            **pos (Union[List[int], Tuple[int]]): Places the item relative to window coordinates, [0,0] is top left.
             **filter_key (str): Used by filter widget.
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
-            **user_data (Any): User data for callbacks.
-            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **frame_padding (int): 
-            **tint_color (List[float]): Applies a color tint to the entire texture.
-            **background_color (List[float]): Displays a border of the specified color around the texture.
-            **uv_min (List[float]): Normalized texture coordinates min point.
-            **uv_max (List[float]): Normalized texture coordinates max point.
+            **tint_color (Union[List[float], Tuple[float]]): Applies a color tint to the entire texture.
+            **background_color (Union[List[float], Tuple[float]]): Displays a border of the specified color around the texture.
+            **uv_min (Union[List[float], Tuple[float]]): Normalized texture coordinates min point.
+            **uv_max (Union[List[float], Tuple[float]]): Normalized texture coordinates max point.
     Returns:
-            int
+            Union[int, str]
     
     """
     _command = dearpygui.dearpygui.add_image_button
 
     def __init__(
         self, 
-        texture_id: int, 
+        texture_id: Union[int, str], 
         label: str = None, 
+        user_data: Any = None, 
+        use_internal_label: bool = True, 
         width: int = 0, 
         height: int = 0, 
         indent: int = -1, 
-        parent: int = 0, 
-        before: int = 0, 
-        source: int = 0, 
+        parent: Union[int, str] = 0, 
+        before: Union[int, str] = 0, 
+        source: Union[int, str] = 0, 
         payload_type: str = '$$DPG_PAYLOAD', 
         callback: Callable = None, 
         drag_callback: Callable = None, 
         drop_callback: Callable = None, 
         show: bool = True, 
         enabled: bool = True, 
-        pos: list[int] = [], 
+        pos: Union[List[int], Tuple[int]] = [], 
         filter_key: str = '', 
         tracked: bool = False, 
         track_offset: float = 0.5, 
-        user_data: Any = None, 
-        use_internal_label: bool = True, 
         frame_padding: int = -1, 
-        tint_color: list[float] = (255, 255, 255, 255), 
-        background_color: list[float] = (0, 0, 0, 0), 
-        uv_min: list[float] = (0.0, 0.0), 
-        uv_max: list[float] = (1.0, 1.0), 
+        tint_color: Union[List[float], Tuple[float]] = (255, 255, 255, 255), 
+        background_color: Union[List[float], Tuple[float]] = (0, 0, 0, 0), 
+        uv_min: Union[List[float], Tuple[float]] = (0.0, 0.0), 
+        uv_max: Union[List[float], Tuple[float]] = (1.0, 1.0), 
         **kwargs, 
     ):
         super().__init__(
             texture_id=texture_id,
             label=label,
+            user_data=user_data,
+            use_internal_label=use_internal_label,
             width=width,
             height=height,
             indent=indent,
@@ -2264,8 +2301,6 @@ class ImageButton(Widget):
             filter_key=filter_key,
             tracked=tracked,
             track_offset=track_offset,
-            user_data=user_data,
-            use_internal_label=use_internal_label,
             frame_padding=frame_padding,
             tint_color=tint_color,
             background_color=background_color,
@@ -2275,6 +2310,8 @@ class ImageButton(Widget):
         )
         self.texture_id = texture_id
         self.label = label
+        self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.width = width
         self.height = height
         self.indent = indent
@@ -2291,8 +2328,6 @@ class ImageButton(Widget):
         self.filter_key = filter_key
         self.tracked = tracked
         self.track_offset = track_offset
-        self.user_data = user_data
-        self.use_internal_label = use_internal_label
         self.frame_padding = frame_padding
         self.tint_color = tint_color
         self.background_color = background_color
@@ -2304,24 +2339,24 @@ class InputFloat(Widget):
     """Adds input for floats. Step buttons can be turned on or off.
     Args:
             **label (str): Overrides 'name' as label.
-            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
+            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
             **width (int): Width of the item.
             **indent (int): Offsets the widget to the right the specified number multiplied by the indent style.
-            **parent (int): Parent to add this item to. (runtime adding)
-            **before (int): This item will be displayed before the specified item in the parent.
-            **source (int): Overrides 'id' as value storage key.
+            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
+            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
+            **source (Union[int, str]): Overrides 'id' as value storage key.
             **payload_type (str): Sender string type must be the same as the target for the target to run the payload_callback.
             **callback (Callable): Registers a callback.
             **drag_callback (Callable): Registers a drag callback for drag and drop.
             **drop_callback (Callable): Registers a drop callback for drag and drop.
             **show (bool): Attempt to render widget.
             **enabled (bool): Turns off functionality of widget and applies the disabled theme.
-            **pos (List[int]): Places the item relative to window coordinates, [0,0] is top left.
+            **pos (Union[List[int], Tuple[int]]): Places the item relative to window coordinates, [0,0] is top left.
             **filter_key (str): Used by filter widget.
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
-            **user_data (Any): User data for callbacks.
-            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **default_value (float): 
             **format (str): 
             **min_value (float): Value for lower limit of input. By default this limits the step buttons. Use clamped to limit manual input.
@@ -2333,7 +2368,7 @@ class InputFloat(Widget):
             **on_enter (bool): Only runs callback on enter key press.
             **readonly (bool): Activates a read only mode for the input.
     Returns:
-            int
+            Union[int, str]
     
     """
     _command = dearpygui.dearpygui.add_input_float
@@ -2341,23 +2376,23 @@ class InputFloat(Widget):
     def __init__(
         self, 
         label: str = None, 
+        user_data: Any = None, 
+        use_internal_label: bool = True, 
         width: int = 0, 
         indent: int = -1, 
-        parent: int = 0, 
-        before: int = 0, 
-        source: int = 0, 
+        parent: Union[int, str] = 0, 
+        before: Union[int, str] = 0, 
+        source: Union[int, str] = 0, 
         payload_type: str = '$$DPG_PAYLOAD', 
         callback: Callable = None, 
         drag_callback: Callable = None, 
         drop_callback: Callable = None, 
         show: bool = True, 
         enabled: bool = True, 
-        pos: list[int] = [], 
+        pos: Union[List[int], Tuple[int]] = [], 
         filter_key: str = '', 
         tracked: bool = False, 
         track_offset: float = 0.5, 
-        user_data: Any = None, 
-        use_internal_label: bool = True, 
         default_value: float = 0.0, 
         format: str = '%.3f', 
         min_value: float = 0.0, 
@@ -2372,6 +2407,8 @@ class InputFloat(Widget):
     ):
         super().__init__(
             label=label,
+            user_data=user_data,
+            use_internal_label=use_internal_label,
             width=width,
             indent=indent,
             parent=parent,
@@ -2387,8 +2424,6 @@ class InputFloat(Widget):
             filter_key=filter_key,
             tracked=tracked,
             track_offset=track_offset,
-            user_data=user_data,
-            use_internal_label=use_internal_label,
             default_value=default_value,
             format=format,
             min_value=min_value,
@@ -2402,6 +2437,8 @@ class InputFloat(Widget):
             **kwargs,
         )
         self.label = label
+        self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.width = width
         self.indent = indent
         self.parent = parent
@@ -2417,8 +2454,6 @@ class InputFloat(Widget):
         self.filter_key = filter_key
         self.tracked = tracked
         self.track_offset = track_offset
-        self.user_data = user_data
-        self.use_internal_label = use_internal_label
         self.default_value = default_value
         self.format = format
         self.min_value = min_value
@@ -2435,25 +2470,25 @@ class InputFloatx(Widget):
     """Adds multi float input for up to 4 float values.
     Args:
             **label (str): Overrides 'name' as label.
-            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
+            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
             **width (int): Width of the item.
             **indent (int): Offsets the widget to the right the specified number multiplied by the indent style.
-            **parent (int): Parent to add this item to. (runtime adding)
-            **before (int): This item will be displayed before the specified item in the parent.
-            **source (int): Overrides 'id' as value storage key.
+            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
+            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
+            **source (Union[int, str]): Overrides 'id' as value storage key.
             **payload_type (str): Sender string type must be the same as the target for the target to run the payload_callback.
             **callback (Callable): Registers a callback.
             **drag_callback (Callable): Registers a drag callback for drag and drop.
             **drop_callback (Callable): Registers a drop callback for drag and drop.
             **show (bool): Attempt to render widget.
             **enabled (bool): Turns off functionality of widget and applies the disabled theme.
-            **pos (List[int]): Places the item relative to window coordinates, [0,0] is top left.
+            **pos (Union[List[int], Tuple[int]]): Places the item relative to window coordinates, [0,0] is top left.
             **filter_key (str): Used by filter widget.
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
-            **user_data (Any): User data for callbacks.
-            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
-            **default_value (List[float]): 
+            **default_value (Union[List[float], Tuple[float]]): 
             **format (str): 
             **min_value (float): Value for lower limit of input for each cell. Use clamped to turn on.
             **max_value (float): Value for upper limit of input for each cell. Use clamped to turn on.
@@ -2463,7 +2498,7 @@ class InputFloatx(Widget):
             **on_enter (bool): Only runs callback on enter key press.
             **readonly (bool): Activates a read only mode for the inputs.
     Returns:
-            int
+            Union[int, str]
     
     """
     _command = dearpygui.dearpygui.add_input_floatx
@@ -2471,24 +2506,24 @@ class InputFloatx(Widget):
     def __init__(
         self, 
         label: str = None, 
+        user_data: Any = None, 
+        use_internal_label: bool = True, 
         width: int = 0, 
         indent: int = -1, 
-        parent: int = 0, 
-        before: int = 0, 
-        source: int = 0, 
+        parent: Union[int, str] = 0, 
+        before: Union[int, str] = 0, 
+        source: Union[int, str] = 0, 
         payload_type: str = '$$DPG_PAYLOAD', 
         callback: Callable = None, 
         drag_callback: Callable = None, 
         drop_callback: Callable = None, 
         show: bool = True, 
         enabled: bool = True, 
-        pos: list[int] = [], 
+        pos: Union[List[int], Tuple[int]] = [], 
         filter_key: str = '', 
         tracked: bool = False, 
         track_offset: float = 0.5, 
-        user_data: Any = None, 
-        use_internal_label: bool = True, 
-        default_value: list[float] = (0.0, 0.0, 0.0, 0.0), 
+        default_value: Union[List[float], Tuple[float]] = (0.0, 0.0, 0.0, 0.0), 
         format: str = '%.3f', 
         min_value: float = 0.0, 
         max_value: float = 100.0, 
@@ -2501,6 +2536,8 @@ class InputFloatx(Widget):
     ):
         super().__init__(
             label=label,
+            user_data=user_data,
+            use_internal_label=use_internal_label,
             width=width,
             indent=indent,
             parent=parent,
@@ -2516,8 +2553,6 @@ class InputFloatx(Widget):
             filter_key=filter_key,
             tracked=tracked,
             track_offset=track_offset,
-            user_data=user_data,
-            use_internal_label=use_internal_label,
             default_value=default_value,
             format=format,
             min_value=min_value,
@@ -2530,6 +2565,8 @@ class InputFloatx(Widget):
             **kwargs,
         )
         self.label = label
+        self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.width = width
         self.indent = indent
         self.parent = parent
@@ -2545,8 +2582,6 @@ class InputFloatx(Widget):
         self.filter_key = filter_key
         self.tracked = tracked
         self.track_offset = track_offset
-        self.user_data = user_data
-        self.use_internal_label = use_internal_label
         self.default_value = default_value
         self.format = format
         self.min_value = min_value
@@ -2562,24 +2597,24 @@ class InputInt(Widget):
     """Adds input for an int. Step buttons can be turned on or off.
     Args:
             **label (str): Overrides 'name' as label.
-            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
+            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
             **width (int): Width of the item.
             **indent (int): Offsets the widget to the right the specified number multiplied by the indent style.
-            **parent (int): Parent to add this item to. (runtime adding)
-            **before (int): This item will be displayed before the specified item in the parent.
-            **source (int): Overrides 'id' as value storage key.
+            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
+            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
+            **source (Union[int, str]): Overrides 'id' as value storage key.
             **payload_type (str): Sender string type must be the same as the target for the target to run the payload_callback.
             **callback (Callable): Registers a callback.
             **drag_callback (Callable): Registers a drag callback for drag and drop.
             **drop_callback (Callable): Registers a drop callback for drag and drop.
             **show (bool): Attempt to render widget.
             **enabled (bool): Turns off functionality of widget and applies the disabled theme.
-            **pos (List[int]): Places the item relative to window coordinates, [0,0] is top left.
+            **pos (Union[List[int], Tuple[int]]): Places the item relative to window coordinates, [0,0] is top left.
             **filter_key (str): Used by filter widget.
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
-            **user_data (Any): User data for callbacks.
-            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **default_value (int): 
             **min_value (int): Value for lower limit of input. By default this limits the step buttons. Use clamped to limit manual input.
             **max_value (int): Value for upper limit of input. By default this limits the step buttons. Use clamped to limit manual input.
@@ -2590,7 +2625,7 @@ class InputInt(Widget):
             **on_enter (bool): Only runs callback on enter key press.
             **readonly (bool): Activates a read only mode for the input.
     Returns:
-            int
+            Union[int, str]
     
     """
     _command = dearpygui.dearpygui.add_input_int
@@ -2598,23 +2633,23 @@ class InputInt(Widget):
     def __init__(
         self, 
         label: str = None, 
+        user_data: Any = None, 
+        use_internal_label: bool = True, 
         width: int = 0, 
         indent: int = -1, 
-        parent: int = 0, 
-        before: int = 0, 
-        source: int = 0, 
+        parent: Union[int, str] = 0, 
+        before: Union[int, str] = 0, 
+        source: Union[int, str] = 0, 
         payload_type: str = '$$DPG_PAYLOAD', 
         callback: Callable = None, 
         drag_callback: Callable = None, 
         drop_callback: Callable = None, 
         show: bool = True, 
         enabled: bool = True, 
-        pos: list[int] = [], 
+        pos: Union[List[int], Tuple[int]] = [], 
         filter_key: str = '', 
         tracked: bool = False, 
         track_offset: float = 0.5, 
-        user_data: Any = None, 
-        use_internal_label: bool = True, 
         default_value: int = 0, 
         min_value: int = 0, 
         max_value: int = 100, 
@@ -2628,6 +2663,8 @@ class InputInt(Widget):
     ):
         super().__init__(
             label=label,
+            user_data=user_data,
+            use_internal_label=use_internal_label,
             width=width,
             indent=indent,
             parent=parent,
@@ -2643,8 +2680,6 @@ class InputInt(Widget):
             filter_key=filter_key,
             tracked=tracked,
             track_offset=track_offset,
-            user_data=user_data,
-            use_internal_label=use_internal_label,
             default_value=default_value,
             min_value=min_value,
             max_value=max_value,
@@ -2657,6 +2692,8 @@ class InputInt(Widget):
             **kwargs,
         )
         self.label = label
+        self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.width = width
         self.indent = indent
         self.parent = parent
@@ -2672,8 +2709,6 @@ class InputInt(Widget):
         self.filter_key = filter_key
         self.tracked = tracked
         self.track_offset = track_offset
-        self.user_data = user_data
-        self.use_internal_label = use_internal_label
         self.default_value = default_value
         self.min_value = min_value
         self.max_value = max_value
@@ -2689,25 +2724,25 @@ class InputIntx(Widget):
     """Adds multi int input for up to 4 integer values.
     Args:
             **label (str): Overrides 'name' as label.
-            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
+            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
             **width (int): Width of the item.
             **indent (int): Offsets the widget to the right the specified number multiplied by the indent style.
-            **parent (int): Parent to add this item to. (runtime adding)
-            **before (int): This item will be displayed before the specified item in the parent.
-            **source (int): Overrides 'id' as value storage key.
+            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
+            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
+            **source (Union[int, str]): Overrides 'id' as value storage key.
             **payload_type (str): Sender string type must be the same as the target for the target to run the payload_callback.
             **callback (Callable): Registers a callback.
             **drag_callback (Callable): Registers a drag callback for drag and drop.
             **drop_callback (Callable): Registers a drop callback for drag and drop.
             **show (bool): Attempt to render widget.
             **enabled (bool): Turns off functionality of widget and applies the disabled theme.
-            **pos (List[int]): Places the item relative to window coordinates, [0,0] is top left.
+            **pos (Union[List[int], Tuple[int]]): Places the item relative to window coordinates, [0,0] is top left.
             **filter_key (str): Used by filter widget.
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
-            **user_data (Any): User data for callbacks.
-            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
-            **default_value (List[int]): 
+            **default_value (Union[List[int], Tuple[int]]): 
             **min_value (int): Value for lower limit of input for each cell. Use clamped to turn on.
             **max_value (int): Value for upper limit of input for each cell. Use clamped to turn on.
             **size (int): Number of components.
@@ -2716,7 +2751,7 @@ class InputIntx(Widget):
             **on_enter (bool): Only runs callback on enter.
             **readonly (bool): Activates a read only mode for the inputs.
     Returns:
-            int
+            Union[int, str]
     
     """
     _command = dearpygui.dearpygui.add_input_intx
@@ -2724,24 +2759,24 @@ class InputIntx(Widget):
     def __init__(
         self, 
         label: str = None, 
+        user_data: Any = None, 
+        use_internal_label: bool = True, 
         width: int = 0, 
         indent: int = -1, 
-        parent: int = 0, 
-        before: int = 0, 
-        source: int = 0, 
+        parent: Union[int, str] = 0, 
+        before: Union[int, str] = 0, 
+        source: Union[int, str] = 0, 
         payload_type: str = '$$DPG_PAYLOAD', 
         callback: Callable = None, 
         drag_callback: Callable = None, 
         drop_callback: Callable = None, 
         show: bool = True, 
         enabled: bool = True, 
-        pos: list[int] = [], 
+        pos: Union[List[int], Tuple[int]] = [], 
         filter_key: str = '', 
         tracked: bool = False, 
         track_offset: float = 0.5, 
-        user_data: Any = None, 
-        use_internal_label: bool = True, 
-        default_value: list[int] = (0, 0, 0, 0), 
+        default_value: Union[List[int], Tuple[int]] = (0, 0, 0, 0), 
         min_value: int = 0, 
         max_value: int = 100, 
         size: int = 4, 
@@ -2753,6 +2788,8 @@ class InputIntx(Widget):
     ):
         super().__init__(
             label=label,
+            user_data=user_data,
+            use_internal_label=use_internal_label,
             width=width,
             indent=indent,
             parent=parent,
@@ -2768,8 +2805,6 @@ class InputIntx(Widget):
             filter_key=filter_key,
             tracked=tracked,
             track_offset=track_offset,
-            user_data=user_data,
-            use_internal_label=use_internal_label,
             default_value=default_value,
             min_value=min_value,
             max_value=max_value,
@@ -2781,6 +2816,8 @@ class InputIntx(Widget):
             **kwargs,
         )
         self.label = label
+        self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.width = width
         self.indent = indent
         self.parent = parent
@@ -2796,8 +2833,6 @@ class InputIntx(Widget):
         self.filter_key = filter_key
         self.tracked = tracked
         self.track_offset = track_offset
-        self.user_data = user_data
-        self.use_internal_label = use_internal_label
         self.default_value = default_value
         self.min_value = min_value
         self.max_value = max_value
@@ -2812,25 +2847,25 @@ class InputText(Widget):
     """Adds input for text.
     Args:
             **label (str): Overrides 'name' as label.
-            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
+            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
             **width (int): Width of the item.
             **height (int): Height of the item.
             **indent (int): Offsets the widget to the right the specified number multiplied by the indent style.
-            **parent (int): Parent to add this item to. (runtime adding)
-            **before (int): This item will be displayed before the specified item in the parent.
-            **source (int): Overrides 'id' as value storage key.
+            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
+            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
+            **source (Union[int, str]): Overrides 'id' as value storage key.
             **payload_type (str): Sender string type must be the same as the target for the target to run the payload_callback.
             **callback (Callable): Registers a callback.
             **drag_callback (Callable): Registers a drag callback for drag and drop.
             **drop_callback (Callable): Registers a drop callback for drag and drop.
             **show (bool): Attempt to render widget.
             **enabled (bool): Turns off functionality of widget and applies the disabled theme.
-            **pos (List[int]): Places the item relative to window coordinates, [0,0] is top left.
+            **pos (Union[List[int], Tuple[int]]): Places the item relative to window coordinates, [0,0] is top left.
             **filter_key (str): Used by filter widget.
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
-            **user_data (Any): User data for callbacks.
-            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **default_value (str): 
             **hint (str): Displayed only when value is empty string. Will reappear if input value is set to empty string. Will not show if default value is anything other than default empty string.
             **multiline (bool): Allows for multiline text input.
@@ -2844,7 +2879,7 @@ class InputText(Widget):
             **scientific (bool): Only allow 0123456789.+-*/eE (Scientific notation input)
             **on_enter (bool): Only runs callback on enter key press.
     Returns:
-            int
+            Union[int, str]
     
     """
     _command = dearpygui.dearpygui.add_input_text
@@ -2852,24 +2887,24 @@ class InputText(Widget):
     def __init__(
         self, 
         label: str = None, 
+        user_data: Any = None, 
+        use_internal_label: bool = True, 
         width: int = 0, 
         height: int = 0, 
         indent: int = -1, 
-        parent: int = 0, 
-        before: int = 0, 
-        source: int = 0, 
+        parent: Union[int, str] = 0, 
+        before: Union[int, str] = 0, 
+        source: Union[int, str] = 0, 
         payload_type: str = '$$DPG_PAYLOAD', 
         callback: Callable = None, 
         drag_callback: Callable = None, 
         drop_callback: Callable = None, 
         show: bool = True, 
         enabled: bool = True, 
-        pos: list[int] = [], 
+        pos: Union[List[int], Tuple[int]] = [], 
         filter_key: str = '', 
         tracked: bool = False, 
         track_offset: float = 0.5, 
-        user_data: Any = None, 
-        use_internal_label: bool = True, 
         default_value: str = '', 
         hint: str = '', 
         multiline: bool = False, 
@@ -2886,6 +2921,8 @@ class InputText(Widget):
     ):
         super().__init__(
             label=label,
+            user_data=user_data,
+            use_internal_label=use_internal_label,
             width=width,
             height=height,
             indent=indent,
@@ -2902,8 +2939,6 @@ class InputText(Widget):
             filter_key=filter_key,
             tracked=tracked,
             track_offset=track_offset,
-            user_data=user_data,
-            use_internal_label=use_internal_label,
             default_value=default_value,
             hint=hint,
             multiline=multiline,
@@ -2919,6 +2954,8 @@ class InputText(Widget):
             **kwargs,
         )
         self.label = label
+        self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.width = width
         self.height = height
         self.indent = indent
@@ -2935,8 +2972,6 @@ class InputText(Widget):
         self.filter_key = filter_key
         self.tracked = tracked
         self.track_offset = track_offset
-        self.user_data = user_data
-        self.use_internal_label = use_internal_label
         self.default_value = default_value
         self.hint = hint
         self.multiline = multiline
@@ -2955,29 +2990,29 @@ class KnobFloat(Widget):
     """Adds a knob that rotates based of change in x mouse position.
     Args:
             **label (str): Overrides 'name' as label.
-            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
+            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
             **width (int): Width of the item.
             **height (int): Height of the item.
             **indent (int): Offsets the widget to the right the specified number multiplied by the indent style.
-            **parent (int): Parent to add this item to. (runtime adding)
-            **before (int): This item will be displayed before the specified item in the parent.
-            **source (int): Overrides 'id' as value storage key.
+            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
+            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
+            **source (Union[int, str]): Overrides 'id' as value storage key.
             **payload_type (str): Sender string type must be the same as the target for the target to run the payload_callback.
             **callback (Callable): Registers a callback.
             **drag_callback (Callable): Registers a drag callback for drag and drop.
             **drop_callback (Callable): Registers a drop callback for drag and drop.
             **show (bool): Attempt to render widget.
-            **pos (List[int]): Places the item relative to window coordinates, [0,0] is top left.
+            **pos (Union[List[int], Tuple[int]]): Places the item relative to window coordinates, [0,0] is top left.
             **filter_key (str): Used by filter widget.
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
-            **user_data (Any): User data for callbacks.
-            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **default_value (float): 
             **min_value (float): Applies lower limit to value.
             **max_value (float): Applies upper limit to value.
     Returns:
-            int
+            Union[int, str]
     
     """
     _command = dearpygui.dearpygui.add_knob_float
@@ -2985,23 +3020,23 @@ class KnobFloat(Widget):
     def __init__(
         self, 
         label: str = None, 
+        user_data: Any = None, 
+        use_internal_label: bool = True, 
         width: int = 0, 
         height: int = 0, 
         indent: int = -1, 
-        parent: int = 0, 
-        before: int = 0, 
-        source: int = 0, 
+        parent: Union[int, str] = 0, 
+        before: Union[int, str] = 0, 
+        source: Union[int, str] = 0, 
         payload_type: str = '$$DPG_PAYLOAD', 
         callback: Callable = None, 
         drag_callback: Callable = None, 
         drop_callback: Callable = None, 
         show: bool = True, 
-        pos: list[int] = [], 
+        pos: Union[List[int], Tuple[int]] = [], 
         filter_key: str = '', 
         tracked: bool = False, 
         track_offset: float = 0.5, 
-        user_data: Any = None, 
-        use_internal_label: bool = True, 
         default_value: float = 0.0, 
         min_value: float = 0.0, 
         max_value: float = 100.0, 
@@ -3009,6 +3044,8 @@ class KnobFloat(Widget):
     ):
         super().__init__(
             label=label,
+            user_data=user_data,
+            use_internal_label=use_internal_label,
             width=width,
             height=height,
             indent=indent,
@@ -3024,14 +3061,14 @@ class KnobFloat(Widget):
             filter_key=filter_key,
             tracked=tracked,
             track_offset=track_offset,
-            user_data=user_data,
-            use_internal_label=use_internal_label,
             default_value=default_value,
             min_value=min_value,
             max_value=max_value,
             **kwargs,
         )
         self.label = label
+        self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.width = width
         self.height = height
         self.indent = indent
@@ -3047,8 +3084,6 @@ class KnobFloat(Widget):
         self.filter_key = filter_key
         self.tracked = tracked
         self.track_offset = track_offset
-        self.user_data = user_data
-        self.use_internal_label = use_internal_label
         self.default_value = default_value
         self.min_value = min_value
         self.max_value = max_value
@@ -3057,55 +3092,55 @@ class KnobFloat(Widget):
 class Listbox(Widget):
     """Adds a listbox. If height is not large enought to show all items a scroll bar will appear.
     Args:
-            *items (List[str]): A tuple of items to be shown in the listbox. Can consist of any combination of types.
+            *items (Union[List[str], Tuple[str]]): A tuple of items to be shown in the listbox. Can consist of any combination of types.
             **label (str): Overrides 'name' as label.
-            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
+            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
             **width (int): Width of the item.
             **indent (int): Offsets the widget to the right the specified number multiplied by the indent style.
-            **parent (int): Parent to add this item to. (runtime adding)
-            **before (int): This item will be displayed before the specified item in the parent.
-            **source (int): Overrides 'id' as value storage key.
+            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
+            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
+            **source (Union[int, str]): Overrides 'id' as value storage key.
             **payload_type (str): Sender string type must be the same as the target for the target to run the payload_callback.
             **callback (Callable): Registers a callback.
             **drag_callback (Callable): Registers a drag callback for drag and drop.
             **drop_callback (Callable): Registers a drop callback for drag and drop.
             **show (bool): Attempt to render widget.
             **enabled (bool): Turns off functionality of widget and applies the disabled theme.
-            **pos (List[int]): Places the item relative to window coordinates, [0,0] is top left.
+            **pos (Union[List[int], Tuple[int]]): Places the item relative to window coordinates, [0,0] is top left.
             **filter_key (str): Used by filter widget.
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
-            **user_data (Any): User data for callbacks.
-            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **default_value (str): 
             **num_items (int): Expands the height of the listbox to show specified number of items.
     Returns:
-            int
+            Union[int, str]
     
     """
     _command = dearpygui.dearpygui.add_listbox
 
     def __init__(
         self, 
-        items: list[str] = (), 
+        items: Union[List[str], Tuple[str]] = (), 
         label: str = None, 
+        user_data: Any = None, 
+        use_internal_label: bool = True, 
         width: int = 0, 
         indent: int = -1, 
-        parent: int = 0, 
-        before: int = 0, 
-        source: int = 0, 
+        parent: Union[int, str] = 0, 
+        before: Union[int, str] = 0, 
+        source: Union[int, str] = 0, 
         payload_type: str = '$$DPG_PAYLOAD', 
         callback: Callable = None, 
         drag_callback: Callable = None, 
         drop_callback: Callable = None, 
         show: bool = True, 
         enabled: bool = True, 
-        pos: list[int] = [], 
+        pos: Union[List[int], Tuple[int]] = [], 
         filter_key: str = '', 
         tracked: bool = False, 
         track_offset: float = 0.5, 
-        user_data: Any = None, 
-        use_internal_label: bool = True, 
         default_value: str = '', 
         num_items: int = 3, 
         **kwargs, 
@@ -3113,6 +3148,8 @@ class Listbox(Widget):
         super().__init__(
             items=items,
             label=label,
+            user_data=user_data,
+            use_internal_label=use_internal_label,
             width=width,
             indent=indent,
             parent=parent,
@@ -3128,14 +3165,14 @@ class Listbox(Widget):
             filter_key=filter_key,
             tracked=tracked,
             track_offset=track_offset,
-            user_data=user_data,
-            use_internal_label=use_internal_label,
             default_value=default_value,
             num_items=num_items,
             **kwargs,
         )
         self.items = items
         self.label = label
+        self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.width = width
         self.indent = indent
         self.parent = parent
@@ -3151,8 +3188,6 @@ class Listbox(Widget):
         self.filter_key = filter_key
         self.tracked = tracked
         self.track_offset = track_offset
-        self.user_data = user_data
-        self.use_internal_label = use_internal_label
         self.default_value = default_value
         self.num_items = num_items
 
@@ -3161,25 +3196,25 @@ class LoadingIndicator(Widget):
     """Adds a rotating anamated loding symbol.
     Args:
             **label (str): Overrides 'name' as label.
-            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
+            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
             **width (int): Width of the item.
             **height (int): Height of the item.
             **indent (int): Offsets the widget to the right the specified number multiplied by the indent style.
-            **parent (int): Parent to add this item to. (runtime adding)
-            **before (int): This item will be displayed before the specified item in the parent.
+            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
+            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
             **show (bool): Attempt to render widget.
-            **pos (List[int]): Places the item relative to window coordinates, [0,0] is top left.
-            **user_data (Any): User data for callbacks.
-            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
+            **pos (Union[List[int], Tuple[int]]): Places the item relative to window coordinates, [0,0] is top left.
             **style (int): 0 is rotating dots style, 1 is rotating bar style.
             **circle_count (int): Number of dots show if dots or size of circle if circle.
             **speed (float): Speed the anamation will rotate.
             **radius (float): Radius size of the loading indicator.
             **thickness (float): Thickness of the circles or line.
-            **color (List[int]): Color of the growing center circle.
-            **secondary_color (List[int]): Background of the dots in dot mode.
+            **color (Union[List[int], Tuple[int]]): Color of the growing center circle.
+            **secondary_color (Union[List[int], Tuple[int]]): Background of the dots in dot mode.
     Returns:
-            int
+            Union[int, str]
     
     """
     _command = dearpygui.dearpygui.add_loading_indicator
@@ -3187,26 +3222,28 @@ class LoadingIndicator(Widget):
     def __init__(
         self, 
         label: str = None, 
+        user_data: Any = None, 
+        use_internal_label: bool = True, 
         width: int = 0, 
         height: int = 0, 
         indent: int = -1, 
-        parent: int = 0, 
-        before: int = 0, 
+        parent: Union[int, str] = 0, 
+        before: Union[int, str] = 0, 
         show: bool = True, 
-        pos: list[int] = [], 
-        user_data: Any = None, 
-        use_internal_label: bool = True, 
+        pos: Union[List[int], Tuple[int]] = [], 
         style: int = 0, 
         circle_count: int = 8, 
         speed: float = 1.0, 
         radius: float = 3.0, 
         thickness: float = 1.0, 
-        color: list[int] = (51, 51, 55, 255), 
-        secondary_color: list[int] = (29, 151, 236, 103), 
+        color: Union[List[int], Tuple[int]] = (51, 51, 55, 255), 
+        secondary_color: Union[List[int], Tuple[int]] = (29, 151, 236, 103), 
         **kwargs, 
     ):
         super().__init__(
             label=label,
+            user_data=user_data,
+            use_internal_label=use_internal_label,
             width=width,
             height=height,
             indent=indent,
@@ -3214,8 +3251,6 @@ class LoadingIndicator(Widget):
             before=before,
             show=show,
             pos=pos,
-            user_data=user_data,
-            use_internal_label=use_internal_label,
             style=style,
             circle_count=circle_count,
             speed=speed,
@@ -3226,6 +3261,8 @@ class LoadingIndicator(Widget):
             **kwargs,
         )
         self.label = label
+        self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.width = width
         self.height = height
         self.indent = indent
@@ -3233,8 +3270,6 @@ class LoadingIndicator(Widget):
         self.before = before
         self.show = show
         self.pos = pos
-        self.user_data = user_data
-        self.use_internal_label = use_internal_label
         self.style = style
         self.circle_count = circle_count
         self.speed = speed
@@ -3248,10 +3283,12 @@ class MenuItem(Widget):
     """Adds a menu item to an existing menu. Menu items act similar to selectables.
     Args:
             **label (str): Overrides 'name' as label.
-            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
+            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
             **indent (int): Offsets the widget to the right the specified number multiplied by the indent style.
-            **parent (int): Parent to add this item to. (runtime adding)
-            **before (int): This item will be displayed before the specified item in the parent.
+            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
+            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
             **payload_type (str): Sender string type must be the same as the target for the target to run the payload_callback.
             **callback (Callable): Registers a callback.
             **drag_callback (Callable): Registers a drag callback for drag and drop.
@@ -3261,13 +3298,11 @@ class MenuItem(Widget):
             **filter_key (str): Used by filter widget.
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
-            **user_data (Any): User data for callbacks.
-            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **default_value (bool): 
             **shortcut (str): Displays text on the menu item. Typically used to show a shortcut key command.
             **check (bool): Displays a checkmark on the menu item when it is selected.
     Returns:
-            int
+            Union[int, str]
     
     """
     _command = dearpygui.dearpygui.add_menu_item
@@ -3275,9 +3310,11 @@ class MenuItem(Widget):
     def __init__(
         self, 
         label: str = None, 
+        user_data: Any = None, 
+        use_internal_label: bool = True, 
         indent: int = -1, 
-        parent: int = 0, 
-        before: int = 0, 
+        parent: Union[int, str] = 0, 
+        before: Union[int, str] = 0, 
         payload_type: str = '$$DPG_PAYLOAD', 
         callback: Callable = None, 
         drag_callback: Callable = None, 
@@ -3287,8 +3324,6 @@ class MenuItem(Widget):
         filter_key: str = '', 
         tracked: bool = False, 
         track_offset: float = 0.5, 
-        user_data: Any = None, 
-        use_internal_label: bool = True, 
         default_value: bool = False, 
         shortcut: str = '', 
         check: bool = False, 
@@ -3296,6 +3331,8 @@ class MenuItem(Widget):
     ):
         super().__init__(
             label=label,
+            user_data=user_data,
+            use_internal_label=use_internal_label,
             indent=indent,
             parent=parent,
             before=before,
@@ -3308,14 +3345,14 @@ class MenuItem(Widget):
             filter_key=filter_key,
             tracked=tracked,
             track_offset=track_offset,
-            user_data=user_data,
-            use_internal_label=use_internal_label,
             default_value=default_value,
             shortcut=shortcut,
             check=check,
             **kwargs,
         )
         self.label = label
+        self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.indent = indent
         self.parent = parent
         self.before = before
@@ -3328,8 +3365,6 @@ class MenuItem(Widget):
         self.filter_key = filter_key
         self.tracked = tracked
         self.track_offset = track_offset
-        self.user_data = user_data
-        self.use_internal_label = use_internal_label
         self.default_value = default_value
         self.shortcut = shortcut
         self.check = check
@@ -3339,27 +3374,27 @@ class ProgressBar(Widget):
     """Adds a progress bar.
     Args:
             **label (str): Overrides 'name' as label.
-            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
+            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
             **width (int): Width of the item.
             **height (int): Height of the item.
             **indent (int): Offsets the widget to the right the specified number multiplied by the indent style.
-            **parent (int): Parent to add this item to. (runtime adding)
-            **before (int): This item will be displayed before the specified item in the parent.
-            **source (int): Overrides 'id' as value storage key.
+            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
+            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
+            **source (Union[int, str]): Overrides 'id' as value storage key.
             **payload_type (str): Sender string type must be the same as the target for the target to run the payload_callback.
             **drag_callback (Callable): Registers a drag callback for drag and drop.
             **drop_callback (Callable): Registers a drop callback for drag and drop.
             **show (bool): Attempt to render widget.
-            **pos (List[int]): Places the item relative to window coordinates, [0,0] is top left.
+            **pos (Union[List[int], Tuple[int]]): Places the item relative to window coordinates, [0,0] is top left.
             **filter_key (str): Used by filter widget.
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
-            **user_data (Any): User data for callbacks.
-            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **overlay (str): Overlayed text.
             **default_value (float): Normalized value to fill the bar from 0.0 to 1.0.
     Returns:
-            int
+            Union[int, str]
     
     """
     _command = dearpygui.dearpygui.add_progress_bar
@@ -3367,28 +3402,30 @@ class ProgressBar(Widget):
     def __init__(
         self, 
         label: str = None, 
+        user_data: Any = None, 
+        use_internal_label: bool = True, 
         width: int = 0, 
         height: int = 0, 
         indent: int = -1, 
-        parent: int = 0, 
-        before: int = 0, 
-        source: int = 0, 
+        parent: Union[int, str] = 0, 
+        before: Union[int, str] = 0, 
+        source: Union[int, str] = 0, 
         payload_type: str = '$$DPG_PAYLOAD', 
         drag_callback: Callable = None, 
         drop_callback: Callable = None, 
         show: bool = True, 
-        pos: list[int] = [], 
+        pos: Union[List[int], Tuple[int]] = [], 
         filter_key: str = '', 
         tracked: bool = False, 
         track_offset: float = 0.5, 
-        user_data: Any = None, 
-        use_internal_label: bool = True, 
         overlay: str = '', 
         default_value: float = 0.0, 
         **kwargs, 
     ):
         super().__init__(
             label=label,
+            user_data=user_data,
+            use_internal_label=use_internal_label,
             width=width,
             height=height,
             indent=indent,
@@ -3403,13 +3440,13 @@ class ProgressBar(Widget):
             filter_key=filter_key,
             tracked=tracked,
             track_offset=track_offset,
-            user_data=user_data,
-            use_internal_label=use_internal_label,
             overlay=overlay,
             default_value=default_value,
             **kwargs,
         )
         self.label = label
+        self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.width = width
         self.height = height
         self.indent = indent
@@ -3424,8 +3461,6 @@ class ProgressBar(Widget):
         self.filter_key = filter_key
         self.tracked = tracked
         self.track_offset = track_offset
-        self.user_data = user_data
-        self.use_internal_label = use_internal_label
         self.overlay = overlay
         self.default_value = default_value
 
@@ -3433,53 +3468,53 @@ class ProgressBar(Widget):
 class RadioButton(Widget):
     """Adds a set of radio buttons. If items keyword is empty, nothing will be shown.
     Args:
-            *items (List[str]): A tuple of items to be shown as radio options. Can consist of any combination of types.
+            *items (Union[List[str], Tuple[str]]): A tuple of items to be shown as radio options. Can consist of any combination of types.
             **label (str): Overrides 'name' as label.
-            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
+            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
             **indent (int): Offsets the widget to the right the specified number multiplied by the indent style.
-            **parent (int): Parent to add this item to. (runtime adding)
-            **before (int): This item will be displayed before the specified item in the parent.
-            **source (int): Overrides 'id' as value storage key.
+            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
+            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
+            **source (Union[int, str]): Overrides 'id' as value storage key.
             **payload_type (str): Sender string type must be the same as the target for the target to run the payload_callback.
             **callback (Callable): Registers a callback.
             **drag_callback (Callable): Registers a drag callback for drag and drop.
             **drop_callback (Callable): Registers a drop callback for drag and drop.
             **show (bool): Attempt to render widget.
             **enabled (bool): Turns off functionality of widget and applies the disabled theme.
-            **pos (List[int]): Places the item relative to window coordinates, [0,0] is top left.
+            **pos (Union[List[int], Tuple[int]]): Places the item relative to window coordinates, [0,0] is top left.
             **filter_key (str): Used by filter widget.
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
-            **user_data (Any): User data for callbacks.
-            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **default_value (str): 
             **horizontal (bool): Displays the radio options horizontally.
     Returns:
-            int
+            Union[int, str]
     
     """
     _command = dearpygui.dearpygui.add_radio_button
 
     def __init__(
         self, 
-        items: list[str] = (), 
+        items: Union[List[str], Tuple[str]] = (), 
         label: str = None, 
+        user_data: Any = None, 
+        use_internal_label: bool = True, 
         indent: int = -1, 
-        parent: int = 0, 
-        before: int = 0, 
-        source: int = 0, 
+        parent: Union[int, str] = 0, 
+        before: Union[int, str] = 0, 
+        source: Union[int, str] = 0, 
         payload_type: str = '$$DPG_PAYLOAD', 
         callback: Callable = None, 
         drag_callback: Callable = None, 
         drop_callback: Callable = None, 
         show: bool = True, 
         enabled: bool = True, 
-        pos: list[int] = [], 
+        pos: Union[List[int], Tuple[int]] = [], 
         filter_key: str = '', 
         tracked: bool = False, 
         track_offset: float = 0.5, 
-        user_data: Any = None, 
-        use_internal_label: bool = True, 
         default_value: str = '', 
         horizontal: bool = False, 
         **kwargs, 
@@ -3487,6 +3522,8 @@ class RadioButton(Widget):
         super().__init__(
             items=items,
             label=label,
+            user_data=user_data,
+            use_internal_label=use_internal_label,
             indent=indent,
             parent=parent,
             before=before,
@@ -3501,14 +3538,14 @@ class RadioButton(Widget):
             filter_key=filter_key,
             tracked=tracked,
             track_offset=track_offset,
-            user_data=user_data,
-            use_internal_label=use_internal_label,
             default_value=default_value,
             horizontal=horizontal,
             **kwargs,
         )
         self.items = items
         self.label = label
+        self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.indent = indent
         self.parent = parent
         self.before = before
@@ -3523,8 +3560,6 @@ class RadioButton(Widget):
         self.filter_key = filter_key
         self.tracked = tracked
         self.track_offset = track_offset
-        self.user_data = user_data
-        self.use_internal_label = use_internal_label
         self.default_value = default_value
         self.horizontal = horizontal
 
@@ -3534,15 +3569,15 @@ class RawTexture(Widget):
     Args:
             width (int): 
             height (int): 
-            default_value (List[float]): 
+            default_value (Union[List[float], Tuple[float]]): 
             **label (str): Overrides 'name' as label.
-            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
             **user_data (Any): User data for callbacks.
             **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
+            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
             **format (int): Data format.
-            **parent (int): Parent to add this item to. (runtime adding)
+            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
     Returns:
-            int
+            Union[int, str]
     
     """
     _command = dearpygui.dearpygui.add_raw_texture
@@ -3551,12 +3586,12 @@ class RawTexture(Widget):
         self, 
         width: int, 
         height: int, 
-        default_value: list[float], 
+        default_value: Union[List[float], Tuple[float]], 
         label: str = None, 
         user_data: Any = None, 
         use_internal_label: bool = True, 
         format: int = 0, 
-        parent: int = 12, 
+        parent: Union[int, str] = 12, 
         **kwargs, 
     ):
         super().__init__(
@@ -3584,16 +3619,16 @@ class SameLine(Widget):
     """Places a widget on the same line as the previous widget. Can also be used for horizontal spacing.
     Args:
             **label (str): Overrides 'name' as label.
-            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-            **parent (int): Parent to add this item to. (runtime adding)
-            **before (int): This item will be displayed before the specified item in the parent.
-            **show (bool): Attempt to render widget.
             **user_data (Any): User data for callbacks.
             **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
+            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
+            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
+            **show (bool): Attempt to render widget.
             **xoffset (float): Offset from containing window.
             **spacing (float): Offset from previous widget.
     Returns:
-            int
+            Union[int, str]
     
     """
     _command = dearpygui.dearpygui.add_same_line
@@ -3601,32 +3636,32 @@ class SameLine(Widget):
     def __init__(
         self, 
         label: str = None, 
-        parent: int = 0, 
-        before: int = 0, 
-        show: bool = True, 
         user_data: Any = None, 
         use_internal_label: bool = True, 
+        parent: Union[int, str] = 0, 
+        before: Union[int, str] = 0, 
+        show: bool = True, 
         xoffset: float = 0.0, 
         spacing: float = -1.0, 
         **kwargs, 
     ):
         super().__init__(
             label=label,
+            user_data=user_data,
+            use_internal_label=use_internal_label,
             parent=parent,
             before=before,
             show=show,
-            user_data=user_data,
-            use_internal_label=use_internal_label,
             xoffset=xoffset,
             spacing=spacing,
             **kwargs,
         )
         self.label = label
+        self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.parent = parent
         self.before = before
         self.show = show
-        self.user_data = user_data
-        self.use_internal_label = use_internal_label
         self.xoffset = xoffset
         self.spacing = spacing
 
@@ -3635,29 +3670,29 @@ class Selectable(Widget):
     """Adds a selectable.
     Args:
             **label (str): Overrides 'name' as label.
-            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
+            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
             **width (int): Width of the item.
             **height (int): Height of the item.
             **indent (int): Offsets the widget to the right the specified number multiplied by the indent style.
-            **parent (int): Parent to add this item to. (runtime adding)
-            **before (int): This item will be displayed before the specified item in the parent.
-            **source (int): Overrides 'id' as value storage key.
+            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
+            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
+            **source (Union[int, str]): Overrides 'id' as value storage key.
             **payload_type (str): Sender string type must be the same as the target for the target to run the payload_callback.
             **callback (Callable): Registers a callback.
             **drag_callback (Callable): Registers a drag callback for drag and drop.
             **drop_callback (Callable): Registers a drop callback for drag and drop.
             **show (bool): Attempt to render widget.
             **enabled (bool): Turns off functionality of widget and applies the disabled theme.
-            **pos (List[int]): Places the item relative to window coordinates, [0,0] is top left.
+            **pos (Union[List[int], Tuple[int]]): Places the item relative to window coordinates, [0,0] is top left.
             **filter_key (str): Used by filter widget.
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
-            **user_data (Any): User data for callbacks.
-            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **default_value (bool): 
             **span_columns (bool): Span the width of all columns if placed in a table.
     Returns:
-            int
+            Union[int, str]
     
     """
     _command = dearpygui.dearpygui.add_selectable
@@ -3665,30 +3700,32 @@ class Selectable(Widget):
     def __init__(
         self, 
         label: str = None, 
+        user_data: Any = None, 
+        use_internal_label: bool = True, 
         width: int = 0, 
         height: int = 0, 
         indent: int = -1, 
-        parent: int = 0, 
-        before: int = 0, 
-        source: int = 0, 
+        parent: Union[int, str] = 0, 
+        before: Union[int, str] = 0, 
+        source: Union[int, str] = 0, 
         payload_type: str = '$$DPG_PAYLOAD', 
         callback: Callable = None, 
         drag_callback: Callable = None, 
         drop_callback: Callable = None, 
         show: bool = True, 
         enabled: bool = True, 
-        pos: list[int] = [], 
+        pos: Union[List[int], Tuple[int]] = [], 
         filter_key: str = '', 
         tracked: bool = False, 
         track_offset: float = 0.5, 
-        user_data: Any = None, 
-        use_internal_label: bool = True, 
         default_value: bool = False, 
         span_columns: bool = False, 
         **kwargs, 
     ):
         super().__init__(
             label=label,
+            user_data=user_data,
+            use_internal_label=use_internal_label,
             width=width,
             height=height,
             indent=indent,
@@ -3705,13 +3742,13 @@ class Selectable(Widget):
             filter_key=filter_key,
             tracked=tracked,
             track_offset=track_offset,
-            user_data=user_data,
-            use_internal_label=use_internal_label,
             default_value=default_value,
             span_columns=span_columns,
             **kwargs,
         )
         self.label = label
+        self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.width = width
         self.height = height
         self.indent = indent
@@ -3728,8 +3765,6 @@ class Selectable(Widget):
         self.filter_key = filter_key
         self.tracked = tracked
         self.track_offset = track_offset
-        self.user_data = user_data
-        self.use_internal_label = use_internal_label
         self.default_value = default_value
         self.span_columns = span_columns
 
@@ -3738,16 +3773,16 @@ class Separator(Widget):
     """Adds a horizontal line.
     Args:
             **label (str): Overrides 'name' as label.
-            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-            **indent (int): Offsets the widget to the right the specified number multiplied by the indent style.
-            **parent (int): Parent to add this item to. (runtime adding)
-            **before (int): This item will be displayed before the specified item in the parent.
-            **show (bool): Attempt to render widget.
-            **pos (List[int]): Places the item relative to window coordinates, [0,0] is top left.
             **user_data (Any): User data for callbacks.
             **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
+            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **indent (int): Offsets the widget to the right the specified number multiplied by the indent style.
+            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
+            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
+            **show (bool): Attempt to render widget.
+            **pos (Union[List[int], Tuple[int]]): Places the item relative to window coordinates, [0,0] is top left.
     Returns:
-            int
+            Union[int, str]
     
     """
     _command = dearpygui.dearpygui.add_separator
@@ -3755,59 +3790,59 @@ class Separator(Widget):
     def __init__(
         self, 
         label: str = None, 
-        indent: int = -1, 
-        parent: int = 0, 
-        before: int = 0, 
-        show: bool = True, 
-        pos: list[int] = [], 
         user_data: Any = None, 
         use_internal_label: bool = True, 
+        indent: int = -1, 
+        parent: Union[int, str] = 0, 
+        before: Union[int, str] = 0, 
+        show: bool = True, 
+        pos: Union[List[int], Tuple[int]] = [], 
         **kwargs, 
     ):
         super().__init__(
             label=label,
+            user_data=user_data,
+            use_internal_label=use_internal_label,
             indent=indent,
             parent=parent,
             before=before,
             show=show,
             pos=pos,
-            user_data=user_data,
-            use_internal_label=use_internal_label,
             **kwargs,
         )
         self.label = label
+        self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.indent = indent
         self.parent = parent
         self.before = before
         self.show = show
         self.pos = pos
-        self.user_data = user_data
-        self.use_internal_label = use_internal_label
 
 
 class SliderFloat(Widget):
     """Adds slider for a single float value. Directly entry can be done with double click or CTRL+Click. Min and Max alone are a soft limit for the slider. Use clamped keyword to also apply limits to the direct entry modes.
     Args:
             **label (str): Overrides 'name' as label.
-            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
+            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
             **width (int): Width of the item.
             **height (int): Height of the item.
             **indent (int): Offsets the widget to the right the specified number multiplied by the indent style.
-            **parent (int): Parent to add this item to. (runtime adding)
-            **before (int): This item will be displayed before the specified item in the parent.
-            **source (int): Overrides 'id' as value storage key.
+            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
+            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
+            **source (Union[int, str]): Overrides 'id' as value storage key.
             **payload_type (str): Sender string type must be the same as the target for the target to run the payload_callback.
             **callback (Callable): Registers a callback.
             **drag_callback (Callable): Registers a drag callback for drag and drop.
             **drop_callback (Callable): Registers a drop callback for drag and drop.
             **show (bool): Attempt to render widget.
             **enabled (bool): Turns off functionality of widget and applies the disabled theme.
-            **pos (List[int]): Places the item relative to window coordinates, [0,0] is top left.
+            **pos (Union[List[int], Tuple[int]]): Places the item relative to window coordinates, [0,0] is top left.
             **filter_key (str): Used by filter widget.
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
-            **user_data (Any): User data for callbacks.
-            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **default_value (float): 
             **vertical (bool): Sets orientation to vertical.
             **no_input (bool): Disable direct entry methods or Enter key allowing to input text directly into the widget.
@@ -3816,7 +3851,7 @@ class SliderFloat(Widget):
             **max_value (float): Applies a limit only to sliding entry only.
             **format (str): 
     Returns:
-            int
+            Union[int, str]
     
     """
     _command = dearpygui.dearpygui.add_slider_float
@@ -3824,24 +3859,24 @@ class SliderFloat(Widget):
     def __init__(
         self, 
         label: str = None, 
+        user_data: Any = None, 
+        use_internal_label: bool = True, 
         width: int = 0, 
         height: int = 0, 
         indent: int = -1, 
-        parent: int = 0, 
-        before: int = 0, 
-        source: int = 0, 
+        parent: Union[int, str] = 0, 
+        before: Union[int, str] = 0, 
+        source: Union[int, str] = 0, 
         payload_type: str = '$$DPG_PAYLOAD', 
         callback: Callable = None, 
         drag_callback: Callable = None, 
         drop_callback: Callable = None, 
         show: bool = True, 
         enabled: bool = True, 
-        pos: list[int] = [], 
+        pos: Union[List[int], Tuple[int]] = [], 
         filter_key: str = '', 
         tracked: bool = False, 
         track_offset: float = 0.5, 
-        user_data: Any = None, 
-        use_internal_label: bool = True, 
         default_value: float = 0.0, 
         vertical: bool = False, 
         no_input: bool = False, 
@@ -3853,6 +3888,8 @@ class SliderFloat(Widget):
     ):
         super().__init__(
             label=label,
+            user_data=user_data,
+            use_internal_label=use_internal_label,
             width=width,
             height=height,
             indent=indent,
@@ -3869,8 +3906,6 @@ class SliderFloat(Widget):
             filter_key=filter_key,
             tracked=tracked,
             track_offset=track_offset,
-            user_data=user_data,
-            use_internal_label=use_internal_label,
             default_value=default_value,
             vertical=vertical,
             no_input=no_input,
@@ -3881,6 +3916,8 @@ class SliderFloat(Widget):
             **kwargs,
         )
         self.label = label
+        self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.width = width
         self.height = height
         self.indent = indent
@@ -3897,8 +3934,6 @@ class SliderFloat(Widget):
         self.filter_key = filter_key
         self.tracked = tracked
         self.track_offset = track_offset
-        self.user_data = user_data
-        self.use_internal_label = use_internal_label
         self.default_value = default_value
         self.vertical = vertical
         self.no_input = no_input
@@ -3912,25 +3947,25 @@ class SliderFloatx(Widget):
     """Adds multi slider for up to 4 float values. Directly entry can be done with double click or CTRL+Click. Min and Max alone are a soft limit for the slider. Use clamped keyword to also apply limits to the direct entry modes.
     Args:
             **label (str): Overrides 'name' as label.
-            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
+            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
             **width (int): Width of the item.
             **indent (int): Offsets the widget to the right the specified number multiplied by the indent style.
-            **parent (int): Parent to add this item to. (runtime adding)
-            **before (int): This item will be displayed before the specified item in the parent.
-            **source (int): Overrides 'id' as value storage key.
+            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
+            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
+            **source (Union[int, str]): Overrides 'id' as value storage key.
             **payload_type (str): Sender string type must be the same as the target for the target to run the payload_callback.
             **callback (Callable): Registers a callback.
             **drag_callback (Callable): Registers a drag callback for drag and drop.
             **drop_callback (Callable): Registers a drop callback for drag and drop.
             **show (bool): Attempt to render widget.
             **enabled (bool): Turns off functionality of widget and applies the disabled theme.
-            **pos (List[int]): Places the item relative to window coordinates, [0,0] is top left.
+            **pos (Union[List[int], Tuple[int]]): Places the item relative to window coordinates, [0,0] is top left.
             **filter_key (str): Used by filter widget.
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
-            **user_data (Any): User data for callbacks.
-            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
-            **default_value (List[float]): 
+            **default_value (Union[List[float], Tuple[float]]): 
             **size (int): Number of components.
             **no_input (bool): Disable direct entry methods or Enter key allowing to input text directly into the widget.
             **clamped (bool): Applies the min and max limits to direct entry methods also such as double click and CTRL+Click.
@@ -3938,7 +3973,7 @@ class SliderFloatx(Widget):
             **max_value (float): Applies a limit only to sliding entry only.
             **format (str): 
     Returns:
-            int
+            Union[int, str]
     
     """
     _command = dearpygui.dearpygui.add_slider_floatx
@@ -3946,24 +3981,24 @@ class SliderFloatx(Widget):
     def __init__(
         self, 
         label: str = None, 
+        user_data: Any = None, 
+        use_internal_label: bool = True, 
         width: int = 0, 
         indent: int = -1, 
-        parent: int = 0, 
-        before: int = 0, 
-        source: int = 0, 
+        parent: Union[int, str] = 0, 
+        before: Union[int, str] = 0, 
+        source: Union[int, str] = 0, 
         payload_type: str = '$$DPG_PAYLOAD', 
         callback: Callable = None, 
         drag_callback: Callable = None, 
         drop_callback: Callable = None, 
         show: bool = True, 
         enabled: bool = True, 
-        pos: list[int] = [], 
+        pos: Union[List[int], Tuple[int]] = [], 
         filter_key: str = '', 
         tracked: bool = False, 
         track_offset: float = 0.5, 
-        user_data: Any = None, 
-        use_internal_label: bool = True, 
-        default_value: list[float] = (0.0, 0.0, 0.0, 0.0), 
+        default_value: Union[List[float], Tuple[float]] = (0.0, 0.0, 0.0, 0.0), 
         size: int = 4, 
         no_input: bool = False, 
         clamped: bool = False, 
@@ -3974,6 +4009,8 @@ class SliderFloatx(Widget):
     ):
         super().__init__(
             label=label,
+            user_data=user_data,
+            use_internal_label=use_internal_label,
             width=width,
             indent=indent,
             parent=parent,
@@ -3989,8 +4026,6 @@ class SliderFloatx(Widget):
             filter_key=filter_key,
             tracked=tracked,
             track_offset=track_offset,
-            user_data=user_data,
-            use_internal_label=use_internal_label,
             default_value=default_value,
             size=size,
             no_input=no_input,
@@ -4001,6 +4036,8 @@ class SliderFloatx(Widget):
             **kwargs,
         )
         self.label = label
+        self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.width = width
         self.indent = indent
         self.parent = parent
@@ -4016,8 +4053,6 @@ class SliderFloatx(Widget):
         self.filter_key = filter_key
         self.tracked = tracked
         self.track_offset = track_offset
-        self.user_data = user_data
-        self.use_internal_label = use_internal_label
         self.default_value = default_value
         self.size = size
         self.no_input = no_input
@@ -4031,25 +4066,25 @@ class SliderInt(Widget):
     """Adds slider for a single int value. Directly entry can be done with double click or CTRL+Click. Min and Max alone are a soft limit for the slider. Use clamped keyword to also apply limits to the direct entry modes.
     Args:
             **label (str): Overrides 'name' as label.
-            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
+            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
             **width (int): Width of the item.
             **height (int): Height of the item.
             **indent (int): Offsets the widget to the right the specified number multiplied by the indent style.
-            **parent (int): Parent to add this item to. (runtime adding)
-            **before (int): This item will be displayed before the specified item in the parent.
-            **source (int): Overrides 'id' as value storage key.
+            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
+            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
+            **source (Union[int, str]): Overrides 'id' as value storage key.
             **payload_type (str): Sender string type must be the same as the target for the target to run the payload_callback.
             **callback (Callable): Registers a callback.
             **drag_callback (Callable): Registers a drag callback for drag and drop.
             **drop_callback (Callable): Registers a drop callback for drag and drop.
             **show (bool): Attempt to render widget.
             **enabled (bool): Turns off functionality of widget and applies the disabled theme.
-            **pos (List[int]): Places the item relative to window coordinates, [0,0] is top left.
+            **pos (Union[List[int], Tuple[int]]): Places the item relative to window coordinates, [0,0] is top left.
             **filter_key (str): Used by filter widget.
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
-            **user_data (Any): User data for callbacks.
-            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **default_value (int): 
             **vertical (bool): Sets orientation to vertical.
             **no_input (bool): Disable direct entry methods or Enter key allowing to input text directly into the widget.
@@ -4058,7 +4093,7 @@ class SliderInt(Widget):
             **max_value (int): Applies a limit only to sliding entry only.
             **format (str): 
     Returns:
-            int
+            Union[int, str]
     
     """
     _command = dearpygui.dearpygui.add_slider_int
@@ -4066,24 +4101,24 @@ class SliderInt(Widget):
     def __init__(
         self, 
         label: str = None, 
+        user_data: Any = None, 
+        use_internal_label: bool = True, 
         width: int = 0, 
         height: int = 0, 
         indent: int = -1, 
-        parent: int = 0, 
-        before: int = 0, 
-        source: int = 0, 
+        parent: Union[int, str] = 0, 
+        before: Union[int, str] = 0, 
+        source: Union[int, str] = 0, 
         payload_type: str = '$$DPG_PAYLOAD', 
         callback: Callable = None, 
         drag_callback: Callable = None, 
         drop_callback: Callable = None, 
         show: bool = True, 
         enabled: bool = True, 
-        pos: list[int] = [], 
+        pos: Union[List[int], Tuple[int]] = [], 
         filter_key: str = '', 
         tracked: bool = False, 
         track_offset: float = 0.5, 
-        user_data: Any = None, 
-        use_internal_label: bool = True, 
         default_value: int = 0, 
         vertical: bool = False, 
         no_input: bool = False, 
@@ -4095,6 +4130,8 @@ class SliderInt(Widget):
     ):
         super().__init__(
             label=label,
+            user_data=user_data,
+            use_internal_label=use_internal_label,
             width=width,
             height=height,
             indent=indent,
@@ -4111,8 +4148,6 @@ class SliderInt(Widget):
             filter_key=filter_key,
             tracked=tracked,
             track_offset=track_offset,
-            user_data=user_data,
-            use_internal_label=use_internal_label,
             default_value=default_value,
             vertical=vertical,
             no_input=no_input,
@@ -4123,6 +4158,8 @@ class SliderInt(Widget):
             **kwargs,
         )
         self.label = label
+        self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.width = width
         self.height = height
         self.indent = indent
@@ -4139,8 +4176,6 @@ class SliderInt(Widget):
         self.filter_key = filter_key
         self.tracked = tracked
         self.track_offset = track_offset
-        self.user_data = user_data
-        self.use_internal_label = use_internal_label
         self.default_value = default_value
         self.vertical = vertical
         self.no_input = no_input
@@ -4154,25 +4189,25 @@ class SliderIntx(Widget):
     """Adds multi slider for up to 4 int values. CTRL+Click to directly modify the value.
     Args:
             **label (str): Overrides 'name' as label.
-            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
+            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
             **width (int): Width of the item.
             **indent (int): Offsets the widget to the right the specified number multiplied by the indent style.
-            **parent (int): Parent to add this item to. (runtime adding)
-            **before (int): This item will be displayed before the specified item in the parent.
-            **source (int): Overrides 'id' as value storage key.
+            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
+            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
+            **source (Union[int, str]): Overrides 'id' as value storage key.
             **payload_type (str): Sender string type must be the same as the target for the target to run the payload_callback.
             **callback (Callable): Registers a callback.
             **drag_callback (Callable): Registers a drag callback for drag and drop.
             **drop_callback (Callable): Registers a drop callback for drag and drop.
             **show (bool): Attempt to render widget.
             **enabled (bool): Turns off functionality of widget and applies the disabled theme.
-            **pos (List[int]): Places the item relative to window coordinates, [0,0] is top left.
+            **pos (Union[List[int], Tuple[int]]): Places the item relative to window coordinates, [0,0] is top left.
             **filter_key (str): Used by filter widget.
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
-            **user_data (Any): User data for callbacks.
-            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
-            **default_value (List[int]): 
+            **default_value (Union[List[int], Tuple[int]]): 
             **size (int): number of components
             **no_input (bool): Disable direct entry methods or Enter key allowing to input text directly into the widget.
             **clamped (bool): Applies the min and max limits to direct entry methods also such as double click and CTRL+Click.
@@ -4180,7 +4215,7 @@ class SliderIntx(Widget):
             **max_value (int): Applies a limit only to sliding entry only.
             **format (str): 
     Returns:
-            int
+            Union[int, str]
     
     """
     _command = dearpygui.dearpygui.add_slider_intx
@@ -4188,24 +4223,24 @@ class SliderIntx(Widget):
     def __init__(
         self, 
         label: str = None, 
+        user_data: Any = None, 
+        use_internal_label: bool = True, 
         width: int = 0, 
         indent: int = -1, 
-        parent: int = 0, 
-        before: int = 0, 
-        source: int = 0, 
+        parent: Union[int, str] = 0, 
+        before: Union[int, str] = 0, 
+        source: Union[int, str] = 0, 
         payload_type: str = '$$DPG_PAYLOAD', 
         callback: Callable = None, 
         drag_callback: Callable = None, 
         drop_callback: Callable = None, 
         show: bool = True, 
         enabled: bool = True, 
-        pos: list[int] = [], 
+        pos: Union[List[int], Tuple[int]] = [], 
         filter_key: str = '', 
         tracked: bool = False, 
         track_offset: float = 0.5, 
-        user_data: Any = None, 
-        use_internal_label: bool = True, 
-        default_value: list[int] = (0, 0, 0, 0), 
+        default_value: Union[List[int], Tuple[int]] = (0, 0, 0, 0), 
         size: int = 4, 
         no_input: bool = False, 
         clamped: bool = False, 
@@ -4216,6 +4251,8 @@ class SliderIntx(Widget):
     ):
         super().__init__(
             label=label,
+            user_data=user_data,
+            use_internal_label=use_internal_label,
             width=width,
             indent=indent,
             parent=parent,
@@ -4231,8 +4268,6 @@ class SliderIntx(Widget):
             filter_key=filter_key,
             tracked=tracked,
             track_offset=track_offset,
-            user_data=user_data,
-            use_internal_label=use_internal_label,
             default_value=default_value,
             size=size,
             no_input=no_input,
@@ -4243,6 +4278,8 @@ class SliderIntx(Widget):
             **kwargs,
         )
         self.label = label
+        self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.width = width
         self.indent = indent
         self.parent = parent
@@ -4258,8 +4295,6 @@ class SliderIntx(Widget):
         self.filter_key = filter_key
         self.tracked = tracked
         self.track_offset = track_offset
-        self.user_data = user_data
-        self.use_internal_label = use_internal_label
         self.default_value = default_value
         self.size = size
         self.no_input = no_input
@@ -4273,17 +4308,17 @@ class Spacing(Widget):
     """Adds vertical spacing.
     Args:
             **label (str): Overrides 'name' as label.
-            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-            **indent (int): Offsets the widget to the right the specified number multiplied by the indent style.
-            **parent (int): Parent to add this item to. (runtime adding)
-            **before (int): This item will be displayed before the specified item in the parent.
-            **show (bool): Attempt to render widget.
-            **pos (List[int]): Places the item relative to window coordinates, [0,0] is top left.
             **user_data (Any): User data for callbacks.
             **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
+            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **indent (int): Offsets the widget to the right the specified number multiplied by the indent style.
+            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
+            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
+            **show (bool): Attempt to render widget.
+            **pos (Union[List[int], Tuple[int]]): Places the item relative to window coordinates, [0,0] is top left.
             **count (int): Number of spacings to add the size is dependant on the curret style.
     Returns:
-            int
+            Union[int, str]
     
     """
     _command = dearpygui.dearpygui.add_spacing
@@ -4291,36 +4326,36 @@ class Spacing(Widget):
     def __init__(
         self, 
         label: str = None, 
-        indent: int = -1, 
-        parent: int = 0, 
-        before: int = 0, 
-        show: bool = True, 
-        pos: list[int] = [], 
         user_data: Any = None, 
         use_internal_label: bool = True, 
+        indent: int = -1, 
+        parent: Union[int, str] = 0, 
+        before: Union[int, str] = 0, 
+        show: bool = True, 
+        pos: Union[List[int], Tuple[int]] = [], 
         count: int = 1, 
         **kwargs, 
     ):
         super().__init__(
             label=label,
+            user_data=user_data,
+            use_internal_label=use_internal_label,
             indent=indent,
             parent=parent,
             before=before,
             show=show,
             pos=pos,
-            user_data=user_data,
-            use_internal_label=use_internal_label,
             count=count,
             **kwargs,
         )
         self.label = label
+        self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.indent = indent
         self.parent = parent
         self.before = before
         self.show = show
         self.pos = pos
-        self.user_data = user_data
-        self.use_internal_label = use_internal_label
         self.count = count
 
 
@@ -4329,14 +4364,14 @@ class StaticTexture(Widget):
     Args:
             width (int): 
             height (int): 
-            default_value (List[float]): 
+            default_value (Union[List[float], Tuple[float]]): 
             **label (str): Overrides 'name' as label.
-            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
             **user_data (Any): User data for callbacks.
             **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
-            **parent (int): Parent to add this item to. (runtime adding)
+            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
     Returns:
-            int
+            Union[int, str]
     
     """
     _command = dearpygui.dearpygui.add_static_texture
@@ -4345,11 +4380,11 @@ class StaticTexture(Widget):
         self, 
         width: int, 
         height: int, 
-        default_value: list[float], 
+        default_value: Union[List[float], Tuple[float]], 
         label: str = None, 
         user_data: Any = None, 
         use_internal_label: bool = True, 
-        parent: int = 12, 
+        parent: Union[int, str] = 12, 
         **kwargs, 
     ):
         super().__init__(
@@ -4375,10 +4410,12 @@ class TabButton(Widget):
     """Adds a tab button to a tab bar.
     Args:
             **label (str): Overrides 'name' as label.
-            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
+            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
             **indent (int): Offsets the widget to the right the specified number multiplied by the indent style.
-            **parent (int): Parent to add this item to. (runtime adding)
-            **before (int): This item will be displayed before the specified item in the parent.
+            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
+            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
             **payload_type (str): Sender string type must be the same as the target for the target to run the payload_callback.
             **callback (Callable): Registers a callback.
             **drag_callback (Callable): Registers a drag callback for drag and drop.
@@ -4387,14 +4424,12 @@ class TabButton(Widget):
             **filter_key (str): Used by filter widget.
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
-            **user_data (Any): User data for callbacks.
-            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **no_reorder (bool): Disable reordering this tab or having another tab cross over this tab.
             **leading (bool): Enforce the tab position to the left of the tab bar (after the tab list popup button).
             **trailing (bool): Enforce the tab position to the right of the tab bar (before the scrolling buttons).
             **no_tooltip (bool): Disable tooltip for the given tab.
     Returns:
-            int
+            Union[int, str]
     
     """
     _command = dearpygui.dearpygui.add_tab_button
@@ -4402,9 +4437,11 @@ class TabButton(Widget):
     def __init__(
         self, 
         label: str = None, 
+        user_data: Any = None, 
+        use_internal_label: bool = True, 
         indent: int = -1, 
-        parent: int = 0, 
-        before: int = 0, 
+        parent: Union[int, str] = 0, 
+        before: Union[int, str] = 0, 
         payload_type: str = '$$DPG_PAYLOAD', 
         callback: Callable = None, 
         drag_callback: Callable = None, 
@@ -4413,8 +4450,6 @@ class TabButton(Widget):
         filter_key: str = '', 
         tracked: bool = False, 
         track_offset: float = 0.5, 
-        user_data: Any = None, 
-        use_internal_label: bool = True, 
         no_reorder: bool = False, 
         leading: bool = False, 
         trailing: bool = False, 
@@ -4423,6 +4458,8 @@ class TabButton(Widget):
     ):
         super().__init__(
             label=label,
+            user_data=user_data,
+            use_internal_label=use_internal_label,
             indent=indent,
             parent=parent,
             before=before,
@@ -4434,8 +4471,6 @@ class TabButton(Widget):
             filter_key=filter_key,
             tracked=tracked,
             track_offset=track_offset,
-            user_data=user_data,
-            use_internal_label=use_internal_label,
             no_reorder=no_reorder,
             leading=leading,
             trailing=trailing,
@@ -4443,6 +4478,8 @@ class TabButton(Widget):
             **kwargs,
         )
         self.label = label
+        self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.indent = indent
         self.parent = parent
         self.before = before
@@ -4454,8 +4491,6 @@ class TabButton(Widget):
         self.filter_key = filter_key
         self.tracked = tracked
         self.track_offset = track_offset
-        self.user_data = user_data
-        self.use_internal_label = use_internal_label
         self.no_reorder = no_reorder
         self.leading = leading
         self.trailing = trailing
@@ -4466,13 +4501,13 @@ class TableColumn(Widget):
     """Undocumented function
     Args:
             **label (str): Overrides 'name' as label.
-            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-            **width (int): Width of the item.
-            **parent (int): Parent to add this item to. (runtime adding)
-            **before (int): This item will be displayed before the specified item in the parent.
-            **show (bool): Attempt to render widget.
             **user_data (Any): User data for callbacks.
             **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
+            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **width (int): Width of the item.
+            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
+            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
+            **show (bool): Attempt to render widget.
             **init_width_or_weight (float): 
             **default_hide (bool): Default as a hidden/disabled column.
             **default_sort (bool): Default as a sorting column.
@@ -4491,7 +4526,7 @@ class TableColumn(Widget):
             **indent_enable (bool): Use current Indent value when entering cell (default for column 0).
             **indent_disable (bool): Ignore current Indent value when entering cell (default for columns > 0). Indentation changes _within_ the cell will still be honored.
     Returns:
-            int
+            Union[int, str]
     
     """
     _command = dearpygui.dearpygui.add_table_column
@@ -4499,12 +4534,12 @@ class TableColumn(Widget):
     def __init__(
         self, 
         label: str = None, 
-        width: int = 0, 
-        parent: int = 0, 
-        before: int = 0, 
-        show: bool = True, 
         user_data: Any = None, 
         use_internal_label: bool = True, 
+        width: int = 0, 
+        parent: Union[int, str] = 0, 
+        before: Union[int, str] = 0, 
+        show: bool = True, 
         init_width_or_weight: float = 0.0, 
         default_hide: bool = False, 
         default_sort: bool = False, 
@@ -4526,12 +4561,12 @@ class TableColumn(Widget):
     ):
         super().__init__(
             label=label,
+            user_data=user_data,
+            use_internal_label=use_internal_label,
             width=width,
             parent=parent,
             before=before,
             show=show,
-            user_data=user_data,
-            use_internal_label=use_internal_label,
             init_width_or_weight=init_width_or_weight,
             default_hide=default_hide,
             default_sort=default_sort,
@@ -4552,12 +4587,12 @@ class TableColumn(Widget):
             **kwargs,
         )
         self.label = label
+        self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.width = width
         self.parent = parent
         self.before = before
         self.show = show
-        self.user_data = user_data
-        self.use_internal_label = use_internal_label
         self.init_width_or_weight = init_width_or_weight
         self.default_hide = default_hide
         self.default_sort = default_sort
@@ -4581,14 +4616,14 @@ class TableNextColumn(Widget):
     """Undocumented function
     Args:
             **label (str): Overrides 'name' as label.
-            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-            **parent (int): Parent to add this item to. (runtime adding)
-            **before (int): This item will be displayed before the specified item in the parent.
-            **show (bool): Attempt to render widget.
             **user_data (Any): User data for callbacks.
             **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
+            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
+            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
+            **show (bool): Attempt to render widget.
     Returns:
-            int
+            Union[int, str]
     
     """
     _command = dearpygui.dearpygui.add_table_next_column
@@ -4596,28 +4631,28 @@ class TableNextColumn(Widget):
     def __init__(
         self, 
         label: str = None, 
-        parent: int = 0, 
-        before: int = 0, 
-        show: bool = True, 
         user_data: Any = None, 
         use_internal_label: bool = True, 
+        parent: Union[int, str] = 0, 
+        before: Union[int, str] = 0, 
+        show: bool = True, 
         **kwargs, 
     ):
         super().__init__(
             label=label,
+            user_data=user_data,
+            use_internal_label=use_internal_label,
             parent=parent,
             before=before,
             show=show,
-            user_data=user_data,
-            use_internal_label=use_internal_label,
             **kwargs,
         )
         self.label = label
+        self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.parent = parent
         self.before = before
         self.show = show
-        self.user_data = user_data
-        self.use_internal_label = use_internal_label
 
 
 class Text(Widget):
@@ -4625,24 +4660,24 @@ class Text(Widget):
     Args:
             *default_value (str): 
             **label (str): Overrides 'name' as label.
-            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
+            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
             **indent (int): Offsets the widget to the right the specified number multiplied by the indent style.
-            **parent (int): Parent to add this item to. (runtime adding)
-            **before (int): This item will be displayed before the specified item in the parent.
-            **source (int): Overrides 'id' as value storage key.
+            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
+            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
+            **source (Union[int, str]): Overrides 'id' as value storage key.
             **show (bool): Attempt to render widget.
-            **pos (List[int]): Places the item relative to window coordinates, [0,0] is top left.
+            **pos (Union[List[int], Tuple[int]]): Places the item relative to window coordinates, [0,0] is top left.
             **filter_key (str): Used by filter widget.
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
-            **user_data (Any): User data for callbacks.
-            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **wrap (int): Number of pixels until wrapping starts.
             **bullet (bool): Makes the text bulleted.
-            **color (List[float]): Color of the text (rgba).
+            **color (Union[List[float], Tuple[float]]): Color of the text (rgba).
             **show_label (bool): Displays the label.
     Returns:
-            int
+            Union[int, str]
     
     """
     _command = dearpygui.dearpygui.add_text
@@ -4651,26 +4686,28 @@ class Text(Widget):
         self, 
         default_value: str = '', 
         label: str = None, 
+        user_data: Any = None, 
+        use_internal_label: bool = True, 
         indent: int = -1, 
-        parent: int = 0, 
-        before: int = 0, 
-        source: int = 0, 
+        parent: Union[int, str] = 0, 
+        before: Union[int, str] = 0, 
+        source: Union[int, str] = 0, 
         show: bool = True, 
-        pos: list[int] = [], 
+        pos: Union[List[int], Tuple[int]] = [], 
         filter_key: str = '', 
         tracked: bool = False, 
         track_offset: float = 0.5, 
-        user_data: Any = None, 
-        use_internal_label: bool = True, 
         wrap: int = -1, 
         bullet: bool = False, 
-        color: list[float] = (-1, -1, -1, -1), 
+        color: Union[List[float], Tuple[float]] = (-1, -1, -1, -1), 
         show_label: bool = False, 
         **kwargs, 
     ):
         super().__init__(
             default_value=default_value,
             label=label,
+            user_data=user_data,
+            use_internal_label=use_internal_label,
             indent=indent,
             parent=parent,
             before=before,
@@ -4680,8 +4717,6 @@ class Text(Widget):
             filter_key=filter_key,
             tracked=tracked,
             track_offset=track_offset,
-            user_data=user_data,
-            use_internal_label=use_internal_label,
             wrap=wrap,
             bullet=bullet,
             color=color,
@@ -4690,6 +4725,8 @@ class Text(Widget):
         )
         self.default_value = default_value
         self.label = label
+        self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.indent = indent
         self.parent = parent
         self.before = before
@@ -4699,8 +4736,6 @@ class Text(Widget):
         self.filter_key = filter_key
         self.tracked = tracked
         self.track_offset = track_offset
-        self.user_data = user_data
-        self.use_internal_label = use_internal_label
         self.wrap = wrap
         self.bullet = bullet
         self.color = color
@@ -4711,25 +4746,25 @@ class TimePicker(Widget):
     """Adds a time picker.
     Args:
             **label (str): Overrides 'name' as label.
-            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
+            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
             **indent (int): Offsets the widget to the right the specified number multiplied by the indent style.
-            **parent (int): Parent to add this item to. (runtime adding)
-            **before (int): This item will be displayed before the specified item in the parent.
+            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
+            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
             **payload_type (str): Sender string type must be the same as the target for the target to run the payload_callback.
             **callback (Callable): Registers a callback.
             **drag_callback (Callable): Registers a drag callback for drag and drop.
             **drop_callback (Callable): Registers a drop callback for drag and drop.
             **show (bool): Attempt to render widget.
-            **pos (List[int]): Places the item relative to window coordinates, [0,0] is top left.
+            **pos (Union[List[int], Tuple[int]]): Places the item relative to window coordinates, [0,0] is top left.
             **filter_key (str): Used by filter widget.
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
-            **user_data (Any): User data for callbacks.
-            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **default_value (dict): 
             **hour24 (bool): Show 24 hour clock instead of 12 hour.
     Returns:
-            int
+            Union[int, str]
     
     """
     _command = dearpygui.dearpygui.add_time_picker
@@ -4737,26 +4772,28 @@ class TimePicker(Widget):
     def __init__(
         self, 
         label: str = None, 
+        user_data: Any = None, 
+        use_internal_label: bool = True, 
         indent: int = -1, 
-        parent: int = 0, 
-        before: int = 0, 
+        parent: Union[int, str] = 0, 
+        before: Union[int, str] = 0, 
         payload_type: str = '$$DPG_PAYLOAD', 
         callback: Callable = None, 
         drag_callback: Callable = None, 
         drop_callback: Callable = None, 
         show: bool = True, 
-        pos: list[int] = [], 
+        pos: Union[List[int], Tuple[int]] = [], 
         filter_key: str = '', 
         tracked: bool = False, 
         track_offset: float = 0.5, 
-        user_data: Any = None, 
-        use_internal_label: bool = True, 
         default_value: dict = {'hour': 14, 'min': 32, 'sec': 23}, 
         hour24: bool = False, 
         **kwargs, 
     ):
         super().__init__(
             label=label,
+            user_data=user_data,
+            use_internal_label=use_internal_label,
             indent=indent,
             parent=parent,
             before=before,
@@ -4769,13 +4806,13 @@ class TimePicker(Widget):
             filter_key=filter_key,
             tracked=tracked,
             track_offset=track_offset,
-            user_data=user_data,
-            use_internal_label=use_internal_label,
             default_value=default_value,
             hour24=hour24,
             **kwargs,
         )
         self.label = label
+        self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.indent = indent
         self.parent = parent
         self.before = before
@@ -4788,7 +4825,5 @@ class TimePicker(Widget):
         self.filter_key = filter_key
         self.tracked = tracked
         self.track_offset = track_offset
-        self.user_data = user_data
-        self.use_internal_label = use_internal_label
         self.default_value = default_value
         self.hour24 = hour24

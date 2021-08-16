@@ -1,4 +1,12 @@
-from typing import Any, Callable
+from typing import (
+    Any,
+    Callable,
+    Union,
+    Dict,
+    Tuple,
+    Set,
+    List,
+)
 import dearpygui.dearpygui
 from dpgwidgets.widget import Container, Widget
 
@@ -38,24 +46,24 @@ class Plot(Container):
     """Adds a plot which is used to hold series, and can be drawn to with draw commands.
     Args:
             **label (str): Overrides 'name' as label.
-            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
+            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
             **width (int): Width of the item.
             **height (int): Height of the item.
             **indent (int): Offsets the widget to the right the specified number multiplied by the indent style.
-            **parent (int): Parent to add this item to. (runtime adding)
-            **before (int): This item will be displayed before the specified item in the parent.
+            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
+            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
             **payload_type (str): Sender string type must be the same as the target for the target to run the payload_callback.
             **callback (Callable): Registers a callback.
             **drag_callback (Callable): Registers a drag callback for drag and drop.
             **drop_callback (Callable): Registers a drop callback for drag and drop.
             **show (bool): Attempt to render widget.
-            **pos (List[int]): Places the item relative to window coordinates, [0,0] is top left.
+            **pos (Union[List[int], Tuple[int]]): Places the item relative to window coordinates, [0,0] is top left.
             **filter_key (str): Used by filter widget.
             **delay_search (bool): Delays searching container for specified items until the end of the app. Possible optimization when a container has many children that are not accessed often.
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
-            **user_data (Any): User data for callbacks.
-            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **no_title (bool): 
             **no_menus (bool): 
             **no_box_select (bool): 
@@ -79,7 +87,7 @@ class Plot(Container):
             **horizontal_mod (int): expands active box selection/query horizontally to plot edge when held
             **vertical_mod (int): expands active box selection/query vertically to plot edge when held
     Returns:
-            int
+            Union[int, str]
     
     """
     _command = dearpygui.dearpygui.add_plot
@@ -87,23 +95,23 @@ class Plot(Container):
     def __init__(
         self, 
         label: str = None, 
+        user_data: Any = None, 
+        use_internal_label: bool = True, 
         width: int = 0, 
         height: int = 0, 
         indent: int = -1, 
-        parent: int = 0, 
-        before: int = 0, 
+        parent: Union[int, str] = 0, 
+        before: Union[int, str] = 0, 
         payload_type: str = '$$DPG_PAYLOAD', 
         callback: Callable = None, 
         drag_callback: Callable = None, 
         drop_callback: Callable = None, 
         show: bool = True, 
-        pos: list[int] = [], 
+        pos: Union[List[int], Tuple[int]] = [], 
         filter_key: str = '', 
         delay_search: bool = False, 
         tracked: bool = False, 
         track_offset: float = 0.5, 
-        user_data: Any = None, 
-        use_internal_label: bool = True, 
         no_title: bool = False, 
         no_menus: bool = False, 
         no_box_select: bool = False, 
@@ -130,6 +138,8 @@ class Plot(Container):
     ):
         super().__init__(
             label=label,
+            user_data=user_data,
+            use_internal_label=use_internal_label,
             width=width,
             height=height,
             indent=indent,
@@ -145,8 +155,6 @@ class Plot(Container):
             delay_search=delay_search,
             tracked=tracked,
             track_offset=track_offset,
-            user_data=user_data,
-            use_internal_label=use_internal_label,
             no_title=no_title,
             no_menus=no_menus,
             no_box_select=no_box_select,
@@ -172,6 +180,8 @@ class Plot(Container):
             **kwargs,
         )
         self.label = label
+        self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.width = width
         self.height = height
         self.indent = indent
@@ -187,8 +197,6 @@ class Plot(Container):
         self.delay_search = delay_search
         self.tracked = tracked
         self.track_offset = track_offset
-        self.user_data = user_data
-        self.use_internal_label = use_internal_label
         self.no_title = no_title
         self.no_menus = no_menus
         self.no_box_select = no_box_select
@@ -219,23 +227,23 @@ class Subplots(Container):
             rows (int): 
             columns (int): 
             **label (str): Overrides 'name' as label.
-            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
+            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
             **width (int): Width of the item.
             **height (int): Height of the item.
             **indent (int): Offsets the widget to the right the specified number multiplied by the indent style.
-            **parent (int): Parent to add this item to. (runtime adding)
-            **before (int): This item will be displayed before the specified item in the parent.
+            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
+            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
             **callback (Callable): Registers a callback.
             **show (bool): Attempt to render widget.
-            **pos (List[int]): Places the item relative to window coordinates, [0,0] is top left.
+            **pos (Union[List[int], Tuple[int]]): Places the item relative to window coordinates, [0,0] is top left.
             **filter_key (str): Used by filter widget.
             **delay_search (bool): Delays searching container for specified items until the end of the app. Possible optimization when a container has many children that are not accessed often.
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
-            **user_data (Any): User data for callbacks.
-            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
-            **row_ratios (List[float]): 
-            **column_ratios (List[float]): 
+            **row_ratios (Union[List[float], Tuple[float]]): 
+            **column_ratios (Union[List[float], Tuple[float]]): 
             **no_title (bool): 
             **no_menus (bool): the user will not be able to open context menus with right-click
             **no_resize (bool): resize splitters between subplot cells will be not be provided
@@ -246,7 +254,7 @@ class Subplots(Container):
             **link_all_y (bool): link the y-axis limits in every plot in the subplot (does not apply to auxiliary y-axes)
             **column_major (bool): subplots are added in column major order instead of the default row major order
     Returns:
-            int
+            Union[int, str]
     
     """
     _command = dearpygui.dearpygui.add_subplots
@@ -256,22 +264,22 @@ class Subplots(Container):
         rows: int, 
         columns: int, 
         label: str = None, 
+        user_data: Any = None, 
+        use_internal_label: bool = True, 
         width: int = 0, 
         height: int = 0, 
         indent: int = -1, 
-        parent: int = 0, 
-        before: int = 0, 
+        parent: Union[int, str] = 0, 
+        before: Union[int, str] = 0, 
         callback: Callable = None, 
         show: bool = True, 
-        pos: list[int] = [], 
+        pos: Union[List[int], Tuple[int]] = [], 
         filter_key: str = '', 
         delay_search: bool = False, 
         tracked: bool = False, 
         track_offset: float = 0.5, 
-        user_data: Any = None, 
-        use_internal_label: bool = True, 
-        row_ratios: list[float] = [], 
-        column_ratios: list[float] = [], 
+        row_ratios: Union[List[float], Tuple[float]] = [], 
+        column_ratios: Union[List[float], Tuple[float]] = [], 
         no_title: bool = False, 
         no_menus: bool = False, 
         no_resize: bool = False, 
@@ -287,6 +295,8 @@ class Subplots(Container):
             rows=rows,
             columns=columns,
             label=label,
+            user_data=user_data,
+            use_internal_label=use_internal_label,
             width=width,
             height=height,
             indent=indent,
@@ -299,8 +309,6 @@ class Subplots(Container):
             delay_search=delay_search,
             tracked=tracked,
             track_offset=track_offset,
-            user_data=user_data,
-            use_internal_label=use_internal_label,
             row_ratios=row_ratios,
             column_ratios=column_ratios,
             no_title=no_title,
@@ -317,6 +325,8 @@ class Subplots(Container):
         self.rows = rows
         self.columns = columns
         self.label = label
+        self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.width = width
         self.height = height
         self.indent = indent
@@ -329,8 +339,6 @@ class Subplots(Container):
         self.delay_search = delay_search
         self.tracked = tracked
         self.track_offset = track_offset
-        self.user_data = user_data
-        self.use_internal_label = use_internal_label
         self.row_ratios = row_ratios
         self.column_ratios = column_ratios
         self.no_title = no_title
@@ -350,13 +358,13 @@ class HistogramSeries(Widget):
             x (Any): 
             y (Any): 
             **label (str): Overrides 'name' as label.
-            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-            **parent (int): Parent to add this item to. (runtime adding)
-            **before (int): This item will be displayed before the specified item in the parent.
-            **source (int): Overrides 'id' as value storage key.
-            **show (bool): Attempt to render widget.
             **user_data (Any): User data for callbacks.
             **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
+            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
+            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
+            **source (Union[int, str]): Overrides 'id' as value storage key.
+            **show (bool): Attempt to render widget.
             **xbins (int): 
             **ybins (int): 
             **xmin_range (float): 
@@ -366,22 +374,22 @@ class HistogramSeries(Widget):
             **density (bool): 
             **outliers (bool): 
     Returns:
-            int
+            Union[int, str]
     
     """
     _command = dearpygui.dearpygui.add_2d_histogram_series
 
     def __init__(
         self, 
-        x: list[float], 
-        y: list[float], 
+        x: Union[List[float], Tuple[float]], 
+        y: Union[List[float], Tuple[float]], 
         label: str = None, 
-        parent: int = 0, 
-        before: int = 0, 
-        source: int = 0, 
-        show: bool = True, 
         user_data: Any = None, 
         use_internal_label: bool = True, 
+        parent: Union[int, str] = 0, 
+        before: Union[int, str] = 0, 
+        source: Union[int, str] = 0, 
+        show: bool = True, 
         xbins: int = -1, 
         ybins: int = -1, 
         xmin_range: float = 0.0, 
@@ -396,12 +404,12 @@ class HistogramSeries(Widget):
             x=x,
             y=y,
             label=label,
+            user_data=user_data,
+            use_internal_label=use_internal_label,
             parent=parent,
             before=before,
             source=source,
             show=show,
-            user_data=user_data,
-            use_internal_label=use_internal_label,
             xbins=xbins,
             ybins=ybins,
             xmin_range=xmin_range,
@@ -415,12 +423,12 @@ class HistogramSeries(Widget):
         self.x = x
         self.y = y
         self.label = label
+        self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.parent = parent
         self.before = before
         self.source = source
         self.show = show
-        self.user_data = user_data
-        self.use_internal_label = use_internal_label
         self.xbins = xbins
         self.ybins = ybins
         self.xmin_range = xmin_range
@@ -437,33 +445,33 @@ class AreaSeries(Widget):
             x (Any): 
             y (Any): 
             **label (str): Overrides 'name' as label.
-            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-            **parent (int): Parent to add this item to. (runtime adding)
-            **before (int): This item will be displayed before the specified item in the parent.
-            **source (int): Overrides 'id' as value storage key.
-            **show (bool): Attempt to render widget.
             **user_data (Any): User data for callbacks.
             **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
-            **fill (List[int]): 
+            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
+            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
+            **source (Union[int, str]): Overrides 'id' as value storage key.
+            **show (bool): Attempt to render widget.
+            **fill (Union[List[int], Tuple[int]]): 
             **contribute_to_bounds (bool): 
     Returns:
-            int
+            Union[int, str]
     
     """
     _command = dearpygui.dearpygui.add_area_series
 
     def __init__(
         self, 
-        x: list[float], 
-        y: list[float], 
+        x: Union[List[float], Tuple[float]], 
+        y: Union[List[float], Tuple[float]], 
         label: str = None, 
-        parent: int = 0, 
-        before: int = 0, 
-        source: int = 0, 
-        show: bool = True, 
         user_data: Any = None, 
         use_internal_label: bool = True, 
-        fill: list[int] = (0, 0, 0, -255), 
+        parent: Union[int, str] = 0, 
+        before: Union[int, str] = 0, 
+        source: Union[int, str] = 0, 
+        show: bool = True, 
+        fill: Union[List[int], Tuple[int]] = (0, 0, 0, -255), 
         contribute_to_bounds: bool = True, 
         **kwargs, 
     ):
@@ -471,12 +479,12 @@ class AreaSeries(Widget):
             x=x,
             y=y,
             label=label,
+            user_data=user_data,
+            use_internal_label=use_internal_label,
             parent=parent,
             before=before,
             source=source,
             show=show,
-            user_data=user_data,
-            use_internal_label=use_internal_label,
             fill=fill,
             contribute_to_bounds=contribute_to_bounds,
             **kwargs,
@@ -484,12 +492,12 @@ class AreaSeries(Widget):
         self.x = x
         self.y = y
         self.label = label
+        self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.parent = parent
         self.before = before
         self.source = source
         self.show = show
-        self.user_data = user_data
-        self.use_internal_label = use_internal_label
         self.fill = fill
         self.contribute_to_bounds = contribute_to_bounds
 
@@ -500,32 +508,32 @@ class BarSeries(Widget):
             x (Any): 
             y (Any): 
             **label (str): Overrides 'name' as label.
-            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-            **parent (int): Parent to add this item to. (runtime adding)
-            **before (int): This item will be displayed before the specified item in the parent.
-            **source (int): Overrides 'id' as value storage key.
-            **show (bool): Attempt to render widget.
             **user_data (Any): User data for callbacks.
             **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
+            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
+            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
+            **source (Union[int, str]): Overrides 'id' as value storage key.
+            **show (bool): Attempt to render widget.
             **weight (float): 
             **horizontal (bool): 
     Returns:
-            int
+            Union[int, str]
     
     """
     _command = dearpygui.dearpygui.add_bar_series
 
     def __init__(
         self, 
-        x: list[float], 
-        y: list[float], 
+        x: Union[List[float], Tuple[float]], 
+        y: Union[List[float], Tuple[float]], 
         label: str = None, 
-        parent: int = 0, 
-        before: int = 0, 
-        source: int = 0, 
-        show: bool = True, 
         user_data: Any = None, 
         use_internal_label: bool = True, 
+        parent: Union[int, str] = 0, 
+        before: Union[int, str] = 0, 
+        source: Union[int, str] = 0, 
+        show: bool = True, 
         weight: float = 1.0, 
         horizontal: bool = False, 
         **kwargs, 
@@ -534,12 +542,12 @@ class BarSeries(Widget):
             x=x,
             y=y,
             label=label,
+            user_data=user_data,
+            use_internal_label=use_internal_label,
             parent=parent,
             before=before,
             source=source,
             show=show,
-            user_data=user_data,
-            use_internal_label=use_internal_label,
             weight=weight,
             horizontal=horizontal,
             **kwargs,
@@ -547,12 +555,12 @@ class BarSeries(Widget):
         self.x = x
         self.y = y
         self.label = label
+        self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.parent = parent
         self.before = before
         self.source = source
         self.show = show
-        self.user_data = user_data
-        self.use_internal_label = use_internal_label
         self.weight = weight
         self.horizontal = horizontal
 
@@ -566,39 +574,39 @@ class CandleSeries(Widget):
             lows (Any): 
             highs (Any): 
             **label (str): Overrides 'name' as label.
-            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-            **parent (int): Parent to add this item to. (runtime adding)
-            **before (int): This item will be displayed before the specified item in the parent.
-            **source (int): Overrides 'id' as value storage key.
-            **show (bool): Attempt to render widget.
             **user_data (Any): User data for callbacks.
             **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
-            **bull_color (List[int]): 
-            **bear_color (List[int]): 
+            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
+            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
+            **source (Union[int, str]): Overrides 'id' as value storage key.
+            **show (bool): Attempt to render widget.
+            **bull_color (Union[List[int], Tuple[int]]): 
+            **bear_color (Union[List[int], Tuple[int]]): 
             **weight (int): 
             **tooltip (bool): 
     Returns:
-            int
+            Union[int, str]
     
     """
     _command = dearpygui.dearpygui.add_candle_series
 
     def __init__(
         self, 
-        dates: list[float], 
-        opens: list[float], 
-        closes: list[float], 
-        lows: list[float], 
-        highs: list[float], 
+        dates: Union[List[float], Tuple[float]], 
+        opens: Union[List[float], Tuple[float]], 
+        closes: Union[List[float], Tuple[float]], 
+        lows: Union[List[float], Tuple[float]], 
+        highs: Union[List[float], Tuple[float]], 
         label: str = None, 
-        parent: int = 0, 
-        before: int = 0, 
-        source: int = 0, 
-        show: bool = True, 
         user_data: Any = None, 
         use_internal_label: bool = True, 
-        bull_color: list[int] = (0, 255, 113, 255), 
-        bear_color: list[int] = (218, 13, 79, 255), 
+        parent: Union[int, str] = 0, 
+        before: Union[int, str] = 0, 
+        source: Union[int, str] = 0, 
+        show: bool = True, 
+        bull_color: Union[List[int], Tuple[int]] = (0, 255, 113, 255), 
+        bear_color: Union[List[int], Tuple[int]] = (218, 13, 79, 255), 
         weight: int = 0.25, 
         tooltip: bool = True, 
         **kwargs, 
@@ -610,12 +618,12 @@ class CandleSeries(Widget):
             lows=lows,
             highs=highs,
             label=label,
+            user_data=user_data,
+            use_internal_label=use_internal_label,
             parent=parent,
             before=before,
             source=source,
             show=show,
-            user_data=user_data,
-            use_internal_label=use_internal_label,
             bull_color=bull_color,
             bear_color=bear_color,
             weight=weight,
@@ -628,12 +636,12 @@ class CandleSeries(Widget):
         self.lows = lows
         self.highs = highs
         self.label = label
+        self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.parent = parent
         self.before = before
         self.source = source
         self.show = show
-        self.user_data = user_data
-        self.use_internal_label = use_internal_label
         self.bull_color = bull_color
         self.bear_color = bear_color
         self.weight = weight
@@ -644,20 +652,20 @@ class DragPoint(Widget):
     """Adds a drag point to a plot.
     Args:
             **label (str): Overrides 'name' as label.
-            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-            **parent (int): Parent to add this item to. (runtime adding)
-            **before (int): This item will be displayed before the specified item in the parent.
-            **source (int): Overrides 'id' as value storage key.
-            **callback (Callable): Registers a callback.
-            **show (bool): Attempt to render widget.
             **user_data (Any): User data for callbacks.
             **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
+            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
+            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
+            **source (Union[int, str]): Overrides 'id' as value storage key.
+            **callback (Callable): Registers a callback.
+            **show (bool): Attempt to render widget.
             **default_value (Any): 
-            **color (List[int]): 
+            **color (Union[List[int], Tuple[int]]): 
             **thickness (float): 
             **show_label (bool): 
     Returns:
-            int
+            Union[int, str]
     
     """
     _command = dearpygui.dearpygui.add_drag_point
@@ -665,28 +673,28 @@ class DragPoint(Widget):
     def __init__(
         self, 
         label: str = None, 
-        parent: int = 0, 
-        before: int = 0, 
-        source: int = 0, 
-        callback: Callable = None, 
-        show: bool = True, 
         user_data: Any = None, 
         use_internal_label: bool = True, 
+        parent: Union[int, str] = 0, 
+        before: Union[int, str] = 0, 
+        source: Union[int, str] = 0, 
+        callback: Callable = None, 
+        show: bool = True, 
         default_value: Any = (0.0, 0.0), 
-        color: list[int] = (0, 0, 0, -255), 
+        color: Union[List[int], Tuple[int]] = (0, 0, 0, -255), 
         thickness: float = 1.0, 
         show_label: bool = True, 
         **kwargs, 
     ):
         super().__init__(
             label=label,
+            user_data=user_data,
+            use_internal_label=use_internal_label,
             parent=parent,
             before=before,
             source=source,
             callback=callback,
             show=show,
-            user_data=user_data,
-            use_internal_label=use_internal_label,
             default_value=default_value,
             color=color,
             thickness=thickness,
@@ -694,13 +702,13 @@ class DragPoint(Widget):
             **kwargs,
         )
         self.label = label
+        self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.parent = parent
         self.before = before
         self.source = source
         self.callback = callback
         self.show = show
-        self.user_data = user_data
-        self.use_internal_label = use_internal_label
         self.default_value = default_value
         self.color = color
         self.thickness = thickness
@@ -715,34 +723,34 @@ class ErrorSeries(Widget):
             negative (Any): 
             positive (Any): 
             **label (str): Overrides 'name' as label.
-            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-            **parent (int): Parent to add this item to. (runtime adding)
-            **before (int): This item will be displayed before the specified item in the parent.
-            **source (int): Overrides 'id' as value storage key.
-            **show (bool): Attempt to render widget.
             **user_data (Any): User data for callbacks.
             **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
+            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
+            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
+            **source (Union[int, str]): Overrides 'id' as value storage key.
+            **show (bool): Attempt to render widget.
             **contribute_to_bounds (bool): 
             **horizontal (bool): 
     Returns:
-            int
+            Union[int, str]
     
     """
     _command = dearpygui.dearpygui.add_error_series
 
     def __init__(
         self, 
-        x: list[float], 
-        y: list[float], 
-        negative: list[float], 
-        positive: list[float], 
+        x: Union[List[float], Tuple[float]], 
+        y: Union[List[float], Tuple[float]], 
+        negative: Union[List[float], Tuple[float]], 
+        positive: Union[List[float], Tuple[float]], 
         label: str = None, 
-        parent: int = 0, 
-        before: int = 0, 
-        source: int = 0, 
-        show: bool = True, 
         user_data: Any = None, 
         use_internal_label: bool = True, 
+        parent: Union[int, str] = 0, 
+        before: Union[int, str] = 0, 
+        source: Union[int, str] = 0, 
+        show: bool = True, 
         contribute_to_bounds: bool = True, 
         horizontal: bool = False, 
         **kwargs, 
@@ -753,12 +761,12 @@ class ErrorSeries(Widget):
             negative=negative,
             positive=positive,
             label=label,
+            user_data=user_data,
+            use_internal_label=use_internal_label,
             parent=parent,
             before=before,
             source=source,
             show=show,
-            user_data=user_data,
-            use_internal_label=use_internal_label,
             contribute_to_bounds=contribute_to_bounds,
             horizontal=horizontal,
             **kwargs,
@@ -768,12 +776,12 @@ class ErrorSeries(Widget):
         self.negative = negative
         self.positive = positive
         self.label = label
+        self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.parent = parent
         self.before = before
         self.source = source
         self.show = show
-        self.user_data = user_data
-        self.use_internal_label = use_internal_label
         self.contribute_to_bounds = contribute_to_bounds
         self.horizontal = horizontal
 
@@ -785,13 +793,13 @@ class HeatSeries(Widget):
             rows (int): 
             cols (int): 
             **label (str): Overrides 'name' as label.
-            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-            **parent (int): Parent to add this item to. (runtime adding)
-            **before (int): This item will be displayed before the specified item in the parent.
-            **source (int): Overrides 'id' as value storage key.
-            **show (bool): Attempt to render widget.
             **user_data (Any): User data for callbacks.
             **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
+            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
+            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
+            **source (Union[int, str]): Overrides 'id' as value storage key.
+            **show (bool): Attempt to render widget.
             **scale_min (float): Sets the color scale min. Typically paired with the color scale widget scale_min.
             **scale_max (float): Sets the color scale max. Typically paired with the color scale widget scale_max.
             **bounds_min (Any): 
@@ -799,23 +807,23 @@ class HeatSeries(Widget):
             **format (str): 
             **contribute_to_bounds (bool): 
     Returns:
-            int
+            Union[int, str]
     
     """
     _command = dearpygui.dearpygui.add_heat_series
 
     def __init__(
         self, 
-        x: list[float], 
+        x: Union[List[float], Tuple[float]], 
         rows: int, 
         cols: int, 
         label: str = None, 
-        parent: int = 0, 
-        before: int = 0, 
-        source: int = 0, 
-        show: bool = True, 
         user_data: Any = None, 
         use_internal_label: bool = True, 
+        parent: Union[int, str] = 0, 
+        before: Union[int, str] = 0, 
+        source: Union[int, str] = 0, 
+        show: bool = True, 
         scale_min: float = 0.0, 
         scale_max: float = 1.0, 
         bounds_min: Any = (0.0, 0.0), 
@@ -829,12 +837,12 @@ class HeatSeries(Widget):
             rows=rows,
             cols=cols,
             label=label,
+            user_data=user_data,
+            use_internal_label=use_internal_label,
             parent=parent,
             before=before,
             source=source,
             show=show,
-            user_data=user_data,
-            use_internal_label=use_internal_label,
             scale_min=scale_min,
             scale_max=scale_max,
             bounds_min=bounds_min,
@@ -847,12 +855,12 @@ class HeatSeries(Widget):
         self.rows = rows
         self.cols = cols
         self.label = label
+        self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.parent = parent
         self.before = before
         self.source = source
         self.show = show
-        self.user_data = user_data
-        self.use_internal_label = use_internal_label
         self.scale_min = scale_min
         self.scale_max = scale_max
         self.bounds_min = bounds_min
@@ -866,13 +874,13 @@ class HistogramSeries(Widget):
     Args:
             x (Any): 
             **label (str): Overrides 'name' as label.
-            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-            **parent (int): Parent to add this item to. (runtime adding)
-            **before (int): This item will be displayed before the specified item in the parent.
-            **source (int): Overrides 'id' as value storage key.
-            **show (bool): Attempt to render widget.
             **user_data (Any): User data for callbacks.
             **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
+            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
+            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
+            **source (Union[int, str]): Overrides 'id' as value storage key.
+            **show (bool): Attempt to render widget.
             **bins (int): 
             **bar_scale (float): 
             **min_range (float): 
@@ -882,21 +890,21 @@ class HistogramSeries(Widget):
             **outliers (bool): 
             **contribute_to_bounds (bool): 
     Returns:
-            int
+            Union[int, str]
     
     """
     _command = dearpygui.dearpygui.add_histogram_series
 
     def __init__(
         self, 
-        x: list[float], 
+        x: Union[List[float], Tuple[float]], 
         label: str = None, 
-        parent: int = 0, 
-        before: int = 0, 
-        source: int = 0, 
-        show: bool = True, 
         user_data: Any = None, 
         use_internal_label: bool = True, 
+        parent: Union[int, str] = 0, 
+        before: Union[int, str] = 0, 
+        source: Union[int, str] = 0, 
+        show: bool = True, 
         bins: int = -1, 
         bar_scale: float = 1.0, 
         min_range: float = 0.0, 
@@ -910,12 +918,12 @@ class HistogramSeries(Widget):
         super().__init__(
             x=x,
             label=label,
+            user_data=user_data,
+            use_internal_label=use_internal_label,
             parent=parent,
             before=before,
             source=source,
             show=show,
-            user_data=user_data,
-            use_internal_label=use_internal_label,
             bins=bins,
             bar_scale=bar_scale,
             min_range=min_range,
@@ -928,12 +936,12 @@ class HistogramSeries(Widget):
         )
         self.x = x
         self.label = label
+        self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.parent = parent
         self.before = before
         self.source = source
         self.show = show
-        self.user_data = user_data
-        self.use_internal_label = use_internal_label
         self.bins = bins
         self.bar_scale = bar_scale
         self.min_range = min_range
@@ -949,94 +957,94 @@ class HlineSeries(Widget):
     Args:
             x (Any): 
             **label (str): Overrides 'name' as label.
-            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-            **parent (int): Parent to add this item to. (runtime adding)
-            **before (int): This item will be displayed before the specified item in the parent.
-            **source (int): Overrides 'id' as value storage key.
-            **show (bool): Attempt to render widget.
             **user_data (Any): User data for callbacks.
             **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
+            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
+            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
+            **source (Union[int, str]): Overrides 'id' as value storage key.
+            **show (bool): Attempt to render widget.
             **contribute_to_bounds (bool): 
     Returns:
-            int
+            Union[int, str]
     
     """
     _command = dearpygui.dearpygui.add_hline_series
 
     def __init__(
         self, 
-        x: list[float], 
+        x: Union[List[float], Tuple[float]], 
         label: str = None, 
-        parent: int = 0, 
-        before: int = 0, 
-        source: int = 0, 
-        show: bool = True, 
         user_data: Any = None, 
         use_internal_label: bool = True, 
+        parent: Union[int, str] = 0, 
+        before: Union[int, str] = 0, 
+        source: Union[int, str] = 0, 
+        show: bool = True, 
         contribute_to_bounds: bool = True, 
         **kwargs, 
     ):
         super().__init__(
             x=x,
             label=label,
+            user_data=user_data,
+            use_internal_label=use_internal_label,
             parent=parent,
             before=before,
             source=source,
             show=show,
-            user_data=user_data,
-            use_internal_label=use_internal_label,
             contribute_to_bounds=contribute_to_bounds,
             **kwargs,
         )
         self.x = x
         self.label = label
+        self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.parent = parent
         self.before = before
         self.source = source
         self.show = show
-        self.user_data = user_data
-        self.use_internal_label = use_internal_label
         self.contribute_to_bounds = contribute_to_bounds
 
 
 class ImageSeries(Widget):
     """Adds a image series to a plot.
     Args:
-            texture_id (int): 
+            texture_id (Union[int, str]): 
             bounds_min (Any): 
             bounds_max (Any): 
             **label (str): Overrides 'name' as label.
-            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-            **parent (int): Parent to add this item to. (runtime adding)
-            **before (int): This item will be displayed before the specified item in the parent.
-            **source (int): Overrides 'id' as value storage key.
-            **show (bool): Attempt to render widget.
             **user_data (Any): User data for callbacks.
             **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
-            **uv_min (List[float]): normalized texture coordinates
-            **uv_max (List[float]): normalized texture coordinates
-            **tint_color (List[int]): 
+            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
+            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
+            **source (Union[int, str]): Overrides 'id' as value storage key.
+            **show (bool): Attempt to render widget.
+            **uv_min (Union[List[float], Tuple[float]]): normalized texture coordinates
+            **uv_max (Union[List[float], Tuple[float]]): normalized texture coordinates
+            **tint_color (Union[List[int], Tuple[int]]): 
     Returns:
-            int
+            Union[int, str]
     
     """
     _command = dearpygui.dearpygui.add_image_series
 
     def __init__(
         self, 
-        texture_id: int, 
-        bounds_min: list[float], 
-        bounds_max: list[float], 
+        texture_id: Union[int, str], 
+        bounds_min: Union[List[float], Tuple[float]], 
+        bounds_max: Union[List[float], Tuple[float]], 
         label: str = None, 
-        parent: int = 0, 
-        before: int = 0, 
-        source: int = 0, 
-        show: bool = True, 
         user_data: Any = None, 
         use_internal_label: bool = True, 
-        uv_min: list[float] = (0.0, 0.0), 
-        uv_max: list[float] = (1.0, 1.0), 
-        tint_color: list[int] = (255, 255, 255, 255), 
+        parent: Union[int, str] = 0, 
+        before: Union[int, str] = 0, 
+        source: Union[int, str] = 0, 
+        show: bool = True, 
+        uv_min: Union[List[float], Tuple[float]] = (0.0, 0.0), 
+        uv_max: Union[List[float], Tuple[float]] = (1.0, 1.0), 
+        tint_color: Union[List[int], Tuple[int]] = (255, 255, 255, 255), 
         **kwargs, 
     ):
         super().__init__(
@@ -1044,12 +1052,12 @@ class ImageSeries(Widget):
             bounds_min=bounds_min,
             bounds_max=bounds_max,
             label=label,
+            user_data=user_data,
+            use_internal_label=use_internal_label,
             parent=parent,
             before=before,
             source=source,
             show=show,
-            user_data=user_data,
-            use_internal_label=use_internal_label,
             uv_min=uv_min,
             uv_max=uv_max,
             tint_color=tint_color,
@@ -1059,12 +1067,12 @@ class ImageSeries(Widget):
         self.bounds_min = bounds_min
         self.bounds_max = bounds_max
         self.label = label
+        self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.parent = parent
         self.before = before
         self.source = source
         self.show = show
-        self.user_data = user_data
-        self.use_internal_label = use_internal_label
         self.uv_min = uv_min
         self.uv_max = uv_max
         self.tint_color = tint_color
@@ -1076,53 +1084,53 @@ class LineSeries(Widget):
             x (Any): 
             y (Any): 
             **label (str): Overrides 'name' as label.
-            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-            **parent (int): Parent to add this item to. (runtime adding)
-            **before (int): This item will be displayed before the specified item in the parent.
-            **source (int): Overrides 'id' as value storage key.
-            **show (bool): Attempt to render widget.
             **user_data (Any): User data for callbacks.
             **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
+            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
+            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
+            **source (Union[int, str]): Overrides 'id' as value storage key.
+            **show (bool): Attempt to render widget.
     Returns:
-            int
+            Union[int, str]
     
     """
     _command = dearpygui.dearpygui.add_line_series
 
     def __init__(
         self, 
-        x: list[float], 
-        y: list[float], 
+        x: Union[List[float], Tuple[float]], 
+        y: Union[List[float], Tuple[float]], 
         label: str = None, 
-        parent: int = 0, 
-        before: int = 0, 
-        source: int = 0, 
-        show: bool = True, 
         user_data: Any = None, 
         use_internal_label: bool = True, 
+        parent: Union[int, str] = 0, 
+        before: Union[int, str] = 0, 
+        source: Union[int, str] = 0, 
+        show: bool = True, 
         **kwargs, 
     ):
         super().__init__(
             x=x,
             y=y,
             label=label,
+            user_data=user_data,
+            use_internal_label=use_internal_label,
             parent=parent,
             before=before,
             source=source,
             show=show,
-            user_data=user_data,
-            use_internal_label=use_internal_label,
             **kwargs,
         )
         self.x = x
         self.y = y
         self.label = label
+        self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.parent = parent
         self.before = before
         self.source = source
         self.show = show
-        self.user_data = user_data
-        self.use_internal_label = use_internal_label
 
 
 class PieSeries(Widget):
@@ -1132,20 +1140,20 @@ class PieSeries(Widget):
             y (float): 
             radius (float): 
             values (Any): 
-            labels (List[str]): 
+            labels (Union[List[str], Tuple[str]]): 
             **label (str): Overrides 'name' as label.
-            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-            **parent (int): Parent to add this item to. (runtime adding)
-            **before (int): This item will be displayed before the specified item in the parent.
-            **source (int): Overrides 'id' as value storage key.
-            **show (bool): Attempt to render widget.
             **user_data (Any): User data for callbacks.
             **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
+            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
+            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
+            **source (Union[int, str]): Overrides 'id' as value storage key.
+            **show (bool): Attempt to render widget.
             **format (str): 
             **angle (float): 
             **normalize (bool): 
     Returns:
-            int
+            Union[int, str]
     
     """
     _command = dearpygui.dearpygui.add_pie_series
@@ -1155,15 +1163,15 @@ class PieSeries(Widget):
         x: float, 
         y: float, 
         radius: float, 
-        values: list[float], 
-        labels: list[str], 
+        values: Union[List[float], Tuple[float]], 
+        labels: Union[List[str], Tuple[str]], 
         label: str = None, 
-        parent: int = 0, 
-        before: int = 0, 
-        source: int = 0, 
-        show: bool = True, 
         user_data: Any = None, 
         use_internal_label: bool = True, 
+        parent: Union[int, str] = 0, 
+        before: Union[int, str] = 0, 
+        source: Union[int, str] = 0, 
+        show: bool = True, 
         format: str = '%0.2f', 
         angle: float = 90.0, 
         normalize: bool = False, 
@@ -1176,12 +1184,12 @@ class PieSeries(Widget):
             values=values,
             labels=labels,
             label=label,
+            user_data=user_data,
+            use_internal_label=use_internal_label,
             parent=parent,
             before=before,
             source=source,
             show=show,
-            user_data=user_data,
-            use_internal_label=use_internal_label,
             format=format,
             angle=angle,
             normalize=normalize,
@@ -1193,12 +1201,12 @@ class PieSeries(Widget):
         self.values = values
         self.labels = labels
         self.label = label
+        self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.parent = parent
         self.before = before
         self.source = source
         self.show = show
-        self.user_data = user_data
-        self.use_internal_label = use_internal_label
         self.format = format
         self.angle = angle
         self.normalize = normalize
@@ -1208,19 +1216,19 @@ class PlotAnnotation(Widget):
     """Adds an annotation to a plot.
     Args:
             **label (str): Overrides 'name' as label.
-            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-            **parent (int): Parent to add this item to. (runtime adding)
-            **before (int): This item will be displayed before the specified item in the parent.
-            **source (int): Overrides 'id' as value storage key.
-            **show (bool): Attempt to render widget.
             **user_data (Any): User data for callbacks.
             **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
+            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
+            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
+            **source (Union[int, str]): Overrides 'id' as value storage key.
+            **show (bool): Attempt to render widget.
             **default_value (Any): 
-            **offset (List[float]): 
-            **color (List[int]): 
+            **offset (Union[List[float], Tuple[float]]): 
+            **color (Union[List[int], Tuple[int]]): 
             **clamped (bool): 
     Returns:
-            int
+            Union[int, str]
     
     """
     _command = dearpygui.dearpygui.add_plot_annotation
@@ -1228,26 +1236,26 @@ class PlotAnnotation(Widget):
     def __init__(
         self, 
         label: str = None, 
-        parent: int = 0, 
-        before: int = 0, 
-        source: int = 0, 
-        show: bool = True, 
         user_data: Any = None, 
         use_internal_label: bool = True, 
+        parent: Union[int, str] = 0, 
+        before: Union[int, str] = 0, 
+        source: Union[int, str] = 0, 
+        show: bool = True, 
         default_value: Any = (0.0, 0.0), 
-        offset: list[float] = (0.0, 0.0), 
-        color: list[int] = (0, 0, 0, -255), 
+        offset: Union[List[float], Tuple[float]] = (0.0, 0.0), 
+        color: Union[List[int], Tuple[int]] = (0, 0, 0, -255), 
         clamped: bool = True, 
         **kwargs, 
     ):
         super().__init__(
             label=label,
+            user_data=user_data,
+            use_internal_label=use_internal_label,
             parent=parent,
             before=before,
             source=source,
             show=show,
-            user_data=user_data,
-            use_internal_label=use_internal_label,
             default_value=default_value,
             offset=offset,
             color=color,
@@ -1255,12 +1263,12 @@ class PlotAnnotation(Widget):
             **kwargs,
         )
         self.label = label
+        self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.parent = parent
         self.before = before
         self.source = source
         self.show = show
-        self.user_data = user_data
-        self.use_internal_label = use_internal_label
         self.default_value = default_value
         self.offset = offset
         self.color = color
@@ -1272,14 +1280,14 @@ class PlotAxis(Widget):
     Args:
             axis (int): 
             **label (str): Overrides 'name' as label.
-            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-            **parent (int): Parent to add this item to. (runtime adding)
+            **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
+            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
             **payload_type (str): Sender string type must be the same as the target for the target to run the payload_callback.
             **drag_callback (Callable): Registers a drag callback for drag and drop.
             **drop_callback (Callable): Registers a drop callback for drag and drop.
             **show (bool): Attempt to render widget.
-            **user_data (Any): User data for callbacks.
-            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **no_gridlines (bool): 
             **no_tick_marks (bool): 
             **no_tick_labels (bool): 
@@ -1289,7 +1297,7 @@ class PlotAxis(Widget):
             **lock_max (bool): 
             **time (bool): 
     Returns:
-            int
+            Union[int, str]
     
     """
     _command = dearpygui.dearpygui.add_plot_axis
@@ -1298,13 +1306,13 @@ class PlotAxis(Widget):
         self, 
         axis: int, 
         label: str = None, 
-        parent: int = 0, 
+        user_data: Any = None, 
+        use_internal_label: bool = True, 
+        parent: Union[int, str] = 0, 
         payload_type: str = '$$DPG_PAYLOAD', 
         drag_callback: Callable = None, 
         drop_callback: Callable = None, 
         show: bool = True, 
-        user_data: Any = None, 
-        use_internal_label: bool = True, 
         no_gridlines: bool = False, 
         no_tick_marks: bool = False, 
         no_tick_labels: bool = False, 
@@ -1318,13 +1326,13 @@ class PlotAxis(Widget):
         super().__init__(
             axis=axis,
             label=label,
+            user_data=user_data,
+            use_internal_label=use_internal_label,
             parent=parent,
             payload_type=payload_type,
             drag_callback=drag_callback,
             drop_callback=drop_callback,
             show=show,
-            user_data=user_data,
-            use_internal_label=use_internal_label,
             no_gridlines=no_gridlines,
             no_tick_marks=no_tick_marks,
             no_tick_labels=no_tick_labels,
@@ -1337,13 +1345,13 @@ class PlotAxis(Widget):
         )
         self.axis = axis
         self.label = label
+        self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.parent = parent
         self.payload_type = payload_type
         self.drag_callback = drag_callback
         self.drop_callback = drop_callback
         self.show = show
-        self.user_data = user_data
-        self.use_internal_label = use_internal_label
         self.no_gridlines = no_gridlines
         self.no_tick_marks = no_tick_marks
         self.no_tick_labels = no_tick_labels
@@ -1358,19 +1366,19 @@ class PlotLegend(Widget):
     """Adds a plot legend to a plot.
     Args:
             **label (str): Overrides 'name' as label.
-            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-            **parent (int): Parent to add this item to. (runtime adding)
+            **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
+            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
             **payload_type (str): Sender string type must be the same as the target for the target to run the payload_callback.
             **drag_callback (Callable): Registers a drag callback for drag and drop.
             **drop_callback (Callable): Registers a drop callback for drag and drop.
             **show (bool): Attempt to render widget.
-            **user_data (Any): User data for callbacks.
-            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **location (int): location, mvPlot_Location_*
             **horizontal (bool): 
             **outside (bool): 
     Returns:
-            int
+            Union[int, str]
     
     """
     _command = dearpygui.dearpygui.add_plot_legend
@@ -1378,13 +1386,13 @@ class PlotLegend(Widget):
     def __init__(
         self, 
         label: str = None, 
-        parent: int = 0, 
+        user_data: Any = None, 
+        use_internal_label: bool = True, 
+        parent: Union[int, str] = 0, 
         payload_type: str = '$$DPG_PAYLOAD', 
         drag_callback: Callable = None, 
         drop_callback: Callable = None, 
         show: bool = True, 
-        user_data: Any = None, 
-        use_internal_label: bool = True, 
         location: int = 5, 
         horizontal: bool = False, 
         outside: bool = False, 
@@ -1392,26 +1400,26 @@ class PlotLegend(Widget):
     ):
         super().__init__(
             label=label,
+            user_data=user_data,
+            use_internal_label=use_internal_label,
             parent=parent,
             payload_type=payload_type,
             drag_callback=drag_callback,
             drop_callback=drop_callback,
             show=show,
-            user_data=user_data,
-            use_internal_label=use_internal_label,
             location=location,
             horizontal=horizontal,
             outside=outside,
             **kwargs,
         )
         self.label = label
+        self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.parent = parent
         self.payload_type = payload_type
         self.drag_callback = drag_callback
         self.drop_callback = drop_callback
         self.show = show
-        self.user_data = user_data
-        self.use_internal_label = use_internal_label
         self.location = location
         self.horizontal = horizontal
         self.outside = outside
@@ -1423,53 +1431,53 @@ class ScatterSeries(Widget):
             x (Any): 
             y (Any): 
             **label (str): Overrides 'name' as label.
-            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-            **parent (int): Parent to add this item to. (runtime adding)
-            **before (int): This item will be displayed before the specified item in the parent.
-            **source (int): Overrides 'id' as value storage key.
-            **show (bool): Attempt to render widget.
             **user_data (Any): User data for callbacks.
             **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
+            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
+            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
+            **source (Union[int, str]): Overrides 'id' as value storage key.
+            **show (bool): Attempt to render widget.
     Returns:
-            int
+            Union[int, str]
     
     """
     _command = dearpygui.dearpygui.add_scatter_series
 
     def __init__(
         self, 
-        x: list[float], 
-        y: list[float], 
+        x: Union[List[float], Tuple[float]], 
+        y: Union[List[float], Tuple[float]], 
         label: str = None, 
-        parent: int = 0, 
-        before: int = 0, 
-        source: int = 0, 
-        show: bool = True, 
         user_data: Any = None, 
         use_internal_label: bool = True, 
+        parent: Union[int, str] = 0, 
+        before: Union[int, str] = 0, 
+        source: Union[int, str] = 0, 
+        show: bool = True, 
         **kwargs, 
     ):
         super().__init__(
             x=x,
             y=y,
             label=label,
+            user_data=user_data,
+            use_internal_label=use_internal_label,
             parent=parent,
             before=before,
             source=source,
             show=show,
-            user_data=user_data,
-            use_internal_label=use_internal_label,
             **kwargs,
         )
         self.x = x
         self.y = y
         self.label = label
+        self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.parent = parent
         self.before = before
         self.source = source
         self.show = show
-        self.user_data = user_data
-        self.use_internal_label = use_internal_label
 
 
 class ShadeSeries(Widget):
@@ -1478,31 +1486,31 @@ class ShadeSeries(Widget):
             x (Any): 
             y1 (Any): 
             **label (str): Overrides 'name' as label.
-            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-            **parent (int): Parent to add this item to. (runtime adding)
-            **before (int): This item will be displayed before the specified item in the parent.
-            **source (int): Overrides 'id' as value storage key.
-            **show (bool): Attempt to render widget.
             **user_data (Any): User data for callbacks.
             **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
+            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
+            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
+            **source (Union[int, str]): Overrides 'id' as value storage key.
+            **show (bool): Attempt to render widget.
             **y2 (Any): 
     Returns:
-            int
+            Union[int, str]
     
     """
     _command = dearpygui.dearpygui.add_shade_series
 
     def __init__(
         self, 
-        x: list[float], 
-        y1: list[float], 
+        x: Union[List[float], Tuple[float]], 
+        y1: Union[List[float], Tuple[float]], 
         label: str = None, 
-        parent: int = 0, 
-        before: int = 0, 
-        source: int = 0, 
-        show: bool = True, 
         user_data: Any = None, 
         use_internal_label: bool = True, 
+        parent: Union[int, str] = 0, 
+        before: Union[int, str] = 0, 
+        source: Union[int, str] = 0, 
+        show: bool = True, 
         y2: Any = [], 
         **kwargs, 
     ):
@@ -1510,24 +1518,24 @@ class ShadeSeries(Widget):
             x=x,
             y1=y1,
             label=label,
+            user_data=user_data,
+            use_internal_label=use_internal_label,
             parent=parent,
             before=before,
             source=source,
             show=show,
-            user_data=user_data,
-            use_internal_label=use_internal_label,
             y2=y2,
             **kwargs,
         )
         self.x = x
         self.y1 = y1
         self.label = label
+        self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.parent = parent
         self.before = before
         self.source = source
         self.show = show
-        self.user_data = user_data
-        self.use_internal_label = use_internal_label
         self.y2 = y2
 
 
@@ -1535,13 +1543,15 @@ class SimplePlot(Widget):
     """A simple plot for visualization of a 1 dimensional set of values.
     Args:
             **label (str): Overrides 'name' as label.
-            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
+            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
             **width (int): Width of the item.
             **height (int): Height of the item.
             **indent (int): Offsets the widget to the right the specified number multiplied by the indent style.
-            **parent (int): Parent to add this item to. (runtime adding)
-            **before (int): This item will be displayed before the specified item in the parent.
-            **source (int): Overrides 'id' as value storage key.
+            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
+            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
+            **source (Union[int, str]): Overrides 'id' as value storage key.
             **payload_type (str): Sender string type must be the same as the target for the target to run the payload_callback.
             **drag_callback (Callable): Registers a drag callback for drag and drop.
             **drop_callback (Callable): Registers a drop callback for drag and drop.
@@ -1549,16 +1559,14 @@ class SimplePlot(Widget):
             **filter_key (str): Used by filter widget.
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
-            **user_data (Any): User data for callbacks.
-            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
-            **default_value (List[float]): 
+            **default_value (Union[List[float], Tuple[float]]): 
             **overlay (str): overlays text (similar to a plot title)
             **histogram (bool): 
             **autosize (bool): 
             **min_scale (float): 
             **max_scale (float): 
     Returns:
-            int
+            Union[int, str]
     
     """
     _command = dearpygui.dearpygui.add_simple_plot
@@ -1566,12 +1574,14 @@ class SimplePlot(Widget):
     def __init__(
         self, 
         label: str = None, 
+        user_data: Any = None, 
+        use_internal_label: bool = True, 
         width: int = 0, 
         height: int = 0, 
         indent: int = -1, 
-        parent: int = 0, 
-        before: int = 0, 
-        source: int = 0, 
+        parent: Union[int, str] = 0, 
+        before: Union[int, str] = 0, 
+        source: Union[int, str] = 0, 
         payload_type: str = '$$DPG_PAYLOAD', 
         drag_callback: Callable = None, 
         drop_callback: Callable = None, 
@@ -1579,9 +1589,7 @@ class SimplePlot(Widget):
         filter_key: str = '', 
         tracked: bool = False, 
         track_offset: float = 0.5, 
-        user_data: Any = None, 
-        use_internal_label: bool = True, 
-        default_value: list[float] = (), 
+        default_value: Union[List[float], Tuple[float]] = (), 
         overlay: str = '', 
         histogram: bool = False, 
         autosize: bool = True, 
@@ -1591,6 +1599,8 @@ class SimplePlot(Widget):
     ):
         super().__init__(
             label=label,
+            user_data=user_data,
+            use_internal_label=use_internal_label,
             width=width,
             height=height,
             indent=indent,
@@ -1604,8 +1614,6 @@ class SimplePlot(Widget):
             filter_key=filter_key,
             tracked=tracked,
             track_offset=track_offset,
-            user_data=user_data,
-            use_internal_label=use_internal_label,
             default_value=default_value,
             overlay=overlay,
             histogram=histogram,
@@ -1615,6 +1623,8 @@ class SimplePlot(Widget):
             **kwargs,
         )
         self.label = label
+        self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.width = width
         self.height = height
         self.indent = indent
@@ -1628,8 +1638,6 @@ class SimplePlot(Widget):
         self.filter_key = filter_key
         self.tracked = tracked
         self.track_offset = track_offset
-        self.user_data = user_data
-        self.use_internal_label = use_internal_label
         self.default_value = default_value
         self.overlay = overlay
         self.histogram = histogram
@@ -1644,53 +1652,53 @@ class StairSeries(Widget):
             x (Any): 
             y (Any): 
             **label (str): Overrides 'name' as label.
-            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-            **parent (int): Parent to add this item to. (runtime adding)
-            **before (int): This item will be displayed before the specified item in the parent.
-            **source (int): Overrides 'id' as value storage key.
-            **show (bool): Attempt to render widget.
             **user_data (Any): User data for callbacks.
             **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
+            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
+            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
+            **source (Union[int, str]): Overrides 'id' as value storage key.
+            **show (bool): Attempt to render widget.
     Returns:
-            int
+            Union[int, str]
     
     """
     _command = dearpygui.dearpygui.add_stair_series
 
     def __init__(
         self, 
-        x: list[float], 
-        y: list[float], 
+        x: Union[List[float], Tuple[float]], 
+        y: Union[List[float], Tuple[float]], 
         label: str = None, 
-        parent: int = 0, 
-        before: int = 0, 
-        source: int = 0, 
-        show: bool = True, 
         user_data: Any = None, 
         use_internal_label: bool = True, 
+        parent: Union[int, str] = 0, 
+        before: Union[int, str] = 0, 
+        source: Union[int, str] = 0, 
+        show: bool = True, 
         **kwargs, 
     ):
         super().__init__(
             x=x,
             y=y,
             label=label,
+            user_data=user_data,
+            use_internal_label=use_internal_label,
             parent=parent,
             before=before,
             source=source,
             show=show,
-            user_data=user_data,
-            use_internal_label=use_internal_label,
             **kwargs,
         )
         self.x = x
         self.y = y
         self.label = label
+        self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.parent = parent
         self.before = before
         self.source = source
         self.show = show
-        self.user_data = user_data
-        self.use_internal_label = use_internal_label
 
 
 class StemSeries(Widget):
@@ -1699,57 +1707,57 @@ class StemSeries(Widget):
             x (Any): 
             y (Any): 
             **label (str): Overrides 'name' as label.
-            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-            **indent (int): Offsets the widget to the right the specified number multiplied by the indent style.
-            **parent (int): Parent to add this item to. (runtime adding)
-            **before (int): This item will be displayed before the specified item in the parent.
-            **source (int): Overrides 'id' as value storage key.
-            **show (bool): Attempt to render widget.
             **user_data (Any): User data for callbacks.
             **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
+            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **indent (int): Offsets the widget to the right the specified number multiplied by the indent style.
+            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
+            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
+            **source (Union[int, str]): Overrides 'id' as value storage key.
+            **show (bool): Attempt to render widget.
     Returns:
-            int
+            Union[int, str]
     
     """
     _command = dearpygui.dearpygui.add_stem_series
 
     def __init__(
         self, 
-        x: list[float], 
-        y: list[float], 
+        x: Union[List[float], Tuple[float]], 
+        y: Union[List[float], Tuple[float]], 
         label: str = None, 
-        indent: int = -1, 
-        parent: int = 0, 
-        before: int = 0, 
-        source: int = 0, 
-        show: bool = True, 
         user_data: Any = None, 
         use_internal_label: bool = True, 
+        indent: int = -1, 
+        parent: Union[int, str] = 0, 
+        before: Union[int, str] = 0, 
+        source: Union[int, str] = 0, 
+        show: bool = True, 
         **kwargs, 
     ):
         super().__init__(
             x=x,
             y=y,
             label=label,
+            user_data=user_data,
+            use_internal_label=use_internal_label,
             indent=indent,
             parent=parent,
             before=before,
             source=source,
             show=show,
-            user_data=user_data,
-            use_internal_label=use_internal_label,
             **kwargs,
         )
         self.x = x
         self.y = y
         self.label = label
+        self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.indent = indent
         self.parent = parent
         self.before = before
         self.source = source
         self.show = show
-        self.user_data = user_data
-        self.use_internal_label = use_internal_label
 
 
 class TextPoint(Widget):
@@ -1758,18 +1766,18 @@ class TextPoint(Widget):
             x (float): 
             y (float): 
             **label (str): Overrides 'name' as label.
-            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-            **parent (int): Parent to add this item to. (runtime adding)
-            **before (int): This item will be displayed before the specified item in the parent.
-            **source (int): Overrides 'id' as value storage key.
-            **show (bool): Attempt to render widget.
             **user_data (Any): User data for callbacks.
             **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
+            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
+            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
+            **source (Union[int, str]): Overrides 'id' as value storage key.
+            **show (bool): Attempt to render widget.
             **x_offset (int): 
             **y_offset (int): 
             **vertical (bool): 
     Returns:
-            int
+            Union[int, str]
     
     """
     _command = dearpygui.dearpygui.add_text_point
@@ -1779,12 +1787,12 @@ class TextPoint(Widget):
         x: float, 
         y: float, 
         label: str = None, 
-        parent: int = 0, 
-        before: int = 0, 
-        source: int = 0, 
-        show: bool = True, 
         user_data: Any = None, 
         use_internal_label: bool = True, 
+        parent: Union[int, str] = 0, 
+        before: Union[int, str] = 0, 
+        source: Union[int, str] = 0, 
+        show: bool = True, 
         x_offset: int = Ellipsis, 
         y_offset: int = Ellipsis, 
         vertical: bool = False, 
@@ -1794,12 +1802,12 @@ class TextPoint(Widget):
             x=x,
             y=y,
             label=label,
+            user_data=user_data,
+            use_internal_label=use_internal_label,
             parent=parent,
             before=before,
             source=source,
             show=show,
-            user_data=user_data,
-            use_internal_label=use_internal_label,
             x_offset=x_offset,
             y_offset=y_offset,
             vertical=vertical,
@@ -1808,12 +1816,12 @@ class TextPoint(Widget):
         self.x = x
         self.y = y
         self.label = label
+        self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.parent = parent
         self.before = before
         self.source = source
         self.show = show
-        self.user_data = user_data
-        self.use_internal_label = use_internal_label
         self.x_offset = x_offset
         self.y_offset = y_offset
         self.vertical = vertical
@@ -1824,47 +1832,47 @@ class VlineSeries(Widget):
     Args:
             x (Any): 
             **label (str): Overrides 'name' as label.
-            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-            **parent (int): Parent to add this item to. (runtime adding)
-            **before (int): This item will be displayed before the specified item in the parent.
-            **source (int): Overrides 'id' as value storage key.
-            **show (bool): Attempt to render widget.
             **user_data (Any): User data for callbacks.
             **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
+            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
+            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
+            **source (Union[int, str]): Overrides 'id' as value storage key.
+            **show (bool): Attempt to render widget.
     Returns:
-            int
+            Union[int, str]
     
     """
     _command = dearpygui.dearpygui.add_vline_series
 
     def __init__(
         self, 
-        x: list[float], 
+        x: Union[List[float], Tuple[float]], 
         label: str = None, 
-        parent: int = 0, 
-        before: int = 0, 
-        source: int = 0, 
-        show: bool = True, 
         user_data: Any = None, 
         use_internal_label: bool = True, 
+        parent: Union[int, str] = 0, 
+        before: Union[int, str] = 0, 
+        source: Union[int, str] = 0, 
+        show: bool = True, 
         **kwargs, 
     ):
         super().__init__(
             x=x,
             label=label,
+            user_data=user_data,
+            use_internal_label=use_internal_label,
             parent=parent,
             before=before,
             source=source,
             show=show,
-            user_data=user_data,
-            use_internal_label=use_internal_label,
             **kwargs,
         )
         self.x = x
         self.label = label
+        self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.parent = parent
         self.before = before
         self.source = source
         self.show = show
-        self.user_data = user_data
-        self.use_internal_label = use_internal_label

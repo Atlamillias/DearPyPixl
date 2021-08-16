@@ -1,4 +1,12 @@
-from typing import Any, Callable
+from typing import (
+    Any,
+    Callable,
+    Union,
+    Dict,
+    Tuple,
+    Set,
+    List,
+)
 import dearpygui.dearpygui
 from dpgwidgets.widget import Container
 
@@ -32,23 +40,23 @@ class Child(Container):
     """Adds an embedded child window. Will show scrollbars when items do not fit. Must be followed by a call to end.
     Args:
             **label (str): Overrides 'name' as label.
-            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
+            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
             **width (int): Width of the item.
             **height (int): Height of the item.
             **indent (int): Offsets the widget to the right the specified number multiplied by the indent style.
-            **parent (int): Parent to add this item to. (runtime adding)
-            **before (int): This item will be displayed before the specified item in the parent.
+            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
+            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
             **payload_type (str): Sender string type must be the same as the target for the target to run the payload_callback.
             **drag_callback (Callable): Registers a drag callback for drag and drop.
             **drop_callback (Callable): Registers a drop callback for drag and drop.
             **show (bool): Attempt to render widget.
-            **pos (List[int]): Places the item relative to window coordinates, [0,0] is top left.
+            **pos (Union[List[int], Tuple[int]]): Places the item relative to window coordinates, [0,0] is top left.
             **filter_key (str): Used by filter widget.
             **delay_search (bool): Delays searching container for specified items until the end of the app. Possible optimization when a container has many children that are not accessed often.
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
-            **user_data (Any): User data for callbacks.
-            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **border (bool): Shows/Hides the border around the sides.
             **autosize_x (bool): Autosize the window to fit it's items in the x.
             **autosize_y (bool): Autosize the window to fit it's items in the y.
@@ -56,7 +64,7 @@ class Child(Container):
             **horizontal_scrollbar (bool): Allow horizontal scrollbar to appear (off by default).
             **menubar (bool): Shows/Hides the menubar at the top.
     Returns:
-            int
+            Union[int, str]
     
     """
     _command = dearpygui.dearpygui.add_child
@@ -64,22 +72,22 @@ class Child(Container):
     def __init__(
         self, 
         label: str = None, 
+        user_data: Any = None, 
+        use_internal_label: bool = True, 
         width: int = 0, 
         height: int = 0, 
         indent: int = -1, 
-        parent: int = 0, 
-        before: int = 0, 
+        parent: Union[int, str] = 0, 
+        before: Union[int, str] = 0, 
         payload_type: str = '$$DPG_PAYLOAD', 
         drag_callback: Callable = None, 
         drop_callback: Callable = None, 
         show: bool = True, 
-        pos: list[int] = [], 
+        pos: Union[List[int], Tuple[int]] = [], 
         filter_key: str = '', 
         delay_search: bool = False, 
         tracked: bool = False, 
         track_offset: float = 0.5, 
-        user_data: Any = None, 
-        use_internal_label: bool = True, 
         border: bool = True, 
         autosize_x: bool = False, 
         autosize_y: bool = False, 
@@ -90,6 +98,8 @@ class Child(Container):
     ):
         super().__init__(
             label=label,
+            user_data=user_data,
+            use_internal_label=use_internal_label,
             width=width,
             height=height,
             indent=indent,
@@ -104,8 +114,6 @@ class Child(Container):
             delay_search=delay_search,
             tracked=tracked,
             track_offset=track_offset,
-            user_data=user_data,
-            use_internal_label=use_internal_label,
             border=border,
             autosize_x=autosize_x,
             autosize_y=autosize_y,
@@ -115,6 +123,8 @@ class Child(Container):
             **kwargs,
         )
         self.label = label
+        self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.width = width
         self.height = height
         self.indent = indent
@@ -129,8 +139,6 @@ class Child(Container):
         self.delay_search = delay_search
         self.tracked = tracked
         self.track_offset = track_offset
-        self.user_data = user_data
-        self.use_internal_label = use_internal_label
         self.border = border
         self.autosize_x = autosize_x
         self.autosize_y = autosize_y
@@ -143,17 +151,17 @@ class Clipper(Container):
     """Helper to manually clip large list of items. Increases performance by not searching or drawing widgets outside of the clipped region.
     Args:
             **label (str): Overrides 'name' as label.
-            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-            **width (int): Width of the item.
-            **indent (int): Offsets the widget to the right the specified number multiplied by the indent style.
-            **parent (int): Parent to add this item to. (runtime adding)
-            **before (int): This item will be displayed before the specified item in the parent.
-            **show (bool): Attempt to render widget.
-            **delay_search (bool): Delays searching container for specified items until the end of the app. Possible optimization when a container has many children that are not accessed often.
             **user_data (Any): User data for callbacks.
             **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
+            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **width (int): Width of the item.
+            **indent (int): Offsets the widget to the right the specified number multiplied by the indent style.
+            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
+            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
+            **show (bool): Attempt to render widget.
+            **delay_search (bool): Delays searching container for specified items until the end of the app. Possible optimization when a container has many children that are not accessed often.
     Returns:
-            int
+            Union[int, str]
     
     """
     _command = dearpygui.dearpygui.add_clipper
@@ -161,58 +169,58 @@ class Clipper(Container):
     def __init__(
         self, 
         label: str = None, 
-        width: int = 0, 
-        indent: int = -1, 
-        parent: int = 0, 
-        before: int = 0, 
-        show: bool = True, 
-        delay_search: bool = False, 
         user_data: Any = None, 
         use_internal_label: bool = True, 
+        width: int = 0, 
+        indent: int = -1, 
+        parent: Union[int, str] = 0, 
+        before: Union[int, str] = 0, 
+        show: bool = True, 
+        delay_search: bool = False, 
         **kwargs, 
     ):
         super().__init__(
             label=label,
+            user_data=user_data,
+            use_internal_label=use_internal_label,
             width=width,
             indent=indent,
             parent=parent,
             before=before,
             show=show,
             delay_search=delay_search,
-            user_data=user_data,
-            use_internal_label=use_internal_label,
             **kwargs,
         )
         self.label = label
+        self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.width = width
         self.indent = indent
         self.parent = parent
         self.before = before
         self.show = show
         self.delay_search = delay_search
-        self.user_data = user_data
-        self.use_internal_label = use_internal_label
 
 
 class CollapsingHeader(Container):
     """Adds a collapsing header to add items to. Must be closed with the end command.
     Args:
             **label (str): Overrides 'name' as label.
-            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
+            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
             **indent (int): Offsets the widget to the right the specified number multiplied by the indent style.
-            **parent (int): Parent to add this item to. (runtime adding)
-            **before (int): This item will be displayed before the specified item in the parent.
+            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
+            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
             **payload_type (str): Sender string type must be the same as the target for the target to run the payload_callback.
             **drag_callback (Callable): Registers a drag callback for drag and drop.
             **drop_callback (Callable): Registers a drop callback for drag and drop.
             **show (bool): Attempt to render widget.
-            **pos (List[int]): Places the item relative to window coordinates, [0,0] is top left.
+            **pos (Union[List[int], Tuple[int]]): Places the item relative to window coordinates, [0,0] is top left.
             **filter_key (str): Used by filter widget.
             **delay_search (bool): Delays searching container for specified items until the end of the app. Possible optimization when a container has many children that are not accessed often.
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
-            **user_data (Any): User data for callbacks.
-            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **closable (bool): Adds the ability to hide this widget by pressing the (x) in the top right of widget.
             **default_open (bool): Sets the collapseable header open by default.
             **open_on_double_click (bool): Need double-click to open node.
@@ -220,7 +228,7 @@ class CollapsingHeader(Container):
             **leaf (bool): No collapsing, no arrow (use as a convenience for leaf nodes).
             **bullet (bool): Display a bullet instead of arrow.
     Returns:
-            int
+            Union[int, str]
     
     """
     _command = dearpygui.dearpygui.add_collapsing_header
@@ -228,20 +236,20 @@ class CollapsingHeader(Container):
     def __init__(
         self, 
         label: str = None, 
+        user_data: Any = None, 
+        use_internal_label: bool = True, 
         indent: int = -1, 
-        parent: int = 0, 
-        before: int = 0, 
+        parent: Union[int, str] = 0, 
+        before: Union[int, str] = 0, 
         payload_type: str = '$$DPG_PAYLOAD', 
         drag_callback: Callable = None, 
         drop_callback: Callable = None, 
         show: bool = True, 
-        pos: list[int] = [], 
+        pos: Union[List[int], Tuple[int]] = [], 
         filter_key: str = '', 
         delay_search: bool = False, 
         tracked: bool = False, 
         track_offset: float = 0.5, 
-        user_data: Any = None, 
-        use_internal_label: bool = True, 
         closable: bool = False, 
         default_open: bool = False, 
         open_on_double_click: bool = False, 
@@ -252,6 +260,8 @@ class CollapsingHeader(Container):
     ):
         super().__init__(
             label=label,
+            user_data=user_data,
+            use_internal_label=use_internal_label,
             indent=indent,
             parent=parent,
             before=before,
@@ -264,8 +274,6 @@ class CollapsingHeader(Container):
             delay_search=delay_search,
             tracked=tracked,
             track_offset=track_offset,
-            user_data=user_data,
-            use_internal_label=use_internal_label,
             closable=closable,
             default_open=default_open,
             open_on_double_click=open_on_double_click,
@@ -275,6 +283,8 @@ class CollapsingHeader(Container):
             **kwargs,
         )
         self.label = label
+        self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.indent = indent
         self.parent = parent
         self.before = before
@@ -287,8 +297,6 @@ class CollapsingHeader(Container):
         self.delay_search = delay_search
         self.tracked = tracked
         self.track_offset = track_offset
-        self.user_data = user_data
-        self.use_internal_label = use_internal_label
         self.closable = closable
         self.default_open = default_open
         self.open_on_double_click = open_on_double_click
@@ -301,15 +309,15 @@ class DragPayload(Container):
     """User data payload for drag and drop operations.
     Args:
             **label (str): Overrides 'name' as label.
-            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-            **parent (int): Parent to add this item to. (runtime adding)
-            **show (bool): Attempt to render widget.
             **user_data (Any): User data for callbacks.
             **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
+            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
+            **show (bool): Attempt to render widget.
             **drag_data (Any): Drag data
             **payload_type (str): 
     Returns:
-            int
+            Union[int, str]
     
     """
     _command = dearpygui.dearpygui.add_drag_payload
@@ -317,29 +325,29 @@ class DragPayload(Container):
     def __init__(
         self, 
         label: str = None, 
-        parent: int = 0, 
-        show: bool = True, 
         user_data: Any = None, 
         use_internal_label: bool = True, 
+        parent: Union[int, str] = 0, 
+        show: bool = True, 
         drag_data: Any = None, 
         payload_type: str = '$$DPG_PAYLOAD', 
         **kwargs, 
     ):
         super().__init__(
             label=label,
-            parent=parent,
-            show=show,
             user_data=user_data,
             use_internal_label=use_internal_label,
+            parent=parent,
+            show=show,
             drag_data=drag_data,
             payload_type=payload_type,
             **kwargs,
         )
         self.label = label
-        self.parent = parent
-        self.show = show
         self.user_data = user_data
         self.use_internal_label = use_internal_label
+        self.parent = parent
+        self.show = show
         self.drag_data = drag_data
         self.payload_type = payload_type
 
@@ -348,20 +356,20 @@ class FileDialog(Container):
     """Displays a file or directory selector depending on keywords. Displays a file dialog by default.
     Args:
             **label (str): Overrides 'name' as label.
-            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
+            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
             **width (int): Width of the item.
             **height (int): Height of the item.
             **callback (Callable): Registers a callback.
             **show (bool): Attempt to render widget.
-            **user_data (Any): User data for callbacks.
-            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **default_path (str): Path that the file dialog will default to when opened.
             **default_filename (str): Default name that will show in the file name input.
             **file_count (int): Number of visible files in the dialog.
             **modal (bool): Forces user interaction with the file selector.
             **directory_selector (bool): Shows only directory/paths as options. Allows selection of directory/paths only.
     Returns:
-            int
+            Union[int, str]
     
     """
     _command = dearpygui.dearpygui.add_file_dialog
@@ -369,12 +377,12 @@ class FileDialog(Container):
     def __init__(
         self, 
         label: str = None, 
+        user_data: Any = None, 
+        use_internal_label: bool = True, 
         width: int = 0, 
         height: int = 0, 
         callback: Callable = None, 
         show: bool = True, 
-        user_data: Any = None, 
-        use_internal_label: bool = True, 
         default_path: str = '', 
         default_filename: str = '.', 
         file_count: int = 0, 
@@ -384,12 +392,12 @@ class FileDialog(Container):
     ):
         super().__init__(
             label=label,
+            user_data=user_data,
+            use_internal_label=use_internal_label,
             width=width,
             height=height,
             callback=callback,
             show=show,
-            user_data=user_data,
-            use_internal_label=use_internal_label,
             default_path=default_path,
             default_filename=default_filename,
             file_count=file_count,
@@ -398,12 +406,12 @@ class FileDialog(Container):
             **kwargs,
         )
         self.label = label
+        self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.width = width
         self.height = height
         self.callback = callback
         self.show = show
-        self.user_data = user_data
-        self.use_internal_label = use_internal_label
         self.default_path = default_path
         self.default_filename = default_filename
         self.file_count = file_count
@@ -415,17 +423,17 @@ class FilterSet(Container):
     """Helper to parse and apply text filters (e.g. aaaaa[, bbbbb][, ccccc])
     Args:
             **label (str): Overrides 'name' as label.
-            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-            **width (int): Width of the item.
-            **indent (int): Offsets the widget to the right the specified number multiplied by the indent style.
-            **parent (int): Parent to add this item to. (runtime adding)
-            **before (int): This item will be displayed before the specified item in the parent.
-            **show (bool): Attempt to render widget.
-            **delay_search (bool): Delays searching container for specified items until the end of the app. Possible optimization when a container has many children that are not accessed often.
             **user_data (Any): User data for callbacks.
             **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
+            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **width (int): Width of the item.
+            **indent (int): Offsets the widget to the right the specified number multiplied by the indent style.
+            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
+            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
+            **show (bool): Attempt to render widget.
+            **delay_search (bool): Delays searching container for specified items until the end of the app. Possible optimization when a container has many children that are not accessed often.
     Returns:
-            int
+            Union[int, str]
     
     """
     _command = dearpygui.dearpygui.add_filter_set
@@ -433,63 +441,63 @@ class FilterSet(Container):
     def __init__(
         self, 
         label: str = None, 
-        width: int = 0, 
-        indent: int = -1, 
-        parent: int = 0, 
-        before: int = 0, 
-        show: bool = True, 
-        delay_search: bool = False, 
         user_data: Any = None, 
         use_internal_label: bool = True, 
+        width: int = 0, 
+        indent: int = -1, 
+        parent: Union[int, str] = 0, 
+        before: Union[int, str] = 0, 
+        show: bool = True, 
+        delay_search: bool = False, 
         **kwargs, 
     ):
         super().__init__(
             label=label,
+            user_data=user_data,
+            use_internal_label=use_internal_label,
             width=width,
             indent=indent,
             parent=parent,
             before=before,
             show=show,
             delay_search=delay_search,
-            user_data=user_data,
-            use_internal_label=use_internal_label,
             **kwargs,
         )
         self.label = label
+        self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.width = width
         self.indent = indent
         self.parent = parent
         self.before = before
         self.show = show
         self.delay_search = delay_search
-        self.user_data = user_data
-        self.use_internal_label = use_internal_label
 
 
 class Group(Container):
     """Creates a group that other widgets can belong to. The group allows item commands to be issued for all of its members. Must be closed with the end command.
     Args:
             **label (str): Overrides 'name' as label.
-            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
+            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
             **width (int): Width of the item.
             **indent (int): Offsets the widget to the right the specified number multiplied by the indent style.
-            **parent (int): Parent to add this item to. (runtime adding)
-            **before (int): This item will be displayed before the specified item in the parent.
+            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
+            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
             **payload_type (str): Sender string type must be the same as the target for the target to run the payload_callback.
             **drag_callback (Callable): Registers a drag callback for drag and drop.
             **drop_callback (Callable): Registers a drop callback for drag and drop.
             **show (bool): Attempt to render widget.
-            **pos (List[int]): Places the item relative to window coordinates, [0,0] is top left.
+            **pos (Union[List[int], Tuple[int]]): Places the item relative to window coordinates, [0,0] is top left.
             **filter_key (str): Used by filter widget.
             **delay_search (bool): Delays searching container for specified items until the end of the app. Possible optimization when a container has many children that are not accessed often.
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
-            **user_data (Any): User data for callbacks.
-            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **horizontal (bool): Forces child widgets to be added in a horizontal layout.
             **horizontal_spacing (float): Spacing for the horizontal layout.
     Returns:
-            int
+            Union[int, str]
     
     """
     _command = dearpygui.dearpygui.add_group
@@ -497,27 +505,29 @@ class Group(Container):
     def __init__(
         self, 
         label: str = None, 
+        user_data: Any = None, 
+        use_internal_label: bool = True, 
         width: int = 0, 
         indent: int = -1, 
-        parent: int = 0, 
-        before: int = 0, 
+        parent: Union[int, str] = 0, 
+        before: Union[int, str] = 0, 
         payload_type: str = '$$DPG_PAYLOAD', 
         drag_callback: Callable = None, 
         drop_callback: Callable = None, 
         show: bool = True, 
-        pos: list[int] = [], 
+        pos: Union[List[int], Tuple[int]] = [], 
         filter_key: str = '', 
         delay_search: bool = False, 
         tracked: bool = False, 
         track_offset: float = 0.5, 
-        user_data: Any = None, 
-        use_internal_label: bool = True, 
         horizontal: bool = False, 
         horizontal_spacing: float = -1, 
         **kwargs, 
     ):
         super().__init__(
             label=label,
+            user_data=user_data,
+            use_internal_label=use_internal_label,
             width=width,
             indent=indent,
             parent=parent,
@@ -531,13 +541,13 @@ class Group(Container):
             delay_search=delay_search,
             tracked=tracked,
             track_offset=track_offset,
-            user_data=user_data,
-            use_internal_label=use_internal_label,
             horizontal=horizontal,
             horizontal_spacing=horizontal_spacing,
             **kwargs,
         )
         self.label = label
+        self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.width = width
         self.indent = indent
         self.parent = parent
@@ -551,8 +561,6 @@ class Group(Container):
         self.delay_search = delay_search
         self.tracked = tracked
         self.track_offset = track_offset
-        self.user_data = user_data
-        self.use_internal_label = use_internal_label
         self.horizontal = horizontal
         self.horizontal_spacing = horizontal_spacing
 
@@ -561,10 +569,12 @@ class Menu(Container):
     """Adds a menu to an existing menu bar. Must be followed by a call to end.
     Args:
             **label (str): Overrides 'name' as label.
-            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
+            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
             **indent (int): Offsets the widget to the right the specified number multiplied by the indent style.
-            **parent (int): Parent to add this item to. (runtime adding)
-            **before (int): This item will be displayed before the specified item in the parent.
+            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
+            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
             **payload_type (str): Sender string type must be the same as the target for the target to run the payload_callback.
             **drag_callback (Callable): Registers a drag callback for drag and drop.
             **drop_callback (Callable): Registers a drop callback for drag and drop.
@@ -574,10 +584,8 @@ class Menu(Container):
             **delay_search (bool): Delays searching container for specified items until the end of the app. Possible optimization when a container has many children that are not accessed often.
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
-            **user_data (Any): User data for callbacks.
-            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
     Returns:
-            int
+            Union[int, str]
     
     """
     _command = dearpygui.dearpygui.add_menu
@@ -585,9 +593,11 @@ class Menu(Container):
     def __init__(
         self, 
         label: str = None, 
+        user_data: Any = None, 
+        use_internal_label: bool = True, 
         indent: int = -1, 
-        parent: int = 0, 
-        before: int = 0, 
+        parent: Union[int, str] = 0, 
+        before: Union[int, str] = 0, 
         payload_type: str = '$$DPG_PAYLOAD', 
         drag_callback: Callable = None, 
         drop_callback: Callable = None, 
@@ -597,12 +607,12 @@ class Menu(Container):
         delay_search: bool = False, 
         tracked: bool = False, 
         track_offset: float = 0.5, 
-        user_data: Any = None, 
-        use_internal_label: bool = True, 
         **kwargs, 
     ):
         super().__init__(
             label=label,
+            user_data=user_data,
+            use_internal_label=use_internal_label,
             indent=indent,
             parent=parent,
             before=before,
@@ -615,11 +625,11 @@ class Menu(Container):
             delay_search=delay_search,
             tracked=tracked,
             track_offset=track_offset,
-            user_data=user_data,
-            use_internal_label=use_internal_label,
             **kwargs,
         )
         self.label = label
+        self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.indent = indent
         self.parent = parent
         self.before = before
@@ -632,23 +642,21 @@ class Menu(Container):
         self.delay_search = delay_search
         self.tracked = tracked
         self.track_offset = track_offset
-        self.user_data = user_data
-        self.use_internal_label = use_internal_label
 
 
 class MenuBar(Container):
     """Adds a menu bar to a window.
     Args:
             **label (str): Overrides 'name' as label.
-            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-            **indent (int): Offsets the widget to the right the specified number multiplied by the indent style.
-            **parent (int): Parent to add this item to. (runtime adding)
-            **show (bool): Attempt to render widget.
-            **delay_search (bool): Delays searching container for specified items until the end of the app. Possible optimization when a container has many children that are not accessed often.
             **user_data (Any): User data for callbacks.
             **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
+            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **indent (int): Offsets the widget to the right the specified number multiplied by the indent style.
+            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
+            **show (bool): Attempt to render widget.
+            **delay_search (bool): Delays searching container for specified items until the end of the app. Possible optimization when a container has many children that are not accessed often.
     Returns:
-            int
+            Union[int, str]
     
     """
     _command = dearpygui.dearpygui.add_menu_bar
@@ -656,42 +664,42 @@ class MenuBar(Container):
     def __init__(
         self, 
         label: str = None, 
-        indent: int = -1, 
-        parent: int = 0, 
-        show: bool = True, 
-        delay_search: bool = False, 
         user_data: Any = None, 
         use_internal_label: bool = True, 
+        indent: int = -1, 
+        parent: Union[int, str] = 0, 
+        show: bool = True, 
+        delay_search: bool = False, 
         **kwargs, 
     ):
         super().__init__(
             label=label,
+            user_data=user_data,
+            use_internal_label=use_internal_label,
             indent=indent,
             parent=parent,
             show=show,
             delay_search=delay_search,
-            user_data=user_data,
-            use_internal_label=use_internal_label,
             **kwargs,
         )
         self.label = label
+        self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.indent = indent
         self.parent = parent
         self.show = show
         self.delay_search = delay_search
-        self.user_data = user_data
-        self.use_internal_label = use_internal_label
 
 
 class StagingContainer(Container):
     """Undocumented function
     Args:
             **label (str): Overrides 'name' as label.
-            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
             **user_data (Any): User data for callbacks.
             **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
+            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
     Returns:
-            int
+            Union[int, str]
     
     """
     _command = dearpygui.dearpygui.add_staging_container
@@ -718,10 +726,12 @@ class Tab(Container):
     """Adds a tab to a tab bar. Must be closed with thes end command.
     Args:
             **label (str): Overrides 'name' as label.
-            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
+            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
             **indent (int): Offsets the widget to the right the specified number multiplied by the indent style.
-            **parent (int): Parent to add this item to. (runtime adding)
-            **before (int): This item will be displayed before the specified item in the parent.
+            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
+            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
             **payload_type (str): Sender string type must be the same as the target for the target to run the payload_callback.
             **drag_callback (Callable): Registers a drag callback for drag and drop.
             **drop_callback (Callable): Registers a drop callback for drag and drop.
@@ -730,13 +740,11 @@ class Tab(Container):
             **delay_search (bool): Delays searching container for specified items until the end of the app. Possible optimization when a container has many children that are not accessed often.
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
-            **user_data (Any): User data for callbacks.
-            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **closable (bool): Creates a button on the tab that can hide the tab.
             **no_tooltip (bool): Disable tooltip for the given tab.
             **order_mode (bool): set using a constant: mvTabOrder_Reorderable: allows reordering, mvTabOrder_Fixed: fixed ordering, mvTabOrder_Leading: adds tab to front, mvTabOrder_Trailing: adds tab to back
     Returns:
-            int
+            Union[int, str]
     
     """
     _command = dearpygui.dearpygui.add_tab
@@ -744,9 +752,11 @@ class Tab(Container):
     def __init__(
         self, 
         label: str = None, 
+        user_data: Any = None, 
+        use_internal_label: bool = True, 
         indent: int = -1, 
-        parent: int = 0, 
-        before: int = 0, 
+        parent: Union[int, str] = 0, 
+        before: Union[int, str] = 0, 
         payload_type: str = '$$DPG_PAYLOAD', 
         drag_callback: Callable = None, 
         drop_callback: Callable = None, 
@@ -755,8 +765,6 @@ class Tab(Container):
         delay_search: bool = False, 
         tracked: bool = False, 
         track_offset: float = 0.5, 
-        user_data: Any = None, 
-        use_internal_label: bool = True, 
         closable: bool = False, 
         no_tooltip: bool = False, 
         order_mode: bool = 0, 
@@ -764,6 +772,8 @@ class Tab(Container):
     ):
         super().__init__(
             label=label,
+            user_data=user_data,
+            use_internal_label=use_internal_label,
             indent=indent,
             parent=parent,
             before=before,
@@ -775,14 +785,14 @@ class Tab(Container):
             delay_search=delay_search,
             tracked=tracked,
             track_offset=track_offset,
-            user_data=user_data,
-            use_internal_label=use_internal_label,
             closable=closable,
             no_tooltip=no_tooltip,
             order_mode=order_mode,
             **kwargs,
         )
         self.label = label
+        self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.indent = indent
         self.parent = parent
         self.before = before
@@ -794,8 +804,6 @@ class Tab(Container):
         self.delay_search = delay_search
         self.tracked = tracked
         self.track_offset = track_offset
-        self.user_data = user_data
-        self.use_internal_label = use_internal_label
         self.closable = closable
         self.no_tooltip = no_tooltip
         self.order_mode = order_mode
@@ -805,25 +813,25 @@ class TabBar(Container):
     """Adds a tab bar.
     Args:
             **label (str): Overrides 'name' as label.
-            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
+            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
             **indent (int): Offsets the widget to the right the specified number multiplied by the indent style.
-            **parent (int): Parent to add this item to. (runtime adding)
-            **before (int): This item will be displayed before the specified item in the parent.
+            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
+            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
             **payload_type (str): Sender string type must be the same as the target for the target to run the payload_callback.
             **callback (Callable): Registers a callback.
             **drag_callback (Callable): Registers a drag callback for drag and drop.
             **drop_callback (Callable): Registers a drop callback for drag and drop.
             **show (bool): Attempt to render widget.
-            **pos (List[int]): Places the item relative to window coordinates, [0,0] is top left.
+            **pos (Union[List[int], Tuple[int]]): Places the item relative to window coordinates, [0,0] is top left.
             **filter_key (str): Used by filter widget.
             **delay_search (bool): Delays searching container for specified items until the end of the app. Possible optimization when a container has many children that are not accessed often.
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
-            **user_data (Any): User data for callbacks.
-            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **reorderable (bool): Allows for the user to change the order of the tabs.
     Returns:
-            int
+            Union[int, str]
     
     """
     _command = dearpygui.dearpygui.add_tab_bar
@@ -831,26 +839,28 @@ class TabBar(Container):
     def __init__(
         self, 
         label: str = None, 
+        user_data: Any = None, 
+        use_internal_label: bool = True, 
         indent: int = -1, 
-        parent: int = 0, 
-        before: int = 0, 
+        parent: Union[int, str] = 0, 
+        before: Union[int, str] = 0, 
         payload_type: str = '$$DPG_PAYLOAD', 
         callback: Callable = None, 
         drag_callback: Callable = None, 
         drop_callback: Callable = None, 
         show: bool = True, 
-        pos: list[int] = [], 
+        pos: Union[List[int], Tuple[int]] = [], 
         filter_key: str = '', 
         delay_search: bool = False, 
         tracked: bool = False, 
         track_offset: float = 0.5, 
-        user_data: Any = None, 
-        use_internal_label: bool = True, 
         reorderable: bool = False, 
         **kwargs, 
     ):
         super().__init__(
             label=label,
+            user_data=user_data,
+            use_internal_label=use_internal_label,
             indent=indent,
             parent=parent,
             before=before,
@@ -864,12 +874,12 @@ class TabBar(Container):
             delay_search=delay_search,
             tracked=tracked,
             track_offset=track_offset,
-            user_data=user_data,
-            use_internal_label=use_internal_label,
             reorderable=reorderable,
             **kwargs,
         )
         self.label = label
+        self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.indent = indent
         self.parent = parent
         self.before = before
@@ -883,8 +893,6 @@ class TabBar(Container):
         self.delay_search = delay_search
         self.tracked = tracked
         self.track_offset = track_offset
-        self.user_data = user_data
-        self.use_internal_label = use_internal_label
         self.reorderable = reorderable
 
 
@@ -892,20 +900,20 @@ class Table(Container):
     """Undocumented function
     Args:
             **label (str): Overrides 'name' as label.
-            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
+            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
             **width (int): Width of the item.
             **height (int): Height of the item.
             **indent (int): Offsets the widget to the right the specified number multiplied by the indent style.
-            **parent (int): Parent to add this item to. (runtime adding)
-            **before (int): This item will be displayed before the specified item in the parent.
-            **source (int): Overrides 'id' as value storage key.
+            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
+            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
+            **source (Union[int, str]): Overrides 'id' as value storage key.
             **callback (Callable): Registers a callback.
             **show (bool): Attempt to render widget.
-            **pos (List[int]): Places the item relative to window coordinates, [0,0] is top left.
+            **pos (Union[List[int], Tuple[int]]): Places the item relative to window coordinates, [0,0] is top left.
             **filter_key (str): Used by filter widget.
             **delay_search (bool): Delays searching container for specified items until the end of the app. Possible optimization when a container has many children that are not accessed often.
-            **user_data (Any): User data for callbacks.
-            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **header_row (bool): show headers at the top of the columns
             **inner_width (int): 
             **policy (int): 
@@ -935,7 +943,7 @@ class Table(Container):
             **scrollY (bool): Enable vertical scrolling.
             **no_saved_settings (bool): Never load/save settings in .ini file.
     Returns:
-            int
+            Union[int, str]
     
     """
     _command = dearpygui.dearpygui.add_table
@@ -943,19 +951,19 @@ class Table(Container):
     def __init__(
         self, 
         label: str = None, 
+        user_data: Any = None, 
+        use_internal_label: bool = True, 
         width: int = 0, 
         height: int = 0, 
         indent: int = -1, 
-        parent: int = 0, 
-        before: int = 0, 
-        source: int = 0, 
+        parent: Union[int, str] = 0, 
+        before: Union[int, str] = 0, 
+        source: Union[int, str] = 0, 
         callback: Callable = None, 
         show: bool = True, 
-        pos: list[int] = [], 
+        pos: Union[List[int], Tuple[int]] = [], 
         filter_key: str = '', 
         delay_search: bool = False, 
-        user_data: Any = None, 
-        use_internal_label: bool = True, 
         header_row: bool = True, 
         inner_width: int = 0, 
         policy: int = 0, 
@@ -988,6 +996,8 @@ class Table(Container):
     ):
         super().__init__(
             label=label,
+            user_data=user_data,
+            use_internal_label=use_internal_label,
             width=width,
             height=height,
             indent=indent,
@@ -999,8 +1009,6 @@ class Table(Container):
             pos=pos,
             filter_key=filter_key,
             delay_search=delay_search,
-            user_data=user_data,
-            use_internal_label=use_internal_label,
             header_row=header_row,
             inner_width=inner_width,
             policy=policy,
@@ -1032,6 +1040,8 @@ class Table(Container):
             **kwargs,
         )
         self.label = label
+        self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.width = width
         self.height = height
         self.indent = indent
@@ -1043,8 +1053,6 @@ class Table(Container):
         self.pos = pos
         self.filter_key = filter_key
         self.delay_search = delay_search
-        self.user_data = user_data
-        self.use_internal_label = use_internal_label
         self.header_row = header_row
         self.inner_width = inner_width
         self.policy = policy
@@ -1079,16 +1087,16 @@ class TableRow(Container):
     """Undocumented function
     Args:
             **label (str): Overrides 'name' as label.
-            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-            **height (int): Height of the item.
-            **parent (int): Parent to add this item to. (runtime adding)
-            **before (int): This item will be displayed before the specified item in the parent.
-            **show (bool): Attempt to render widget.
-            **filter_key (str): Used by filter widget.
             **user_data (Any): User data for callbacks.
             **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
+            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **height (int): Height of the item.
+            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
+            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
+            **show (bool): Attempt to render widget.
+            **filter_key (str): Used by filter widget.
     Returns:
-            int
+            Union[int, str]
     
     """
     _command = dearpygui.dearpygui.add_table_row
@@ -1096,94 +1104,94 @@ class TableRow(Container):
     def __init__(
         self, 
         label: str = None, 
-        height: int = 0, 
-        parent: int = 0, 
-        before: int = 0, 
-        show: bool = True, 
-        filter_key: str = '', 
         user_data: Any = None, 
         use_internal_label: bool = True, 
+        height: int = 0, 
+        parent: Union[int, str] = 0, 
+        before: Union[int, str] = 0, 
+        show: bool = True, 
+        filter_key: str = '', 
         **kwargs, 
     ):
         super().__init__(
             label=label,
+            user_data=user_data,
+            use_internal_label=use_internal_label,
             height=height,
             parent=parent,
             before=before,
             show=show,
             filter_key=filter_key,
-            user_data=user_data,
-            use_internal_label=use_internal_label,
             **kwargs,
         )
         self.label = label
+        self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.height = height
         self.parent = parent
         self.before = before
         self.show = show
         self.filter_key = filter_key
-        self.user_data = user_data
-        self.use_internal_label = use_internal_label
 
 
 class Tooltip(Container):
     """Adds an advanced tool tip for an item. This command must come immediately after the item the tip is for.
     Args:
-            parent (int): 
+            parent (Union[int, str]): 
             **label (str): Overrides 'name' as label.
-            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-            **show (bool): Attempt to render widget.
             **user_data (Any): User data for callbacks.
             **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
+            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **show (bool): Attempt to render widget.
     Returns:
-            int
+            Union[int, str]
     
     """
     _command = dearpygui.dearpygui.add_tooltip
 
     def __init__(
         self, 
-        parent: int, 
+        parent: Union[int, str], 
         label: str = None, 
-        show: bool = True, 
         user_data: Any = None, 
         use_internal_label: bool = True, 
+        show: bool = True, 
         **kwargs, 
     ):
         super().__init__(
             parent=parent,
             label=label,
-            show=show,
             user_data=user_data,
             use_internal_label=use_internal_label,
+            show=show,
             **kwargs,
         )
         self.parent = parent
         self.label = label
-        self.show = show
         self.user_data = user_data
         self.use_internal_label = use_internal_label
+        self.show = show
 
 
 class TreeNode(Container):
     """Adds a tree node to add items to. Must be closed with the end command.
     Args:
             **label (str): Overrides 'name' as label.
-            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
+            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
             **indent (int): Offsets the widget to the right the specified number multiplied by the indent style.
-            **parent (int): Parent to add this item to. (runtime adding)
-            **before (int): This item will be displayed before the specified item in the parent.
+            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
+            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
             **payload_type (str): Sender string type must be the same as the target for the target to run the payload_callback.
             **drag_callback (Callable): Registers a drag callback for drag and drop.
             **drop_callback (Callable): Registers a drop callback for drag and drop.
             **show (bool): Attempt to render widget.
-            **pos (List[int]): Places the item relative to window coordinates, [0,0] is top left.
+            **pos (Union[List[int], Tuple[int]]): Places the item relative to window coordinates, [0,0] is top left.
             **filter_key (str): Used by filter widget.
             **delay_search (bool): Delays searching container for specified items until the end of the app. Possible optimization when a container has many children that are not accessed often.
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
-            **user_data (Any): User data for callbacks.
-            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **default_open (bool): Sets the tree node open by default.
             **open_on_double_click (bool): Need double-click to open node.
             **open_on_arrow (bool): Only open when clicking on the arrow part.
@@ -1191,7 +1199,7 @@ class TreeNode(Container):
             **bullet (bool): Display a bullet instead of arrow.
             **selectable (bool): Makes the tree selectable.
     Returns:
-            int
+            Union[int, str]
     
     """
     _command = dearpygui.dearpygui.add_tree_node
@@ -1199,20 +1207,20 @@ class TreeNode(Container):
     def __init__(
         self, 
         label: str = None, 
+        user_data: Any = None, 
+        use_internal_label: bool = True, 
         indent: int = -1, 
-        parent: int = 0, 
-        before: int = 0, 
+        parent: Union[int, str] = 0, 
+        before: Union[int, str] = 0, 
         payload_type: str = '$$DPG_PAYLOAD', 
         drag_callback: Callable = None, 
         drop_callback: Callable = None, 
         show: bool = True, 
-        pos: list[int] = [], 
+        pos: Union[List[int], Tuple[int]] = [], 
         filter_key: str = '', 
         delay_search: bool = False, 
         tracked: bool = False, 
         track_offset: float = 0.5, 
-        user_data: Any = None, 
-        use_internal_label: bool = True, 
         default_open: bool = False, 
         open_on_double_click: bool = False, 
         open_on_arrow: bool = False, 
@@ -1223,6 +1231,8 @@ class TreeNode(Container):
     ):
         super().__init__(
             label=label,
+            user_data=user_data,
+            use_internal_label=use_internal_label,
             indent=indent,
             parent=parent,
             before=before,
@@ -1235,8 +1245,6 @@ class TreeNode(Container):
             delay_search=delay_search,
             tracked=tracked,
             track_offset=track_offset,
-            user_data=user_data,
-            use_internal_label=use_internal_label,
             default_open=default_open,
             open_on_double_click=open_on_double_click,
             open_on_arrow=open_on_arrow,
@@ -1246,6 +1254,8 @@ class TreeNode(Container):
             **kwargs,
         )
         self.label = label
+        self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.indent = indent
         self.parent = parent
         self.before = before
@@ -1258,8 +1268,6 @@ class TreeNode(Container):
         self.delay_search = delay_search
         self.tracked = tracked
         self.track_offset = track_offset
-        self.user_data = user_data
-        self.use_internal_label = use_internal_label
         self.default_open = default_open
         self.open_on_double_click = open_on_double_click
         self.open_on_arrow = open_on_arrow
@@ -1272,15 +1280,15 @@ class ViewportMenuBar(Container):
     """Adds a menu bar to the viewport.
     Args:
             **label (str): Overrides 'name' as label.
-            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-            **indent (int): Offsets the widget to the right the specified number multiplied by the indent style.
-            **parent (int): Parent to add this item to. (runtime adding)
-            **show (bool): Attempt to render widget.
-            **delay_search (bool): Delays searching container for specified items until the end of the app. Possible optimization when a container has many children that are not accessed often.
             **user_data (Any): User data for callbacks.
             **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
+            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **indent (int): Offsets the widget to the right the specified number multiplied by the indent style.
+            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
+            **show (bool): Attempt to render widget.
+            **delay_search (bool): Delays searching container for specified items until the end of the app. Possible optimization when a container has many children that are not accessed often.
     Returns:
-            int
+            Union[int, str]
     
     """
     _command = dearpygui.dearpygui.add_viewport_menu_bar
@@ -1288,48 +1296,48 @@ class ViewportMenuBar(Container):
     def __init__(
         self, 
         label: str = None, 
-        indent: int = -1, 
-        parent: int = 0, 
-        show: bool = True, 
-        delay_search: bool = False, 
         user_data: Any = None, 
         use_internal_label: bool = True, 
+        indent: int = -1, 
+        parent: Union[int, str] = 0, 
+        show: bool = True, 
+        delay_search: bool = False, 
         **kwargs, 
     ):
         super().__init__(
             label=label,
+            user_data=user_data,
+            use_internal_label=use_internal_label,
             indent=indent,
             parent=parent,
             show=show,
             delay_search=delay_search,
-            user_data=user_data,
-            use_internal_label=use_internal_label,
             **kwargs,
         )
         self.label = label
+        self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.indent = indent
         self.parent = parent
         self.show = show
         self.delay_search = delay_search
-        self.user_data = user_data
-        self.use_internal_label = use_internal_label
 
 
 class Window(Container):
     """Creates a new window for following items to be added to.
     Args:
             **label (str): Overrides 'name' as label.
-            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
+            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
             **width (int): Width of the item.
             **height (int): Height of the item.
             **indent (int): Offsets the widget to the right the specified number multiplied by the indent style.
             **show (bool): Attempt to render widget.
-            **pos (List[int]): Places the item relative to window coordinates, [0,0] is top left.
+            **pos (Union[List[int], Tuple[int]]): Places the item relative to window coordinates, [0,0] is top left.
             **delay_search (bool): Delays searching container for specified items until the end of the app. Possible optimization when a container has many children that are not accessed often.
-            **user_data (Any): User data for callbacks.
-            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
-            **min_size (List[int]): Minimum window size.
-            **max_size (List[int]): Maximum window size.
+            **min_size (Union[List[int], Tuple[int]]): Minimum window size.
+            **max_size (Union[List[int], Tuple[int]]): Maximum window size.
             **menubar (bool): Shows or hides the menubar.
             **collapsed (bool): Collapse the window.
             **autosize (bool): Autosized the window to fit it's items.
@@ -1348,7 +1356,7 @@ class Window(Container):
             **no_saved_settings (bool): Never load/save settings in .ini file.
             **on_close (Callable): Callback ran when window is closed.
     Returns:
-            int
+            Union[int, str]
     
     """
     _command = dearpygui.dearpygui.add_window
@@ -1356,16 +1364,16 @@ class Window(Container):
     def __init__(
         self, 
         label: str = None, 
+        user_data: Any = None, 
+        use_internal_label: bool = True, 
         width: int = 0, 
         height: int = 0, 
         indent: int = -1, 
         show: bool = True, 
-        pos: list[int] = [], 
+        pos: Union[List[int], Tuple[int]] = [], 
         delay_search: bool = False, 
-        user_data: Any = None, 
-        use_internal_label: bool = True, 
-        min_size: list[int] = [100, 100], 
-        max_size: list[int] = [30000, 30000], 
+        min_size: Union[List[int], Tuple[int]] = [100, 100], 
+        max_size: Union[List[int], Tuple[int]] = [30000, 30000], 
         menubar: bool = False, 
         collapsed: bool = False, 
         autosize: bool = False, 
@@ -1387,14 +1395,14 @@ class Window(Container):
     ):
         super().__init__(
             label=label,
+            user_data=user_data,
+            use_internal_label=use_internal_label,
             width=width,
             height=height,
             indent=indent,
             show=show,
             pos=pos,
             delay_search=delay_search,
-            user_data=user_data,
-            use_internal_label=use_internal_label,
             min_size=min_size,
             max_size=max_size,
             menubar=menubar,
@@ -1417,14 +1425,14 @@ class Window(Container):
             **kwargs,
         )
         self.label = label
+        self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.width = width
         self.height = height
         self.indent = indent
         self.show = show
         self.pos = pos
         self.delay_search = delay_search
-        self.user_data = user_data
-        self.use_internal_label = use_internal_label
         self.min_size = min_size
         self.max_size = max_size
         self.menubar = menubar

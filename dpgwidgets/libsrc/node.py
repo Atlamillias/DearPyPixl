@@ -1,4 +1,12 @@
-from typing import Any, Callable
+from typing import (
+    Any,
+    Callable,
+    Union,
+    Dict,
+    Tuple,
+    Set,
+    List,
+)
 import dearpygui.dearpygui
 from dpgwidgets.widget import Container, Widget
 
@@ -18,23 +26,23 @@ class Node(Container):
     """Adds a node to a node editor.
     Args:
             **label (str): Overrides 'name' as label.
-            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-            **parent (int): Parent to add this item to. (runtime adding)
-            **before (int): This item will be displayed before the specified item in the parent.
+            **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
+            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
+            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
             **payload_type (str): Sender string type must be the same as the target for the target to run the payload_callback.
             **drag_callback (Callable): Registers a drag callback for drag and drop.
             **drop_callback (Callable): Registers a drop callback for drag and drop.
             **show (bool): Attempt to render widget.
-            **pos (List[int]): Places the item relative to window coordinates, [0,0] is top left.
+            **pos (Union[List[int], Tuple[int]]): Places the item relative to window coordinates, [0,0] is top left.
             **filter_key (str): Used by filter widget.
             **delay_search (bool): Delays searching container for specified items until the end of the app. Possible optimization when a container has many children that are not accessed often.
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
-            **user_data (Any): User data for callbacks.
-            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **draggable (bool): Allow node to be draggable.
     Returns:
-            int
+            Union[int, str]
     
     """
     _command = dearpygui.dearpygui.add_node
@@ -42,24 +50,26 @@ class Node(Container):
     def __init__(
         self, 
         label: str = None, 
-        parent: int = 0, 
-        before: int = 0, 
+        user_data: Any = None, 
+        use_internal_label: bool = True, 
+        parent: Union[int, str] = 0, 
+        before: Union[int, str] = 0, 
         payload_type: str = '$$DPG_PAYLOAD', 
         drag_callback: Callable = None, 
         drop_callback: Callable = None, 
         show: bool = True, 
-        pos: list[int] = [], 
+        pos: Union[List[int], Tuple[int]] = [], 
         filter_key: str = '', 
         delay_search: bool = False, 
         tracked: bool = False, 
         track_offset: float = 0.5, 
-        user_data: Any = None, 
-        use_internal_label: bool = True, 
         draggable: bool = True, 
         **kwargs, 
     ):
         super().__init__(
             label=label,
+            user_data=user_data,
+            use_internal_label=use_internal_label,
             parent=parent,
             before=before,
             payload_type=payload_type,
@@ -71,12 +81,12 @@ class Node(Container):
             delay_search=delay_search,
             tracked=tracked,
             track_offset=track_offset,
-            user_data=user_data,
-            use_internal_label=use_internal_label,
             draggable=draggable,
             **kwargs,
         )
         self.label = label
+        self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.parent = parent
         self.before = before
         self.payload_type = payload_type
@@ -88,8 +98,6 @@ class Node(Container):
         self.delay_search = delay_search
         self.tracked = tracked
         self.track_offset = track_offset
-        self.user_data = user_data
-        self.use_internal_label = use_internal_label
         self.draggable = draggable
 
 
@@ -97,10 +105,12 @@ class NodeAttribute(Container):
     """Adds a node attribute.
     Args:
             **label (str): Overrides 'name' as label.
-            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
+            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
             **indent (int): Offsets the widget to the right the specified number multiplied by the indent style.
-            **parent (int): Parent to add this item to. (runtime adding)
-            **before (int): This item will be displayed before the specified item in the parent.
+            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
+            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
             **payload_type (str): Sender string type must be the same as the target for the target to run the payload_callback.
             **drag_callback (Callable): Registers a drag callback for drag and drop.
             **drop_callback (Callable): Registers a drop callback for drag and drop.
@@ -108,13 +118,11 @@ class NodeAttribute(Container):
             **filter_key (str): Used by filter widget.
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
-            **user_data (Any): User data for callbacks.
-            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **attribute_type (int): mvNode_Attr_Input, mvNode_Attr_Output, or mvNode_Attr_Static.
             **shape (int): Pin shape.
             **category (str): Category
     Returns:
-            int
+            Union[int, str]
     
     """
     _command = dearpygui.dearpygui.add_node_attribute
@@ -122,9 +130,11 @@ class NodeAttribute(Container):
     def __init__(
         self, 
         label: str = None, 
+        user_data: Any = None, 
+        use_internal_label: bool = True, 
         indent: int = -1, 
-        parent: int = 0, 
-        before: int = 0, 
+        parent: Union[int, str] = 0, 
+        before: Union[int, str] = 0, 
         payload_type: str = '$$DPG_PAYLOAD', 
         drag_callback: Callable = None, 
         drop_callback: Callable = None, 
@@ -132,8 +142,6 @@ class NodeAttribute(Container):
         filter_key: str = '', 
         tracked: bool = False, 
         track_offset: float = 0.5, 
-        user_data: Any = None, 
-        use_internal_label: bool = True, 
         attribute_type: int = 0, 
         shape: int = 1, 
         category: str = 'general', 
@@ -141,6 +149,8 @@ class NodeAttribute(Container):
     ):
         super().__init__(
             label=label,
+            user_data=user_data,
+            use_internal_label=use_internal_label,
             indent=indent,
             parent=parent,
             before=before,
@@ -151,14 +161,14 @@ class NodeAttribute(Container):
             filter_key=filter_key,
             tracked=tracked,
             track_offset=track_offset,
-            user_data=user_data,
-            use_internal_label=use_internal_label,
             attribute_type=attribute_type,
             shape=shape,
             category=category,
             **kwargs,
         )
         self.label = label
+        self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.indent = indent
         self.parent = parent
         self.before = before
@@ -169,8 +179,6 @@ class NodeAttribute(Container):
         self.filter_key = filter_key
         self.tracked = tracked
         self.track_offset = track_offset
-        self.user_data = user_data
-        self.use_internal_label = use_internal_label
         self.attribute_type = attribute_type
         self.shape = shape
         self.category = category
@@ -180,11 +188,13 @@ class NodeEditor(Container):
     """Adds a node editor.
     Args:
             **label (str): Overrides 'name' as label.
-            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **user_data (Any): User data for callbacks.
+            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
+            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
             **width (int): Width of the item.
             **height (int): Height of the item.
-            **parent (int): Parent to add this item to. (runtime adding)
-            **before (int): This item will be displayed before the specified item in the parent.
+            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
+            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
             **payload_type (str): Sender string type must be the same as the target for the target to run the payload_callback.
             **callback (Callable): Registers a callback.
             **drag_callback (Callable): Registers a drag callback for drag and drop.
@@ -194,12 +204,10 @@ class NodeEditor(Container):
             **delay_search (bool): Delays searching container for specified items until the end of the app. Possible optimization when a container has many children that are not accessed often.
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
-            **user_data (Any): User data for callbacks.
-            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
             **delink_callback (Callable): Callback ran when a link is detached.
             **menubar (bool): Shows or hides the menubar.
     Returns:
-            int
+            Union[int, str]
     
     """
     _command = dearpygui.dearpygui.add_node_editor
@@ -207,10 +215,12 @@ class NodeEditor(Container):
     def __init__(
         self, 
         label: str = None, 
+        user_data: Any = None, 
+        use_internal_label: bool = True, 
         width: int = 0, 
         height: int = 0, 
-        parent: int = 0, 
-        before: int = 0, 
+        parent: Union[int, str] = 0, 
+        before: Union[int, str] = 0, 
         payload_type: str = '$$DPG_PAYLOAD', 
         callback: Callable = None, 
         drag_callback: Callable = None, 
@@ -220,14 +230,14 @@ class NodeEditor(Container):
         delay_search: bool = False, 
         tracked: bool = False, 
         track_offset: float = 0.5, 
-        user_data: Any = None, 
-        use_internal_label: bool = True, 
         delink_callback: Callable = None, 
         menubar: bool = False, 
         **kwargs, 
     ):
         super().__init__(
             label=label,
+            user_data=user_data,
+            use_internal_label=use_internal_label,
             width=width,
             height=height,
             parent=parent,
@@ -241,13 +251,13 @@ class NodeEditor(Container):
             delay_search=delay_search,
             tracked=tracked,
             track_offset=track_offset,
-            user_data=user_data,
-            use_internal_label=use_internal_label,
             delink_callback=delink_callback,
             menubar=menubar,
             **kwargs,
         )
         self.label = label
+        self.user_data = user_data
+        self.use_internal_label = use_internal_label
         self.width = width
         self.height = height
         self.parent = parent
@@ -261,8 +271,6 @@ class NodeEditor(Container):
         self.delay_search = delay_search
         self.tracked = tracked
         self.track_offset = track_offset
-        self.user_data = user_data
-        self.use_internal_label = use_internal_label
         self.delink_callback = delink_callback
         self.menubar = menubar
 
@@ -270,45 +278,45 @@ class NodeEditor(Container):
 class NodeLink(Widget):
     """Adds a node link between nodes.
     Args:
-            attr_1 (int): 
-            attr_2 (int): 
+            attr_1 (Union[int, str]): 
+            attr_2 (Union[int, str]): 
             **label (str): Overrides 'name' as label.
-            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-            **parent (int): Parent to add this item to. (runtime adding)
-            **show (bool): Attempt to render widget.
             **user_data (Any): User data for callbacks.
             **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
+            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
+            **show (bool): Attempt to render widget.
     Returns:
-            int
+            Union[int, str]
     
     """
     _command = dearpygui.dearpygui.add_node_link
 
     def __init__(
         self, 
-        attr_1: int, 
-        attr_2: int, 
+        attr_1: Union[int, str], 
+        attr_2: Union[int, str], 
         label: str = None, 
-        parent: int = 0, 
-        show: bool = True, 
         user_data: Any = None, 
         use_internal_label: bool = True, 
+        parent: Union[int, str] = 0, 
+        show: bool = True, 
         **kwargs, 
     ):
         super().__init__(
             attr_1=attr_1,
             attr_2=attr_2,
             label=label,
-            parent=parent,
-            show=show,
             user_data=user_data,
             use_internal_label=use_internal_label,
+            parent=parent,
+            show=show,
             **kwargs,
         )
         self.attr_1 = attr_1
         self.attr_2 = attr_2
         self.label = label
-        self.parent = parent
-        self.show = show
         self.user_data = user_data
         self.use_internal_label = use_internal_label
+        self.parent = parent
+        self.show = show

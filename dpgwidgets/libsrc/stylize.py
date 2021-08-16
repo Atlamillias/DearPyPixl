@@ -1,4 +1,12 @@
-from typing import Any, Callable
+from typing import (
+    Any,
+    Callable,
+    Union,
+    Dict,
+    Tuple,
+    Set,
+    List,
+)
 import dearpygui.dearpygui
 from dpgwidgets.item import Item, ContextSupport
 
@@ -23,13 +31,13 @@ class Font(Item, ContextSupport):
             file (str): 
             size (int): 
             **label (str): Overrides 'name' as label.
-            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
             **user_data (Any): User data for callbacks.
             **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
+            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
             **default_font (bool): 
-            **parent (int): Parent to add this item to. (runtime adding)
+            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
     Returns:
-            int
+            Union[int, str]
     
     """
     _command = dearpygui.dearpygui.add_font
@@ -42,7 +50,7 @@ class Font(Item, ContextSupport):
         user_data: Any = None, 
         use_internal_label: bool = True, 
         default_font: bool = False, 
-        parent: int = 10, 
+        parent: Union[int, str] = 10, 
         **kwargs, 
     ):
         super().__init__(
@@ -68,12 +76,12 @@ class Theme(Item, ContextSupport):
     """Undocumented function
     Args:
             **label (str): Overrides 'name' as label.
-            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
             **user_data (Any): User data for callbacks.
             **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
+            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
             **default_theme (bool): 
     Returns:
-            int
+            Union[int, str]
     
     """
     _command = dearpygui.dearpygui.add_theme
@@ -102,40 +110,40 @@ class Theme(Item, ContextSupport):
 class FontChars(Item):
     """Undocumented function
     Args:
-            chars (List[int]): 
+            chars (Union[List[int], Tuple[int]]): 
             **label (str): Overrides 'name' as label.
-            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-            **parent (int): Parent to add this item to. (runtime adding)
             **user_data (Any): User data for callbacks.
             **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
+            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
     Returns:
-            int
+            Union[int, str]
     
     """
     _command = dearpygui.dearpygui.add_font_chars
 
     def __init__(
         self, 
-        chars: list[int], 
+        chars: Union[List[int], Tuple[int]], 
         label: str = None, 
-        parent: int = 0, 
         user_data: Any = None, 
         use_internal_label: bool = True, 
+        parent: Union[int, str] = 0, 
         **kwargs, 
     ):
         super().__init__(
             chars=chars,
             label=label,
-            parent=parent,
             user_data=user_data,
             use_internal_label=use_internal_label,
+            parent=parent,
             **kwargs,
         )
         self.chars = chars
         self.label = label
-        self.parent = parent
         self.user_data = user_data
         self.use_internal_label = use_internal_label
+        self.parent = parent
 
 
 class FontRange(Item):
@@ -144,12 +152,12 @@ class FontRange(Item):
             first_char (int): 
             last_char (int): 
             **label (str): Overrides 'name' as label.
-            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-            **parent (int): Parent to add this item to. (runtime adding)
             **user_data (Any): User data for callbacks.
             **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
+            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
     Returns:
-            int
+            Union[int, str]
     
     """
     _command = dearpygui.dearpygui.add_font_range
@@ -159,26 +167,26 @@ class FontRange(Item):
         first_char: int, 
         last_char: int, 
         label: str = None, 
-        parent: int = 0, 
         user_data: Any = None, 
         use_internal_label: bool = True, 
+        parent: Union[int, str] = 0, 
         **kwargs, 
     ):
         super().__init__(
             first_char=first_char,
             last_char=last_char,
             label=label,
-            parent=parent,
             user_data=user_data,
             use_internal_label=use_internal_label,
+            parent=parent,
             **kwargs,
         )
         self.first_char = first_char
         self.last_char = last_char
         self.label = label
-        self.parent = parent
         self.user_data = user_data
         self.use_internal_label = use_internal_label
+        self.parent = parent
 
 
 class FontRangeHint(Item):
@@ -186,12 +194,12 @@ class FontRangeHint(Item):
     Args:
             hint (int): 
             **label (str): Overrides 'name' as label.
-            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-            **parent (int): Parent to add this item to. (runtime adding)
             **user_data (Any): User data for callbacks.
             **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
+            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
     Returns:
-            int
+            Union[int, str]
     
     """
     _command = dearpygui.dearpygui.add_font_range_hint
@@ -200,39 +208,39 @@ class FontRangeHint(Item):
         self, 
         hint: int, 
         label: str = None, 
-        parent: int = 0, 
         user_data: Any = None, 
         use_internal_label: bool = True, 
+        parent: Union[int, str] = 0, 
         **kwargs, 
     ):
         super().__init__(
             hint=hint,
             label=label,
-            parent=parent,
             user_data=user_data,
             use_internal_label=use_internal_label,
+            parent=parent,
             **kwargs,
         )
         self.hint = hint
         self.label = label
-        self.parent = parent
         self.user_data = user_data
         self.use_internal_label = use_internal_label
+        self.parent = parent
 
 
 class ThemeColor(Item):
     """Undocumented function
     Args:
             *target (int): 
-            *value (List[int]): 
+            *value (Union[List[int], Tuple[int]]): 
             **label (str): Overrides 'name' as label.
-            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-            **parent (int): Parent to add this item to. (runtime adding)
             **user_data (Any): User data for callbacks.
             **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
+            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
             **category (int): Options include mvThemeCat_Core, mvThemeCat_Plots, mvThemeCat_Nodes.
     Returns:
-            int
+            Union[int, str]
     
     """
     _command = dearpygui.dearpygui.add_theme_color
@@ -240,11 +248,11 @@ class ThemeColor(Item):
     def __init__(
         self, 
         target: int = 0, 
-        value: list[int] = (0, 0, 0, 255), 
+        value: Union[List[int], Tuple[int]] = (0, 0, 0, 255), 
         label: str = None, 
-        parent: int = 0, 
         user_data: Any = None, 
         use_internal_label: bool = True, 
+        parent: Union[int, str] = 0, 
         category: int = 0, 
         **kwargs, 
     ):
@@ -252,18 +260,18 @@ class ThemeColor(Item):
             target=target,
             value=value,
             label=label,
-            parent=parent,
             user_data=user_data,
             use_internal_label=use_internal_label,
+            parent=parent,
             category=category,
             **kwargs,
         )
         self.target = target
         self.value = value
         self.label = label
-        self.parent = parent
         self.user_data = user_data
         self.use_internal_label = use_internal_label
+        self.parent = parent
         self.category = category
 
 
@@ -274,13 +282,13 @@ class ThemeStyle(Item):
             *x (float): 
             *y (float): 
             **label (str): Overrides 'name' as label.
-            **id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-            **parent (int): Parent to add this item to. (runtime adding)
             **user_data (Any): User data for callbacks.
             **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
+            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
             **category (int): Options include mvThemeCat_Core, mvThemeCat_Plots, mvThemeCat_Nodes.
     Returns:
-            int
+            Union[int, str]
     
     """
     _command = dearpygui.dearpygui.add_theme_style
@@ -291,9 +299,9 @@ class ThemeStyle(Item):
         x: float = 1.0, 
         y: float = -1.0, 
         label: str = None, 
-        parent: int = 0, 
         user_data: Any = None, 
         use_internal_label: bool = True, 
+        parent: Union[int, str] = 0, 
         category: int = 0, 
         **kwargs, 
     ):
@@ -302,9 +310,9 @@ class ThemeStyle(Item):
             x=x,
             y=y,
             label=label,
-            parent=parent,
             user_data=user_data,
             use_internal_label=use_internal_label,
+            parent=parent,
             category=category,
             **kwargs,
         )
@@ -312,7 +320,7 @@ class ThemeStyle(Item):
         self.x = x
         self.y = y
         self.label = label
-        self.parent = parent
         self.user_data = user_data
         self.use_internal_label = use_internal_label
+        self.parent = parent
         self.category = category
