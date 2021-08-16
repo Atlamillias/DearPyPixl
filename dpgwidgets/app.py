@@ -11,6 +11,7 @@ from dearpygui._dearpygui import (
 
 import dpgwidgets
 from dpgwidgets import _c_types
+from dpgwidgets.item import Item
 from dpgwidgets.containers import Window
 from dpgwidgets.error import ViewportError
 from dpgwidgets.handler import AppHandlerSupport
@@ -24,7 +25,7 @@ __all__ = [
 ]
 
 
-class Viewport(ThemeSupport, AppHandlerSupport):
+class Viewport(Item, ThemeSupport, AppHandlerSupport):
     """Creates and performs setup on a DearPyGui viewport. A Viewport
     instance represents the application itself, and only one instance 
     should exist per-process.
@@ -96,13 +97,11 @@ class Viewport(ThemeSupport, AppHandlerSupport):
         dock_space: bool = False,
         theme: Theme = None
     ):
-        super().__init__()
-        cls = self.__class__
-        # setting `self.__config` as empty prevents __getattribute__ from
+        # setting `self._item_config` as empty prevents __getattribute__ from
         # making calls that would raise internal errors (since the viewport
-        # hasn't been created yet). `self.__config` is deleted later in 
+        # hasn't been created yet). `self._item_config` is deleted later in 
         # _setup_viewport.
-        self.__config = ()
+        self._item_config = ()
         self.__staging_mode = staging_mode
         self.__docking_enabled = enable_docking
         self.__dock_space = dock_space
@@ -126,8 +125,11 @@ class Viewport(ThemeSupport, AppHandlerSupport):
         self.clear_color = clear_color
         self.decorated = decorated
 
-        self.theme = theme or DEFAULT
+        # Initializing mixins only.
+        ThemeSupport.__init__(self)
+        AppHandlerSupport.__init__(self)
 
+        self.theme = theme or DEFAULT
 
         if sys.platform == "win32":
             # This lets the application use the real resolution of your
@@ -142,26 +144,22 @@ class Viewport(ThemeSupport, AppHandlerSupport):
         return f"{self.__class__.__qualname__} ({type(self)}) =>"
 
     def __int__(self):
-        return str(self.__id)
+        return str(self.id)
 
     def __str__(self):
         return self.title
 
     def __getattribute__(self, attr: str):
-        if attr in object.__getattribute__(self, "_Viewport__config"):
+        if attr in object.__getattribute__(self, "_item_config"):
             return get_viewport_configuration()[attr]
 
         return object.__getattribute__(self, attr)
 
     def __setattr__(self, attr, value):
-        if attr in object.__getattribute__(self, "_Viewport__config"):
-            configure_viewport(self.__id, **{attr: value})
+        if attr in object.__getattribute__(self, "_item_config"):
+            configure_viewport(self.id, **{attr: value})
         else:
             object.__setattr__(self, attr, value)
-
-    @property
-    def id(self):
-        return self.__id
 
     @property
     def exists(self):
@@ -171,16 +169,16 @@ class Viewport(ThemeSupport, AppHandlerSupport):
         """Updates the viewport configuration.
         
         """
-        dpg.configure_viewport(self.__id, **config)
+        dpg.configure_viewport(self.id, **config)
 
     def configuration(self, option=None):
         """Returns the entire current viewport configuration, or only
         <option> if specified.
         """
         if option:
-            return dpg.get_viewport_configuration(self.__id)[option]
+            return dpg.get_viewport_configuration(self.id)[option]
 
-        return dpg.get_viewport_configuration(self.__id)
+        return dpg.get_viewport_configuration(self.id)
 
     def maximize(self):
         """Maximizes the viewport.
@@ -423,10 +421,10 @@ class Viewport(ThemeSupport, AppHandlerSupport):
     ##########################################
     ########### Internal-use Only ############
     ##########################################
-    __command = dpg.create_viewport
-    __id = "DPG_NOT_USED_YET"
     __exists = False
-    __config = (
+    _command = dpg.create_viewport
+    _id = "DPG_NOT_USED_YET"
+    _item_config = (
         "title",
         "small_icon",
         "large_icon",
@@ -446,25 +444,25 @@ class Viewport(ThemeSupport, AppHandlerSupport):
     )
 
     def _setup_viewport(self):
-        cls = self.__class__
+        cls = type(self)
 
         if cls.__exists:
             raise ViewportError("Instance already exists, and only 1 instance can exist.")
 
         cls.__exists = True
 
-        config = {option:getattr(self, option) for option in cls.__config}
-        cls.__command(**config)
+        config = {option:getattr(self, option) for option in cls._item_config}
+        cls._command(**config)
         # Now __getattribute__ can properly set configuration
         # options with the viewport made.
-        del self.__config
+        del self._item_config
 
         # must be called before dpg.setup_dearpygui
         if self.__docking_enabled:  
             dpg.enable_docking(dock_space=self.__dock_space)
 
-        dpg.setup_dearpygui(viewport=self.__id)
-        dpg.show_viewport(self.__id)
+        dpg.setup_dearpygui(viewport=self.id)
+        dpg.show_viewport(self.id)
 
         # Re-binding the global reference to the real viewport
         dpgwidgets.Application = self
@@ -478,7 +476,7 @@ class _Viewport(Viewport):
     """
     def __init__(self):
         # Initializing mixins
-        [super(c, self).__init__() for c in Viewport.mro()
+        [c.__init__(self) for c in Viewport.__bases__
          if c.__name__.endswith("Support")]
 
         # Fetching parameters
@@ -486,7 +484,7 @@ class _Viewport(Viewport):
         vp_attrs = {p.name: p.default for p in
                       vp_attrs if p.name != "kwargs"}
 
-        self.__config = ()
+        self._item_config = ()
         # Hard-coded for intellisense/language servers...
         self.title = vp_attrs["title"]
         self.small_icon = vp_attrs["small_icon"]
