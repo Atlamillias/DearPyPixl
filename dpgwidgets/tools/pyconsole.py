@@ -7,7 +7,8 @@ import sys
 from dearpygui import dearpygui as dpg
 
 from dpgwidgets import widget
-from dpgwidgets import widget
+from dpgwidgets.containers import Window
+from dpgwidgets.constants import AppItemType
 from dpgwidgets.libsrc.containers import Child, Group
 from dpgwidgets.libsrc.widgets import Text, InputText
 
@@ -42,14 +43,14 @@ class PyConsole(InteractiveInterpreter):
 
     def __init__(
         self,
-        parent: widget.Container,
+        parent: AppItemType = None,
         locals: dict = None,
         filename: str = None,
         banner_msg: str = None,
         exit_msg: str = None,
     ):
         super().__init__(locals)
-        self.parent = parent
+        self.parent = parent or Window()
         self.locals = locals or vars(__import__(__name__.split(".")[0]))
         self.filename = filename or self.__class__.__name__
         self.banner_msg = banner_msg or (
@@ -59,7 +60,7 @@ class PyConsole(InteractiveInterpreter):
         self.exit_msg = exit_msg or f"Exiting {self.__class__.__name__}...\n"
 
         with self.parent:
-            with Child(border = False) as self.stdout:
+            with Child(border=False) as self.stdout:
                 stdout_txt = Text(self.banner_msg)
             dpg.add_separator()
             dpg.add_dummy(height=1)
@@ -71,7 +72,7 @@ class PyConsole(InteractiveInterpreter):
                     height=25,
                     on_enter=True,
                     tab_input=True,
-                    callback=self.process
+                    callback=self.process,  
                 )
 
         self._buffer = []
@@ -81,10 +82,11 @@ class PyConsole(InteractiveInterpreter):
 
         @self.parent.on_resize
         def stdio_resize():
-            self.stdout.height = self.parent.height - (self.stdin.height or 30) - 57
+            self.stdout.height = self.parent.height - 30
             
             self.stdin.width = self.parent.width
             stdout_txt.wrap = self.stdout.width - 20
+            self.parent.y_scroll_pos = -1.0
         
         stdio_resize()
 
