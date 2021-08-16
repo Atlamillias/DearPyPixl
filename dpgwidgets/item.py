@@ -48,7 +48,7 @@ class Item(metaclass=ABCMeta):
         if parent := kwargs.pop("parent", None):
             kwargs["parent"] = int(parent)
         # Provides a readable label if None (hidden by passing empty strings).
-        if (label := kwargs.get("label", None)) is None:
+        if kwargs.get("label", None) is None:
             kwargs["label"] = cls.__name__
 
         cls._command(id=self._id,**kwargs)  # item creation
