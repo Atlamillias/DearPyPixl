@@ -1,16 +1,12 @@
 import inspect
 from inspect import Parameter
 import typing
-from typing import Callable, Any
+from typing import Callable, Any, Union, Dict, Tuple, Set, List
 from pathlib import Path
 
 import dearpygui.dearpygui as dearpygui
 import dearpygui._dearpygui as _dearpygui
 
-from . import item as _item
-from . import widget as _widget
-from .item import Item, ContextSupport
-from .widget import Widget, Container
 from ._pyfiletext import (
     PyTextNamespace, 
     PyTextObject, 
@@ -21,9 +17,11 @@ from ._pyfiletext import (
 
 # Namespaces (imports)
 _DEARPYGUI_ = PyTextNamespace(dearpygui)
-_TYPING_ = PyTextNamespace(typing, imports=[Any, Callable])
-_ITEM_ = PyTextNamespace(_item, imports=[Item, ContextSupport])
-_WIDGETS_ = PyTextNamespace(_widget, imports=[Container, Widget])
+_TYPING_ = PyTextNamespace(
+    typing, imports=[Any, Callable, Union, Dict, Tuple, Set, List])
+# These are strings and not references to avoid circular imports.
+_ITEM_ = PyTextNamespace("dpgwidgets.item", imports=["Item", "ContextSupport"])
+_WIDGETS_ = PyTextNamespace("dpgwidgets.widget", imports=["Container", "Widget"])
 
 # paths
 CWD = Path(__file__).parent
@@ -65,10 +63,10 @@ def process_container(cmd_name: str, command: Callable, item_type: str):
         PYFILES["containers"] = PyFile("containers", DIRPATH)
         PYFILES["containers"].imports = [
             _TYPING_, _DEARPYGUI_,
-            PyTextNamespace(_widget, imports=[Container])
+            PyTextNamespace("dpgwidgets.widget", imports=["Container"])
         ]
     item_name = cmd_name.replace("add_", "")
-    container = make_textclass(item_name, command, [Container])
+    container = make_textclass(item_name, command, ["Container"])
     PYFILES[item_type].objects.append(container)
 
 def process_widget(cmd_name: str, command: Callable):
@@ -76,10 +74,10 @@ def process_widget(cmd_name: str, command: Callable):
         PYFILES[item_type] = PyFile(item_type, DIRPATH)
         PYFILES[item_type].imports = [
             _TYPING_, _DEARPYGUI_,
-            PyTextNamespace(_widget, imports=[Widget])
+            PyTextNamespace("dpgwidgets.widget", imports=["Widget"])
         ]
     item_name = cmd_name.replace("add_", "")
-    widget = make_textclass(item_name, command, [Widget])
+    widget = make_textclass(item_name, command, ["Widget"])
     PYFILES["widgets"].objects.append(widget)
 
 def process_draw_item(cmd_name: str, command: Callable, is_container: bool = False):
@@ -91,7 +89,7 @@ def process_draw_item(cmd_name: str, command: Callable, is_container: bool = Fal
         process_container(cmd_name, command, item_type)
     else:
         item_name = cmd_name.replace("draw_", "")
-        widget = make_textclass(item_name, command, [Widget])
+        widget = make_textclass(item_name, command, ["Widget"])
         PYFILES[item_type].objects.append(widget)
 
 def process_plot_item(cmd_name: str, command: Callable, is_container: bool = False):
@@ -103,7 +101,7 @@ def process_plot_item(cmd_name: str, command: Callable, is_container: bool = Fal
         process_container(cmd_name, command, item_type)
     else:
         item_name = cmd_name.replace("add_", "")
-        widget = make_textclass(item_name, command, [Widget])
+        widget = make_textclass(item_name, command, ["Widget"])
         PYFILES[item_type].objects.append(widget)
 
 def process_node_item(cmd_name: str, command: Callable, is_container: bool = False):
@@ -115,7 +113,7 @@ def process_node_item(cmd_name: str, command: Callable, is_container: bool = Fal
         process_container(cmd_name, command, item_type)
     else:
         item_name = cmd_name.replace("add_", "")
-        widget = make_textclass(item_name, command, [Widget])
+        widget = make_textclass(item_name, command, ["Widget"])
         PYFILES[item_type].objects.append(widget)
 
 def process_val_item(cmd_name: str, command: Callable, is_container: bool = False):
@@ -125,11 +123,11 @@ def process_val_item(cmd_name: str, command: Callable, is_container: bool = Fals
 
     if is_container:
         item_name = cmd_name.replace("add_", "")
-        container = make_textclass(item_name, command, [Item, ContextSupport])
+        container = make_textclass(item_name, command, ["Item", "ContextSupport"])
         PYFILES[item_type].objects.append(container)
     else:
         item_name = cmd_name.replace("add_", "")
-        widget = make_textclass(item_name, command, [Item])
+        widget = make_textclass(item_name, command, ["Item"])
         PYFILES[item_type].objects.append(widget)
 
 def process_style_item(cmd_name: str, command: Callable, is_container: bool = False):
@@ -139,11 +137,11 @@ def process_style_item(cmd_name: str, command: Callable, is_container: bool = Fa
 
     if is_container:
         item_name = cmd_name.replace("add_", "")
-        container = make_textclass(item_name, command, [Item, ContextSupport])
+        container = make_textclass(item_name, command, ["Item", "ContextSupport"])
         PYFILES[item_type].objects.append(container)
     else:
         item_name = cmd_name.replace("add_", "")
-        widget = make_textclass(item_name, command, [Item])
+        widget = make_textclass(item_name, command, ["Item"])
         PYFILES[item_type].objects.append(widget)
 
 def process_handler_item(cmd_name: str, command: Callable, is_container: bool = False):
@@ -153,11 +151,11 @@ def process_handler_item(cmd_name: str, command: Callable, is_container: bool = 
 
     if is_container:
         item_name = cmd_name.replace("add_", "")
-        container = make_textclass(item_name, command, [Item, ContextSupport])
+        container = make_textclass(item_name, command, ["Item", "ContextSupport"])
         PYFILES[item_type].objects.append(container)
     else:
         item_name = cmd_name.replace("add_", "")
-        widget = make_textclass(item_name, command, [Item])
+        widget = make_textclass(item_name, command, ["Item"])
         PYFILES[item_type].objects.append(widget)
 
 def process_registry_item(cmd_name: str, command: Callable, is_container: bool = False):
@@ -167,11 +165,11 @@ def process_registry_item(cmd_name: str, command: Callable, is_container: bool =
 
     if is_container:
         item_name = cmd_name.replace("add_", "")
-        container = make_textclass(item_name, command, [Item, ContextSupport])
+        container = make_textclass(item_name, command, ["Item", "ContextSupport"])
         PYFILES[item_type].objects.append(container)
     else:
         item_name = cmd_name.replace("add_", "")
-        widget = make_textclass(item_name, command, [Item])
+        widget = make_textclass(item_name, command, ["Item"])
         PYFILES[item_type].objects.append(widget)
 
 # WIP
@@ -221,7 +219,7 @@ def main():
     ## The summary of the script follows:
     ##    - Parse dearpygui as a text file, finding functions decorated w/
     ##    @contextmanager as potential containers.
-    ##    - Containers are sorted and processed as they are found. "General"
+    ##    - "Container"s are sorted and processed as they are found. "General"
     ##    containers are written to "containers.py".
     ##    - Non-containers are searched for next. Like containers they are
     ##    sorted and processed on-find. "General" non-containers are written
@@ -258,7 +256,7 @@ def main():
                     process_item[item_type](cmd_name, command, True)
                     break
             else:
-                # Containers w/o a specific home are written to containers.py.
+                # "Container"s w/o a specific home are written to containers.py.
                 process_container(cmd_name, command, "containers")
             REGISTERED_COMMANDS.append(cmd_name)
 
