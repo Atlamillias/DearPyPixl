@@ -3,8 +3,7 @@ from typing import Sequence
 from pathlib import Path
 
 from dearpygui import dearpygui as dpg
-
-from dpgwidgets.constants import COLOR_OPTN, STYLE_OPTN, Registry
+from dpgwidgets.constants import COLOR_OPTN, STYLE_OPTN
 
 
 # NOTE: DearPyGui seperates "Theme" and "Font". The process
@@ -125,7 +124,7 @@ class Theme:
     _color_ids = None
     _style_ids = None
     _font_id = None  # id of the font item that matches the set size
-    __id = None
+    _id = None
 
     __color = None
     __style = None
@@ -141,7 +140,7 @@ class Theme:
         self._setup()
 
     def __int__(self):
-        return int(self.__id)
+        return int(self._id)
 
     def __str__(self):
         return str(self.label)
@@ -149,7 +148,7 @@ class Theme:
     # DPG theme stuff
     @property
     def id(self):
-        return self.__id
+        return self._id
 
     @property
     def label(self):
@@ -158,7 +157,7 @@ class Theme:
     @label.setter
     def label(self, value: str):
         self.__label = value
-        dpg.configure_item(self.__id, label=value)
+        dpg.configure_item(self._id, label=value)
 
     # Theme attributes
     @property
@@ -219,15 +218,15 @@ class Theme:
 
     def refresh(self):
         self._setup()
-        dpg.delete_item(self.__id, children_only=True)
+        dpg.delete_item(self._id, children_only=True)
     
     def _setup(self):
         # {option: theme_item_id, ...}
         self._color_ids = {attr: None for attr in COLOR_OPTN}
         self._style_ids = {attr: None for attr in STYLE_OPTN}
 
-        if not self.__id:
-            with dpg.theme(label=self.__label, **self.__kwargs) as self.__id:
+        if not self._id:
+            with dpg.theme(label=self.__label, **self.__kwargs) as self._id:
                 pass
 
         # theme "parts"
@@ -241,7 +240,7 @@ class Theme:
   
 
     def _clean(self):
-        dpg.delete_item(self.__id, children_only=True)
+        dpg.delete_item(self._id, children_only=True)
 
 
 
@@ -582,7 +581,7 @@ class Font:
         # If a font with that size doesn't exist, then we create one
         # and add it to the cache using the parameters passed when 
         # the Font instance was created.
-        with dpg.font(self.__file, size, parent=Registry.FONT.value, **self.__kwargs) as font:
+        with dpg.font(self.__file, size, **self.__kwargs) as font:
             if self.__font_range:
                 start, stop = self.__font_range
                 dpg.add_font_range(start, stop)
