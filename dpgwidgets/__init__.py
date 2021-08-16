@@ -37,7 +37,7 @@ import dpgwidgets.libsrc as dpglib
 
 from dpgwidgets.app import Viewport, _Viewport
 from dpgwidgets.theme import Font, Theme
-from dpgwidgets.constants import Key, Mouse
+from dpgwidgets.keycodes import Key, Mouse
 
 
 __version__ = "0.2.42"
