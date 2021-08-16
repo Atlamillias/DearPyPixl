@@ -1,6 +1,6 @@
+from __future__ import annotations
 from abc import ABCMeta, abstractmethod
 from typing import Callable
-
 
 from dearpygui import dearpygui as dpg
 from dearpygui._dearpygui import (
@@ -8,6 +8,7 @@ from dearpygui._dearpygui import (
     get_item_configuration,
     set_value,
     delete_item,
+    generate_uuid,
 )
 
 
@@ -17,9 +18,9 @@ __all__ = [
 ]
 
 
-_APPITEMS = {}
 # This is called a lot (or called *enough*, rather)
 _OBJ_GET_ATTRIBUTE = object.__getattribute__
+
 
 
 class Item(metaclass=ABCMeta):
@@ -33,63 +34,79 @@ class Item(metaclass=ABCMeta):
 
     @abstractmethod
     def _command() -> Callable: ...
-    __config = set()
+    _item_config: list[str] = set()
+    _addl_config_in_repr: list[str] = []  # custom attrs/properties included in repr
+
+    APPITEMS = {}
 
     def __init__(self, **kwargs):
+        self._id = kwargs.pop("id", None) or generate_uuid()
+        self._item_config = {}  # this remains empty until internal item is made
+        cls = type(self)
         # Internal library returns `int` (id) when making items. Calling int on
         # a parent means it can be <class 'Item'> instances or 'raw' items.
         if parent := kwargs.pop("parent", None):
             kwargs["parent"] = int(parent)
-
-        cls = self.__class__
         # Provides a readable label if None (hidden by passing empty strings).
-        kwargs["label"] = kwargs.get('label') or cls.__name__
-        self.__id = cls._command(**kwargs)  # item creation
+        if (label := kwargs.get("label", None)) is None:
+            kwargs["label"] = cls.__name__
+
+        cls._command(id=self._id,**kwargs)  # item creation
         # We aren't tracking 'default_value' - most items can have a 'value'
         # but only some have 'default_value', which is weird.
         if default_value := kwargs.pop("default_value", None):
-            set_value(self.__id, default_value)
+            set_value(self._id, default_value)
 
-        if not self.__config:
+        if not self._item_config:
             # id isn't tracked in config because it's set as a property and
-            # can't be changed internally anyway. So if it was manually 
+            # can't be changed internally anyway. So if it was manually
             # provided, we don't want it in here.
             kwargs.pop("id", None)
-            cls.__config = {option for option in kwargs.keys()}
+            cls._item_config = {option for option in kwargs.keys()}
 
         # Registering new item
-        _APPITEMS[self.__id] = self
+        cls.APPITEMS[self._id] = self
         super().__init__()
-        
 
     def __str__(self):
         try:
-            return self.label
+            return get_item_configuration(self._id)["label"]
         except AttributeError:
-            return f"{self.__id}"
+            return f"{self._id}"
 
     def __int__(self):
-        return self.__id
+        return self._id
 
     def __repr__(self):
-        return f"{self.__class__.__qualname__}"
+        config = {"id": self._id, "label": None} | {attr: getattr(self,attr) for
+                                                    attr in self._addl_config_in_repr}
+        for optn, val in self.configuration().items():
+            # Formatting strings for a proper representation.
+            if isinstance(val, str):
+                val = f"'{val}'"
+            config[optn] = val
+
+        config = ", ".join((
+            f'{optn}={val}' for optn, val in config.items()
+        )).rstrip(", ")
+        return f"{self.__class__.__qualname__}({config})"
 
     def __getattribute__(self, attr: str):
-        if attr in _OBJ_GET_ATTRIBUTE(self, "_Item__config"):
-            id = _OBJ_GET_ATTRIBUTE(self, "_Item__id")
+        if attr in _OBJ_GET_ATTRIBUTE(self, "_item_config"):
+            id = _OBJ_GET_ATTRIBUTE(self, "_id")
             return get_item_configuration(id)[attr]
 
         return _OBJ_GET_ATTRIBUTE(self, attr)
 
     def __setattr__(self, attr, value):
-        if attr in _OBJ_GET_ATTRIBUTE(self, "_Item__config"):
-            configure_item(self.__id, **{attr: value})
+        if attr in _OBJ_GET_ATTRIBUTE(self, "_item_config"):
+            configure_item(self._id, **{attr: value})
         else:
             object.__setattr__(self, attr, value)
 
     @property
     def id(self):
-        return self.__id
+        return self._id
 
     def delete(self):
         """Deletes the item and any child items it may have.
@@ -101,11 +118,11 @@ class Item(metaclass=ABCMeta):
         so cleanup might not run even if it were defined (which it's not).
         """
         try:
-            delete_item(self.__id)
+            delete_item(self._id)
         except SystemError:
             pass
 
-        _APPITEMS.pop(self.__id, None)
+        self.__class__.APPITEMS.pop(self._id, None)
 
         del self
 
@@ -126,11 +143,13 @@ class Item(metaclass=ABCMeta):
         parameters used to create an instance of an item. This will
         not include other instance attributes, and does not replace
         `getattr`.
-        
         """
-        configs = get_item_configuration(self.__id)
+        configs = get_item_configuration(self._id)
         return configs.get(option, configs)
 
+
+    def _item_setup(self):
+        ...
 
 
 
@@ -139,7 +158,6 @@ class ContextSupport:  # mixin
     as containers. Containers need to be set as the "parent" -
     the item that will be holding any new items created within the
     context of their **with** statement.
-     
     """
     def __enter__(self):
         dpg.push_container_stack(self.id)
@@ -147,3 +165,7 @@ class ContextSupport:  # mixin
 
     def __exit__(self, exec_type, exec_value, traceback):
         dpg.pop_container_stack()
+
+
+
+
