@@ -40,9 +40,12 @@ def show_developer_window():
         dev.theme_color.title_bg_active = (
             0.14 * 255, 0.14 * 255, 0.14 * 255, 1.00 * 255)
 
-        with Child(height=130):
-            fields = ("Mouse pos", "Runtime",
-                      "Frames (all)", "Frames (/s)")
+        with Child(height=200):
+            fields = ("Mouse POS", "Runtime",
+                      "Frames (all)", "Frames (/s)",
+                      "Key Input",
+                      "Mouse Input"
+                      )
             with Group(width=50) as headers:
                 [Text(f) for f in fields]
             dpg.add_same_line(spacing=5)
@@ -54,6 +57,9 @@ def show_developer_window():
                 runtime = Text("")
                 frames = Text("")
                 framerate = Text("")
+                keycode = Text("")
+                mousekey = Text("")
+                
 
         btn_width = dev.width - 10
         Button("Documentation", callback=dpg.show_documentation, width=btn_width)
@@ -73,11 +79,50 @@ def show_developer_window():
     @Application.on_render
     def update_dev():
         x, y = Application.get_mouse_pos(local=False)
-
         mouse_pos.value = f"{x}, {y}"
         runtime.value = f"{datetime.timedelta(seconds=Application.runtime())}"
         frames.value = f"{Application.frame_count()}"
         framerate.value = f"{Application.framerate()}"
+
+    # Keyboard polling
+    KeysDown = []
+    @Application.on_key_press
+    def capture_key(sender, sender_data):
+        if sender_data not in KeysDown:
+            KeysDown.append(sender_data)
+
+        keycode.value = f"{KeysDown[-1]} ({chr(sum(KeysDown))})"
+
+    @Application.on_key_up
+    def clear_key(sender, sender_data):
+        KeysDown.remove(sender_data)
+
+        if KeysDown:
+            keycode.value = f"{KeysDown[-1]} ({chr(sum(KeysDown))})"
+        else:
+            keycode.value = ""
+
+
+    # Mouse polling
+    MouseDown = []
+    @Application.on_mouse_click
+    def capture_mouse(sender, sender_data):
+        if sender_data not in MouseDown:
+            MouseDown.append(sender_data)
+
+        mousekey.value = MouseDown[-1]
+
+    @Application.on_mouse_up
+    def clear_mouse(sender, sender_data):
+        MouseDown.remove(sender_data)
+
+        if KeysDown:
+            mousekey.value = KeysDown[-1]
+
+        else:
+            mousekey.value = ""
+
+        
 
 
 def show_style_editor(sender: str = "", data: Any = None):
