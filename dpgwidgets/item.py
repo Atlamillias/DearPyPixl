@@ -148,11 +148,6 @@ class Item(metaclass=ABCMeta):
         return configs.get(option, configs)
 
 
-    def _item_setup(self):
-        ...
-
-
-
 class ContextSupport:  # mixin
     """Mixin class for Item subclasses that are intended to act
     as containers. Containers need to be set as the "parent" -
