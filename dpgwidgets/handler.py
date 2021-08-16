@@ -3,7 +3,6 @@ from abc import ABCMeta, abstractmethod
 from typing import Callable, Any
 import functools
 import inspect
-import copy
 
 from dearpygui import dearpygui as dpg
 
