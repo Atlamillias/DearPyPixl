@@ -40,7 +40,7 @@ from dpgwidgets.theme import Font, Theme
 from dpgwidgets.keycodes import Key, Mouse
 
 
-__version__ = "0.2.49"
+__version__ = "0.2.51"
 
 __all__ = [
     # high-level objects
