@@ -349,6 +349,20 @@ class Viewport(Item, ThemeSupport, AppHandlerSupport):
         t = idpg.get_total_time() or 1
         return round(frames / t)
 
+    def event_handlers(self):
+        """Returns a list of event handlers that are currently registered
+        to the application.
+
+        NOTE: Calling the `delete` method on the references in the returned
+        list will unregister the handler from the application and destroy the
+        handler.
+        """
+        cls = type(self)
+        registry_id = idpg.mvReservedUUID_1
+        return [cls.APPITEMS[item] for item in cls.APPITEMS if
+                idpg.get_item_info(item)["parent"] == registry_id]
+
+
     @property
     def docking_enabled(self) -> bool:
         return self.__docking_enabled
