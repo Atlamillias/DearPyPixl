@@ -34,14 +34,13 @@ class Item(metaclass=ABCMeta):
 
     @abstractmethod
     def _command() -> Callable: ...
-    _item_config: list[str] = set()
+    _item_config = set()
     _addl_config_in_repr: list[str] = []  # custom attrs/properties included in repr
 
     APPITEMS = {}
 
     def __init__(self, **kwargs):
         self._id = kwargs.pop("id", None) or generate_uuid()
-        self._item_config = {}  # this remains empty until internal item is made
         cls = type(self)
         # Internal library returns `int` (id) when making items. Calling int on
         # a parent means it can be <class 'Item'> instances or 'raw' items.
