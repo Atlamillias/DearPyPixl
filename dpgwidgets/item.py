@@ -1,15 +1,18 @@
 from __future__ import annotations
 from abc import ABCMeta, abstractmethod
-from typing import Callable
+from typing import Callable, Any
 
 from dearpygui import dearpygui as dpg
 from dearpygui._dearpygui import (
     configure_item,
     get_item_configuration,
+    get_item_info,
     set_value,
+    get_value,
     delete_item,
     generate_uuid,
 )
+from dpgwidgets.error import AppItemConfigError
 
 
 __all__ = [
@@ -29,12 +32,11 @@ class Item(metaclass=ABCMeta):
     Args:
         **kwargs (optional): Configuration options used to create
     an item internally.
-    
     """
 
     @abstractmethod
     def _command() -> Callable: ...
-    _item_config = set()
+    _appitem_config = set()
     _addl_config_in_repr: list[str] = []  # custom attrs/properties included in repr
 
     APPITEMS = {}
@@ -46,24 +48,31 @@ class Item(metaclass=ABCMeta):
         # a parent means it can be <class 'Item'> instances or 'raw' items.
         if parent := kwargs.pop("parent", None):
             kwargs["parent"] = int(parent)
-        # Provides a readable label if None (hidden by passing empty strings).
+        # Provides a readable label if None. Not using false equality i.e.
+        # `if not x` because passing an empty string is a valid value 
+        # (it hides the label).
         if kwargs.get("label", None) is None:
             kwargs["label"] = cls.__name__
 
-        cls._command(id=self._id,**kwargs)  # item creation
+        # Item is created here.
+        cls._command(id=self._id,**kwargs)
         # We aren't tracking 'default_value' - most items can have a 'value'
         # but only some have 'default_value', which is weird.
         if default_value := kwargs.pop("default_value", None):
             set_value(self._id, default_value)
-
-        if not self._item_config:
-            # id isn't tracked in config because it's set as a property and
-            # can't be changed internally anyway. So if it was manually
-            # provided, we don't want it in here.
+        # `__getattribute__` and `__setattr__` catch attrs found in
+        # self._appitem_config to properly get/set them. They are bound to 
+        # the class and not instance. This is so the behavior can be 
+        # "turned off" by binding self._appitem_config to an empty sequence.
+        # Deleting the instance attribute will restore the behavior.
+        if not self._appitem_config:
+            # We aren't tracking "special" configuration. They either
+            # can't be set, or have gimmicks and require unique handling.
             kwargs.pop("id", None)
-            cls._item_config = {option for option in kwargs.keys()}
+            kwargs.pop("parent", None)
+            cls._appitem_config = {option for option in kwargs.keys()}
 
-        # Registering new item
+        # Registering new item.
         cls.APPITEMS[self._id] = self
         super().__init__()
 
@@ -77,35 +86,95 @@ class Item(metaclass=ABCMeta):
         return self._id
 
     def __repr__(self):
+        # Building this early to have some control over the order.
         config = {"id": self._id, "label": None} | {attr: getattr(self,attr) for
                                                     attr in self._addl_config_in_repr}
         for optn, val in self.configuration().items():
-            # Formatting strings for a proper representation.
+            # Wrapping strings w/single quotes to improve readability.
             if isinstance(val, str):
                 val = f"'{val}'"
             config[optn] = val
-
+        # Output as "class(param=p_value,...)"
         config = ", ".join((
             f'{optn}={val}' for optn, val in config.items()
         )).rstrip(", ")
-        return f"{self.__class__.__qualname__}({config})"
+        return f"{type(self).__qualname__}({config})"
 
     def __getattribute__(self, attr: str):
-        if attr in _OBJ_GET_ATTRIBUTE(self, "_item_config"):
+        if attr in _OBJ_GET_ATTRIBUTE(self, "_appitem_config"):
             id = _OBJ_GET_ATTRIBUTE(self, "_id")
             return get_item_configuration(id)[attr]
-
         return _OBJ_GET_ATTRIBUTE(self, attr)
 
     def __setattr__(self, attr, value):
-        if attr in _OBJ_GET_ATTRIBUTE(self, "_item_config"):
+        if attr in _OBJ_GET_ATTRIBUTE(self, "_appitem_config"):
             configure_item(self._id, **{attr: value})
-        else:
-            object.__setattr__(self, attr, value)
+            return None
+        object.__setattr__(self, attr, value)
 
     @property
     def id(self):
+        """The unique identifier for the item. Cannot be changed
+        once the item has been instantiated.
+        """
         return self._id
+
+    @property
+    def parent(self):
+        """The item parenting this one. Setting this will attempt to
+        re-parent the item.
+        """
+        current_parent = get_item_info(self._id)["parent"]
+        # Tries to return the parent object, but returns
+        # the id if it doesn't exist.
+        return type(self).APPITEMS.get(current_parent, current_parent)
+    @parent.setter
+    def parent(self, value):
+        value = int(value)
+        current_parent = get_item_info(self._id)["parent"]
+        # If the value would be the default value (0 or None),
+        # or if the parent wouldn't change, do nothing.
+        if not value or value == current_parent:
+            return None
+        # Moving the item is the only way to "re-parent".
+        try:
+            dpg.move_item(self._id, parent=value)
+        except SystemError:
+            item_exists = dpg.does_item_exist(value)
+            # 2021-08-18: `get_item_info(...)["container"]` always
+            # returns False on window items. Unsure if this is a bug.
+            if item_exists and get_item_info(value)["container"]:
+                msg = f"'parent' is unsupported by <class '{type(self).__name__}'> and cannot be set."
+            elif item_exists:
+                msg = f"'parent' must be a container."
+            else:
+                msg = f"'parent' could not be found or does not exist."
+            raise AppItemConfigError(msg)
+
+    @property
+    def value(self) -> Any:
+        """Return the item value (if any).
+        """
+        return get_value(self.id)
+    @value.setter
+    def value(self, value: Any):
+        try:
+            set_value(self.id, value)
+        except SystemError:
+            raise AppItemConfigError(
+                f"'value' is unsupported by <class '{type(self).__name__}'> and cannot be set."
+            )
+        # 2021-08-06: A SystemError should be thrown if the item
+        # isn't capable of having a value set on it, but it is
+        # being supressed internally - the `except` code will
+        # never actually run. As a workaround, we check to see if
+        # the value we tried to set "stuck". If the value is still
+        # None, we raise an error. This should be deleted later
+        # once the issue is resolved.
+        if get_value(self.id) != value:
+            raise AppItemConfigError(
+                f"'value' is unsupported by <class '{type(self).__name__}'> and cannot be set."
+            )
 
     def delete(self):
         """Deletes the item and any child items it may have.
@@ -121,7 +190,7 @@ class Item(metaclass=ABCMeta):
         except SystemError:
             pass
 
-        self.__class__.APPITEMS.pop(self._id, None)
+        type(self).APPITEMS.pop(self._id, None)
 
         del self
 
