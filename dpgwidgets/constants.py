@@ -8,8 +8,8 @@ if TYPE_CHECKING:
     from dpgwidgets.item import Item
     from dpgwidgets.widget import Widget, Container
 
-    AppItemType = Union[Item, Widget, Container]
-    ItemType = Union[int, AppItemType]
+    AppItemType = Union[Item, Widget, Container]  # Item instances only
+    ItemType = Union[int, str, AppItemType]  # Any, "backwards compatable"
 
 
 ## Theming ##
