@@ -45,7 +45,7 @@ def make_textclass(item_name, command, baseclass: list[object] = []):
 
 def _handle_parameters(command: Callable):
     parameters = [p for p in inspect.signature(command).parameters.values()
-                  if p.name != "id"]
+                  if p.name != "id" or p.name != "tag"]
     if "kwargs" not in (p.name for p in parameters):
         parameters.append(Parameter("kwargs", Parameter.VAR_KEYWORD))
 
