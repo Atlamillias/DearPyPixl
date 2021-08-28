@@ -1,22 +1,10 @@
-from typing import Any, Callable
-from dataclasses import dataclass
 import datetime
+from pixle.application import Application
+from pixle.containers import Window, Child, Group
+from pixle.widgets import Text, Separator
+from pixle.keycodes import Key, Mouse
+from pixle.itemtypes import Item
 
-from dearpygui import dearpygui as dpg
-
-from dpgwidgets import Application as App
-from dpgwidgets.libsrc.containers import Window, Group, Child
-from dpgwidgets.libsrc.widgets import Button, Text, Separator, SameLine
-from dpgwidgets.theme import Theme
-from dpgwidgets.constants import AppItemType
-from dpgwidgets.keycodes import Key, Mouse
-
-
-@dataclass
-class InfoHandler:
-    header: str
-    value_item: AppItemType = None
-    value_callback: Callable = None
 
 
 class AppInfo(Child):
@@ -36,11 +24,13 @@ class AppInfo(Child):
     _key_poll = (
         ""
     )
-    def __init__(self, parent: AppItemType = None):
+
+    def __init__(self, parent: Item = None):
         super().__init__(
             autosize_x=True,
-            parent=parent or Window(label="AppInfo",width=400, height=500)
+            parent=parent or Window(label="AppInfo", width=400, height=500)
         )
+        self.App = Application()
         self.AppInfo = Group(parent=self, horizontal=True)
         # appinfo
         self.runtime = None
@@ -76,37 +66,37 @@ class AppInfo(Child):
                     Text("Down (current)")
                     Text("Up (previous)")
                 with Group():
-                    self.runtime = Text(":",color=[150, 150, 150])
+                    self.runtime = Text(":", color=[150, 150, 150])
                     self.frames_all = Text(":", color=[150, 150, 150])
                     self.frames_per_sec = Text(":", color=[150, 150, 150])
                     Separator()
                     self.mouse_pos = Text(":", color=[150, 150, 150])
-                    self.mouse_drag_delta_now = Text(":", color=[150, 150, 150])
-                    self.mouse_down_now=Text(":", color = [150, 150, 150])
+                    self.mouse_drag_delta_now = Text(
+                        ":", color=[150, 150, 150])
+                    self.mouse_down_now = Text(":", color=[150, 150, 150])
                     self.mouse_up_prev = Text(":", color=[150, 150, 150])
                     self.mouse_whl_prev = Text(":", color=[150, 150, 150])
                     Separator()
                     self.key_down_now = Text(":", color=[150, 150, 150])
                     self.key_up_prev = Text(":", color=[150, 150, 150])
 
-            @App.on_render
+            @self.App.on_render
             def update_render_info():
                 # AppInfo
-                self.runtime.value = f":    {datetime.timedelta(seconds=App.runtime())}"
-                self.frames_all.value = f":    {App.frame_count()}"
-                self.frames_per_sec.value = f":    {App.framerate()}"
+                self.runtime.value = f":    {datetime.timedelta(seconds=self.App.runtime())}"
+                self.frames_all.value = f":    {self.App.frame_count()}"
+                self.frames_per_sec.value = f":    {self.App.framerate()}"
                 # Mouse
-                x, y = App.get_mouse_pos(local=False)
+                x, y = self.App.get_mouse_pos(local=False)
                 self.mouse_pos.value = f":    {x}, {y}"
 
-
-            @App.on_key_press(key=Key.ANY.value)
+            @self.App.on_key_press(key=Key.ANY.value)
             def update_on_keypress(sender, sender_data, user_data):
                 if sender_data not in self.keys_down:
                     self.keys_down.append(sender_data)
                 set_key_down_value()
 
-            @App.on_key_up(key=Key.ANY.value)
+            @self.App.on_key_up(key=Key.ANY.value)
             def update_on_keyup_info(sender, sender_data, user_data):
                 self.keys_down.remove(sender_data)
                 self.key_up_prev.value = f":    {Key(sender_data).name}"
@@ -118,15 +108,14 @@ class AppInfo(Child):
                     (f"{Key(k).name}" for k in self.keys_down)).rstrip(" + ")
                 self.key_down_now.value = key_str
 
-
-            @App.on_mouse_click(button=Mouse.ANY.value)
+            @self.App.on_mouse_click(button=Mouse.ANY.value)
             def update_mouse_click(sender, sender_data, user_data):
                 if sender_data not in self.mice_down:
                     self.mice_down.append(sender_data)
                 self.mouse_drag_delta_now.value = f":    0, 0"
                 set_mouse_click_value()
 
-            @App.on_mouse_up(button=Mouse.ANY.value)
+            @self.App.on_mouse_up(button=Mouse.ANY.value)
             def update_mouse_up(sender, sender_data, user_data):
                 self.mice_down.remove(sender_data)
                 self.mouse_up_prev.value = f":    {Mouse(sender_data).name}"
@@ -137,12 +126,11 @@ class AppInfo(Child):
                 mouse_str += " + ".join(
                     (f"{Mouse(b).name}" for b in self.mice_down)).rstrip(" + ")
                 self.mouse_down_now.value = mouse_str
-                
-            @App.on_mouse_wheel_scroll
+
+            @self.App.on_mouse_wheel_scroll
             def update_mouse_scroll(sender, sender_data, user_data):
                 self.mouse_whl_prev.value = f":    {sender_data}"
 
-            @App.on_mouse_drag
+            @self.App.on_mouse_drag
             def update_mouse_drag(sender, sender_data):
                 self.mouse_drag_delta_now.value = f":    {sender_data[1]}, {sender_data[2]}"
-

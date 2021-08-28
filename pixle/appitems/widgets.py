@@ -2,13 +2,11 @@ from typing import (
     Any,
     Callable,
     Union,
-    Dict,
     Tuple,
-    Set,
     List,
 )
 import dearpygui.dearpygui
-from dpgwidgets.widget import Widget
+from pixle.itemtypes.widget import Widget
 
 ##################################################
 ####### NOTE: This file is auto-generated. #######
@@ -90,7 +88,7 @@ class Slider(Widget):
             **filter_key (str): Used by filter widget.
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
-            **default_value (Union[List[float], Tuple[float]]): 
+            **value (Union[List[float], Tuple[float]]): 
             **max_x (float): Applies upper limit to slider.
             **max_y (float): Applies upper limit to slider.
             **max_z (float): Applies upper limit to slider.
@@ -124,7 +122,7 @@ class Slider(Widget):
         filter_key: str = '', 
         tracked: bool = False, 
         track_offset: float = 0.5, 
-        default_value: Union[List[float], Tuple[float]] = (0.0, 0.0, 0.0, 0.0), 
+        value: Union[List[float], Tuple[float]] = (0.0, 0.0, 0.0, 0.0), 
         max_x: float = 100.0, 
         max_y: float = 100.0, 
         max_z: float = 100.0, 
@@ -153,7 +151,7 @@ class Slider(Widget):
             filter_key=filter_key,
             tracked=tracked,
             track_offset=track_offset,
-            default_value=default_value,
+            value=value,
             max_x=max_x,
             max_y=max_y,
             max_z=max_z,
@@ -181,7 +179,7 @@ class Slider(Widget):
         self.filter_key = filter_key
         self.tracked = tracked
         self.track_offset = track_offset
-        self.default_value = default_value
+        self.value = value
         self.max_x = max_x
         self.max_y = max_y
         self.max_z = max_z
@@ -384,7 +382,7 @@ class Checkbox(Widget):
             **filter_key (str): Used by filter widget.
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
-            **default_value (bool): 
+            **value (bool): 
     Returns:
             Union[int, str]
     
@@ -410,7 +408,7 @@ class Checkbox(Widget):
         filter_key: str = '', 
         tracked: bool = False, 
         track_offset: float = 0.5, 
-        default_value: bool = False, 
+        value: bool = False, 
         **kwargs, 
     ):
         super().__init__(
@@ -431,7 +429,7 @@ class Checkbox(Widget):
             filter_key=filter_key,
             tracked=tracked,
             track_offset=track_offset,
-            default_value=default_value,
+            value=value,
             **kwargs,
         )
         self.label = label
@@ -451,13 +449,13 @@ class Checkbox(Widget):
         self.filter_key = filter_key
         self.tracked = tracked
         self.track_offset = track_offset
-        self.default_value = default_value
+        self.value = value
 
 
 class ColorButton(Widget):
     """Adds a color button.
     Args:
-            *default_value (Union[List[int], Tuple[int]]): 
+            *value (Union[List[int], Tuple[int]]): 
             **label (str): Overrides 'name' as label.
             **user_data (Any): User data for callbacks.
             **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
@@ -488,7 +486,7 @@ class ColorButton(Widget):
 
     def __init__(
         self, 
-        default_value: Union[List[int], Tuple[int]] = (0, 0, 0, 255), 
+        value: Union[List[int], Tuple[int]] = (0, 0, 0, 255), 
         label: str = None, 
         user_data: Any = None, 
         use_internal_label: bool = True, 
@@ -513,7 +511,7 @@ class ColorButton(Widget):
         **kwargs, 
     ):
         super().__init__(
-            default_value=default_value,
+            value=value,
             label=label,
             user_data=user_data,
             use_internal_label=use_internal_label,
@@ -537,7 +535,7 @@ class ColorButton(Widget):
             no_drag_drop=no_drag_drop,
             **kwargs,
         )
-        self.default_value = default_value
+        self.value = value
         self.label = label
         self.user_data = user_data
         self.use_internal_label = use_internal_label
@@ -564,7 +562,7 @@ class ColorButton(Widget):
 class ColorEdit(Widget):
     """Adds an RGBA color editor. Click the small color preview will provide a color picker. Click and draging the small color preview will copy the color to be applied on any other color widget.
     Args:
-            *default_value (Union[List[int], Tuple[int]]): 
+            *value (Union[List[int], Tuple[int]]): 
             **label (str): Overrides 'name' as label.
             **user_data (Any): User data for callbacks.
             **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
@@ -606,7 +604,7 @@ class ColorEdit(Widget):
 
     def __init__(
         self, 
-        default_value: Union[List[int], Tuple[int]] = (0, 0, 0, 255), 
+        value: Union[List[int], Tuple[int]] = (0, 0, 0, 255), 
         label: str = None, 
         user_data: Any = None, 
         use_internal_label: bool = True, 
@@ -642,7 +640,7 @@ class ColorEdit(Widget):
         **kwargs, 
     ):
         super().__init__(
-            default_value=default_value,
+            value=value,
             label=label,
             user_data=user_data,
             use_internal_label=use_internal_label,
@@ -677,7 +675,7 @@ class ColorEdit(Widget):
             input_mode=input_mode,
             **kwargs,
         )
-        self.default_value = default_value
+        self.value = value
         self.label = label
         self.user_data = user_data
         self.use_internal_label = use_internal_label
@@ -715,7 +713,7 @@ class ColorEdit(Widget):
 class ColorPicker(Widget):
     """Adds an RGB color picker. Right click the color picker for options. Click and drag the color preview to copy the color and drop on any other color widget to apply. Right Click allows the style of the color picker to be changed.
     Args:
-            *default_value (Union[List[int], Tuple[int]]): 
+            *value (Union[List[int], Tuple[int]]): 
             **label (str): Overrides 'name' as label.
             **user_data (Any): User data for callbacks.
             **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
@@ -758,7 +756,7 @@ class ColorPicker(Widget):
 
     def __init__(
         self, 
-        default_value: Union[List[int], Tuple[int]] = (0, 0, 0, 255), 
+        value: Union[List[int], Tuple[int]] = (0, 0, 0, 255), 
         label: str = None, 
         user_data: Any = None, 
         use_internal_label: bool = True, 
@@ -795,7 +793,7 @@ class ColorPicker(Widget):
         **kwargs, 
     ):
         super().__init__(
-            default_value=default_value,
+            value=value,
             label=label,
             user_data=user_data,
             use_internal_label=use_internal_label,
@@ -831,7 +829,7 @@ class ColorPicker(Widget):
             input_mode=input_mode,
             **kwargs,
         )
-        self.default_value = default_value
+        self.value = value
         self.label = label
         self.user_data = user_data
         self.use_internal_label = use_internal_label
@@ -917,7 +915,7 @@ class Colormap(Widget):
 class ColormapButton(Widget):
     """Adds a color button.
     Args:
-            *default_value (Union[List[int], Tuple[int]]): 
+            *value (Union[List[int], Tuple[int]]): 
             **label (str): Overrides 'name' as label.
             **user_data (Any): User data for callbacks.
             **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
@@ -948,7 +946,7 @@ class ColormapButton(Widget):
 
     def __init__(
         self, 
-        default_value: Union[List[int], Tuple[int]] = (0, 0, 0, 255), 
+        value: Union[List[int], Tuple[int]] = (0, 0, 0, 255), 
         label: str = None, 
         user_data: Any = None, 
         use_internal_label: bool = True, 
@@ -973,7 +971,7 @@ class ColormapButton(Widget):
         **kwargs, 
     ):
         super().__init__(
-            default_value=default_value,
+            value=value,
             label=label,
             user_data=user_data,
             use_internal_label=use_internal_label,
@@ -997,7 +995,7 @@ class ColormapButton(Widget):
             no_drag_drop=no_drag_drop,
             **kwargs,
         )
-        self.default_value = default_value
+        self.value = value
         self.label = label
         self.user_data = user_data
         self.use_internal_label = use_internal_label
@@ -1117,7 +1115,7 @@ class ColormapSlider(Widget):
             **filter_key (str): Used by filter widget.
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
-            **default_value (float): 
+            **value (float): 
     Returns:
             Union[int, str]
     
@@ -1143,7 +1141,7 @@ class ColormapSlider(Widget):
         filter_key: str = '', 
         tracked: bool = False, 
         track_offset: float = 0.5, 
-        default_value: float = 0.0, 
+        value: float = 0.0, 
         **kwargs, 
     ):
         super().__init__(
@@ -1164,7 +1162,7 @@ class ColormapSlider(Widget):
             filter_key=filter_key,
             tracked=tracked,
             track_offset=track_offset,
-            default_value=default_value,
+            value=value,
             **kwargs,
         )
         self.label = label
@@ -1184,7 +1182,7 @@ class ColormapSlider(Widget):
         self.filter_key = filter_key
         self.tracked = tracked
         self.track_offset = track_offset
-        self.default_value = default_value
+        self.value = value
 
 
 class Combo(Widget):
@@ -1210,7 +1208,7 @@ class Combo(Widget):
             **filter_key (str): Used by filter widget.
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
-            **default_value (str): 
+            **value (str): 
             **popup_align_left (bool): Align the popup toward the left.
             **no_arrow_button (bool): Display the preview box without the square arrow button.
             **no_preview (bool): Display only the square arrow button.
@@ -1242,7 +1240,7 @@ class Combo(Widget):
         filter_key: str = '', 
         tracked: bool = False, 
         track_offset: float = 0.5, 
-        default_value: str = '', 
+        value: str = '', 
         popup_align_left: bool = False, 
         no_arrow_button: bool = False, 
         no_preview: bool = False, 
@@ -1269,7 +1267,7 @@ class Combo(Widget):
             filter_key=filter_key,
             tracked=tracked,
             track_offset=track_offset,
-            default_value=default_value,
+            value=value,
             popup_align_left=popup_align_left,
             no_arrow_button=no_arrow_button,
             no_preview=no_preview,
@@ -1295,7 +1293,7 @@ class Combo(Widget):
         self.filter_key = filter_key
         self.tracked = tracked
         self.track_offset = track_offset
-        self.default_value = default_value
+        self.value = value
         self.popup_align_left = popup_align_left
         self.no_arrow_button = no_arrow_button
         self.no_preview = no_preview
@@ -1321,7 +1319,7 @@ class DatePicker(Widget):
             **filter_key (str): Used by filter widget.
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
-            **default_value (dict): 
+            **value (dict): 
             **level (int): Use avaliable constants. mvDatePickerLevel_Day, mvDatePickerLevel_Month, mvDatePickerLevel_Year
     Returns:
             Union[int, str]
@@ -1346,7 +1344,7 @@ class DatePicker(Widget):
         filter_key: str = '', 
         tracked: bool = False, 
         track_offset: float = 0.5, 
-        default_value: dict = {'month_day': 14, 'year': 20, 'month': 5}, 
+        value: dict = {'month_day': 14, 'year': 20, 'month': 5}, 
         level: int = 0, 
         **kwargs, 
     ):
@@ -1366,7 +1364,7 @@ class DatePicker(Widget):
             filter_key=filter_key,
             tracked=tracked,
             track_offset=track_offset,
-            default_value=default_value,
+            value=value,
             level=level,
             **kwargs,
         )
@@ -1385,7 +1383,7 @@ class DatePicker(Widget):
         self.filter_key = filter_key
         self.tracked = tracked
         self.track_offset = track_offset
-        self.default_value = default_value
+        self.value = value
         self.level = level
 
 
@@ -1411,7 +1409,7 @@ class DragFloat(Widget):
             **filter_key (str): Used by filter widget.
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
-            **default_value (float): 
+            **value (float): 
             **format (str): 
             **speed (float): 
             **min_value (float): Applies a limit only to draging entry only.
@@ -1444,7 +1442,7 @@ class DragFloat(Widget):
         filter_key: str = '', 
         tracked: bool = False, 
         track_offset: float = 0.5, 
-        default_value: float = 0.0, 
+        value: float = 0.0, 
         format: str = '%0.3f', 
         speed: float = 1.0, 
         min_value: float = 0.0, 
@@ -1472,7 +1470,7 @@ class DragFloat(Widget):
             filter_key=filter_key,
             tracked=tracked,
             track_offset=track_offset,
-            default_value=default_value,
+            value=value,
             format=format,
             speed=speed,
             min_value=min_value,
@@ -1499,7 +1497,7 @@ class DragFloat(Widget):
         self.filter_key = filter_key
         self.tracked = tracked
         self.track_offset = track_offset
-        self.default_value = default_value
+        self.value = value
         self.format = format
         self.speed = speed
         self.min_value = min_value
@@ -1530,7 +1528,7 @@ class DragFloatx(Widget):
             **filter_key (str): Used by filter widget.
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
-            **default_value (Union[List[float], Tuple[float]]): 
+            **value (Union[List[float], Tuple[float]]): 
             **size (int): Number of components
             **format (str): 
             **speed (float): 
@@ -1564,7 +1562,7 @@ class DragFloatx(Widget):
         filter_key: str = '', 
         tracked: bool = False, 
         track_offset: float = 0.5, 
-        default_value: Union[List[float], Tuple[float]] = (0.0, 0.0, 0.0, 0.0), 
+        value: Union[List[float], Tuple[float]] = (0.0, 0.0, 0.0, 0.0), 
         size: int = 4, 
         format: str = '%0.3f', 
         speed: float = 1.0, 
@@ -1593,7 +1591,7 @@ class DragFloatx(Widget):
             filter_key=filter_key,
             tracked=tracked,
             track_offset=track_offset,
-            default_value=default_value,
+            value=value,
             size=size,
             format=format,
             speed=speed,
@@ -1621,7 +1619,7 @@ class DragFloatx(Widget):
         self.filter_key = filter_key
         self.tracked = tracked
         self.track_offset = track_offset
-        self.default_value = default_value
+        self.value = value
         self.size = size
         self.format = format
         self.speed = speed
@@ -1653,7 +1651,7 @@ class DragInt(Widget):
             **filter_key (str): Used by filter widget.
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
-            **default_value (int): 
+            **value (int): 
             **format (str): 
             **speed (float): 
             **min_value (int): Applies a limit only to draging entry only.
@@ -1686,7 +1684,7 @@ class DragInt(Widget):
         filter_key: str = '', 
         tracked: bool = False, 
         track_offset: float = 0.5, 
-        default_value: int = 0, 
+        value: int = 0, 
         format: str = '%d', 
         speed: float = 1.0, 
         min_value: int = 0, 
@@ -1714,7 +1712,7 @@ class DragInt(Widget):
             filter_key=filter_key,
             tracked=tracked,
             track_offset=track_offset,
-            default_value=default_value,
+            value=value,
             format=format,
             speed=speed,
             min_value=min_value,
@@ -1741,7 +1739,7 @@ class DragInt(Widget):
         self.filter_key = filter_key
         self.tracked = tracked
         self.track_offset = track_offset
-        self.default_value = default_value
+        self.value = value
         self.format = format
         self.speed = speed
         self.min_value = min_value
@@ -1772,7 +1770,7 @@ class DragIntx(Widget):
             **filter_key (str): Used by filter widget.
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
-            **default_value (Union[List[int], Tuple[int]]): 
+            **value (Union[List[int], Tuple[int]]): 
             **size (int): Number of components.
             **format (str): 
             **speed (float): 
@@ -1806,7 +1804,7 @@ class DragIntx(Widget):
         filter_key: str = '', 
         tracked: bool = False, 
         track_offset: float = 0.5, 
-        default_value: Union[List[int], Tuple[int]] = (0, 0, 0, 0), 
+        value: Union[List[int], Tuple[int]] = (0, 0, 0, 0), 
         size: int = 4, 
         format: str = '%d', 
         speed: float = 1.0, 
@@ -1835,7 +1833,7 @@ class DragIntx(Widget):
             filter_key=filter_key,
             tracked=tracked,
             track_offset=track_offset,
-            default_value=default_value,
+            value=value,
             size=size,
             format=format,
             speed=speed,
@@ -1863,7 +1861,7 @@ class DragIntx(Widget):
         self.filter_key = filter_key
         self.tracked = tracked
         self.track_offset = track_offset
-        self.default_value = default_value
+        self.value = value
         self.size = size
         self.format = format
         self.speed = speed
@@ -1885,7 +1883,7 @@ class DragLine(Widget):
             **source (Union[int, str]): Overrides 'id' as value storage key.
             **callback (Callable): Registers a callback.
             **show (bool): Attempt to render widget.
-            **default_value (Any): 
+            **value (Any): 
             **color (Union[List[int], Tuple[int]]): 
             **thickness (float): 
             **show_label (bool): 
@@ -1906,7 +1904,7 @@ class DragLine(Widget):
         source: Union[int, str] = 0, 
         callback: Callable = None, 
         show: bool = True, 
-        default_value: Any = 0.0, 
+        value: Any = 0.0, 
         color: Union[List[int], Tuple[int]] = (0, 0, 0, -255), 
         thickness: float = 1.0, 
         show_label: bool = True, 
@@ -1922,7 +1920,7 @@ class DragLine(Widget):
             source=source,
             callback=callback,
             show=show,
-            default_value=default_value,
+            value=value,
             color=color,
             thickness=thickness,
             show_label=show_label,
@@ -1937,7 +1935,7 @@ class DragLine(Widget):
         self.source = source
         self.callback = callback
         self.show = show
-        self.default_value = default_value
+        self.value = value
         self.color = color
         self.thickness = thickness
         self.show_label = show_label
@@ -2008,7 +2006,7 @@ class DynamicTexture(Widget):
     Args:
             width (int): 
             height (int): 
-            default_value (Union[List[float], Tuple[float]]): 
+            value (Union[List[float], Tuple[float]]): 
             **label (str): Overrides 'name' as label.
             **user_data (Any): User data for callbacks.
             **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
@@ -2024,7 +2022,7 @@ class DynamicTexture(Widget):
         self, 
         width: int, 
         height: int, 
-        default_value: Union[List[float], Tuple[float]], 
+        value: Union[List[float], Tuple[float]], 
         label: str = None, 
         user_data: Any = None, 
         use_internal_label: bool = True, 
@@ -2034,7 +2032,7 @@ class DynamicTexture(Widget):
         super().__init__(
             width=width,
             height=height,
-            default_value=default_value,
+            value=value,
             label=label,
             user_data=user_data,
             use_internal_label=use_internal_label,
@@ -2043,7 +2041,7 @@ class DynamicTexture(Widget):
         )
         self.width = width
         self.height = height
-        self.default_value = default_value
+        self.value = value
         self.label = label
         self.user_data = user_data
         self.use_internal_label = use_internal_label
@@ -2357,7 +2355,7 @@ class InputFloat(Widget):
             **filter_key (str): Used by filter widget.
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
-            **default_value (float): 
+            **value (float): 
             **format (str): 
             **min_value (float): Value for lower limit of input. By default this limits the step buttons. Use clamped to limit manual input.
             **max_value (float): Value for upper limit of input. By default this limits the step buttons. Use clamped to limit manual input.
@@ -2393,7 +2391,7 @@ class InputFloat(Widget):
         filter_key: str = '', 
         tracked: bool = False, 
         track_offset: float = 0.5, 
-        default_value: float = 0.0, 
+        value: float = 0.0, 
         format: str = '%.3f', 
         min_value: float = 0.0, 
         max_value: float = 100.0, 
@@ -2424,7 +2422,7 @@ class InputFloat(Widget):
             filter_key=filter_key,
             tracked=tracked,
             track_offset=track_offset,
-            default_value=default_value,
+            value=value,
             format=format,
             min_value=min_value,
             max_value=max_value,
@@ -2454,7 +2452,7 @@ class InputFloat(Widget):
         self.filter_key = filter_key
         self.tracked = tracked
         self.track_offset = track_offset
-        self.default_value = default_value
+        self.value = value
         self.format = format
         self.min_value = min_value
         self.max_value = max_value
@@ -2488,7 +2486,7 @@ class InputFloatx(Widget):
             **filter_key (str): Used by filter widget.
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
-            **default_value (Union[List[float], Tuple[float]]): 
+            **value (Union[List[float], Tuple[float]]): 
             **format (str): 
             **min_value (float): Value for lower limit of input for each cell. Use clamped to turn on.
             **max_value (float): Value for upper limit of input for each cell. Use clamped to turn on.
@@ -2523,7 +2521,7 @@ class InputFloatx(Widget):
         filter_key: str = '', 
         tracked: bool = False, 
         track_offset: float = 0.5, 
-        default_value: Union[List[float], Tuple[float]] = (0.0, 0.0, 0.0, 0.0), 
+        value: Union[List[float], Tuple[float]] = (0.0, 0.0, 0.0, 0.0), 
         format: str = '%.3f', 
         min_value: float = 0.0, 
         max_value: float = 100.0, 
@@ -2553,7 +2551,7 @@ class InputFloatx(Widget):
             filter_key=filter_key,
             tracked=tracked,
             track_offset=track_offset,
-            default_value=default_value,
+            value=value,
             format=format,
             min_value=min_value,
             max_value=max_value,
@@ -2582,7 +2580,7 @@ class InputFloatx(Widget):
         self.filter_key = filter_key
         self.tracked = tracked
         self.track_offset = track_offset
-        self.default_value = default_value
+        self.value = value
         self.format = format
         self.min_value = min_value
         self.max_value = max_value
@@ -2615,7 +2613,7 @@ class InputInt(Widget):
             **filter_key (str): Used by filter widget.
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
-            **default_value (int): 
+            **value (int): 
             **min_value (int): Value for lower limit of input. By default this limits the step buttons. Use clamped to limit manual input.
             **max_value (int): Value for upper limit of input. By default this limits the step buttons. Use clamped to limit manual input.
             **step (int): Increment to change value by when the step buttons are pressed. Setting this to a value of 0 or smaller will turn off step buttons.
@@ -2650,7 +2648,7 @@ class InputInt(Widget):
         filter_key: str = '', 
         tracked: bool = False, 
         track_offset: float = 0.5, 
-        default_value: int = 0, 
+        value: int = 0, 
         min_value: int = 0, 
         max_value: int = 100, 
         step: int = 1, 
@@ -2680,7 +2678,7 @@ class InputInt(Widget):
             filter_key=filter_key,
             tracked=tracked,
             track_offset=track_offset,
-            default_value=default_value,
+            value=value,
             min_value=min_value,
             max_value=max_value,
             step=step,
@@ -2709,7 +2707,7 @@ class InputInt(Widget):
         self.filter_key = filter_key
         self.tracked = tracked
         self.track_offset = track_offset
-        self.default_value = default_value
+        self.value = value
         self.min_value = min_value
         self.max_value = max_value
         self.step = step
@@ -2742,7 +2740,7 @@ class InputIntx(Widget):
             **filter_key (str): Used by filter widget.
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
-            **default_value (Union[List[int], Tuple[int]]): 
+            **value (Union[List[int], Tuple[int]]): 
             **min_value (int): Value for lower limit of input for each cell. Use clamped to turn on.
             **max_value (int): Value for upper limit of input for each cell. Use clamped to turn on.
             **size (int): Number of components.
@@ -2776,7 +2774,7 @@ class InputIntx(Widget):
         filter_key: str = '', 
         tracked: bool = False, 
         track_offset: float = 0.5, 
-        default_value: Union[List[int], Tuple[int]] = (0, 0, 0, 0), 
+        value: Union[List[int], Tuple[int]] = (0, 0, 0, 0), 
         min_value: int = 0, 
         max_value: int = 100, 
         size: int = 4, 
@@ -2805,7 +2803,7 @@ class InputIntx(Widget):
             filter_key=filter_key,
             tracked=tracked,
             track_offset=track_offset,
-            default_value=default_value,
+            value=value,
             min_value=min_value,
             max_value=max_value,
             size=size,
@@ -2833,7 +2831,7 @@ class InputIntx(Widget):
         self.filter_key = filter_key
         self.tracked = tracked
         self.track_offset = track_offset
-        self.default_value = default_value
+        self.value = value
         self.min_value = min_value
         self.max_value = max_value
         self.size = size
@@ -2866,7 +2864,7 @@ class InputText(Widget):
             **filter_key (str): Used by filter widget.
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
-            **default_value (str): 
+            **value (str): 
             **hint (str): Displayed only when value is empty string. Will reappear if input value is set to empty string. Will not show if default value is anything other than default empty string.
             **multiline (bool): Allows for multiline text input.
             **no_spaces (bool): Filter out spaces and tabs.
@@ -2905,7 +2903,7 @@ class InputText(Widget):
         filter_key: str = '', 
         tracked: bool = False, 
         track_offset: float = 0.5, 
-        default_value: str = '', 
+        value: str = '', 
         hint: str = '', 
         multiline: bool = False, 
         no_spaces: bool = False, 
@@ -2939,7 +2937,7 @@ class InputText(Widget):
             filter_key=filter_key,
             tracked=tracked,
             track_offset=track_offset,
-            default_value=default_value,
+            value=value,
             hint=hint,
             multiline=multiline,
             no_spaces=no_spaces,
@@ -2972,7 +2970,7 @@ class InputText(Widget):
         self.filter_key = filter_key
         self.tracked = tracked
         self.track_offset = track_offset
-        self.default_value = default_value
+        self.value = value
         self.hint = hint
         self.multiline = multiline
         self.no_spaces = no_spaces
@@ -3008,7 +3006,7 @@ class KnobFloat(Widget):
             **filter_key (str): Used by filter widget.
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
-            **default_value (float): 
+            **value (float): 
             **min_value (float): Applies lower limit to value.
             **max_value (float): Applies upper limit to value.
     Returns:
@@ -3037,7 +3035,7 @@ class KnobFloat(Widget):
         filter_key: str = '', 
         tracked: bool = False, 
         track_offset: float = 0.5, 
-        default_value: float = 0.0, 
+        value: float = 0.0, 
         min_value: float = 0.0, 
         max_value: float = 100.0, 
         **kwargs, 
@@ -3061,7 +3059,7 @@ class KnobFloat(Widget):
             filter_key=filter_key,
             tracked=tracked,
             track_offset=track_offset,
-            default_value=default_value,
+            value=value,
             min_value=min_value,
             max_value=max_value,
             **kwargs,
@@ -3084,7 +3082,7 @@ class KnobFloat(Widget):
         self.filter_key = filter_key
         self.tracked = tracked
         self.track_offset = track_offset
-        self.default_value = default_value
+        self.value = value
         self.min_value = min_value
         self.max_value = max_value
 
@@ -3112,7 +3110,7 @@ class Listbox(Widget):
             **filter_key (str): Used by filter widget.
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
-            **default_value (str): 
+            **value (str): 
             **num_items (int): Expands the height of the listbox to show specified number of items.
     Returns:
             Union[int, str]
@@ -3141,7 +3139,7 @@ class Listbox(Widget):
         filter_key: str = '', 
         tracked: bool = False, 
         track_offset: float = 0.5, 
-        default_value: str = '', 
+        value: str = '', 
         num_items: int = 3, 
         **kwargs, 
     ):
@@ -3165,7 +3163,7 @@ class Listbox(Widget):
             filter_key=filter_key,
             tracked=tracked,
             track_offset=track_offset,
-            default_value=default_value,
+            value=value,
             num_items=num_items,
             **kwargs,
         )
@@ -3188,7 +3186,7 @@ class Listbox(Widget):
         self.filter_key = filter_key
         self.tracked = tracked
         self.track_offset = track_offset
-        self.default_value = default_value
+        self.value = value
         self.num_items = num_items
 
 
@@ -3298,7 +3296,7 @@ class MenuItem(Widget):
             **filter_key (str): Used by filter widget.
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
-            **default_value (bool): 
+            **value (bool): 
             **shortcut (str): Displays text on the menu item. Typically used to show a shortcut key command.
             **check (bool): Displays a checkmark on the menu item when it is selected.
     Returns:
@@ -3324,7 +3322,7 @@ class MenuItem(Widget):
         filter_key: str = '', 
         tracked: bool = False, 
         track_offset: float = 0.5, 
-        default_value: bool = False, 
+        value: bool = False, 
         shortcut: str = '', 
         check: bool = False, 
         **kwargs, 
@@ -3345,7 +3343,7 @@ class MenuItem(Widget):
             filter_key=filter_key,
             tracked=tracked,
             track_offset=track_offset,
-            default_value=default_value,
+            value=value,
             shortcut=shortcut,
             check=check,
             **kwargs,
@@ -3365,7 +3363,7 @@ class MenuItem(Widget):
         self.filter_key = filter_key
         self.tracked = tracked
         self.track_offset = track_offset
-        self.default_value = default_value
+        self.value = value
         self.shortcut = shortcut
         self.check = check
 
@@ -3392,7 +3390,7 @@ class ProgressBar(Widget):
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
             **overlay (str): Overlayed text.
-            **default_value (float): Normalized value to fill the bar from 0.0 to 1.0.
+            **value (float): Normalized value to fill the bar from 0.0 to 1.0.
     Returns:
             Union[int, str]
     
@@ -3419,7 +3417,7 @@ class ProgressBar(Widget):
         tracked: bool = False, 
         track_offset: float = 0.5, 
         overlay: str = '', 
-        default_value: float = 0.0, 
+        value: float = 0.0, 
         **kwargs, 
     ):
         super().__init__(
@@ -3441,7 +3439,7 @@ class ProgressBar(Widget):
             tracked=tracked,
             track_offset=track_offset,
             overlay=overlay,
-            default_value=default_value,
+            value=value,
             **kwargs,
         )
         self.label = label
@@ -3462,7 +3460,7 @@ class ProgressBar(Widget):
         self.tracked = tracked
         self.track_offset = track_offset
         self.overlay = overlay
-        self.default_value = default_value
+        self.value = value
 
 
 class RadioButton(Widget):
@@ -3487,7 +3485,7 @@ class RadioButton(Widget):
             **filter_key (str): Used by filter widget.
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
-            **default_value (str): 
+            **value (str): 
             **horizontal (bool): Displays the radio options horizontally.
     Returns:
             Union[int, str]
@@ -3515,7 +3513,7 @@ class RadioButton(Widget):
         filter_key: str = '', 
         tracked: bool = False, 
         track_offset: float = 0.5, 
-        default_value: str = '', 
+        value: str = '', 
         horizontal: bool = False, 
         **kwargs, 
     ):
@@ -3538,7 +3536,7 @@ class RadioButton(Widget):
             filter_key=filter_key,
             tracked=tracked,
             track_offset=track_offset,
-            default_value=default_value,
+            value=value,
             horizontal=horizontal,
             **kwargs,
         )
@@ -3560,7 +3558,7 @@ class RadioButton(Widget):
         self.filter_key = filter_key
         self.tracked = tracked
         self.track_offset = track_offset
-        self.default_value = default_value
+        self.value = value
         self.horizontal = horizontal
 
 
@@ -3569,7 +3567,7 @@ class RawTexture(Widget):
     Args:
             width (int): 
             height (int): 
-            default_value (Union[List[float], Tuple[float]]): 
+            value (Union[List[float], Tuple[float]]): 
             **label (str): Overrides 'name' as label.
             **user_data (Any): User data for callbacks.
             **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
@@ -3586,7 +3584,7 @@ class RawTexture(Widget):
         self, 
         width: int, 
         height: int, 
-        default_value: Union[List[float], Tuple[float]], 
+        value: Union[List[float], Tuple[float]], 
         label: str = None, 
         user_data: Any = None, 
         use_internal_label: bool = True, 
@@ -3597,7 +3595,7 @@ class RawTexture(Widget):
         super().__init__(
             width=width,
             height=height,
-            default_value=default_value,
+            value=value,
             label=label,
             user_data=user_data,
             use_internal_label=use_internal_label,
@@ -3607,7 +3605,7 @@ class RawTexture(Widget):
         )
         self.width = width
         self.height = height
-        self.default_value = default_value
+        self.value = value
         self.label = label
         self.user_data = user_data
         self.use_internal_label = use_internal_label
@@ -3689,7 +3687,7 @@ class Selectable(Widget):
             **filter_key (str): Used by filter widget.
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
-            **default_value (bool): 
+            **value (bool): 
             **span_columns (bool): Span the width of all columns if placed in a table.
     Returns:
             Union[int, str]
@@ -3718,7 +3716,7 @@ class Selectable(Widget):
         filter_key: str = '', 
         tracked: bool = False, 
         track_offset: float = 0.5, 
-        default_value: bool = False, 
+        value: bool = False, 
         span_columns: bool = False, 
         **kwargs, 
     ):
@@ -3742,7 +3740,7 @@ class Selectable(Widget):
             filter_key=filter_key,
             tracked=tracked,
             track_offset=track_offset,
-            default_value=default_value,
+            value=value,
             span_columns=span_columns,
             **kwargs,
         )
@@ -3765,7 +3763,7 @@ class Selectable(Widget):
         self.filter_key = filter_key
         self.tracked = tracked
         self.track_offset = track_offset
-        self.default_value = default_value
+        self.value = value
         self.span_columns = span_columns
 
 
@@ -3843,7 +3841,7 @@ class SliderFloat(Widget):
             **filter_key (str): Used by filter widget.
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
-            **default_value (float): 
+            **value (float): 
             **vertical (bool): Sets orientation to vertical.
             **no_input (bool): Disable direct entry methods or Enter key allowing to input text directly into the widget.
             **clamped (bool): Applies the min and max limits to direct entry methods also such as double click and CTRL+Click.
@@ -3877,7 +3875,7 @@ class SliderFloat(Widget):
         filter_key: str = '', 
         tracked: bool = False, 
         track_offset: float = 0.5, 
-        default_value: float = 0.0, 
+        value: float = 0.0, 
         vertical: bool = False, 
         no_input: bool = False, 
         clamped: bool = False, 
@@ -3906,7 +3904,7 @@ class SliderFloat(Widget):
             filter_key=filter_key,
             tracked=tracked,
             track_offset=track_offset,
-            default_value=default_value,
+            value=value,
             vertical=vertical,
             no_input=no_input,
             clamped=clamped,
@@ -3934,7 +3932,7 @@ class SliderFloat(Widget):
         self.filter_key = filter_key
         self.tracked = tracked
         self.track_offset = track_offset
-        self.default_value = default_value
+        self.value = value
         self.vertical = vertical
         self.no_input = no_input
         self.clamped = clamped
@@ -3965,7 +3963,7 @@ class SliderFloatx(Widget):
             **filter_key (str): Used by filter widget.
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
-            **default_value (Union[List[float], Tuple[float]]): 
+            **value (Union[List[float], Tuple[float]]): 
             **size (int): Number of components.
             **no_input (bool): Disable direct entry methods or Enter key allowing to input text directly into the widget.
             **clamped (bool): Applies the min and max limits to direct entry methods also such as double click and CTRL+Click.
@@ -3998,7 +3996,7 @@ class SliderFloatx(Widget):
         filter_key: str = '', 
         tracked: bool = False, 
         track_offset: float = 0.5, 
-        default_value: Union[List[float], Tuple[float]] = (0.0, 0.0, 0.0, 0.0), 
+        value: Union[List[float], Tuple[float]] = (0.0, 0.0, 0.0, 0.0), 
         size: int = 4, 
         no_input: bool = False, 
         clamped: bool = False, 
@@ -4026,7 +4024,7 @@ class SliderFloatx(Widget):
             filter_key=filter_key,
             tracked=tracked,
             track_offset=track_offset,
-            default_value=default_value,
+            value=value,
             size=size,
             no_input=no_input,
             clamped=clamped,
@@ -4053,7 +4051,7 @@ class SliderFloatx(Widget):
         self.filter_key = filter_key
         self.tracked = tracked
         self.track_offset = track_offset
-        self.default_value = default_value
+        self.value = value
         self.size = size
         self.no_input = no_input
         self.clamped = clamped
@@ -4085,7 +4083,7 @@ class SliderInt(Widget):
             **filter_key (str): Used by filter widget.
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
-            **default_value (int): 
+            **value (int): 
             **vertical (bool): Sets orientation to vertical.
             **no_input (bool): Disable direct entry methods or Enter key allowing to input text directly into the widget.
             **clamped (bool): Applies the min and max limits to direct entry methods also such as double click and CTRL+Click.
@@ -4119,7 +4117,7 @@ class SliderInt(Widget):
         filter_key: str = '', 
         tracked: bool = False, 
         track_offset: float = 0.5, 
-        default_value: int = 0, 
+        value: int = 0, 
         vertical: bool = False, 
         no_input: bool = False, 
         clamped: bool = False, 
@@ -4148,7 +4146,7 @@ class SliderInt(Widget):
             filter_key=filter_key,
             tracked=tracked,
             track_offset=track_offset,
-            default_value=default_value,
+            value=value,
             vertical=vertical,
             no_input=no_input,
             clamped=clamped,
@@ -4176,7 +4174,7 @@ class SliderInt(Widget):
         self.filter_key = filter_key
         self.tracked = tracked
         self.track_offset = track_offset
-        self.default_value = default_value
+        self.value = value
         self.vertical = vertical
         self.no_input = no_input
         self.clamped = clamped
@@ -4207,7 +4205,7 @@ class SliderIntx(Widget):
             **filter_key (str): Used by filter widget.
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
-            **default_value (Union[List[int], Tuple[int]]): 
+            **value (Union[List[int], Tuple[int]]): 
             **size (int): number of components
             **no_input (bool): Disable direct entry methods or Enter key allowing to input text directly into the widget.
             **clamped (bool): Applies the min and max limits to direct entry methods also such as double click and CTRL+Click.
@@ -4240,7 +4238,7 @@ class SliderIntx(Widget):
         filter_key: str = '', 
         tracked: bool = False, 
         track_offset: float = 0.5, 
-        default_value: Union[List[int], Tuple[int]] = (0, 0, 0, 0), 
+        value: Union[List[int], Tuple[int]] = (0, 0, 0, 0), 
         size: int = 4, 
         no_input: bool = False, 
         clamped: bool = False, 
@@ -4268,7 +4266,7 @@ class SliderIntx(Widget):
             filter_key=filter_key,
             tracked=tracked,
             track_offset=track_offset,
-            default_value=default_value,
+            value=value,
             size=size,
             no_input=no_input,
             clamped=clamped,
@@ -4295,7 +4293,7 @@ class SliderIntx(Widget):
         self.filter_key = filter_key
         self.tracked = tracked
         self.track_offset = track_offset
-        self.default_value = default_value
+        self.value = value
         self.size = size
         self.no_input = no_input
         self.clamped = clamped
@@ -4364,7 +4362,7 @@ class StaticTexture(Widget):
     Args:
             width (int): 
             height (int): 
-            default_value (Union[List[float], Tuple[float]]): 
+            value (Union[List[float], Tuple[float]]): 
             **label (str): Overrides 'name' as label.
             **user_data (Any): User data for callbacks.
             **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
@@ -4380,7 +4378,7 @@ class StaticTexture(Widget):
         self, 
         width: int, 
         height: int, 
-        default_value: Union[List[float], Tuple[float]], 
+        value: Union[List[float], Tuple[float]], 
         label: str = None, 
         user_data: Any = None, 
         use_internal_label: bool = True, 
@@ -4390,7 +4388,7 @@ class StaticTexture(Widget):
         super().__init__(
             width=width,
             height=height,
-            default_value=default_value,
+            value=value,
             label=label,
             user_data=user_data,
             use_internal_label=use_internal_label,
@@ -4399,7 +4397,7 @@ class StaticTexture(Widget):
         )
         self.width = width
         self.height = height
-        self.default_value = default_value
+        self.value = value
         self.label = label
         self.user_data = user_data
         self.use_internal_label = use_internal_label
@@ -4658,7 +4656,7 @@ class TableNextColumn(Widget):
 class Text(Widget):
     """Adds text. Text can have an optional label that will display to the right of the text.
     Args:
-            *default_value (str): 
+            *value (str): 
             **label (str): Overrides 'name' as label.
             **user_data (Any): User data for callbacks.
             **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
@@ -4684,7 +4682,7 @@ class Text(Widget):
 
     def __init__(
         self, 
-        default_value: str = '', 
+        value: str = '', 
         label: str = None, 
         user_data: Any = None, 
         use_internal_label: bool = True, 
@@ -4704,7 +4702,7 @@ class Text(Widget):
         **kwargs, 
     ):
         super().__init__(
-            default_value=default_value,
+            value=value,
             label=label,
             user_data=user_data,
             use_internal_label=use_internal_label,
@@ -4723,7 +4721,7 @@ class Text(Widget):
             show_label=show_label,
             **kwargs,
         )
-        self.default_value = default_value
+        self.value = value
         self.label = label
         self.user_data = user_data
         self.use_internal_label = use_internal_label
@@ -4761,7 +4759,7 @@ class TimePicker(Widget):
             **filter_key (str): Used by filter widget.
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
-            **default_value (dict): 
+            **value (dict): 
             **hour24 (bool): Show 24 hour clock instead of 12 hour.
     Returns:
             Union[int, str]
@@ -4786,7 +4784,7 @@ class TimePicker(Widget):
         filter_key: str = '', 
         tracked: bool = False, 
         track_offset: float = 0.5, 
-        default_value: dict = {'hour': 14, 'min': 32, 'sec': 23}, 
+        value: dict = {'hour': 14, 'min': 32, 'sec': 23}, 
         hour24: bool = False, 
         **kwargs, 
     ):
@@ -4806,7 +4804,7 @@ class TimePicker(Widget):
             filter_key=filter_key,
             tracked=tracked,
             track_offset=track_offset,
-            default_value=default_value,
+            value=value,
             hour24=hour24,
             **kwargs,
         )
@@ -4825,5 +4823,5 @@ class TimePicker(Widget):
         self.filter_key = filter_key
         self.tracked = tracked
         self.track_offset = track_offset
-        self.default_value = default_value
+        self.value = value
         self.hour24 = hour24

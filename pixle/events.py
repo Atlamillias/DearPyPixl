@@ -1,18 +1,7 @@
-from typing import (
-    Any,
-    Callable,
-    Union,
-    Dict,
-    Tuple,
-    Set,
-    List,
-)
+from typing import Any, Callable, Union
 import dearpygui.dearpygui
-from dpgwidgets.item import Item, ContextSupport
+from pixle.itemtypes import Item
 
-##################################################
-####### NOTE: This file is auto-generated. #######
-##################################################
 
 __all__ = [
     "ActivatedHandler",
@@ -56,14 +45,14 @@ class ActivatedHandler(Item):
     _command = dearpygui.dearpygui.add_activated_handler
 
     def __init__(
-        self, 
-        parent: Union[int, str], 
-        label: str = None, 
-        user_data: Any = None, 
-        use_internal_label: bool = True, 
-        callback: Callable = None, 
-        show: bool = True, 
-        **kwargs, 
+        self,
+        parent: Union[int, str],
+        label: str = None,
+        user_data: Any = None,
+        use_internal_label: bool = True,
+        callback: Callable = None,
+        show: bool = True,
+        **kwargs,
     ):
         super().__init__(
             parent=parent,
@@ -99,14 +88,14 @@ class ActiveHandler(Item):
     _command = dearpygui.dearpygui.add_active_handler
 
     def __init__(
-        self, 
-        parent: Union[int, str], 
-        label: str = None, 
-        user_data: Any = None, 
-        use_internal_label: bool = True, 
-        callback: Callable = None, 
-        show: bool = True, 
-        **kwargs, 
+        self,
+        parent: Union[int, str],
+        label: str = None,
+        user_data: Any = None,
+        use_internal_label: bool = True,
+        callback: Callable = None,
+        show: bool = True,
+        **kwargs,
     ):
         super().__init__(
             parent=parent,
@@ -143,15 +132,15 @@ class ClickedHandler(Item):
     _command = dearpygui.dearpygui.add_clicked_handler
 
     def __init__(
-        self, 
-        parent: Union[int, str], 
-        button: int = -1, 
-        label: str = None, 
-        user_data: Any = None, 
-        use_internal_label: bool = True, 
-        callback: Callable = None, 
-        show: bool = True, 
-        **kwargs, 
+        self,
+        parent: Union[int, str],
+        button: int = -1,
+        label: str = None,
+        user_data: Any = None,
+        use_internal_label: bool = True,
+        callback: Callable = None,
+        show: bool = True,
+        **kwargs,
     ):
         super().__init__(
             parent=parent,
@@ -189,14 +178,14 @@ class DeactivatedAfterEditHandler(Item):
     _command = dearpygui.dearpygui.add_deactivated_after_edit_handler
 
     def __init__(
-        self, 
-        parent: Union[int, str], 
-        label: str = None, 
-        user_data: Any = None, 
-        use_internal_label: bool = True, 
-        callback: Callable = None, 
-        show: bool = True, 
-        **kwargs, 
+        self,
+        parent: Union[int, str],
+        label: str = None,
+        user_data: Any = None,
+        use_internal_label: bool = True,
+        callback: Callable = None,
+        show: bool = True,
+        **kwargs,
     ):
         super().__init__(
             parent=parent,
@@ -232,14 +221,14 @@ class DeactivatedHandler(Item):
     _command = dearpygui.dearpygui.add_deactivated_handler
 
     def __init__(
-        self, 
-        parent: Union[int, str], 
-        label: str = None, 
-        user_data: Any = None, 
-        use_internal_label: bool = True, 
-        callback: Callable = None, 
-        show: bool = True, 
-        **kwargs, 
+        self,
+        parent: Union[int, str],
+        label: str = None,
+        user_data: Any = None,
+        use_internal_label: bool = True,
+        callback: Callable = None,
+        show: bool = True,
+        **kwargs,
     ):
         super().__init__(
             parent=parent,
@@ -275,14 +264,14 @@ class EditedHandler(Item):
     _command = dearpygui.dearpygui.add_edited_handler
 
     def __init__(
-        self, 
-        parent: Union[int, str], 
-        label: str = None, 
-        user_data: Any = None, 
-        use_internal_label: bool = True, 
-        callback: Callable = None, 
-        show: bool = True, 
-        **kwargs, 
+        self,
+        parent: Union[int, str],
+        label: str = None,
+        user_data: Any = None,
+        use_internal_label: bool = True,
+        callback: Callable = None,
+        show: bool = True,
+        **kwargs,
     ):
         super().__init__(
             parent=parent,
@@ -318,14 +307,14 @@ class FocusHandler(Item):
     _command = dearpygui.dearpygui.add_focus_handler
 
     def __init__(
-        self, 
-        parent: Union[int, str], 
-        label: str = None, 
-        user_data: Any = None, 
-        use_internal_label: bool = True, 
-        callback: Callable = None, 
-        show: bool = True, 
-        **kwargs, 
+        self,
+        parent: Union[int, str],
+        label: str = None,
+        user_data: Any = None,
+        use_internal_label: bool = True,
+        callback: Callable = None,
+        show: bool = True,
+        **kwargs,
     ):
         super().__init__(
             parent=parent,
@@ -361,14 +350,14 @@ class HoverHandler(Item):
     _command = dearpygui.dearpygui.add_hover_handler
 
     def __init__(
-        self, 
-        parent: Union[int, str], 
-        label: str = None, 
-        user_data: Any = None, 
-        use_internal_label: bool = True, 
-        callback: Callable = None, 
-        show: bool = True, 
-        **kwargs, 
+        self,
+        parent: Union[int, str],
+        label: str = None,
+        user_data: Any = None,
+        use_internal_label: bool = True,
+        callback: Callable = None,
+        show: bool = True,
+        **kwargs,
     ):
         super().__init__(
             parent=parent,
@@ -405,15 +394,15 @@ class KeyDownHandler(Item):
     _command = dearpygui.dearpygui.add_key_down_handler
 
     def __init__(
-        self, 
-        key: int = -1, 
-        label: str = None, 
-        user_data: Any = None, 
-        use_internal_label: bool = True, 
-        callback: Callable = None, 
-        show: bool = True, 
-        parent: Union[int, str] = 11, 
-        **kwargs, 
+        self,
+        key: int = -1,
+        label: str = None,
+        user_data: Any = None,
+        use_internal_label: bool = True,
+        callback: Callable = None,
+        show: bool = True,
+        parent: Union[int, str] = 11,
+        **kwargs,
     ):
         super().__init__(
             key=key,
@@ -452,15 +441,15 @@ class KeyPressHandler(Item):
     _command = dearpygui.dearpygui.add_key_press_handler
 
     def __init__(
-        self, 
-        key: int = -1, 
-        label: str = None, 
-        user_data: Any = None, 
-        use_internal_label: bool = True, 
-        callback: Callable = None, 
-        show: bool = True, 
-        parent: Union[int, str] = 11, 
-        **kwargs, 
+        self,
+        key: int = -1,
+        label: str = None,
+        user_data: Any = None,
+        use_internal_label: bool = True,
+        callback: Callable = None,
+        show: bool = True,
+        parent: Union[int, str] = 11,
+        **kwargs,
     ):
         super().__init__(
             key=key,
@@ -499,15 +488,15 @@ class KeyReleaseHandler(Item):
     _command = dearpygui.dearpygui.add_key_release_handler
 
     def __init__(
-        self, 
-        key: int = -1, 
-        label: str = None, 
-        user_data: Any = None, 
-        use_internal_label: bool = True, 
-        callback: Callable = None, 
-        show: bool = True, 
-        parent: Union[int, str] = 11, 
-        **kwargs, 
+        self,
+        key: int = -1,
+        label: str = None,
+        user_data: Any = None,
+        use_internal_label: bool = True,
+        callback: Callable = None,
+        show: bool = True,
+        parent: Union[int, str] = 11,
+        **kwargs,
     ):
         super().__init__(
             key=key,
@@ -546,15 +535,15 @@ class MouseClickHandler(Item):
     _command = dearpygui.dearpygui.add_mouse_click_handler
 
     def __init__(
-        self, 
-        button: int = -1, 
-        label: str = None, 
-        user_data: Any = None, 
-        use_internal_label: bool = True, 
-        callback: Callable = None, 
-        show: bool = True, 
-        parent: Union[int, str] = 11, 
-        **kwargs, 
+        self,
+        button: int = -1,
+        label: str = None,
+        user_data: Any = None,
+        use_internal_label: bool = True,
+        callback: Callable = None,
+        show: bool = True,
+        parent: Union[int, str] = 11,
+        **kwargs,
     ):
         super().__init__(
             button=button,
@@ -593,15 +582,15 @@ class MouseDoubleClickHandler(Item):
     _command = dearpygui.dearpygui.add_mouse_double_click_handler
 
     def __init__(
-        self, 
-        button: int = -1, 
-        label: str = None, 
-        user_data: Any = None, 
-        use_internal_label: bool = True, 
-        callback: Callable = None, 
-        show: bool = True, 
-        parent: Union[int, str] = 11, 
-        **kwargs, 
+        self,
+        button: int = -1,
+        label: str = None,
+        user_data: Any = None,
+        use_internal_label: bool = True,
+        callback: Callable = None,
+        show: bool = True,
+        parent: Union[int, str] = 11,
+        **kwargs,
     ):
         super().__init__(
             button=button,
@@ -640,15 +629,15 @@ class MouseDownHandler(Item):
     _command = dearpygui.dearpygui.add_mouse_down_handler
 
     def __init__(
-        self, 
-        button: int = -1, 
-        label: str = None, 
-        user_data: Any = None, 
-        use_internal_label: bool = True, 
-        callback: Callable = None, 
-        show: bool = True, 
-        parent: Union[int, str] = 11, 
-        **kwargs, 
+        self,
+        button: int = -1,
+        label: str = None,
+        user_data: Any = None,
+        use_internal_label: bool = True,
+        callback: Callable = None,
+        show: bool = True,
+        parent: Union[int, str] = 11,
+        **kwargs,
     ):
         super().__init__(
             button=button,
@@ -688,16 +677,16 @@ class MouseDragHandler(Item):
     _command = dearpygui.dearpygui.add_mouse_drag_handler
 
     def __init__(
-        self, 
-        button: int = -1, 
-        threshold: float = 10.0, 
-        label: str = None, 
-        user_data: Any = None, 
-        use_internal_label: bool = True, 
-        callback: Callable = None, 
-        show: bool = True, 
-        parent: Union[int, str] = 11, 
-        **kwargs, 
+        self,
+        button: int = -1,
+        threshold: float = 10.0,
+        label: str = None,
+        user_data: Any = None,
+        use_internal_label: bool = True,
+        callback: Callable = None,
+        show: bool = True,
+        parent: Union[int, str] = 11,
+        **kwargs,
     ):
         super().__init__(
             button=button,
@@ -737,14 +726,14 @@ class MouseMoveHandler(Item):
     _command = dearpygui.dearpygui.add_mouse_move_handler
 
     def __init__(
-        self, 
-        label: str = None, 
-        user_data: Any = None, 
-        use_internal_label: bool = True, 
-        callback: Callable = None, 
-        show: bool = True, 
-        parent: Union[int, str] = 11, 
-        **kwargs, 
+        self,
+        label: str = None,
+        user_data: Any = None,
+        use_internal_label: bool = True,
+        callback: Callable = None,
+        show: bool = True,
+        parent: Union[int, str] = 11,
+        **kwargs,
     ):
         super().__init__(
             label=label,
@@ -781,15 +770,15 @@ class MouseReleaseHandler(Item):
     _command = dearpygui.dearpygui.add_mouse_release_handler
 
     def __init__(
-        self, 
-        button: int = -1, 
-        label: str = None, 
-        user_data: Any = None, 
-        use_internal_label: bool = True, 
-        callback: Callable = None, 
-        show: bool = True, 
-        parent: Union[int, str] = 11, 
-        **kwargs, 
+        self,
+        button: int = -1,
+        label: str = None,
+        user_data: Any = None,
+        use_internal_label: bool = True,
+        callback: Callable = None,
+        show: bool = True,
+        parent: Union[int, str] = 11,
+        **kwargs,
     ):
         super().__init__(
             button=button,
@@ -827,14 +816,14 @@ class MouseWheelHandler(Item):
     _command = dearpygui.dearpygui.add_mouse_wheel_handler
 
     def __init__(
-        self, 
-        label: str = None, 
-        user_data: Any = None, 
-        use_internal_label: bool = True, 
-        callback: Callable = None, 
-        show: bool = True, 
-        parent: Union[int, str] = 11, 
-        **kwargs, 
+        self,
+        label: str = None,
+        user_data: Any = None,
+        use_internal_label: bool = True,
+        callback: Callable = None,
+        show: bool = True,
+        parent: Union[int, str] = 11,
+        **kwargs,
     ):
         super().__init__(
             label=label,
@@ -870,14 +859,14 @@ class ResizeHandler(Item):
     _command = dearpygui.dearpygui.add_resize_handler
 
     def __init__(
-        self, 
-        parent: Union[int, str], 
-        label: str = None, 
-        user_data: Any = None, 
-        use_internal_label: bool = True, 
-        callback: Callable = None, 
-        show: bool = True, 
-        **kwargs, 
+        self,
+        parent: Union[int, str],
+        label: str = None,
+        user_data: Any = None,
+        use_internal_label: bool = True,
+        callback: Callable = None,
+        show: bool = True,
+        **kwargs,
     ):
         super().__init__(
             parent=parent,
@@ -913,14 +902,14 @@ class ToggledOpenHandler(Item):
     _command = dearpygui.dearpygui.add_toggled_open_handler
 
     def __init__(
-        self, 
-        parent: Union[int, str], 
-        label: str = None, 
-        user_data: Any = None, 
-        use_internal_label: bool = True, 
-        callback: Callable = None, 
-        show: bool = True, 
-        **kwargs, 
+        self,
+        parent: Union[int, str],
+        label: str = None,
+        user_data: Any = None,
+        use_internal_label: bool = True,
+        callback: Callable = None,
+        show: bool = True,
+        **kwargs,
     ):
         super().__init__(
             parent=parent,
@@ -956,14 +945,14 @@ class VisibleHandler(Item):
     _command = dearpygui.dearpygui.add_visible_handler
 
     def __init__(
-        self, 
-        parent: Union[int, str], 
-        label: str = None, 
-        user_data: Any = None, 
-        use_internal_label: bool = True, 
-        callback: Callable = None, 
-        show: bool = True, 
-        **kwargs, 
+        self,
+        parent: Union[int, str],
+        label: str = None,
+        user_data: Any = None,
+        use_internal_label: bool = True,
+        callback: Callable = None,
+        show: bool = True,
+        **kwargs,
     ):
         super().__init__(
             parent=parent,

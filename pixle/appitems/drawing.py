@@ -2,13 +2,12 @@ from typing import (
     Any,
     Callable,
     Union,
-    Dict,
     Tuple,
-    Set,
     List,
 )
 import dearpygui.dearpygui
-from dpgwidgets.widget import Container, Widget
+from pixle.itemtypes.container import Container
+from pixle.itemtypes.widget import Widget
 
 ##################################################
 ####### NOTE: This file is auto-generated. #######

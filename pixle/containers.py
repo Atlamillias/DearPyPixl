@@ -2,16 +2,17 @@ from typing import Callable, Any
 
 import dearpygui._dearpygui as idpg
 
-import dpgwidgets.libsrc.containers
-from dpgwidgets.libsrc.containers import *
-from dpgwidgets.libsrc.handlers import ClickedHandler as _ClickedHandler
-from dpgwidgets.constants import ItemType, AppItemType
+import pixle.appitems.containers
+from pixle.appitems.containers import *
+from pixle.itemtypes import Item
+from pixle.events import ClickedHandler
+
 
 
 __all__ = [
-    *dpgwidgets.libsrc.containers.__all__,
+    *pixle.appitems.containers.__all__,
     "Popup",
-    ]
+]
 
 
 class Popup(Window):
@@ -19,7 +20,7 @@ class Popup(Window):
 
     def __init__(
         self,
-        parent: AppItemType,
+        parent: Item,
         button: int = -1,
         modal: bool = False,
         **kwargs,
@@ -29,12 +30,12 @@ class Popup(Window):
             show=False,
             popup=popup,
             modal=modal,
-            min_size=[25,25],
+            min_size=[25, 25],
             autosize=True,
             **kwargs,
         )
 
-        self.__on_click_handler = _ClickedHandler(
+        self.__on_click_handler = ClickedHandler(
             parent,
             button,
             callback=self.__on_click_callback
@@ -43,6 +44,7 @@ class Popup(Window):
     @property
     def button(self):
         return self.__on_click_handler.button
+
     @button.setter
     def button(self, value: int):
         self.__on_click_handler.button = value
@@ -51,10 +53,5 @@ class Popup(Window):
     def parent(self):
         return idpg.get_item_info(self.__on_click_handler.id)["parent"]
 
-
     def __on_click_callback(self):
         self.configure(show=True)
-
-
-
-    

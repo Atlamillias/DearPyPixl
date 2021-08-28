@@ -4,13 +4,11 @@ import contextlib
 import traceback
 import sys
 
-from dearpygui import dearpygui as dpg
-
-from dpgwidgets import widget
-from dpgwidgets.containers import Window
-from dpgwidgets.constants import AppItemType
-from dpgwidgets.libsrc.containers import Child, Group
-from dpgwidgets.libsrc.widgets import Text, InputText
+from dearpygui import dearpygui
+from pixle.application import Application
+from pixle.containers import Window, Child, Group
+from pixle.widgets import Text, InputText
+from pixle.itemtypes import Item
 
 
 __all__ = [
@@ -20,12 +18,12 @@ __all__ = [
 
 class PycSTDOut(io.StringIO):
     msg_flag = {
-        "-c": (200, 125, 0, 150),  # code
-        "-r": (0, 255, 120, 255),  # return
-        "-e": (255, 100, 100, 255),  # error
+        "-c": {"color": (200, 125, 0, 150)},  # code
+        "-r": {"color": (0, 255, 120, 255), "indent": 5},  # return
+        "-e": {"color": (255, 100, 100, 255)},  # error
     }
 
-    def __init__(self, widget: widget.Container, *args, **kwargs):
+    def __init__(self, widget: Item, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.stdout_w = widget
 
@@ -33,9 +31,12 @@ class PycSTDOut(io.StringIO):
         if string in ("", "\n"):
             return None
 
-        color = self.msg_flag.get(flag, self.msg_flag["-r"])
-        Text(f" >>> {string}", parent=self.stdout_w, color=color)
-        
+        params = self.msg_flag.get(flag, self.msg_flag["-r"])
+        pretxt = f" << {string}"
+        if flag == "-e":
+            pretxt = f"  {string}"
+        Text(pretxt, parent=self.stdout_w,**params,)
+
 
 class PyConsole(InteractiveInterpreter):
     sys.ps1 = ">>> "
@@ -43,52 +44,54 @@ class PyConsole(InteractiveInterpreter):
 
     def __init__(
         self,
-        parent: AppItemType = None,
         locals: dict = None,
         filename: str = None,
-        banner_msg: str = None,
-        exit_msg: str = None,
     ):
         super().__init__(locals)
-        self.parent = parent or Window()
+        self.App = Application()
+        self.parent = Window("InteractivePythonConsole",width=600, height=400)
         self.locals = locals or vars(__import__(__name__.split(".")[0]))
         self.filename = filename or self.__class__.__name__
-        self.banner_msg = banner_msg or (
+        self.banner_msg = (
             f'Python ({self.__class__.__name__}) {sys.version} on {sys.platform}.\n'
             f'Type "help", "copyright", "credits" or "license" for more information.\n'
         )
-        self.exit_msg = exit_msg or f"Exiting {self.__class__.__name__}...\n"
+        self.exit_msg = f"Exiting {self.__class__.__name__}...\n"
 
         with self.parent:
-            with Child(border=False) as self.stdout:
-                stdout_txt = Text(self.banner_msg)
-            dpg.add_separator()
-            dpg.add_dummy(height=1)
-            with Group(horizontal=True):
-                self.prompt1 = Text(sys.ps1)
-                self.prompt2 = Text(sys.ps2, show=False)
-                self.stdin = InputText(
-                    label="",
-                    height=25,
-                    on_enter=True,
-                    tab_input=True,
-                    callback=self.process,  
-                )
+            self.parent.theme.font = "segoeui.ttf"
+            self.parent.theme.font_size = 22
+            self.parent.no_scrollbar = True
+            self.parent.theme.style.item_spacing = 0,0
+            self.parent.theme.style.item_inner_spacing = 0, 0
+            self.parent.theme.style.window_padding = 4, 4
+            with Child(autosize_x=True) as self.stdout:
+                Text(self.banner_msg)
+            dearpygui.add_dummy(height=1)
+            with Child(no_scrollbar=True) as self.stdin_parent:
+                with Group(horizontal=True):
+                    self.prompt1 = Text(sys.ps1)
+                    self.prompt2 = Text(sys.ps2, show=False)
+                    self.stdin = InputText(
+                        label="",
+                        height=25,
+                        on_enter=True,
+                        tab_input=True,
+                        callback=self.process,
+                    )
 
         self._buffer = []
         self._file = PycSTDOut(self.stdout)
         self._unfinished_input = None
-        self._parent_pad_x = self.parent.theme_style.window_padding
+        self._parent_pad_x = self.parent.theme.style.window_padding
+        self.stdin_parent.height = 35
+        self.stdin.width = self.parent.width
+        self.stdout.height = self.parent.height - 72
 
         @self.parent.on_resize
         def stdio_resize():
-            self.stdout.height = self.parent.height - 30
-            
             self.stdin.width = self.parent.width
-            stdout_txt.wrap = self.stdout.width - 20
-            self.parent.y_scroll_pos = -1.0
-        
-        stdio_resize()
+            self.stdout.height = self.parent.height - 72
 
     def process(self, *args):
         Text(self.stdin.value, parent=self.stdout, color=[200, 125, 0, 150],)
@@ -130,18 +133,18 @@ class PyConsole(InteractiveInterpreter):
             self.showtraceback()
 
     def showtraceback(self):
-        sys.last_type, sys.last_value, last_tb = ei = sys.exc_info()
-        sys.last_traceback = last_tb
+        sys.last_type, sys.last_value, prev_traceback = ei = sys.exc_info()
+        sys.last_traceback = prev_traceback
         try:
-            lines = traceback.format_exception(ei[0], ei[1], last_tb.tb_next)
+            lines = traceback.format_exception(ei[0], ei[1], prev_traceback.tb_next)
             if sys.excepthook is sys.__excepthook__:
                 self._file.write(''.join(lines), "-e")
             else:
                 # If someone has set sys.excepthook, we let that take precedence
                 # over self.write
-                sys.excepthook(ei[0], ei[1], last_tb)
+                sys.excepthook(ei[0], ei[1], prev_traceback)
         finally:
-            last_tb = ei = None
+            prev_traceback = ei = None
 
     def showsyntaxerror(self, filename=None):
         type, value, tb = sys.exc_info()

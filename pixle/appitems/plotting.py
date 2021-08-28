@@ -2,13 +2,12 @@ from typing import (
     Any,
     Callable,
     Union,
-    Dict,
     Tuple,
-    Set,
     List,
 )
 import dearpygui.dearpygui
-from dpgwidgets.widget import Container, Widget
+from pixle.itemtypes.container import Container
+from pixle.itemtypes.widget import Widget
 
 ##################################################
 ####### NOTE: This file is auto-generated. #######
@@ -660,7 +659,7 @@ class DragPoint(Widget):
             **source (Union[int, str]): Overrides 'id' as value storage key.
             **callback (Callable): Registers a callback.
             **show (bool): Attempt to render widget.
-            **default_value (Any): 
+            **value (Any): 
             **color (Union[List[int], Tuple[int]]): 
             **thickness (float): 
             **show_label (bool): 
@@ -680,7 +679,7 @@ class DragPoint(Widget):
         source: Union[int, str] = 0, 
         callback: Callable = None, 
         show: bool = True, 
-        default_value: Any = (0.0, 0.0), 
+        value: Any = (0.0, 0.0), 
         color: Union[List[int], Tuple[int]] = (0, 0, 0, -255), 
         thickness: float = 1.0, 
         show_label: bool = True, 
@@ -695,7 +694,7 @@ class DragPoint(Widget):
             source=source,
             callback=callback,
             show=show,
-            default_value=default_value,
+            value=value,
             color=color,
             thickness=thickness,
             show_label=show_label,
@@ -709,7 +708,7 @@ class DragPoint(Widget):
         self.source = source
         self.callback = callback
         self.show = show
-        self.default_value = default_value
+        self.value = value
         self.color = color
         self.thickness = thickness
         self.show_label = show_label
@@ -1223,7 +1222,7 @@ class PlotAnnotation(Widget):
             **before (Union[int, str]): This item will be displayed before the specified item in the parent.
             **source (Union[int, str]): Overrides 'id' as value storage key.
             **show (bool): Attempt to render widget.
-            **default_value (Any): 
+            **value (Any): 
             **offset (Union[List[float], Tuple[float]]): 
             **color (Union[List[int], Tuple[int]]): 
             **clamped (bool): 
@@ -1242,7 +1241,7 @@ class PlotAnnotation(Widget):
         before: Union[int, str] = 0, 
         source: Union[int, str] = 0, 
         show: bool = True, 
-        default_value: Any = (0.0, 0.0), 
+        value: Any = (0.0, 0.0), 
         offset: Union[List[float], Tuple[float]] = (0.0, 0.0), 
         color: Union[List[int], Tuple[int]] = (0, 0, 0, -255), 
         clamped: bool = True, 
@@ -1256,7 +1255,7 @@ class PlotAnnotation(Widget):
             before=before,
             source=source,
             show=show,
-            default_value=default_value,
+            value=value,
             offset=offset,
             color=color,
             clamped=clamped,
@@ -1269,7 +1268,7 @@ class PlotAnnotation(Widget):
         self.before = before
         self.source = source
         self.show = show
-        self.default_value = default_value
+        self.value = value
         self.offset = offset
         self.color = color
         self.clamped = clamped
@@ -1559,7 +1558,7 @@ class SimplePlot(Widget):
             **filter_key (str): Used by filter widget.
             **tracked (bool): Scroll tracking
             **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
-            **default_value (Union[List[float], Tuple[float]]): 
+            **value (Union[List[float], Tuple[float]]): 
             **overlay (str): overlays text (similar to a plot title)
             **histogram (bool): 
             **autosize (bool): 
@@ -1589,7 +1588,7 @@ class SimplePlot(Widget):
         filter_key: str = '', 
         tracked: bool = False, 
         track_offset: float = 0.5, 
-        default_value: Union[List[float], Tuple[float]] = (), 
+        value: Union[List[float], Tuple[float]] = (), 
         overlay: str = '', 
         histogram: bool = False, 
         autosize: bool = True, 
@@ -1614,7 +1613,7 @@ class SimplePlot(Widget):
             filter_key=filter_key,
             tracked=tracked,
             track_offset=track_offset,
-            default_value=default_value,
+            value=value,
             overlay=overlay,
             histogram=histogram,
             autosize=autosize,
@@ -1638,7 +1637,7 @@ class SimplePlot(Widget):
         self.filter_key = filter_key
         self.tracked = tracked
         self.track_offset = track_offset
-        self.default_value = default_value
+        self.value = value
         self.overlay = overlay
         self.histogram = histogram
         self.autosize = autosize
