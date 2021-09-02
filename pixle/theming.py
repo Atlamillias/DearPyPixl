@@ -19,8 +19,7 @@ from dearpygui.dearpygui import (
     add_font_range_hint,
     # misc
     delete_item,
-    configure_item,
-    get_item_configuration
+    configure_item
 )
 from pixle.itemtypes import Item
 from pixle.errors import FontSizeError
@@ -36,7 +35,7 @@ __all__ = [
 # Type hints
 Numeric: Union[int, float]
 ColorValue: tuple[Numeric, Numeric, Numeric, Optional[Numeric]]
-StyleValue: tuple[Numeric, Optional[Numeric]]
+StyleValue: tuple[Numeric, Numeric]
 ElementValue: Union[ColorValue, StyleValue, None]
 FtRangeHint: Union[FontRangeHint, int, str]
 
@@ -53,10 +52,36 @@ FtRangeHint: Union[FontRangeHint, int, str]
 class Theme(Item, Mapping):
     """A theme that can be applied to items. The same theme can be applied
     to several items. Themes are dynamic -- any changes made to the theme
-    will be reflected to all items using it.
+    will be reflected to all items using it. An item can be affected by a
+    theme (prioritized, from top to bottom):
+        * by directly applying the theme to an item
+        * if the item is a child of a parent item with an applied theme
+        * if an application default theme is set
+        * by the system (internal) default theme
 
-    Args:
-        label (str, optional): A name for the theme.
+
+    Properties
+    ----------
+    * targets (read-only)
+    * color (read-only)
+    * style (read-only)
+    * font
+    * font_size
+
+
+    Methods
+    -------
+    * configure
+    * configuration
+    * apply
+    * apply_as_disabled
+    * unapply
+    * unapply_disabled
+    * renew
+
+
+    Returns:
+        *Theme*
     """
     _command = add_theme
     __gl_font_id = 0
@@ -135,7 +160,6 @@ class Theme(Item, Mapping):
         # anything.
         if not font and self.__font_id == 0:
             return None
-
         # If __font_id is not 0, that means self.font was changed to 
         # None in the prior frame (which should have been font.setter).
         self.__font_id = font.get_size(value) if font else 0
@@ -143,7 +167,7 @@ class Theme(Item, Mapping):
 
     @property
     def targets(self) -> list[Item]:
-        """Returns a list of items that the theme is directly applied to.
+        """Returns a list of items that the theme is directly applied to. 
         """
         appitems = self.APPITEMS
         return [item for item_id in self.__item_ids if
@@ -251,6 +275,7 @@ class Theme(Item, Mapping):
             set_item_font(item_id, font_id)
 
         cls = type(self)
+        # If this theme is also the default theme:
         if self._id == cls.__gl_theme_id:
             configure_item(font_id, default_font=True)
             cls.__gl_font_id = font_id
@@ -271,6 +296,8 @@ class Theme(Item, Mapping):
         if font_id:
             configure_item(font_id, default_font=True)
 
+        # Can't fetch the current default font or theme with
+        # the current API so it needs to be tracked.
         cls.__gl_theme_id = theme_id
         cls.__gl_font_id = font_id
 
