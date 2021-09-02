@@ -68,6 +68,35 @@ def get_configuration(item: Item):
 #    - Use the weakref module instead of strong refs for the registry.
 
 class Item(metaclass=ABCMeta):
+    """Base class for all wrapped items. Cannot be instantiated -- must be
+    subclassed.
+
+
+    Abstract Methods
+    ----------------
+    * _command (Callable): Class attribute - Internal API command that can
+    be called to create the item.
+
+
+    Properties
+    ----------
+    * id (read-only)
+
+
+    Methods
+    -------
+    * commit_setup
+    * configure
+    * configuration
+    * delete
+    * children
+    * handlers
+    * duplicate
+
+
+    Returns:
+        *Item*
+    """
     @abstractmethod
     def _command() -> Callable: ...
     _is_initialized = False
@@ -77,6 +106,18 @@ class Item(metaclass=ABCMeta):
     APPITEMS: dict[int,"Item"] = {}
 
     def __init__(self, stage: bool = False, untrack: bool = False, **kwargs):
+        """Initializes an instance of *Item*.
+
+        Args:
+            * stage (bool, optional): If True, the instance is partially initialized --
+            self._command will not be called and the item itself will not be (internally)
+            created. Item initialization must be finished by calling `commit_setup` on
+            the instance. While the item is staged, some method calls may raise exceptions.
+            Defaults to False.
+
+            * untrack (bool, optional): If True, no references will be added to the item
+            registry for this item. Defaults to False.
+        """
         cls = type(self)
         # Attributes in _configurations is have unique handling.
         if not cls._configurations:
@@ -137,6 +178,8 @@ class Item(metaclass=ABCMeta):
         object.__setattr__(self, attr, value)
 
     def commit_setup(self):
+        """Un-stages the item and creates it.
+        """
         value_attr = self._staged_configuration.pop("value", None)
         type(self)._command(id=self._id, **self._staged_configuration)
         if value_attr is not None:
@@ -146,7 +189,9 @@ class Item(metaclass=ABCMeta):
         del self._staged_configuration
 
     @property
-    def id(self):
+    def id(self) -> int:
+        """Unique identifier for the item.
+        """
         return self._id
 
     def configure(self, **config) -> None:
