@@ -185,7 +185,11 @@ class Application(EventSupport, UniqueItem, metaclass=UniqueMeta):
         return self.title
 
     def __getattr__(self, attr):  # Overloaded from Item
-        return dearpygui.get_viewport_configuration(self._id)[attr]
+        try:
+            return dearpygui.get_viewport_configuration(self._id)[attr]
+        except KeyError:
+            raise AttributeError(
+                f"{type(self).__qualname__!r} object has no attribute {attr!r}.")
 
     def __setattr__(self, attr, value):  # Overloaded from Item
         # Allowing special methods, descriptors, etc. first.

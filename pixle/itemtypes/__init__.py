@@ -11,7 +11,6 @@ from dearpygui.dearpygui import (
     set_value as dpg_set_value,
     get_value,
     move_item,
-    set_staging_mode,
     unstage_items,
 )
 
@@ -156,7 +155,11 @@ class Item(metaclass=ABCMeta):
         )
 
     def __getattr__(self, attr):
-        return get_configuration(self)[attr]
+        try:
+            return get_configuration(self)[attr]
+        except KeyError:
+            raise AttributeError(
+                f"{type(self).__qualname__!r} object has no attribute {attr!r}.")
 
     def __setattr__(self, attr, value):
         # Allowing special methods, descriptors, etc.
