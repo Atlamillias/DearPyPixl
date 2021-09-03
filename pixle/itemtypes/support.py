@@ -3,7 +3,7 @@ from abc import ABCMeta, abstractmethod
 from typing import Callable, Any, Union
 import inspect
 import functools
-from dearpygui import _dearpygui as idpg
+from dearpygui import _dearpygui, dearpygui
 
 
 from pixle.events import *  # handlers
@@ -28,17 +28,12 @@ class ContextSupport:
     """A mixin for *Item* subclasses. Allows context manager syntax usage
     for container-like items.
     """
-
     def __enter__(self):
-        # If the container is still staged, commit its setup.
-        if not self._is_initialized:
-            self.commit_setup()
-
-        idpg.push_container_stack(self._id)
+        _dearpygui.push_container_stack(self._id)
         return self
 
     def __exit__(self, exec_type, exec_value, traceback):
-        idpg.pop_container_stack()
+        _dearpygui.pop_container_stack()
 
 
 class ThemeSupport:
@@ -46,13 +41,8 @@ class ThemeSupport:
     own self-contained theme.
     """
     def __init__(self, theme: Theme=None, *args, **kwargs):
-        self._theme = theme or Theme()
         super().__init__(*args, **kwargs)
-
-    def commit_setup(self):
-        # Item.commit_setup needs to be ran first to create the item.
-        super().commit_setup()
-        self.theme = self._theme
+        self.theme = theme or Theme()
 
     @property
     def theme(self):
@@ -60,9 +50,7 @@ class ThemeSupport:
     @theme.setter
     def theme(self, value: Theme):
         self._theme = value
-
-        if self._is_initialized:
-            value.apply(self)
+        value.apply(self)
             
 
 class EventSupport(metaclass=ABCMeta):
@@ -72,8 +60,8 @@ class EventSupport(metaclass=ABCMeta):
     def _handler_map(self): ...  # {method_name_str: EventHandlerItem}
 
     def __init__(self, *args, **kwargs):
-        self._registered_handlers: dict[str, tuple] = {}
         super().__init__(*args, **kwargs)
+        self._registered_handlers: dict[str, tuple] = {}
         
 
     def _pop_handler(self, handler_type: str, callback: Callable):
@@ -175,51 +163,51 @@ class StateSupport:
     def is_container(self) -> bool:
         """Checks if the widget is a container item.
         """
-        return idpg.get_item_info(self._id)["container"]
+        return _dearpygui.get_item_info(self._id)["container"]
 
     @property
     def is_hovered(self) -> bool:
-        return idpg.get_item_state(self._id)["hovered"]
+        return _dearpygui.get_item_state(self._id)["hovered"]
 
     @property
     def is_active(self) -> bool:
-        return idpg.get_item_state(self._id)["active"]
+        return _dearpygui.get_item_state(self._id)["active"]
 
     @property
     def is_focused(self) -> bool:
-        return idpg.get_item_state(self._id)["focused"]
+        return _dearpygui.get_item_state(self._id)["focused"]
 
     @property
     def is_clicked(self) -> bool:
-        return idpg.get_item_state(self._id)["clicked"]
+        return _dearpygui.get_item_state(self._id)["clicked"]
 
     @property
     def is_visible(self) -> bool:
-        return idpg.get_item_state(self._id)["visible"]
+        return _dearpygui.get_item_state(self._id)["visible"]
 
     @property
     def is_edited(self) -> bool:
-        return idpg.get_item_state(self._id)["edited"]
+        return _dearpygui.get_item_state(self._id)["edited"]
 
     @property
     def is_activated(self) -> bool:
-        return idpg.get_item_state(self._id)["activated"]
+        return _dearpygui.get_item_state(self._id)["activated"]
 
     @property
     def is_deactivated(self) -> bool:
-        return idpg.get_item_state(self._id)["deactivated"]
+        return _dearpygui.get_item_state(self._id)["deactivated"]
 
     @property
     def is_deactivated_after_edit(self) -> bool:
-        return idpg.get_item_state(self._id)["deactivated_after_edit"]
+        return _dearpygui.get_item_state(self._id)["deactivated_after_edit"]
 
     @property
     def is_toggled_open(self) -> bool:
-        return idpg.get_item_state(self._id)["toggled_open"]
+        return _dearpygui.get_item_state(self._id)["toggled_open"]
 
     @property
     def is_ok(self) -> bool:
-        return idpg.get_item_state(self._id)["ok"]
+        return _dearpygui.get_item_state(self._id)["ok"]
 
 
 class CallbackSupport:
@@ -235,21 +223,21 @@ class ItemMethodSupport:
     def focus(self):
         """Brings the widget into focus.
         """
-        idpg.focus_item(self._id)
+        _dearpygui.focus_item(self._id)
 
     def move_up(self) -> None:
         """If the widget is a child, it is placed above the item
         that immediately precedes it.
         """
-        idpg.move_item_up(self._id)
+        _dearpygui.move_item_up(self._id)
 
     def move_down(self) -> None:
         """If the widget is a child, it is placed above the item
         that immediately precedes it.
         """
-        idpg.move_item_down(self._id)
+        _dearpygui.move_item_down(self._id)
 
-    def move(self, parent: int, before: int = 0) -> None:
+    def move(self, parent, before: int = 0) -> None:
         """If the widget is a child, it will be moved to another
         parent and placed above/before another item.
 
@@ -258,4 +246,4 @@ class ItemMethodSupport:
             before (int, optional): id of the child item that the widget 
             will be placed above/before.
         """
-        idpg.move_item(self._id, parent, before)
+        _dearpygui.move_item(self._id, parent=parent._id, before=before)

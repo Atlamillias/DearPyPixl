@@ -11,6 +11,8 @@ from dearpygui.dearpygui import (
     set_value as dpg_set_value,
     get_value,
     move_item,
+    set_staging_mode,
+    unstage_items,
 )
 
 
@@ -19,22 +21,20 @@ __all__ = ["Item"]
 
 def _set_parent(item: Item, parent):
     item_id = item._id
-    if item._is_initialized:
-        parent = int(parent)
-        current_parent = get_item_info(item_id)["parent"]
-        # If the value would be the default value (0 or None),
-        # or if the parent wouldn't change, do nothing.
-        if not parent or parent == current_parent:
-            return None
 
-        return move_item(item_id, parent=int(parent))
-    item._staged_configuration["parent"] = parent
+    parent = int(parent)
+    current_parent = get_item_info(item_id)["parent"]
+    # If the value would be the default value (0 or None),
+    # or if the parent wouldn't change, do nothing.
+    if not parent or parent == current_parent:
+        return None
+
+    return move_item(item_id, parent=int(parent))
 
 
 def _set_value(item: Item, value: Any):
-    if item._is_initialized:
-        return dpg_set_value(item._id, value)
-    item._staged_configuration["default_value"] = value
+    return dpg_set_value(item._id, value)
+
 
 
 _SET_CONFIG = {
@@ -63,6 +63,7 @@ def get_configuration(item: Item):
 
 
 
+
 # TODO: 
 #    - Include layout import/export methods.
 #    - Use the weakref module instead of strong refs for the registry.
@@ -85,13 +86,13 @@ class Item(metaclass=ABCMeta):
 
     Methods
     -------
-    * commit_setup
     * configure
     * configuration
     * delete
     * children
     * handlers
     * duplicate
+    * unstage
 
 
     Returns:
@@ -99,45 +100,43 @@ class Item(metaclass=ABCMeta):
     """
     @abstractmethod
     def _command() -> Callable: ...
-    _is_initialized = False
     _configurations: set = set()
-    _staged_configuration: dict = None
 
     APPITEMS: dict[int,"Item"] = {}
 
-    def __init__(self, stage: bool = False, untrack: bool = False, **kwargs):
+    def __init__(self, untrack: bool = False, **kwargs):
         """Initializes an instance of *Item*.
 
         Args:
-            * stage (bool, optional): If True, the instance is partially initialized --
-            self._command will not be called and the item itself will not be (internally)
-            created. Item initialization must be finished by calling `commit_setup` on
-            the instance. While the item is staged, some method calls may raise exceptions.
+            * stage (bool, optional): If True, the item will be created but not
+            rendered. The `unstage` method needs to be called to render it.
             Defaults to False.
 
             * untrack (bool, optional): If True, no references will be added to the item
             registry for this item. Defaults to False.
         """
+        self._id = kwargs.pop("id", generate_uuid())
         cls = type(self)
+
         # Attributes in _configurations is have unique handling.
         if not cls._configurations:
-            cls._configurations = {option for option in kwargs
-                                   if option != "id"}
+            cls._configurations = {option for option in kwargs if option != "id"}
 
         if parent := kwargs.pop("parent", None):
             kwargs["parent"] = int(parent)
         if kwargs.get("label", None) is None:  # empty strings have value here
             kwargs["label"] = cls.__name__
+        # Constructor expects "default_value", but wrappers use "value" instead.
+        value = kwargs.pop("value", None)
 
-        self._id = kwargs.pop("id", generate_uuid())
-        self._staged_configuration = kwargs
-
-        # The instance won't be stored in the registry if untracked.
         if not untrack:
-            cls.APPITEMS[self._id] = self
-        # Complete item initialization if the item isn't being staged.
-        if not stage:
-            self.commit_setup()
+            self.APPITEMS[self._id] = self
+
+        type(self)._command(id=self._id, **kwargs)
+
+        if value is not None:
+            dpg_set_value(self._id, value)
+
     
     def __int__(self):
         return self._id
@@ -157,36 +156,15 @@ class Item(metaclass=ABCMeta):
         )
 
     def __getattr__(self, attr):
-        if self._is_initialized:
-            return get_configuration(self)[attr]
-        return self._staged_configuration[attr]
+        return get_configuration(self)[attr]
 
     def __setattr__(self, attr, value):
         # Allowing special methods, descriptors, etc.
         if hasattr(type(self), attr):
             return object.__setattr__(self, attr, value)
-
-        # Where configuration values are set depends on the item's
-        # initialization state.
-        configurations = self._configurations
-        if attr in configurations and self._is_initialized:
+        if attr in self._configurations:
             return set_configuration(self, attr, value)
-        elif attr in configurations:
-            self._staged_configuration[attr] = value
-            return None
-
         object.__setattr__(self, attr, value)
-
-    def commit_setup(self):
-        """Un-stages the item and creates it.
-        """
-        value_attr = self._staged_configuration.pop("value", None)
-        type(self)._command(id=self._id, **self._staged_configuration)
-        if value_attr is not None:
-            dpg_set_value(self._id, value_attr)
-        self._is_initialized = True
-
-        del self._staged_configuration
 
     @property
     def id(self) -> int:
@@ -260,7 +238,7 @@ class Item(metaclass=ABCMeta):
         return [cls.APPITEMS[child]
                 for c_list in childs for child in c_list]
 
-    def handlers(self) -> list["Item"]:
+    def handlers(self) -> list[Item]:
         """Returns a list of event handlers that are currently registered
         to the item.
         """
@@ -269,7 +247,12 @@ class Item(metaclass=ABCMeta):
         return [cls.APPITEMS[handler] for handler in
                 get_item_info(self._id)["children"][3]]
 
-    def duplicate(self) -> "Item":
+    def unstage(self) -> None:
+        """Unstages the item.
+        """
+        unstage_items([self._id])
+
+    def duplicate(self) -> Item:
         """Creates a copy of the item and returns it.
 
         Args:
