@@ -16,10 +16,11 @@ from pixle.tools.appinfo import AppInfo
 
 @contextmanager
 def stage():
-    """Sets staging mode for all items added within the call's context.
-    An item created in staging mode is not rendered and has limited
-    functionality until its `unstage` method is called. Useful for
-    creating items whos parents will exist later.
+    """Temporarily sets staging mode. An item created in staging mode
+    is not rendered and has limited functionality until its `unstage`
+    method is called. Useful for creating items within existential
+    paradoxes -- For example; a `Button` item where the parent does
+    not exist at the time of the button's creation.
 
     Yields:
         None
