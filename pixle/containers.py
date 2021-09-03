@@ -1,10 +1,11 @@
 from typing import Callable, Any
 
-import dearpygui._dearpygui as idpg
+from dearpygui import dearpygui, _dearpygui
 
 import pixle.appitems.containers
 from pixle.appitems.containers import *
 from pixle.itemtypes import Item
+from pixle.itemtypes.container import Container
 from pixle.events import ClickedHandler
 
 
@@ -51,7 +52,8 @@ class Popup(Window):
 
     @property
     def parent(self):
-        return idpg.get_item_info(self.__on_click_handler.id)["parent"]
+        return _dearpygui.get_item_info(self.__on_click_handler.id)["parent"]
 
     def __on_click_callback(self):
         self.configure(show=True)
+
