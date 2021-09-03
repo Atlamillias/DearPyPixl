@@ -64,13 +64,10 @@ class UniqueItem(_Item):
             self.disable_virtual_scaling()
         dearpygui.setup_dearpygui(viewport=self.id)
         dearpygui.show_viewport(self._id)
-        # Most methods that needed this have been overloaded for
-        # Application and no longer do.
-        self._is_initialized = True
 
     # These inherited methods do not work for this class, and have
     # been overloaded and listed here for clarity.
-    def commit_setup(self) -> NotImplemented:
+    def unstage(self) -> NotImplemented:
         return NotImplemented
 
     def delete(self) -> NotImplemented:
@@ -80,7 +77,7 @@ class UniqueItem(_Item):
         return NotImplemented
 
 
-class Application(EventSupport, ThemeSupport, UniqueItem, metaclass=UniqueMeta):
+class Application(EventSupport, UniqueItem, metaclass=UniqueMeta):
     """Creates and performs setup on the viewport. Directly manages application
     settings. 
 
@@ -146,7 +143,6 @@ class Application(EventSupport, ThemeSupport, UniqueItem, metaclass=UniqueMeta):
         dock_space: bool = False,
 
         theme: Theme = None,
-        staging_mode: bool = False,
         virtual_scaling: bool = False,
     ):  
         super().__init__(
@@ -157,7 +153,7 @@ class Application(EventSupport, ThemeSupport, UniqueItem, metaclass=UniqueMeta):
         self.__virtual_scaling = virtual_scaling
         self.__dock_space = dock_space
         self.__docking_mode = enable_docking
-        self.__staging_mode = staging_mode
+        self.__staging_mode = False
         self.__primary_window = None
         self.__use_primary_window = False
 
@@ -179,7 +175,6 @@ class Application(EventSupport, ThemeSupport, UniqueItem, metaclass=UniqueMeta):
         self.decorated = decorated
 
         self.theme = theme or Theme()
-        self.staging_mode = staging_mode
 
         self.called_on_start: list[Callable] = []
         self.called_on_exit: list[Callable] = []
@@ -320,10 +315,10 @@ class Application(EventSupport, ThemeSupport, UniqueItem, metaclass=UniqueMeta):
     ################################
     @property
     def theme(self) -> Theme:  # Overloaded from ThemeHandler
-        return self._theme
+        return self.__theme
     @theme.setter
     def theme(self, value: Theme):  # Overloaded from ThemeHandler
-        self._theme = value
+        self.__theme = value
         try:
             value._set_as_default()
         except TypeError:
@@ -365,6 +360,10 @@ class Application(EventSupport, ThemeSupport, UniqueItem, metaclass=UniqueMeta):
     @property
     def docking_mode(self) -> bool:
         return self.__docking_mode
+
+    @property
+    def dock_space(self) -> bool:
+        return self.__dock_space
 
     @property
     def mouse_drag_delta(self):
