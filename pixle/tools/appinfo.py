@@ -25,10 +25,10 @@ class AppInfo(Child):
         ""
     )
 
-    def __init__(self, parent: Item = None):
+    def __init__(self):
         super().__init__(
             autosize_x=True,
-            parent=parent or Window(label="AppInfo", width=400, height=500)
+            parent=Window(label="AppInfo", width=400, height=500)
         )
         self.App = Application()
         self.AppInfo = Group(parent=self, horizontal=True)
@@ -84,10 +84,10 @@ class AppInfo(Child):
             def update_render_info():
                 # AppInfo
                 self.runtime.value = f":    {datetime.timedelta(seconds=self.App.runtime())}"
-                self.frames_all.value = f":    {self.App.frame_count()}"
+                self.frames_all.value = f":    {self.App.frames()}"
                 self.frames_per_sec.value = f":    {self.App.framerate()}"
                 # Mouse
-                x, y = self.App.get_mouse_pos(local=False)
+                x, y = self.App.local_mouse_pos
                 self.mouse_pos.value = f":    {x}, {y}"
 
             @self.App.on_key_press(key=Key.ANY.value)
