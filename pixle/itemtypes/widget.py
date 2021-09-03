@@ -11,13 +11,13 @@ from pixle.itemtypes.support import (
 )
 
 
-_WIDGET_MIXINS = (
+class Widget(
     EventItemSupport,
     ThemeSupport,
     StateSupport,
     ItemMethodSupport,
-)
-
-class Widget(*_WIDGET_MIXINS, Item, metaclass=ABCMeta):
+    Item,
+    metaclass=ABCMeta
+    ):
     @abstractmethod
     def _command() -> Callable: ...
