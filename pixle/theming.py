@@ -400,8 +400,10 @@ class ThemeProperty(Mapping):
                 f"minimum 3 values expected, but got {len(value)}.")
         a = a[0] if a else default_alpha
         element_uuid, category = getattr(type(self), element)
-        add_theme_color(element_uuid, [r, g, b, a],
+        ele_id = add_theme_color(element_uuid, [r, g, b, a],
                         category=category, parent=self._parent_id)
+        self._element_ids[element] = ele_id
+        
         return r, g, b, a
 
     def __set_style(self, element, value):
@@ -409,8 +411,9 @@ class ThemeProperty(Mapping):
         # TypeError could be raised.
         x, y = value
         element_uuid, category = getattr(type(self), element)
-        add_theme_style(element_uuid, x, y, category=category,
+        ele_id = add_theme_style(element_uuid, x, y, category=category,
                         parent=self._parent_id)
+        self._element_ids[element] = ele_id
         return x, y
 
 
