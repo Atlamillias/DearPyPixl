@@ -78,6 +78,7 @@ class StagingContainer(Container):
         use_internal_label: bool = True,
         **kwargs,
     ):
+        _dearpygui.set_staging_mode(True)
         super().__init__(
             label=label,
             user_data=user_data,
@@ -87,10 +88,12 @@ class StagingContainer(Container):
         self.label = label
         self.user_data = user_data
         self.use_internal_label = use_internal_label
+        _dearpygui.set_staging_mode(False)
 
     def __enter__(self):
         _dearpygui.set_staging_mode(True)
         super().__enter__()
+        return self
 
     def __exit__(self, exec_type, exec_value, traceback):
         super().__exit__(exec_type, exec_value, traceback)
