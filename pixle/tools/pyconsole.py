@@ -4,7 +4,7 @@ import contextlib
 import traceback
 import sys
 
-from dearpygui import dearpygui
+from dearpygui import dearpygui, _dearpygui
 from pixle.application import Application
 from pixle.containers import Window, Child, Group
 from pixle.widgets import Text, InputText
@@ -59,8 +59,6 @@ class PyConsole(InteractiveInterpreter):
         self.exit_msg = f"Exiting {self.__class__.__name__}...\n"
 
         with self.parent:
-            self.parent.theme.font = "segoeui.ttf"
-            self.parent.theme.font_size = 22
             self.parent.no_scrollbar = True
             self.parent.theme.style.item_spacing = 0,0
             self.parent.theme.style.item_inner_spacing = 0, 0
@@ -92,6 +90,13 @@ class PyConsole(InteractiveInterpreter):
         def stdio_resize():
             self.stdin.width = self.parent.width
             self.stdout.height = self.parent.height - 72
+
+    def __enter__(self):
+        _dearpygui.push_container_stack(self.parent.id)
+        return self
+
+    def __exit__(self, exec_type, exec_value, traceback):
+        _dearpygui.pop_container_stack()
 
     def process(self, *args):
         Text(self.stdin.value, parent=self.stdout, color=[200, 125, 0, 150],)
