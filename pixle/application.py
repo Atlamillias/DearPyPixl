@@ -20,7 +20,7 @@ from dearpygui._dearpygui import (
     get_frame_count,
 )
 from pixle.itemtypes import Item as _Item
-from pixle.itemtypes.support import EventSupport, ThemeSupport
+from pixle.itemtypes.support import EventSupport
 from pixle.theming import Theme
 from pixle.events import (
     KeyDownHandler,
