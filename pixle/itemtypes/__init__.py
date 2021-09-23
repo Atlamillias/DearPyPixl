@@ -18,6 +18,17 @@ from dearpygui.dearpygui import (
 __all__ = ["Item"]
 
 
+# There are several commands to get/set DPG item configuration.
+# When it is changed in the future, I can clean up this mess...
+def _get_before(item: Item):
+    item_id = item._id
+    parent = get_item_info(item_id)["parent"]
+    parent_childs: dict[str, list] = get_item_info(parent)["children"]
+    for childs in parent_childs.values():
+        if item_id in childs and item_id != childs[-1]:
+            return childs.index(item_id) + 1
+    return None
+
 def _set_parent(item: Item, parent):
     item_id = item._id
 
@@ -30,37 +41,50 @@ def _set_parent(item: Item, parent):
 
     return move_item(item_id, parent=int(parent))
 
+def _set_before(item: Item, before):
+    item_id = item._id
+    before = int(before)
+
+    # If the value would be the default value (0 or None), do nothing.
+    if not before or before == _get_before(item):
+        return None
+
+    return move_item(item_id, before=before)
 
 def _set_value(item: Item, value: Any):
     return dpg_set_value(item._id, value)
 
-
-
 _SET_CONFIG = {
     "parent": _set_parent,
+    "before": _set_before,
     "value": _set_value,
     "default_value": _set_value,
 }
-
 
 def set_configuration(item: Item, attribute: str, value: Any):
     if func := _SET_CONFIG.get(attribute, None):
         return func(item, value)
     return configure_item(item._id, **{attribute: value})
 
-
 def get_configuration(item: Item):
     # This function acts as a patched `get_item_configuration`. All
     # configuration options that an item *might* have are returned.
     item_id = item._id
-    return {
+    config = {
         **get_item_configuration(item_id),
         "parent": get_item_info(item_id)["parent"],
+        "before": None,
         "pos": get_item_state(item_id)["pos"],
         "value": get_value(item_id),
     }
+    # Getting object reference from id's
+    if parent_id := config["parent"]:
+        config["parent"] = Item.APPITEMS.get(parent_id, parent_id)
 
+        before_id = _get_before(item)
+        config["before"] = Item.APPITEMS.get(before_id, before_id)
 
+    return config
 
 
 # TODO: 
@@ -120,19 +144,22 @@ class Item(metaclass=ABCMeta):
         # Attributes in _configurations is have unique handling.
         if not cls._configurations:
             cls._configurations = {option for option in kwargs if option != "id"}
+        # Untracked in item registry...?
+        if not untrack:
+            self.APPITEMS[self._id] = self
 
-        if parent := kwargs.pop("parent", None):
-            kwargs["parent"] = int(parent)
-        if kwargs.get("label", None) is None:  # empty strings have value here
+        # Need the id of any Item instance passed as a value for configuration.
+        [kwargs.update({kw: int(val)}) for kw, val in kwargs.items() if isinstance(val, Item)]
+        # Checking specifically for None because passing an empty string is
+        # meaningful.
+        if kwargs.get("label", None) is None:
             kwargs["label"] = cls.__name__
         # Constructor expects "default_value", but wrappers use "value" instead.
         value = kwargs.pop("value", None)
 
-        if not untrack:
-            self.APPITEMS[self._id] = self
+        type(self)._command(id=self._id, **kwargs)  # item creation
 
-        type(self)._command(id=self._id, **kwargs)
-
+        # Setting `value` if one was passed...
         if value is not None:
             dpg_set_value(self._id, value)
 
