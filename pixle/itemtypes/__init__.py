@@ -131,10 +131,6 @@ class Item(metaclass=ABCMeta):
         """Initializes an instance of *Item*.
 
         Args:
-            * stage (bool, optional): If True, the item will be created but not
-            rendered. The `unstage` method needs to be called to render it.
-            Defaults to False.
-
             * untrack (bool, optional): If True, no references will be added to the item
             registry for this item. Defaults to False.
         """
