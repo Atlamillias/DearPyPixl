@@ -63,7 +63,6 @@ class UniqueItem(_Item):
         if sys.platform == "win32" and not virtual_scaling:
             self.disable_virtual_scaling()
         dearpygui.setup_dearpygui(viewport=self.id)
-        dearpygui.show_viewport(self._id)
 
     # These inherited methods do not work for this class, and have
     # been overloaded and listed here for clarity.
@@ -215,16 +214,25 @@ class Application(EventSupport, UniqueItem, metaclass=UniqueMeta):
         """
         [f() for f in self.called_on_render]
 
+    def show_viewport(self) -> None:
+        """Show the viewport. Icon configuration options can't be changed once
+        showing the viewport.
+        """
+        type(self)._is_viewport_showing = True
+        return _dearpygui.show_viewport(self._id)
+
     @classmethod
     def start(cls) -> None:
+        # Verify a configured viewport
         if cls.__application__ is None:
             cls.__application__ = cls()
+        # Verify viewport is showing
+        if not cls._is_viewport_showing:
+            _dearpygui.show_viewport(cls._id)
 
         application = cls.__application__
         application.register_callbacks()
-
         call_on_render_callbacks = application.call_on_render_callbacks
-
         while is_dearpygui_running():
             call_on_render_callbacks()
             render_dearpygui_frame()
@@ -249,6 +257,10 @@ class Application(EventSupport, UniqueItem, metaclass=UniqueMeta):
     @property
     def is_running(self) -> bool:
         return is_dearpygui_running()
+    
+    @property
+    def is_viewport_showing(self) -> bool:
+        return self._is_viewport_showing
 
     ################################
     ######## Event Handlers ########
@@ -493,6 +505,7 @@ class Application(EventSupport, UniqueItem, metaclass=UniqueMeta):
 
     _command = dearpygui.create_viewport
     _id = "DPG_NOT_USED_YET"
+    _is_viewport_showing = False
     _configurations: set = {
         "title",
         "small_icon",
