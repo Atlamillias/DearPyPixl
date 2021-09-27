@@ -33,7 +33,7 @@ class Container(
     def renew(self) -> None:
         """Deletes all children in the widget, if any.
         """
-        [child.delete() for child in self.children()]
+        idpg.delete_item(self._id, children_only=True)
 
     @property
     def is_top_level(self) -> bool:
