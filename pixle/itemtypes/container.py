@@ -39,7 +39,7 @@ class Container(
     def is_top_level(self) -> bool:
         """Checks if the item is a top-level container.
         """
-        # If the
+        # This container item won't have a parent if True.
         if not idpg.get_item_info(self._id)["parent"]:
             return True
         return False
@@ -51,7 +51,6 @@ class Container(
         its position will be set to the end.
         """
         return idpg.get_y_scroll(self.id)
-
     @y_scroll_pos.setter
     def y_scroll_pos(self, value):  # -1.0 will set it to max/end
         idpg.set_y_scroll(self.id, value)
@@ -68,7 +67,6 @@ class Container(
         its position will be set to the end.
         """
         return idpg.get_x_scroll(self.id)
-
     @x_scroll_pos.setter
     def x_scroll_pos(self, value: float):  # -1.0 will set it to max/end
         return idpg.set_x_scroll(self.id, value)
