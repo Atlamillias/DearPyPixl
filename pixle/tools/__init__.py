@@ -8,16 +8,33 @@ from pixle.tools.dpgtools import (
     show_font_manager,
     show_item_registry,
     show_metrics,
-    show_style_editor
+    show_style_editor,
 )
 from pixle.tools.pyconsole import PyConsole
 from pixle.tools.appinfo import AppInfo
 from pixle.itemtypes import Item
 
+__all__ = [
+    # from DPG
+    "show_about",
+    "show_debug",
+    "show_documentation",
+    "show_font_manager",
+    "show_item_registry",
+    "show_metrics",
+    "show_style_editor",
+    # classes
+    "PyConsole",
+    "AppInfo",
+    # functions/helpers
+    "stage",
+    "mutex",
+    "find_reference",
+]
 
 
 @contextmanager
-def stage():
+def stage() -> None:
     """Temporarily sets staging mode. An item created in staging mode
     is not rendered and has limited functionality until its `unstage`
     method is called. Useful for creating items within existential
@@ -34,9 +51,8 @@ def stage():
 
 
 @contextmanager
-def mutex():
-    """Locks the mutex within context of this call. Mutex is unlocked
-    once out-of-scope.
+def mutex() -> None:
+    """Locks the mutex within context of this call.
 
     Yields:
         None
