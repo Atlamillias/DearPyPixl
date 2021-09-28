@@ -186,7 +186,7 @@ class Item(metaclass=ABCMeta):
                 f"{type(self).__qualname__!r} object has no attribute {attr!r}.")
 
     def __setattr__(self, attr, value):
-        # Allowing special methods, descriptors, etc.
+        # Prioritizing descriptors, etc.
         if hasattr(type(self), attr):
             return object.__setattr__(self, attr, value)
         if attr in self._configurations:
