@@ -48,7 +48,6 @@ class PyConsole(InteractiveInterpreter):
         filename: str = None,
     ):
         super().__init__(locals)
-        self.App = Application()
         self.parent = Window("InteractivePythonConsole",width=600, height=400)
         self.locals = locals or vars(__import__(__name__.split(".")[0]))
         self.filename = filename or self.__class__.__name__
