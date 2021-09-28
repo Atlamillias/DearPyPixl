@@ -1,4 +1,5 @@
 from contextlib import contextmanager
+from typing import Union
 from dearpygui import _dearpygui, dearpygui
 from pixle.tools.dpgtools import (
     show_about,
@@ -11,6 +12,7 @@ from pixle.tools.dpgtools import (
 )
 from pixle.tools.pyconsole import PyConsole
 from pixle.tools.appinfo import AppInfo
+from pixle.itemtypes import Item
 
 
 
@@ -43,3 +45,16 @@ def mutex():
         yield _dearpygui.lock_mutex()
     finally:
         _dearpygui.unlock_mutex()
+
+
+def find_reference(tag: Union[str, int]) -> Union[Item, None]:
+    """Returns a reference of an Item object that has a unique identifier
+    of <tag>. Returns None if it doesn't exist or is not found.
+
+    Args:
+        * tag (Union[str, int]): Unique identifier of an item.
+
+    Returns:
+        Union[Item, None]
+    """
+    return Item.APPITEMS.get(tag, None)
