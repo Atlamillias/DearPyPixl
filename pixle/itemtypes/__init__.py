@@ -1,6 +1,7 @@
 from __future__ import annotations
 from abc import ABCMeta, abstractmethod
 from typing import Callable, Any, Union
+from dearpygui import dearpygui
 from dearpygui.dearpygui import (
     get_item_info,
     delete_item,
@@ -278,11 +279,43 @@ class Item(metaclass=ABCMeta):
         """
         unstage_items([self._id])
 
-    def duplicate(self) -> Item:
-        """Creates a copy of the item and returns it.
+    def duplicate(self, **config) -> Item:
+        """Creates a (recursive) copy of the item and returns a reference to the
+        object. If the item is a top-level item (a container that cannot have a
+        parent), a new item created containing copies of the original item's
+        children. Otherwise, the copy will be parented by this item's parent.
 
         Args:
-            config (keyword-only, optional): Options/values to use instead
-            of the 'copied' options/values.
+            * config (keyword-only, optional): Configuration for the highest-
+            level copy. Will be used instead of the copied parameters.
+
+        Returns:
+            Item
         """
-        ...
+        item_type = type(self)
+        item_info = get_item_info(self._id)
+        item_config = self.configuration()
+
+        exclude_config = ("id", "before", "pos")
+        [item_config.pop(ex, None) for ex in exclude_config]
+
+        item_config = item_config | config
+
+        is_container = item_info["container"]
+        is_top_level = is_container and item_info["parent"] == None
+        if is_container and not is_top_level or type(self).__qualname__ == "Window":
+            if new_item_parent := config.get("parent", None):
+                item_config["parent"] = new_item_parent
+
+        new_item = item_type(**item_config)
+
+        # copying theme
+        dearpygui.set_item_theme(new_item._id, item_info["theme"])
+        dearpygui.set_item_theme(new_item._id, item_info["disabled_theme"])
+        dearpygui.set_item_font(new_item.id, item_info["font"])
+        
+        # duplicating children
+        for child in self.children():
+            child.duplicate(parent=new_item)
+
+        return new_item
