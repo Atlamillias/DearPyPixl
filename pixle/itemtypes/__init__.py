@@ -160,7 +160,6 @@ class Item(metaclass=ABCMeta):
         if value is not None:
             dpg_set_value(self._id, value)
 
-    
     def __int__(self):
         return self._id
 
@@ -177,6 +176,12 @@ class Item(metaclass=ABCMeta):
             + f", ".join((f'{attr}={val!r}' for attr, val in config.items()))
             + f")"
         )
+
+    def __hash__(self):
+        return hash((type(self).__qualname__,self._id))
+
+    def __eq__(self, other: object):
+        return hash(self) == hash(other)
 
     def __getattr__(self, attr):
         try:
