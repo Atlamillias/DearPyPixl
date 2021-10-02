@@ -210,7 +210,7 @@ class Theme(Item, Mapping):
     def renew(self) -> None:
         """Resets all theme elements to their default values.
         """
-        delete_item(self._id, children_only=True)
+        delete_item(self._tag, children_only=True)
         self._color._element_ids.clear()
         self._style._element_ids.clear()
 
@@ -224,11 +224,11 @@ class Theme(Item, Mapping):
         existing set theme will be unset. Cannot be applied to staged
         items.
         """
-        item_id = item._id
+        item_id = item._tag
         # Since font is tied to the main enabled theme we need to
         # track items so we can manually apply the font as it changes.
         self.__item_ids.add(item_id)
-        set_item_theme(item_id, self._id)
+        set_item_theme(item_id, self._tag)
         set_item_font(item_id, self.__font_id)
 
     def apply_as_disabled(self, item: Item):
@@ -242,13 +242,13 @@ class Theme(Item, Mapping):
         NOTE: the theme's *font* and *font_size* cannot be applied to an
         item's disabled theme.
         """
-        set_item_disabled_theme(item._id, self._id)
+        set_item_disabled_theme(item._tag, self._tag)
 
     def unapply(self, item: Item):
         """Applies the current enabled default theme to the item,
         or the system default is no default theme is set.
         """
-        item_id = item._id
+        item_id = item._tag
         self.__item_ids.remove(item_id)
         # 0 is the system default font/theme id.
         set_item_theme(item_id, 0)
@@ -259,7 +259,7 @@ class Theme(Item, Mapping):
         or the system default is no default theme is set.
         """
         # 0 is the system default font/theme id.
-        set_item_disabled_theme(item._id, 0)
+        set_item_disabled_theme(item._tag, 0)
 
     #### Internal-use ####
     def _set_font(self):
@@ -276,13 +276,13 @@ class Theme(Item, Mapping):
 
         cls = type(self)
         # If this theme is also the default theme:
-        if self._id == cls.__gl_theme_id:
+        if self._tag == cls.__gl_theme_id:
             configure_item(font_id, default_font=True)
             cls.__gl_font_id = font_id
         
     def _set_as_default(self):
         cls = type(self)
-        theme_id = self._id
+        theme_id = self._tag
         font_id = self.__font_id
         gl_theme_id = cls.__gl_theme_id
         gl_font_id = cls.__gl_font_id
@@ -317,7 +317,7 @@ class ThemeProperty(Mapping):
 
     def __init__(self, parent: Item):
         self._parent = parent
-        self._parent_id = parent._id
+        self._parent_id = parent._tag
         self._element_ids = {}
 
         set_attr = object.__setattr__
@@ -771,7 +771,7 @@ class Font:
         """
         # This will create a new font item if it doesn't exist, then
         # apply it.
-        return set_item_font(item._id, self(size).__sizes[size])
+        return set_item_font(item._tag, self(size).__sizes[size])
 
     def delete(self) -> None:
         """Deletes the font object.

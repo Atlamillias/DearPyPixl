@@ -22,7 +22,7 @@ __all__ = ["Item"]
 # There are several commands to get/set DPG item configuration.
 # When it is changed in the future, I can clean up this mess...
 def _get_before(item: Item):
-    item_id = item._id
+    item_id = item._tag
     parent = get_item_info(item_id)["parent"]
     parent_childs: dict[str, list] = get_item_info(parent)["children"]
     for childs in parent_childs.values():
@@ -31,7 +31,7 @@ def _get_before(item: Item):
     return None
 
 def _set_parent(item: Item, parent):
-    item_id = item._id
+    item_id = item._tag
 
     parent = int(parent)
     current_parent = get_item_info(item_id)["parent"]
@@ -43,7 +43,7 @@ def _set_parent(item: Item, parent):
     return move_item(item_id, parent=int(parent))
 
 def _set_before(item: Item, before):
-    item_id = item._id
+    item_id = item._tag
     before = int(before)
 
     # If the value would be the default value (0 or None), do nothing.
@@ -53,7 +53,7 @@ def _set_before(item: Item, before):
     return move_item(item_id, before=before)
 
 def _set_value(item: Item, value: Any):
-    return dpg_set_value(item._id, value)
+    return dpg_set_value(item._tag, value)
 
 _SET_CONFIG = {
     "parent": _set_parent,
@@ -65,12 +65,12 @@ _SET_CONFIG = {
 def set_configuration(item: Item, attribute: str, value: Any):
     if func := _SET_CONFIG.get(attribute, None):
         return func(item, value)
-    return configure_item(item._id, **{attribute: value})
+    return configure_item(item._tag, **{attribute: value})
 
 def get_configuration(item: Item):
     # This function acts as a patched `get_item_configuration`. All
     # configuration options that an item *might* have are returned.
-    item_id = item._id
+    item_id = item._tag
     config = {
         **get_item_configuration(item_id),
         "parent": get_item_info(item_id)["parent"],
@@ -135,15 +135,15 @@ class Item(metaclass=ABCMeta):
             * untrack (bool, optional): If True, no references will be added to the item
             registry for this item. Defaults to False.
         """
-        self._id = kwargs.pop("id", generate_uuid())
+        self._tag = kwargs.pop("tag", generate_uuid())
         cls = type(self)
 
         # Attributes in _configurations is have unique handling.
         if not cls._configurations:
-            cls._configurations = {option for option in kwargs if option != "id"}
+            cls._configurations = {option for option in kwargs if option != "tag"}
         # Untracked in item registry...?
         if not untrack:
-            self.APPITEMS[self._id] = self
+            self.APPITEMS[self._tag] = self
 
         # Need the id of any Item instance passed as a value for configuration.
         [kwargs.update({kw: int(val)}) for kw, val in kwargs.items() if isinstance(val, Item)]
@@ -154,23 +154,23 @@ class Item(metaclass=ABCMeta):
         # Constructor expects "default_value", but wrappers use "value" instead.
         value = kwargs.pop("value", None)
 
-        type(self)._command(id=self._id, **kwargs)  # item creation
+        type(self)._command(id=self._tag, **kwargs)  # item creation
 
         # Setting `value` if one was passed...
         if value is not None:
-            dpg_set_value(self._id, value)
+            dpg_set_value(self._tag, value)
 
     def __int__(self):
-        return self._id
+        return self._tag
 
     def __repr__(self):
         # These next few lines of code pretty much make up the body
         # of `Item.configuration`. However, it is possible that the method
         # could be overloaded. 
-        unfiltered_config = {"id": self._id} | get_configuration(self)
+        unfiltered_config = {"tag": self._tag} | get_configuration(self)
         configurations = self._configurations
         config = {attr: val for attr, val in unfiltered_config.items()
-                  if attr in configurations or attr == "id"}
+                  if attr in configurations or attr == "tag"}
         return (
             f"{type(self).__qualname__}("
             + f", ".join((f'{attr}={val!r}' for attr, val in config.items()))
@@ -178,7 +178,7 @@ class Item(metaclass=ABCMeta):
         )
 
     def __hash__(self):
-        return hash((type(self).__qualname__,self._id))
+        return hash((type(self).__qualname__,self._tag))
 
     def __eq__(self, other: object):
         return hash(self) == hash(other)
@@ -199,10 +199,10 @@ class Item(metaclass=ABCMeta):
         object.__setattr__(self, attr, value)
 
     @property
-    def id(self) -> int:
+    def tag(self) -> int:
         """Unique identifier for the item.
         """
-        return self._id
+        return self._tag
 
     def configure(self, **config) -> None:
         """Updates the item configuration item. It is the equivelent
@@ -226,7 +226,7 @@ class Item(metaclass=ABCMeta):
         configurations = self._configurations
         config = {attr: val for attr, val in
                   get_configuration(self).items()
-                  if attr in configurations or attr == "id"}
+                  if attr in configurations or attr == "tag"}
         return config.get(option, config)
 
     def delete(self) -> None:
@@ -242,11 +242,11 @@ class Item(metaclass=ABCMeta):
                 pass
 
         try:
-            delete_item(self._id)
+            delete_item(self._tag)
         except SystemError:
             pass
 
-        type(self).APPITEMS.pop(self._id, None)
+        type(self).APPITEMS.pop(self._tag, None)
         del self
 
     def children(self) -> list["Item"]:
@@ -264,7 +264,7 @@ class Item(metaclass=ABCMeta):
         # Slot 2: Draw items
         cls = type(self)
         childs = (val for slot, val in
-                  get_item_info(self._id)["children"].items()
+                  get_item_info(self._tag)["children"].items()
                   if slot in (0, 1, 2))
         # Flattening list of lists.
         return [cls.APPITEMS[child]
@@ -277,12 +277,12 @@ class Item(metaclass=ABCMeta):
         # Items in Slot 3 are event handlers.
         cls = type(self)
         return [cls.APPITEMS[handler] for handler in
-                get_item_info(self._id)["children"][3]]
+                get_item_info(self._tag)["children"][3]]
 
     def unstage(self) -> None:
         """Unstages the item.
         """
-        unstage_items([self._id])
+        unstage_items([self._tag])
 
     def duplicate(self, **config) -> Item:
         """Creates a (recursive) copy of the item and returns a reference to the
@@ -298,10 +298,10 @@ class Item(metaclass=ABCMeta):
             Item
         """
         item_type = type(self)
-        item_info = get_item_info(self._id)
+        item_info = get_item_info(self._tag)
         item_config = self.configuration()
 
-        exclude_config = ("id", "before", "pos")
+        exclude_config = ("tag", "before", "pos")
         [item_config.pop(ex, None) for ex in exclude_config]
 
         item_config = item_config | config
@@ -315,9 +315,9 @@ class Item(metaclass=ABCMeta):
         new_item = item_type(**item_config)
 
         # copying theme
-        dearpygui.set_item_theme(new_item._id, item_info["theme"])
-        dearpygui.set_item_theme(new_item._id, item_info["disabled_theme"])
-        dearpygui.set_item_font(new_item.id, item_info["font"])
+        dearpygui.set_item_theme(new_item._tag, item_info["theme"])
+        dearpygui.set_item_theme(new_item._tag, item_info["disabled_theme"])
+        dearpygui.set_item_font(new_item.tag, item_info["font"])
         
         # duplicating children
         for child in self.children():

@@ -193,7 +193,7 @@ class Popup(Window):
         self.configure(show=True)
 
 
-class StagingContainer(Container):
+class Test_Stage(Container):
     """A container that automatically sets staging mode for all items it parents.
     When its `unstage` method is called, all children are placed into the parent
     in the current context. For example, calling `unstage` in the scope of
@@ -250,14 +250,14 @@ class TabBar(TabBar):
     def active_tab(self) -> Tab:
         """The currently selected tab.
         """
-        active_tab_id = _dearpygui.get_value(self.id)
+        active_tab_id = _dearpygui.get_value(self.tag)
         if active_tab_id == 0 and (childs := self.children()):
             return childs[0]
         return self.APPITEMS.get(active_tab_id, active_tab_id)
 
     @active_tab.setter
     def active_tab(self, value: Tab):
-        _dearpygui.set_value(self.id, value.id)
+        _dearpygui.set_value(self.tag, value.tag)
 
 
 class Tab(Tab):

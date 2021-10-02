@@ -91,7 +91,7 @@ class PyConsole(InteractiveInterpreter):
             self.stdout.height = self.parent.height - 72
 
     def __enter__(self):
-        _dearpygui.push_container_stack(self.parent.id)
+        _dearpygui.push_container_stack(self.parent.tag)
         return self
 
     def __exit__(self, exec_type, exec_value, traceback):

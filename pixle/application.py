@@ -62,7 +62,7 @@ class UniqueItem(_Item):
         # This can be changed.
         if sys.platform == "win32" and not virtual_scaling:
             self.disable_virtual_scaling()
-        dearpygui.setup_dearpygui(viewport=self.id)
+        dearpygui.setup_dearpygui(viewport=self.tag)
 
     # These inherited methods do not work for this class, and have
     # been overloaded and listed here for clarity.
@@ -112,7 +112,6 @@ class Application(EventSupport, UniqueItem, metaclass=UniqueMeta):
         not be shown. Default is True.
         clear_color (list[float], optional): [UNDOCUMENTED - Sets viewport background color?].
         Defaults to [0, 0, 0, 255].
-        staging_mode (bool, optional): Enables staging mode. Defaults to False.
         enable_docking (bool, optional): Enables docking - drag and dropping windows in other
         windows will "nest" them into each other where you can tab back and forth between them.
         Defaults to False.
@@ -152,7 +151,6 @@ class Application(EventSupport, UniqueItem, metaclass=UniqueMeta):
         self.__virtual_scaling = virtual_scaling
         self.__dock_space = dock_space
         self.__docking_mode = enable_docking
-        self.__staging_mode = False
         self.__primary_window = None
         self.__use_primary_window = False
 
@@ -185,7 +183,7 @@ class Application(EventSupport, UniqueItem, metaclass=UniqueMeta):
 
     def __getattr__(self, attr):  # Overloaded from Item
         try:
-            return dearpygui.get_viewport_configuration(self._id)[attr]
+            return dearpygui.get_viewport_configuration(self._tag)[attr]
         except KeyError:
             raise AttributeError(
                 f"{type(self).__qualname__!r} object has no attribute {attr!r}.")
@@ -195,7 +193,7 @@ class Application(EventSupport, UniqueItem, metaclass=UniqueMeta):
         if hasattr(type(self), attr):
             return object.__setattr__(self, attr, value)
         elif attr in self._configurations:
-            return dearpygui.configure_viewport(self._id, **{attr: value})
+            return dearpygui.configure_viewport(self._tag, **{attr: value})
         object.__setattr__(self, attr, value)
 
 
@@ -219,7 +217,7 @@ class Application(EventSupport, UniqueItem, metaclass=UniqueMeta):
         showing the viewport.
         """
         type(self)._is_viewport_showing = True
-        return _dearpygui.show_viewport(self._id)
+        return _dearpygui.show_viewport(self._tag)
 
     @classmethod
     def start(cls) -> None:
@@ -228,7 +226,7 @@ class Application(EventSupport, UniqueItem, metaclass=UniqueMeta):
             cls.__application__ = cls()
         # Verify viewport is showing
         if not cls._is_viewport_showing:
-            _dearpygui.show_viewport(cls._id)
+            _dearpygui.show_viewport(cls._tag)
 
         application = cls.__application__
         application.register_callbacks()
@@ -341,14 +339,6 @@ class Application(EventSupport, UniqueItem, metaclass=UniqueMeta):
             raise TypeError(f"value of 'theme' cannot be `None`.")
 
     @property
-    def staging_mode(self) -> bool:
-        return self.__staging_mode
-    @staging_mode.setter
-    def staging_mode(self, value: bool):
-        self.__staging_mode = value
-        _dearpygui.set_staging_mode(mode=value)
-
-    @property
     def font_scaling(self) -> float:
         return _dearpygui.get_global_font_scale()
     @font_scaling.setter
@@ -438,7 +428,7 @@ class Application(EventSupport, UniqueItem, metaclass=UniqueMeta):
         configurations = self._configurations
         config = {attr: val for attr, val in
                   dearpygui.get_viewport_configuration(self).items()
-                  if attr in configurations or attr == "id"}
+                  if attr in configurations or attr == "tag"}
         return config.get(option, config)
 
     def children(self) -> list[UniqueItem]:  # Overloaded from Item
@@ -504,7 +494,7 @@ class Application(EventSupport, UniqueItem, metaclass=UniqueMeta):
     _colormap_registry_id = _dearpygui.mvReservedUUID_4
 
     _command = dearpygui.create_viewport
-    _id = "DPG_NOT_USED_YET"
+    _tag = "DPG_NOT_USED_YET"
     _is_viewport_showing = False
     _configurations: set = {
         "title",

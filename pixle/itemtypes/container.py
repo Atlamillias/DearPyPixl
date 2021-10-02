@@ -28,19 +28,19 @@ class Container(
     def reset_pos(self) -> None:
         """Sets the container's position to the default.
         """
-        idpg.reset_pos(self.id)
+        idpg.reset_pos(self.tag)
 
     def renew(self) -> None:
         """Deletes all children in the widget, if any.
         """
-        idpg.delete_item(self._id, children_only=True)
+        idpg.delete_item(self._tag, children_only=True)
 
     @property
     def is_top_level(self) -> bool:
         """Checks if the item is a top-level container.
         """
         # This container item won't have a parent if True.
-        if not idpg.get_item_info(self._id)["parent"]:
+        if not idpg.get_item_info(self._tag)["parent"]:
             return True
         return False
 
@@ -50,29 +50,29 @@ class Container(
         """Vertical scroll position of the container. If set to -1.0,
         its position will be set to the end.
         """
-        return idpg.get_y_scroll(self.id)
+        return idpg.get_y_scroll(self.tag)
     @y_scroll_pos.setter
     def y_scroll_pos(self, value):  # -1.0 will set it to max/end
-        idpg.set_y_scroll(self.id, value)
+        idpg.set_y_scroll(self.tag, value)
 
     @property
     def y_scroll_max(self) -> float:
         """Maximum vertical scroll position.
         """
-        return idpg.get_y_scroll_max(self.id)
+        return idpg.get_y_scroll_max(self.tag)
 
     @property
     def x_scroll_pos(self) -> float:
         """Horizontal scroll position of the container. If set to -1.0,
         its position will be set to the end.
         """
-        return idpg.get_x_scroll(self.id)
+        return idpg.get_x_scroll(self.tag)
     @x_scroll_pos.setter
     def x_scroll_pos(self, value: float):  # -1.0 will set it to max/end
-        return idpg.set_x_scroll(self.id, value)
+        return idpg.set_x_scroll(self.tag, value)
 
     @property
     def x_scroll_max(self) -> float:
         """Maximum horizontal scroll position.
         """
-        return idpg.get_x_scroll_max(self.id)
+        return idpg.get_x_scroll_max(self.tag)

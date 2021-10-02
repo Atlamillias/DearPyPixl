@@ -11,4 +11,4 @@ __all__ = [
     'constants',
 ]
 
-__version__ = '0.8.64'
+__version__ = '1.0.x'
