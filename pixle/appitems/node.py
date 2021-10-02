@@ -23,23 +23,25 @@ __all__ = [
 
 class Node(Container):
     """Adds a node to a node editor.
+    
     Args:
-            **label (str): Overrides 'name' as label.
-            **user_data (Any): User data for callbacks.
-            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
-            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
-            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
-            **payload_type (str): Sender string type must be the same as the target for the target to run the payload_callback.
-            **drag_callback (Callable): Registers a drag callback for drag and drop.
-            **drop_callback (Callable): Registers a drop callback for drag and drop.
-            **show (bool): Attempt to render widget.
-            **pos (Union[List[int], Tuple[int]]): Places the item relative to window coordinates, [0,0] is top left.
-            **filter_key (str): Used by filter widget.
-            **delay_search (bool): Delays searching container for specified items until the end of the app. Possible optimization when a container has many children that are not accessed often.
-            **tracked (bool): Scroll tracking
-            **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
-            **draggable (bool): Allow node to be draggable.
+            label (str, optional): Overrides 'name' as label.
+            user_data (Any, optional): User data for callbacks
+            use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+            tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
+            before (Union[int, str], optional): This item will be displayed before the specified item in the parent.
+            payload_type (str, optional): Sender string type must be the same as the target for the target to run the payload_callback.
+            drag_callback (Callable, optional): Registers a drag callback for drag and drop.
+            drop_callback (Callable, optional): Registers a drop callback for drag and drop.
+            show (bool, optional): Attempt to render widget.
+            pos (Union[List[int], Tuple[int]], optional): Places the item relative to window coordinates, [0,0] is top left.
+            filter_key (str, optional): Used by filter widget.
+            delay_search (bool, optional): Delays searching container for specified items until the end of the app. Possible optimization when a container has many children that are not accessed often.
+            tracked (bool, optional): Scroll tracking
+            track_offset (float, optional): 0.0f:top, 0.5f:center, 1.0f:bottom
+            draggable (bool, optional): Allow node to be draggable.
+            id (Union[int, str], optional): (deprecated) 
     Returns:
             Union[int, str]
     
@@ -101,25 +103,24 @@ class Node(Container):
 
 
 class NodeAttribute(Container):
-    """Adds a node attribute.
+    """Adds a node attribute to a node.
+    
     Args:
-            **label (str): Overrides 'name' as label.
-            **user_data (Any): User data for callbacks.
-            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
-            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-            **indent (int): Offsets the widget to the right the specified number multiplied by the indent style.
-            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
-            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
-            **payload_type (str): Sender string type must be the same as the target for the target to run the payload_callback.
-            **drag_callback (Callable): Registers a drag callback for drag and drop.
-            **drop_callback (Callable): Registers a drop callback for drag and drop.
-            **show (bool): Attempt to render widget.
-            **filter_key (str): Used by filter widget.
-            **tracked (bool): Scroll tracking
-            **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
-            **attribute_type (int): mvNode_Attr_Input, mvNode_Attr_Output, or mvNode_Attr_Static.
-            **shape (int): Pin shape.
-            **category (str): Category
+            label (str, optional): Overrides 'name' as label.
+            user_data (Any, optional): User data for callbacks
+            use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+            tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            indent (int, optional): Offsets the widget to the right the specified number multiplied by the indent style.
+            parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
+            before (Union[int, str], optional): This item will be displayed before the specified item in the parent.
+            show (bool, optional): Attempt to render widget.
+            filter_key (str, optional): Used by filter widget.
+            tracked (bool, optional): Scroll tracking
+            track_offset (float, optional): 0.0f:top, 0.5f:center, 1.0f:bottom
+            attribute_type (int, optional): mvNode_Attr_Input, mvNode_Attr_Output, or mvNode_Attr_Static.
+            shape (int, optional): Pin shape.
+            category (str, optional): Category
+            id (Union[int, str], optional): (deprecated) 
     Returns:
             Union[int, str]
     
@@ -134,9 +135,6 @@ class NodeAttribute(Container):
         indent: int = -1, 
         parent: Union[int, str] = 0, 
         before: Union[int, str] = 0, 
-        payload_type: str = '$$DPG_PAYLOAD', 
-        drag_callback: Callable = None, 
-        drop_callback: Callable = None, 
         show: bool = True, 
         filter_key: str = '', 
         tracked: bool = False, 
@@ -153,9 +151,6 @@ class NodeAttribute(Container):
             indent=indent,
             parent=parent,
             before=before,
-            payload_type=payload_type,
-            drag_callback=drag_callback,
-            drop_callback=drop_callback,
             show=show,
             filter_key=filter_key,
             tracked=tracked,
@@ -171,9 +166,6 @@ class NodeAttribute(Container):
         self.indent = indent
         self.parent = parent
         self.before = before
-        self.payload_type = payload_type
-        self.drag_callback = drag_callback
-        self.drop_callback = drop_callback
         self.show = show
         self.filter_key = filter_key
         self.tracked = tracked
@@ -185,26 +177,25 @@ class NodeAttribute(Container):
 
 class NodeEditor(Container):
     """Adds a node editor.
+    
     Args:
-            **label (str): Overrides 'name' as label.
-            **user_data (Any): User data for callbacks.
-            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
-            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-            **width (int): Width of the item.
-            **height (int): Height of the item.
-            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
-            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
-            **payload_type (str): Sender string type must be the same as the target for the target to run the payload_callback.
-            **callback (Callable): Registers a callback.
-            **drag_callback (Callable): Registers a drag callback for drag and drop.
-            **drop_callback (Callable): Registers a drop callback for drag and drop.
-            **show (bool): Attempt to render widget.
-            **filter_key (str): Used by filter widget.
-            **delay_search (bool): Delays searching container for specified items until the end of the app. Possible optimization when a container has many children that are not accessed often.
-            **tracked (bool): Scroll tracking
-            **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
-            **delink_callback (Callable): Callback ran when a link is detached.
-            **menubar (bool): Shows or hides the menubar.
+            label (str, optional): Overrides 'name' as label.
+            user_data (Any, optional): User data for callbacks
+            use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+            tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            width (int, optional): Width of the item.
+            height (int, optional): Height of the item.
+            parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
+            before (Union[int, str], optional): This item will be displayed before the specified item in the parent.
+            callback (Callable, optional): Registers a callback.
+            show (bool, optional): Attempt to render widget.
+            filter_key (str, optional): Used by filter widget.
+            delay_search (bool, optional): Delays searching container for specified items until the end of the app. Possible optimization when a container has many children that are not accessed often.
+            tracked (bool, optional): Scroll tracking
+            track_offset (float, optional): 0.0f:top, 0.5f:center, 1.0f:bottom
+            delink_callback (Callable, optional): Callback ran when a link is detached.
+            menubar (bool, optional): Shows or hides the menubar.
+            id (Union[int, str], optional): (deprecated) 
     Returns:
             Union[int, str]
     
@@ -220,10 +211,7 @@ class NodeEditor(Container):
         height: int = 0, 
         parent: Union[int, str] = 0, 
         before: Union[int, str] = 0, 
-        payload_type: str = '$$DPG_PAYLOAD', 
         callback: Callable = None, 
-        drag_callback: Callable = None, 
-        drop_callback: Callable = None, 
         show: bool = True, 
         filter_key: str = '', 
         delay_search: bool = False, 
@@ -241,10 +229,7 @@ class NodeEditor(Container):
             height=height,
             parent=parent,
             before=before,
-            payload_type=payload_type,
             callback=callback,
-            drag_callback=drag_callback,
-            drop_callback=drop_callback,
             show=show,
             filter_key=filter_key,
             delay_search=delay_search,
@@ -261,10 +246,7 @@ class NodeEditor(Container):
         self.height = height
         self.parent = parent
         self.before = before
-        self.payload_type = payload_type
         self.callback = callback
-        self.drag_callback = drag_callback
-        self.drop_callback = drop_callback
         self.show = show
         self.filter_key = filter_key
         self.delay_search = delay_search
@@ -275,16 +257,18 @@ class NodeEditor(Container):
 
 
 class NodeLink(Widget):
-    """Adds a node link between nodes.
+    """Undocumented
+    
     Args:
             attr_1 (Union[int, str]): 
             attr_2 (Union[int, str]): 
-            **label (str): Overrides 'name' as label.
-            **user_data (Any): User data for callbacks.
-            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
-            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
-            **show (bool): Attempt to render widget.
+            label (str, optional): Overrides 'name' as label.
+            user_data (Any, optional): User data for callbacks
+            use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+            tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
+            show (bool, optional): Attempt to render widget.
+            id (Union[int, str], optional): (deprecated) 
     Returns:
             Union[int, str]
     

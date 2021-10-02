@@ -34,15 +34,17 @@ __all__ = [
 
 
 class DrawLayer(Container):
-    """Creates a layer that can be drawn to. Useful for grouping drawing items.
+    """Creates a layer useful for grouping drawlist items.
+    
     Args:
-            **label (str): Overrides 'name' as label.
-            **user_data (Any): User data for callbacks.
-            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
-            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
-            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
-            **show (bool): Attempt to render widget.
+            label (str, optional): Overrides 'name' as label.
+            user_data (Any, optional): User data for callbacks
+            use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+            tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
+            before (Union[int, str], optional): This item will be displayed before the specified item in the parent.
+            show (bool, optional): Attempt to render widget.
+            id (Union[int, str], optional): (deprecated) 
     Returns:
             Union[int, str]
     
@@ -77,26 +79,25 @@ class DrawLayer(Container):
 
 
 class Drawlist(Container):
-    """A container widget that is used to present draw items or layers. Layers and draw items should be added to this widget as children.
+    """Adds a drawing canvas.
+    
     Args:
-            **label (str): Overrides 'name' as label.
-            **user_data (Any): User data for callbacks.
-            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
-            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-            **width (int): Width of the item.
-            **height (int): Height of the item.
-            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
-            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
-            **payload_type (str): Sender string type must be the same as the target for the target to run the payload_callback.
-            **callback (Callable): Registers a callback.
-            **drag_callback (Callable): Registers a drag callback for drag and drop.
-            **drop_callback (Callable): Registers a drop callback for drag and drop.
-            **show (bool): Attempt to render widget.
-            **pos (Union[List[int], Tuple[int]]): Places the item relative to window coordinates, [0,0] is top left.
-            **filter_key (str): Used by filter widget.
-            **delay_search (bool): Delays searching container for specified items until the end of the app. Possible optimization when a container has many children that are not accessed often.
-            **tracked (bool): Scroll tracking
-            **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
+            label (str, optional): Overrides 'name' as label.
+            user_data (Any, optional): User data for callbacks
+            use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+            tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            width (int, optional): Width of the item.
+            height (int, optional): Height of the item.
+            parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
+            before (Union[int, str], optional): This item will be displayed before the specified item in the parent.
+            callback (Callable, optional): Registers a callback.
+            show (bool, optional): Attempt to render widget.
+            pos (Union[List[int], Tuple[int]], optional): Places the item relative to window coordinates, [0,0] is top left.
+            filter_key (str, optional): Used by filter widget.
+            delay_search (bool, optional): Delays searching container for specified items until the end of the app. Possible optimization when a container has many children that are not accessed often.
+            tracked (bool, optional): Scroll tracking
+            track_offset (float, optional): 0.0f:top, 0.5f:center, 1.0f:bottom
+            id (Union[int, str], optional): (deprecated) 
     Returns:
             Union[int, str]
     
@@ -112,10 +113,7 @@ class Drawlist(Container):
         height: int = 0, 
         parent: Union[int, str] = 0, 
         before: Union[int, str] = 0, 
-        payload_type: str = '$$DPG_PAYLOAD', 
         callback: Callable = None, 
-        drag_callback: Callable = None, 
-        drop_callback: Callable = None, 
         show: bool = True, 
         pos: Union[List[int], Tuple[int]] = [], 
         filter_key: str = '', 
@@ -132,10 +130,7 @@ class Drawlist(Container):
             height=height,
             parent=parent,
             before=before,
-            payload_type=payload_type,
             callback=callback,
-            drag_callback=drag_callback,
-            drop_callback=drop_callback,
             show=show,
             pos=pos,
             filter_key=filter_key,
@@ -151,10 +146,7 @@ class Drawlist(Container):
         self.height = height
         self.parent = parent
         self.before = before
-        self.payload_type = payload_type
         self.callback = callback
-        self.drag_callback = drag_callback
-        self.drop_callback = drop_callback
         self.show = show
         self.pos = pos
         self.filter_key = filter_key
@@ -164,16 +156,18 @@ class Drawlist(Container):
 
 
 class ViewportDrawlist(Container):
-    """A container that is used to present draw items or layers directly to the viewport. By default this will draw to the back of teh viewport. Layers and draw items should be added to this widget as children.
+    """A container that is used to present draw items or layers directly to the viewport. By default this will draw to the back of the viewport. Layers and draw items should be added to this widget as children.
+    
     Args:
-            **label (str): Overrides 'name' as label.
-            **user_data (Any): User data for callbacks.
-            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
-            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-            **show (bool): Attempt to render widget.
-            **filter_key (str): Used by filter widget.
-            **delay_search (bool): Delays searching container for specified items until the end of the app. Possible optimization when a container has many children that are not accessed often.
-            **front (bool): Draws to the front of the view port instead of the back.
+            label (str, optional): Overrides 'name' as label.
+            user_data (Any, optional): User data for callbacks
+            use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+            tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            show (bool, optional): Attempt to render widget.
+            filter_key (str, optional): Used by filter widget.
+            delay_search (bool, optional): Delays searching container for specified items until the end of the app. Possible optimization when a container has many children that are not accessed often.
+            front (bool, optional): Draws to the front of the view port instead of the back.
+            id (Union[int, str], optional): (deprecated) 
     Returns:
             Union[int, str]
     
@@ -211,20 +205,22 @@ class ViewportDrawlist(Container):
 
 
 class Arrow(Widget):
-    """Draws an arrow on a drawing.
+    """Adds an arrow.
+    
     Args:
             p1 (Union[List[float], Tuple[float]]): Arrow tip.
             p2 (Union[List[float], Tuple[float]]): Arrow tail.
-            **label (str): Overrides 'name' as label.
-            **user_data (Any): User data for callbacks.
-            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
-            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
-            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
-            **show (bool): Attempt to render widget.
-            **color (Union[List[int], Tuple[int]]): 
-            **thickness (float): 
-            **size (int): 
+            label (str, optional): Overrides 'name' as label.
+            user_data (Any, optional): User data for callbacks
+            use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+            tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
+            before (Union[int, str], optional): This item will be displayed before the specified item in the parent.
+            show (bool, optional): Attempt to render widget.
+            color (Union[List[int], Tuple[int]], optional): 
+            thickness (float, optional): 
+            size (int, optional): 
+            id (Union[int, str], optional): (deprecated) 
     Returns:
             Union[int, str]
     
@@ -233,8 +229,8 @@ class Arrow(Widget):
 
     def __init__(
         self, 
-        p1: Union[List[float], Tuple[float]], 
-        p2: Union[List[float], Tuple[float]], 
+        p1: Union[List[float], Tuple[float, ...]], 
+        p2: Union[List[float], Tuple[float, ...]], 
         label: str = None, 
         user_data: Any = None, 
         use_internal_label: bool = True, 
@@ -274,22 +270,24 @@ class Arrow(Widget):
 
 
 class BezierCubic(Widget):
-    """Draws a cubic bezier curve on a drawing.
+    """Adds a cubic bezier curve.
+    
     Args:
             p1 (Union[List[float], Tuple[float]]): First point in curve.
             p2 (Union[List[float], Tuple[float]]): Second point in curve.
             p3 (Union[List[float], Tuple[float]]): Third point in curve.
             p4 (Union[List[float], Tuple[float]]): Fourth point in curve.
-            **label (str): Overrides 'name' as label.
-            **user_data (Any): User data for callbacks.
-            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
-            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
-            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
-            **show (bool): Attempt to render widget.
-            **color (Union[List[int], Tuple[int]]): 
-            **thickness (float): 
-            **segments (int): Number of segments to approximate bezier curve.
+            label (str, optional): Overrides 'name' as label.
+            user_data (Any, optional): User data for callbacks
+            use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+            tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
+            before (Union[int, str], optional): This item will be displayed before the specified item in the parent.
+            show (bool, optional): Attempt to render widget.
+            color (Union[List[int], Tuple[int]], optional): 
+            thickness (float, optional): 
+            segments (int, optional): Number of segments to approximate bezier curve.
+            id (Union[int, str], optional): (deprecated) 
     Returns:
             Union[int, str]
     
@@ -298,10 +296,10 @@ class BezierCubic(Widget):
 
     def __init__(
         self, 
-        p1: Union[List[float], Tuple[float]], 
-        p2: Union[List[float], Tuple[float]], 
-        p3: Union[List[float], Tuple[float]], 
-        p4: Union[List[float], Tuple[float]], 
+        p1: Union[List[float], Tuple[float, ...]], 
+        p2: Union[List[float], Tuple[float, ...]], 
+        p3: Union[List[float], Tuple[float, ...]], 
+        p4: Union[List[float], Tuple[float, ...]], 
         label: str = None, 
         user_data: Any = None, 
         use_internal_label: bool = True, 
@@ -345,21 +343,23 @@ class BezierCubic(Widget):
 
 
 class BezierQuadratic(Widget):
-    """Draws a quadratic bezier curve on a drawing.
+    """Adds a quadratic bezier curve.
+    
     Args:
             p1 (Union[List[float], Tuple[float]]): First point in curve.
             p2 (Union[List[float], Tuple[float]]): Second point in curve.
             p3 (Union[List[float], Tuple[float]]): Third point in curve.
-            **label (str): Overrides 'name' as label.
-            **user_data (Any): User data for callbacks.
-            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
-            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
-            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
-            **show (bool): Attempt to render widget.
-            **color (Union[List[int], Tuple[int]]): 
-            **thickness (float): 
-            **segments (int): Number of segments to approximate bezier curve.
+            label (str, optional): Overrides 'name' as label.
+            user_data (Any, optional): User data for callbacks
+            use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+            tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
+            before (Union[int, str], optional): This item will be displayed before the specified item in the parent.
+            show (bool, optional): Attempt to render widget.
+            color (Union[List[int], Tuple[int]], optional): 
+            thickness (float, optional): 
+            segments (int, optional): Number of segments to approximate bezier curve.
+            id (Union[int, str], optional): (deprecated) 
     Returns:
             Union[int, str]
     
@@ -368,9 +368,9 @@ class BezierQuadratic(Widget):
 
     def __init__(
         self, 
-        p1: Union[List[float], Tuple[float]], 
-        p2: Union[List[float], Tuple[float]], 
-        p3: Union[List[float], Tuple[float]], 
+        p1: Union[List[float], Tuple[float, ...]], 
+        p2: Union[List[float], Tuple[float, ...]], 
+        p3: Union[List[float], Tuple[float, ...]], 
         label: str = None, 
         user_data: Any = None, 
         use_internal_label: bool = True, 
@@ -412,21 +412,23 @@ class BezierQuadratic(Widget):
 
 
 class Circle(Widget):
-    """Draws a circle on a drawing.
+    """Adds a circle
+    
     Args:
             center (Union[List[float], Tuple[float]]): 
             radius (float): 
-            **label (str): Overrides 'name' as label.
-            **user_data (Any): User data for callbacks.
-            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
-            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
-            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
-            **show (bool): Attempt to render widget.
-            **color (Union[List[int], Tuple[int]]): 
-            **fill (Union[List[int], Tuple[int]]): 
-            **thickness (float): 
-            **segments (int): Number of segments to approximate circle.
+            label (str, optional): Overrides 'name' as label.
+            user_data (Any, optional): User data for callbacks
+            use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+            tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
+            before (Union[int, str], optional): This item will be displayed before the specified item in the parent.
+            show (bool, optional): Attempt to render widget.
+            color (Union[List[int], Tuple[int]], optional): 
+            fill (Union[List[int], Tuple[int]], optional): 
+            thickness (float, optional): 
+            segments (int, optional): Number of segments to approximate circle.
+            id (Union[int, str], optional): (deprecated) 
     Returns:
             Union[int, str]
     
@@ -435,7 +437,7 @@ class Circle(Widget):
 
     def __init__(
         self, 
-        center: Union[List[float], Tuple[float]], 
+        center: Union[List[float], Tuple[float, ...]], 
         radius: float, 
         label: str = None, 
         user_data: Any = None, 
@@ -479,21 +481,23 @@ class Circle(Widget):
 
 
 class Ellipse(Widget):
-    """Draws an ellipse on a drawing.
+    """Adds an ellipse.
+    
     Args:
             pmin (Union[List[float], Tuple[float]]): Min point of bounding rectangle.
             pmax (Union[List[float], Tuple[float]]): Max point of bounding rectangle.
-            **label (str): Overrides 'name' as label.
-            **user_data (Any): User data for callbacks.
-            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
-            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
-            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
-            **show (bool): Attempt to render widget.
-            **color (Union[List[int], Tuple[int]]): 
-            **fill (Union[List[int], Tuple[int]]): 
-            **thickness (float): 
-            **segments (int): Number of segments to approximate bezier curve.
+            label (str, optional): Overrides 'name' as label.
+            user_data (Any, optional): User data for callbacks
+            use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+            tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
+            before (Union[int, str], optional): This item will be displayed before the specified item in the parent.
+            show (bool, optional): Attempt to render widget.
+            color (Union[List[int], Tuple[int]], optional): 
+            fill (Union[List[int], Tuple[int]], optional): 
+            thickness (float, optional): 
+            segments (int, optional): Number of segments to approximate bezier curve.
+            id (Union[int, str], optional): (deprecated) 
     Returns:
             Union[int, str]
     
@@ -502,8 +506,8 @@ class Ellipse(Widget):
 
     def __init__(
         self, 
-        pmin: Union[List[float], Tuple[float]], 
-        pmax: Union[List[float], Tuple[float]], 
+        pmin: Union[List[float], Tuple[float, ...]], 
+        pmax: Union[List[float], Tuple[float, ...]], 
         label: str = None, 
         user_data: Any = None, 
         use_internal_label: bool = True, 
@@ -546,21 +550,23 @@ class Ellipse(Widget):
 
 
 class Image(Widget):
-    """Draws an image on a drawing. p_min (top-left) and p_max (bottom-right) represent corners of the rectangle the image will be drawn to.Setting the p_min equal to the p_max will sraw the image to with 1:1 scale.uv_min and uv_max represent the normalized texture coordinates of the original image that will be shown. Using (0.0,0.0)->(1.0,1.0) texturecoordinates will generally display the entire texture.
+    """Adds an image (for a drawing).
+    
     Args:
             texture_id (Union[int, str]): 
             pmin (Union[List[float], Tuple[float]]): Point of to start drawing texture.
             pmax (Union[List[float], Tuple[float]]): Point to complete drawing texture.
-            **label (str): Overrides 'name' as label.
-            **user_data (Any): User data for callbacks.
-            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
-            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
-            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
-            **show (bool): Attempt to render widget.
-            **uv_min (Union[List[float], Tuple[float]]): Normalized coordinates on texture that will be drawn.
-            **uv_max (Union[List[float], Tuple[float]]): Normalized coordinates on texture that will be drawn.
-            **color (Union[List[int], Tuple[int]]): 
+            label (str, optional): Overrides 'name' as label.
+            user_data (Any, optional): User data for callbacks
+            use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+            tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
+            before (Union[int, str], optional): This item will be displayed before the specified item in the parent.
+            show (bool, optional): Attempt to render widget.
+            uv_min (Union[List[float], Tuple[float]], optional): Normalized coordinates on texture that will be drawn.
+            uv_max (Union[List[float], Tuple[float]], optional): Normalized coordinates on texture that will be drawn.
+            color (Union[List[int], Tuple[int]], optional): 
+            id (Union[int, str], optional): (deprecated) 
     Returns:
             Union[int, str]
     
@@ -570,8 +576,8 @@ class Image(Widget):
     def __init__(
         self, 
         texture_id: Union[int, str], 
-        pmin: Union[List[float], Tuple[float]], 
-        pmax: Union[List[float], Tuple[float]], 
+        pmin: Union[List[float], Tuple[float, ...]], 
+        pmax: Union[List[float], Tuple[float, ...]], 
         label: str = None, 
         user_data: Any = None, 
         use_internal_label: bool = True, 
@@ -613,19 +619,21 @@ class Image(Widget):
 
 
 class Line(Widget):
-    """Draws a line on a drawing.
+    """Adds a line.
+    
     Args:
             p1 (Union[List[float], Tuple[float]]): Start of line.
             p2 (Union[List[float], Tuple[float]]): End of line.
-            **label (str): Overrides 'name' as label.
-            **user_data (Any): User data for callbacks.
-            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
-            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
-            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
-            **show (bool): Attempt to render widget.
-            **color (Union[List[int], Tuple[int]]): 
-            **thickness (float): 
+            label (str, optional): Overrides 'name' as label.
+            user_data (Any, optional): User data for callbacks
+            use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+            tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
+            before (Union[int, str], optional): This item will be displayed before the specified item in the parent.
+            show (bool, optional): Attempt to render widget.
+            color (Union[List[int], Tuple[int]], optional): 
+            thickness (float, optional): 
+            id (Union[int, str], optional): (deprecated) 
     Returns:
             Union[int, str]
     
@@ -634,8 +642,8 @@ class Line(Widget):
 
     def __init__(
         self, 
-        p1: Union[List[float], Tuple[float]], 
-        p2: Union[List[float], Tuple[float]], 
+        p1: Union[List[float], Tuple[float, ...]], 
+        p2: Union[List[float], Tuple[float, ...]], 
         label: str = None, 
         user_data: Any = None, 
         use_internal_label: bool = True, 
@@ -672,19 +680,21 @@ class Line(Widget):
 
 
 class Polygon(Widget):
-    """Draws a polygon on a drawing. First and and last point should be the same to close teh polygone.
+    """Adds a polygon.
+    
     Args:
             points (List[List[float]]): 
-            **label (str): Overrides 'name' as label.
-            **user_data (Any): User data for callbacks.
-            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
-            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
-            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
-            **show (bool): Attempt to render widget.
-            **color (Union[List[int], Tuple[int]]): 
-            **fill (Union[List[int], Tuple[int]]): 
-            **thickness (float): 
+            label (str, optional): Overrides 'name' as label.
+            user_data (Any, optional): User data for callbacks
+            use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+            tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
+            before (Union[int, str], optional): This item will be displayed before the specified item in the parent.
+            show (bool, optional): Attempt to render widget.
+            color (Union[List[int], Tuple[int]], optional): 
+            fill (Union[List[int], Tuple[int]], optional): 
+            thickness (float, optional): 
+            id (Union[int, str], optional): (deprecated) 
     Returns:
             Union[int, str]
     
@@ -731,19 +741,21 @@ class Polygon(Widget):
 
 
 class Polyline(Widget):
-    """Draws connected lines on a drawing from points.
+    """Adds a polyline.
+    
     Args:
             points (List[List[float]]): 
-            **label (str): Overrides 'name' as label.
-            **user_data (Any): User data for callbacks.
-            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
-            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
-            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
-            **show (bool): Attempt to render widget.
-            **closed (bool): Will close the polyline by returning to the first point.
-            **color (Union[List[int], Tuple[int]]): 
-            **thickness (float): 
+            label (str, optional): Overrides 'name' as label.
+            user_data (Any, optional): User data for callbacks
+            use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+            tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
+            before (Union[int, str], optional): This item will be displayed before the specified item in the parent.
+            show (bool, optional): Attempt to render widget.
+            closed (bool, optional): Will close the polyline by returning to the first point.
+            color (Union[List[int], Tuple[int]], optional): 
+            thickness (float, optional): 
+            id (Union[int, str], optional): (deprecated) 
     Returns:
             Union[int, str]
     
@@ -790,22 +802,24 @@ class Polyline(Widget):
 
 
 class Quad(Widget):
-    """Draws a quad on a drawing.
+    """Adds a quad.
+    
     Args:
             p1 (Union[List[float], Tuple[float]]): 
             p2 (Union[List[float], Tuple[float]]): 
             p3 (Union[List[float], Tuple[float]]): 
             p4 (Union[List[float], Tuple[float]]): 
-            **label (str): Overrides 'name' as label.
-            **user_data (Any): User data for callbacks.
-            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
-            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
-            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
-            **show (bool): Attempt to render widget.
-            **color (Union[List[int], Tuple[int]]): 
-            **fill (Union[List[int], Tuple[int]]): 
-            **thickness (float): 
+            label (str, optional): Overrides 'name' as label.
+            user_data (Any, optional): User data for callbacks
+            use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+            tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
+            before (Union[int, str], optional): This item will be displayed before the specified item in the parent.
+            show (bool, optional): Attempt to render widget.
+            color (Union[List[int], Tuple[int]], optional): 
+            fill (Union[List[int], Tuple[int]], optional): 
+            thickness (float, optional): 
+            id (Union[int, str], optional): (deprecated) 
     Returns:
             Union[int, str]
     
@@ -814,10 +828,10 @@ class Quad(Widget):
 
     def __init__(
         self, 
-        p1: Union[List[float], Tuple[float]], 
-        p2: Union[List[float], Tuple[float]], 
-        p3: Union[List[float], Tuple[float]], 
-        p4: Union[List[float], Tuple[float]], 
+        p1: Union[List[float], Tuple[float, ...]], 
+        p2: Union[List[float], Tuple[float, ...]], 
+        p3: Union[List[float], Tuple[float, ...]], 
+        p4: Union[List[float], Tuple[float, ...]], 
         label: str = None, 
         user_data: Any = None, 
         use_internal_label: bool = True, 
@@ -861,26 +875,28 @@ class Quad(Widget):
 
 
 class Rectangle(Widget):
-    """Draws a rectangle on a drawing.
+    """Adds a rectangle.
+    
     Args:
             pmin (Union[List[float], Tuple[float]]): Min point of bounding rectangle.
             pmax (Union[List[float], Tuple[float]]): Max point of bounding rectangle.
-            **label (str): Overrides 'name' as label.
-            **user_data (Any): User data for callbacks.
-            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
-            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
-            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
-            **show (bool): Attempt to render widget.
-            **color (Union[List[int], Tuple[int]]): 
-            **color_upper_left (Union[List[int], Tuple[int]]): 'multicolor' must be set to 'True'
-            **color_upper_right (Union[List[int], Tuple[int]]): 'multicolor' must be set to 'True'
-            **color_bottom_right (Union[List[int], Tuple[int]]): 'multicolor' must be set to 'True'
-            **color_bottom_left (Union[List[int], Tuple[int]]): 'multicolor' must be set to 'True'
-            **fill (Union[List[int], Tuple[int]]): 
-            **multicolor (bool): 
-            **rounding (float): Number of pixels of the radius that will round the corners of the rectangle. Note: doesn't work with multicolor
-            **thickness (float): 
+            label (str, optional): Overrides 'name' as label.
+            user_data (Any, optional): User data for callbacks
+            use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+            tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
+            before (Union[int, str], optional): This item will be displayed before the specified item in the parent.
+            show (bool, optional): Attempt to render widget.
+            color (Union[List[int], Tuple[int]], optional): 
+            color_upper_left (Union[List[int], Tuple[int]], optional): 'multicolor' must be set to 'True'
+            color_upper_right (Union[List[int], Tuple[int]], optional): 'multicolor' must be set to 'True'
+            color_bottom_right (Union[List[int], Tuple[int]], optional): 'multicolor' must be set to 'True'
+            color_bottom_left (Union[List[int], Tuple[int]], optional): 'multicolor' must be set to 'True'
+            fill (Union[List[int], Tuple[int]], optional): 
+            multicolor (bool, optional): 
+            rounding (float, optional): Number of pixels of the radius that will round the corners of the rectangle. Note: doesn't work with multicolor
+            thickness (float, optional): 
+            id (Union[int, str], optional): (deprecated) 
     Returns:
             Union[int, str]
     
@@ -889,8 +905,8 @@ class Rectangle(Widget):
 
     def __init__(
         self, 
-        pmin: Union[List[float], Tuple[float]], 
-        pmax: Union[List[float], Tuple[float]], 
+        pmin: Union[List[float], Tuple[float, ...]], 
+        pmax: Union[List[float], Tuple[float, ...]], 
         label: str = None, 
         user_data: Any = None, 
         use_internal_label: bool = True, 
@@ -948,19 +964,21 @@ class Rectangle(Widget):
 
 
 class Text(Widget):
-    """Draws a text on a drawing.
+    """Adds text (drawlist).
+    
     Args:
             pos (Union[List[float], Tuple[float]]): Top left point of bounding text rectangle.
             text (str): Text to draw.
-            **label (str): Overrides 'name' as label.
-            **user_data (Any): User data for callbacks.
-            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
-            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
-            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
-            **show (bool): Attempt to render widget.
-            **color (Union[List[int], Tuple[int]]): 
-            **size (float): 
+            label (str, optional): Overrides 'name' as label.
+            user_data (Any, optional): User data for callbacks
+            use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+            tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
+            before (Union[int, str], optional): This item will be displayed before the specified item in the parent.
+            show (bool, optional): Attempt to render widget.
+            color (Union[List[int], Tuple[int]], optional): 
+            size (float, optional): 
+            id (Union[int, str], optional): (deprecated) 
     Returns:
             Union[int, str]
     
@@ -969,7 +987,7 @@ class Text(Widget):
 
     def __init__(
         self, 
-        pos: Union[List[float], Tuple[float]], 
+        pos: Union[List[float], Tuple[float, ...]], 
         text: str, 
         label: str = None, 
         user_data: Any = None, 
@@ -1007,21 +1025,23 @@ class Text(Widget):
 
 
 class Triangle(Widget):
-    """Draws a triangle on a drawing.
+    """Adds a triangle.
+    
     Args:
             p1 (Union[List[float], Tuple[float]]): 
             p2 (Union[List[float], Tuple[float]]): 
             p3 (Union[List[float], Tuple[float]]): 
-            **label (str): Overrides 'name' as label.
-            **user_data (Any): User data for callbacks.
-            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
-            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
-            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
-            **show (bool): Attempt to render widget.
-            **color (Union[List[int], Tuple[int]]): 
-            **fill (Union[List[int], Tuple[int]]): 
-            **thickness (float): 
+            label (str, optional): Overrides 'name' as label.
+            user_data (Any, optional): User data for callbacks
+            use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+            tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
+            before (Union[int, str], optional): This item will be displayed before the specified item in the parent.
+            show (bool, optional): Attempt to render widget.
+            color (Union[List[int], Tuple[int]], optional): 
+            fill (Union[List[int], Tuple[int]], optional): 
+            thickness (float, optional): 
+            id (Union[int, str], optional): (deprecated) 
     Returns:
             Union[int, str]
     
@@ -1030,9 +1050,9 @@ class Triangle(Widget):
 
     def __init__(
         self, 
-        p1: Union[List[float], Tuple[float]], 
-        p2: Union[List[float], Tuple[float]], 
-        p3: Union[List[float], Tuple[float]], 
+        p1: Union[List[float], Tuple[float, ...]], 
+        p2: Union[List[float], Tuple[float, ...]], 
+        p3: Union[List[float], Tuple[float, ...]], 
         label: str = None, 
         user_data: Any = None, 
         use_internal_label: bool = True, 

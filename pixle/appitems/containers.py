@@ -13,20 +13,20 @@ from pixle.itemtypes.container import Container
 ##################################################
 
 __all__ = [
-    "Child",
+    "ChildWindow",
     "Clipper",
     "CollapsingHeader",
     "DragPayload",
     "FileDialog",
     "FilterSet",
     "Group",
+    "ItemPool",
+    "ItemSet",
     "Menu",
     "MenuBar",
-    "StagingContainer",
+    "Stage",
     "Tab",
     "TabBar",
-    "Table",
-    "TableRow",
     "Tooltip",
     "TreeNode",
     "ViewportMenuBar",
@@ -34,38 +34,39 @@ __all__ = [
 ]
 
 
-class Child(Container):
-    """Adds an embedded child window. Will show scrollbars when items do not fit. Must be followed by a call to end.
+class ChildWindow(Container):
+    """Adds an embedded child window. Will show scrollbars when items do not fit.
+    
     Args:
-            **label (str): Overrides 'name' as label.
-            **user_data (Any): User data for callbacks.
-            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
-            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-            **width (int): Width of the item.
-            **height (int): Height of the item.
-            **indent (int): Offsets the widget to the right the specified number multiplied by the indent style.
-            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
-            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
-            **payload_type (str): Sender string type must be the same as the target for the target to run the payload_callback.
-            **drag_callback (Callable): Registers a drag callback for drag and drop.
-            **drop_callback (Callable): Registers a drop callback for drag and drop.
-            **show (bool): Attempt to render widget.
-            **pos (Union[List[int], Tuple[int]]): Places the item relative to window coordinates, [0,0] is top left.
-            **filter_key (str): Used by filter widget.
-            **delay_search (bool): Delays searching container for specified items until the end of the app. Possible optimization when a container has many children that are not accessed often.
-            **tracked (bool): Scroll tracking
-            **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
-            **border (bool): Shows/Hides the border around the sides.
-            **autosize_x (bool): Autosize the window to fit it's items in the x.
-            **autosize_y (bool): Autosize the window to fit it's items in the y.
-            **no_scrollbar (bool):  Disable scrollbars (window can still scroll with mouse or programmatically).
-            **horizontal_scrollbar (bool): Allow horizontal scrollbar to appear (off by default).
-            **menubar (bool): Shows/Hides the menubar at the top.
+            label (str, optional): Overrides 'name' as label.
+            user_data (Any, optional): User data for callbacks
+            use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+            tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            width (int, optional): Width of the item.
+            height (int, optional): Height of the item.
+            indent (int, optional): Offsets the widget to the right the specified number multiplied by the indent style.
+            parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
+            before (Union[int, str], optional): This item will be displayed before the specified item in the parent.
+            payload_type (str, optional): Sender string type must be the same as the target for the target to run the payload_callback.
+            drop_callback (Callable, optional): Registers a drop callback for drag and drop.
+            show (bool, optional): Attempt to render widget.
+            pos (Union[List[int], Tuple[int]], optional): Places the item relative to window coordinates, [0,0] is top left.
+            filter_key (str, optional): Used by filter widget.
+            delay_search (bool, optional): Delays searching container for specified items until the end of the app. Possible optimization when a container has many children that are not accessed often.
+            tracked (bool, optional): Scroll tracking
+            track_offset (float, optional): 0.0f:top, 0.5f:center, 1.0f:bottom
+            border (bool, optional): Shows/Hides the border around the sides.
+            autosize_x (bool, optional): Autosize the window to fit it's items in the x.
+            autosize_y (bool, optional): Autosize the window to fit it's items in the y.
+            no_scrollbar (bool, optional):  Disable scrollbars (window can still scroll with mouse or programmatically).
+            horizontal_scrollbar (bool, optional): Allow horizontal scrollbar to appear (off by default).
+            menubar (bool, optional): Shows/Hides the menubar at the top.
+            id (Union[int, str], optional): (deprecated) 
     Returns:
             Union[int, str]
     
     """
-    _command = dearpygui.dearpygui.add_child
+    _command = dearpygui.dearpygui.add_child_window
 
     def __init__(
         self, 
@@ -78,7 +79,6 @@ class Child(Container):
         parent: Union[int, str] = 0, 
         before: Union[int, str] = 0, 
         payload_type: str = '$$DPG_PAYLOAD', 
-        drag_callback: Callable = None, 
         drop_callback: Callable = None, 
         show: bool = True, 
         pos: Union[List[int], Tuple[int]] = [], 
@@ -104,7 +104,6 @@ class Child(Container):
             parent=parent,
             before=before,
             payload_type=payload_type,
-            drag_callback=drag_callback,
             drop_callback=drop_callback,
             show=show,
             pos=pos,
@@ -129,7 +128,6 @@ class Child(Container):
         self.parent = parent
         self.before = before
         self.payload_type = payload_type
-        self.drag_callback = drag_callback
         self.drop_callback = drop_callback
         self.show = show
         self.pos = pos
@@ -147,17 +145,19 @@ class Child(Container):
 
 class Clipper(Container):
     """Helper to manually clip large list of items. Increases performance by not searching or drawing widgets outside of the clipped region.
+    
     Args:
-            **label (str): Overrides 'name' as label.
-            **user_data (Any): User data for callbacks.
-            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
-            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-            **width (int): Width of the item.
-            **indent (int): Offsets the widget to the right the specified number multiplied by the indent style.
-            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
-            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
-            **show (bool): Attempt to render widget.
-            **delay_search (bool): Delays searching container for specified items until the end of the app. Possible optimization when a container has many children that are not accessed often.
+            label (str, optional): Overrides 'name' as label.
+            user_data (Any, optional): User data for callbacks
+            use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+            tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            width (int, optional): Width of the item.
+            indent (int, optional): Offsets the widget to the right the specified number multiplied by the indent style.
+            parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
+            before (Union[int, str], optional): This item will be displayed before the specified item in the parent.
+            show (bool, optional): Attempt to render widget.
+            delay_search (bool, optional): Delays searching container for specified items until the end of the app. Possible optimization when a container has many children that are not accessed often.
+            id (Union[int, str], optional): (deprecated) 
     Returns:
             Union[int, str]
     
@@ -202,29 +202,31 @@ class Clipper(Container):
 
 class CollapsingHeader(Container):
     """Adds a collapsing header to add items to. Must be closed with the end command.
+    
     Args:
-            **label (str): Overrides 'name' as label.
-            **user_data (Any): User data for callbacks.
-            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
-            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-            **indent (int): Offsets the widget to the right the specified number multiplied by the indent style.
-            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
-            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
-            **payload_type (str): Sender string type must be the same as the target for the target to run the payload_callback.
-            **drag_callback (Callable): Registers a drag callback for drag and drop.
-            **drop_callback (Callable): Registers a drop callback for drag and drop.
-            **show (bool): Attempt to render widget.
-            **pos (Union[List[int], Tuple[int]]): Places the item relative to window coordinates, [0,0] is top left.
-            **filter_key (str): Used by filter widget.
-            **delay_search (bool): Delays searching container for specified items until the end of the app. Possible optimization when a container has many children that are not accessed often.
-            **tracked (bool): Scroll tracking
-            **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
-            **closable (bool): Adds the ability to hide this widget by pressing the (x) in the top right of widget.
-            **default_open (bool): Sets the collapseable header open by default.
-            **open_on_double_click (bool): Need double-click to open node.
-            **open_on_arrow (bool): Only open when clicking on the arrow part.
-            **leaf (bool): No collapsing, no arrow (use as a convenience for leaf nodes).
-            **bullet (bool): Display a bullet instead of arrow.
+            label (str, optional): Overrides 'name' as label.
+            user_data (Any, optional): User data for callbacks
+            use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+            tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            indent (int, optional): Offsets the widget to the right the specified number multiplied by the indent style.
+            parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
+            before (Union[int, str], optional): This item will be displayed before the specified item in the parent.
+            payload_type (str, optional): Sender string type must be the same as the target for the target to run the payload_callback.
+            drag_callback (Callable, optional): Registers a drag callback for drag and drop.
+            drop_callback (Callable, optional): Registers a drop callback for drag and drop.
+            show (bool, optional): Attempt to render widget.
+            pos (Union[List[int], Tuple[int]], optional): Places the item relative to window coordinates, [0,0] is top left.
+            filter_key (str, optional): Used by filter widget.
+            delay_search (bool, optional): Delays searching container for specified items until the end of the app. Possible optimization when a container has many children that are not accessed often.
+            tracked (bool, optional): Scroll tracking
+            track_offset (float, optional): 0.0f:top, 0.5f:center, 1.0f:bottom
+            closable (bool, optional): Adds the ability to hide this widget by pressing the (x) in the top right of widget.
+            default_open (bool, optional): Sets the collapseable header open by default.
+            open_on_double_click (bool, optional): Need double-click to open node.
+            open_on_arrow (bool, optional): Only open when clicking on the arrow part.
+            leaf (bool, optional): No collapsing, no arrow (use as a convenience for leaf nodes).
+            bullet (bool, optional): Display a bullet instead of arrow.
+            id (Union[int, str], optional): (deprecated) 
     Returns:
             Union[int, str]
     
@@ -305,15 +307,18 @@ class CollapsingHeader(Container):
 
 class DragPayload(Container):
     """User data payload for drag and drop operations.
+    
     Args:
-            **label (str): Overrides 'name' as label.
-            **user_data (Any): User data for callbacks.
-            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
-            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
-            **show (bool): Attempt to render widget.
-            **drag_data (Any): Drag data
-            **payload_type (str): 
+            label (str, optional): Overrides 'name' as label.
+            user_data (Any, optional): User data for callbacks
+            use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+            tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
+            show (bool, optional): Attempt to render widget.
+            drag_data (Any, optional): Drag data
+            drop_data (Any, optional): Drop data
+            payload_type (str, optional): 
+            id (Union[int, str], optional): (deprecated) 
     Returns:
             Union[int, str]
     
@@ -328,6 +333,7 @@ class DragPayload(Container):
         parent: Union[int, str] = 0, 
         show: bool = True, 
         drag_data: Any = None, 
+        drop_data: Any = None, 
         payload_type: str = '$$DPG_PAYLOAD', 
         **kwargs, 
     ):
@@ -338,6 +344,7 @@ class DragPayload(Container):
             parent=parent,
             show=show,
             drag_data=drag_data,
+            drop_data=drop_data,
             payload_type=payload_type,
             **kwargs,
         )
@@ -347,25 +354,28 @@ class DragPayload(Container):
         self.parent = parent
         self.show = show
         self.drag_data = drag_data
+        self.drop_data = drop_data
         self.payload_type = payload_type
 
 
 class FileDialog(Container):
     """Displays a file or directory selector depending on keywords. Displays a file dialog by default.
+    
     Args:
-            **label (str): Overrides 'name' as label.
-            **user_data (Any): User data for callbacks.
-            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
-            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-            **width (int): Width of the item.
-            **height (int): Height of the item.
-            **callback (Callable): Registers a callback.
-            **show (bool): Attempt to render widget.
-            **default_path (str): Path that the file dialog will default to when opened.
-            **default_filename (str): Default name that will show in the file name input.
-            **file_count (int): Number of visible files in the dialog.
-            **modal (bool): Forces user interaction with the file selector.
-            **directory_selector (bool): Shows only directory/paths as options. Allows selection of directory/paths only.
+            label (str, optional): Overrides 'name' as label.
+            user_data (Any, optional): User data for callbacks
+            use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+            tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            width (int, optional): Width of the item.
+            height (int, optional): Height of the item.
+            callback (Callable, optional): Registers a callback.
+            show (bool, optional): Attempt to render widget.
+            default_path (str, optional): Path that the file dialog will default to when opened.
+            default_filename (str, optional): Default name that will show in the file name input.
+            file_count (int, optional): Number of visible files in the dialog.
+            modal (bool, optional): Forces user interaction with the file selector.
+            directory_selector (bool, optional): Shows only directory/paths as options. Allows selection of directory/paths only.
+            id (Union[int, str], optional): (deprecated) 
     Returns:
             Union[int, str]
     
@@ -419,17 +429,19 @@ class FileDialog(Container):
 
 class FilterSet(Container):
     """Helper to parse and apply text filters (e.g. aaaaa[, bbbbb][, ccccc])
+    
     Args:
-            **label (str): Overrides 'name' as label.
-            **user_data (Any): User data for callbacks.
-            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
-            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-            **width (int): Width of the item.
-            **indent (int): Offsets the widget to the right the specified number multiplied by the indent style.
-            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
-            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
-            **show (bool): Attempt to render widget.
-            **delay_search (bool): Delays searching container for specified items until the end of the app. Possible optimization when a container has many children that are not accessed often.
+            label (str, optional): Overrides 'name' as label.
+            user_data (Any, optional): User data for callbacks
+            use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+            tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            width (int, optional): Width of the item.
+            indent (int, optional): Offsets the widget to the right the specified number multiplied by the indent style.
+            parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
+            before (Union[int, str], optional): This item will be displayed before the specified item in the parent.
+            show (bool, optional): Attempt to render widget.
+            delay_search (bool, optional): Delays searching container for specified items until the end of the app. Possible optimization when a container has many children that are not accessed often.
+            id (Union[int, str], optional): (deprecated) 
     Returns:
             Union[int, str]
     
@@ -473,27 +485,30 @@ class FilterSet(Container):
 
 
 class Group(Container):
-    """Creates a group that other widgets can belong to. The group allows item commands to be issued for all of its members. Must be closed with the end command.
+    """Creates a group that other widgets can belong to. The group allows item commands to be issued for all of its members.
+    
     Args:
-            **label (str): Overrides 'name' as label.
-            **user_data (Any): User data for callbacks.
-            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
-            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-            **width (int): Width of the item.
-            **indent (int): Offsets the widget to the right the specified number multiplied by the indent style.
-            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
-            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
-            **payload_type (str): Sender string type must be the same as the target for the target to run the payload_callback.
-            **drag_callback (Callable): Registers a drag callback for drag and drop.
-            **drop_callback (Callable): Registers a drop callback for drag and drop.
-            **show (bool): Attempt to render widget.
-            **pos (Union[List[int], Tuple[int]]): Places the item relative to window coordinates, [0,0] is top left.
-            **filter_key (str): Used by filter widget.
-            **delay_search (bool): Delays searching container for specified items until the end of the app. Possible optimization when a container has many children that are not accessed often.
-            **tracked (bool): Scroll tracking
-            **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
-            **horizontal (bool): Forces child widgets to be added in a horizontal layout.
-            **horizontal_spacing (float): Spacing for the horizontal layout.
+            label (str, optional): Overrides 'name' as label.
+            user_data (Any, optional): User data for callbacks
+            use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+            tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            width (int, optional): Width of the item.
+            indent (int, optional): Offsets the widget to the right the specified number multiplied by the indent style.
+            parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
+            before (Union[int, str], optional): This item will be displayed before the specified item in the parent.
+            payload_type (str, optional): Sender string type must be the same as the target for the target to run the payload_callback.
+            drag_callback (Callable, optional): Registers a drag callback for drag and drop.
+            drop_callback (Callable, optional): Registers a drop callback for drag and drop.
+            show (bool, optional): Attempt to render widget.
+            pos (Union[List[int], Tuple[int]], optional): Places the item relative to window coordinates, [0,0] is top left.
+            filter_key (str, optional): Used by filter widget.
+            delay_search (bool, optional): Delays searching container for specified items until the end of the app. Possible optimization when a container has many children that are not accessed often.
+            tracked (bool, optional): Scroll tracking
+            track_offset (float, optional): 0.0f:top, 0.5f:center, 1.0f:bottom
+            horizontal (bool, optional): Forces child widgets to be added in a horizontal layout.
+            horizontal_spacing (float, optional): Spacing for the horizontal layout.
+            xoffset (float, optional): Offset from containing window x item location within group.
+            id (Union[int, str], optional): (deprecated) 
     Returns:
             Union[int, str]
     
@@ -520,6 +535,7 @@ class Group(Container):
         track_offset: float = 0.5, 
         horizontal: bool = False, 
         horizontal_spacing: float = -1, 
+        xoffset: float = 0.0, 
         **kwargs, 
     ):
         super().__init__(
@@ -541,6 +557,7 @@ class Group(Container):
             track_offset=track_offset,
             horizontal=horizontal,
             horizontal_spacing=horizontal_spacing,
+            xoffset=xoffset,
             **kwargs,
         )
         self.label = label
@@ -561,27 +578,103 @@ class Group(Container):
         self.track_offset = track_offset
         self.horizontal = horizontal
         self.horizontal_spacing = horizontal_spacing
+        self.xoffset = xoffset
+
+
+class ItemPool(Container):
+    """Adds an item pool.
+    
+    Args:
+            label (str, optional): Overrides 'name' as label.
+            user_data (Any, optional): User data for callbacks
+            use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+            tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            id (Union[int, str], optional): (deprecated) 
+    Returns:
+            Union[int, str]
+    
+    """
+    _command = dearpygui.dearpygui.add_item_pool
+
+    def __init__(
+        self, 
+        label: str = None, 
+        user_data: Any = None, 
+        use_internal_label: bool = True, 
+        **kwargs, 
+    ):
+        super().__init__(
+            label=label,
+            user_data=user_data,
+            use_internal_label=use_internal_label,
+            **kwargs,
+        )
+        self.label = label
+        self.user_data = user_data
+        self.use_internal_label = use_internal_label
+
+
+class ItemSet(Container):
+    """Adds an item set to an item pool.
+    
+    Args:
+            type (int): 
+            count (int): 
+            label (str, optional): Overrides 'name' as label.
+            user_data (Any, optional): User data for callbacks
+            use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+            tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            id (Union[int, str], optional): (deprecated) 
+    Returns:
+            Union[int, str]
+    
+    """
+    _command = dearpygui.dearpygui.add_item_set
+
+    def __init__(
+        self, 
+        type: int, 
+        count: int, 
+        label: str = None, 
+        user_data: Any = None, 
+        use_internal_label: bool = True, 
+        **kwargs, 
+    ):
+        super().__init__(
+            type=type,
+            count=count,
+            label=label,
+            user_data=user_data,
+            use_internal_label=use_internal_label,
+            **kwargs,
+        )
+        self.type = type
+        self.count = count
+        self.label = label
+        self.user_data = user_data
+        self.use_internal_label = use_internal_label
 
 
 class Menu(Container):
-    """Adds a menu to an existing menu bar. Must be followed by a call to end.
+    """Adds a menu to an existing menu bar.
+    
     Args:
-            **label (str): Overrides 'name' as label.
-            **user_data (Any): User data for callbacks.
-            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
-            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-            **indent (int): Offsets the widget to the right the specified number multiplied by the indent style.
-            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
-            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
-            **payload_type (str): Sender string type must be the same as the target for the target to run the payload_callback.
-            **drag_callback (Callable): Registers a drag callback for drag and drop.
-            **drop_callback (Callable): Registers a drop callback for drag and drop.
-            **show (bool): Attempt to render widget.
-            **enabled (bool): Turns off functionality of widget and applies the disabled theme.
-            **filter_key (str): Used by filter widget.
-            **delay_search (bool): Delays searching container for specified items until the end of the app. Possible optimization when a container has many children that are not accessed often.
-            **tracked (bool): Scroll tracking
-            **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
+            label (str, optional): Overrides 'name' as label.
+            user_data (Any, optional): User data for callbacks
+            use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+            tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            indent (int, optional): Offsets the widget to the right the specified number multiplied by the indent style.
+            parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
+            before (Union[int, str], optional): This item will be displayed before the specified item in the parent.
+            payload_type (str, optional): Sender string type must be the same as the target for the target to run the payload_callback.
+            drop_callback (Callable, optional): Registers a drop callback for drag and drop.
+            show (bool, optional): Attempt to render widget.
+            enabled (bool, optional): Turns off functionality of widget and applies the disabled theme.
+            filter_key (str, optional): Used by filter widget.
+            delay_search (bool, optional): Delays searching container for specified items until the end of the app. Possible optimization when a container has many children that are not accessed often.
+            tracked (bool, optional): Scroll tracking
+            track_offset (float, optional): 0.0f:top, 0.5f:center, 1.0f:bottom
+            id (Union[int, str], optional): (deprecated) 
     Returns:
             Union[int, str]
     
@@ -597,7 +690,6 @@ class Menu(Container):
         parent: Union[int, str] = 0, 
         before: Union[int, str] = 0, 
         payload_type: str = '$$DPG_PAYLOAD', 
-        drag_callback: Callable = None, 
         drop_callback: Callable = None, 
         show: bool = True, 
         enabled: bool = True, 
@@ -615,7 +707,6 @@ class Menu(Container):
             parent=parent,
             before=before,
             payload_type=payload_type,
-            drag_callback=drag_callback,
             drop_callback=drop_callback,
             show=show,
             enabled=enabled,
@@ -632,7 +723,6 @@ class Menu(Container):
         self.parent = parent
         self.before = before
         self.payload_type = payload_type
-        self.drag_callback = drag_callback
         self.drop_callback = drop_callback
         self.show = show
         self.enabled = enabled
@@ -644,15 +734,17 @@ class Menu(Container):
 
 class MenuBar(Container):
     """Adds a menu bar to a window.
+    
     Args:
-            **label (str): Overrides 'name' as label.
-            **user_data (Any): User data for callbacks.
-            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
-            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-            **indent (int): Offsets the widget to the right the specified number multiplied by the indent style.
-            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
-            **show (bool): Attempt to render widget.
-            **delay_search (bool): Delays searching container for specified items until the end of the app. Possible optimization when a container has many children that are not accessed often.
+            label (str, optional): Overrides 'name' as label.
+            user_data (Any, optional): User data for callbacks
+            use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+            tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            indent (int, optional): Offsets the widget to the right the specified number multiplied by the indent style.
+            parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
+            show (bool, optional): Attempt to render widget.
+            delay_search (bool, optional): Delays searching container for specified items until the end of the app. Possible optimization when a container has many children that are not accessed often.
+            id (Union[int, str], optional): (deprecated) 
     Returns:
             Union[int, str]
     
@@ -689,18 +781,20 @@ class MenuBar(Container):
         self.delay_search = delay_search
 
 
-class StagingContainer(Container):
-    """Undocumented function
+class Stage(Container):
+    """Adds a stage.
+    
     Args:
-            **label (str): Overrides 'name' as label.
-            **user_data (Any): User data for callbacks.
-            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
-            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            label (str, optional): Overrides 'name' as label.
+            user_data (Any, optional): User data for callbacks
+            use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+            tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            id (Union[int, str], optional): (deprecated) 
     Returns:
             Union[int, str]
     
     """
-    _command = dearpygui.dearpygui.add_staging_container
+    _command = dearpygui.dearpygui.add_stage
 
     def __init__(
         self, 
@@ -721,26 +815,27 @@ class StagingContainer(Container):
 
 
 class Tab(Container):
-    """Adds a tab to a tab bar. Must be closed with thes end command.
+    """Adds a tab to a tab bar.
+    
     Args:
-            **label (str): Overrides 'name' as label.
-            **user_data (Any): User data for callbacks.
-            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
-            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-            **indent (int): Offsets the widget to the right the specified number multiplied by the indent style.
-            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
-            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
-            **payload_type (str): Sender string type must be the same as the target for the target to run the payload_callback.
-            **drag_callback (Callable): Registers a drag callback for drag and drop.
-            **drop_callback (Callable): Registers a drop callback for drag and drop.
-            **show (bool): Attempt to render widget.
-            **filter_key (str): Used by filter widget.
-            **delay_search (bool): Delays searching container for specified items until the end of the app. Possible optimization when a container has many children that are not accessed often.
-            **tracked (bool): Scroll tracking
-            **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
-            **closable (bool): Creates a button on the tab that can hide the tab.
-            **no_tooltip (bool): Disable tooltip for the given tab.
-            **order_mode (bool): set using a constant: mvTabOrder_Reorderable: allows reordering, mvTabOrder_Fixed: fixed ordering, mvTabOrder_Leading: adds tab to front, mvTabOrder_Trailing: adds tab to back
+            label (str, optional): Overrides 'name' as label.
+            user_data (Any, optional): User data for callbacks
+            use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+            tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            indent (int, optional): Offsets the widget to the right the specified number multiplied by the indent style.
+            parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
+            before (Union[int, str], optional): This item will be displayed before the specified item in the parent.
+            payload_type (str, optional): Sender string type must be the same as the target for the target to run the payload_callback.
+            drop_callback (Callable, optional): Registers a drop callback for drag and drop.
+            show (bool, optional): Attempt to render widget.
+            filter_key (str, optional): Used by filter widget.
+            delay_search (bool, optional): Delays searching container for specified items until the end of the app. Possible optimization when a container has many children that are not accessed often.
+            tracked (bool, optional): Scroll tracking
+            track_offset (float, optional): 0.0f:top, 0.5f:center, 1.0f:bottom
+            closable (bool, optional): Creates a button on the tab that can hide the tab.
+            no_tooltip (bool, optional): Disable tooltip for the given tab.
+            order_mode (bool, optional): set using a constant: mvTabOrder_Reorderable: allows reordering, mvTabOrder_Fixed: fixed ordering, mvTabOrder_Leading: adds tab to front, mvTabOrder_Trailing: adds tab to back
+            id (Union[int, str], optional): (deprecated) 
     Returns:
             Union[int, str]
     
@@ -756,7 +851,6 @@ class Tab(Container):
         parent: Union[int, str] = 0, 
         before: Union[int, str] = 0, 
         payload_type: str = '$$DPG_PAYLOAD', 
-        drag_callback: Callable = None, 
         drop_callback: Callable = None, 
         show: bool = True, 
         filter_key: str = '', 
@@ -776,7 +870,6 @@ class Tab(Container):
             parent=parent,
             before=before,
             payload_type=payload_type,
-            drag_callback=drag_callback,
             drop_callback=drop_callback,
             show=show,
             filter_key=filter_key,
@@ -795,7 +888,6 @@ class Tab(Container):
         self.parent = parent
         self.before = before
         self.payload_type = payload_type
-        self.drag_callback = drag_callback
         self.drop_callback = drop_callback
         self.show = show
         self.filter_key = filter_key
@@ -809,25 +901,24 @@ class Tab(Container):
 
 class TabBar(Container):
     """Adds a tab bar.
+    
     Args:
-            **label (str): Overrides 'name' as label.
-            **user_data (Any): User data for callbacks.
-            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
-            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-            **indent (int): Offsets the widget to the right the specified number multiplied by the indent style.
-            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
-            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
-            **payload_type (str): Sender string type must be the same as the target for the target to run the payload_callback.
-            **callback (Callable): Registers a callback.
-            **drag_callback (Callable): Registers a drag callback for drag and drop.
-            **drop_callback (Callable): Registers a drop callback for drag and drop.
-            **show (bool): Attempt to render widget.
-            **pos (Union[List[int], Tuple[int]]): Places the item relative to window coordinates, [0,0] is top left.
-            **filter_key (str): Used by filter widget.
-            **delay_search (bool): Delays searching container for specified items until the end of the app. Possible optimization when a container has many children that are not accessed often.
-            **tracked (bool): Scroll tracking
-            **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
-            **reorderable (bool): Allows for the user to change the order of the tabs.
+            label (str, optional): Overrides 'name' as label.
+            user_data (Any, optional): User data for callbacks
+            use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+            tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            indent (int, optional): Offsets the widget to the right the specified number multiplied by the indent style.
+            parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
+            before (Union[int, str], optional): This item will be displayed before the specified item in the parent.
+            callback (Callable, optional): Registers a callback.
+            show (bool, optional): Attempt to render widget.
+            pos (Union[List[int], Tuple[int]], optional): Places the item relative to window coordinates, [0,0] is top left.
+            filter_key (str, optional): Used by filter widget.
+            delay_search (bool, optional): Delays searching container for specified items until the end of the app. Possible optimization when a container has many children that are not accessed often.
+            tracked (bool, optional): Scroll tracking
+            track_offset (float, optional): 0.0f:top, 0.5f:center, 1.0f:bottom
+            reorderable (bool, optional): Allows for the user to change the order of the tabs.
+            id (Union[int, str], optional): (deprecated) 
     Returns:
             Union[int, str]
     
@@ -842,10 +933,7 @@ class TabBar(Container):
         indent: int = -1, 
         parent: Union[int, str] = 0, 
         before: Union[int, str] = 0, 
-        payload_type: str = '$$DPG_PAYLOAD', 
         callback: Callable = None, 
-        drag_callback: Callable = None, 
-        drop_callback: Callable = None, 
         show: bool = True, 
         pos: Union[List[int], Tuple[int]] = [], 
         filter_key: str = '', 
@@ -862,10 +950,7 @@ class TabBar(Container):
             indent=indent,
             parent=parent,
             before=before,
-            payload_type=payload_type,
             callback=callback,
-            drag_callback=drag_callback,
-            drop_callback=drop_callback,
             show=show,
             pos=pos,
             filter_key=filter_key,
@@ -881,10 +966,7 @@ class TabBar(Container):
         self.indent = indent
         self.parent = parent
         self.before = before
-        self.payload_type = payload_type
         self.callback = callback
-        self.drag_callback = drag_callback
-        self.drop_callback = drop_callback
         self.show = show
         self.pos = pos
         self.filter_key = filter_key
@@ -894,253 +976,17 @@ class TabBar(Container):
         self.reorderable = reorderable
 
 
-class Table(Container):
-    """Undocumented function
-    Args:
-            **label (str): Overrides 'name' as label.
-            **user_data (Any): User data for callbacks.
-            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
-            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-            **width (int): Width of the item.
-            **height (int): Height of the item.
-            **indent (int): Offsets the widget to the right the specified number multiplied by the indent style.
-            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
-            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
-            **source (Union[int, str]): Overrides 'id' as value storage key.
-            **callback (Callable): Registers a callback.
-            **show (bool): Attempt to render widget.
-            **pos (Union[List[int], Tuple[int]]): Places the item relative to window coordinates, [0,0] is top left.
-            **filter_key (str): Used by filter widget.
-            **delay_search (bool): Delays searching container for specified items until the end of the app. Possible optimization when a container has many children that are not accessed often.
-            **header_row (bool): show headers at the top of the columns
-            **inner_width (int): 
-            **policy (int): 
-            **freeze_rows (int): 
-            **freeze_columns (int): 
-            **sort_multi (bool): Hold shift when clicking headers to sort on multiple column.
-            **sort_tristate (bool): Allow no sorting, disable default sorting.
-            **resizable (bool): Enable resizing columns
-            **reorderable (bool): Enable reordering columns in header row (need calling TableSetupColumn() + TableHeadersRow() to display headers)
-            **hideable (bool): Enable hiding/disabling columns in context menu.
-            **sortable (bool): Enable sorting. Call TableGetSortSpecs() to obtain sort specs. Also see ImGuiTableFlags_SortMulti and ImGuiTableFlags_SortTristate.
-            **context_menu_in_body (bool): Right-click on columns body/contents will display table context menu. By default it is available in TableHeadersRow().
-            **row_background (bool): Set each RowBg color with ImGuiCol_TableRowBg or ImGuiCol_TableRowBgAlt (equivalent of calling TableSetBgColor with ImGuiTableBgFlags_RowBg0 on each row manually)
-            **borders_innerH (bool): Draw horizontal borders between rows.
-            **borders_outerH (bool): Draw horizontal borders at the top and bottom.
-            **borders_innerV (bool): Draw vertical borders between columns.
-            **borders_outerV (bool): Draw vertical borders on the left and right sides.
-            **no_host_extendX (bool): Make outer width auto-fit to columns, overriding outer_size.x value. Only available when ScrollX/ScrollY are disabled and Stretch columns are not used.
-            **no_host_extendY (bool): Make outer height stop exactly at outer_size.y (prevent auto-extending table past the limit). Only available when ScrollX/ScrollY are disabled. Data below the limit will be clipped and not visible.
-            **no_keep_columns_visible (bool): Disable keeping column always minimally visible when ScrollX is off and table gets too small. Not recommended if columns are resizable.
-            **precise_widths (bool): Disable distributing remainder width to stretched columns (width allocation on a 100-wide table with 3 columns: Without this flag: 33,33,34. With this flag: 33,33,33). With larger number of columns, resizing will appear to be less smooth.
-            **no_clip (bool): Disable clipping rectangle for every individual columns.
-            **pad_outerX (bool): Default if BordersOuterV is on. Enable outer-most padding. Generally desirable if you have headers.
-            **no_pad_outerX (bool): Default if BordersOuterV is off. Disable outer-most padding.
-            **no_pad_innerX (bool): Disable inner padding between columns (double inner padding if BordersOuterV is on, single inner padding if BordersOuterV is off).
-            **scrollX (bool): Enable horizontal scrolling. Require 'outer_size' parameter of BeginTable() to specify the container size. Changes default sizing policy. Because this create a child window, ScrollY is currently generally recommended when using ScrollX.
-            **scrollY (bool): Enable vertical scrolling.
-            **no_saved_settings (bool): Never load/save settings in .ini file.
-    Returns:
-            Union[int, str]
-    
-    """
-    _command = dearpygui.dearpygui.add_table
-
-    def __init__(
-        self, 
-        label: str = None, 
-        user_data: Any = None, 
-        use_internal_label: bool = True, 
-        width: int = 0, 
-        height: int = 0, 
-        indent: int = -1, 
-        parent: Union[int, str] = 0, 
-        before: Union[int, str] = 0, 
-        source: Union[int, str] = 0, 
-        callback: Callable = None, 
-        show: bool = True, 
-        pos: Union[List[int], Tuple[int]] = [], 
-        filter_key: str = '', 
-        delay_search: bool = False, 
-        header_row: bool = True, 
-        inner_width: int = 0, 
-        policy: int = 0, 
-        freeze_rows: int = 0, 
-        freeze_columns: int = 0, 
-        sort_multi: bool = False, 
-        sort_tristate: bool = False, 
-        resizable: bool = False, 
-        reorderable: bool = False, 
-        hideable: bool = False, 
-        sortable: bool = False, 
-        context_menu_in_body: bool = False, 
-        row_background: bool = False, 
-        borders_innerH: bool = False, 
-        borders_outerH: bool = False, 
-        borders_innerV: bool = False, 
-        borders_outerV: bool = False, 
-        no_host_extendX: bool = False, 
-        no_host_extendY: bool = False, 
-        no_keep_columns_visible: bool = False, 
-        precise_widths: bool = False, 
-        no_clip: bool = False, 
-        pad_outerX: bool = False, 
-        no_pad_outerX: bool = False, 
-        no_pad_innerX: bool = False, 
-        scrollX: bool = False, 
-        scrollY: bool = False, 
-        no_saved_settings: bool = False, 
-        **kwargs, 
-    ):
-        super().__init__(
-            label=label,
-            user_data=user_data,
-            use_internal_label=use_internal_label,
-            width=width,
-            height=height,
-            indent=indent,
-            parent=parent,
-            before=before,
-            source=source,
-            callback=callback,
-            show=show,
-            pos=pos,
-            filter_key=filter_key,
-            delay_search=delay_search,
-            header_row=header_row,
-            inner_width=inner_width,
-            policy=policy,
-            freeze_rows=freeze_rows,
-            freeze_columns=freeze_columns,
-            sort_multi=sort_multi,
-            sort_tristate=sort_tristate,
-            resizable=resizable,
-            reorderable=reorderable,
-            hideable=hideable,
-            sortable=sortable,
-            context_menu_in_body=context_menu_in_body,
-            row_background=row_background,
-            borders_innerH=borders_innerH,
-            borders_outerH=borders_outerH,
-            borders_innerV=borders_innerV,
-            borders_outerV=borders_outerV,
-            no_host_extendX=no_host_extendX,
-            no_host_extendY=no_host_extendY,
-            no_keep_columns_visible=no_keep_columns_visible,
-            precise_widths=precise_widths,
-            no_clip=no_clip,
-            pad_outerX=pad_outerX,
-            no_pad_outerX=no_pad_outerX,
-            no_pad_innerX=no_pad_innerX,
-            scrollX=scrollX,
-            scrollY=scrollY,
-            no_saved_settings=no_saved_settings,
-            **kwargs,
-        )
-        self.label = label
-        self.user_data = user_data
-        self.use_internal_label = use_internal_label
-        self.width = width
-        self.height = height
-        self.indent = indent
-        self.parent = parent
-        self.before = before
-        self.source = source
-        self.callback = callback
-        self.show = show
-        self.pos = pos
-        self.filter_key = filter_key
-        self.delay_search = delay_search
-        self.header_row = header_row
-        self.inner_width = inner_width
-        self.policy = policy
-        self.freeze_rows = freeze_rows
-        self.freeze_columns = freeze_columns
-        self.sort_multi = sort_multi
-        self.sort_tristate = sort_tristate
-        self.resizable = resizable
-        self.reorderable = reorderable
-        self.hideable = hideable
-        self.sortable = sortable
-        self.context_menu_in_body = context_menu_in_body
-        self.row_background = row_background
-        self.borders_innerH = borders_innerH
-        self.borders_outerH = borders_outerH
-        self.borders_innerV = borders_innerV
-        self.borders_outerV = borders_outerV
-        self.no_host_extendX = no_host_extendX
-        self.no_host_extendY = no_host_extendY
-        self.no_keep_columns_visible = no_keep_columns_visible
-        self.precise_widths = precise_widths
-        self.no_clip = no_clip
-        self.pad_outerX = pad_outerX
-        self.no_pad_outerX = no_pad_outerX
-        self.no_pad_innerX = no_pad_innerX
-        self.scrollX = scrollX
-        self.scrollY = scrollY
-        self.no_saved_settings = no_saved_settings
-
-
-class TableRow(Container):
-    """Undocumented function
-    Args:
-            **label (str): Overrides 'name' as label.
-            **user_data (Any): User data for callbacks.
-            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
-            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-            **height (int): Height of the item.
-            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
-            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
-            **show (bool): Attempt to render widget.
-            **filter_key (str): Used by filter widget.
-    Returns:
-            Union[int, str]
-    
-    """
-    _command = dearpygui.dearpygui.add_table_row
-
-    def __init__(
-        self, 
-        label: str = None, 
-        user_data: Any = None, 
-        use_internal_label: bool = True, 
-        height: int = 0, 
-        parent: Union[int, str] = 0, 
-        before: Union[int, str] = 0, 
-        show: bool = True, 
-        filter_key: str = '', 
-        **kwargs, 
-    ):
-        super().__init__(
-            label=label,
-            user_data=user_data,
-            use_internal_label=use_internal_label,
-            height=height,
-            parent=parent,
-            before=before,
-            show=show,
-            filter_key=filter_key,
-            **kwargs,
-        )
-        self.label = label
-        self.user_data = user_data
-        self.use_internal_label = use_internal_label
-        self.height = height
-        self.parent = parent
-        self.before = before
-        self.show = show
-        self.filter_key = filter_key
-
-
 class Tooltip(Container):
-    """Adds an advanced tool tip for an item. This command must come immediately after the item the tip is for.
+    """Adds a tooltip window.
+    
     Args:
             parent (Union[int, str]): 
-            **label (str): Overrides 'name' as label.
-            **user_data (Any): User data for callbacks.
-            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
-            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-            **show (bool): Attempt to render widget.
+            label (str, optional): Overrides 'name' as label.
+            user_data (Any, optional): User data for callbacks
+            use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+            tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            show (bool, optional): Attempt to render widget.
+            id (Union[int, str], optional): (deprecated) 
     Returns:
             Union[int, str]
     
@@ -1172,30 +1018,32 @@ class Tooltip(Container):
 
 
 class TreeNode(Container):
-    """Adds a tree node to add items to. Must be closed with the end command.
+    """Adds a tree node to add items to.
+    
     Args:
-            **label (str): Overrides 'name' as label.
-            **user_data (Any): User data for callbacks.
-            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
-            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-            **indent (int): Offsets the widget to the right the specified number multiplied by the indent style.
-            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
-            **before (Union[int, str]): This item will be displayed before the specified item in the parent.
-            **payload_type (str): Sender string type must be the same as the target for the target to run the payload_callback.
-            **drag_callback (Callable): Registers a drag callback for drag and drop.
-            **drop_callback (Callable): Registers a drop callback for drag and drop.
-            **show (bool): Attempt to render widget.
-            **pos (Union[List[int], Tuple[int]]): Places the item relative to window coordinates, [0,0] is top left.
-            **filter_key (str): Used by filter widget.
-            **delay_search (bool): Delays searching container for specified items until the end of the app. Possible optimization when a container has many children that are not accessed often.
-            **tracked (bool): Scroll tracking
-            **track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
-            **default_open (bool): Sets the tree node open by default.
-            **open_on_double_click (bool): Need double-click to open node.
-            **open_on_arrow (bool): Only open when clicking on the arrow part.
-            **leaf (bool): No collapsing, no arrow (use as a convenience for leaf nodes).
-            **bullet (bool): Display a bullet instead of arrow.
-            **selectable (bool): Makes the tree selectable.
+            label (str, optional): Overrides 'name' as label.
+            user_data (Any, optional): User data for callbacks
+            use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+            tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            indent (int, optional): Offsets the widget to the right the specified number multiplied by the indent style.
+            parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
+            before (Union[int, str], optional): This item will be displayed before the specified item in the parent.
+            payload_type (str, optional): Sender string type must be the same as the target for the target to run the payload_callback.
+            drag_callback (Callable, optional): Registers a drag callback for drag and drop.
+            drop_callback (Callable, optional): Registers a drop callback for drag and drop.
+            show (bool, optional): Attempt to render widget.
+            pos (Union[List[int], Tuple[int]], optional): Places the item relative to window coordinates, [0,0] is top left.
+            filter_key (str, optional): Used by filter widget.
+            delay_search (bool, optional): Delays searching container for specified items until the end of the app. Possible optimization when a container has many children that are not accessed often.
+            tracked (bool, optional): Scroll tracking
+            track_offset (float, optional): 0.0f:top, 0.5f:center, 1.0f:bottom
+            default_open (bool, optional): Sets the tree node open by default.
+            open_on_double_click (bool, optional): Need double-click to open node.
+            open_on_arrow (bool, optional): Only open when clicking on the arrow part.
+            leaf (bool, optional): No collapsing, no arrow (use as a convenience for leaf nodes).
+            bullet (bool, optional): Display a bullet instead of arrow.
+            selectable (bool, optional): Makes the tree selectable.
+            id (Union[int, str], optional): (deprecated) 
     Returns:
             Union[int, str]
     
@@ -1275,16 +1123,18 @@ class TreeNode(Container):
 
 
 class ViewportMenuBar(Container):
-    """Adds a menu bar to the viewport.
+    """Adds a menubar to the viewport.
+    
     Args:
-            **label (str): Overrides 'name' as label.
-            **user_data (Any): User data for callbacks.
-            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
-            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-            **indent (int): Offsets the widget to the right the specified number multiplied by the indent style.
-            **parent (Union[int, str]): Parent to add this item to. (runtime adding)
-            **show (bool): Attempt to render widget.
-            **delay_search (bool): Delays searching container for specified items until the end of the app. Possible optimization when a container has many children that are not accessed often.
+            label (str, optional): Overrides 'name' as label.
+            user_data (Any, optional): User data for callbacks
+            use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+            tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            indent (int, optional): Offsets the widget to the right the specified number multiplied by the indent style.
+            parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
+            show (bool, optional): Attempt to render widget.
+            delay_search (bool, optional): Delays searching container for specified items until the end of the app. Possible optimization when a container has many children that are not accessed often.
+            id (Union[int, str], optional): (deprecated) 
     Returns:
             Union[int, str]
     
@@ -1323,36 +1173,38 @@ class ViewportMenuBar(Container):
 
 class Window(Container):
     """Creates a new window for following items to be added to.
+    
     Args:
-            **label (str): Overrides 'name' as label.
-            **user_data (Any): User data for callbacks.
-            **use_internal_label (bool): Use generated internal label instead of user specified (appends ### uuid).
-            **id (Union[int, str]): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-            **width (int): Width of the item.
-            **height (int): Height of the item.
-            **indent (int): Offsets the widget to the right the specified number multiplied by the indent style.
-            **show (bool): Attempt to render widget.
-            **pos (Union[List[int], Tuple[int]]): Places the item relative to window coordinates, [0,0] is top left.
-            **delay_search (bool): Delays searching container for specified items until the end of the app. Possible optimization when a container has many children that are not accessed often.
-            **min_size (Union[List[int], Tuple[int]]): Minimum window size.
-            **max_size (Union[List[int], Tuple[int]]): Maximum window size.
-            **menubar (bool): Shows or hides the menubar.
-            **collapsed (bool): Collapse the window.
-            **autosize (bool): Autosized the window to fit it's items.
-            **no_resize (bool): Allows for the window size to be changed or fixed.
-            **no_title_bar (bool): Title name for the title bar of the window.
-            **no_move (bool): Allows for the window's position to be changed or fixed.
-            **no_scrollbar (bool):  Disable scrollbars. (window can still scroll with mouse or programmatically)
-            **no_collapse (bool): Disable user collapsing window by double-clicking on it.
-            **horizontal_scrollbar (bool): Allow horizontal scrollbar to appear. (off by default)
-            **no_focus_on_appearing (bool): Disable taking focus when transitioning from hidden to visible state.
-            **no_bring_to_front_on_focus (bool): Disable bringing window to front when taking focus. (e.g. clicking on it or programmatically giving it focus)
-            **no_close (bool): Disable user closing the window by removing the close button.
-            **no_background (bool): Sets Background and border alpha to transparent.
-            **modal (bool): Fills area behind window according to the theme and disables user ability to interact with anything except the window.
-            **popup (bool): Fills area behind window according to the theme, removes title bar, collapse and close. Window can be closed by selecting area in the background behind the window.
-            **no_saved_settings (bool): Never load/save settings in .ini file.
-            **on_close (Callable): Callback ran when window is closed.
+            label (str, optional): Overrides 'name' as label.
+            user_data (Any, optional): User data for callbacks
+            use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+            tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            width (int, optional): Width of the item.
+            height (int, optional): Height of the item.
+            indent (int, optional): Offsets the widget to the right the specified number multiplied by the indent style.
+            show (bool, optional): Attempt to render widget.
+            pos (Union[List[int], Tuple[int]], optional): Places the item relative to window coordinates, [0,0] is top left.
+            delay_search (bool, optional): Delays searching container for specified items until the end of the app. Possible optimization when a container has many children that are not accessed often.
+            min_size (Union[List[int], Tuple[int]], optional): Minimum window size.
+            max_size (Union[List[int], Tuple[int]], optional): Maximum window size.
+            menubar (bool, optional): Shows or hides the menubar.
+            collapsed (bool, optional): Collapse the window.
+            autosize (bool, optional): Autosized the window to fit it's items.
+            no_resize (bool, optional): Allows for the window size to be changed or fixed.
+            no_title_bar (bool, optional): Title name for the title bar of the window.
+            no_move (bool, optional): Allows for the window's position to be changed or fixed.
+            no_scrollbar (bool, optional):  Disable scrollbars. (window can still scroll with mouse or programmatically)
+            no_collapse (bool, optional): Disable user collapsing window by double-clicking on it.
+            horizontal_scrollbar (bool, optional): Allow horizontal scrollbar to appear. (off by default)
+            no_focus_on_appearing (bool, optional): Disable taking focus when transitioning from hidden to visible state.
+            no_bring_to_front_on_focus (bool, optional): Disable bringing window to front when taking focus. (e.g. clicking on it or programmatically giving it focus)
+            no_close (bool, optional): Disable user closing the window by removing the close button.
+            no_background (bool, optional): Sets Background and border alpha to transparent.
+            modal (bool, optional): Fills area behind window according to the theme and disables user ability to interact with anything except the window.
+            popup (bool, optional): Fills area behind window according to the theme, removes title bar, collapse and close. Window can be closed by selecting area in the background behind the window.
+            no_saved_settings (bool, optional): Never load/save settings in .ini file.
+            on_close (Callable, optional): Callback ran when window is closed.
+            id (Union[int, str], optional): (deprecated) 
     Returns:
             Union[int, str]
     
