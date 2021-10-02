@@ -1,6 +1,8 @@
 import datetime
+import os
+
 from pixle.application import Application
-from pixle.containers import Window, Child, Group
+from pixle.containers import Window, Child, Group, TreeNode
 from pixle.widgets import Text, Separator
 from pixle.keycodes import Key, Mouse
 from pixle.itemtypes import Item
@@ -33,6 +35,7 @@ class AppInfo(Child):
         self.App = Application()
         self.AppInfo = Group(parent=self, horizontal=True)
         # appinfo
+        self.pid = None
         self.runtime = None
         self.frames_all = None
         self.frames_per_sec = None
@@ -53,6 +56,7 @@ class AppInfo(Child):
             # appinfo
             with self.AppInfo:
                 with Group():
+                    Text("Process ID")
                     Text("Runtime")
                     Text("Frames (all)")
                     Text("Frames (/s)")
@@ -66,6 +70,7 @@ class AppInfo(Child):
                     Text("Down (current)")
                     Text("Up (previous)")
                 with Group():
+                    self.pid = Text(f":    {os.getpid()}", color=[150, 150, 150])
                     self.runtime = Text(":", color=[150, 150, 150])
                     self.frames_all = Text(":", color=[150, 150, 150])
                     self.frames_per_sec = Text(":", color=[150, 150, 150])
