@@ -108,17 +108,17 @@ class EventItemSupport(EventSupport):
     registering event handlers to items.
     """
     _handler_map = {
-        "while_active": ActiveHandler,
-        "on_activation": ActivatedHandler,
-        "on_click": ClickedHandler,
-        "on_deactivation_after_edit": DeactivatedAfterEditHandler,
-        "on_deactivation": DeactivatedHandler,
-        "on_edit": EditedHandler,
-        "on_focus": FocusHandler,
-        "on_hover": HoverHandler,
-        "on_resize": ResizeHandler,
-        "on_toggle_open": ToggledOpenHandler,
-        "on_visible": VisibleHandler,
+        "while_active": ItemActiveHandler,
+        "on_activation": ItemActivatedHandler,
+        "on_click": ItemClickedHandler,
+        "on_deactivation_after_edit": ItemDeactivatedAfterEditHandler,
+        "on_deactivation": ItemDeactivatedHandler,
+        "on_edit": ItemEditedHandler,
+        "on_focus": ItemFocusHandler,
+        "on_hover": ItemHoverHandler,
+        "on_resize": ItemResizeHandler,
+        "on_toggle_open": ItemToggledOpenHandler,
+        "on_visible": ItemVisibleHandler,
     }
 
     def while_active(self, callback: Callable = None, *, user_data: Any = None, **kwargs):
