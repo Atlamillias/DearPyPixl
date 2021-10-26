@@ -544,10 +544,12 @@ class Dir(IntEnum):
     Up = 2
     Down = 3
 
+
 class NodeAttr(IntEnum):
     Input = 0
     Output = 1
     Static = 2
+
 
 class NodePinShape(IntEnum):
     Circle = 0
@@ -557,10 +559,12 @@ class NodePinShape(IntEnum):
     Quad = 4
     QuadFilled = 5
 
+
 class DatePickerLevel(IntEnum):
     Day = 0
     Month = 1
     Year = 2
+
 
 class PlotMarker(IntEnum):
     NONE = -1
@@ -576,11 +580,13 @@ class PlotMarker(IntEnum):
     Plus = 8
     Asterisk = 9
 
+
 class PlotBin(IntEnum):
     Sqrt = -1
     Sturges = -2
     Rice = -3
     Scott = -4
+
 
 class PlotColormap(IntEnum):
     DEFAULT = 0
@@ -601,6 +607,7 @@ class PlotColormap(IntEnum):
     Spectral = 14
     Grey = 15
 
+
 class PlotLocation(IntEnum):
     Center = 0
     North = 1
@@ -620,6 +627,7 @@ class PlotLocation(IntEnum):
     NE = 9
     SE = 10
 
+
 class ColorEditType(IntEnum):
     FLOAT = 16777216
     HEX = 4194304
@@ -629,14 +637,17 @@ class ColorEditType(IntEnum):
     RGB = 1048576
     UINT_8 = 8388608
 
+
 class ColorEditorAlpha(IntEnum):
     Preview = 131072
     PreviewHalf = 262144
     PreviewNone = 0
 
+
 class ColorPickerInput(IntEnum):
     Bar = 33554432
     Wheel = 67108864
+
 
 class ReservedUUID(IntEnum):
     UUID_0 = 10
@@ -650,11 +661,13 @@ class ReservedUUID(IntEnum):
     UUID_8 = 18
     UUID_9 = 19
 
+
 class ComboHeight(IntEnum):
     Large = 2
     Largest = 3
     Regular = 1
     Small = 0
+
 
 class TabOrder(IntEnum):
     Reorderable = 0
@@ -662,11 +675,13 @@ class TabOrder(IntEnum):
     Leading = 2
     Trailing = 3
 
+
 class TableSizing(IntEnum):
     FixedFit = 8192
     FixedSame = 16384
     StretchProp = 24576
     StretchSame = 32768
+
 
 class Tool(IntEnum):
     About = 3
@@ -677,9 +692,11 @@ class Tool(IntEnum):
     Metrics = 7
     Style = 8
 
+
 class FormatFloat(IntEnum):
     RGB = 1
     RGBA = 0
+
 
 class FontRangeHint(IntEnum):
     DEFAULT = 0
@@ -691,19 +708,26 @@ class FontRangeHint(IntEnum):
     Thai = 6
     Vietnamese = 7
 
+
 class DefaultRegistries(Enum):
-    FONT = (_dearpygui.add_font_registry, ReservedUUID.UUID_1.value)
-    EVENT = (_dearpygui.add_handler_registry, ReservedUUID.UUID_2.value)
-    TEXTURE = (_dearpygui.add_texture_registry, ReservedUUID.UUID_3.value)
-    VALUEITEM = (_dearpygui.add_value_registry, ReservedUUID.UUID_4.value)
-    COLORMAP = (_dearpygui.add_colormap_registry, ReservedUUID.UUID_5.value)
-    TEMPLATE = (_dearpygui.add_template_registry, ReservedUUID.UUID_6.value)
+    Font = (_dearpygui.add_font_registry, ReservedUUID.UUID_1.value)
+    Event = (_dearpygui.add_handler_registry, ReservedUUID.UUID_2.value)
+    Texture = (_dearpygui.add_texture_registry, ReservedUUID.UUID_3.value)
+    Value = (_dearpygui.add_value_registry, ReservedUUID.UUID_4.value)
+    ColorMap = (_dearpygui.add_colormap_registry, ReservedUUID.UUID_5.value)
+    Template = (_dearpygui.add_template_registry, ReservedUUID.UUID_6.value)
 
     @classmethod
     def setup_registries(cls):
         for value in cls.__members__.values():
             func, tag = value.value
             func(label=None, user_data=None, use_internal_label=True, tag=tag)
+
+
+class DPIAwareness(IntEnum):
+    Unaware = 0
+    SystemAware = 1
+    PerMonitorAware = 2
 
 
 # These are only used by constructors and can't be gotten or set after

@@ -1,2 +1,7 @@
-from dearpypixl.raw_items.table import *
-from dearpypixl.raw_items.table import __all__
+import dearpypixl.appitems.table
+from dearpypixl.appitems.table import *
+
+
+__all__ = [
+    *dearpypixl.appitems.table.__all__,
+]

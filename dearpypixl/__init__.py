@@ -1,24 +1,35 @@
-from enum import Enum
-from dearpygui import _dearpygui
-from dearpypixl.application import Application as _Application, Viewport as _Viewport
-from dearpypixl.theming import Theme, Font
-from dearpypixl.constants import Key, Mouse, FontRangeHint
+
+from dearpypixl.constants import (
+    Key,
+    Mouse,
+    CoreThemeElement,
+    PlotThemeElement,
+    NodeThemeElement,
+)
+from dearpypixl.components import (
+    Theme,
+    Events,
+    AppEvents
+)
+from dearpypixl.application import (
+    Application as _Application,
+    Viewport as _Viewport
+)
 
 
 __all__ = [
     "Application",
     "Viewport",
-
+    "AppEvents",
     "Theme",
-    "Font",
+    "Events",
 
-    "FontRangeHint",
     "Key",
     "Mouse",
+    "CoreThemeElement",
+    "PlotThemeElement",
+    "NodeThemeElement",
 ]
-
-
-_dearpygui.create_context()
 
 
 Application = _Application()

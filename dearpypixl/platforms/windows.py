@@ -184,7 +184,7 @@ def SetLayeredWindowAttributes(hwnd: HWND, rgba: tuple[int, int, int, int], flag
 #########################################################################################
 __all__ = [
     "set_transparent_color",
-    "restore_color",
+    "unset_transparency_color",
     "disable_virtual_scaling",
     "enable_virtual_scaling",
 ]
@@ -231,7 +231,7 @@ def set_transparent_color(rgb: tuple[int, int, int]):
     SetLayeredWindowAttributes(APP_HANDLE, rgb + (255,), LWA_COLORKEY)
 
 
-def restore_color():
+def unset_transparency_color():
     """Removes the transparency from the set transparent color
     i.e. color is no longer transparent.
 

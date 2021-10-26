@@ -29,10 +29,10 @@ class DearPyGuiErrorHandler:
         ...
 
     def __exit__(self, exc_type, exc_value, traceback):
-        if not exc_type:
+        if not exc_value:
             return None
-        elif not self.use_dedicated_errors:
-            raise exc_type
+        elif type(exc_type) != SystemError or not self.use_dedicated_errors:
+            raise exc_value
 
         self.traceback = traceback
         error_handler = self._get_exception(exc_value)

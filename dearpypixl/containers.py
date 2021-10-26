@@ -1,17 +1,22 @@
-from typing import Callable, Any, Union
+from typing import Union
 from time import sleep
 
 from dearpygui import dearpygui, _dearpygui
 
-import dearpypixl.raw_items.containers
-from dearpypixl.raw_items.containers import *
-from dearpypixl.item import Item
-from dearpypixl.item.container import Container
-from dearpypixl.item.widget import Widget
-from dearpypixl.events import ItemClickedHandler, ItemHoverHandler, ItemVisibleHandler
+import dearpypixl.appitems.containers
+from dearpypixl.appitems.containers import *
+from dearpypixl.items import Container
+from dearpypixl.items import Widget
+from dearpypixl.components import Item
+from dearpypixl.components.events import (
+    ItemClickedHandler,
+    ItemHoverHandler,
+    ItemVisibleHandler
+)
+
 
 __all__ = [
-    *dearpypixl.raw_items.containers.__all__,
+    *dearpypixl.appitems.containers.__all__,
     "Popup",
 ]
 

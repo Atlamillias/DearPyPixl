@@ -1,2 +1,7 @@
-from dearpypixl.raw_items.plotting import *
-from dearpypixl.raw_items.plotting import __all__
+import dearpypixl.appitems.plotting
+from dearpypixl.appitems.plotting import *
+
+
+__all__ = [
+    *dearpypixl.appitems.plotting.__all__,
+]

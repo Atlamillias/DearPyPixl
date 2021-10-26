@@ -1,5 +1,4 @@
-from typing import Callable, Any, Union, Iterable
-from abc import ABCMeta, abstractmethod
+from typing import Callable, Union
 import sys
 import os
 import ctypes
@@ -29,31 +28,47 @@ from dearpygui._dearpygui import (
     split_frame,
     set_frame_callback,
 )
-
-from dearpypixl.item import Item
-from dearpypixl.item.other import UniqueItemMeta, ItemLike, UpdaterList
-from dearpypixl.constants import AppUUID, ViewportUUID, Key, Mouse, DefaultRegistries
-from dearpypixl.theming import Theme
+from dearpypixl.components import Item, AppEvents, Theme, configuration_override, information_override
+from dearpypixl.items.misc import UniqueItemMeta, ItemLike, UpdaterList
+from dearpypixl.constants import AppUUID, ViewportUUID, Key, DPIAwareness
 from dearpypixl.containers import Window
-from dearpypixl.events import (
-    KeyDownHandler,
-    KeyPressHandler,
-    KeyReleaseHandler,
-    MouseDownHandler,
-    MouseClickHandler,
-    MouseDoubleClickHandler,
-    MouseReleaseHandler,
-    MouseMoveHandler,
-    MouseWheelHandler,
-    MouseDragHandler
+from dearpypixl.errors import DearPyGuiErrorHandler
+from dearpypixl.components.registries import (
+    ColormapRegistry,
+    TemplateRegistry,
+    ValueRegistry,
+    TextureRegistry,
 )
+if sys.platform == "win32":
+    from dearpypixl.platforms import windows
+
+    
 
 __all__ = [
     "Application",
     "Viewport",
 ]
 
-Keycode = Union[Key, Mouse, int]
+
+
+# Usage:
+#    @property.setter
+#    @_manage_callable_list
+def _manage_callable_list(method=None):
+    # Enforcing pretty strict type checks for properties holding callables
+    # so useful information is provided if something breaks.
+    @functools.wraps(method)
+    def wrapper(self, value: list, *args, **kwargs):
+        if not isinstance(value, list):
+            raise TypeError(
+                f"{type(list)!r} expected, got {type(value)!r} ({value!r}).")
+        for non_callable in filterfalse(callable, value):
+            raise TypeError(
+                f"{type(list)!r} of callables expected, found {type(non_callable)!r} ({non_callable!r}).")
+        return method(self, value, *args, **kwargs)
+    return wrapper
+
+
 
 
 class Application(ItemLike, metaclass=UniqueItemMeta):
@@ -72,11 +87,11 @@ class Application(ItemLike, metaclass=UniqueItemMeta):
             the Viewport is shown. Typically, the Viewport will be shown when the 
             `start` method is called.
         """
-        DefaultRegistries.setup_registries()
+        super().__init__()
         self.__calls_on_render = None
         self.__calls_on_startup = None
         self.__calls_on_exit = None
-        self.__virtual_scaling = None
+        self.__default_registries = ()
         self.__events = ...
 
         self.auto_device: bool = False
@@ -88,20 +103,15 @@ class Application(ItemLike, metaclass=UniqueItemMeta):
         self.calls_on_render = []
         self.calls_on_exit = []  # _ExitUpdaterList
 
-        if sys.platform == "win32":
-            self.virtual_scaling = False
+    def __init_subclass__(cls) -> None:
+        return TypeError(f"{type(cls)} cannot be derived from.")
 
-    def __manage_callable_list(method=None):
-        # Enforcing pretty strict type checks for properties holding callables
-        # so useful information is provided if something breaks.
-        @functools.wraps(method)
-        def wrapper(self, value: list, *args, **kwargs):
-            if not isinstance(value, list):
-                raise TypeError(f"{type(list)!r} expected, got {type(value)!r} ({value!r}).")
-            for non_callable in filterfalse(callable, value):
-                raise TypeError(f"{type(list)!r} of callables expected, found {type(non_callable)!r} ({non_callable!r}).")
-            return method(self, value, *args, **kwargs)
-        return wrapper
+    def __setattr__(self, attr, value) -> None:
+        if not self._locked:
+            return super().__setattr__(attr, value)
+        elif attr not in self._locked_params:
+            return super().__setattr__(attr, value)
+        raise AttributeError(f"{attr!r} cannot be set because the viewport is showing.")
 
     ################################
     ######### Render loop ##########
@@ -130,14 +140,14 @@ class Application(ItemLike, metaclass=UniqueItemMeta):
     def stop(self) -> None:
         """Break the main render loop and stop the application
         if it is running. This is the equivelent to pressing the
-        "close" or "exit" button application title bars.
+        "close" or "exit" button on the application title bar.
 
         """
         if self.is_running():
             stop_dearpygui()
 
     def end(self) -> None:
-        """Post-process wind-down. Must be called following the render
+        """Post-process clean-up. Must be called following the render
         loop to ensure proper 'cleanup'. Once called, future calls
         to the internal library will likely cause a segmentation fault
         (i.e. this should be the last call you make).
@@ -159,44 +169,48 @@ class Application(ItemLike, metaclass=UniqueItemMeta):
     ######### Properties ###########
     ################################
     @property
+    @configuration_override
     def calls_on_startup(self) -> list[Callable]:
         """List of callables set to run within the first few frames on
         application startup.
         """
         return self.__calls_on_startup
     @calls_on_startup.setter
-    @__manage_callable_list
+    @_manage_callable_list
     def calls_on_startup(self, value: list[Callable]) -> None:
         self.__calls_on_startup = self._StartupUpdaterList(value)
 
 
     @property
+    @configuration_override
     def calls_on_render(self) -> list[Callable]:
         """List of callables set to run after rendering a frame.
         """
         return self.__calls_on_render
     @calls_on_render.setter
-    @__manage_callable_list
+    @_manage_callable_list
     def calls_on_render(self, value: list[Callable]) -> None:
         self.__calls_on_render = value
 
 
     @property
+    @configuration_override
     def calls_on_exit(self) -> list[Callable]:
         """List of callables set to run on application exit.
         """
         return self.__calls_on_exit
     @calls_on_exit.setter
-    @__manage_callable_list
+    @_manage_callable_list
     def calls_on_exit(self, value: list[Callable]) -> None:
         self.__calls_on_exit = self._ExitUpdaterList(value)
 
 
     @property
+    @configuration_override
     def theme(self) -> Theme:
         """The application's default Theme item.
         """
-        if not (default_theme_uuid := getattr(Theme, "_Theme__default_theme")):
+        if not (default_theme_uuid := getattr(Theme, "_Theme__default_theme_uuid")):
             theme_item = Theme("APPICATION_AUTO_DEFAULT", include_presets=True)
             theme_item.bind()
             return theme_item
@@ -219,6 +233,7 @@ class Application(ItemLike, metaclass=UniqueItemMeta):
 
 
     @property
+    @configuration_override
     def font_scale(self) -> float:
         """The value in which all font renders are scaled to. A value larger
         than 1.0 can result in a loss of visual quality.
@@ -228,6 +243,33 @@ class Application(ItemLike, metaclass=UniqueItemMeta):
     def font_scale(self, value: float):
         _dearpygui.set_global_font_scale(value)
 
+    @property
+    @configuration_override
+    def device_manager(self) -> str:
+        """Return the current controller of the display adapter used for the
+        application.
+        
+        Possible returns:
+            * system: The display adapter has been set by your operating
+            system.
+            * internal: The display adapter has been set by DearPyGui.
+            * manual: The display adapter has been manually selected.
+        """
+        configuration = self._get_configuration()
+        device = configuration["device"]
+        auto_device = configuration["auto_device"]
+        if device != -1:
+            return "manual"
+        elif not auto_device:
+            return "system"
+        return "internal"
+
+    @property
+    @configuration_override
+    def process_id(self) -> str:
+        """Return the current process identifier.
+        """
+        return os.getpid()
 
     @property
     def version(self) -> str:
@@ -248,51 +290,8 @@ class Application(ItemLike, metaclass=UniqueItemMeta):
         return _dearpygui.get_app_configuration()["device_name"]
 
     @property
-    def device_manager(self) -> str:
-        """Return the current controller of the display adapter used for the
-        application.
-        
-        Possible returns:
-            * system: The display adapter has been set by your operating
-            system.
-            * internal: The display adapter has been set by DearPyGui.
-            * manual: The display adapter has been manually selected.
-        """
-        configuration = self._configuration()
-        device = configuration["device"]
-        auto_device = configuration["auto_device"]
-        if device != -1:
-            return "manual"
-        elif not auto_device:
-            return "system"
-        return "internal"
-
-
-    @property
-    def process_id(self) -> str:
-        """Return the current process identifier.
-        """
-        return os.getpid()
-
-    if sys.platform == "win32":
-        @property
-        def virtual_scaling(self) -> bool:
-            """If True, the interface will be scaled to the current value of
-            the "Scale" setting in Windows. This can improve the readability
-            of the interface if this value is set over 100% when viewed on
-            high-resolution displays, but the quality of the renders will
-            be reduced. If False, the process will ignore this setting and
-            the interface will not be scaled.
-            """
-            return self.__virtual_scaling
-        @virtual_scaling.setter
-        def virtual_scaling(self, value: bool) -> None:
-            self.__virtual_scaling = value
-            if value is True:
-                # enable virtual scaling
-                return ctypes.windll.shcore.SetProcessDpiAwareness(0)
-            # disable virtual scaling
-            return ctypes.windll.shcore.SetProcessDpiAwareness(2)
+    def default_registries(self) -> tuple:
+        return self.__default_registries
 
     ################################
     ######## Event Handling ########
@@ -374,52 +373,75 @@ class Application(ItemLike, metaclass=UniqueItemMeta):
         return is_dearpygui_running()
 
     @staticmethod
-    def is_key_pressed(keycode: Keycode) -> bool:
-        """Return True if `keycode` is pressed, otherwise return False.
+    def is_key_pressed(key: Union[Key, int]) -> bool:
+        """Return True if `key` is pressed, otherwise return False.
 
         Args:
-            * keycode (Union[Key, Mouse, int]): key event code to inquire
+            * key (Union[Key, Mouse, int]): Union[Key, int] event code to inquire
             about.
         """
-        return is_key_pressed(int(keycode))
+        return is_key_pressed(int(key))
 
     @staticmethod
-    def is_key_released(keycode: Keycode) -> bool:
-        """Return True if `keycode` is released, otherwise return False.
+    def is_key_released(key: Union[Key, int]) -> bool:
+        """Return True if `key` is released, otherwise return False.
 
         Args:
-            * keycode (Union[Key, Mouse, int]): key event code to inquire
+            * key (Union[Key, Mouse, int]): Union[Key, int] event code to inquire
             about.
         """
-        return is_key_released(int(keycode))
+        return is_key_released(int(key))
 
     @staticmethod
-    def is_key_down(keycode: Keycode) -> bool:
-        """Return True if `keycode` is down, otherwise return False.
+    def is_key_down(key: Union[Key, int]) -> bool:
+        """Return True if `key` is down, otherwise return False.
 
         Args:
-            * keycode (Union[Key, Mouse, int]): key event code to inquire
+            * key (Union[Key, Mouse, int]): Union[Key, int] event code to inquire
             about.
         """
-        return is_key_down(keycode)
+        return is_key_down(int(key))
 
     ################################
     ###### Private/Internal ########
     ################################
+    def _set_configuration(self, **kwargs):
+        dearpygui.configure_app(**kwargs)
+
+    def _get_configuration(self):
+        return _dearpygui.get_app_configuration()
+
+    def _command(self, **kwargs):
+        dearpygui.create_context()
+        # Default registry setup.
+        # NOTE: Font registry setup is done on the `Font` class as DearPyPixl
+        # does not expose them and is internally used.
+        self.__default_registries = (
+            TextureRegistry("DEARPYPIXL_DEFAULT", tag=dearpygui.mvReservedUUID_2),
+            ValueRegistry("DEARPYPIXL_DEFAULT", tag=dearpygui.mvReservedUUID_3),
+            ColormapRegistry("DEARPYPIXL_DEFAULT", tag=dearpygui.mvReservedUUID_4),
+            # template registries need to be bound seperately as global
+            TemplateRegistry("DEARPYPIXL_DEFAULT", tag=dearpygui.mvReservedUUID_5)
+        )
+        dearpygui.bind_template_registry(self.__default_registries[-1]._tag)
+
+
     _tag = AppUUID
-    _configurations = (
+    _config_params = (
         # Supported by pixl
         'auto_device',
         'docking',
         'docking_space',
         'device',
     )
-
-    def _configure(self, **kwargs):
-        dearpygui.configure_app(**kwargs)
-    
-    def _configuration(self):
-        return _dearpygui.get_app_configuration()
+    _locked_params = (
+        'auto_device',
+        'docking',
+        'docking_space',
+        'device',
+        "_dpi_awareness",
+    )
+    _locked = False
 
     class _StartupUpdaterList(UpdaterList):
         """Automatically re-sets the startup callback with the contents
@@ -438,12 +460,49 @@ class Application(ItemLike, metaclass=UniqueItemMeta):
             _dearpygui.set_exit_callback(lambda: [c() for c in callables])
 
 
+    # Windows-only, undocumented
+    if sys.platform == "win32":
+        __dpi_awareness = DPIAwareness.PerMonitorAware
+
+        @property
+        def _dpi_awareness(self) -> Union[DPIAwareness, int]:
+            """(Windows-only) The dots-per-inch awareness setting for this
+            process.
+
+            Values:
+                * DPIAwareness.Unaware/0: Windows will bitmap-stretch all
+                renders in the application window(s) to the expected physical
+                size.
+                * DPIAwareness.SystemAware/1: The application will not have
+                its DPI scaled for this process while it is being rendered
+                on the primary monitor, but will still be scaled when viewing
+                on a display with a different scale factor.
+                * DPIAwareness.PerMonitorAware/2: Windows will not scale the
+                application regardless of the display it is being viewed on
+                for this process. This is default.
+            """
+            return self.__dpi_awareness
+        @_dpi_awareness.setter
+        def _dpi_awareness(self, value: Union[DPIAwareness, int]) -> None:
+            self.__dpi_awareness = value
+
+        def _set_dpi_awareness(self):
+            # Only effective once. Cannot be changed for the remainder of
+            # the running process once set.
+            return ctypes.windll.shcore.SetProcessDpiAwareness(int(self._dpi_awareness))
+
+
+
 class Viewport(ItemLike, metaclass=UniqueItemMeta):
+    """A class-representation of the viewport. 
+    """
     def __init__(self):
+        super().__init__()
         self.__primary_window = None
         self.__use_primary_window = False
-        dearpygui.create_viewport()
-        dearpygui.setup_dearpygui()
+        self.__fullscreen = False
+        self.__calls_on_resize = None
+        self.__is_showing = False
 
         self.title: str = 'Application'
         self.small_icon: str = ''
@@ -462,16 +521,32 @@ class Viewport(ItemLike, metaclass=UniqueItemMeta):
         self.decorated: bool = True
         self.clear_color: Union[list[float], tuple[float, ...]] = (0, 0, 0, 255)
 
+        self.calls_on_resize = []
+
+    def __setattr__(self, attr, value) -> None:
+        if not self._locked:
+            return super().__setattr__(attr, value)
+        elif attr not in self._locked_params:
+            return super().__setattr__(attr, value)
+        raise AttributeError(f"{attr!r} cannot be set because the viewport is showing.")
+
+    def __init_subclass__(cls) -> None:
+        return TypeError(f"{type(cls)} cannot be derived from.")
+
     ################################
     ######## Event Handling ########
     ################################
     # TODO: Add I/O handlers
-    def on_resize(self, callback: Callable): ...
+
+    def on_resize(self, callback: Callable):
+        self.__calls_on_resize.append(callback)
+        return callback
 
     ################################
     ########## Properties ##########
     ################################
     @property
+    @configuration_override
     def active_window(self):
         return get_active_window()
 
@@ -496,6 +571,26 @@ class Viewport(ItemLike, metaclass=UniqueItemMeta):
         return get_plot_mouse_pos()
 
     @property
+    @configuration_override
+    def is_showing(self) -> bool:
+        return self.__is_showing
+
+
+    @property
+    @configuration_override
+    def fullscreen(self) -> bool:
+        return self.__fullscreen
+    @fullscreen.setter
+    def fullscreen(self, value: bool):
+        # No way to fetch state, so checking if the value is
+        # different.
+        if value is not self.__fullscreen:
+            dearpygui.toggle_viewport_fullscreen()
+            self.__fullscreen = value
+
+
+    @property
+    @configuration_override
     def primary_window(self) -> Union[Window, None]:
         return self.__primary_window
     @primary_window.setter
@@ -503,17 +598,34 @@ class Viewport(ItemLike, metaclass=UniqueItemMeta):
         if value is None:
             dearpygui.set_primary_window(self.__primary_window._tag, False)
         else:
-            dearpygui.set_primary_window(value._tag, self.__use_primary_window)
+            with DearPyGuiErrorHandler(self, "primary_window", value):
+                dearpygui.set_primary_window(value._tag, self.__use_primary_window)
         self.__primary_window = value
 
+
     @property
+    @configuration_override
     def use_primary_window(self) -> bool:
         return self.__use_primary_window
     @use_primary_window.setter
     def use_primary_window(self, value: bool) -> None:
         if self.__primary_window:
-            dearpygui.set_primary_window(self.__primary_window._tag, value)
+            with DearPyGuiErrorHandler(self, "primary_window", value):
+                dearpygui.set_primary_window(self.__primary_window._tag, value)
         self.__use_primary_window = value
+
+
+    @property
+    @configuration_override
+    def calls_on_resize(self) -> list[Callable]:
+        """List of callables set to run within the first few frames on
+        application startup.
+        """
+        return self.__calls_on_resize
+    @calls_on_resize.setter
+    @_manage_callable_list
+    def calls_on_resize(self, value: list[Callable]) -> None:
+        self.__calls_on_resize = self._ResizeUpdaterList(value)
 
     ################################
     ######## Misc. methods #########
@@ -537,22 +649,43 @@ class Viewport(ItemLike, metaclass=UniqueItemMeta):
         _dearpygui.minimize_viewport()
 
     def show(self) -> None:
-        """Shows the viewport. Some configuration options will no longer
-        be configurable.
+        """Shows the viewport. This will lock some Application and
+        Viewport configurations from being set.
         """
-        _dearpygui.show_viewport()
+        if not self.__is_showing:
+            application = Application.__instance__
+            if sys.platform == "win32":
+                if application._dpi_awareness is not None:
+                    application._set_dpi_awareness()
+                _dearpygui.show_viewport()
+                application._locked = True
+                self._locked = True
+                self._set_transparency()
+            else:
+                application._locked = True
+                self._locked = True
+                _dearpygui.show_viewport()
+                self.__is_showing = True
 
+    def toggle_fullscreen(self) -> None:
+        dearpygui.toggle_viewport_fullscreen()
+        self.__fullscreen = not self.__fullscreen
+        
     ################################
     ###### Private/Internal ########
     ################################
-    def _configure(self, **kwargs):
+    def _set_configuration(self, **kwargs):
         dearpygui.configure_viewport(self._tag, **kwargs)
 
-    def _configuration(self) -> dict:
+    def _get_configuration(self) -> dict:
         return _dearpygui.get_viewport_configuration(self._tag)
 
+    def _command(self, **kwargs):
+        dearpygui.create_viewport()
+        dearpygui.setup_dearpygui()
+
     _tag = ViewportUUID
-    _configurations = (
+    _config_params = (
         'title',
         'small_icon',
         'large_icon',
@@ -570,6 +703,44 @@ class Viewport(ItemLike, metaclass=UniqueItemMeta):
         'decorated',
         'clear_color',
     )
+    _setup_params = tuple([*_config_params, "client_width", "client_height"])
+    _locked_params = (
+        "small_icon",
+        "large_icon",
+    )
+    _locked = False
+
+    class _ResizeUpdaterList(UpdaterList):
+        """Automatically re-sets the exit callback with the contents
+        of `self` on creation, or update through list method calls.
+        """
+        @staticmethod
+        def _on_update(callables):
+            _dearpygui.set_viewport_resize_callback(lambda: [c() for c in callables])
 
 
+    # Windows-only, undocumented
+    if sys.platform == "win32":
+        __transparent = None
+
+        @property
+        def _transparent(self) -> bool:
+            # Recommended: maximize viewport & set `always_on_top` to True
+            # for overlays.
+            return self.__transparent
+        @_transparent.setter
+        def _transparent(self, value: bool) -> None:
+            self.__transparent = value
+            if self._locked:
+                self._set_transparency()
+
+        def _set_transparency(self) -> None:
+            if self.__transparent is True:
+                rgb = (176, 87, 244)
+                dearpygui.configure_viewport(self._tag, decorated=False, clear_color=rgb)
+                self.maximize()
+                windows.set_transparent_color(rgb)
+            elif self.__transparent is False:
+                windows.unset_transparency_color()
+            return None
 

@@ -2,19 +2,14 @@ from __future__ import annotations
 from abc import ABCMeta, abstractmethod
 from typing import Callable, Union
 from dearpygui import _dearpygui
-from dearpygui import dearpygui
-
-
-from dearpypixl.item import Item, configuration_override
-from dearpypixl.item.widget import Widget
-from dearpypixl.item.support import(
+from dearpypixl.components import Item, configuration_override, information_override
+from dearpypixl.items.support import(
     ContextSupport,
     ThemeSupport,
-    EventItemSupport,
+    EventSupport,
     StateSupport,
     CommandSupport,
 )
-from dearpypixl.theming import Theme
 
 __all__ = [
     "Container"
@@ -23,13 +18,13 @@ __all__ = [
 
 class Container(
     ThemeSupport,
-    EventItemSupport,
+    EventSupport,
     StateSupport,
     CommandSupport,
     ContextSupport,
     Item,
     metaclass=ABCMeta,
-    ):
+):
     @abstractmethod
     def _command() -> Callable: ...
 
@@ -38,9 +33,8 @@ class Container(
         """
         _dearpygui.reset_pos(self.tag)
 
-
-
     @property
+    @information_override
     def is_root_item(self) -> bool:
         """Checks if the item is a top-level container.
         """
@@ -56,6 +50,7 @@ class Container(
         its position will be set to the end.
         """
         return _dearpygui.get_y_scroll(self.tag)
+
     @y_scroll_pos.setter
     def y_scroll_pos(self, value):  # -1.0 will set it to max/end
         _dearpygui.set_y_scroll(self.tag, value)
@@ -72,6 +67,7 @@ class Container(
         its position will be set to the end.
         """
         return _dearpygui.get_x_scroll(self.tag)
+
     @x_scroll_pos.setter
     def x_scroll_pos(self, value: float):  # -1.0 will set it to max/end
         return _dearpygui.set_x_scroll(self.tag, value)

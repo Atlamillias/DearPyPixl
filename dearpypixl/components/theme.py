@@ -1,8 +1,8 @@
 from __future__ import annotations
 from collections.abc import Mapping
 from typing import Callable, Union, Sequence, Any
-from functools import singledispatchmethod, wraps
-import enum
+import functools
+from warnings import warn
 from dearpygui import _dearpygui
 from dearpygui.dearpygui import (
     # theme
@@ -22,8 +22,8 @@ from dearpygui.dearpygui import (
     # misc
     configure_item
 )
-from dearpypixl.item import Item, configuration_override
-from dearpypixl.errors import ItemBindingError
+from dearpypixl.components.item import Item, configuration_override, information_override
+from dearpypixl.components.primitives import AbstractBoundItem
 from dearpypixl.constants import (
     CoreThemeElement,
     PlotThemeElement,
@@ -63,11 +63,10 @@ ThemeElement = Union[
 
 
 
-
 ###################################
 ############## Theme ##############
 ###################################
-class Theme(Mapping, Item):
+class Theme(Mapping, AbstractBoundItem, Item):
     """A configurable mapping-like item that stores color and style
     values. Items will reflect the theme that they are bound to. Items can
     only be bound to 1 Theme item at a time -- creating a new bind safely
@@ -84,7 +83,6 @@ class Theme(Mapping, Item):
     ):
         self.__keys: set[str] = {"label", "font", "font_size"}
         self.__preset = include_presets
-        self.__target_uuids: set[int] = set()
         self.__font: Font = font
         self.__font_uuid: int = 0
         self.__font_size_value: float = font_size
@@ -122,32 +120,12 @@ class Theme(Mapping, Item):
         mapping = {k: str(v) for k, v in dict(self).items()}
         return f"{mapping}"
 
-    def __enter__(self):
-        _dearpygui.push_container_stack(self._tag)
-        return self
-
-    def __exit__(self, exec_type, exec_value, traceback):
-        _dearpygui.pop_container_stack()
-
-
     @property
     def label(self) -> str:
         return _dearpygui.get_item_configuration(self._tag)["label"]
     @label.setter
     def label(self, value: str):
         configure_item(self._tag, label=value)
-
-
-    @property
-    def targets(self) -> list[Item]:
-        """Items currently bound to this theme.
-        """
-        target_uuids = self.__target_uuids
-        appitems = type(self)._appitems
-        return [target_item for targets in target_uuids
-                for target in targets if
-                (target_item := appitems.get(target, None))]
-
 
     @property
     def font(self) -> Union[Font, None]:
@@ -178,6 +156,8 @@ class Theme(Mapping, Item):
     def font_size(self, value: float):
         if value < 0:
             raise ValueError(f"`font_size` cannot be less than zero (got {value!r}).")
+        elif value > 350:
+            warn(f"Rendering some fonts at such sizes ({value!r}) can cause a segmentation fault.")
         font = self.__font
         self.__font_size_value = value
         # This means that the font doesn't need to be applied to anything.
@@ -241,7 +221,7 @@ class Theme(Mapping, Item):
             Binding an item will break an existing bind to a Theme (if it exists).
         """
         self_uuid = self._tag
-        self_target_uuids = self.__target_uuids
+        self_target_uuids = self._target_uuids
         for i in item:
             bind_item_theme(i._tag, self_uuid)
             bind_item_font(i._tag, self.__font_uuid)
@@ -261,10 +241,10 @@ class Theme(Mapping, Item):
             * item(Item, optional): instances of `Item` to unbind from the theme. If an
             item is not bound to this Theme, `BindItemError` will be raised. 
         """
-        self_target_uuids = self.__target_uuids
+        self_target_uuids = self._target_uuids
         for i in item:
             if i._tag not in self_target_uuids:
-                raise ItemBindingError(f"Cannot unbind `item`: it is not bound to this item.")
+                raise ValueError(f"Cannot unbind {item.__qualname__!r} as it is not bound to this item.")
             bind_item_theme(i._tag, 0)  # 0 is system default theme
             bind_item_font(i._tag, 0)  # 0 is system default theme
         
@@ -284,7 +264,7 @@ class Theme(Mapping, Item):
     def __update_targets_font(self):
         # font.setter uses this to bind a new font (size) to all bound items.
         font_uuid = self.__font_uuid
-        target_uuids = self.__target_uuids
+        target_uuids = self._target_uuids
         # Since theme and font are seperate internally we need to rebind
         # all targets to the new font item.
         for item_uuid in target_uuids:
@@ -389,7 +369,7 @@ class ThemeComponent(Mapping, Item):
         return f"{mapping}"
 
     def __manage_target_param(method: Callable = None):
-        @wraps(method)
+        @functools.wraps(method)
         def wrapper(self, target: Union[str, ThemeElement], *value: Numeric):
             aliases = getattr(self, "_ThemeComponent__element_aliases")
             target = aliases.get(target, target)
@@ -728,14 +708,22 @@ class Font:
     """Global font manager and registry system.
     """
     __fonts: dict = {}
+    # This is the "default" registry for the entire framework. DearPyPixl does
+    # NOT expose font registries like DearPyGui does.
+    __font_registry_uuid = ...
+
     # Loading font files is expensive. Each font is rendered as a bitmap, so
     # the size can't be changed easily while maintaining a quality render.
     # Changing the font size means creating a new internal font item. To streamline
     # the end-user API and avoid needlessly creating new font items, this class
     # (and instances) tracks all font files and sizes passed -- caching them for
     # reuse when possible.
-
     def __new__(cls, file: str, size: Numeric = 12.0, label: str = None) -> "Font":
+        try:
+            assert cls.__font_registry_uuid
+        except AssertionError:
+            cls.__font_registry_uuid = _dearpygui.add_font_registry(tag=_dearpygui.mvReservedUUID_0)
+
         if font := cls.__fonts.get(file, None):
             return font(size)
         instance = object.__new__(cls)
@@ -787,7 +775,7 @@ class Font:
         return self
 
     def __manage_range_hint(method=None):
-        @wraps(method)
+        @functools.wraps(method)
         def wrapper(self, range_hint: FontRangeHint, *args, **kwargs):
             try:
                 range_hint.value
@@ -925,6 +913,3 @@ class Font:
         file = self.__file
         [font_sizes.update({font_size: add_font(file, font_size)})
          for font_size in sizes]
-
-
-

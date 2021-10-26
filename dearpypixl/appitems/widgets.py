@@ -6,7 +6,7 @@ from typing import (
     List,
 )
 import dearpygui.dearpygui
-from dearpypixl.item.widget import Widget
+from dearpypixl.items import Widget
 
 ##################################################
 ####### NOTE: This file is auto-generated. #######

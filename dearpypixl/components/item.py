@@ -1,3 +1,4 @@
+"""Lowest-level types for DearPyPixl."""
 from __future__ import annotations
 import functools
 from abc import ABCMeta, abstractmethod
@@ -21,17 +22,21 @@ from dearpypixl.errors import DearPyGuiErrorHandler
 
 
 __all__ = [
+    "ItemAttrOverride",
     "Item",
+    "configuration_override",
+    "information_override",
     ]
 
 
 _CONFIG_OVERRIDES: dict = None
+_INFO_OVERRIDES: dict = None
 _GETATTRIBUTE = object.__getattribute__
 
 
 
 def configuration_override(class_attr=None, key: str = None):
-    """Include (or override) a key-value pair in the return of `get_configuration`.
+    """Include (or override) a key-value pair in the return of `_get_configuration`.
     *key* (or *class_attr*.__name__) will be used as the key, and the return of
     *object*.__getattribute__ will be used as the value. In order to override
     a configuration entry, *key* or the defined name of *class_attr* must match
@@ -41,11 +46,6 @@ def configuration_override(class_attr=None, key: str = None):
         * class_attr ([type], optional): ...
         * key (str, optional): Name of the key to override. Defaults to None.
     """
-    # NOTE: `wrapper` is *meant* to return `property(class_attr)` to avoid
-    # multiple decorations. This breaks pylance's introspection even w/return
-    # type hints (verified the signature is correct at runtime). In order to preserve
-    # it the decorations need to be seperate i.e.:
-    # @property -> @configuration_override -> method
     @functools.wraps(class_attr)
     def wrapper(class_attr):
         global _CONFIG_OVERRIDES
@@ -61,37 +61,79 @@ def configuration_override(class_attr=None, key: str = None):
     return wrapper(class_attr)
 
 
-def get_configuration(item: Item):
+def information_override(class_attr=None, key: str = None):
+    """Include (or override) a key-value pair in the return of `information`.
+    *key* (or *class_attr*.__name__) will be used as the key, and the return of
+    *object*.__getattribute__ will be used as the value. In order to override
+    a information entry, *key* or the defined name of *class_attr* must match
+    the name of the option (key) you are trying to override.
+
+    Args:
+        * class_attr ([type], optional): ...
+        * key (str, optional): Name of the key to override. Defaults to None.
+    """
+    @functools.wraps(class_attr)
+    def wrapper(class_attr):
+        global _INFO_OVERRIDES
+        name = class_attr.__name__
+        try:
+            _INFO_OVERRIDES[key or name] = name
+        except TypeError:
+            _INFO_OVERRIDES = {key or name: name}
+        return class_attr
+
+    if not class_attr:
+        return wrapper
+    return wrapper(class_attr)
+
+
+def _get_configuration(item: Item):
     # Several sources possible...
     item_uuid = item._tag
     item_params = item._setup_params
+    item_readonly = item._readonly_params
     all_configuration = {"label": None, } | {**get_item_configuration(item_uuid),
                                              **get_item_info(item_uuid),
                                              "pos": get_item_state(item_uuid)["pos"],
                                              "value": get_value(item_uuid)}
     configuration = {k: v for k, v in all_configuration.items()
-                     if k in item_params}
+                     if k in item_params and k not in item_readonly}
+    # configuration overrides
     for config_option, attribute in item._config_overrides.items():
         configuration.pop(config_option, None)   # no key overwrite if aliased
         configuration[attribute] = _GETATTRIBUTE(item, attribute)
+    # `value` is the sole exception as not all items can have it
+    # and it would be a pain in the ass to adjust the system
+    # for it.
+    if "value" not in item_params:
+        configuration.pop("value", None)
     return configuration
 
 
 
-class ItemSupport(metaclass=ABCMeta):
-    # NOTE: Should be included in mixins.
+class ItemAttrOverride(metaclass=ABCMeta):
+    # NOTE: Should be included as a base for mixins  as well to allow
+    # override decorators to function if they're needed.
     def __init_subclass__(cls):
-        global _CONFIG_OVERRIDES
+        global _CONFIG_OVERRIDES, _INFO_OVERRIDES
         super().__init_subclass__()
-        overrides = {}
+        c_overrides = {}
+        i_overrides = {}
         for base_c in cls.mro():
-            overrides |= base_c.__dict__.get("_config_overrides", {})
+            c_overrides |= base_c.__dict__.get("_config_overrides", {})
+            i_overrides |= base_c.__dict__.get("_inform_overrides", {})
         if _CONFIG_OVERRIDES:
-            cls._config_overrides = overrides | _CONFIG_OVERRIDES
+            cls._config_overrides = c_overrides | _CONFIG_OVERRIDES
             _CONFIG_OVERRIDES = None  # reset for next subclass
+        if _INFO_OVERRIDES:
+            cls._inform_overrides = i_overrides | _INFO_OVERRIDES
+            _INFO_OVERRIDES = None
+
+    # _config_overrides = ...
+    # _inform_overrides = ...
 
 
-class _Item(ItemSupport, metaclass=ABCMeta):
+class ItemBase(ItemAttrOverride, metaclass=ABCMeta):
     @abstractmethod
     def _command() -> Callable: ...
 
@@ -99,8 +141,8 @@ class _Item(ItemSupport, metaclass=ABCMeta):
     # populates below containers when False (first instantiation)
     _cached: bool = False
     _setup_params: set = ()          # all parameters used by the constructor
-    _config_params: set = ()         # DPG configurable
-    _readonly_params: set = ()       # read-only configuration
+    _config_params: set = ()         # DPG configurable attributes (configuration)
+    _readonly_params: set = ()       # read-only configuration (information)
 
     def __init__(self, untrack: bool = False, **kwargs):
         cls = type(self)
@@ -133,7 +175,7 @@ class _Item(ItemSupport, metaclass=ABCMeta):
 
     def __getattr__(self, attr):
         try:
-            return get_configuration(self)[attr]
+            return _get_configuration(self)[attr]
         except KeyError:
             raise AttributeError(f"{type(self).__qualname__!r} object has no attribute {attr!r}.")
 
@@ -157,8 +199,15 @@ class _Item(ItemSupport, metaclass=ABCMeta):
         configuration = {
             "tag": self._tag,
             "label": get_item_configuration(self._tag)["label"],
+            "item_category": None,
             "is_container": get_item_info(self._tag)["container"],
         }
+        try:
+            configuration["item_category"] = ItemCategory[type(
+                self).__qualname__]
+        except (AttributeError, KeyError):
+            pass
+
         return (
             f"{type(self).__qualname__}("
             + f", ".join((f'{attr}={val!r}' for attr,
@@ -171,7 +220,7 @@ class _Item(ItemSupport, metaclass=ABCMeta):
 
 
 
-class Item(_Item, metaclass=ABCMeta):
+class Item(ItemBase, metaclass=ABCMeta):
     """Base class for all wrapped items. Cannot be instantiated -- must be
     subclassed.
 
@@ -210,17 +259,14 @@ class Item(_Item, metaclass=ABCMeta):
     def _command() -> Callable: ...
 
     @property
+    @information_override
     def tag(self) -> int:
         """This item's unique identifier.
         """
         return self._tag
 
     @property
-    def is_container(self) -> bool:
-        return get_item_info(self._tag)["container"]
-
-    @property
-    @configuration_override(key="type")
+    @information_override
     def item_category(self) -> ItemCategory:
         """The enum member that represents the item's type.
         """
@@ -230,6 +276,16 @@ class Item(_Item, metaclass=ABCMeta):
             return None
 
     @property
+    @information_override
+    def is_container(self) -> bool:
+        return get_item_info(self._tag)["container"]
+
+    @property
+    def is_ok(self) -> bool:
+        return get_item_state(self._tag)["ok"]
+
+    @property
+    @configuration_override
     def value(self) -> Any:
         return get_value(self._tag)
     @value.setter
@@ -261,10 +317,23 @@ class Item(_Item, metaclass=ABCMeta):
         [_setattr(option, value) for option, value in config.items()]
 
     def configuration(self) -> dict[str, Any]:
-        """Returns the item's configuration options and values
+        """Return the item's configuration options and values
         that are internally used to manage the item.
         """
-        return get_configuration(self)
+        return _get_configuration(self)
+
+    def information(self) -> dict[str, Any]:
+        """Return various read-only information about the item.
+        """
+        read_only = _GETATTRIBUTE(self, "_readonly_params")
+        information = {config: value for config, value in
+                       get_item_configuration().items() if
+                       config in read_only}
+
+        for config_option, attribute in self._inform_overrides.items():
+            information.pop(config_option, None)   # no key overwrite if aliased
+            information[attribute] = _GETATTRIBUTE(self, attribute)
+        return information
 
     def children(self) -> list[Item]:
         """Returns a list of the item's children.

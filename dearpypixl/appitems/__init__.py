@@ -1,6 +1,5 @@
 __all__ = [
     'containers',
-    'registries',
     'drawing',
     'node',
     'plotting',

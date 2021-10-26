@@ -1,2 +1,7 @@
-from dearpypixl.raw_items.widgets import *
-from dearpypixl.raw_items.widgets import __all__
+import dearpypixl.appitems.widgets
+from dearpypixl.appitems.widgets import *
+
+
+__all__ = [
+    *dearpypixl.appitems.widgets.__all__,
+]
