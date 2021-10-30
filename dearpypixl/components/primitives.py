@@ -4,7 +4,7 @@ building basic items.
 from typing import Callable, Iterable, Any
 from abc import ABCMeta, abstractmethod
 from dearpygui._dearpygui import pop_container_stack, push_container_stack
-from dearpypixl.components.item import Item, ItemAttrOverride
+from dearpypixl.components.item import Item, ItemAttributeCache
 
 
 

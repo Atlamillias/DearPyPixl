@@ -2,7 +2,7 @@
 from dearpypixl.components.item import (
     configuration_override,
     information_override,
-    ItemAttrOverride,
+    ItemAttributeCache,
     Item
 )
 from dearpypixl.components.events import AppEvents, Events
@@ -15,7 +15,7 @@ __all__ = [
     "configuration_override",
     "information_override",
     
-    "ItemAttrOverride",
+    "ItemAttributeCache",
     
     "Item",
     "AppEvents",

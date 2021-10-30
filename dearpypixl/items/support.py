@@ -4,7 +4,7 @@ from dearpygui import _dearpygui
 from dearpypixl.components import (
     Theme,
     Events,
-    ItemAttrOverride,
+    ItemAttributeCache,
     configuration_override,
     information_override
 )
@@ -13,7 +13,7 @@ from dearpypixl.errors import DearPyGuiErrorHandler
 
 
 
-class ContextSupport(ItemAttrOverride):
+class ContextSupport(ItemAttributeCache):
     """A mixin for *Item* subclasses. Allows context manager syntax usage
     for container-like items.
     """
@@ -26,7 +26,7 @@ class ContextSupport(ItemAttrOverride):
         _dearpygui.pop_container_stack()
 
 
-class ThemeSupport(ItemAttrOverride):
+class ThemeSupport(ItemAttributeCache):
     """A mixin for *Item* subclasses. Adds a `theme` (getter/setter) property.
     """
 
@@ -51,7 +51,7 @@ class ThemeSupport(ItemAttrOverride):
         value.bind(self)
 
 
-class EventSupport(ItemAttrOverride):
+class EventSupport(ItemAttributeCache):
     """A mixin for *Item* subclasses. Adds a `theme` (getter/setter) property.
     """
     def __init__(self, events: Events = None, *args, **kwargs):
@@ -75,7 +75,7 @@ class EventSupport(ItemAttrOverride):
         self.__event_uuid = int(value)
 
 
-class StateSupport(ItemAttrOverride):
+class StateSupport(ItemAttributeCache):
     """A mixin for Item subclasses. Includes properties for fetching various
     states of an item.
     """
@@ -122,7 +122,7 @@ class StateSupport(ItemAttrOverride):
 
 
 
-class CommandSupport(ItemAttrOverride):
+class CommandSupport(ItemAttributeCache):
     """A mixin for Item subclasses. Has general-purpose methods suitable
     for most items.
     """

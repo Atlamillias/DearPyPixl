@@ -5,7 +5,7 @@ from abc import ABCMeta, abstractmethod
 from inspect import signature
 from typing import Any, Iterable, Union, Callable, TypeVar
 from dataclasses import dataclass, field, asdict
-from dearpypixl.components.item import ItemAttrOverride, Item
+from dearpypixl.components.item import ItemAttributeCache, Item
 from dearpypixl.errors import DearPyGuiErrorHandler
 
 
@@ -27,7 +27,7 @@ class UniqueItemMeta(ABCMeta):
         return cls.__instance__
 
 
-class ItemLike(ItemAttrOverride, metaclass=ABCMeta):
+class ItemLike(ItemAttributeCache, metaclass=ABCMeta):
     """A template for item-like subclasses. Mimics the `Item` API,
     but inherits a limited number of methods.
     """
@@ -162,7 +162,7 @@ class UpdaterList(list, metaclass=ABCMeta):
 class ConfigContainer:
     _target_params = ()
     _configuration = ()
-    def __init__(self, target_item: Item):
+    def __init__(self, target_item: Item, **kwargs):
         """A configuration container for Item objects.
 
         Args:
@@ -172,12 +172,13 @@ class ConfigContainer:
         self._target_item = target_item  #  "target object/item"
         self._target_params = tuple([*signature(target_item).parameters])
         self._configuration = {}
+        self.configure(**kwargs)
 
     def __setattr__(self, attr, value):
         if attr in self._target_params:
             self._configuration[attr] = value
             return None
-        elif attr.startswith("_"):
+        elif attr.startswith("_"):  # allow private attributes
             return object.__setattr__(self, attr, value)
         raise AttributeError(f"{self._target_item!r} does not accept this parameter.")
 

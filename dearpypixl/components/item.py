@@ -25,7 +25,7 @@ from dearpypixl.errors import DearPyGuiErrorHandler
 
 
 __all__ = [
-    "ItemAttrOverride",
+    "ItemAttributeCache",
     "Item",
     "configuration_override",
     "information_override",
@@ -114,8 +114,8 @@ def _get_configuration(item: Item):
 
 
 
-class ItemAttrOverride(metaclass=ABCMeta):
-    # NOTE: Should be included as a base for mixins  as well to allow
+class ItemAttributeCache(metaclass=ABCMeta):
+    # NOTE: Should be included as a base for mixins as well to allow
     # override decorators to function if they're needed.
     def __init_subclass__(cls):
         global _CONFIG_OVERRIDES, _INFO_OVERRIDES
@@ -136,7 +136,7 @@ class ItemAttrOverride(metaclass=ABCMeta):
     # _inform_overrides = ...
 
 
-class ItemBase(ItemAttrOverride, metaclass=ABCMeta):
+class ItemBase(ItemAttributeCache, metaclass=ABCMeta):
     @abstractmethod
     def _command() -> Callable: ...
 
