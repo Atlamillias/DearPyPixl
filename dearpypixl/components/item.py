@@ -2,16 +2,19 @@
 from __future__ import annotations
 import functools
 from abc import ABCMeta, abstractmethod
-from typing import Callable, Any
+from typing import Callable, Any, TypeVar
 from dearpygui import dearpygui
-from dearpygui.dearpygui import (
-    get_item_info,
-    delete_item,
+from dearpygui._dearpygui import (
     generate_uuid,
     configure_item,
-    get_all_items,
     get_item_configuration,
+    get_item_info,
     get_item_state,
+    get_all_items,
+)
+from dearpygui.dearpygui import (
+    delete_item,
+    get_all_items,
     set_value,
     get_value,
     move_item,
@@ -144,14 +147,14 @@ class ItemBase(ItemAttrOverride, metaclass=ABCMeta):
     _config_params: set = ()         # DPG configurable attributes (configuration)
     _readonly_params: set = ()       # read-only configuration (information)
 
-    def __init__(self, untrack: bool = False, **kwargs):
+    def __init__(self, _untrack: bool = False, **kwargs):
         cls = type(self)
         if not cls._cached:
             cls._setup_params = {param for param in kwargs}
             cls._config_params = {param for param in kwargs if param not
                                   in [*READ_ONLY_ATTR, *SETUP_ONLY_ATTR]}
             cls._readonly_params = {param for param in kwargs if
-                                    param not in READ_ONLY_ATTR}
+                                    param in READ_ONLY_ATTR}
             cls._cached = True
 
         self._tag = kwargs.pop("tag", generate_uuid())
@@ -170,7 +173,7 @@ class ItemBase(ItemAttrOverride, metaclass=ABCMeta):
             type(self)._command(id=self._tag, **kwargs)  # item creation
 
         # Registering new item.
-        if not untrack:
+        if not _untrack:
             self._appitems[self._tag] = self
 
     def __getattr__(self, attr):
@@ -198,15 +201,8 @@ class ItemBase(ItemAttrOverride, metaclass=ABCMeta):
     def __repr__(self):
         configuration = {
             "tag": self._tag,
-            "label": get_item_configuration(self._tag)["label"],
-            "item_category": None,
-            "is_container": get_item_info(self._tag)["container"],
+            "parent": self.parent,
         }
-        try:
-            configuration["item_category"] = ItemCategory[type(
-                self).__qualname__]
-        except (AttributeError, KeyError):
-            pass
 
         return (
             f"{type(self).__qualname__}("
@@ -225,7 +221,7 @@ class Item(ItemBase, metaclass=ABCMeta):
     subclassed.
 
     Args:
-    * untrack (bool, optional): If True, no references will be added to the item
+    * _untrack (bool, optional): If True, no references will be added to the item
     registry for this item. Defaults to False.
 
 
@@ -317,8 +313,7 @@ class Item(ItemBase, metaclass=ABCMeta):
         [_setattr(option, value) for option, value in config.items()]
 
     def configuration(self) -> dict[str, Any]:
-        """Return the item's configuration options and values
-        that are internally used to manage the item.
+        """Return configuration options and values used to manage this item.
         """
         return _get_configuration(self)
 
@@ -335,10 +330,13 @@ class Item(ItemBase, metaclass=ABCMeta):
             information[attribute] = _GETATTRIBUTE(self, attribute)
         return information
 
-    def children(self) -> list[Item]:
-        """Returns a list of the item's children.
+    def children(self, slot: int = None) -> list[Item]:
+        """Return a list of the item's children. If a slot number is passed, then
+        the list will only contain the children in that slot (in the order of their
+        current positions).
         """
-        children = (val for val in get_item_info(self._tag)["children"].values())
+        children = [val for val in get_item_info(self._tag)["children"].values()]
+        children = children if slot is None else children[slot]
         appitems = type(self)._appitems
         return [child_item for childs in children
                 for child in childs if

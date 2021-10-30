@@ -710,7 +710,6 @@ class Font:
     __fonts: dict = {}
     # This is the "default" registry for the entire framework. DearPyPixl does
     # NOT expose font registries like DearPyGui does.
-    __font_registry_uuid = ...
 
     # Loading font files is expensive. Each font is rendered as a bitmap, so
     # the size can't be changed easily while maintaining a quality render.
@@ -719,11 +718,6 @@ class Font:
     # (and instances) tracks all font files and sizes passed -- caching them for
     # reuse when possible.
     def __new__(cls, file: str, size: Numeric = 12.0, label: str = None) -> "Font":
-        try:
-            assert cls.__font_registry_uuid
-        except AssertionError:
-            cls.__font_registry_uuid = _dearpygui.add_font_registry(tag=_dearpygui.mvReservedUUID_0)
-
         if font := cls.__fonts.get(file, None):
             return font(size)
         instance = object.__new__(cls)

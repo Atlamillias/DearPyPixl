@@ -22,7 +22,7 @@ __all__ = [
 
 
 ##########################
-### Rewrites/homebrew ####
+### Rewrites/Extensions ##
 ##########################
 class Tooltip(Window):
     """A tooltip window that is displayed only when its target item is
@@ -71,7 +71,7 @@ class Tooltip(Window):
 
         self.__on_hover_handler = None
         self.__is_hovering = False
-        ItemVisibleHandler(parent=self, callback=self.__on_visible_callback, untrack=True)
+        ItemVisibleHandler(parent=self.events, callback=self.__on_visible_callback, untrack=True)
 
         if target:
             self.target = target
@@ -90,7 +90,7 @@ class Tooltip(Window):
         # Avoid creating a new handler if value is None
         if value is not None:
             self.__on_hover_handler = ItemHoverHandler(
-                parent=value,
+                parent=value.events,
                 callback=self.__on_hover_callback,
                 untrack=True,
             )
@@ -189,7 +189,7 @@ class Popup(Window):
         # Avoid creating a new handler if value is None
         if value is not None:
             self.__on_click_handler = ItemClickedHandler(
-                parent=value,
+                parent=value.events._tag,
                 button=self.__button,
                 callback=self.__on_click_callback
             )
@@ -198,10 +198,9 @@ class Popup(Window):
         self.configure(show=True)
 
 
-##########################
-########## Tabs ##########
-##########################
 class TabBar(TabBar):
+    # Allows the active tab to be selected programatically through the
+    # tab bar and tabs themselves.
     @property
     def active_tab(self) -> Tab:
         """The currently selected tab.
@@ -217,6 +216,8 @@ class TabBar(TabBar):
 
 
 class Tab(Tab):
+    # Allows the active tab to be selected programatically through the
+    # tab bar and tabs themselves.
     @property
     def is_active_tab(self) -> bool:
         """If this item is currently the active/selected tab within its parent
@@ -237,6 +238,10 @@ class Tab(Tab):
 
 
 ##########################
-#### Work-in-progress ####
+#####  Exclusive to ######
+#####   DearPyPixl  ######
 ##########################
-
+class __AdaptiveWindow(ChildWindow):
+    def __init__(self, **kwargs):
+        self.foster_parent = Window()
+        super().__init__(parent=self.foster_parent, **kwargs)

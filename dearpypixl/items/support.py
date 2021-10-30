@@ -59,10 +59,8 @@ class EventSupport(ItemAttrOverride):
         # Information regarding the bound events registry can't be fetched
         # like theme can...
         self.__event_uuid = None
-        if events:
-            self.events = events
-        else:
-            self.events = Events()
+        self.events = events or Events()
+        
 
     @property
     @configuration_override

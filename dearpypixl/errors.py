@@ -3,7 +3,7 @@ from typing import Callable
 from dataclasses import dataclass
 from enum import IntEnum
 from dearpygui import dearpygui
-
+import textwrap
 # NOTE: error codes are in:
 # "DearPyGui/src/core/PythonUtilities/mvPythonExceptions"
 
@@ -31,7 +31,7 @@ class DearPyGuiErrorHandler:
     def __exit__(self, exc_type, exc_value, traceback):
         if not exc_value:
             return None
-        elif type(exc_type) != SystemError or not self.use_dedicated_errors:
+        elif exc_type != SystemError or not self.use_dedicated_errors:
             raise exc_value
 
         self.traceback = traceback
@@ -148,7 +148,6 @@ class DearPyGuiErrorHandler:
                     return self.error_info["message"]
                 error: Exception = method(self)
                 error.__traceback__ = self.traceback
-                error.args = (self._new_message_formatter(error.args[0]),)
                 return error
             _dedicated_errors[error_code] = method.__name__
             return error_handler
@@ -162,7 +161,7 @@ class DearPyGuiErrorHandler:
         message1 = "{item} got an unexpected keyword argument {info}."
 
         self.info = f'{self.error_info["message"].split(" ", maxsplit=1)[0]!r}'
-        return error(self._general_str_format(message1))
+        return error(self._general_str_format(f"[{self.error_info['error_code']}] {message1}"))
 
     @dearpygui_error(1003)
     def incompatible_parent(self) -> TypeError:
@@ -171,19 +170,31 @@ class DearPyGuiErrorHandler:
         # mvAppItemType::<ITEM>\n
         error = TypeError
         # Failure at assignment...
-        message1 = "{value} is an incompatible parent for {item}. \
-                    Applicable parents for {item} are: {info}."
+        message1 = "{value} is an incompatible parent for {item}.\nApplicable parents for {item} are: {info}"
         # Failure at item creation...
-        message2 = "Cannot create {item} item as its parent would be incompatible.\
-                    Applicable parents for {item} are: {info}."
+        message2 = "Cannot create {item} item as its parent would be incompatible.\nApplicable parents for {item} are: {info}"
         unfmt_parents = self.error_info["message"].split(": ", maxsplit=1)[-1]
-        parents = [f'{parent.split("::mv")[-1]!r}' for parent in unfmt_parents.split()]
-        self.info = f'{", ".join(parents[:-1])}, and {parents[-1]}'
+        self.info = "".join([f'\n   - {parent.split("::mv")[-1]!r}' for parent in unfmt_parents.split()])
         if not self.value:
             message = message2
         else:
             message = message1
-        return error(self._general_str_format(message))
+        message = self._general_str_format(f"[{self.error_info['error_code']}] {message}")
+        return error(message)
+
+    @dearpygui_error(1004)
+    def incompatible_child(self) -> TypeError:
+        error = TypeError
+        message1 = "{value} is an incompatible child for {item}.\nApplicable parents for {value} are: {info}"
+        message2 = "Cannot create {item} item as its parent would be incompatible.\nApplicable child items are: {info}"
+        unfmt_parents = self.error_info["message"].split(": ", maxsplit=1)[-1]
+        self.info = "".join([f'\n   - {parent.split("::mv")[-1]!r}' for parent in unfmt_parents.split()])
+        if not self.value:
+            message = message2
+        else:
+            message = message1
+        message = self._general_str_format(f"[{self.error_info['error_code']}] {message}")
+        return error(message)
 
     @dearpygui_error(1005)
     def item_not_found(self) -> ValueError:
@@ -199,14 +210,14 @@ class DearPyGuiErrorHandler:
             message = message2
         else:
             message = message1
-        return error(self._general_str_format(message))
+        return error(self._general_str_format(f"[{self.error_info['error_code']}] {message}"))
 
     @dearpygui_error(1011)
     def parent_not_deduced(self) -> TypeError:
         error = TypeError
-        message = "The `parent` argument is required to create a {item} item in \
+        message = "The `parent` argument is required to create a {item} item in\n\
                    this context."
-        return error(self._general_str_format(message))
+        return error(self._general_str_format(f"[{self.error_info['error_code']}] {message}"))
 
         
 

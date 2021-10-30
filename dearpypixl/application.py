@@ -414,8 +414,8 @@ class Application(ItemLike, metaclass=UniqueItemMeta):
     def _command(self, **kwargs):
         dearpygui.create_context()
         # Default registry setup.
-        # NOTE: Font registry setup is done on the `Font` class as DearPyPixl
-        # does not expose them and is internally used.
+        # DearPyPixl does not expose font registries.
+        _dearpygui.add_font_registry(tag=_dearpygui.mvReservedUUID_0)
         self.__default_registries = (
             TextureRegistry("DEARPYPIXL_DEFAULT", tag=dearpygui.mvReservedUUID_2),
             ValueRegistry("DEARPYPIXL_DEFAULT", tag=dearpygui.mvReservedUUID_3),
