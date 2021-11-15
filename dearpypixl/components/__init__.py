@@ -1,28 +1,15 @@
-from dearpypixl.items import (
+from abc import ABCMeta, abstractmethod
+from dearpygui import _dearpygui
+from dearpypixl.item import (
     item_attribute,
     ItemAttribute,
     ConfigContainer,
     Item,
-    
-    # Registries
-    ItemEvents,
-    AppEvents,
-    ValueRegistry,
-    TextureRegistry,
-    ColorMapRegistry,
-    TemplateRegistry,
-    FontRegistry,
 
-    Theme,
+    ItemT,
 )
-from dearpypixl.components.support import (
-    ContextSupport,
-    AddinSupport,
-    CommandSupport,
-)
-from dearpypixl.components.container import Container
-from dearpypixl.components.widget import Widget
-from dearpypixl.components.misc import UniqueItemMeta, ItemLike, UpdaterList
+from dearpypixl.components.registries import *
+from dearpypixl.components.other import UniqueItemMeta, ItemLike, UpdaterList
 
 
 __all__ = [
@@ -33,3 +20,22 @@ __all__ = [
     "Container",
     "Widget",
 ]
+
+
+class Widget(Item, metaclass=ABCMeta):
+    ...
+
+
+class Container(Widget, metaclass=ABCMeta):
+    def __enter__(self):
+        _dearpygui.push_container_stack(self._tag)
+        return self
+
+    def __exit__(self, exc_type, exc_instance, traceback):
+        _dearpygui.pop_container_stack()
+
+
+    def reset_pos(self) -> None:
+        """Sets the item position (`pos`) to it's original position.
+        """
+        _dearpygui.reset_pos(self.tag)

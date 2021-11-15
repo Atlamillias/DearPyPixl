@@ -1,16 +1,18 @@
 """Contains objects used in defining, caching, or managing an item's internal configuration."""
 import functools
 from inspect import signature
-from typing import Callable, Any, Union
+from typing import Callable, Any, Union, TypeVar
 from dearpygui._dearpygui import (
-    configure_item,
+    # getters
     get_item_configuration,
     get_item_info,
     get_item_state,
-    set_value,
     get_value as _get_value,
-)
+    # setters
+    configure_item,
+    set_value,
 
+)
 
 
 _CATEGORY = (
@@ -18,8 +20,6 @@ _CATEGORY = (
     "information",
     "state",
 )
-
-_categorized_new_cls_props = {cat:set() for cat in _CATEGORY}
 
 
 def common_getter(func):
@@ -44,6 +44,9 @@ def get_unmanagable(instance, attr, private_attr):
 get_item_configuration = common_getter(get_item_configuration)
 get_item_info          = common_getter(get_item_info)
 get_item_state         = common_getter(get_item_state)
+
+
+_categorized_new_cls_props = {cat:set() for cat in _CATEGORY}
 
 
 def item_attribute(func=None, *, category: str = "configuration"):

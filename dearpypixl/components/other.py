@@ -4,7 +4,7 @@ import functools
 from abc import ABCMeta, abstractmethod
 from typing import Any, Iterable
 from dataclasses import dataclass, field, asdict
-from dearpypixl.items.item import ItemAttributeCache, Item
+from dearpypixl.item.item import ItemAttributeCache, Item
 
 
 __all__ = [

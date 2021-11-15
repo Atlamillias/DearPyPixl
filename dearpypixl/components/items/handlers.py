@@ -4,8 +4,7 @@ from typing import (
     Union,
 )
 from dearpygui import dearpygui
-from dearpypixl.items.configuration import ItemAttribute
-from dearpypixl.items.item import Item
+from dearpypixl.item import Item, ItemAttribute
 
 ##################################################
 ####### NOTE: This file is auto-generated. #######

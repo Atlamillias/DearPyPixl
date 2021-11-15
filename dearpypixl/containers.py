@@ -6,7 +6,7 @@ from dearpygui import _dearpygui
 import dearpypixl.appitems.containers
 from dearpypixl.appitems.containers import *
 from dearpypixl.components import Container, Widget, item_attribute
-from dearpypixl.items.handlers import (
+from dearpypixl.components.handlers import (
     ClickedHandler,
     HoverHandler,
     VisibleHandler

@@ -23,13 +23,13 @@ from dearpygui.dearpygui import (
     pop_container_stack,
     push_container_stack,
 )
-from dearpypixl.items.configuration import item_attribute, ItemAttribute
-from dearpypixl.items.item import Item
+from dearpypixl.item.configuration import item_attribute, ItemAttribute
+from dearpypixl.item.item import Item
 from dearpypixl.constants import (
     CoreThemeElement,
     PlotThemeElement,
     NodeThemeElement,
-    ItemCategory,
+    ItemIndex,
     FontRangeHint,
     _ThemeElementT,
     ThemeElementTData,
@@ -97,8 +97,8 @@ class Theme(Item):
         super().__init__(label=label)
 
         if include_presets:
-            self.color = ColorComponent(ItemCategory.ALL, enabled_state=True, parent=self.tag)
-            self.style = StyleComponent(ItemCategory.ALL, enabled_state=True, parent=self.tag)
+            self.color = ColorComponent(ItemIndex.ALL, enabled_state=True, parent=self.tag)
+            self.style = StyleComponent(ItemIndex.ALL, enabled_state=True, parent=self.tag)
 
     def __enter__(self):
         push_container_stack(self._tag)
@@ -165,8 +165,8 @@ class Theme(Item):
         """
         super().renew()
         if self.__preset:
-            self.color = ColorComponent(ItemCategory.ALL, enabled_state=True, parent=self.tag)
-            self.style = StyleComponent(ItemCategory.ALL, enabled_state=True, parent=self.tag)
+            self.color = ColorComponent(ItemIndex.ALL, enabled_state=True, parent=self.tag)
+            self.style = StyleComponent(ItemIndex.ALL, enabled_state=True, parent=self.tag)
 
     def bind(self, *item: Item) -> None:
         """Link item(s) to the theme. If no item is passed, the theme will
@@ -227,7 +227,7 @@ class Theme(Item):
             
 
 class ThemeComponent(Item):
-    item_type         : Union[int, ItemCategory] =  ItemAttribute("configuration", "get_unmanagable", None, "item_type")
+    item_type         : Union[int, ItemIndex] =  ItemAttribute("configuration", "get_unmanagable", None, "item_type")
     label             : str                      =  ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")             
     user_data         : Any                      =  ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")         
     use_internal_label: bool                     =  ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")
@@ -244,7 +244,7 @@ class ThemeComponent(Item):
 
     def __init__(
         self                                               ,
-        item_type         : Union[int, ItemCategory] = 0   ,
+        item_type         : Union[int, ItemIndex] = 0   ,
         label             : str                      = None,
         user_data         : Any                      = None,
         use_internal_label: bool                     = True,
@@ -357,9 +357,8 @@ class ThemeComponent(Item):
 
         number_of_vals = element_data.values
         new_vals_len = len(value)
-        try:
-            assert new_vals_len <= number_of_vals
-        except AssertionError:
+
+        if new_vals_len >= number_of_vals:
             raise TypeError(f"`ThemeElement` {target!r} takes up to {number_of_vals!r} argument(s) ({new_vals_len!r} given).")
 
         # Adding placeholder values so `value` matches the number of values necessary.

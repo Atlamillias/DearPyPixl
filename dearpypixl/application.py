@@ -28,7 +28,7 @@ from dearpygui._dearpygui import (
     split_frame,
     set_frame_callback,
 )
-from dearpypixl.components import Item, AppEvents, Theme, item_attribute, ItemAttribute, UniqueItemMeta, ItemLike, UpdaterList
+from dearpypixl.components import Item, AppEvents, item_attribute, ItemAttribute, UniqueItemMeta, ItemLike, UpdaterList
 from dearpypixl.constants import AppUUID, ViewportUUID, Key, DPIAwareness
 from dearpypixl.containers import Window
 from dearpypixl.errors import DearPyGuiErrorHandler
@@ -206,19 +206,9 @@ class Application(ItemLike, metaclass=UniqueItemMeta):
 
     @property
     @item_attribute(category="information")
-    def theme(self) -> Theme:
-        """The application's default Theme item.
-        """
-        if not (default_theme_uuid := getattr(Theme, "_Theme__default_theme_uuid")):
-            theme_item = Theme("APPICATION_AUTO_DEFAULT", include_presets=True)
-            theme_item.bind()
-            return theme_item
-        return self._appitems[default_theme_uuid]
-    @theme.setter
-    def theme(self, value: Union[Theme, None]) -> None:
-        if value is None:
-            value.unbind()
-        value.bind()
+    def theme(self) -> ...:
+        ...
+
     
 
     @property
@@ -226,9 +216,6 @@ class Application(ItemLike, metaclass=UniqueItemMeta):
         """The polling event manager that is currently in use.
         """
         return self.__events
-    @events.setter
-    def events(self, value: ...):
-        ...
 
 
     @property

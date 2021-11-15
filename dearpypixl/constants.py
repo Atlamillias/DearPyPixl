@@ -9,7 +9,7 @@ AppUUID = 1
 ViewportUUID = "DPG NOT USED YET"
 
 
-class ItemCategory(IntEnum):
+class ItemIndex(IntEnum):
     ALL = 0
     ActivatedHandler = 119
     ActiveHandler = 115
