@@ -1,176 +1,220 @@
-"""Objects for various uses (except as Item-subclass mixins).
-"""
+"""Contains objects used in defining, caching, or managing an item's internal configuration."""
 import functools
-from abc import ABCMeta, abstractmethod
 from inspect import signature
-from typing import Any, Iterable, Union, Callable, TypeVar
-from dataclasses import dataclass, field, asdict
-from dearpypixl.components.item import ItemAttributeCache, Item
-from dearpypixl.errors import DearPyGuiErrorHandler
+from typing import Callable, Any, Union
+from dearpygui._dearpygui import (
+    configure_item,
+    get_item_configuration,
+    get_item_info,
+    get_item_state,
+    set_value,
+    get_value as _get_value,
+)
 
 
-__all__ = [
-    "UniqueItemMeta",
-    "ItemLike",
-    "UpdaterList",
-]
+
+_CATEGORY = (
+    "configuration",
+    "information",
+    "state",
+)
+
+_categorized_new_cls_props = {cat:set() for cat in _CATEGORY}
 
 
-class UniqueItemMeta(ABCMeta):
-    """A metaclass for singleton classes.
-    """
-    __instance__ = None
-
-    def __call__(cls, *args, **kwargs):
-        if cls.__instance__ is None:
-            cls.__instance__ = super().__call__(*args, **kwargs)
-        return cls.__instance__
-
-
-class ItemLike(ItemAttributeCache, metaclass=ABCMeta):
-    """A template for item-like subclasses. Mimics the `Item` API,
-    but inherits a limited number of methods.
-    """
-    @abstractmethod
-    def _get_configuration(self) -> dict: ...
-    @abstractmethod
-    def _set_configuration(self, **kwargs) -> None: ...
-    @abstractmethod
-    def _config_params() -> Iterable: ...
-    @abstractmethod
-    def _tag(self) -> Any: ...
-
-    _appitems = Item._appitems
-    _setup_params: set = ()          # all parameters used by the constructor
-    _readonly_params: set = ()       # read-only configuration
-    _command = None
-
-    tag = Item.tag
-
-    def __init__(self, **kwargs):
-        # Used in `configuration`.
-        if not self._setup_params:
-            self._setup_params = self._config_params
-
-        # `_command` is not abstract for this object and is optional.
-        if self._command:
-            with DearPyGuiErrorHandler(self):
-                self._command(**kwargs)  # Item Creation
-
-    def __repr__(self):
-        configuration = {"tag": self._tag, **self.configuration()}
-
-        return (
-            f"{type(self).__qualname__}("
-            + f", ".join((f'{attr}={val!r}' for attr,
-                         val in configuration.items()))
-            + f")"
-        )
-
-    def __getattr__(self, attr):
+def common_getter(func):
+    @functools.wraps(func)
+    def bound_dpg_cmd(instance: object, attr: str, private_attr: str):
         try:
-            return self._get_configuration()[attr]
+            return func(instance._tag)[attr]
         except KeyError:
-            raise AttributeError(
-                f"{type(self).__qualname__!r} object has no attribute {attr!r}.")
+            return getattr(instance, private_attr)
 
-    def __setattr__(self, attr, value):
-        # Prioritizing descriptors.
-        if hasattr(type(self), attr):
-            return object.__setattr__(self, attr, value)
-        elif attr in self._config_params:
-            with DearPyGuiErrorHandler(self, attr, value):
-                return self._set_configuration(**{attr: value})
-        elif attr in self._readonly_params:
-            raise AttributeError(f"{attr!r} is read-only and cannot be set.")
-        object.__setattr__(self, attr, value)
-
-    def configure(self, **config) -> None:
-        return Item.configure(self, **config)
-
-    def configuration(self) -> dict:
-        setup_params = self._setup_params
-        configuration = {optn: val for optn, val in
-                         self._get_configuration().items()
-                         if optn in setup_params}
-        getattribute = object.__getattribute__
-
-        for option, attribute in self._config_overrides.items():
-            configuration.pop(option, None)   # no key overwrite if aliased
-            configuration[attribute] = getattribute(self, attribute)
-        return configuration
+    return bound_dpg_cmd
 
 
-class UpdaterList(list, metaclass=ABCMeta):
-    """An instance of `list` that runs a callable immediately after
-    the list has been updated through various methods.
+def get_value(instance, *args):
+    return _get_value(instance._tag)
+
+
+def get_unmanagable(instance, attr, private_attr):
+    return getattr(instance, private_attr)
+
+
+get_item_configuration = common_getter(get_item_configuration)
+get_item_info          = common_getter(get_item_info)
+get_item_state         = common_getter(get_item_state)
+
+
+def item_attribute(func=None, *, category: str = "configuration"):
+    """A decorator to be used on properties (`property`) that manage
+    an (internal) item attribute. If the name of the defined property
+    differs from the actual name of the attribute, `target_attr` must
+    be included and must be the actual name of the target attribute.
+    The `property` decorator must be the outer decorator.
+
+    This can be used instead of the `ItemAttribute` descriptor if more
+    customization is needed than what the default `ItemAttribute`
+    implementation can offer.
+
+    Args:
+        * function ([type], optional): The function object to decorate.
+        Defaults to None.
+        * target_attr (str, optional): The key/name of the internal item
+        attribute. Defaults to None (`function.__name__`).
     """
-    @staticmethod
-    @abstractmethod
-    def _on_update(__iterable: Iterable): ...
+    @functools.wraps(func)
+    def wrapper(obj):
+        # Register the attribute by category.
+        name = obj.__name__
+        try:
+            _categorized_new_cls_props[category].add(name)
+        except KeyError:
+            raise ValueError("Incorrect value for `category`; must be 'configuration', 'state', or 'information'.")
+        return obj
 
-    def __init__(self, __iterable=None):
-        if __iterable:
-            list.__init__(self, __iterable)
-        else:
-            list.__init__(self)
-
-        self._on_update(self)
-
-    def __on_update(method):
-        @functools.wraps(method)
-        def wrapper(self, *args, **kwargs):
-            rtn = method(self, *args, **kwargs)
-            self._on_update(self)
-            return rtn
+    if not func:
         return wrapper
+    return wrapper(func)
 
-    @__on_update
-    def __add__(self, x: list) -> list:
-        list.__add__(self, x)
 
-    @__on_update
-    def append(self, __object):
-        list.append(self, __object)
+class ItemAttribute:
+    def __init__(
+        self,
+        category: str = "configuration",
+        getter: Union[str, Callable, None] = ...,
+        setter: Union[str, Callable, None] = ...,
+        target: str = None,
+        doc: str = None
+    ):
+        """DearPyGui configuration handler. Functionally similar to the `property`
+        built-in, but specific to dearpygui keyword attributes. Cannot be used
+        as a decorator. 
+        """
+        self.category = category
+        self.fget = getter
+        self.fset = setter
+        self.target = target
 
-    @__on_update
-    def extend(self, __iterable) -> None:
-        list.extend(self, __iterable)
+        if doc is None and getter is not None:
+            doc = getter.__doc__
+        self.__doc__ = doc
+        self._name = ''
 
-    @__on_update
-    def pop(self, __index=...) -> object:
-        list.pop(self, __index)
+    def __set_name__(self, __type: type, name: str):
+        self._name = name
+        self._private_name = f"_{name}"
+        self._item = __type
+        self.target = name if self.target is None else self.target
 
-    @__on_update
-    def insert(self, __index, __object) -> None:
-        list.insert(self, __index, __object)
+        # Setting default getter/setter based on category if one wasn't included.
+        # NOTE: Default ellipsis is used to differentiate `not included`
+        # from `None`. Setting a getter or setter to `None` is meaningful.
+        # If the value is `...` it will use the default configuration.
+        try:
+            category_defaults = self.category_cmd_map[self.category]
+        except KeyError:
+            raise ValueError("Incorrect value for `category`; must be 'configuration', 'state', or 'information'.")
+        for idx, attr in enumerate(("fget", "fset")):
+            value = getattr(self, attr)
+            if value == ...:
+                setattr(self, attr, category_defaults[idx])
+            elif isinstance(value, str):
+                try:
+                    setattr(self, attr, self.cmd_attr_map[value])
+                except KeyError:
+                    raise AttributeError(f"{__name__!r} has no attribute {value!r}.")
+        _categorized_new_cls_props[self.category].add(name)
 
-    @__on_update
-    def remove(self, __value) -> None:
-        list.remove(self, __value)
+    def __get__(self, instance: object, __type: type):
+        try:
+            return self.fget(instance, self.target, self._private_name)
+        # raised from `common_getter` trying to get `tag` from `instance` i.e.
+        # `None._tag`.
+        except AttributeError:
+            return self
 
-    @__on_update
-    def reverse(self) -> None:
-        list.reverse(self)
+    def __set__(self, instance: object, value):
+        if self.fset is None:
+            raise AttributeError(f"The {self._name!r} attribute is read-only and cannot be set.")
+        self.fset(instance._tag, **{self.target: value})
 
-    @__on_update
-    def clear(self) -> None:
-        list.clear(self)
+    category_cmd_map = {
+        "configuration": (get_item_configuration, configure_item),
+        "information": (get_item_info, None),
+        "state": (get_item_state, None),
+    }
 
+    cmd_attr_map = {
+        "get_item_configuration": get_item_configuration,
+        "get_item_info": get_item_info,
+        "get_item_state": get_item_state,
+        "configure_item": configure_item,
+        "get_value": get_value,
+        "set_value": set_value,
+        "get_unmanagable": get_unmanagable
+    }
+
+
+class ItemAttributeCache:
+    """Updates attribute dictionaries for `Item` class derivatives, ensuring
+    that the new subclass has all configuration, information, and state attributes/keys
+    from their ancestor(s), along with any new additions of its own. Mixin classes
+    can (should) inherit from this as well if they define new attributes with the
+    intention of passing them onto descendants as internally managed attributes.
+
+    Glossary:
+        * config_attrs: A collection of item attributes that can be used as an
+        argument for an item's creation, and can still be configured afterwards.
+        * inform_attrs: A collection of item attributes that can potentially
+        be used as an argument for an item's creation, but is generally read-only
+        afterwards.
+        * states_attrs: A collection of item attributes that are read-only. They
+        are not used as item-creation arguments and are not configurable.
+        * attr_aliases: A mapping of an item's defined class or instance attributes
+        pointing to the name of the internal item attribute that they actually manage.
+    """
+    def __init_subclass__(cls):
+        super().__init_subclass__()
+        config_attrs = _categorized_new_cls_props["configuration"]
+        inform_attrs = _categorized_new_cls_props["information"]
+        states_attrs = _categorized_new_cls_props["state"]
+        init_params  = set()
+        # Iterate from oldest to newest object; excluding `object`
+        # and `ItemAttributeCache` (2 oldest) and `cls` (newest).
+        for derived_from in cls.mro()[-3:0:-1]:
+            config_attrs |= derived_from.__dict__.get("_config_attrs", set())
+            inform_attrs |= derived_from.__dict__.get("_inform_attrs", set())
+            states_attrs |= derived_from.__dict__.get("_states_attrs", set())
+            init_params  |= derived_from.__dict__.get("_init_params" , set())
+        cls._config_attrs = cls.__dict__.get("_config_attrs", set()) | config_attrs
+        cls._inform_attrs = cls.__dict__.get("_inform_attrs", set()) | inform_attrs
+        cls._states_attrs = cls.__dict__.get("_states_attrs", set()) | states_attrs
+        cls._init_params = {*signature(cls).parameters} | init_params
+        # Reset the global variable for the next subclass.
+        [_set.clear() for _set in _categorized_new_cls_props.values()]
+        # Storing unmanagable attribute names.
+        unmanagable_attrs = set()
+        for attr_name in {*cls._config_attrs, *cls._inform_attrs}:
+            attr = getattr(cls, attr_name)
+            if hasattr(attr, "__get__") and getattr(attr, "fget") == get_unmanagable:
+                unmanagable_attrs.add(attr_name)
+        cls._unmanaged_attrs = unmanagable_attrs
 
 
 class ConfigContainer:
     _target_params = ()
     _configuration = ()
-    def __init__(self, target_item: Item, **kwargs):
+
+    def __init__(self, target_item, **kwargs):
         """A configuration container for Item objects.
 
         Args:
             * target_item (Item): The item you wish to instantiate using this
             object's configuration.
         """
-        self._target_item = target_item  #  "target object/item"
-        self._target_params = tuple([*signature(target_item).parameters])
+        self._target_item = target_item
+        self._target_params = tuple([*target_item._init_params])
         self._configuration = {}
         self.configure(**kwargs)
 
@@ -180,7 +224,8 @@ class ConfigContainer:
             return None
         elif attr.startswith("_"):  # allow private attributes
             return object.__setattr__(self, attr, value)
-        raise AttributeError(f"{self._target_item!r} does not accept this parameter.")
+        raise AttributeError(
+            f"{self._target_item!r} does not accept this parameter.")
 
     def __getattr__(self, attr):
         if attr in self._configuration:
@@ -189,7 +234,7 @@ class ConfigContainer:
             return None
         raise AttributeError(f"{type(self)!r} has no attribute {attr!r}.")
 
-    def create(self) -> Item:
+    def create(self):
         """Return an instance from the target item using this object's configuration.
         """
         return self._target_item(**self._configuration)

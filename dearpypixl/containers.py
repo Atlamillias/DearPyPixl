@@ -1,17 +1,15 @@
 from typing import Union
 from time import sleep
 
-from dearpygui import dearpygui, _dearpygui
+from dearpygui import _dearpygui
 
 import dearpypixl.appitems.containers
 from dearpypixl.appitems.containers import *
-from dearpypixl.items import Container
-from dearpypixl.items import Widget
-from dearpypixl.components import Item
-from dearpypixl.components.events import (
-    ItemClickedHandler,
-    ItemHoverHandler,
-    ItemVisibleHandler
+from dearpypixl.components import Container, Widget, item_attribute
+from dearpypixl.items.handlers import (
+    ClickedHandler,
+    HoverHandler,
+    VisibleHandler
 )
 
 
@@ -22,7 +20,7 @@ __all__ = [
 
 
 ##########################
-### Rewrites/Extensions ##
+######## Rewrites ########
 ##########################
 class Tooltip(Window):
     """A tooltip window that is displayed only when its target item is
@@ -71,7 +69,7 @@ class Tooltip(Window):
 
         self.__on_hover_handler = None
         self.__is_hovering = False
-        ItemVisibleHandler(parent=self.events, callback=self.__on_visible_callback, untrack=True)
+        VisibleHandler(parent=self.events, callback=self.__on_visible_callback, untrack=True)
 
         if target:
             self.target = target
@@ -89,7 +87,7 @@ class Tooltip(Window):
             self.__on_hover_handler.delete()
         # Avoid creating a new handler if value is None
         if value is not None:
-            self.__on_hover_handler = ItemHoverHandler(
+            self.__on_hover_handler = HoverHandler(
                 parent=value.events,
                 callback=self.__on_hover_callback,
                 untrack=True,
@@ -188,7 +186,7 @@ class Popup(Window):
             self.__on_click_handler.delete()
         # Avoid creating a new handler if value is None
         if value is not None:
-            self.__on_click_handler = ItemClickedHandler(
+            self.__on_click_handler = ClickedHandler(
                 parent=value.events._tag,
                 button=self.__button,
                 callback=self.__on_click_callback
@@ -196,6 +194,94 @@ class Popup(Window):
 
     def __on_click_callback(self):
         self.configure(show=True)
+
+
+
+##########################
+####### Extensions #######
+##########################
+class Window(Window):
+    @property
+    @item_attribute(category="configuration")
+    def y_scroll_pos(self) -> float:
+        """Vertical scroll position of the container. If set to -1.0,
+        its position will be set to the end.
+        """
+        return _dearpygui.get_y_scroll(self.tag)
+    @y_scroll_pos.setter
+    def y_scroll_pos(self, value):  # -1.0 will set it to max/end
+        _dearpygui.set_y_scroll(self.tag, value)
+
+
+    @property
+    @item_attribute(category="information")
+    def y_scroll_max(self) -> float:
+        """Maximum vertical scroll position.
+        """
+        return _dearpygui.get_y_scroll_max(self.tag)
+
+
+    @property
+    @item_attribute(category="configuration")
+    def x_scroll_pos(self) -> float:
+        """Horizontal scroll position of the container. If set to -1.0,
+        its position will be set to the end.
+        """
+        return _dearpygui.get_x_scroll(self.tag)
+    @x_scroll_pos.setter
+    def x_scroll_pos(self, value: float):  # -1.0 will set it to max/end
+        return _dearpygui.set_x_scroll(self.tag, value)
+
+
+    @property
+    @item_attribute(category="information")
+    def x_scroll_max(self) -> float:
+        """Maximum horizontal scroll position.
+        """
+        return _dearpygui.get_x_scroll_max(self.tag)
+
+
+class ChildWindow(ChildWindow):
+    # Scroll position
+    @property
+    @item_attribute(category="configuration")
+    def y_scroll_pos(self) -> float:
+        """Vertical scroll position of the container. If set to -1.0,
+        its position will be set to the end.
+        """
+        return _dearpygui.get_y_scroll(self.tag)
+    @y_scroll_pos.setter
+    def y_scroll_pos(self, value):  # -1.0 will set it to max/end
+        _dearpygui.set_y_scroll(self.tag, value)
+
+
+    @property
+    @item_attribute(category="information")
+    def y_scroll_max(self) -> float:
+        """Maximum vertical scroll position.
+        """
+        return _dearpygui.get_y_scroll_max(self.tag)
+
+
+    @property
+    @item_attribute(category="configuration")
+    def x_scroll_pos(self) -> float:
+        """Horizontal scroll position of the container. If set to -1.0,
+        its position will be set to the end.
+        """
+        return _dearpygui.get_x_scroll(self.tag)
+    @x_scroll_pos.setter
+    def x_scroll_pos(self, value: float):  # -1.0 will set it to max/end
+        return _dearpygui.set_x_scroll(self.tag, value)
+
+
+    @property
+    @item_attribute(category="information")
+    def x_scroll_max(self) -> float:
+        """Maximum horizontal scroll position.
+        """
+        return _dearpygui.get_x_scroll_max(self.tag)
+
 
 
 class TabBar(TabBar):
@@ -233,15 +319,3 @@ class Tab(Tab):
         """Sets this tab item as the currently active/selected tab within its parent.
         """
         self.parent.active_tab = self
-
-
-
-
-##########################
-#####  Exclusive to ######
-#####   DearPyPixl  ######
-##########################
-class __AdaptiveWindow(ChildWindow):
-    def __init__(self, **kwargs):
-        self.foster_parent = Window()
-        super().__init__(parent=self.foster_parent, **kwargs)

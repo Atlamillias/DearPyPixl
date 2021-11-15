@@ -1,24 +1,35 @@
-"""Low-level component and base objects for Item derivitives."""
-from dearpypixl.components.item import (
-    configuration_override,
-    information_override,
-    ItemAttributeCache,
-    Item
+from dearpypixl.items import (
+    item_attribute,
+    ItemAttribute,
+    ConfigContainer,
+    Item,
+    
+    # Registries
+    ItemEvents,
+    AppEvents,
+    ValueRegistry,
+    TextureRegistry,
+    ColorMapRegistry,
+    TemplateRegistry,
+    FontRegistry,
+
+    Theme,
 )
-from dearpypixl.components.events import AppEvents, Events
-from dearpypixl.components.theme import Theme
+from dearpypixl.components.support import (
+    ContextSupport,
+    AddinSupport,
+    CommandSupport,
+)
+from dearpypixl.components.container import Container
+from dearpypixl.components.widget import Widget
+from dearpypixl.components.misc import UniqueItemMeta, ItemLike, UpdaterList
 
-
-# NOTE (to self): **components** -> items -> appitems -> appitems(top-level) -> application
 
 __all__ = [
-    "configuration_override",
-    "information_override",
-    
-    "ItemAttributeCache",
-    
-    "Item",
-    "AppEvents",
-    "Events",
-    "Theme",
+    # NOTE: Limiting what objects are exported to appitem modules.
+    "ItemAttribute",
+    "item_attribute",
+
+    "Container",
+    "Widget",
 ]

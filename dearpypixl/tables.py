@@ -5,14 +5,14 @@ from dearpygui._dearpygui import (
     get_item_info,  # used A LOT
     get_value
 )
-import dearpypixl.appitems.table
-from dearpypixl.appitems.table import *
+import dearpypixl.appitems.tables
+from dearpypixl.appitems.tables import *
 from dearpypixl.components import Item
 
 
 
 __all__ = [
-    *dearpypixl.appitems.table.__all__,
+    *dearpypixl.appitems.tables.__all__,
 ]
 
 dearpygui.is_table_cell_highlight

@@ -730,19 +730,6 @@ class DPIAwareness(IntEnum):
     PerMonitorAware = 2
 
 
-# These are only used by constructors and can't be gotten or set after
-# creation. Some are special cases (properties), and some are simply omitted.
-SETUP_ONLY_ATTR = (
-    "before",
-    "default_value",
-    "item_type",
-    "tag",
-    "id",
-)
-# Get-only configuration.
-READ_ONLY_ATTR = (
-    "item_type",
-    "parent",
-)
+
 
 

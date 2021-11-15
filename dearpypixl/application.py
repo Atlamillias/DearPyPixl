@@ -28,13 +28,12 @@ from dearpygui._dearpygui import (
     split_frame,
     set_frame_callback,
 )
-from dearpypixl.components import Item, AppEvents, Theme, configuration_override, information_override
-from dearpypixl.items.misc import UniqueItemMeta, ItemLike, UpdaterList
+from dearpypixl.components import Item, AppEvents, Theme, item_attribute, ItemAttribute, UniqueItemMeta, ItemLike, UpdaterList
 from dearpypixl.constants import AppUUID, ViewportUUID, Key, DPIAwareness
 from dearpypixl.containers import Window
 from dearpypixl.errors import DearPyGuiErrorHandler
-from dearpypixl.components.registries import (
-    ColormapRegistry,
+from dearpypixl.components import (
+    ColorMapRegistry,
     TemplateRegistry,
     ValueRegistry,
     TextureRegistry,
@@ -169,7 +168,7 @@ class Application(ItemLike, metaclass=UniqueItemMeta):
     ######### Properties ###########
     ################################
     @property
-    @configuration_override
+    @item_attribute(category="information")
     def calls_on_startup(self) -> list[Callable]:
         """List of callables set to run within the first few frames on
         application startup.
@@ -182,7 +181,7 @@ class Application(ItemLike, metaclass=UniqueItemMeta):
 
 
     @property
-    @configuration_override
+    @item_attribute(category="information")
     def calls_on_render(self) -> list[Callable]:
         """List of callables set to run after rendering a frame.
         """
@@ -194,7 +193,7 @@ class Application(ItemLike, metaclass=UniqueItemMeta):
 
 
     @property
-    @configuration_override
+    @item_attribute(category="information")
     def calls_on_exit(self) -> list[Callable]:
         """List of callables set to run on application exit.
         """
@@ -206,7 +205,7 @@ class Application(ItemLike, metaclass=UniqueItemMeta):
 
 
     @property
-    @configuration_override
+    @item_attribute(category="information")
     def theme(self) -> Theme:
         """The application's default Theme item.
         """
@@ -233,7 +232,7 @@ class Application(ItemLike, metaclass=UniqueItemMeta):
 
 
     @property
-    @configuration_override
+    @item_attribute(category="configuration")
     def font_scale(self) -> float:
         """The value in which all font renders are scaled to. A value larger
         than 1.0 can result in a loss of visual quality.
@@ -244,7 +243,7 @@ class Application(ItemLike, metaclass=UniqueItemMeta):
         _dearpygui.set_global_font_scale(value)
 
     @property
-    @configuration_override
+    @item_attribute(category="information")
     def device_manager(self) -> str:
         """Return the current controller of the display adapter used for the
         application.
@@ -265,7 +264,7 @@ class Application(ItemLike, metaclass=UniqueItemMeta):
         return "internal"
 
     @property
-    @configuration_override
+    @item_attribute(category="information")
     def process_id(self) -> str:
         """Return the current process identifier.
         """
@@ -419,7 +418,7 @@ class Application(ItemLike, metaclass=UniqueItemMeta):
         self.__default_registries = (
             TextureRegistry("DEARPYPIXL_DEFAULT", tag=dearpygui.mvReservedUUID_2),
             ValueRegistry("DEARPYPIXL_DEFAULT", tag=dearpygui.mvReservedUUID_3),
-            ColormapRegistry("DEARPYPIXL_DEFAULT", tag=dearpygui.mvReservedUUID_4),
+            ColorMapRegistry("DEARPYPIXL_DEFAULT", tag=dearpygui.mvReservedUUID_4),
             # template registries need to be bound seperately as global
             TemplateRegistry("DEARPYPIXL_DEFAULT", tag=dearpygui.mvReservedUUID_5)
         )
@@ -546,7 +545,7 @@ class Viewport(ItemLike, metaclass=UniqueItemMeta):
     ########## Properties ##########
     ################################
     @property
-    @configuration_override
+    @item_attribute(category="information")
     def active_window(self):
         return get_active_window()
 
@@ -571,13 +570,13 @@ class Viewport(ItemLike, metaclass=UniqueItemMeta):
         return get_plot_mouse_pos()
 
     @property
-    @configuration_override
+    @item_attribute(category="state")
     def is_showing(self) -> bool:
         return self.__is_showing
 
 
     @property
-    @configuration_override
+    @item_attribute(category="configuration")
     def fullscreen(self) -> bool:
         return self.__fullscreen
     @fullscreen.setter
@@ -590,7 +589,7 @@ class Viewport(ItemLike, metaclass=UniqueItemMeta):
 
 
     @property
-    @configuration_override
+    @item_attribute(category="information")
     def primary_window(self) -> Union[Window, None]:
         return self.__primary_window
     @primary_window.setter
@@ -604,7 +603,7 @@ class Viewport(ItemLike, metaclass=UniqueItemMeta):
 
 
     @property
-    @configuration_override
+    @item_attribute(category="configuration")
     def use_primary_window(self) -> bool:
         return self.__use_primary_window
     @use_primary_window.setter
@@ -616,7 +615,7 @@ class Viewport(ItemLike, metaclass=UniqueItemMeta):
 
 
     @property
-    @configuration_override
+    @item_attribute(category="information")
     def calls_on_resize(self) -> list[Callable]:
         """List of callables set to run within the first few frames on
         application startup.

@@ -1,22 +1,23 @@
 from typing import Callable
 from abc import ABCMeta, abstractmethod
 
-from dearpypixl.components import Item
-from dearpypixl.items.support import (
-    EventSupport,
-    ThemeSupport,
-    StateSupport,
+from dearpygui._dearpygui import (
+    get_item_state
+)
+
+from dearpypixl.items import Item, ItemAttribute
+from dearpypixl.components.support import (
+    AddinSupport,
     CommandSupport,
 )
 
 
 class Widget(
-    EventSupport,
-    ThemeSupport,
-    StateSupport,
+    AddinSupport,
     CommandSupport,
     Item,
     metaclass=ABCMeta
 ):
     @abstractmethod
     def _command() -> Callable: ...
+

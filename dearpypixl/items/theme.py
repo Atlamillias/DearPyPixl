@@ -20,10 +20,11 @@ from dearpygui.dearpygui import (
     add_font_range,
     add_font_range_hint,
     # misc
-    configure_item
+    pop_container_stack,
+    push_container_stack,
 )
-from dearpypixl.components.item import Item, configuration_override, information_override
-from dearpypixl.components.primitives import AbstractBoundItem
+from dearpypixl.items.configuration import item_attribute, ItemAttribute
+from dearpypixl.items.item import Item
 from dearpypixl.constants import (
     CoreThemeElement,
     PlotThemeElement,
@@ -40,14 +41,7 @@ __all__ = [
     "ThemeComponent",
     "ColorComponent",
     "StyleComponent",
-
     "Font",
-
-    "ItemCategory",
-    "CoreThemeElement",
-    "PlotThemeElement",
-    "NodeThemeElement",
-    "FontRangeHint",
 ]
 
 
@@ -66,13 +60,26 @@ ThemeElement = Union[
 ###################################
 ############## Theme ##############
 ###################################
-class Theme(Mapping, AbstractBoundItem, Item):
-    """A configurable mapping-like item that stores color and style
+class Theme(Item):
+    """A configurable item that stores color and style
     values. Items will reflect the theme that they are bound to. Items can
     only be bound to 1 Theme item at a time -- creating a new bind safely
     destroys the previous one. However, an error will occur when trying to
     manually unbind an item from a Theme that isn't bound.
     """
+    label             : str      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")             
+    user_data         : Any      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")         
+    use_internal_label: bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")
+
+    _is_container     : bool     = True                                                                                            
+    _is_root_item     : bool     = True                                                                                            
+    _is_value_able    : bool     = False                                                                                           
+    _unique_parents   : tuple    = ()                                                                                              
+    _unique_children  : tuple    = ('ThemeComponent',)                                                                             
+    _unique_commands  : tuple    = ('bind_theme',)                                                                                 
+    _unique_constants : tuple    = ('mvTheme', 'mvThemeCat_Core', 'mvThemeCat_Plots', 'mvThemeCat_Nodes')                          
+    _command          : Callable = add_theme      
+
     def __init__(
         self,
         label: str = None,
@@ -81,7 +88,7 @@ class Theme(Mapping, AbstractBoundItem, Item):
         *,
         include_presets: bool = True,
     ):
-        self.__keys: set[str] = {"label", "font", "font_size"}
+        self.__target_uuids: set[int] = set()
         self.__preset = include_presets
         self.__font: Font = font
         self.__font_uuid: int = 0
@@ -93,39 +100,12 @@ class Theme(Mapping, AbstractBoundItem, Item):
             self.color = ColorComponent(ItemCategory.ALL, enabled_state=True, parent=self.tag)
             self.style = StyleComponent(ItemCategory.ALL, enabled_state=True, parent=self.tag)
 
-    def __setattr__(self, attr, value):  # Overloaded
-        if isinstance(value, ThemeComponent):
-            self.__keys.add(attr)
-        elif attr in self.__keys:
-            # attr formerly was a ThemeComponent
-            self.__keys.remove(attr)
-        object.__setattr__(self, attr, value)
+    def __enter__(self):
+        push_container_stack(self._tag)
+        return self
 
-    def __getattr__(self, attr):  # Overloaded
-        raise AttributeError(f"{type(self).__qualname__!r} object has no attribute {attr!r}.")
-
-    def __getitem__(self, item):
-        return getattr(self, item)
-
-    def __setitem__(self, item, value):
-        return setattr(self, item, value)
-
-    def __len__(self):
-        return len(self.__keys)
-
-    def __iter__(self):
-        yield from self.__keys
-
-    def __str__(self):
-        mapping = {k: str(v) for k, v in dict(self).items()}
-        return f"{mapping}"
-
-    @property
-    def label(self) -> str:
-        return _dearpygui.get_item_configuration(self._tag)["label"]
-    @label.setter
-    def label(self, value: str):
-        configure_item(self._tag, label=value)
+    def __exit__(self, exec_type, exec_value, traceback):
+        pop_container_stack()
 
     @property
     def font(self) -> Union[Font, None]:
@@ -148,7 +128,6 @@ class Theme(Mapping, AbstractBoundItem, Item):
         # Having font_size.setter update bound items with the font, if needed.
         self.font_size = self.__font_size_value
 
-
     @property
     def font_size(self) -> float:
         return self.__font_size_value
@@ -165,42 +144,19 @@ class Theme(Mapping, AbstractBoundItem, Item):
             return None
         # If __font_id is not 0, that means self.font was set to
         # None in the prior frame via font property (NOTE: See font setter comment).
-        self.__font_uuid = font.get_size(value) if font else 0
+        self.__font_uuid = font.get_font_size(value) if font else 0
         self.__update_targets_font()
 
-    def configure(
-            self,
-            label: str = ...,
-            color: dict = ...,
-            style: dict = ...,
-            font: Union[str, Font] = ...,
-            font_size: float = ...,
-    ) -> Theme:
-        """Customize and return the theme. Useful for creating themes from
-        mappings (presets only).
+    @property
+    @item_attribute(category="information")
+    def targets(self) -> list[Item]:
+        """Return a list of items that are bound to this item.
         """
-        if label != ...:
-            self.label = label
-        if color != ...:
-            self.color.configure(**color)
-        if style != ...:
-            self.style.configure(**style)
-        # Setting this first because the font property will
-        # call the font_size property if it needs to.
-        if font_size != ...:
-            self.__font_size_value = font_size
-        if font != ...:
-            self.font = font
-
-        return self
-
-    def configuration(self) -> dict:
-        """Returns the theme's configuration.
-
-        NOTE: The return value of this method contains all of the
-        input parameters for `configure` method.
-        """
-        return {attr: getattr(self, attr) for attr in self.__keys}
+        target_uuids = self.__target_uuids
+        appitems = type(self)._appitems
+        return [target_item for targets in target_uuids
+                for target in targets if
+                (target_item := appitems.get(target, None))]
 
     def renew(self) -> None:
         """Deletes all of the theme's children, including theme components.
@@ -221,7 +177,7 @@ class Theme(Mapping, AbstractBoundItem, Item):
             Binding an item will break an existing bind to a Theme (if it exists).
         """
         self_uuid = self._tag
-        self_target_uuids = self._target_uuids
+        self_target_uuids = self.__target_uuids
         for i in item:
             bind_item_theme(i._tag, self_uuid)
             bind_item_font(i._tag, self.__font_uuid)
@@ -241,7 +197,7 @@ class Theme(Mapping, AbstractBoundItem, Item):
             * item(Item, optional): instances of `Item` to unbind from the theme. If an
             item is not bound to this Theme, `BindItemError` will be raised. 
         """
-        self_target_uuids = self._target_uuids
+        self_target_uuids = self.__target_uuids
         for i in item:
             if i._tag not in self_target_uuids:
                 raise ValueError(f"Cannot unbind {item.__qualname__!r} as it is not bound to this item.")
@@ -254,17 +210,10 @@ class Theme(Mapping, AbstractBoundItem, Item):
             bind_font(0)
             type(self).__default_theme_uuid = 0
 
-    ################################
-    ####### Private/Internal #######
-    ################################
-    _command = add_theme
-    __default_theme_uuid = 0  # no way to fetch via DPG API
-    __keys = {}
-
     def __update_targets_font(self):
         # font.setter uses this to bind a new font (size) to all bound items.
         font_uuid = self.__font_uuid
-        target_uuids = self._target_uuids
+        target_uuids = self.__target_uuids
         # Since theme and font are seperate internally we need to rebind
         # all targets to the new font item.
         for item_uuid in target_uuids:
@@ -273,25 +222,46 @@ class Theme(Mapping, AbstractBoundItem, Item):
         # If this theme is also the default theme:
         if self._tag == type(self).__default_theme_uuid:
             bind_font(font_uuid)
+
+    __default_theme_uuid = 0  # no way to fetch via DPG API
             
 
-class ThemeComponent(Mapping, Item):
+class ThemeComponent(Item):
+    item_type         : Union[int, ItemCategory] =  ItemAttribute("configuration", "get_unmanagable", None, "item_type")
+    label             : str                      =  ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")             
+    user_data         : Any                      =  ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")         
+    use_internal_label: bool                     =  ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")
+    enabled_state     : bool                     =  ItemAttribute("configuration", "get_item_configuration", "configure_item", "enabled_state")     
+
+    _is_container     : bool                     =  True                                                                                            
+    _is_root_item     : bool                     =  False                                                                                           
+    _is_value_able    : bool                     =  False                                                                                           
+    _unique_parents   : tuple                    =  ('Theme',)                                                                                      
+    _unique_children  : tuple                    =  ('ThemeColor', 'ThemeStyle')                                                                    
+    _unique_commands  : tuple                    =  ()                                                                                              
+    _unique_constants : tuple                    =  ('mvThemeComponent',)                                                                           
+    _command          : Callable                 =  add_theme_component  
+
     def __init__(
-        self,
-        item_type: ItemCategory = ItemCategory.ALL,
-        enabled_state: bool = True,
-        parent: Theme = None,
-        label: str = None,
-        user_data: Any = None,
-        **kwargs
-    ):
+        self                                               ,
+        item_type         : Union[int, ItemCategory] = 0   ,
+        label             : str                      = None,
+        user_data         : Any                      = None,
+        use_internal_label: bool                     = True,
+        parent            : Union[int, str]          = 0   ,
+        before            : Union[int, str]          = 0   ,
+        enabled_state     : bool                     = True,
+        **kwargs                                           ,
+    ) -> None:
         super().__init__(
-            item_type=int(item_type),
-            enabled_state=enabled_state,
-            parent=parent or 0,
+            item_type=item_type,
             label=label,
             user_data=user_data,
-            **kwargs
+            use_internal_label=use_internal_label,
+            parent=parent,
+            before=before,
+            enabled_state=enabled_state,
+            **kwargs,
         )
         # Importing class element data. The data needs to be kept per-instance
         # because it may change via `bind`.
@@ -299,10 +269,6 @@ class ThemeComponent(Mapping, Item):
         self.__element_aliases: dict[str, ThemeElement] = {**cls.__element_aliases}
         self.__element_uuids: dict[ThemeElement, int] = {element: None for element in
                                                          self.__element_aliases.values()}
-        self.__item_type = item_type
-        self.label = label
-        self.enabled_state = enabled_state
-        self.parent = parent
 
     def __init_subclass__(cls):
         # NOTE: Subclassing `ThemeComponent` allows elements to be pre-bound
@@ -352,22 +318,6 @@ class ThemeComponent(Mapping, Item):
             return None
         super().__delattr__(attr)
 
-    def __getitem__(self, item):
-        return getattr(self, item)
-
-    def __setitem__(self, item, value):
-        return setattr(self, item, value)
-
-    def __len__(self):
-        return len(self.__element_aliases)
-
-    def __iter__(self):
-        yield from self.__element_aliases
-
-    def __str__(self):
-        mapping = {k: str(v) for k, v in dict(self).items()}
-        return f"{mapping}"
-
     def __manage_target_param(method: Callable = None):
         @functools.wraps(method)
         def wrapper(self, target: Union[str, ThemeElement], *value: Numeric):
@@ -379,13 +329,6 @@ class ThemeComponent(Mapping, Item):
                 raise TypeError(f"`target` parameter {target!r} is not of type `ThemeElement`, or is not a bound theme attribute.")
             return method(self, target, *value)
         return wrapper
-
-    @property
-    def item_type(self) -> ItemCategory:
-        """Elements items parented by this component will only affect this
-        type of appitem, and all children parented by that appitem type.
-        """
-        return self.__item_type
 
     @__manage_target_param
     def add_element(self, target: Union[ThemeElement, str], *value: Numeric) -> int:
@@ -497,16 +440,6 @@ class ThemeComponent(Mapping, Item):
                 raise TypeError(f"`ThemeElement` expected for `element` parameter, got {type(attribute)!r}.")
             element_aliases[attribute] = element
             element_uuids.setdefault(element, None)
-
-    ################################
-    ####### Private/Internal #######
-    ################################
-    _command = add_theme_component
-    __element_defaults = {
-        0: [0, 0, 0, 255],
-        1: [-1.0, -1.0],
-    }
-    __element_aliases: dict[str, ThemeElement] = {}
    
     @staticmethod
     def __build_new_value(new: Sequence, current: Sequence, value_ceiling):
@@ -521,9 +454,13 @@ class ThemeComponent(Mapping, Item):
         except TypeError:  # occurs if value_ceiling is `...` or `None` (no max)
             return [val for val in map(val_map_func, zip(new, current))]
 
+    __element_defaults = {
+        0: [0, 0, 0, 255],
+        1: [-1.0, -1.0],
+    }
+    __element_aliases: dict[str, ThemeElement] = {}
+
     
-
-
 class ColorComponent(ThemeComponent):
     """A theme component with pre-bound elements that affect
     color for all theme categories.
@@ -820,7 +757,7 @@ class Font:
         # This may or may not create a new instance. See `__new__`.
         return cls(file, size, label)
 
-    def get_size(self, size: Numeric = 12.0) -> int:
+    def get_font_size(self, size: Numeric = 12.0) -> int:
         """Returns the font id of the given *size*.
 
         Args:
