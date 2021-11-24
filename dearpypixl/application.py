@@ -53,7 +53,7 @@ __all__ = [
 # Usage:
 #    @property.setter
 #    @_manage_callable_list
-def _manage_callable_list(method=None):
+def _manage_callback_sequence(method=None):
     # Enforcing pretty strict type checks for properties holding callables
     # so useful information is provided if something breaks.
     @functools.wraps(method)
@@ -63,7 +63,7 @@ def _manage_callable_list(method=None):
                 f"{type(list)!r} expected, got {type(value)!r} ({value!r}).")
         for non_callable in filterfalse(callable, value):
             raise TypeError(
-                f"{type(list)!r} of callables expected, found {type(non_callable)!r} ({non_callable!r}).")
+                f"{type(non_callable)!r} ({non_callable!r}) is not callable.")
         return method(self, value, *args, **kwargs)
     return wrapper
 
@@ -116,8 +116,7 @@ class Application(ItemLike, metaclass=UniqueItemMeta):
     ######### Render loop ##########
     ################################
     def start(self) -> None:
-        """Start the application by executing the main render loop. This
-        is the recommended way to start the application.
+        """Start the application by executing the main render loop.
 
         NOTE: It is not recommended to manually build the render loop.
         If it is necessary for code to be ran in the loop itself, use
@@ -126,8 +125,8 @@ class Application(ItemLike, metaclass=UniqueItemMeta):
         directly append it to `calls_on_render`.
         """
         Viewport().show()  # singleton
-        # Avoiding lookup overhead in the loop as it is the most
-        # "sensitive" spot in the entire framework.
+        # Avoiding lookup overhead in the loop as it is the most "sensitive"
+        # spot in the entire framework.
         is_running = self.is_running
         render_frame = self.render_frame  
 
@@ -139,7 +138,7 @@ class Application(ItemLike, metaclass=UniqueItemMeta):
     def stop(self) -> None:
         """Break the main render loop and stop the application
         if it is running. This is the equivelent to pressing the
-        "close" or "exit" button on the application title bar.
+        "close"/"exit" button on the application title bar.
 
         """
         if self.is_running():
@@ -153,7 +152,7 @@ class Application(ItemLike, metaclass=UniqueItemMeta):
 
         NOTE: The `start` method automatically calls this. You should only
         need to make this call yourself if you're not calling `start` and
-        have made the render loop manually.
+        are manually building the render loop.
         """
         _dearpygui.destroy_context()
 
@@ -161,7 +160,8 @@ class Application(ItemLike, metaclass=UniqueItemMeta):
         """Renders a frame. Only for use in the main render loop (see the
         `start` method).
         """
-        [c() for c in self.__calls_on_render]
+        for render_callable in self.__calls_on_render:
+            render_callable()
         render_dearpygui_frame()
 
     ################################
@@ -175,7 +175,7 @@ class Application(ItemLike, metaclass=UniqueItemMeta):
         """
         return self.__calls_on_startup
     @calls_on_startup.setter
-    @_manage_callable_list
+    @_manage_callback_sequence
     def calls_on_startup(self, value: list[Callable]) -> None:
         self.__calls_on_startup = self._StartupUpdaterList(value)
 
@@ -187,7 +187,7 @@ class Application(ItemLike, metaclass=UniqueItemMeta):
         """
         return self.__calls_on_render
     @calls_on_render.setter
-    @_manage_callable_list
+    @_manage_callback_sequence
     def calls_on_render(self, value: list[Callable]) -> None:
         self.__calls_on_render = value
 
@@ -199,7 +199,7 @@ class Application(ItemLike, metaclass=UniqueItemMeta):
         """
         return self.__calls_on_exit
     @calls_on_exit.setter
-    @_manage_callable_list
+    @_manage_callback_sequence
     def calls_on_exit(self, value: list[Callable]) -> None:
         self.__calls_on_exit = self._ExitUpdaterList(value)
 
@@ -258,12 +258,14 @@ class Application(ItemLike, metaclass=UniqueItemMeta):
         return os.getpid()
 
     @property
+    @item_attribute(category="information")
     def version(self) -> str:
         """Return the version of Dearpygui that is being used.
         """
         return _dearpygui.get_app_configuration()["version"]
 
     @property
+    @item_attribute(category="information")
     def platform(self) -> str:
         """Return the platform.
         """
@@ -478,6 +480,28 @@ class Application(ItemLike, metaclass=UniqueItemMeta):
             return ctypes.windll.shcore.SetProcessDpiAwareness(int(self._dpi_awareness))
 
 
+class _AppInterface(type):
+    def __new__(cls, name, bases, namespace) -> type[Application]:
+        new_cls = type.__new__(cls, name, bases, namespace)
+        new_cls._disguised_as_ = Application
+        return new_cls
+        
+    def __getattr__(cls, attr: str):
+        return getattr(cls._disguised_as_, attr)
+
+
+class AppInterface(metaclass=_AppInterface):
+    """
+    """
+    def __new__(cls: type[Application], *args, **kwargs) -> Application:
+        new_instance = object.__new__(cls)
+        new_instance._disguised_as_ = cls._composed_obj_()
+        return new_instance
+
+    def __getattr__(self, attr: str):
+        return getattr(self._disguised_as_, attr)
+
+
 
 class Viewport(ItemLike, metaclass=UniqueItemMeta):
     """A class-representation of the viewport. 
@@ -609,7 +633,7 @@ class Viewport(ItemLike, metaclass=UniqueItemMeta):
         """
         return self.__calls_on_resize
     @calls_on_resize.setter
-    @_manage_callable_list
+    @_manage_callback_sequence
     def calls_on_resize(self, value: list[Callable]) -> None:
         self.__calls_on_resize = self._ResizeUpdaterList(value)
 

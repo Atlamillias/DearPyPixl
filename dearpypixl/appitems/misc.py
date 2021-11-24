@@ -710,8 +710,8 @@ class KnobFloat(Widget):
     tracked             : bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "tracked")           
     track_offset        : float                             = ItemAttribute("configuration", "get_item_configuration", "configure_item", "track_offset")      
     default_value       : float                             = ItemAttribute('information', 'get_unmanagable', None, 'default_value')                          
-    min_value           : float                             = ItemAttribute("configuration", "get_item_configuration", "configure_item", "min_value")         
-    max_value           : float                             = ItemAttribute("configuration", "get_item_configuration", "configure_item", "max_value")         
+    min_value           : float                             = ItemAttribute("configuration", "get_item_configuration", "configure_item", "min_scale")         
+    max_value           : float                             = ItemAttribute("configuration", "get_item_configuration", "configure_item", "max_scale")         
     value               : float                             = ItemAttribute("configuration", "get_value", "set_value", "default_value")                       
 
     is_resized          : bool                              = ItemAttribute("state", "get_item_state", None, "resized")                                       
@@ -1003,7 +1003,7 @@ class FileExtension(Widget):
     		Union[int, str]
     """
 
-    extension         : str                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "extension")         
+    extension         : str                               = ItemAttribute("configuration", "get_unmanagable", "configure_item", "extension")         
     label             : str                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")             
     user_data         : Any                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")         
     use_internal_label: bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")

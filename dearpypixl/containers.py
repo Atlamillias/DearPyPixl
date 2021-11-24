@@ -5,12 +5,13 @@ from dearpygui import _dearpygui
 
 import dearpypixl.appitems.containers
 from dearpypixl.appitems.containers import *
-from dearpypixl.components import Container, Widget, item_attribute
+from dearpypixl.components import Container, Widget, ItemEvents, item_attribute, ItemAttribute, ContainerItemT, AppItemT
 from dearpypixl.components.handlers import (
     ClickedHandler,
     HoverHandler,
     VisibleHandler
 )
+from dearpypixl.constants import Key, Mouse
 
 
 __all__ = [
@@ -23,9 +24,12 @@ __all__ = [
 ######## Rewrites ########
 ##########################
 class Tooltip(Window):
+    x_offset = item_attribute("x_offset", category="configuration")
+    y_offset = item_attribute("y_offset", category="configuration")
+    delay    = item_attribute("delay"   , category="configuration")
+
     """A tooltip window that is displayed only when its target item is
     hovered.
-
 
     Args:
         * target (Union[Container, Widget], optional): the item that causes this
@@ -40,15 +44,15 @@ class Tooltip(Window):
     Returns:
         *Tooltip*
     """
-    # NOTE: Current bug where focus is lost on the currently focused item
+    # BUG: Focus is dropped on the currently (previously?) focused item
     # when this item is displayed. Also, this item does not display above
-    # all other items when it is not focused...
+    # all other items when it is not focused. Awaiting DPG update.
     def __init__(
         self,
-        target: Union[Container, Widget] = None,
-        delay: int = 0,
-        x_offset: int = 25,
-        y_offset: int = 0,
+        target  : AppItemT = None,
+        delay   : int      = 0,
+        x_offset: int      = 25,
+        y_offset: int      = 0,
         **kwargs,
     ):
         super().__init__(
@@ -60,67 +64,69 @@ class Tooltip(Window):
             no_collapse=True,
             no_move=True,
             show=False,
+            events=ItemEvents(),
             **kwargs,
         )
+        VisibleHandler(parent=self.events, callback=self.__call_on_visible)
+        self.__target              : AppItemT     = None
+        self.__target_uuid         : int          = None
+        self.__target_hover_handler: HoverHandler = None
+        # This is only used if a delay is needed.
+        self.__target_is_hovered   : bool         = False
+
         self.x_offset = x_offset
         self.y_offset = y_offset
-        self.__target = None
-        self.__delay = delay
-
-        self.__on_hover_handler = None
-        self.__is_hovering = False
-        VisibleHandler(parent=self.events, callback=self.__on_visible_callback, untrack=True)
-
-        if target:
-            self.target = target
+        self.delay    = delay
+        self.target   = target
 
     @property
-    def target(self) -> Union[Container, Widget]:
-        """The item that will cause this item to be displayed when hovered.
+    @item_attribute(category="configuration")
+    def target(self) -> Union[AppItemT, None]:
+        """The item that, when hovered, will cause this item to display.
         """
         return self.__target
     @target.setter
-    def target(self, value: Union[Container, Widget]):
-        self.__target = value
+    def target(self, value: Union[AppItemT, None]):
+        if not isinstance(value, (Widget, None)):
+            raise TypeError(f"`target` must `Widget` or `None` type (got {type(value).__qualname__!r}).")
+        elif value and not hasattr(value, "is_hovered"):
+            raise ValueError(f"`target` is unsupported: {type(value).__qualname__!r} does not have `is_hovered` state.")
 
-        if self.__on_hover_handler:
-            self.__on_hover_handler.delete()
-        # Avoid creating a new handler if value is None
-        if value is not None:
-            self.__on_hover_handler = HoverHandler(
-                parent=value.events,
-                callback=self.__on_hover_callback,
-                untrack=True,
-            )
+        self.__target            = value
+        self.__target_is_hovered = False
+        if self.__target_uuid:
+            self.__target_hover_handler.delete()
+            self.__target_hover_handler = None
 
-    @property
-    def delay(self) -> int:
-        """The time (milliseconds) between the hovering the target and showing
-        the item.
-        """
-        return self.__delay
-    @delay.setter
-    def delay(self, value: int) -> None:
-        self.__delay = value
+        if value is None:
+            self.__target_uuid = None
+            return None
 
-    def __on_hover_callback(self, *args):
+        if not value.events:
+            value.events = ItemEvents()
+        self.__target_uuid          = value._tag
+        self.__target_hover_handler = HoverHandler(
+            parent  =value.events,
+            callback=self.__call_on_target_hover
+        )
+
+    def __call_on_target_hover(self, *callback_args):
         # If the target was not being hovered prior to this call,
         # add the delay.
-        delay = self.__delay
-        if not self.__is_hovering and delay != 0:
-            self.__is_hovering = True
-            sleep(delay / 1000)
+        if not self.__target_is_hovered and self.delay != 0:
+            self.__target_is_hovered = True
+            sleep(self.delay / 1000)
 
         mouse_x, mouse_y = _dearpygui.get_mouse_pos(local=False)
         self.pos = mouse_x + self.x_offset, mouse_y + self.y_offset
         self.show = True
 
-    def __on_visible_callback(self, *args):
+    def __call_on_visible(self, *callback_args):
         # Hide the item if the target is no longer being hovered and
-        # reset the is_hovering state.
+        # reset the `target_is_hovered` state.
         if self.target and not self.target.is_hovered:
             self.show = False
-            self.__is_hovering = False
+            self.__target_is_hovered = False
             pass
 
 
@@ -142,9 +148,9 @@ class Popup(Window):
     """
     def __init__(
         self,
-        target: Union[Container, Widget],
-        button: int = -1,
-        modal: bool = False,
+        target: Union[AppItemT, None] = None,
+        button: Union[Mouse, int]     = Mouse.ANY,
+        modal : bool                  = False,
         **kwargs,
     ):
         popup = not modal
@@ -156,41 +162,56 @@ class Popup(Window):
             show=False,
             **kwargs,
         )
-        self.__target = None
-        self.__button = button
-        self.__on_click_handler = None
+        self.__target_uuid          = None
+        self.__target               = None
+        self.__button               = None
+        self.__target_click_handler = None
 
-        if target:
-            self.target = target
+        self.button = button
+        self.target = target
 
     @property
+    @item_attribute(category="configuration")
     def button(self) -> int:
         """The mouse button that must be clicked to display this item.
         """
         return self.__button
     @button.setter
     def button(self, value: int) -> None:
-        self.__button = value
-        if self.__on_click_handler:
-            self.__on_click_handler.button = value
+        self.__button = int(value)
+        if self.__target_click_handler:
+            self.__target_click_handler.button = value
             
     @property
-    def target(self) -> Union[Container, Widget]:
-        """The item that will cause this item to be displayed when clicked.
+    @item_attribute(category="configuration")
+    def target(self) -> Union[AppItemT, None]:
+        """The item that, when clicked, will cause this item to display.
         """
         return self.__target
     @target.setter
-    def target(self, value: Union[Container, Widget]) -> None:
+    def target(self, value: Union[AppItemT, None]) -> None:
+        if not isinstance(value, (Widget, None)):
+            raise TypeError(f"`target` must `Widget` or `None` type (got {type(value).__qualname__!r}).")
+        elif value and not hasattr(value, "is_clicked"):
+            raise ValueError(f"`target` is unsupported: {type(value).__qualname__!r} does not have `is_clicked` state.")
+
         self.__target = value
-        if self.__on_click_handler:
-            self.__on_click_handler.delete()
-        # Avoid creating a new handler if value is None
-        if value is not None:
-            self.__on_click_handler = ClickedHandler(
-                parent=value.events._tag,
+        if self.__target_uuid:
+            self.__target_click_handler.delete()
+            self.__target_click_handler = None
+
+        if value is None:
+            self.__target_uuid = None
+            return None
+
+        if not value.events:
+            value.events = ItemEvents()
+        self.__target_uuid = value._tag
+        self.__target_click_handler = ClickedHandler(
+                parent=value.events,
                 button=self.__button,
                 callback=self.__on_click_callback
-            )
+        )
 
     def __on_click_callback(self):
         self.configure(show=True)
@@ -201,8 +222,15 @@ class Popup(Window):
 ####### Extensions #######
 ##########################
 class Window(Window):
+    def __init__(self, on_close = None, **kwargs):
+        self._call_on_close = []
+        super().__init__(on_close=self.__on_close, **kwargs)
+
+    def __on_close(self):
+        return [f() for f in self._call_on_close]
+
     @property
-    @item_attribute(category="configuration")
+    @item_attribute(category="information")
     def y_scroll_pos(self) -> float:
         """Vertical scroll position of the container. If set to -1.0,
         its position will be set to the end.
@@ -222,7 +250,7 @@ class Window(Window):
 
 
     @property
-    @item_attribute(category="configuration")
+    @item_attribute(category="information")
     def x_scroll_pos(self) -> float:
         """Horizontal scroll position of the container. If set to -1.0,
         its position will be set to the end.
@@ -244,7 +272,7 @@ class Window(Window):
 class ChildWindow(ChildWindow):
     # Scroll position
     @property
-    @item_attribute(category="configuration")
+    @item_attribute(category="information")
     def y_scroll_pos(self) -> float:
         """Vertical scroll position of the container. If set to -1.0,
         its position will be set to the end.
@@ -264,7 +292,7 @@ class ChildWindow(ChildWindow):
 
 
     @property
-    @item_attribute(category="configuration")
+    @item_attribute(category="information")
     def x_scroll_pos(self) -> float:
         """Horizontal scroll position of the container. If set to -1.0,
         its position will be set to the end.
@@ -288,6 +316,7 @@ class TabBar(TabBar):
     # Allows the active tab to be selected programatically through the
     # tab bar and tabs themselves.
     @property
+    @item_attribute(category="information")
     def active_tab(self) -> Tab:
         """The currently selected tab.
         """
@@ -295,7 +324,6 @@ class TabBar(TabBar):
         if active_tab_id == 0 and (childs := self.children()):
             return childs[0]
         return self._raw_items.get(active_tab_id, active_tab_id)
-
     @active_tab.setter
     def active_tab(self, value: Tab):
         _dearpygui.set_value(self.tag, value.tag)
@@ -305,6 +333,7 @@ class Tab(Tab):
     # Allows the active tab to be selected programatically through the
     # tab bar and tabs themselves.
     @property
+    @item_attribute(category="state")
     def is_active_tab(self) -> bool:
         """If this item is currently the active/selected tab within its parent
         this returns True. Otherwise, this returns False.

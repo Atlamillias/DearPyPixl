@@ -4,7 +4,7 @@ import functools
 from abc import ABCMeta, abstractmethod
 from typing import Any, Iterable
 from dataclasses import dataclass, field, asdict
-from dearpypixl.item.item import ItemAttributeCache, Item
+from dearpypixl.item.item import ProtoItem, Item
 
 
 __all__ = [
@@ -25,7 +25,7 @@ class UniqueItemMeta(ABCMeta):
         return cls.__instance__
 
 
-class ItemLike(ItemAttributeCache, metaclass=ABCMeta):
+class ItemLike(ProtoItem, metaclass=ABCMeta):
     """A template for item-like subclasses. Mimics the `Item` API,
     but inherits a limited number of methods.
     """
@@ -38,7 +38,7 @@ class ItemLike(ItemAttributeCache, metaclass=ABCMeta):
     @abstractmethod
     def _tag(self) -> Any: ...
 
-    _appitems = Item._appitems
+    _appitems = Item._AppItemsRegistry
     _setup_params: set = ()          # all parameters used by the constructor
     _readonly_params: set = ()       # read-only configuration
     _command = None

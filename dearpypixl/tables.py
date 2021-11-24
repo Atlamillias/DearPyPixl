@@ -45,7 +45,7 @@ class Table(Table):
         # value is a slice as `[row_start:row_stop:step]`
         row_uuids = get_item_info(self._tag)["children"][1]
         sliced_row_uuids = row_uuids[value.start: value.stop: value.step]
-        appitems = self._appitems
+        appitems = self._AppItemsRegistry
         return [appitems[row_uuid] for row_uuid in sliced_row_uuids]
 
     @__getitem__.register
@@ -55,13 +55,13 @@ class Table(Table):
         row_uuid = get_item_info(self._tag)["children"][1][row_index]
         item_at_pos_uuid = get_item_info(row_uuid)["children"][1][col_index]
         # `TableRow` child (`TableCell`, `Text`, etc.)
-        return self._appitems[item_at_pos_uuid]
+        return self._AppItemsRegistry[item_at_pos_uuid]
 
     @__getitem__.register
     def _(self, value: int) -> TableRow:
         # value is a int as `[row]`
         row_uuid = get_item_info(self._tag)["children"][1][value]
-        return self._appitems[row_uuid]
+        return self._AppItemsRegistry[row_uuid]
 
     def index(self, row_col_cell_item: Union[TableRow, TableColumn, TableCell]) -> Union[list[int], int]:
         """Return the position of a row, column, or cell item in this table. An `int`
@@ -99,14 +99,14 @@ class Table(Table):
         """Deletes the row at the specified index.
         """
         row_uuid = get_item_info(self._tag)["children"][1][row_idx]
-        row_item = self._appitems[row_uuid]
+        row_item = self._AppItemsRegistry[row_uuid]
         row_item.delete()
 
     def remove_column(self, column_idx: int) -> None:
         """Deletes the column at the specified index.
         """
         col_uuid = get_item_info(self._tag)["children"][0][column_idx]
-        col_item = self._appitems[col_uuid]
+        col_item = self._AppItemsRegistry[col_uuid]
         col_item.delete()
 
     #########################
@@ -152,7 +152,7 @@ class Table(Table):
         the order of their current positions.
         """
         row_uuids = get_item_info(self._tag)["children"][1]
-        appitems = self._appitems
+        appitems = self._AppItemsRegistry
         return [appitems[row_uuid] for row_uuid in row_uuids]
 
     @property
@@ -161,7 +161,7 @@ class Table(Table):
         the order of their current positions.
         """
         col_uuids = get_item_info(self._tag)["children"][0]
-        appitems = self._appitems
+        appitems = self._AppItemsRegistry
         return [appitems[col_uuid] for col_uuid in col_uuids]
 
 
@@ -234,7 +234,7 @@ class TableColumn(TableColumn):
         # It varies on the size of the table. Just thought i'd mention...
 
         # Need to pull info from ALL of the rows...
-        appitems = self._appitems
+        appitems = self._AppItemsRegistry
         position = self.position  # index for the row child
         values = []
         # Using the DPP API pre-loop. In the loop though we're using the DPG API as
@@ -301,7 +301,7 @@ class TableCell(TableCell):
         col_position = row_childs.index(self._tag)
         table_uuid = get_item_info(row_uuid)["parent"]
         table_columns = get_item_info(table_uuid)["children"][0]
-        return self._appitems[table_columns[col_position]]
+        return self._AppItemsRegistry[table_columns[col_position]]
 
     @property
     def position(self) -> tuple[int, int]:

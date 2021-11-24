@@ -672,7 +672,7 @@ class SubPlots(Container):
     """
 
     rows              : int                                   = ItemAttribute("configuration", "get_item_configuration", "configure_item", "rows")              
-    columns           : int                                   = ItemAttribute("configuration", "get_item_configuration", "configure_item", "columns")           
+    columns           : int                                   = ItemAttribute("configuration", "get_item_configuration", "configure_item", "cols")           
     label             : str                                   = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")             
     user_data         : Any                                   = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")         
     use_internal_label: bool                                  = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")

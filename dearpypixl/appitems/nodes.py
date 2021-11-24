@@ -90,7 +90,7 @@ class NodeEditor(Container):
         delay_search      : bool            = False,
         tracked           : bool            = False,
         track_offset      : float           = 0.5  ,
-        delink_callback   : Callable        = None ,
+        delink_callback   : Callable        = ''   ,
         menubar           : bool            = False,
         **kwargs                                   ,
     ) -> None:

@@ -25,15 +25,16 @@ __all__ = [
 class Theme(Item):
     """Adds a theme.
     
-    	Args:
-    		label (str, optional): Overrides 'name' as label.
-    		user_data (Any, optional): User data for callbacks
-    		use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
-    		tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-    		id (Union[int, str], optional): (deprecated) 
-    		default_theme (bool, optional): (deprecated) 
-    	Returns:
-    		Union[int, str]
+    Args:
+        label (str, optional): Overrides 'name' as label.
+        user_data (Any, optional): User data for callbacks
+        use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+        tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+        id (Union[int, str], optional): (deprecated) 
+        default_theme (bool, optional): (deprecated)
+        
+    Returns:
+        Union[int, str]
     """
 
     label             : str      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")             

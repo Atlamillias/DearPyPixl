@@ -1,9 +1,9 @@
 from __future__ import annotations
 from collections.abc import Mapping
-from typing import Callable, Union, Sequence, Any, Optional
+from typing import Callable, Union, Sequence, Any, Optional, TypeVar
 import functools
 from warnings import warn
-from dearpygui import _dearpygui
+from dearpygui import _dearpygui, dearpygui
 from dearpygui.dearpygui import (
     # theme
     add_theme,
@@ -25,12 +25,14 @@ from dearpygui.dearpygui import (
     get_text_size,
 )
 from dearpypixl.item.configuration import item_attribute, ItemAttribute
-from dearpypixl.item.item import Item
+from dearpypixl.item.item import Item, ItemT
+from dearpypixl.components.items.themes import Theme
 from dearpypixl.constants import (
+    ItemIndex,
     CoreThemeElement,
     PlotThemeElement,
     NodeThemeElement,
-    ItemIndex,
+
     FontRangeHint,
     _ThemeElementT,
     ThemeElementTData,
@@ -46,7 +48,7 @@ __all__ = [
 ]
 
 
-# Type hints
+# Typing
 Numeric: Union[int, float]
 ThemeElementColorValue: Union[tuple[Numeric, Optional[Numeric], Optional[Numeric], Optional[Numeric]], None]
 ThemeElementStyleValue: Union[tuple[Numeric, Optional[Numeric]], None]
@@ -56,183 +58,15 @@ ThemeElement: Union[
     "NodeThemeElement",
     "PlotThemeElement",
 ]
+ThemeComponentT = TypeVar("ThemeComponentT", bound='ThemeComponent')
+
+_COLOR = 0
+_STYLE = 1
 
 
 
-
-###################################
-############## Theme ##############
-###################################
-class Theme(Item):
-    """A configurable item that stores color and style
-    values. Items will reflect the theme that they are bound to. Items can
-    only be bound to 1 Theme item at a time -- creating a new bind safely
-    destroys the previous one. However, an error will occur when trying to
-    manually unbind an item from a Theme that isn't bound.
-    """
-    label             : str      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")             
-    user_data         : Any      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")         
-    use_internal_label: bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")
-
-    _is_container     : bool     = True                                                                                            
-    _is_root_item     : bool     = True                                                                                            
-    _is_value_able    : bool     = False                                                                                           
-    _unique_parents   : tuple    = ()                                                                                              
-    _unique_children  : tuple    = ('ThemeComponent',)                                                                             
-    _unique_commands  : tuple    = ('bind_theme',)                                                                                 
-    _unique_constants : tuple    = ('mvTheme', 'mvThemeCat_Core', 'mvThemeCat_Plots', 'mvThemeCat_Nodes')                          
-    _command          : Callable = add_theme      
-
-    def __init__(
-        self,
-        label: str = None,
-        font: Union[str, Font] = None,
-        font_size: float = 12.0, 
-        *,
-        incl_theme_presets: bool = True,
-    ):
-        self.__target_uuids: set[int] = set()
-        self.__preset = incl_theme_presets
-        self.__font: Font = font
-        self.__font_uuid: int = 0
-        self.__font_size_value: float = font_size
-
-        super().__init__(label=label)
-
-        if incl_theme_presets:
-            self.color = ThemeColorComponent(ItemIndex.ALL, enabled_state=True, parent=self.tag)
-            self.style = ThemeStyleComponent(ItemIndex.ALL, enabled_state=True, parent=self.tag)
-
-    def __enter__(self):
-        push_container_stack(self._tag)
-        return self
-
-    def __exit__(self, exec_type, exec_value, traceback):
-        pop_container_stack()
-
-    @property
-    @item_attribute(category="configuration")
-    def font(self) -> Union[Font, None]:
-        """Font item used by this theme. If set as a `str` (filepath),
-        will try to load the font.
-        """
-        return self.__font
-    @font.setter
-    def font(self, value: Union[str, Font, None]):
-        # While changes to the theme (color and style) are automatically
-        # reflected on any item using it, the font is not and must be
-        # manually applied with each change.
-        if not value:
-            self.__font = None
-        elif isinstance(value, str):
-            # Get a suitable Font object from `value` (should be a filepath)
-            self.__font = Font.get_font_tag(value)
-        else:  # assumed `Font` type
-            self.__font = value
-        # Having font_size.setter update bound items with the font, if needed.
-        self.font_size = self.__font_size_value
-
-    @property
-    @item_attribute(category="configuration")
-    def font_size(self) -> float:
-        return self.__font_size_value
-    @font_size.setter
-    def font_size(self, value: float):
-        if value < 0:
-            raise ValueError(f"`font_size` cannot be less than zero (got {value!r}).")
-        elif value > 350:
-            warn(f"Rendering some fonts at such sizes ({value!r}) can cause a segmentation fault.")
-        font = self.__font
-        self.__font_size_value = value
-        # This means that the font doesn't need to be applied to anything.
-        if not font and self.__font_uuid == 0:
-            return None
-        # If __font_id is not 0, that means self.font was set to
-        # None in the prior frame via font property (NOTE: See font setter comment).
-        self.__font_uuid = font.get_font_size(value) if font else 0
-        self.__update_targets_font()
-
-    @property
-    @item_attribute(category="information")
-    def targets(self) -> list[Item]:
-        """Return a list of items that are bound to this item.
-        """
-        target_uuids = self.__target_uuids
-        appitems = type(self)._AppItemsRegistry
-        return [target_item for targets in target_uuids
-                for target in targets if
-                (target_item := appitems.get(target, None))]
-
-    def renew(self) -> None:
-        """Deletes all of the theme's children, including theme components.
-        Any presets will be re-created if `include_presets` was True on
-        instantiation.
-        """
-        super().delete(children_only=True)
-        if self.__preset:
-            self.color = ThemeColorComponent(ItemIndex.ALL, enabled_state=True, parent=self.tag)
-            self.style = ThemeStyleComponent(ItemIndex.ALL, enabled_state=True, parent=self.tag)
-
-    def bind(self, *item: Item) -> None:
-        """Link item(s) to the theme. If no item is passed, the theme will
-        be set as the new default theme.
-
-        Args:
-            * item(Item, optional): instances of `Item` to bind to the theme.
-            Binding an item will break an existing bind to a Theme (if it exists).
-        """
-        self_uuid = self._tag
-        self_target_uuids = self.__target_uuids
-        for i in item:
-            bind_item_theme(i._tag, self_uuid)
-            bind_item_font(i._tag, self.__font_uuid)
-            self_target_uuids.add(i._tag)
-        
-        # Sets as default
-        if not item:
-            bind_theme(self_uuid)
-            bind_font(self.__font_uuid)
-            type(self).__default_theme_uuid = self_uuid
-   
-    def unbind(self, *item: Item) -> None:
-        """Unlink item(s) from the theme. If no item is passed and the theme
-        is the default theme, it will no longer be the default theme.
-
-        Args:
-            * item(Item, optional): instances of `Item` to unbind from the theme. If an
-            item is not bound to this Theme, `BindItemError` will be raised. 
-        """
-        self_target_uuids = self.__target_uuids
-        for i in item:
-            if i._tag not in self_target_uuids:
-                raise ValueError(f"Cannot unbind {item.__qualname__!r} as it is not bound to this item.")
-            bind_item_theme(i._tag, 0)  # 0 is system default theme
-            bind_item_font(i._tag, 0)  # 0 is system default theme
-        
-        # If default, unset
-        if not item and self._tag == type(self).__default_theme_uuid:
-            bind_theme(0)
-            bind_font(0)
-            type(self).__default_theme_uuid = 0
-
-    def __update_targets_font(self):
-        # font.setter uses this to bind a new font (size) to all bound items.
-        font_uuid = self.__font_uuid
-        target_uuids = self.__target_uuids
-        # Since theme and font are seperate internally we need to rebind
-        # all targets to the new font item.
-        for item_uuid in target_uuids:
-            bind_item_font(item_uuid, font_uuid)
-
-        # If this theme is also the default theme:
-        if self._tag == type(self).__default_theme_uuid:
-            bind_font(font_uuid)
-
-    __default_theme_uuid = 0  # no way to fetch via DPG API
-            
 
 class ThemeComponent(Item):
-    item_type         : Union[int, ItemIndex]    =  ItemAttribute("configuration", "get_unmanagable", None, "item_type")
     label             : str                      =  ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")             
     user_data         : Any                      =  ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")         
     use_internal_label: bool                     =  ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")
@@ -248,18 +82,18 @@ class ThemeComponent(Item):
     _command          : Callable                 =  add_theme_component  
 
     def __init__(
-        self                                               ,
-        item_type         : Union[int, ItemIndex]    = ItemIndex.ALL,
+        self                                                        ,
+        target            : Union[int, ItemIndex]    = ItemIndex.ALL,
         label             : str                      = None         ,
         user_data         : Any                      = None         ,
         use_internal_label: bool                     = True         ,
-        parent            : Union[int, str]          = 0            ,
-        before            : Union[int, str]          = 0            ,
+        parent            : Union[ItemT, int]        = 0            ,
+        before            : Union[ItemT, int]        = 0            ,
         enabled_state     : bool                     = True         ,
         **kwargs                                                    ,
     ) -> None:
         super().__init__(
-            item_type=item_type,
+            item_type=target,
             label=label,
             user_data=user_data,
             use_internal_label=use_internal_label,
@@ -268,6 +102,7 @@ class ThemeComponent(Item):
             enabled_state=enabled_state,
             **kwargs,
         )
+        self.__target = target
         # Importing class element data. The data needs to be kept per-instance
         # because it may change via `bind`.
         cls = type(self)
@@ -322,6 +157,11 @@ class ThemeComponent(Item):
         if element:
             return None
         super().__delattr__(attr)
+
+    @property
+    @item_attribute(category="configuration")
+    def target(self) -> ItemIndex:
+        return ItemIndex(self.__target)
 
     def __manage_target_param(method: Callable = None):
         @functools.wraps(method)
@@ -638,13 +478,9 @@ class ThemeStyleComponent(ThemeComponent):
     plot_minor_tick_len               : ThemeElementStyleValue = PlotThemeElement.MinorTickLen             
     plot_minor_tick_size              : ThemeElementStyleValue = PlotThemeElement.MinorTickSize            
     plot_mouse_pos_padding            : ThemeElementStyleValue = PlotThemeElement.MousePosPadding          
-    plot_padding                      : ThemeElementStyleValue = PlotThemeElement.PlotPadding  
+    plot_padding                      : ThemeElementStyleValue = PlotThemeElement.PlotPadding 
 
 
-
-###################################
-############## Font ###############
-###################################
 class Font:
     """Global font manager and registry system.
     """
@@ -773,7 +609,6 @@ class Font:
         return self(size).__sizes[size]
 
     #### Configuration methods ####
-
     def add_characters(self, *chars: Numeric) -> None:
         """Adds additional characters to the font
         """
@@ -849,3 +684,188 @@ class Font:
         [font_sizes.update({font_size: add_font(file, font_size)})
          for font_size in sizes]
 
+
+
+
+class Theme(Theme):
+    COLOR = _COLOR
+    STYLE = _STYLE
+
+    __default_theme_uuid: int             = 0  # no way to fetch via DPG API
+    __tcomponent_uuids  : dict[str, int]  = {}
+    __tcomponent_mapping: ThemeComponentT = {
+        _COLOR: ThemeColorComponent,
+        _STYLE: ThemeStyleComponent,
+        None  : ThemeComponent,
+    }
+
+    def __init__(
+        self                                       ,
+        label             : str              = None,
+        font              : Union[Font, str] = None,
+        font_size         : Numeric          = 12.0,
+        user_data         : Any              = None,
+        use_internal_label: bool             = True,
+        *,
+        incl_theme_presets : bool            = True,
+        **kwargs                                   ,
+    ) -> None:
+        super().__init__(
+            label=label,
+            user_data=user_data,
+            use_internal_label=use_internal_label,
+            **kwargs,
+        )
+        self.__tcomponent_uuids  : dict[str, int]       = {}
+        self.__target_uuids      : set[int]             = set()
+        self.__font              : Font                 = font
+        self.__font_uuid         : int                  = 0
+        self.__font_size_value   : float                = font_size
+
+        if incl_theme_presets:
+            self.color = ItemIndex.ALL, self.COLOR
+            self.style = ItemIndex.ALL, self.STYLE
+        
+    def __enter__(self):
+        _dearpygui.push_container_stack(self._tag)
+        return self
+
+    def __exit__(self, exc_type, exc_instance, traceback):
+        _dearpygui.pop_container_stack()
+
+    def __setattr__(self, attr: str, value: Union[Any, ItemIndex, tuple[ItemIndex, Union[int, None]]]):
+        if hasattr(self, attr):
+            return super().__setattr__(attr, value)
+        # Check if `attr` is bound to a theme component. It will be deleted if it exists before
+        # the attribute can be set again (perhaps to something else).
+        if bound_tcomp := self.__tcomponent_uuids.pop(attr, None):
+            self._AppItemsRegistry[bound_tcomp].delete()
+        # Checks if `value` is a member of `ItemIndex`, or a 2-item tuple consisting of an `ItemIndex`
+        # member and int (COLOR/STYLE) i.e. (ItemIndex.ALL, <self>.COLOR/STYLE). The attribute will
+        # be bound to a ThemeComponent.
+        if isinstance(value, ItemIndex):
+            value = ItemIndex, None
+        if isinstance(value, tuple) and isinstance(value[0], ItemIndex) and len(value) == 2:
+            item_index_mem, tcomp_category = value
+            # TODO: enabled_state?
+            new_tcomp_uuid = self.__tcomponent_mapping.get(tcomp_category, ThemeComponent())(item_type=item_index_mem, parent=self._tag)
+
+        # Otherwise, set the attribute as normal.
+        super().__setattr__(attr, value)
+
+    def __getattr__(self, attr) -> ThemeComponentT:
+        try:
+            tcomp_uuid = self.__tcomponent_uuids[attr]
+        except KeyError:
+            raise AttributeError(f"{type(self).__qualname__!r} object has no attribute {attr!r}.")
+        return self._AppItemsRegistry[tcomp_uuid]
+
+    @property
+    @item_attribute(category="configuration")
+    def font(self) -> Union[Font, None]:
+        """Font item used by this theme. If set as a `str` (filepath),
+        will try to load the font.
+        """
+        return self.__font
+    @font.setter
+    def font(self, value: Union[str, Font, None]):
+        # While changes to the theme (color and style) are automatically
+        # reflected on any item using it, the font is not and must be
+        # manually applied with each change.
+        if not value:
+            self.__font = None
+        elif isinstance(value, str):
+            # Get a suitable Font object from `value` (should be a filepath)
+            self.__font = Font.get_font_tag(value)
+        else:  # assumed `Font` type
+            self.__font = value
+        # Having font_size.setter update bound items with the font, if needed.
+        self.font_size = self.__font_size_value
+
+    @property
+    @item_attribute(category="configuration")
+    def font_size(self) -> float:
+        return self.__font_size_value
+    @font_size.setter
+    def font_size(self, value: float):
+        if value < 0:
+            raise ValueError(f"`font_size` cannot be less than zero (got {value!r}).")
+        elif value > 350:
+            warn(f"Rendering some fonts at large sizes can cause a segmentation fault.")
+        font = self.__font
+        self.__font_size_value = value
+        # This means that the font doesn't need to be applied to anything.
+        if not font and self.__font_uuid == 0:
+            return None
+        # If __font_id is not 0, that means self.font was set to
+        # None in the prior frame via font property (NOTE: See font setter comment).
+        self.__font_uuid = font.get_font_size(value) if font else 0
+        self.__update_targets_font()
+
+    @property
+    @item_attribute(category="information")
+    def targets(self) -> list[Item]:
+        """Return a list of items that are bound to this item.
+        """
+        target_uuids = self.__target_uuids
+        appitems = type(self)._AppItemsRegistry
+        return [target_item for targets in target_uuids
+                for target in targets if
+                (target_item := appitems.get(target, None))]
+
+    def bind(self, *item: Item) -> None:
+        """Link item(s) to the theme. If no item is passed, the theme will
+        be set as the new default theme.
+
+        Args:
+            * item(Item, optional): instances of `Item` to bind to the theme.
+            Binding an item will break an existing bind to a Theme (if it exists).
+        """
+        self_uuid = self._tag
+        self_target_uuids = self.__target_uuids
+        for i in item:
+            bind_item_theme(i._tag, self_uuid)
+            bind_item_font(i._tag, self.__font_uuid)
+            self_target_uuids.add(i._tag)
+        
+        # Sets as default
+        if not item:
+            bind_theme(self_uuid)
+            bind_font(self.__font_uuid)
+            type(self).__default_theme_uuid = self_uuid
+   
+    def unbind(self, *item: Item) -> None:
+        """Unlink item(s) from the theme. If no item is passed and the theme
+        is the default theme, it will no longer be the default theme.
+
+        Args:
+            * item(Item, optional): instances of `Item` to unbind from the theme. If an
+            item is not bound to this Theme, `BindItemError` will be raised. 
+        """
+        self_target_uuids = self.__target_uuids
+        for i in item:
+            if i._tag not in self_target_uuids:
+                raise ValueError(f"Cannot unbind {item.__qualname__!r} as it is not bound to this item.")
+            bind_item_theme(i._tag, 0)  # 0 is system default theme
+            bind_item_font(i._tag, 0)  # 0 is system default theme
+        
+        # If default, unset
+        if not item and self._tag == type(self).__default_theme_uuid:
+            bind_theme(0)
+            bind_font(0)
+            type(self).__default_theme_uuid = 0
+
+    def __update_targets_font(self):
+        # font.setter uses this to bind a new font (size) to all bound items.
+        font_uuid = self.__font_uuid
+        target_uuids = self.__target_uuids
+        # Since theme and font are seperate internally we need to rebind
+        # all targets to the new font item.
+        for item_uuid in target_uuids:
+            bind_item_font(item_uuid, font_uuid)
+
+        # If this theme is also the default theme:
+        if self._tag == type(self).__default_theme_uuid:
+            bind_font(font_uuid)
+
+    

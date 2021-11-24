@@ -864,7 +864,7 @@ class InputText(Widget):
     track_offset             : float                             = ItemAttribute("configuration", "get_item_configuration", "configure_item", "track_offset")      
     default_value            : str                               = ItemAttribute('information', 'get_unmanagable', None, 'default_value')                          
     hint                     : str                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "hint")              
-    multiline                : bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "multiline")         
+    multiline                : bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "multline")         
     no_spaces                : bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "no_spaces")         
     uppercase                : bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "uppercase")         
     tab_input                : bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "tab_input")         

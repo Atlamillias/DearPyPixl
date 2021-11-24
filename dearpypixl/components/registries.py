@@ -6,7 +6,7 @@ from dearpygui import dearpygui, _dearpygui
 
 from dearpypixl.constants import Key, Mouse
 from dearpypixl.item.configuration import ItemAttribute, item_attribute
-from dearpypixl.item.item import Item
+from dearpypixl.item.item import Item, ItemT
 from dearpypixl.components.items.handlers import *
 from dearpypixl.components.items.registries import (
     ValueRegistry,
@@ -171,23 +171,23 @@ class ItemEvents(Item):
 
     @property
     @item_attribute(category="information")
-    def targets(self) -> list[Item]:
+    def targets(self) -> list[ItemT]:
         """Return a list of items that are bound to this item.
         """
         target_uuids = self.__target_uuids
-        appitems = type(self)._appitems
+        appitems = type(self)._AppItemsRegistry
         return [target_item for targets in target_uuids
                 for target in targets if
                 (target_item := appitems.get(target, None))]
 
-    def bind(self, *item: Item):
+    def bind(self, *item: ItemT):
         self_uuid = self._tag
         self_target_uuids = self.__target_uuids
         for i in item:
             dearpygui.bind_item_handler_registry(i._tag, self_uuid)
             self_target_uuids.add(i._tag)
 
-    def unbind(self, *item: Item):
+    def unbind(self, *item: ItemT):
         self_target_uuids = self.__target_uuids
         for i in item:
             if i._tag not in self_target_uuids:
@@ -240,3 +240,30 @@ class ItemEvents(Item):
     @_manage_handler(VisibleHandler)
     def on_visible(self, callback: Callable = None, *, user_data: Any = None, **kwargs) -> Callable:
         ...
+
+
+class ColorMapRegistry(ColorMapRegistry):
+    def __enter__(self):
+        _dearpygui.push_container_stack(self._tag)
+        return self
+
+    def __exit__(self, exc_type, exc_instance, traceback):
+        _dearpygui.pop_container_stack()
+
+
+class TemplateRegistry(TemplateRegistry):
+    def __enter__(self):
+        _dearpygui.push_container_stack(self._tag)
+        return self
+
+    def __exit__(self, exc_type, exc_instance, traceback):
+        _dearpygui.pop_container_stack()
+
+
+class TextureRegistry(TextureRegistry):
+    def __enter__(self):
+        _dearpygui.push_container_stack(self._tag)
+        return self
+
+    def __exit__(self, exc_type, exc_instance, traceback):
+        _dearpygui.pop_container_stack()

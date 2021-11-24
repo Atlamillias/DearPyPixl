@@ -555,7 +555,7 @@ class ColorMapScale(Widget):
     drop_callback       : Callable                          = ItemAttribute("configuration", "get_item_configuration", "configure_item", "drop_callback")     
     show                : bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "show")              
     pos                 : Union[List[int], Tuple[int, ...]] = ItemAttribute('configuration', 'get_item_state', 'configure_item', 'pos')                       
-    colormap            : Union[int, str]                   = ItemAttribute("configuration", "get_item_configuration", "configure_item", "colormap")          
+    colormap            : Union[int, str]                   = ItemAttribute("configuration", "get_unmanagable", "configure_item", "colormap")          
     min_scale           : float                             = ItemAttribute("configuration", "get_item_configuration", "configure_item", "min_scale")         
     max_scale           : float                             = ItemAttribute("configuration", "get_item_configuration", "configure_item", "max_scale")         
 

@@ -1,8 +1,9 @@
 """Lowest-level types for DearPyPixl."""
 from __future__ import annotations
-from typing import TypeVar
 from abc import ABCMeta, abstractmethod
-from typing import Callable, Any
+from typing import Callable, Any, TypeVar, Union
+from enum import IntEnum
+from inspect import signature
 from dearpygui import dearpygui
 from dearpygui._dearpygui import (
     generate_uuid,
@@ -21,26 +22,97 @@ from dearpygui._dearpygui import (
 from dearpypixl.constants import ItemIndex
 from dearpypixl.item.configuration import (
     item_attribute,
-    ItemAttributeCache,
-    ConfigContainer
+    ItemAttribute,
+    get_unmanagable,
 )
 
 
 __all__ = [
     "ItemT",
-
+    "ProtoItem",
     "Item",
     ]
 
 
-ItemT = TypeVar("ItemT", bound="Item")
+ItemT = TypeVar("ItemT", bound="ProtoItem")
 
 
-class Item(ItemAttributeCache, metaclass=ABCMeta):
-    """Base class for all wrapped items. Cannot be instantiated -- must be
-    subclassed.
+class objectmethod(classmethod):
+    """Method descriptor. Wrapped methods will recieve `self` as their first argument
+    if the method is called on an instance object (i.e. "instance method"). Otherwise,
+    `cls` is passed as the first argument to the method (i.e. `classmethod`)."""
+    def __get__(self, instance, __type):
+        method = super().__get__ if instance is None else self.__func__.__get__
+        return method(instance, __type)
 
 
+
+class ProtoItem:
+    """Updates attribute dictionaries for `Item` class derivatives, ensuring
+    that the new subclass has all configuration, information, and state attributes/keys
+    from their ancestor(s), along with any new additions of its own. Mixin classes
+    can (should) inherit from this as well if they define new attributes with the
+    intention of passing them onto descendants as internally managed attributes.
+
+    Attributes:
+        * config_attrs: A collection of item attributes that can be used as an
+        argument for an item's creation, and can still be configured afterwards.
+        * inform_attrs: A collection of item attributes that can potentially
+        be used as an argument for an item's creation, but is generally read-only
+        afterwards.
+        * states_attrs: A collection of item attributes that are read-only. They
+        are not used as item-creation arguments and are not configurable.
+        * attr_aliases: A mapping of an item's defined class or instance attributes
+        pointing to the name of the internal item attribute that they actually manage.
+    """
+    # NOTE: ALL Item-related class objects in DearPyPixl should be inheriting from this in some
+    #       fashion. This includes the `Item` base type, and ALL (App)Item mixin classes. Default
+    #       implementations for exposing the registered managed attributes is defined on `Item`.
+    __slots__ = (
+                    "_config_attrs"   ,
+                    "_inform_attrs"   ,
+                    "_states_attrs"   ,
+                    "_init_params"    ,
+                    "_unmanaged_attrs",
+                )
+
+    _AppItemsRegistry: dict[int, ItemT]       = {}
+    _ItemTypeRegistry: dict[str, type[ItemT]] = {}
+
+    def __init_subclass__(cls):
+        super().__init_subclass__()
+        config_attrs = ItemAttribute.next_class_item_attrs["configuration"]
+        inform_attrs = ItemAttribute.next_class_item_attrs["information"]
+        states_attrs = ItemAttribute.next_class_item_attrs["state"]
+        init_params  = set()
+        # Iterate from oldest to newest parent class; excluding `object`
+        # and `ItemAttributeCache` (2 oldest) and `cls` (newest).
+        for derived_from in cls.mro()[-3:0:-1]:
+            config_attrs |= derived_from.__dict__.get("_config_attrs", set())
+            inform_attrs |= derived_from.__dict__.get("_inform_attrs", set())
+            states_attrs |= derived_from.__dict__.get("_states_attrs", set())
+            init_params  |= derived_from.__dict__.get("_init_params" , set())
+        cls._config_attrs = cls.__dict__.get("_config_attrs", set()) | config_attrs
+        cls._inform_attrs = cls.__dict__.get("_inform_attrs", set()) | inform_attrs
+        cls._states_attrs = cls.__dict__.get("_states_attrs", set()) | states_attrs
+        cls._init_params  = {*signature(cls).parameters} | init_params
+        # Reset `next_class_item_attrs.values()` for the next class.
+        for collection in ItemAttribute.next_class_item_attrs.values():
+            collection.clear()
+        # Storing unmanagable attribute names. These cannot be gotten or set from DPG 
+        # after item creation. Their default implementation is a read-only property.
+        unmanaged_attrs = set()
+        for attr_name in {*cls._config_attrs, *cls._inform_attrs}:
+            attr = getattr(cls, attr_name)
+            # Checking for descriptor 
+            if isinstance(attr, ItemAttribute) and attr.fget == get_unmanagable:
+                unmanaged_attrs.add(attr_name)
+        cls._unmanaged_attrs = unmanaged_attrs
+
+
+
+class Item(ProtoItem, metaclass=ABCMeta):
+    """
     Abstract Methods
     ----------------
     * _command (Callable): Class attribute - Internal API command that can
@@ -71,39 +143,39 @@ class Item(ItemAttributeCache, metaclass=ABCMeta):
     * move_up
     * move_down
     * focus
-
-
-    Returns:
-        *Item*
     """
+
+    __slots__ = (
+                    "_tag",
+                )
+
+    _is_container    : bool  = False
+    _is_root_item    : bool  = False
+    _unique_parents  : tuple = ()
+    _unique_children : tuple = ()
+    _unique_commands : tuple = ()
+    _unique_constants: tuple = ()
+
     @abstractmethod
     def _command() -> Callable: ...
 
-    _is_container: bool = False
-    _is_root_item: bool = False
-    _unique_parents = ()
-    _unique_children = ()
-    _unique_commands = ()
-    _unique_constants = ()
-
-    _appitems: dict[int, Item] = {}
 
     def __init__(self, **kwargs):
         cls = type(self)
         self._tag = kwargs.pop("tag", generate_uuid())
 
+        _unmanaged_attrs = self._unmanaged_attrs
         for kw, val in kwargs.items():
-            # Converting all `Item` instances (values) to `int` for their `tag`.
-            if isinstance(val, Item):
+            # Values: `Item` -> `Item.tag`, `IntEnum` -> `IntEnum.value`
+            if isinstance(val, (Item, IntEnum)):
                 kwargs[kw] = int(val)
-            # Setting unmanagable attributes in instance dictionary.
-            # NOTE: `unmanagable` attributes are those that cannot be get/set through
-            # dearpygui post item creation, but are used to construct the item. They are
-            # set as simple read-only properties.
-            if kw in self._unmanaged_attrs:
+            # "unmanaged" == item configuration that cannot be gotten or set after
+            # item creation. Default implementation is a read-only property.
+            if kw in _unmanaged_attrs:
                 setattr(self, f"_{kw}", val)
 
-        cls._command(id=self._tag, **kwargs)
+        cls._command(tag=self._tag, **kwargs)
+        self._AppItemsRegistry[self._tag] = self
 
     def __repr__(self):
         configuration = {
@@ -120,18 +192,29 @@ class Item(ItemAttributeCache, metaclass=ABCMeta):
     def __int__(self):
         return self._tag
 
-    @classmethod
-    def as_configuration_container(cls, **config) -> ConfigContainer:
-        """Return a `ConfigContainer` instance for this item type. The container's
-        configuration can be freely changed, provided that the configuration
-        attribute(s) is an acceptable argument to create instances of this item type.
+    @objectmethod
+    def as_template(obj: Union[ItemT, type[ItemT]], **config) -> ItemTemplate:
+        """Return an instance of `ItemTemplate` -- a mapping-like factory object 
+        that can create instances of items from a freely-customizable default
+        configuration. This method has slightly different behavior depending on if
+        it is called on an instance or class object. If called on an instance,
+        <config> is merged into a copy of the item's existing configuration, which
+        is then sent to the `ItemTemplate` constructor as the initial default
+        configuration for items made from the template. If called on the class,
+        <config> will instead be merged into a copy of the default parameters used
+        to initialize an instance of it.
 
         Args:
-            * config (optional, keyword-only): configuration used to
-            create an instance of this item type (<cls>). An AttributeError
-            will be raised if the configuration attribute is not supported.
+            * config (keyword-only, optional): Overriding configuration to be used
+            as initial default configuration for future items.
         """
-        return ConfigContainer(cls, **config)
+        # If `obj` is an instance, we copy the existing configuration from it
+        # and pass it to the template constructor.
+        if isinstance(obj, Item):
+            # `config` overrides the existing configuration.
+            config = obj.configuration() | config
+            obj = type(obj)
+        return ItemTemplate(obj , **config)
 
     @property
     @item_attribute(category="information")
@@ -152,10 +235,10 @@ class Item(ItemAttributeCache, metaclass=ABCMeta):
 
     @property
     @item_attribute(category="information")
-    def parent(self) -> Item:
+    def parent(self) -> ItemT:
         """Return the direct progenitor of this item.
         """
-        return self._appitems.get(get_item_info(self._tag)["parent"], None)
+        return self._AppItemsRegistry.get(get_item_info(self._tag)["parent"], None)
 
     @property
     @item_attribute(category="information")
@@ -221,30 +304,29 @@ class Item(ItemAttributeCache, metaclass=ABCMeta):
         return {attr: getattr(self, attr) for attr in self._states_attrs}
 
     def configure(self, **config) -> None:
-        """Update the item's configuration. It is the equivelent of calling
-        `setattr`, and can be used to configure multiple attributes.
+        """Update the item's configuration, or other instance attributes.
         """
-        _setattr = self.__setattr__
-        [_setattr(option, value) for option, value in config.items()]
+        for key, value in config.items():
+            setattr(self, key, value)
 
-    def children(self, slot: int = None) -> list[Item]:
+    def children(self, slot: int = None) -> list[ItemT]:
         """Return a list of the item's children. If a slot number is passed, then
         the list will only contain the children in that slot (in the order of their
         current positions).
         """
         children = [val for val in get_item_info(self._tag)["children"].values()]
         children = children if slot is None else children[slot]
-        appitems = type(self)._appitems
+        appitems = type(self)._AppItemsRegistry
         return [child_item for childs in children
                 for child in childs if
                 (child_item := appitems.get(child, None))]
 
-    def focus(self):
+    def focus(self) -> None:
         """Brings a visual item into focus. Does nothing to un-viewable items.
         """
         focus_item(self._tag)
 
-    def move(self, parent: Item = 0, before: Item = 0) -> None:
+    def move(self, parent: Union[ItemT, int] = 0, before: Union[ItemT, int] = 0) -> None:
         """If the item is a child, it will be appended to <parent>'s list
         of children, or inserted before/above <before>. An error will be raised if
         this item does not require a parenting item to exist.
@@ -295,7 +377,7 @@ class Item(ItemAttributeCache, metaclass=ABCMeta):
         NOTE: The `del` does not properly delete items -- use this method instead
         of `del.
         """
-        appitems = self._appitems
+        appitems = self._AppItemsRegistry
         try:
             delete_item(self._tag, children_only=children_only, slot=slot)
         except SystemError:
@@ -309,7 +391,7 @@ class Item(ItemAttributeCache, metaclass=ABCMeta):
         if not children_only:
             del self
 
-    def duplicate(self, **config) -> Item:
+    def duplicate(self: ItemT, **config) -> ItemT:
         """Creates a (recursive) copy of the item and returns a reference to the
         object. If the item is a root item, a new item created containing copies
         of the original item's children. Otherwise, the copy will be parented by
@@ -349,4 +431,54 @@ class Item(ItemAttributeCache, metaclass=ABCMeta):
             child.duplicate(parent=new_item)
 
         return new_item
+
+
+
+
+
+
+
+class ItemTemplate():
+    _target_params = ()
+    _configuration = ()
+
+    def __init__(self, target_item, **kwargs):
+        self._target_item = target_item
+        self._target_params = tuple([*target_item._init_params])
+        self._configuration = {}
+        self.configure(**kwargs)
+
+    def __setattr__(self, attr, value):
+        if attr in self._target_params:
+            self._configuration[attr] = value
+            return None
+        elif attr.startswith("_"):  # allow private attributes
+            return object.__setattr__(self, attr, value)
+        raise AttributeError(
+            f"{self._target_item!r} does not accept this parameter.")
+
+    def __getattr__(self, attr):
+        if attr in self._configuration:
+            return self._configuration[attr]
+        elif attr in self._target_params:
+            return None
+        raise AttributeError(f"{type(self)!r} has no attribute {attr!r}.")
+
+    def create(self):
+        """Return an instance from the target item using this object's configuration.
+        """
+        return self._target_item(**self._configuration)
+
+    def parameters(self) -> tuple:
+        """Return a tuple containing the accepted parameters for the
+        target constructor.
+        """
+        return self._target_params
+
+    def configuration(self) -> dict:
+        return self._configuration
+
+    def configure(self, **config) -> None:
+        _setattr = self.__setattr__
+        [_setattr(optn, value) for optn, value in config.items()]
 

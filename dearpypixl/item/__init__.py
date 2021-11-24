@@ -2,8 +2,6 @@
 from dearpypixl.item.configuration import (
     item_attribute,
     ItemAttribute,
-    ItemAttributeCache,
-    ConfigContainer
 )
-from dearpypixl.item.item import Item, ItemT
+from dearpypixl.item.item import ItemT, ProtoItem, Item
 from dearpypixl.item.theme import Theme
