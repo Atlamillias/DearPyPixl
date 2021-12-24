@@ -13,13 +13,11 @@ from dearpypixl.components import Item
 
 __all__ = [
     *dearpypixl.appitems.tables.__all__,
+    "Table",
+    "TableCell",
+    "TableColumn",
+    "TableRow"
 ]
-
-dearpygui.is_table_cell_highlight
-dearpygui.is_table_column_highlight
-dearpygui.is_table_row_highlight
-dearpygui.set_table_row_color
-dearpygui.unset_table_row_color
 
 
 
@@ -113,13 +111,13 @@ class Table(Table):
     #### DPG cmd methods ####
     #########################
     def is_row_highlighted(self, row_idx: int) -> bool:
-        return dearpygui.is_table_row_highlight(self._tag, row_idx)
+        return dearpygui.is_table_row_highlighted(self._tag, row_idx)
 
     def is_column_highlighted(self, column_idx: int) -> bool:
-        return dearpygui.is_table_column_highlight(self._tag, column_idx)
+        return dearpygui.is_table_column_highlighted(self._tag, column_idx)
 
     def is_cell_highlighted(self, row_idx: int, column_idx: int) -> bool:
-        return dearpygui.is_table_cell_highlight(self._tag, row_idx, column_idx)
+        return dearpygui.is_table_cell_highlighted(self._tag, row_idx, column_idx)
 
     def highlight_cell(self, row_idx: int, column_idx: int, color: Union[tuple[int], list[int]]) -> None:
         dearpygui.highlight_table_cell(self._tag, row_idx, column_idx, color)
@@ -186,7 +184,7 @@ class TableRow(TableRow):
     def is_highlighted(self) -> bool:
         """Check if this row is highlighted.
         """
-        return dearpygui.is_table_row_highlight(self.parent._tag, self.position)
+        return dearpygui.is_table_row_highlighted(self.parent._tag, self.position)
 
     def _get_index_params(method):
         def wrapper(self, color: Union[tuple[int], list[int]] = None, **kwargs) -> None:
@@ -248,7 +246,7 @@ class TableColumn(TableColumn):
     def is_highlighted(self) -> bool:
         """Check if this row is highlighted.
         """
-        return dearpygui.is_table_column_highlight(self.parent._tag, self.position)
+        return dearpygui.is_table_column_highlighted(self.parent._tag, self.position)
 
     def _get_index_params(method):
         def wrapper(self, color: Union[tuple[int], list[int]] = None, **kwargs) -> None:
@@ -319,7 +317,7 @@ class TableCell(TableCell):
     def is_highlighted(self) -> bool:
         """Check if this row is highlighted.
         """
-        return dearpygui.is_table_cell_highlight(self.parent.parent._tag, *self.position)
+        return dearpygui.is_table_cell_highlighted(self.parent.parent._tag, *self.position)
 
     @property
     def value(self) -> list[Any]:
