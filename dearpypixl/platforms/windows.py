@@ -1,66 +1,54 @@
 import ctypes
+import functools
 from ctypes import wintypes
+from dearpygui import dearpygui
 
 
-class cWin32:
-    """Misc. imports from ctypes module (Windows)."""
-    EnumWindowsProc = ctypes.WINFUNCTYPE(
-        ctypes.c_bool,
-        ctypes.c_int,
-        ctypes.POINTER(ctypes.c_int)
-    )
-    EnumChildProc = ctypes.WINFUNCTYPE(
-        ctypes.c_bool,
-        ctypes.c_int,
-        ctypes.POINTER(ctypes.c_int)
-    )
-    EnumWindows = ctypes.windll.user32.EnumWindows
-    EnumChildWindows = ctypes.windll.user32.EnumChildWindows
-    GetForegroundWindow = ctypes.windll.user32.GetForegroundWindow
-    GetWindowText = ctypes.windll.user32.GetWindowTextW
-    GetWindowTextLength = ctypes.windll.user32.GetWindowTextLengthW
-    IsWindowVisible = ctypes.windll.user32.IsWindowVisible
+__all__ = [
+    "toggle_dpg_viewport_transparency",
+    "toggle_process_dpi_scaling",
+]
 
 
-########################################
-############### C Types ################
-########################################
-WINFUNCTYPE = ctypes.WINFUNCTYPE
-HWND = wintypes.HWND
-BOOL = wintypes.BOOL
-COLORREF = wintypes.COLORREF
-BYTE = wintypes.BYTE
-DWORD = wintypes.DWORD
-LONG = wintypes.LONG
-NULL = 0
+# Wintypes
+_WINFUNCTYPE = ctypes.WINFUNCTYPE
+_HWND = wintypes.HWND
+_BOOL = wintypes.BOOL
+_COLORREF = wintypes.COLORREF
+_BYTE = wintypes.BYTE
+_DWORD = wintypes.DWORD
+_LONG = wintypes.LONG
+_NULL = 0
 
 
-########################################
-############ Constructors ##############
-########################################
+# For color transparency
+_APP_HANDLE = _NULL
+_ATTR_IS_SET = False
+
+_WS_EX_LAYERED = 0x00080000  # layered window
+_GWL_EXSTYLE = -20  # "extended window style"
+
+_LWA_COLORKEY: _DWORD = 0x00000001
+_LWA_ALPHA: _DWORD = 0x00000002
+
+
+# High-level functions use these
+_is_transparent = False
+_dpi_scaling    = True
+
+
+# C "Structs"
 def _get_func_GetLayeredWindowAttributes():
-    _func = WINFUNCTYPE(
-        BOOL,
-        HWND,
-        COLORREF,
-        BYTE,
-        DWORD
-    )
+    _func = _WINFUNCTYPE(_BOOL, _HWND, _COLORREF, _BYTE, _DWORD)
     return _func(
         ("SetLayeredWindowAttributes", ctypes.windll.user32),
-        ((1, "hwnd"), (1, "*pcrKey", NULL),
-         (1, "*pbAlpha", NULL), (1, "*pdwFlags", NULL)),
+        ((1, "hwnd"), (1, "*pcrKey", _NULL),
+         (1, "*pbAlpha", _NULL), (1, "*pdwFlags", _NULL)),
     )
 
 
 def _get_func_SetLayeredWindowAttributes():
-    _func = WINFUNCTYPE(
-        BOOL,
-        HWND,
-        COLORREF,
-        BYTE,
-        DWORD
-    )
+    _func = _WINFUNCTYPE(_BOOL, _HWND, _COLORREF, _BYTE, _DWORD)
     return _func(
         ("SetLayeredWindowAttributes", ctypes.windll.user32),
         ((1, "hwnd"), (1, "crKey"), (1, "bAlpha"), (1, "dwFlags")),
@@ -68,12 +56,7 @@ def _get_func_SetLayeredWindowAttributes():
 
 
 def _get_func_SetWindowLongA():
-    _func = WINFUNCTYPE(
-        LONG,
-        HWND,
-        ctypes.c_int,
-        LONG,
-    )
+    _func = _WINFUNCTYPE(_LONG, _HWND, ctypes.c_int, _LONG)
     return _func(
         ("SetWindowLongA", ctypes.windll.user32),
         ((1, "hwnd"), (1, "nIndex"), (1, "dwNewLong"))
@@ -81,9 +64,9 @@ def _get_func_SetWindowLongA():
 
 
 def _get_func_GetWindowLongA():
-    _func = WINFUNCTYPE(
-        LONG,
-        HWND,
+    _func = _WINFUNCTYPE(
+        _LONG,
+        _HWND,
         ctypes.c_int,
     )
     return _func(
@@ -92,68 +75,14 @@ def _get_func_GetWindowLongA():
     )
 
 
-########################################
-########## Py-wrapped C funcs###########
-########################################
+# Raw py-wrapped windll commands
 _GetWindowLongA = _get_func_GetWindowLongA()
 _SetWindowLongA = _get_func_SetWindowLongA()
 _GetLayeredWindowAttributes = _get_func_GetLayeredWindowAttributes()
 _SetLayeredWindowAttributes = _get_func_SetLayeredWindowAttributes()
 
 
-def _EnumWindows() -> list[HWND]:
-    handles = []
-
-    def callback(hwnd, lparam):
-        handles.append(hwnd)
-        return True
-
-    cWin32.EnumWindows(cWin32.EnumWindowsProc(callback), 0)
-    return handles
-
-
-def EnumWindows(hwnd: HWND = None):
-    if not hwnd:
-        return _EnumWindows()
-    handles = []
-
-    def callback(hwnd, lparam):
-        handles.append(hwnd)
-        return True
-
-    cWin32.EnumChildWindows(hwnd, cWin32.EnumChildProc(callback), 0)
-    return handles
-
-
-def GetForegroundWindow() -> HWND:
-    return cWin32.GetForegroundWindow()
-
-
-def GetWindowTitle(hwnd: HWND) -> str:
-    handles = EnumWindows()
-    for h in handles:
-        if h == hwnd:
-            text_len = cWin32.GetWindowTextLength(h) + 1
-            buffer = ctypes.create_unicode_buffer(text_len)
-            cWin32.GetWindowText(h, buffer, text_len)
-            return buffer.value
-    return None
-
-
-def GetWindowsAndTitles(parent_hwnd: HWND = None, visible_only: bool = True) -> list[tuple[HWND, str]]:
-    handles = EnumWindows(parent_hwnd)
-    _return = []
-    for h in handles:
-        if visible_only and not cWin32.IsWindowVisible(h):
-            continue
-        text_len = cWin32.GetWindowTextLength(h) + 1
-        buffer = ctypes.create_unicode_buffer(text_len)
-        cWin32.GetWindowText(h, buffer, text_len)
-        _return.append((h, buffer.value))
-    return _return
-
-
-def GetLayeredWindowAttributes(hwnd: HWND, rgba: tuple = None, flag: DWORD = None):
+def GetLayeredWindowAttributes(hwnd: _HWND, rgba: tuple = None, flag: _DWORD = None):
     args = [hwnd]
     if rgba and len(rgba) == 4:
         *rgb, alpha = rgba
@@ -161,11 +90,11 @@ def GetLayeredWindowAttributes(hwnd: HWND, rgba: tuple = None, flag: DWORD = Non
         args += [rgb, alpha]
     elif rgba:
         rgb = wintypes.RGB(*rgba)
-        alpha = NULL
+        alpha = _NULL
         args += [rgb]
     else:
-        rgb = NULL
-        alpha = NULL
+        rgb = _NULL
+        alpha = _NULL
 
     if flag:
         args.append(flag)
@@ -173,92 +102,160 @@ def GetLayeredWindowAttributes(hwnd: HWND, rgba: tuple = None, flag: DWORD = Non
     return _GetLayeredWindowAttributes(hwnd, *args)
 
 
-def SetLayeredWindowAttributes(hwnd: HWND, rgba: tuple[int, int, int, int], flag: DWORD):
+def SetLayeredWindowAttributes(hwnd: _HWND, rgba: tuple[int, int, int, int], flag: _DWORD):
     *rgb, alpha = rgba
     rgb = wintypes.RGB(*rgb)
     _SetLayeredWindowAttributes(hwnd, rgb, alpha, flag)
 
 
-#########################################################################################
-## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
-#########################################################################################
-__all__ = [
-    "set_transparent_color",
-    "unset_transparency_color",
-    "disable_virtual_scaling",
-    "enable_virtual_scaling",
-]
-
-APP_HANDLE = NULL
-ATTR_IS_SET = False
-
-WS_EX_LAYERED = 0x00080000  # layered window
-GWL_EXSTYLE = -20  # "extended window style"
-
-LWA_COLORKEY: DWORD = 0x00000001
-LWA_ALPHA: DWORD = 0x00000002
-
-
 def _setup():  # NOTE: call on conditional
-    global ATTR_IS_SET, APP_HANDLE
+    global _ATTR_IS_SET, _APP_HANDLE
 
-    ATTR_IS_SET = True
-    APP_HANDLE = cWin32.GetForegroundWindow()
+    _ATTR_IS_SET = True
+    _APP_HANDLE = ctypes.windll.user32.GetForegroundWindow()
+    # Set placeholder int32 value in memory for `index`.
     _SetWindowLongA(
-        APP_HANDLE,
-        GWL_EXSTYLE,
-        _GetWindowLongA(APP_HANDLE, GWL_EXSTYLE) | WS_EX_LAYERED
+        _APP_HANDLE,  # window handle
+        _GWL_EXSTYLE, # index i.e. attribute to change
+        # replacement value
+        _GetWindowLongA(_APP_HANDLE, _GWL_EXSTYLE) | _WS_EX_LAYERED
     )
 
+def _check_setup(func):
+    @functools.wraps(func)
+    def wrapped(*args, **kwargs):
+        global _ATTR_IS_SET
 
-def set_transparent_color(rgb: tuple[int, int, int]):
-    """Sets a color to be transparent. Anything painted that color
-    will be transparent instead. Transparent parts of items can
-    be clicked through. Only one color can be set as transparent
-    at a time - the old one will be unset for subsequent calls.
+        if _ATTR_IS_SET is False:
+            _setup()
+        return func(*args, **kwargs)
+    return wrapped
 
-    NOTE: If the application is intended to be an overlay, make sure
-    to set `Viewport().always_on_top` to True.
+
+# High-level functions
+@_check_setup
+def set_transparent_color(rgb: tuple[int, int, int] = (0, 0, 0)) -> None:
+    """Applies 100% transparency to <rgb>. A application window using
+    this value as it's clear color ("background") will also be transparent.
+    This may cause other renders of the same color within the application
+    window to also be transparent.
 
     Args:
         rgb (tuple[int, int, int]): The color that will be transparent.
 
+    # NOTE: This will bork the functionality of the window title bar,
+    and does not hide it. Calling `unset_transparent_color` should restore
+    functionality.
+
+    # NOTE: Make certain that this call is scheduled AFTER your application/
+    viewport has been made and is showing.
     """
-    global ATTR_IS_SET, LWA_COLORKEY
+    global _LWA_COLORKEY, _is_transparent
 
-    if ATTR_IS_SET is False:
-        _setup()
-    SetLayeredWindowAttributes(APP_HANDLE, rgb + (255,), LWA_COLORKEY)
+    _is_transparent = True
+    SetLayeredWindowAttributes(_APP_HANDLE, rgb + (255,), _LWA_COLORKEY)
 
 
-def unset_transparency_color():
-    """Removes the transparency from the set transparent color
-    i.e. color is no longer transparent.
+@_check_setup
+def unset_transparent_color() -> None:
+    """Removes the effects of `set_transparent_color`.
 
+    NOTE: From my observations the window (title bar included) operate
+    perfectly fine. That does not mean side-effects do not exist.
     """
-    global ATTR_IS_SET, LWA_COLORKEY
+    global _LWA_COLORKEY, _LWA_ALPHA, _is_transparent
 
-    if ATTR_IS_SET is False:
-        return
+    # Do nothing...?
+    if _is_transparent is False:
+        return None
+    _is_transparent = False
+    SetLayeredWindowAttributes(_APP_HANDLE, (255, 255, 255, 255), _LWA_ALPHA)
 
-    SetLayeredWindowAttributes(APP_HANDLE, (255, 255, 255, 255), LWA_ALPHA)
 
 
-def disable_virtual_scaling():
-    """Ignore the 'Scale and layout' display setting in Windows
-    for this process. Recommended.
 
+# For DearPyPixl
+def toggle_dpg_viewport_transparency(
+    *,
+    rgb: tuple[int] = (73, 59, 16),
+    always_on_top: bool = True
+) -> None:
+    """Applies 100% transparency to the color <rgb>, as well as various
+    configuration settings to the DearPyGui viewport to help ensure that
+    it remains fully functional. `clear_color` will be set to the value 
+    of <rgb>, `decorated` will be set to False, and `always_on_top` to
+    <always_on_top>. The viewport will also be maximized. Keep in mind
+    that you will not have access to the viewport title bar to close the
+    application -- set another means of doing so via `stop_dearpygui` or
+    using the taskbar.
+
+    If the "transparency" effect is already applied, it will be removed
+    and ...
+
+    The "strange" rgb default value of (69, 59, 9) is intentional -- It
+    is possible that other renders of the exact same color within the
+    application window will also be affected by the transparency setting,
+    and the default value is a color that DearPyGui does not use for its
+    defaults (while also just being a rather unpleasant color in my opinion).
+
+
+    NOTE: Call this AFTER showing the viewport via `dearpygui.show_viewport`.
+    Otherwise, the color transparency setting may affect the wrong
+    application window...
+
+    Args:
+        * rgb (tuple, optional): The color that will not be painted. Default
+        is (73, 59, 16).
+        * always_on_top (bool, optional): If True, the DearPyGui viewport
+        will be rendered above all other application windows. Default is True.
     """
+    viewport = "DPG NOT USED YET"
+    # Applying the effect if it's not applied.
+    if _is_transparent is False:
+        # `clear_color` must match `rgb` so it won't be painted by Windows.
+        #
+        # `decorated` *should* be set to False to hide the title bar and viewport
+        # border. The transparency adjustment completely breaks the functionality
+        # of the title bar, the border, and the title bar buttons. Trying to
+        # use them can cause weird errors.
+        #
+        # `always_on_top` is True by default because this "hack" is typically
+        # desired to create overlays, but is exposed to the user as a parameter
+        # if this is not the case.
+        configuration = {
+                        "clear_color": rgb,
+                        "always_on_top": always_on_top,
+                        "decorated": False
+                        }
+        # The viewport is maximized because appitems can become lost when dragged
+        # outside of the drawn viewport area. I have also observed some generally
+        # undesirable effects/bugs when dragging an item, like window item, to
+        # and from the drawn viewport boundries such as a less unresponsive UI
+        # and fubar'd renders. I've never observed this while interacting with
+        # the UI while its maximized, and the application can still be minimized
+        # using the taskbar.
 
-    ctypes.windll.shcore.SetProcessDpiAwareness(2)
+        # Applying the color to not be painted.
+        dearpygui.maximize_viewport()
+        set_transparent_color(rgb)
+        return dearpygui.configure_viewport(viewport, **configuration)
+    # Otherwise, revert the effect. Leave the viewport maximized.
+    # NOTE: Any arguments passed to this func are ignored for this.
+    dearpygui.configure_viewport(
+        viewport,
+        decorated=True,
+        always_on_top=False,
+        clear_color=(0,0,0,255)  # DPG default. Not many people change it anyway.
+    )
+    unset_transparent_color()
+    dearpygui.maximize_viewport()
 
 
-def enable_virtual_scaling():
-    """Use the current 'Scale and layout' display setting in Windows
-    for this process. Renders may suffer from quality loss (from being
-    stretched), and may also affect how well items scale within the
-    application window.
 
-    """
+def toggle_process_dpi_scaling():
+    match _dpi_scaling:
+        case True:
+            ctypes.windll.shcore.SetProcessDpiAwareness(2)
+        case False:
+            ctypes.windll.shcore.SetProcessDpiAwareness(0)
 
-    ctypes.windll.shcore.SetProcessDpiAwareness(0)
