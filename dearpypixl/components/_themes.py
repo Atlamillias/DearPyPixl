@@ -67,10 +67,10 @@ _STYLE = 1
 
 
 class ThemeComponent(Item):
-    label             : str                      =  ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")             
-    user_data         : Any                      =  ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")         
-    use_internal_label: bool                     =  ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")
-    enabled_state     : bool                     =  ItemAttribute("configuration", "get_item_configuration", "configure_item", "enabled_state")     
+    label             : str                      =  ItemAttribute("configuration", "get_item_config", "set_item_config", "label")             
+    user_data         : Any                      =  ItemAttribute("configuration", "get_item_config", "set_item_config", "user_data")         
+    use_internal_label: bool                     =  ItemAttribute("configuration", "get_item_config", "set_item_config", "use_internal_label")
+    enabled_state     : bool                     =  ItemAttribute("configuration", "get_item_config", "set_item_config", "enabled_state")     
 
     _is_container     : bool                     =  True                                                                                            
     _is_root_item     : bool                     =  False                                                                                           

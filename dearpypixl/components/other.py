@@ -26,9 +26,10 @@ class UniqueItemMeta(ABCMeta):
 
 
 class ItemLike(ProtoItem, metaclass=ABCMeta):
-    """A template for item-like subclasses. Mimics the `Item` API,
-    but inherits a limited number of methods.
+    """A template for item-like subclasses. Mimics the core `Item` API.
     """
+    __slots__ = ()
+    
     @abstractmethod
     def _get_configuration(self) -> dict: ...
     @abstractmethod

@@ -1,10 +1,15 @@
 from typing import (
-    Any,
     Callable,
+    Any,
     Union,
+    Dict,
+    Tuple,
+    Set,
+    List,
 )
 from dearpygui import dearpygui
-from dearpypixl.item import Item, ItemAttribute
+from dearpypixl.item.item import Item
+from dearpypixl.item.configuration import ItemAttribute
 
 ##################################################
 ####### NOTE: This file is auto-generated. #######
@@ -35,7 +40,6 @@ __all__ = [
 ]
 
 
-
 class KeyDownHandler(Item):
     """Adds a key down handler.
     
@@ -53,21 +57,21 @@ class KeyDownHandler(Item):
     		Union[int, str]
     """
 
-    key               : int      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "key")               
-    label             : str      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")             
-    user_data         : Any      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")         
-    use_internal_label: bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")
-    callback          : Callable = ItemAttribute("configuration", "get_item_configuration", "configure_item", "callback")          
-    show              : bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "show")              
+    key               : int      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    label             : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    user_data         : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    callback          : Callable = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
-    _is_container     : bool     = False                                                                                           
-    _is_root_item     : bool     = False                                                                                           
-    _is_value_able    : bool     = False                                                                                           
-    _unique_parents   : tuple    = ('Stage', 'TemplateRegistry', 'HandlerRegistry')                                                
-    _unique_children  : tuple    = ()                                                                                              
-    _unique_commands  : tuple    = ()                                                                                              
-    _unique_constants : tuple    = ('mvKeyDownHandler',)                                                                           
-    _command          : Callable = dearpygui.add_key_down_handler                                                                  
+    _is_container     : bool     = False                                                                     
+    _is_root_item     : bool     = False                                                                     
+    _is_value_able    : bool     = False                                                                     
+    _unique_parents   : tuple    = ('Stage', 'TemplateRegistry', 'HandlerRegistry')                          
+    _unique_children  : tuple    = ()                                                                        
+    _unique_commands  : tuple    = ()                                                                        
+    _unique_constants : tuple    = ('mvKeyDownHandler',)                                                     
+    _command          : Callable = dearpygui.add_key_down_handler                                            
 
     def __init__(
         self                                      ,
@@ -109,21 +113,21 @@ class KeyPressHandler(Item):
     		Union[int, str]
     """
 
-    key               : int      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "key")               
-    label             : str      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")             
-    user_data         : Any      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")         
-    use_internal_label: bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")
-    callback          : Callable = ItemAttribute("configuration", "get_item_configuration", "configure_item", "callback")          
-    show              : bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "show")              
+    key               : int      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    label             : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    user_data         : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    callback          : Callable = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
-    _is_container     : bool     = False                                                                                           
-    _is_root_item     : bool     = False                                                                                           
-    _is_value_able    : bool     = False                                                                                           
-    _unique_parents   : tuple    = ('Stage', 'TemplateRegistry', 'HandlerRegistry')                                                
-    _unique_children  : tuple    = ()                                                                                              
-    _unique_commands  : tuple    = ()                                                                                              
-    _unique_constants : tuple    = ('mvKeyPressHandler',)                                                                          
-    _command          : Callable = dearpygui.add_key_press_handler                                                                 
+    _is_container     : bool     = False                                                                     
+    _is_root_item     : bool     = False                                                                     
+    _is_value_able    : bool     = False                                                                     
+    _unique_parents   : tuple    = ('Stage', 'TemplateRegistry', 'HandlerRegistry')                          
+    _unique_children  : tuple    = ()                                                                        
+    _unique_commands  : tuple    = ()                                                                        
+    _unique_constants : tuple    = ('mvKeyPressHandler',)                                                    
+    _command          : Callable = dearpygui.add_key_press_handler                                           
 
     def __init__(
         self                                      ,
@@ -165,21 +169,21 @@ class KeyReleaseHandler(Item):
     		Union[int, str]
     """
 
-    key               : int      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "key")               
-    label             : str      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")             
-    user_data         : Any      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")         
-    use_internal_label: bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")
-    callback          : Callable = ItemAttribute("configuration", "get_item_configuration", "configure_item", "callback")          
-    show              : bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "show")              
+    key               : int      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    label             : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    user_data         : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    callback          : Callable = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
-    _is_container     : bool     = False                                                                                           
-    _is_root_item     : bool     = False                                                                                           
-    _is_value_able    : bool     = False                                                                                           
-    _unique_parents   : tuple    = ('Stage', 'TemplateRegistry', 'HandlerRegistry')                                                
-    _unique_children  : tuple    = ()                                                                                              
-    _unique_commands  : tuple    = ()                                                                                              
-    _unique_constants : tuple    = ('mvKeyReleaseHandler',)                                                                        
-    _command          : Callable = dearpygui.add_key_release_handler                                                               
+    _is_container     : bool     = False                                                                     
+    _is_root_item     : bool     = False                                                                     
+    _is_value_able    : bool     = False                                                                     
+    _unique_parents   : tuple    = ('Stage', 'TemplateRegistry', 'HandlerRegistry')                          
+    _unique_children  : tuple    = ()                                                                        
+    _unique_commands  : tuple    = ()                                                                        
+    _unique_constants : tuple    = ('mvKeyReleaseHandler',)                                                  
+    _command          : Callable = dearpygui.add_key_release_handler                                         
 
     def __init__(
         self                                      ,
@@ -220,20 +224,20 @@ class MouseMoveHandler(Item):
     		Union[int, str]
     """
 
-    label             : str      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")             
-    user_data         : Any      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")         
-    use_internal_label: bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")
-    callback          : Callable = ItemAttribute("configuration", "get_item_configuration", "configure_item", "callback")          
-    show              : bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "show")              
+    label             : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    user_data         : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    callback          : Callable = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
-    _is_container     : bool     = False                                                                                           
-    _is_root_item     : bool     = False                                                                                           
-    _is_value_able    : bool     = False                                                                                           
-    _unique_parents   : tuple    = ('TemplateRegistry', 'Stage', 'HandlerRegistry')                                                
-    _unique_children  : tuple    = ()                                                                                              
-    _unique_commands  : tuple    = ()                                                                                              
-    _unique_constants : tuple    = ('mvMouseMoveHandler',)                                                                         
-    _command          : Callable = dearpygui.add_mouse_move_handler                                                                
+    _is_container     : bool     = False                                                                     
+    _is_root_item     : bool     = False                                                                     
+    _is_value_able    : bool     = False                                                                     
+    _unique_parents   : tuple    = ('TemplateRegistry', 'Stage', 'HandlerRegistry')                          
+    _unique_children  : tuple    = ()                                                                        
+    _unique_commands  : tuple    = ()                                                                        
+    _unique_constants : tuple    = ('mvMouseMoveHandler',)                                                   
+    _command          : Callable = dearpygui.add_mouse_move_handler                                          
 
     def __init__(
         self                                      ,
@@ -272,20 +276,20 @@ class MouseWheelHandler(Item):
     		Union[int, str]
     """
 
-    label             : str      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")             
-    user_data         : Any      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")         
-    use_internal_label: bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")
-    callback          : Callable = ItemAttribute("configuration", "get_item_configuration", "configure_item", "callback")          
-    show              : bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "show")              
+    label             : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    user_data         : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    callback          : Callable = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
-    _is_container     : bool     = False                                                                                           
-    _is_root_item     : bool     = False                                                                                           
-    _is_value_able    : bool     = False                                                                                           
-    _unique_parents   : tuple    = ('TemplateRegistry', 'Stage', 'HandlerRegistry')                                                
-    _unique_children  : tuple    = ()                                                                                              
-    _unique_commands  : tuple    = ()                                                                                              
-    _unique_constants : tuple    = ('mvMouseWheelHandler',)                                                                        
-    _command          : Callable = dearpygui.add_mouse_wheel_handler                                                               
+    _is_container     : bool     = False                                                                     
+    _is_root_item     : bool     = False                                                                     
+    _is_value_able    : bool     = False                                                                     
+    _unique_parents   : tuple    = ('TemplateRegistry', 'Stage', 'HandlerRegistry')                          
+    _unique_children  : tuple    = ()                                                                        
+    _unique_commands  : tuple    = ()                                                                        
+    _unique_constants : tuple    = ('mvMouseWheelHandler',)                                                  
+    _command          : Callable = dearpygui.add_mouse_wheel_handler                                         
 
     def __init__(
         self                                      ,
@@ -325,21 +329,21 @@ class MouseClickHandler(Item):
     		Union[int, str]
     """
 
-    button            : int      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "button")            
-    label             : str      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")             
-    user_data         : Any      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")         
-    use_internal_label: bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")
-    callback          : Callable = ItemAttribute("configuration", "get_item_configuration", "configure_item", "callback")          
-    show              : bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "show")              
+    button            : int      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    label             : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    user_data         : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    callback          : Callable = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
-    _is_container     : bool     = False                                                                                           
-    _is_root_item     : bool     = False                                                                                           
-    _is_value_able    : bool     = False                                                                                           
-    _unique_parents   : tuple    = ('Stage', 'TemplateRegistry', 'HandlerRegistry')                                                
-    _unique_children  : tuple    = ()                                                                                              
-    _unique_commands  : tuple    = ()                                                                                              
-    _unique_constants : tuple    = ('mvMouseClickHandler',)                                                                        
-    _command          : Callable = dearpygui.add_mouse_click_handler                                                               
+    _is_container     : bool     = False                                                                     
+    _is_root_item     : bool     = False                                                                     
+    _is_value_able    : bool     = False                                                                     
+    _unique_parents   : tuple    = ('Stage', 'TemplateRegistry', 'HandlerRegistry')                          
+    _unique_children  : tuple    = ()                                                                        
+    _unique_commands  : tuple    = ()                                                                        
+    _unique_constants : tuple    = ('mvMouseClickHandler',)                                                  
+    _command          : Callable = dearpygui.add_mouse_click_handler                                         
 
     def __init__(
         self                                      ,
@@ -381,21 +385,21 @@ class MouseDoubleClickHandler(Item):
     		Union[int, str]
     """
 
-    button            : int      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "button")            
-    label             : str      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")             
-    user_data         : Any      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")         
-    use_internal_label: bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")
-    callback          : Callable = ItemAttribute("configuration", "get_item_configuration", "configure_item", "callback")          
-    show              : bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "show")              
+    button            : int      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    label             : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    user_data         : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    callback          : Callable = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
-    _is_container     : bool     = False                                                                                           
-    _is_root_item     : bool     = False                                                                                           
-    _is_value_able    : bool     = False                                                                                           
-    _unique_parents   : tuple    = ('TemplateRegistry', 'Stage', 'HandlerRegistry')                                                
-    _unique_children  : tuple    = ()                                                                                              
-    _unique_commands  : tuple    = ()                                                                                              
-    _unique_constants : tuple    = ('mvMouseDoubleClickHandler',)                                                                  
-    _command          : Callable = dearpygui.add_mouse_double_click_handler                                                        
+    _is_container     : bool     = False                                                                     
+    _is_root_item     : bool     = False                                                                     
+    _is_value_able    : bool     = False                                                                     
+    _unique_parents   : tuple    = ('TemplateRegistry', 'Stage', 'HandlerRegistry')                          
+    _unique_children  : tuple    = ()                                                                        
+    _unique_commands  : tuple    = ()                                                                        
+    _unique_constants : tuple    = ('mvMouseDoubleClickHandler',)                                            
+    _command          : Callable = dearpygui.add_mouse_double_click_handler                                  
 
     def __init__(
         self                                      ,
@@ -437,21 +441,21 @@ class MouseDownHandler(Item):
     		Union[int, str]
     """
 
-    button            : int      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "button")            
-    label             : str      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")             
-    user_data         : Any      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")         
-    use_internal_label: bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")
-    callback          : Callable = ItemAttribute("configuration", "get_item_configuration", "configure_item", "callback")          
-    show              : bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "show")              
+    button            : int      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    label             : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    user_data         : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    callback          : Callable = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
-    _is_container     : bool     = False                                                                                           
-    _is_root_item     : bool     = False                                                                                           
-    _is_value_able    : bool     = False                                                                                           
-    _unique_parents   : tuple    = ('TemplateRegistry', 'Stage', 'HandlerRegistry')                                                
-    _unique_children  : tuple    = ()                                                                                              
-    _unique_commands  : tuple    = ()                                                                                              
-    _unique_constants : tuple    = ('mvMouseDownHandler',)                                                                         
-    _command          : Callable = dearpygui.add_mouse_down_handler                                                                
+    _is_container     : bool     = False                                                                     
+    _is_root_item     : bool     = False                                                                     
+    _is_value_able    : bool     = False                                                                     
+    _unique_parents   : tuple    = ('TemplateRegistry', 'Stage', 'HandlerRegistry')                          
+    _unique_children  : tuple    = ()                                                                        
+    _unique_commands  : tuple    = ()                                                                        
+    _unique_constants : tuple    = ('mvMouseDownHandler',)                                                   
+    _command          : Callable = dearpygui.add_mouse_down_handler                                          
 
     def __init__(
         self                                      ,
@@ -493,21 +497,21 @@ class MouseReleaseHandler(Item):
     		Union[int, str]
     """
 
-    button            : int      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "button")            
-    label             : str      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")             
-    user_data         : Any      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")         
-    use_internal_label: bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")
-    callback          : Callable = ItemAttribute("configuration", "get_item_configuration", "configure_item", "callback")          
-    show              : bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "show")              
+    button            : int      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    label             : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    user_data         : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    callback          : Callable = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
-    _is_container     : bool     = False                                                                                           
-    _is_root_item     : bool     = False                                                                                           
-    _is_value_able    : bool     = False                                                                                           
-    _unique_parents   : tuple    = ('TemplateRegistry', 'Stage', 'HandlerRegistry')                                                
-    _unique_children  : tuple    = ()                                                                                              
-    _unique_commands  : tuple    = ()                                                                                              
-    _unique_constants : tuple    = ('mvMouseReleaseHandler',)                                                                      
-    _command          : Callable = dearpygui.add_mouse_release_handler                                                             
+    _is_container     : bool     = False                                                                     
+    _is_root_item     : bool     = False                                                                     
+    _is_value_able    : bool     = False                                                                     
+    _unique_parents   : tuple    = ('TemplateRegistry', 'Stage', 'HandlerRegistry')                          
+    _unique_children  : tuple    = ()                                                                        
+    _unique_commands  : tuple    = ()                                                                        
+    _unique_constants : tuple    = ('mvMouseReleaseHandler',)                                                
+    _command          : Callable = dearpygui.add_mouse_release_handler                                       
 
     def __init__(
         self                                      ,
@@ -550,22 +554,22 @@ class MouseDragHandler(Item):
     		Union[int, str]
     """
 
-    button            : int      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "button")            
-    threshold         : float    = ItemAttribute("configuration", "get_item_configuration", "configure_item", "threshold")         
-    label             : str      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")             
-    user_data         : Any      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")         
-    use_internal_label: bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")
-    callback          : Callable = ItemAttribute("configuration", "get_item_configuration", "configure_item", "callback")          
-    show              : bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "show")              
+    button            : int      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    threshold         : float    = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    label             : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    user_data         : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    callback          : Callable = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
-    _is_container     : bool     = False                                                                                           
-    _is_root_item     : bool     = False                                                                                           
-    _is_value_able    : bool     = False                                                                                           
-    _unique_parents   : tuple    = ('TemplateRegistry', 'Stage', 'HandlerRegistry')                                                
-    _unique_children  : tuple    = ()                                                                                              
-    _unique_commands  : tuple    = ()                                                                                              
-    _unique_constants : tuple    = ('mvMouseDragHandler',)                                                                         
-    _command          : Callable = dearpygui.add_mouse_drag_handler                                                                
+    _is_container     : bool     = False                                                                     
+    _is_root_item     : bool     = False                                                                     
+    _is_value_able    : bool     = False                                                                     
+    _unique_parents   : tuple    = ('TemplateRegistry', 'Stage', 'HandlerRegistry')                          
+    _unique_children  : tuple    = ()                                                                        
+    _unique_commands  : tuple    = ()                                                                        
+    _unique_constants : tuple    = ('mvMouseDragHandler',)                                                   
+    _command          : Callable = dearpygui.add_mouse_drag_handler                                          
 
     def __init__(
         self                                      ,
@@ -608,20 +612,20 @@ class HoverHandler(Item):
     		Union[int, str]
     """
 
-    label             : str      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")             
-    user_data         : Any      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")         
-    use_internal_label: bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")
-    callback          : Callable = ItemAttribute("configuration", "get_item_configuration", "configure_item", "callback")          
-    show              : bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "show")              
+    label             : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    user_data         : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    callback          : Callable = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
-    _is_container     : bool     = False                                                                                           
-    _is_root_item     : bool     = False                                                                                           
-    _is_value_able    : bool     = False                                                                                           
-    _unique_parents   : tuple    = ('Stage', 'TemplateRegistry', 'ItemHandlerRegistry')                                            
-    _unique_children  : tuple    = ()                                                                                              
-    _unique_commands  : tuple    = ()                                                                                              
-    _unique_constants : tuple    = ('mvHoverHandler',)                                                                             
-    _command          : Callable = dearpygui.add_item_hover_handler                                                                
+    _is_container     : bool     = False                                                                     
+    _is_root_item     : bool     = False                                                                     
+    _is_value_able    : bool     = False                                                                     
+    _unique_parents   : tuple    = ('Stage', 'TemplateRegistry', 'ItemHandlerRegistry')                      
+    _unique_children  : tuple    = ()                                                                        
+    _unique_commands  : tuple    = ()                                                                        
+    _unique_constants : tuple    = ('mvHoverHandler',)                                                       
+    _command          : Callable = dearpygui.add_item_hover_handler                                          
 
     def __init__(
         self                                      ,
@@ -660,20 +664,20 @@ class ResizeHandler(Item):
     		Union[int, str]
     """
 
-    label             : str      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")             
-    user_data         : Any      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")         
-    use_internal_label: bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")
-    callback          : Callable = ItemAttribute("configuration", "get_item_configuration", "configure_item", "callback")          
-    show              : bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "show")              
+    label             : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    user_data         : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    callback          : Callable = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
-    _is_container     : bool     = False                                                                                           
-    _is_root_item     : bool     = False                                                                                           
-    _is_value_able    : bool     = False                                                                                           
-    _unique_parents   : tuple    = ('Stage', 'TemplateRegistry', 'ItemHandlerRegistry')                                            
-    _unique_children  : tuple    = ()                                                                                              
-    _unique_commands  : tuple    = ()                                                                                              
-    _unique_constants : tuple    = ('mvResizeHandler',)                                                                            
-    _command          : Callable = dearpygui.add_item_resize_handler                                                               
+    _is_container     : bool     = False                                                                     
+    _is_root_item     : bool     = False                                                                     
+    _is_value_able    : bool     = False                                                                     
+    _unique_parents   : tuple    = ('Stage', 'TemplateRegistry', 'ItemHandlerRegistry')                      
+    _unique_children  : tuple    = ()                                                                        
+    _unique_commands  : tuple    = ()                                                                        
+    _unique_constants : tuple    = ('mvResizeHandler',)                                                      
+    _command          : Callable = dearpygui.add_item_resize_handler                                         
 
     def __init__(
         self                                      ,
@@ -712,20 +716,20 @@ class FocusHandler(Item):
     		Union[int, str]
     """
 
-    label             : str      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")             
-    user_data         : Any      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")         
-    use_internal_label: bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")
-    callback          : Callable = ItemAttribute("configuration", "get_item_configuration", "configure_item", "callback")          
-    show              : bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "show")              
+    label             : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    user_data         : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    callback          : Callable = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
-    _is_container     : bool     = False                                                                                           
-    _is_root_item     : bool     = False                                                                                           
-    _is_value_able    : bool     = False                                                                                           
-    _unique_parents   : tuple    = ('Stage', 'TemplateRegistry', 'ItemHandlerRegistry')                                            
-    _unique_children  : tuple    = ()                                                                                              
-    _unique_commands  : tuple    = ()                                                                                              
-    _unique_constants : tuple    = ('mvFocusHandler',)                                                                             
-    _command          : Callable = dearpygui.add_item_focus_handler                                                                
+    _is_container     : bool     = False                                                                     
+    _is_root_item     : bool     = False                                                                     
+    _is_value_able    : bool     = False                                                                     
+    _unique_parents   : tuple    = ('Stage', 'TemplateRegistry', 'ItemHandlerRegistry')                      
+    _unique_children  : tuple    = ()                                                                        
+    _unique_commands  : tuple    = ()                                                                        
+    _unique_constants : tuple    = ('mvFocusHandler',)                                                       
+    _command          : Callable = dearpygui.add_item_focus_handler                                          
 
     def __init__(
         self                                      ,
@@ -764,20 +768,20 @@ class ActiveHandler(Item):
     		Union[int, str]
     """
 
-    label             : str      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")             
-    user_data         : Any      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")         
-    use_internal_label: bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")
-    callback          : Callable = ItemAttribute("configuration", "get_item_configuration", "configure_item", "callback")          
-    show              : bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "show")              
+    label             : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    user_data         : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    callback          : Callable = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
-    _is_container     : bool     = False                                                                                           
-    _is_root_item     : bool     = False                                                                                           
-    _is_value_able    : bool     = False                                                                                           
-    _unique_parents   : tuple    = ('Stage', 'TemplateRegistry', 'ItemHandlerRegistry')                                            
-    _unique_children  : tuple    = ()                                                                                              
-    _unique_commands  : tuple    = ()                                                                                              
-    _unique_constants : tuple    = ('mvActiveHandler',)                                                                            
-    _command          : Callable = dearpygui.add_item_active_handler                                                               
+    _is_container     : bool     = False                                                                     
+    _is_root_item     : bool     = False                                                                     
+    _is_value_able    : bool     = False                                                                     
+    _unique_parents   : tuple    = ('Stage', 'TemplateRegistry', 'ItemHandlerRegistry')                      
+    _unique_children  : tuple    = ()                                                                        
+    _unique_commands  : tuple    = ()                                                                        
+    _unique_constants : tuple    = ('mvActiveHandler',)                                                      
+    _command          : Callable = dearpygui.add_item_active_handler                                         
 
     def __init__(
         self                                      ,
@@ -816,20 +820,20 @@ class VisibleHandler(Item):
     		Union[int, str]
     """
 
-    label             : str      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")             
-    user_data         : Any      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")         
-    use_internal_label: bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")
-    callback          : Callable = ItemAttribute("configuration", "get_item_configuration", "configure_item", "callback")          
-    show              : bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "show")              
+    label             : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    user_data         : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    callback          : Callable = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
-    _is_container     : bool     = False                                                                                           
-    _is_root_item     : bool     = False                                                                                           
-    _is_value_able    : bool     = False                                                                                           
-    _unique_parents   : tuple    = ('Stage', 'TemplateRegistry', 'ItemHandlerRegistry')                                            
-    _unique_children  : tuple    = ()                                                                                              
-    _unique_commands  : tuple    = ()                                                                                              
-    _unique_constants : tuple    = ('mvVisibleHandler',)                                                                           
-    _command          : Callable = dearpygui.add_item_visible_handler                                                              
+    _is_container     : bool     = False                                                                     
+    _is_root_item     : bool     = False                                                                     
+    _is_value_able    : bool     = False                                                                     
+    _unique_parents   : tuple    = ('Stage', 'TemplateRegistry', 'ItemHandlerRegistry')                      
+    _unique_children  : tuple    = ()                                                                        
+    _unique_commands  : tuple    = ()                                                                        
+    _unique_constants : tuple    = ('mvVisibleHandler',)                                                     
+    _command          : Callable = dearpygui.add_item_visible_handler                                        
 
     def __init__(
         self                                      ,
@@ -868,20 +872,20 @@ class ActivatedHandler(Item):
     		Union[int, str]
     """
 
-    label             : str      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")             
-    user_data         : Any      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")         
-    use_internal_label: bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")
-    callback          : Callable = ItemAttribute("configuration", "get_item_configuration", "configure_item", "callback")          
-    show              : bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "show")              
+    label             : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    user_data         : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    callback          : Callable = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
-    _is_container     : bool     = False                                                                                           
-    _is_root_item     : bool     = False                                                                                           
-    _is_value_able    : bool     = False                                                                                           
-    _unique_parents   : tuple    = ('Stage', 'TemplateRegistry', 'ItemHandlerRegistry')                                            
-    _unique_children  : tuple    = ()                                                                                              
-    _unique_commands  : tuple    = ()                                                                                              
-    _unique_constants : tuple    = ('mvActivatedHandler',)                                                                         
-    _command          : Callable = dearpygui.add_item_activated_handler                                                            
+    _is_container     : bool     = False                                                                     
+    _is_root_item     : bool     = False                                                                     
+    _is_value_able    : bool     = False                                                                     
+    _unique_parents   : tuple    = ('Stage', 'TemplateRegistry', 'ItemHandlerRegistry')                      
+    _unique_children  : tuple    = ()                                                                        
+    _unique_commands  : tuple    = ()                                                                        
+    _unique_constants : tuple    = ('mvActivatedHandler',)                                                   
+    _command          : Callable = dearpygui.add_item_activated_handler                                      
 
     def __init__(
         self                                      ,
@@ -920,20 +924,20 @@ class DeactivatedHandler(Item):
     		Union[int, str]
     """
 
-    label             : str      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")             
-    user_data         : Any      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")         
-    use_internal_label: bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")
-    callback          : Callable = ItemAttribute("configuration", "get_item_configuration", "configure_item", "callback")          
-    show              : bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "show")              
+    label             : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    user_data         : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    callback          : Callable = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
-    _is_container     : bool     = False                                                                                           
-    _is_root_item     : bool     = False                                                                                           
-    _is_value_able    : bool     = False                                                                                           
-    _unique_parents   : tuple    = ('Stage', 'TemplateRegistry', 'ItemHandlerRegistry')                                            
-    _unique_children  : tuple    = ()                                                                                              
-    _unique_commands  : tuple    = ()                                                                                              
-    _unique_constants : tuple    = ('mvDeactivatedHandler',)                                                                       
-    _command          : Callable = dearpygui.add_item_deactivated_handler                                                          
+    _is_container     : bool     = False                                                                     
+    _is_root_item     : bool     = False                                                                     
+    _is_value_able    : bool     = False                                                                     
+    _unique_parents   : tuple    = ('Stage', 'TemplateRegistry', 'ItemHandlerRegistry')                      
+    _unique_children  : tuple    = ()                                                                        
+    _unique_commands  : tuple    = ()                                                                        
+    _unique_constants : tuple    = ('mvDeactivatedHandler',)                                                 
+    _command          : Callable = dearpygui.add_item_deactivated_handler                                    
 
     def __init__(
         self                                      ,
@@ -972,20 +976,20 @@ class EditedHandler(Item):
     		Union[int, str]
     """
 
-    label             : str      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")             
-    user_data         : Any      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")         
-    use_internal_label: bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")
-    callback          : Callable = ItemAttribute("configuration", "get_item_configuration", "configure_item", "callback")          
-    show              : bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "show")              
+    label             : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    user_data         : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    callback          : Callable = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
-    _is_container     : bool     = False                                                                                           
-    _is_root_item     : bool     = False                                                                                           
-    _is_value_able    : bool     = False                                                                                           
-    _unique_parents   : tuple    = ('Stage', 'TemplateRegistry', 'ItemHandlerRegistry')                                            
-    _unique_children  : tuple    = ()                                                                                              
-    _unique_commands  : tuple    = ()                                                                                              
-    _unique_constants : tuple    = ('mvEditedHandler',)                                                                            
-    _command          : Callable = dearpygui.add_item_edited_handler                                                               
+    _is_container     : bool     = False                                                                     
+    _is_root_item     : bool     = False                                                                     
+    _is_value_able    : bool     = False                                                                     
+    _unique_parents   : tuple    = ('Stage', 'TemplateRegistry', 'ItemHandlerRegistry')                      
+    _unique_children  : tuple    = ()                                                                        
+    _unique_commands  : tuple    = ()                                                                        
+    _unique_constants : tuple    = ('mvEditedHandler',)                                                      
+    _command          : Callable = dearpygui.add_item_edited_handler                                         
 
     def __init__(
         self                                      ,
@@ -1024,20 +1028,20 @@ class DeactivatedAfterEditHandler(Item):
     		Union[int, str]
     """
 
-    label             : str      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")             
-    user_data         : Any      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")         
-    use_internal_label: bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")
-    callback          : Callable = ItemAttribute("configuration", "get_item_configuration", "configure_item", "callback")          
-    show              : bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "show")              
+    label             : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    user_data         : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    callback          : Callable = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
-    _is_container     : bool     = False                                                                                           
-    _is_root_item     : bool     = False                                                                                           
-    _is_value_able    : bool     = False                                                                                           
-    _unique_parents   : tuple    = ('Stage', 'TemplateRegistry', 'ItemHandlerRegistry')                                            
-    _unique_children  : tuple    = ()                                                                                              
-    _unique_commands  : tuple    = ()                                                                                              
-    _unique_constants : tuple    = ('mvDeactivatedAfterEditHandler',)                                                              
-    _command          : Callable = dearpygui.add_item_deactivated_after_edit_handler                                               
+    _is_container     : bool     = False                                                                     
+    _is_root_item     : bool     = False                                                                     
+    _is_value_able    : bool     = False                                                                     
+    _unique_parents   : tuple    = ('Stage', 'TemplateRegistry', 'ItemHandlerRegistry')                      
+    _unique_children  : tuple    = ()                                                                        
+    _unique_commands  : tuple    = ()                                                                        
+    _unique_constants : tuple    = ('mvDeactivatedAfterEditHandler',)                                        
+    _command          : Callable = dearpygui.add_item_deactivated_after_edit_handler                         
 
     def __init__(
         self                                      ,
@@ -1076,20 +1080,20 @@ class ToggledOpenHandler(Item):
     		Union[int, str]
     """
 
-    label             : str      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")             
-    user_data         : Any      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")         
-    use_internal_label: bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")
-    callback          : Callable = ItemAttribute("configuration", "get_item_configuration", "configure_item", "callback")          
-    show              : bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "show")              
+    label             : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    user_data         : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    callback          : Callable = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
-    _is_container     : bool     = False                                                                                           
-    _is_root_item     : bool     = False                                                                                           
-    _is_value_able    : bool     = False                                                                                           
-    _unique_parents   : tuple    = ('Stage', 'TemplateRegistry', 'ItemHandlerRegistry')                                            
-    _unique_children  : tuple    = ()                                                                                              
-    _unique_commands  : tuple    = ()                                                                                              
-    _unique_constants : tuple    = ('mvToggledOpenHandler',)                                                                       
-    _command          : Callable = dearpygui.add_item_toggled_open_handler                                                         
+    _is_container     : bool     = False                                                                     
+    _is_root_item     : bool     = False                                                                     
+    _is_value_able    : bool     = False                                                                     
+    _unique_parents   : tuple    = ('Stage', 'TemplateRegistry', 'ItemHandlerRegistry')                      
+    _unique_children  : tuple    = ()                                                                        
+    _unique_commands  : tuple    = ()                                                                        
+    _unique_constants : tuple    = ('mvToggledOpenHandler',)                                                 
+    _command          : Callable = dearpygui.add_item_toggled_open_handler                                   
 
     def __init__(
         self                                      ,
@@ -1129,21 +1133,21 @@ class ClickedHandler(Item):
     		Union[int, str]
     """
 
-    button            : int      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "button")            
-    label             : str      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")             
-    user_data         : Any      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")         
-    use_internal_label: bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")
-    callback          : Callable = ItemAttribute("configuration", "get_item_configuration", "configure_item", "callback")          
-    show              : bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "show")              
+    button            : int      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    label             : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    user_data         : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    callback          : Callable = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
-    _is_container     : bool     = False                                                                                           
-    _is_root_item     : bool     = False                                                                                           
-    _is_value_able    : bool     = False                                                                                           
-    _unique_parents   : tuple    = ('Stage', 'TemplateRegistry', 'ItemHandlerRegistry')                                            
-    _unique_children  : tuple    = ()                                                                                              
-    _unique_commands  : tuple    = ()                                                                                              
-    _unique_constants : tuple    = ('mvClickedHandler',)                                                                           
-    _command          : Callable = dearpygui.add_item_clicked_handler                                                              
+    _is_container     : bool     = False                                                                     
+    _is_root_item     : bool     = False                                                                     
+    _is_value_able    : bool     = False                                                                     
+    _unique_parents   : tuple    = ('Stage', 'TemplateRegistry', 'ItemHandlerRegistry')                      
+    _unique_children  : tuple    = ()                                                                        
+    _unique_commands  : tuple    = ()                                                                        
+    _unique_constants : tuple    = ('mvClickedHandler',)                                                     
+    _command          : Callable = dearpygui.add_item_clicked_handler                                        
 
     def __init__(
         self                                      ,

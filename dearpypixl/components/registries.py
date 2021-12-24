@@ -49,10 +49,10 @@ def _manage_handler(handler: Item):
 
 
 class AppEvents(Item):
-    label             : str      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")                                                                                                                               
-    user_data         : Any      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")                                                                                                                           
-    use_internal_label: bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")                                                                                                                  
-    show              : bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "show")                                                                                                                                
+    label             : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", "label")                                                                                                                               
+    user_data         : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", "user_data")                                                                                                                           
+    use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", "use_internal_label")                                                                                                                  
+    show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", "show")                                                                                                                                
 
     _is_container     : bool     = True                                                                                                                                                                                                              
     _is_root_item     : bool     = True                                                                                                                                                                                                              
@@ -131,10 +131,10 @@ class AppEvents(Item):
 
 
 class ItemEvents(Item):
-    label             : str      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")                                                                                                                                   
-    user_data         : Any      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")                                                                                                                               
-    use_internal_label: bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")                                                                                                                      
-    show              : bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "show")                                                                                                                                    
+    label             : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", "label")                                                                                                                                   
+    user_data         : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", "user_data")                                                                                                                               
+    use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", "use_internal_label")                                                                                                                      
+    show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", "show")                                                                                                                                    
 
     _is_container     : bool     = True                                                                                                                                                                                                                  
     _is_root_item     : bool     = True                                                                                                                                                                                                                  

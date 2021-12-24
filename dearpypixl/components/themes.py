@@ -70,9 +70,9 @@ class Theme(Item):
     destroys the previous one. However, an error will occur when trying to
     manually unbind an item from a Theme that isn't bound.
     """
-    label             : str      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")             
-    user_data         : Any      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")         
-    use_internal_label: bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")
+    label             : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", "label")             
+    user_data         : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", "user_data")         
+    use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", "use_internal_label")
 
     _is_container     : bool     = True                                                                                            
     _is_root_item     : bool     = True                                                                                            
@@ -88,20 +88,16 @@ class Theme(Item):
         label: str = None,
         font: Union[str, Font] = None,
         font_size: float = 12.0, 
-        *,
-        incl_theme_presets: bool = True,
     ):
         self.__target_uuids: set[int] = set()
-        self.__preset = incl_theme_presets
         self.__font: Font = font
         self.__font_uuid: int = 0
         self.__font_size_value: float = font_size
 
         super().__init__(label=label)
 
-        if incl_theme_presets:
-            self.color = ThemeColorComponent(ItemIndex.ALL, enabled_state=True, parent=self.tag)
-            self.style = ThemeStyleComponent(ItemIndex.ALL, enabled_state=True, parent=self.tag)
+        self.color = ThemeColorComponent(ItemIndex.ALL, enabled_state=True, parent=self.tag)
+        self.style = ThemeStyleComponent(ItemIndex.ALL, enabled_state=True, parent=self.tag)
 
     def __enter__(self):
         push_container_stack(self._tag)
@@ -163,16 +159,6 @@ class Theme(Item):
                 for target in targets if
                 (target_item := appitems.get(target, None))]
 
-    def renew(self) -> None:
-        """Deletes all of the theme's children, including theme components.
-        Any presets will be re-created if `include_presets` was True on
-        instantiation.
-        """
-        super().delete(children_only=True)
-        if self.__preset:
-            self.color = ThemeColorComponent(ItemIndex.ALL, enabled_state=True, parent=self.tag)
-            self.style = ThemeStyleComponent(ItemIndex.ALL, enabled_state=True, parent=self.tag)
-
     def bind(self, *item: Item) -> None:
         """Link item(s) to the theme. If no item is passed, the theme will
         be set as the new default theme.
@@ -192,7 +178,7 @@ class Theme(Item):
         if not item:
             bind_theme(self_uuid)
             bind_font(self.__font_uuid)
-            type(self).__default_theme_uuid = self_uuid
+            type(self)._default_theme_uuid = self_uuid
    
     def unbind(self, *item: Item) -> None:
         """Unlink item(s) from the theme. If no item is passed and the theme
@@ -210,10 +196,10 @@ class Theme(Item):
             bind_item_font(i._tag, 0)  # 0 is system default theme
         
         # If default, unset
-        if not item and self._tag == type(self).__default_theme_uuid:
+        if not item and self._tag == type(self)._default_theme_uuid:
             bind_theme(0)
             bind_font(0)
-            type(self).__default_theme_uuid = 0
+            type(self)._default_theme_uuid = 0
 
     def __update_targets_font(self):
         # font.setter uses this to bind a new font (size) to all bound items.
@@ -225,18 +211,18 @@ class Theme(Item):
             bind_item_font(item_uuid, font_uuid)
 
         # If this theme is also the default theme:
-        if self._tag == type(self).__default_theme_uuid:
+        if self._tag == type(self)._default_theme_uuid:
             bind_font(font_uuid)
 
-    __default_theme_uuid = 0  # no way to fetch via DPG API
+    _default_theme_uuid = 0  # no way to fetch via DPG API
             
 
 class ThemeComponent(Item):
-    item_type         : Union[int, ItemIndex]    =  ItemAttribute("configuration", "get_unmanagable", None, "item_type")
-    label             : str                      =  ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")             
-    user_data         : Any                      =  ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")         
-    use_internal_label: bool                     =  ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")
-    enabled_state     : bool                     =  ItemAttribute("configuration", "get_item_configuration", "configure_item", "enabled_state")     
+    item_type         : Union[int, ItemIndex]    =  ItemAttribute("configuration", "get_item_cached", None, "item_type")
+    label             : str                      =  ItemAttribute("configuration", "get_item_config", "set_item_config", "label")             
+    user_data         : Any                      =  ItemAttribute("configuration", "get_item_config", "set_item_config", "user_data")         
+    use_internal_label: bool                     =  ItemAttribute("configuration", "get_item_config", "set_item_config", "use_internal_label")
+    enabled_state     : bool                     =  ItemAttribute("configuration", "get_item_config", "set_item_config", "enabled_state")     
 
     _is_container     : bool                     =  True                                                                                            
     _is_root_item     : bool                     =  False                                                                                           

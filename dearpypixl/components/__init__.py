@@ -11,13 +11,19 @@ from dearpygui._dearpygui import (
 from dearpypixl.item import (
     item_attribute,
     ItemAttribute,
+
     ItemT,
+    TemplateT,
+    ItemLikeT,
+
+    Template,
     ProtoItem,
-    Item,    
+    Item,  
+    ItemLike,  
 )
 from dearpypixl.components.registries import *
 from dearpypixl.components.themes import Theme, ThemeComponent, ThemeColorComponent, ThemeStyleComponent, Font
-from dearpypixl.components.other import UniqueItemMeta, ItemLike, UpdaterList
+from dearpypixl.components.other import UniqueItemMeta, UpdaterList
 
 
 __all__ = [
@@ -29,14 +35,14 @@ __all__ = [
     "Widget",
 ]
 
-# Item types
-ItemT          = ItemT
-AppItemT       = TypeVar("AppItemT"      , bound='Widget')
-ContainerItemT = TypeVar("ContainerItemT", bound='Container')
+PixlItemT       = TypeVar("PixlItemT"      , bound='Widget')
+ContainerItemT  = TypeVar("ContainerItemT", bound='Container')
 
 
 
 class Widget(Item, metaclass=ABCMeta):
+    __slots__ = ("__events_uuid")
+
     @abstractmethod
     def _command() -> Callable: ...
 
@@ -49,7 +55,7 @@ class Widget(Item, metaclass=ABCMeta):
             return None
         if theme:
             if theme is True:
-                self.theme = Theme(incl_theme_presets=True)
+                self.theme = Theme()
             else:
                 self.theme = theme
         if events:
@@ -93,6 +99,8 @@ class Widget(Item, metaclass=ABCMeta):
 
 
 class Container(Widget, metaclass=ABCMeta):
+    __slots__ = ()
+    
     @abstractmethod
     def _command() -> Callable: ...
 

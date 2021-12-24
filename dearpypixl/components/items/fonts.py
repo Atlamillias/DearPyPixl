@@ -8,7 +8,8 @@ from typing import (
     List,
 )
 from dearpygui import dearpygui
-from dearpypixl.item import Item, ItemAttribute
+from dearpypixl.item.item import Item
+from dearpypixl.item.configuration import ItemAttribute
 
 ##################################################
 ####### NOTE: This file is auto-generated. #######
@@ -40,20 +41,20 @@ class Font(Item):
     		Union[int, str]
     """
 
-    file              : str      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "file")              
-    size              : int      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "size")              
-    label             : str      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")             
-    user_data         : Any      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")         
-    use_internal_label: bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")
+    file              : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)  
+    size              : int      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)  
+    label             : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)  
+    user_data         : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)  
+    use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)  
 
-    _is_container     : bool     = True                                                                                            
-    _is_root_item     : bool     = False                                                                                           
-    _is_value_able    : bool     = False                                                                                           
-    _unique_parents   : tuple    = ('FontRegistry',)                                                                               
-    _unique_children  : tuple    = ('FontChars', 'FontRange', 'CharRemap', 'FontRangeHint', 'TemplateRegistry')                    
-    _unique_commands  : tuple    = ('bind_font', 'get_text_size')                                                                  
-    _unique_constants : tuple    = ('mvFont',)                                                                                     
-    _command          : Callable = dearpygui.add_font                                                                              
+    _is_container     : bool     = True                                                                        
+    _is_root_item     : bool     = False                                                                       
+    _is_value_able    : bool     = False                                                                       
+    _unique_parents   : tuple    = ('FontRegistry',)                                                           
+    _unique_children  : tuple    = ('FontChars', 'FontRange', 'CharRemap', 'FontRangeHint', 'TemplateRegistry')
+    _unique_commands  : tuple    = ('bind_font', 'get_text_size')                                              
+    _unique_constants : tuple    = ('mvFont',)                                                                 
+    _command          : Callable = dearpygui.add_font                                                          
 
     def __init__(
         self                                      ,
@@ -91,19 +92,19 @@ class FontChars(Item):
     		Union[int, str]
     """
 
-    chars             : Union[List[int], Tuple[int, ...]] = ItemAttribute("configuration", "get_item_configuration", "configure_item", "chars")             
-    label             : str                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")             
-    user_data         : Any                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")         
-    use_internal_label: bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")
+    chars             : Union[List[int], Tuple[int, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    label             : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    user_data         : Any                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    use_internal_label: bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
-    _is_container     : bool                              = False                                                                                           
-    _is_root_item     : bool                              = False                                                                                           
-    _is_value_able    : bool                              = False                                                                                           
-    _unique_parents   : tuple                             = ('Font', 'TemplateRegistry')                                                                    
-    _unique_children  : tuple                             = ()                                                                                              
-    _unique_commands  : tuple                             = ()                                                                                              
-    _unique_constants : tuple                             = ('mvFontChars',)                                                                                
-    _command          : Callable                          = dearpygui.add_font_chars                                                                        
+    _is_container     : bool                              = False                                                                     
+    _is_root_item     : bool                              = False                                                                     
+    _is_value_able    : bool                              = False                                                                     
+    _unique_parents   : tuple                             = ('Font', 'TemplateRegistry')                                              
+    _unique_children  : tuple                             = ()                                                                        
+    _unique_commands  : tuple                             = ()                                                                        
+    _unique_constants : tuple                             = ('mvFontChars',)                                                          
+    _command          : Callable                          = dearpygui.add_font_chars                                                  
 
     def __init__(
         self                                                       ,
@@ -140,20 +141,20 @@ class FontRange(Item):
     		Union[int, str]
     """
 
-    first_char        : int      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "first_char")        
-    last_char         : int      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "last_char")         
-    label             : str      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")             
-    user_data         : Any      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")         
-    use_internal_label: bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")
+    first_char        : int      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    last_char         : int      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    label             : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    user_data         : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
-    _is_container     : bool     = False                                                                                           
-    _is_root_item     : bool     = False                                                                                           
-    _is_value_able    : bool     = False                                                                                           
-    _unique_parents   : tuple    = ('Font', 'TemplateRegistry')                                                                    
-    _unique_children  : tuple    = ()                                                                                              
-    _unique_commands  : tuple    = ()                                                                                              
-    _unique_constants : tuple    = ('mvFontRange',)                                                                                
-    _command          : Callable = dearpygui.add_font_range                                                                        
+    _is_container     : bool     = False                                                                     
+    _is_root_item     : bool     = False                                                                     
+    _is_value_able    : bool     = False                                                                     
+    _unique_parents   : tuple    = ('Font', 'TemplateRegistry')                                              
+    _unique_children  : tuple    = ()                                                                        
+    _unique_commands  : tuple    = ()                                                                        
+    _unique_constants : tuple    = ('mvFontRange',)                                                          
+    _command          : Callable = dearpygui.add_font_range                                                  
 
     def __init__(
         self                                      ,
@@ -191,10 +192,10 @@ class FontRangeHint(Item):
     		Union[int, str]
     """
 
-    hint              : int      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "hint")                                                                                                                                                                                 
-    label             : str      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")                                                                                                                                                                                
-    user_data         : Any      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")                                                                                                                                                                            
-    use_internal_label: bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")                                                                                                                                                                   
+    hint              : int      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                         
+    label             : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                         
+    user_data         : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                         
+    use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                         
 
     _is_container     : bool     = False                                                                                                                                                                                                                                                              
     _is_root_item     : bool     = False                                                                                                                                                                                                                                                              
@@ -240,20 +241,20 @@ class CharRemap(Item):
     		Union[int, str]
     """
 
-    source            : int      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "source")            
-    target            : int      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "target")            
-    label             : str      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")             
-    user_data         : Any      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")         
-    use_internal_label: bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")
+    source            : int      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    target            : int      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    label             : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    user_data         : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
-    _is_container     : bool     = False                                                                                           
-    _is_root_item     : bool     = False                                                                                           
-    _is_value_able    : bool     = False                                                                                           
-    _unique_parents   : tuple    = ('Font', 'TemplateRegistry')                                                                    
-    _unique_children  : tuple    = ()                                                                                              
-    _unique_commands  : tuple    = ()                                                                                              
-    _unique_constants : tuple    = ('mvCharRemap',)                                                                                
-    _command          : Callable = dearpygui.add_char_remap                                                                        
+    _is_container     : bool     = False                                                                     
+    _is_root_item     : bool     = False                                                                     
+    _is_value_able    : bool     = False                                                                     
+    _unique_parents   : tuple    = ('Font', 'TemplateRegistry')                                              
+    _unique_children  : tuple    = ()                                                                        
+    _unique_commands  : tuple    = ()                                                                        
+    _unique_constants : tuple    = ('mvCharRemap',)                                                          
+    _command          : Callable = dearpygui.add_char_remap                                                  
 
     def __init__(
         self                                      ,

@@ -8,7 +8,8 @@ from typing import (
     List,
 )
 from dearpygui import dearpygui
-from dearpypixl.item import Item, ItemAttribute
+from dearpypixl.item.item import Item
+from dearpypixl.item.configuration import ItemAttribute
 
 ##################################################
 ####### NOTE: This file is auto-generated. #######
@@ -38,9 +39,9 @@ class ValueRegistry(Item):
     		Union[int, str]
     """
 
-    label             : str      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")                                                                             
-    user_data         : Any      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")                                                                         
-    use_internal_label: bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")                                                                
+    label             : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                      
+    user_data         : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                      
+    use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                      
 
     _is_container     : bool     = True                                                                                                                                                            
     _is_root_item     : bool     = True                                                                                                                                                            
@@ -80,19 +81,19 @@ class TextureRegistry(Item):
     		Union[int, str]
     """
 
-    label             : str      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")             
-    user_data         : Any      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")         
-    use_internal_label: bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")
-    show              : bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "show")              
+    label             : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    user_data         : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
-    _is_container     : bool     = True                                                                                            
-    _is_root_item     : bool     = True                                                                                            
-    _is_value_able    : bool     = False                                                                                           
-    _unique_parents   : tuple    = ()                                                                                              
-    _unique_children  : tuple    = ('StaticTexture', 'DynamicTexture', 'RawTexture')                                               
-    _unique_commands  : tuple    = ()                                                                                              
-    _unique_constants : tuple    = ('mvTextureRegistry',)                                                                          
-    _command          : Callable = dearpygui.add_texture_registry                                                                  
+    _is_container     : bool     = True                                                                      
+    _is_root_item     : bool     = True                                                                      
+    _is_value_able    : bool     = False                                                                     
+    _unique_parents   : tuple    = ()                                                                        
+    _unique_children  : tuple    = ('StaticTexture', 'DynamicTexture', 'RawTexture')                         
+    _unique_commands  : tuple    = ()                                                                        
+    _unique_constants : tuple    = ('mvTextureRegistry',)                                                    
+    _command          : Callable = dearpygui.add_texture_registry                                            
 
     def __init__(
         self                            ,
@@ -125,10 +126,10 @@ class HandlerRegistry(Item):
     		Union[int, str]
     """
 
-    label             : str      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")                                                                                                                               
-    user_data         : Any      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")                                                                                                                           
-    use_internal_label: bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")                                                                                                                  
-    show              : bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "show")                                                                                                                                
+    label             : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                        
+    user_data         : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                        
+    use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                        
+    show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                        
 
     _is_container     : bool     = True                                                                                                                                                                                                              
     _is_root_item     : bool     = True                                                                                                                                                                                                              
@@ -170,10 +171,10 @@ class ItemHandlerRegistry(Item):
     		Union[int, str]
     """
 
-    label             : str      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")                                                                                                                                   
-    user_data         : Any      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")                                                                                                                               
-    use_internal_label: bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")                                                                                                                      
-    show              : bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "show")                                                                                                                                    
+    label             : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                            
+    user_data         : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                            
+    use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                            
+    show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                            
 
     _is_container     : bool     = True                                                                                                                                                                                                                  
     _is_root_item     : bool     = True                                                                                                                                                                                                                  
@@ -215,19 +216,19 @@ class ColorMapRegistry(Item):
     		Union[int, str]
     """
 
-    label             : str      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")             
-    user_data         : Any      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")         
-    use_internal_label: bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")
-    show              : bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "show")              
+    label             : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    user_data         : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
-    _is_container     : bool     = True                                                                                            
-    _is_root_item     : bool     = True                                                                                            
-    _is_value_able    : bool     = False                                                                                           
-    _unique_parents   : tuple    = ()                                                                                              
-    _unique_children  : tuple    = ('ColorMap',)                                                                                   
-    _unique_commands  : tuple    = ()                                                                                              
-    _unique_constants : tuple    = ('mvColorMapRegistry',)                                                                         
-    _command          : Callable = dearpygui.add_colormap_registry                                                                 
+    _is_container     : bool     = True                                                                      
+    _is_root_item     : bool     = True                                                                      
+    _is_value_able    : bool     = False                                                                     
+    _unique_parents   : tuple    = ()                                                                        
+    _unique_children  : tuple    = ('ColorMap',)                                                             
+    _unique_commands  : tuple    = ()                                                                        
+    _unique_constants : tuple    = ('mvColorMapRegistry',)                                                   
+    _command          : Callable = dearpygui.add_colormap_registry                                           
 
     def __init__(
         self                            ,
@@ -259,18 +260,18 @@ class TemplateRegistry(Item):
     		Union[int, str]
     """
 
-    label             : str      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")             
-    user_data         : Any      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")         
-    use_internal_label: bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")
+    label             : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    user_data         : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
-    _is_container     : bool     = True                                                                                            
-    _is_root_item     : bool     = True                                                                                            
-    _is_value_able    : bool     = False                                                                                           
-    _unique_parents   : tuple    = ()                                                                                              
-    _unique_children  : tuple    = ()                                                                                              
-    _unique_commands  : tuple    = ()                                                                                              
-    _unique_constants : tuple    = ('mvTemplateRegistry',)                                                                         
-    _command          : Callable = dearpygui.add_template_registry                                                                 
+    _is_container     : bool     = True                                                                      
+    _is_root_item     : bool     = True                                                                      
+    _is_value_able    : bool     = False                                                                     
+    _unique_parents   : tuple    = ()                                                                        
+    _unique_children  : tuple    = ()                                                                        
+    _unique_commands  : tuple    = ()                                                                        
+    _unique_constants : tuple    = ('mvTemplateRegistry',)                                                   
+    _command          : Callable = dearpygui.add_template_registry                                           
 
     def __init__(
         self                           ,
@@ -301,19 +302,19 @@ class FontRegistry(Item):
     		Union[int, str]
     """
 
-    label             : str      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")             
-    user_data         : Any      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")         
-    use_internal_label: bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")
-    show              : bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "show")              
+    label             : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    user_data         : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
-    _is_container     : bool     = True                                                                                            
-    _is_root_item     : bool     = True                                                                                            
-    _is_value_able    : bool     = False                                                                                           
-    _unique_parents   : tuple    = ()                                                                                              
-    _unique_children  : tuple    = ('Font',)                                                                                       
-    _unique_commands  : tuple    = ()                                                                                              
-    _unique_constants : tuple    = ('mvFontRegistry',)                                                                             
-    _command          : Callable = dearpygui.add_font_registry                                                                     
+    _is_container     : bool     = True                                                                      
+    _is_root_item     : bool     = True                                                                      
+    _is_value_able    : bool     = False                                                                     
+    _unique_parents   : tuple    = ()                                                                        
+    _unique_children  : tuple    = ('Font',)                                                                 
+    _unique_commands  : tuple    = ()                                                                        
+    _unique_constants : tuple    = ('mvFontRegistry',)                                                       
+    _command          : Callable = dearpygui.add_font_registry                                               
 
     def __init__(
         self                           ,
