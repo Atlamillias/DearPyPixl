@@ -1,18 +1,17 @@
-from typing import Union
+from typing import Union, Callable, Any
 from time import sleep
 
 from dearpygui import _dearpygui
 
 import dearpypixl.appitems.containers
 from dearpypixl.appitems.containers import *
-from dearpypixl.components import Container, Widget, ItemEvents, item_attribute, ItemAttribute, ContainerItemT, AppItemT
+from dearpypixl.components import Container, Widget, ItemEvents, item_attribute, ItemAttribute, ContainerItemT, PixlItemT
 from dearpypixl.components.handlers import (
     ClickedHandler,
     HoverHandler,
     VisibleHandler
 )
 from dearpypixl.constants import Key, Mouse
-
 
 __all__ = [
     *dearpypixl.appitems.containers.__all__,
@@ -49,7 +48,7 @@ class Tooltip(Window):
     # all other items when it is not focused. Awaiting DPG update.
     def __init__(
         self,
-        target  : AppItemT = None,
+        target  : PixlItemT = None,
         delay   : int      = 0,
         x_offset: int      = 25,
         y_offset: int      = 0,
@@ -68,7 +67,7 @@ class Tooltip(Window):
             **kwargs,
         )
         VisibleHandler(parent=self.events, callback=self.__call_on_visible)
-        self.__target              : AppItemT     = None
+        self.__target              : PixlItemT     = None
         self.__target_uuid         : int          = None
         self.__target_hover_handler: HoverHandler = None
         # This is only used if a delay is needed.
@@ -81,13 +80,13 @@ class Tooltip(Window):
 
     @property
     @item_attribute(category="configuration")
-    def target(self) -> Union[AppItemT, None]:
+    def target(self) -> Union[PixlItemT, None]:
         """The item that, when hovered, will cause this item to display.
         """
         return self.__target
     @target.setter
-    def target(self, value: Union[AppItemT, None]):
-        if not isinstance(value, (Widget, None)):
+    def target(self, value: Union[PixlItemT, None]):
+        if not isinstance(value, Widget) and value is not None:
             raise TypeError(f"`target` must `Widget` or `None` type (got {type(value).__qualname__!r}).")
         elif value and not hasattr(value, "is_hovered"):
             raise ValueError(f"`target` is unsupported: {type(value).__qualname__!r} does not have `is_hovered` state.")
@@ -148,7 +147,7 @@ class Popup(Window):
     """
     def __init__(
         self,
-        target: Union[AppItemT, None] = None,
+        target: Union[PixlItemT, None] = None,
         button: Union[Mouse, int]     = Mouse.ANY,
         modal : bool                  = False,
         **kwargs,
@@ -184,13 +183,13 @@ class Popup(Window):
             
     @property
     @item_attribute(category="configuration")
-    def target(self) -> Union[AppItemT, None]:
+    def target(self) -> Union[PixlItemT, None]:
         """The item that, when clicked, will cause this item to display.
         """
         return self.__target
     @target.setter
-    def target(self, value: Union[AppItemT, None]) -> None:
-        if not isinstance(value, (Widget, None)):
+    def target(self, value: Union[PixlItemT, None]) -> None:
+        if not isinstance(value, Widget) and value is not None:
             raise TypeError(f"`target` must `Widget` or `None` type (got {type(value).__qualname__!r}).")
         elif value and not hasattr(value, "is_clicked"):
             raise ValueError(f"`target` is unsupported: {type(value).__qualname__!r} does not have `is_clicked` state.")
@@ -222,13 +221,6 @@ class Popup(Window):
 ####### Extensions #######
 ##########################
 class Window(Window):
-    def __init__(self, on_close = None, **kwargs):
-        self._call_on_close = []
-        super().__init__(on_close=self.__on_close, **kwargs)
-
-    def __on_close(self):
-        return [f() for f in self._call_on_close]
-
     @property
     @item_attribute(category="information")
     def y_scroll_pos(self) -> float:
@@ -321,9 +313,14 @@ class TabBar(TabBar):
         """The currently selected tab.
         """
         active_tab_id = _dearpygui.get_value(self.tag)
-        if active_tab_id == 0 and (childs := self.children()):
+        if active_tab_id:
+            return self._AppItemsRegistry[active_tab_id, active_tab_id]
+        
+        childs = self.children()
+        if not childs:
+            return None
+        else:
             return childs[0]
-        return self._raw_items.get(active_tab_id, active_tab_id)
     @active_tab.setter
     def active_tab(self, value: Tab):
         _dearpygui.set_value(self.tag, value.tag)
