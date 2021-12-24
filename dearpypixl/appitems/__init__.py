@@ -1,14 +1,14 @@
 __all__ = [
-    'textures',
-    'containers',
     'plotting',
     'misc',
+    'colors',
+    'tables',
+    'nodes',
+    'containers',
     'values',
     'basic',
-    'nodes',
-    'tables',
+    'textures',
     'drawing',
-    'colors',
 ]
 
-__version__ = '1.1'
+__version__ = '1.1.1'

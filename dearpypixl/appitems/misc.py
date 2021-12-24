@@ -16,7 +16,6 @@ from dearpypixl.components import *
 
 __all__ = [
     "ProgressBar",
-    "ItemSet",
     "Spacer",
     "Separator",
     "TimePicker",
@@ -58,33 +57,33 @@ class ProgressBar(Widget):
     		Union[int, str]
     """
 
-    label             : str                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")             
-    user_data         : Any                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")         
-    use_internal_label: bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")
-    width             : int                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "width")             
-    height            : int                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "height")            
-    indent            : int                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "indent")            
-    source            : Union[int, str]                   = ItemAttribute("configuration", "get_item_configuration", "configure_item", "source")            
-    payload_type      : str                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "payload_type")      
-    drag_callback     : Callable                          = ItemAttribute("configuration", "get_item_configuration", "configure_item", "drag_callback")     
-    drop_callback     : Callable                          = ItemAttribute("configuration", "get_item_configuration", "configure_item", "drop_callback")     
-    show              : bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "show")              
-    pos               : Union[List[int], Tuple[int, ...]] = ItemAttribute('configuration', 'get_item_state', 'configure_item', 'pos')                       
-    filter_key        : str                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "filter_key")        
-    tracked           : bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "tracked")           
-    track_offset      : float                             = ItemAttribute("configuration", "get_item_configuration", "configure_item", "track_offset")      
-    overlay           : str                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "overlay")           
-    default_value     : float                             = ItemAttribute('information', 'get_unmanagable', None, 'default_value')                          
-    value             : float                             = ItemAttribute("configuration", "get_value", "set_value", "default_value")                       
+    label             : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    user_data         : Any                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    use_internal_label: bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    width             : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    height            : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    indent            : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    source            : Union[int, str]                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    payload_type      : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    drag_callback     : Callable                          = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    drop_callback     : Callable                          = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    show              : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    pos               : Union[List[int], Tuple[int, ...]] = ItemAttribute('configuration', 'get_item_state', 'set_item_config', None)          
+    filter_key        : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    tracked           : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    track_offset      : float                             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    overlay           : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    default_value     : float                             = ItemAttribute('information', 'get_item_cached', None, None)                        
+    value             : float                             = ItemAttribute("configuration", "get_item_value", "set_item_value", "default_value")
 
-    _is_container     : bool                              = False                                                                                           
-    _is_root_item     : bool                              = False                                                                                           
-    _is_value_able    : bool                              = True                                                                                            
-    _unique_parents   : tuple                             = ()                                                                                              
-    _unique_children  : tuple                             = ()                                                                                              
-    _unique_commands  : tuple                             = ()                                                                                              
-    _unique_constants : tuple                             = ('mvProgressBar',)                                                                              
-    _command          : Callable                          = dearpygui.add_progress_bar                                                                      
+    _is_container     : bool                              = False                                                                              
+    _is_root_item     : bool                              = False                                                                              
+    _is_value_able    : bool                              = True                                                                               
+    _unique_parents   : tuple                             = ()                                                                                 
+    _unique_children  : tuple                             = ()                                                                                 
+    _unique_commands  : tuple                             = ()                                                                                 
+    _unique_constants : tuple                             = ('mvProgressBar',)                                                                 
+    _command          : Callable                          = dearpygui.add_progress_bar                                                         
 
     def __init__(
         self                                                                   ,
@@ -133,54 +132,6 @@ class ProgressBar(Widget):
         )
 
 
-class ItemSet(Widget):
-    """Adds an item set to an item pool.
-    
-    	Args:
-    		type (int): 
-    		count (int): 
-    		label (str, optional): Overrides 'name' as label.
-    		user_data (Any, optional): User data for callbacks
-    		use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
-    		tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-    		id (Union[int, str], optional): (deprecated) 
-    	Returns:
-    		Union[int, str]
-    """
-
-    count             : int      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "count")             
-    label             : str      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")             
-    user_data         : Any      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")         
-    use_internal_label: bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")
-
-    _is_container     : bool     = False                                                                                           
-    _is_root_item     : bool     = False                                                                                           
-    _is_value_able    : bool     = False                                                                                           
-    _unique_parents   : tuple    = ('ItemPool',)                                                                                   
-    _unique_children  : tuple    = ('ItemSet',)                                                                                    
-    _unique_commands  : tuple    = ()                                                                                              
-    _unique_constants : tuple    = ('mvItemPool',)                                                                                 
-    _command          : Callable = dearpygui.add_item_set                                                                          
-
-    def __init__(
-        self                           ,
-        item_type         : int        ,
-        count             : int        ,
-        label             : str  = None,
-        user_data         : Any  = None,
-        use_internal_label: bool = True,
-        **kwargs                       ,
-    ) -> None:
-        super().__init__(
-            item_type=item_type,
-            count=count,
-            label=label,
-            user_data=user_data,
-            use_internal_label=use_internal_label,
-            **kwargs,
-        )
-
-
 class Spacer(Widget):
     """Adds a spacer item that can be used to help with layouts or can be used as a placeholder item.
     
@@ -201,23 +152,23 @@ class Spacer(Widget):
     		Union[int, str]
     """
 
-    label             : str                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")             
-    user_data         : Any                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")         
-    use_internal_label: bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")
-    width             : int                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "width")             
-    height            : int                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "height")            
-    indent            : int                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "indent")            
-    show              : bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "show")              
-    pos               : Union[List[int], Tuple[int, ...]] = ItemAttribute('configuration', 'get_item_state', 'configure_item', 'pos')                       
+    label             : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    user_data         : Any                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    use_internal_label: bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    width             : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    height            : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    indent            : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    show              : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    pos               : Union[List[int], Tuple[int, ...]] = ItemAttribute('configuration', 'get_item_state', 'set_item_config', None) 
 
-    _is_container     : bool                              = False                                                                                           
-    _is_root_item     : bool                              = False                                                                                           
-    _is_value_able    : bool                              = False                                                                                           
-    _unique_parents   : tuple                             = ()                                                                                              
-    _unique_children  : tuple                             = ()                                                                                              
-    _unique_commands  : tuple                             = ()                                                                                              
-    _unique_constants : tuple                             = ('mvSpacer',)                                                                                   
-    _command          : Callable                          = dearpygui.add_spacer                                                                            
+    _is_container     : bool                              = False                                                                     
+    _is_root_item     : bool                              = False                                                                     
+    _is_value_able    : bool                              = False                                                                     
+    _unique_parents   : tuple                             = ()                                                                        
+    _unique_children  : tuple                             = ()                                                                        
+    _unique_commands  : tuple                             = ()                                                                        
+    _unique_constants : tuple                             = ('mvSpacer',)                                                             
+    _command          : Callable                          = dearpygui.add_spacer                                                      
 
     def __init__(
         self                                                        ,
@@ -266,21 +217,21 @@ class Separator(Widget):
     		Union[int, str]
     """
 
-    label             : str                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")             
-    user_data         : Any                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")         
-    use_internal_label: bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")
-    indent            : int                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "indent")            
-    show              : bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "show")              
-    pos               : Union[List[int], Tuple[int, ...]] = ItemAttribute('configuration', 'get_item_state', 'configure_item', 'pos')                       
+    label             : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    user_data         : Any                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    use_internal_label: bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    indent            : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    show              : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    pos               : Union[List[int], Tuple[int, ...]] = ItemAttribute('configuration', 'get_item_state', 'set_item_config', None) 
 
-    _is_container     : bool                              = False                                                                                           
-    _is_root_item     : bool                              = False                                                                                           
-    _is_value_able    : bool                              = False                                                                                           
-    _unique_parents   : tuple                             = ()                                                                                              
-    _unique_children  : tuple                             = ()                                                                                              
-    _unique_commands  : tuple                             = ()                                                                                              
-    _unique_constants : tuple                             = ('mvSeparator',)                                                                                
-    _command          : Callable                          = dearpygui.add_separator                                                                         
+    _is_container     : bool                              = False                                                                     
+    _is_root_item     : bool                              = False                                                                     
+    _is_value_able    : bool                              = False                                                                     
+    _unique_parents   : tuple                             = ()                                                                        
+    _unique_children  : tuple                             = ()                                                                        
+    _unique_commands  : tuple                             = ()                                                                        
+    _unique_constants : tuple                             = ('mvSeparator',)                                                          
+    _command          : Callable                          = dearpygui.add_separator                                                   
 
     def __init__(
         self                                                        ,
@@ -334,38 +285,38 @@ class TimePicker(Widget):
     		Union[int, str]
     """
 
-    label               : str                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")             
-    user_data           : Any                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")         
-    use_internal_label  : bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")
-    indent              : int                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "indent")            
-    payload_type        : str                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "payload_type")      
-    callback            : Callable                          = ItemAttribute("configuration", "get_item_configuration", "configure_item", "callback")          
-    drag_callback       : Callable                          = ItemAttribute("configuration", "get_item_configuration", "configure_item", "drag_callback")     
-    drop_callback       : Callable                          = ItemAttribute("configuration", "get_item_configuration", "configure_item", "drop_callback")     
-    show                : bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "show")              
-    pos                 : Union[List[int], Tuple[int, ...]] = ItemAttribute('configuration', 'get_item_state', 'configure_item', 'pos')                       
-    filter_key          : str                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "filter_key")        
-    tracked             : bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "tracked")           
-    track_offset        : float                             = ItemAttribute("configuration", "get_item_configuration", "configure_item", "track_offset")      
-    default_value       : dict                              = ItemAttribute('information', 'get_unmanagable', None, 'default_value')                          
-    hour24              : bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "hour24")            
-    value               : dict                              = ItemAttribute("configuration", "get_value", "set_value", "default_value")                       
+    label               : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    user_data           : Any                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    use_internal_label  : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    indent              : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    payload_type        : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    callback            : Callable                          = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    drag_callback       : Callable                          = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    drop_callback       : Callable                          = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    show                : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    pos                 : Union[List[int], Tuple[int, ...]] = ItemAttribute('configuration', 'get_item_state', 'set_item_config', None)          
+    filter_key          : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    tracked             : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    track_offset        : float                             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    default_value       : dict                              = ItemAttribute('information', 'get_item_cached', None, None)                        
+    hour24              : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    value               : dict                              = ItemAttribute("configuration", "get_item_value", "set_item_value", "default_value")
 
-    is_resized          : bool                              = ItemAttribute("state", "get_item_state", None, "resized")                                       
-    is_visible          : bool                              = ItemAttribute("state", "get_item_state", None, "visible")                                       
-    rect_min            : list[int, int]                    = ItemAttribute("state", "get_item_state", None, "rect_min")                                      
-    rect_max            : list[int, int]                    = ItemAttribute("state", "get_item_state", None, "rect_max")                                      
-    rect_size           : list[int, int]                    = ItemAttribute("state", "get_item_state", None, "rect_size")                                     
-    content_region_avail: list[int, int]                    = ItemAttribute("state", "get_item_state", None, "content_region_avail")                          
+    is_resized          : bool                              = ItemAttribute("state", "get_item_state", None, "resized")                          
+    is_visible          : bool                              = ItemAttribute("state", "get_item_state", None, "visible")                          
+    rect_min            : list[int, int]                    = ItemAttribute("state", "get_item_state", None, "rect_min")                         
+    rect_max            : list[int, int]                    = ItemAttribute("state", "get_item_state", None, "rect_max")                         
+    rect_size           : list[int, int]                    = ItemAttribute("state", "get_item_state", None, "rect_size")                        
+    content_region_avail: list[int, int]                    = ItemAttribute("state", "get_item_state", None, "content_region_avail")             
 
-    _is_container       : bool                              = False                                                                                           
-    _is_root_item       : bool                              = False                                                                                           
-    _is_value_able      : bool                              = True                                                                                            
-    _unique_parents     : tuple                             = ()                                                                                              
-    _unique_children    : tuple                             = ()                                                                                              
-    _unique_commands    : tuple                             = ()                                                                                              
-    _unique_constants   : tuple                             = ('mvTimePicker',)                                                                               
-    _command            : Callable                          = dearpygui.add_time_picker                                                                       
+    _is_container       : bool                              = False                                                                              
+    _is_root_item       : bool                              = False                                                                              
+    _is_value_able      : bool                              = True                                                                               
+    _unique_parents     : tuple                             = ()                                                                                 
+    _unique_children    : tuple                             = ()                                                                                 
+    _unique_commands    : tuple                             = ()                                                                                 
+    _unique_constants   : tuple                             = ('mvTimePicker',)                                                                  
+    _command            : Callable                          = dearpygui.add_time_picker                                                          
 
     def __init__(
         self                                                                                      ,
@@ -437,47 +388,47 @@ class DatePicker(Widget):
     		Union[int, str]
     """
 
-    label               : str                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")             
-    user_data           : Any                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")         
-    use_internal_label  : bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")
-    indent              : int                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "indent")            
-    payload_type        : str                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "payload_type")      
-    callback            : Callable                          = ItemAttribute("configuration", "get_item_configuration", "configure_item", "callback")          
-    drag_callback       : Callable                          = ItemAttribute("configuration", "get_item_configuration", "configure_item", "drag_callback")     
-    drop_callback       : Callable                          = ItemAttribute("configuration", "get_item_configuration", "configure_item", "drop_callback")     
-    show                : bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "show")              
-    pos                 : Union[List[int], Tuple[int, ...]] = ItemAttribute('configuration', 'get_item_state', 'configure_item', 'pos')                       
-    filter_key          : str                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "filter_key")        
-    tracked             : bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "tracked")           
-    track_offset        : float                             = ItemAttribute("configuration", "get_item_configuration", "configure_item", "track_offset")      
-    default_value       : dict                              = ItemAttribute('information', 'get_unmanagable', None, 'default_value')                          
-    level               : int                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "level")             
-    value               : dict                              = ItemAttribute("configuration", "get_value", "set_value", "default_value")                       
+    label               : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                    
+    user_data           : Any                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                    
+    use_internal_label  : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                    
+    indent              : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                    
+    payload_type        : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                    
+    callback            : Callable                          = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                    
+    drag_callback       : Callable                          = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                    
+    drop_callback       : Callable                          = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                    
+    show                : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                    
+    pos                 : Union[List[int], Tuple[int, ...]] = ItemAttribute('configuration', 'get_item_state', 'set_item_config', None)                     
+    filter_key          : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                    
+    tracked             : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                    
+    track_offset        : float                             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                    
+    default_value       : dict                              = ItemAttribute('information', 'get_item_cached', None, None)                                   
+    level               : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                    
+    value               : dict                              = ItemAttribute("configuration", "get_item_value", "set_item_value", "default_value")           
 
-    is_resized          : bool                              = ItemAttribute("state", "get_item_state", None, "resized")                                       
-    is_middle_clicked   : bool                              = ItemAttribute("state", "get_item_state", None, "middle_clicked")                                
-    is_right_clicked    : bool                              = ItemAttribute("state", "get_item_state", None, "right_clicked")                                 
-    is_left_clicked     : bool                              = ItemAttribute("state", "get_item_state", None, "left_clicked")                                  
-    is_hovered          : bool                              = ItemAttribute("state", "get_item_state", None, "hovered")                                       
-    is_active           : bool                              = ItemAttribute("state", "get_item_state", None, "active")                                        
-    is_focused          : bool                              = ItemAttribute("state", "get_item_state", None, "focused")                                       
-    is_clicked          : bool                              = ItemAttribute("state", "get_item_state", None, "clicked")                                       
-    is_visible          : bool                              = ItemAttribute("state", "get_item_state", None, "visible")                                       
-    is_activated        : bool                              = ItemAttribute("state", "get_item_state", None, "activated")                                     
-    is_deactivated      : bool                              = ItemAttribute("state", "get_item_state", None, "deactivated")                                   
-    rect_min            : list[int, int]                    = ItemAttribute("state", "get_item_state", None, "rect_min")                                      
-    rect_max            : list[int, int]                    = ItemAttribute("state", "get_item_state", None, "rect_max")                                      
-    rect_size           : list[int, int]                    = ItemAttribute("state", "get_item_state", None, "rect_size")                                     
-    content_region_avail: list[int, int]                    = ItemAttribute("state", "get_item_state", None, "content_region_avail")                          
+    is_resized          : bool                              = ItemAttribute("state", "get_item_state", None, "resized")                                     
+    is_middle_clicked   : bool                              = ItemAttribute("state", "get_item_state", None, "middle_clicked")                              
+    is_right_clicked    : bool                              = ItemAttribute("state", "get_item_state", None, "right_clicked")                               
+    is_left_clicked     : bool                              = ItemAttribute("state", "get_item_state", None, "left_clicked")                                
+    is_hovered          : bool                              = ItemAttribute("state", "get_item_state", None, "hovered")                                     
+    is_active           : bool                              = ItemAttribute("state", "get_item_state", None, "active")                                      
+    is_focused          : bool                              = ItemAttribute("state", "get_item_state", None, "focused")                                     
+    is_clicked          : bool                              = ItemAttribute("state", "get_item_state", None, "clicked")                                     
+    is_visible          : bool                              = ItemAttribute("state", "get_item_state", None, "visible")                                     
+    is_activated        : bool                              = ItemAttribute("state", "get_item_state", None, "activated")                                   
+    is_deactivated      : bool                              = ItemAttribute("state", "get_item_state", None, "deactivated")                                 
+    rect_min            : list[int, int]                    = ItemAttribute("state", "get_item_state", None, "rect_min")                                    
+    rect_max            : list[int, int]                    = ItemAttribute("state", "get_item_state", None, "rect_max")                                    
+    rect_size           : list[int, int]                    = ItemAttribute("state", "get_item_state", None, "rect_size")                                   
+    content_region_avail: list[int, int]                    = ItemAttribute("state", "get_item_state", None, "content_region_avail")                        
 
-    _is_container       : bool                              = False                                                                                           
-    _is_root_item       : bool                              = False                                                                                           
-    _is_value_able      : bool                              = True                                                                                            
-    _unique_parents     : tuple                             = ()                                                                                              
-    _unique_children    : tuple                             = ()                                                                                              
-    _unique_commands    : tuple                             = ()                                                                                              
-    _unique_constants   : tuple                             = ('mvDatePicker', 'mvDatePickerLevel_Day', 'mvDatePickerLevel_Month', 'mvDatePickerLevel_Year')  
-    _command            : Callable                          = dearpygui.add_date_picker                                                                       
+    _is_container       : bool                              = False                                                                                         
+    _is_root_item       : bool                              = False                                                                                         
+    _is_value_able      : bool                              = True                                                                                          
+    _unique_parents     : tuple                             = ()                                                                                            
+    _unique_children    : tuple                             = ()                                                                                            
+    _unique_commands    : tuple                             = ()                                                                                            
+    _unique_constants   : tuple                             = ('mvDatePicker', 'mvDatePickerLevel_Day', 'mvDatePickerLevel_Month', 'mvDatePickerLevel_Year')
+    _command            : Callable                          = dearpygui.add_date_picker                                                                     
 
     def __init__(
         self                                                                                             ,
@@ -558,48 +509,48 @@ class Slider3D(Widget):
     		Union[int, str]
     """
 
-    label               : str                                   = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")             
-    user_data           : Any                                   = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")         
-    use_internal_label  : bool                                  = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")
-    width               : int                                   = ItemAttribute("configuration", "get_item_configuration", "configure_item", "width")             
-    height              : int                                   = ItemAttribute("configuration", "get_item_configuration", "configure_item", "height")            
-    indent              : int                                   = ItemAttribute("configuration", "get_item_configuration", "configure_item", "indent")            
-    source              : Union[int, str]                       = ItemAttribute("configuration", "get_item_configuration", "configure_item", "source")            
-    payload_type        : str                                   = ItemAttribute("configuration", "get_item_configuration", "configure_item", "payload_type")      
-    callback            : Callable                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "callback")          
-    drag_callback       : Callable                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "drag_callback")     
-    drop_callback       : Callable                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "drop_callback")     
-    show                : bool                                  = ItemAttribute("configuration", "get_item_configuration", "configure_item", "show")              
-    pos                 : Union[List[int], Tuple[int, ...]]     = ItemAttribute('configuration', 'get_item_state', 'configure_item', 'pos')                       
-    filter_key          : str                                   = ItemAttribute("configuration", "get_item_configuration", "configure_item", "filter_key")        
-    tracked             : bool                                  = ItemAttribute("configuration", "get_item_configuration", "configure_item", "tracked")           
-    track_offset        : float                                 = ItemAttribute("configuration", "get_item_configuration", "configure_item", "track_offset")      
-    default_value       : Union[List[float], Tuple[float, ...]] = ItemAttribute('information', 'get_unmanagable', None, 'default_value')                          
-    max_x               : float                                 = ItemAttribute("configuration", "get_item_configuration", "configure_item", "max_x")             
-    max_y               : float                                 = ItemAttribute("configuration", "get_item_configuration", "configure_item", "max_y")             
-    max_z               : float                                 = ItemAttribute("configuration", "get_item_configuration", "configure_item", "max_z")             
-    min_x               : float                                 = ItemAttribute("configuration", "get_item_configuration", "configure_item", "min_x")             
-    min_y               : float                                 = ItemAttribute("configuration", "get_item_configuration", "configure_item", "min_y")             
-    min_z               : float                                 = ItemAttribute("configuration", "get_item_configuration", "configure_item", "min_z")             
-    scale               : float                                 = ItemAttribute("configuration", "get_item_configuration", "configure_item", "scale")             
-    value               : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_value", "set_value", "default_value")                       
+    label               : str                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    user_data           : Any                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    use_internal_label  : bool                                  = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    width               : int                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    height              : int                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    indent              : int                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    source              : Union[int, str]                       = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    payload_type        : str                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    callback            : Callable                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    drag_callback       : Callable                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    drop_callback       : Callable                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    show                : bool                                  = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    pos                 : Union[List[int], Tuple[int, ...]]     = ItemAttribute('configuration', 'get_item_state', 'set_item_config', None)          
+    filter_key          : str                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    tracked             : bool                                  = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    track_offset        : float                                 = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    default_value       : Union[List[float], Tuple[float, ...]] = ItemAttribute('information', 'get_item_cached', None, None)                        
+    max_x               : float                                 = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    max_y               : float                                 = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    max_z               : float                                 = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    min_x               : float                                 = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    min_y               : float                                 = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    min_z               : float                                 = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    scale               : float                                 = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    value               : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_value", "set_item_value", "default_value")
 
-    is_resized          : bool                                  = ItemAttribute("state", "get_item_state", None, "resized")                                       
-    is_hovered          : bool                                  = ItemAttribute("state", "get_item_state", None, "hovered")                                       
-    is_visible          : bool                                  = ItemAttribute("state", "get_item_state", None, "visible")                                       
-    rect_min            : list[int, int]                        = ItemAttribute("state", "get_item_state", None, "rect_min")                                      
-    rect_max            : list[int, int]                        = ItemAttribute("state", "get_item_state", None, "rect_max")                                      
-    rect_size           : list[int, int]                        = ItemAttribute("state", "get_item_state", None, "rect_size")                                     
-    content_region_avail: list[int, int]                        = ItemAttribute("state", "get_item_state", None, "content_region_avail")                          
+    is_resized          : bool                                  = ItemAttribute("state", "get_item_state", None, "resized")                          
+    is_hovered          : bool                                  = ItemAttribute("state", "get_item_state", None, "hovered")                          
+    is_visible          : bool                                  = ItemAttribute("state", "get_item_state", None, "visible")                          
+    rect_min            : list[int, int]                        = ItemAttribute("state", "get_item_state", None, "rect_min")                         
+    rect_max            : list[int, int]                        = ItemAttribute("state", "get_item_state", None, "rect_max")                         
+    rect_size           : list[int, int]                        = ItemAttribute("state", "get_item_state", None, "rect_size")                        
+    content_region_avail: list[int, int]                        = ItemAttribute("state", "get_item_state", None, "content_region_avail")             
 
-    _is_container       : bool                                  = False                                                                                           
-    _is_root_item       : bool                                  = False                                                                                           
-    _is_value_able      : bool                                  = True                                                                                            
-    _unique_parents     : tuple                                 = ()                                                                                              
-    _unique_children    : tuple                                 = ()                                                                                              
-    _unique_commands    : tuple                                 = ()                                                                                              
-    _unique_constants   : tuple                                 = ('mvSlider3D',)                                                                                 
-    _command            : Callable                              = dearpygui.add_3d_slider                                                                         
+    _is_container       : bool                                  = False                                                                              
+    _is_root_item       : bool                                  = False                                                                              
+    _is_value_able      : bool                                  = True                                                                               
+    _unique_parents     : tuple                                 = ()                                                                                 
+    _unique_children    : tuple                                 = ()                                                                                 
+    _unique_commands    : tuple                                 = ()                                                                                 
+    _unique_constants   : tuple                                 = ('mvSlider3D',)                                                                    
+    _command            : Callable                              = dearpygui.add_3d_slider                                                            
 
     def __init__(
         self                                                                            ,
@@ -693,52 +644,52 @@ class KnobFloat(Widget):
     		Union[int, str]
     """
 
-    label               : str                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")             
-    user_data           : Any                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")         
-    use_internal_label  : bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")
-    width               : int                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "width")             
-    height              : int                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "height")            
-    indent              : int                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "indent")            
-    source              : Union[int, str]                   = ItemAttribute("configuration", "get_item_configuration", "configure_item", "source")            
-    payload_type        : str                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "payload_type")      
-    callback            : Callable                          = ItemAttribute("configuration", "get_item_configuration", "configure_item", "callback")          
-    drag_callback       : Callable                          = ItemAttribute("configuration", "get_item_configuration", "configure_item", "drag_callback")     
-    drop_callback       : Callable                          = ItemAttribute("configuration", "get_item_configuration", "configure_item", "drop_callback")     
-    show                : bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "show")              
-    pos                 : Union[List[int], Tuple[int, ...]] = ItemAttribute('configuration', 'get_item_state', 'configure_item', 'pos')                       
-    filter_key          : str                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "filter_key")        
-    tracked             : bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "tracked")           
-    track_offset        : float                             = ItemAttribute("configuration", "get_item_configuration", "configure_item", "track_offset")      
-    default_value       : float                             = ItemAttribute('information', 'get_unmanagable', None, 'default_value')                          
-    min_value           : float                             = ItemAttribute("configuration", "get_item_configuration", "configure_item", "min_scale")         
-    max_value           : float                             = ItemAttribute("configuration", "get_item_configuration", "configure_item", "max_scale")         
-    value               : float                             = ItemAttribute("configuration", "get_value", "set_value", "default_value")                       
+    label               : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    user_data           : Any                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    use_internal_label  : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    width               : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    height              : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    indent              : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    source              : Union[int, str]                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    payload_type        : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    callback            : Callable                          = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    drag_callback       : Callable                          = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    drop_callback       : Callable                          = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    show                : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    pos                 : Union[List[int], Tuple[int, ...]] = ItemAttribute('configuration', 'get_item_state', 'set_item_config', None)          
+    filter_key          : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    tracked             : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    track_offset        : float                             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    default_value       : float                             = ItemAttribute('information', 'get_item_cached', None, None)                        
+    min_value           : float                             = ItemAttribute('configuration', 'get_item_config', 'set_item_config', 'min_scale')  
+    max_value           : float                             = ItemAttribute('configuration', 'get_item_config', 'set_item_config', 'max_scale')  
+    value               : float                             = ItemAttribute("configuration", "get_item_value", "set_item_value", "default_value")
 
-    is_resized          : bool                              = ItemAttribute("state", "get_item_state", None, "resized")                                       
-    is_middle_clicked   : bool                              = ItemAttribute("state", "get_item_state", None, "middle_clicked")                                
-    is_right_clicked    : bool                              = ItemAttribute("state", "get_item_state", None, "right_clicked")                                 
-    is_left_clicked     : bool                              = ItemAttribute("state", "get_item_state", None, "left_clicked")                                  
-    is_hovered          : bool                              = ItemAttribute("state", "get_item_state", None, "hovered")                                       
-    is_active           : bool                              = ItemAttribute("state", "get_item_state", None, "active")                                        
-    is_focused          : bool                              = ItemAttribute("state", "get_item_state", None, "focused")                                       
-    is_clicked          : bool                              = ItemAttribute("state", "get_item_state", None, "clicked")                                       
-    is_visible          : bool                              = ItemAttribute("state", "get_item_state", None, "visible")                                       
-    is_edited           : bool                              = ItemAttribute("state", "get_item_state", None, "edited")                                        
-    is_activated        : bool                              = ItemAttribute("state", "get_item_state", None, "activated")                                     
-    is_deactivated      : bool                              = ItemAttribute("state", "get_item_state", None, "deactivated")                                   
-    rect_min            : list[int, int]                    = ItemAttribute("state", "get_item_state", None, "rect_min")                                      
-    rect_max            : list[int, int]                    = ItemAttribute("state", "get_item_state", None, "rect_max")                                      
-    rect_size           : list[int, int]                    = ItemAttribute("state", "get_item_state", None, "rect_size")                                     
-    content_region_avail: list[int, int]                    = ItemAttribute("state", "get_item_state", None, "content_region_avail")                          
+    is_resized          : bool                              = ItemAttribute("state", "get_item_state", None, "resized")                          
+    is_middle_clicked   : bool                              = ItemAttribute("state", "get_item_state", None, "middle_clicked")                   
+    is_right_clicked    : bool                              = ItemAttribute("state", "get_item_state", None, "right_clicked")                    
+    is_left_clicked     : bool                              = ItemAttribute("state", "get_item_state", None, "left_clicked")                     
+    is_hovered          : bool                              = ItemAttribute("state", "get_item_state", None, "hovered")                          
+    is_active           : bool                              = ItemAttribute("state", "get_item_state", None, "active")                           
+    is_focused          : bool                              = ItemAttribute("state", "get_item_state", None, "focused")                          
+    is_clicked          : bool                              = ItemAttribute("state", "get_item_state", None, "clicked")                          
+    is_visible          : bool                              = ItemAttribute("state", "get_item_state", None, "visible")                          
+    is_edited           : bool                              = ItemAttribute("state", "get_item_state", None, "edited")                           
+    is_activated        : bool                              = ItemAttribute("state", "get_item_state", None, "activated")                        
+    is_deactivated      : bool                              = ItemAttribute("state", "get_item_state", None, "deactivated")                      
+    rect_min            : list[int, int]                    = ItemAttribute("state", "get_item_state", None, "rect_min")                         
+    rect_max            : list[int, int]                    = ItemAttribute("state", "get_item_state", None, "rect_max")                         
+    rect_size           : list[int, int]                    = ItemAttribute("state", "get_item_state", None, "rect_size")                        
+    content_region_avail: list[int, int]                    = ItemAttribute("state", "get_item_state", None, "content_region_avail")             
 
-    _is_container       : bool                              = False                                                                                           
-    _is_root_item       : bool                              = False                                                                                           
-    _is_value_able      : bool                              = True                                                                                            
-    _unique_parents     : tuple                             = ()                                                                                              
-    _unique_children    : tuple                             = ()                                                                                              
-    _unique_commands    : tuple                             = ()                                                                                              
-    _unique_constants   : tuple                             = ('mvKnob',)                                                                                     
-    _command            : Callable                          = dearpygui.add_knob_float                                                                        
+    _is_container       : bool                              = False                                                                              
+    _is_root_item       : bool                              = False                                                                              
+    _is_value_able      : bool                              = True                                                                               
+    _unique_parents     : tuple                             = ()                                                                                 
+    _unique_children    : tuple                             = ()                                                                                 
+    _unique_commands    : tuple                             = ()                                                                                 
+    _unique_constants   : tuple                             = ('mvKnob',)                                                                        
+    _command            : Callable                          = dearpygui.add_knob_float                                                           
 
     def __init__(
         self                                                                   ,
@@ -820,44 +771,44 @@ class LoadingIndicator(Widget):
     		Union[int, str]
     """
 
-    label               : str                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")             
-    user_data           : Any                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")         
-    use_internal_label  : bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")
-    width               : int                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "width")             
-    height              : int                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "height")            
-    indent              : int                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "indent")            
-    payload_type        : str                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "payload_type")      
-    drop_callback       : Callable                          = ItemAttribute("configuration", "get_item_configuration", "configure_item", "drop_callback")     
-    show                : bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "show")              
-    pos                 : Union[List[int], Tuple[int, ...]] = ItemAttribute('configuration', 'get_item_state', 'configure_item', 'pos')                       
-    style               : int                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "style")             
-    circle_count        : int                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "circle_count")      
-    speed               : float                             = ItemAttribute("configuration", "get_item_configuration", "configure_item", "speed")             
-    radius              : float                             = ItemAttribute("configuration", "get_item_configuration", "configure_item", "radius")            
-    thickness           : float                             = ItemAttribute("configuration", "get_item_configuration", "configure_item", "thickness")         
-    color               : Union[List[int], Tuple[int, ...]] = ItemAttribute("configuration", "get_item_configuration", "configure_item", "color")             
-    secondary_color     : Union[List[int], Tuple[int, ...]] = ItemAttribute("configuration", "get_item_configuration", "configure_item", "secondary_color")   
+    label               : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    user_data           : Any                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    use_internal_label  : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    width               : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    height              : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    indent              : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    payload_type        : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    drop_callback       : Callable                          = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    show                : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    pos                 : Union[List[int], Tuple[int, ...]] = ItemAttribute('configuration', 'get_item_state', 'set_item_config', None) 
+    style               : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    circle_count        : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    speed               : float                             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    radius              : float                             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    thickness           : float                             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    color               : Union[List[int], Tuple[int, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    secondary_color     : Union[List[int], Tuple[int, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
-    is_resized          : bool                              = ItemAttribute("state", "get_item_state", None, "resized")                                       
-    is_middle_clicked   : bool                              = ItemAttribute("state", "get_item_state", None, "middle_clicked")                                
-    is_right_clicked    : bool                              = ItemAttribute("state", "get_item_state", None, "right_clicked")                                 
-    is_left_clicked     : bool                              = ItemAttribute("state", "get_item_state", None, "left_clicked")                                  
-    is_hovered          : bool                              = ItemAttribute("state", "get_item_state", None, "hovered")                                       
-    is_clicked          : bool                              = ItemAttribute("state", "get_item_state", None, "clicked")                                       
-    is_visible          : bool                              = ItemAttribute("state", "get_item_state", None, "visible")                                       
-    rect_min            : list[int, int]                    = ItemAttribute("state", "get_item_state", None, "rect_min")                                      
-    rect_max            : list[int, int]                    = ItemAttribute("state", "get_item_state", None, "rect_max")                                      
-    rect_size           : list[int, int]                    = ItemAttribute("state", "get_item_state", None, "rect_size")                                     
-    content_region_avail: list[int, int]                    = ItemAttribute("state", "get_item_state", None, "content_region_avail")                          
+    is_resized          : bool                              = ItemAttribute("state", "get_item_state", None, "resized")                 
+    is_middle_clicked   : bool                              = ItemAttribute("state", "get_item_state", None, "middle_clicked")          
+    is_right_clicked    : bool                              = ItemAttribute("state", "get_item_state", None, "right_clicked")           
+    is_left_clicked     : bool                              = ItemAttribute("state", "get_item_state", None, "left_clicked")            
+    is_hovered          : bool                              = ItemAttribute("state", "get_item_state", None, "hovered")                 
+    is_clicked          : bool                              = ItemAttribute("state", "get_item_state", None, "clicked")                 
+    is_visible          : bool                              = ItemAttribute("state", "get_item_state", None, "visible")                 
+    rect_min            : list[int, int]                    = ItemAttribute("state", "get_item_state", None, "rect_min")                
+    rect_max            : list[int, int]                    = ItemAttribute("state", "get_item_state", None, "rect_max")                
+    rect_size           : list[int, int]                    = ItemAttribute("state", "get_item_state", None, "rect_size")               
+    content_region_avail: list[int, int]                    = ItemAttribute("state", "get_item_state", None, "content_region_avail")    
 
-    _is_container       : bool                              = False                                                                                           
-    _is_root_item       : bool                              = False                                                                                           
-    _is_value_able      : bool                              = False                                                                                           
-    _unique_parents     : tuple                             = ()                                                                                              
-    _unique_children    : tuple                             = ()                                                                                              
-    _unique_commands    : tuple                             = ()                                                                                              
-    _unique_constants   : tuple                             = ('mvLoadingIndicator',)                                                                         
-    _command            : Callable                          = dearpygui.add_loading_indicator                                                                 
+    _is_container       : bool                              = False                                                                     
+    _is_root_item       : bool                              = False                                                                     
+    _is_value_able      : bool                              = False                                                                     
+    _unique_parents     : tuple                             = ()                                                                        
+    _unique_children    : tuple                             = ()                                                                        
+    _unique_commands    : tuple                             = ()                                                                        
+    _unique_constants   : tuple                             = ('mvLoadingIndicator',)                                                   
+    _command            : Callable                          = dearpygui.add_loading_indicator                                           
 
     def __init__(
         self                                                                       ,
@@ -928,27 +879,27 @@ class FileDialog(Container):
     		Union[int, str]
     """
 
-    label             : str      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")             
-    user_data         : Any      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")         
-    use_internal_label: bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")
-    width             : int      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "width")             
-    height            : int      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "height")            
-    callback          : Callable = ItemAttribute("configuration", "get_item_configuration", "configure_item", "callback")          
-    show              : bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "show")              
-    default_path      : str      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "default_path")      
-    default_filename  : str      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "default_filename")  
-    file_count        : int      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "file_count")        
-    modal             : bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "modal")             
-    directory_selector: bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "directory_selector")
+    label             : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    user_data         : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    width             : int      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    height            : int      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    callback          : Callable = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    default_path      : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    default_filename  : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    file_count        : int      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    modal             : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    directory_selector: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
-    _is_container     : bool     = True                                                                                            
-    _is_root_item     : bool     = True                                                                                            
-    _is_value_able    : bool     = True                                                                                            
-    _unique_parents   : tuple    = ()                                                                                              
-    _unique_children  : tuple    = ()                                                                                              
-    _unique_commands  : tuple    = ('get_file_dialog_info',)                                                                       
-    _unique_constants : tuple    = ('mvFileDialog',)                                                                               
-    _command          : Callable = dearpygui.add_file_dialog                                                                       
+    _is_container     : bool     = True                                                                      
+    _is_root_item     : bool     = True                                                                      
+    _is_value_able    : bool     = True                                                                      
+    _unique_parents   : tuple    = ()                                                                        
+    _unique_children  : tuple    = ()                                                                        
+    _unique_commands  : tuple    = ('get_file_dialog_info',)                                                 
+    _unique_constants : tuple    = ('mvFileDialog',)                                                         
+    _command          : Callable = dearpygui.add_file_dialog                                                 
 
     def __init__(
         self                                ,
@@ -1003,23 +954,23 @@ class FileExtension(Widget):
     		Union[int, str]
     """
 
-    extension         : str                               = ItemAttribute("configuration", "get_unmanagable", "configure_item", "extension")         
-    label             : str                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")             
-    user_data         : Any                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")         
-    use_internal_label: bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")
-    width             : int                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "width")             
-    height            : int                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "height")            
-    custom_text       : str                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "custom_text")       
-    color             : Union[List[int], Tuple[int, ...]] = ItemAttribute("configuration", "get_item_configuration", "configure_item", "color")             
+    extension         : str                               = ItemAttribute("configuration", "get_item_cached", "set_item_cached_config", None)
+    label             : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    user_data         : Any                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    use_internal_label: bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    width             : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    height            : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    custom_text       : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    color             : Union[List[int], Tuple[int, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
-    _is_container     : bool                              = False                                                                                           
-    _is_root_item     : bool                              = False                                                                                           
-    _is_value_able    : bool                              = False                                                                                           
-    _unique_parents   : tuple                             = ('Stage', 'FileDialog', 'TemplateRegistry')                                                     
-    _unique_children  : tuple                             = ()                                                                                              
-    _unique_commands  : tuple                             = ()                                                                                              
-    _unique_constants : tuple                             = ('mvFileExtension',)                                                                            
-    _command          : Callable                          = dearpygui.add_file_extension                                                                    
+    _is_container     : bool                              = False                                                                     
+    _is_root_item     : bool                              = False                                                                     
+    _is_value_able    : bool                              = False                                                                     
+    _unique_parents   : tuple                             = ('Stage', 'FileDialog', 'TemplateRegistry')                               
+    _unique_children  : tuple                             = ()                                                                        
+    _unique_commands  : tuple                             = ()                                                                        
+    _unique_constants : tuple                             = ('mvFileExtension',)                                                      
+    _command          : Callable                          = dearpygui.add_file_extension                                              
 
     def __init__(
         self                                                                     ,

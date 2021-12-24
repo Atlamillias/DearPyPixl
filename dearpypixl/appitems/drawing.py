@@ -60,18 +60,18 @@ class Drawlist(Container):
     		Union[int, str]
     """
 
-    width               : int                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "width")                                                                                                                                                       
-    height              : int                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "height")                                                                                                                                                      
-    label               : str                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")                                                                                                                                                       
-    user_data           : Any                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")                                                                                                                                                   
-    use_internal_label  : bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")                                                                                                                                          
-    callback            : Callable                          = ItemAttribute("configuration", "get_item_configuration", "configure_item", "callback")                                                                                                                                                    
-    show                : bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "show")                                                                                                                                                        
-    pos                 : Union[List[int], Tuple[int, ...]] = ItemAttribute('configuration', 'get_item_state', 'configure_item', 'pos')                                                                                                                                                                 
-    filter_key          : str                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "filter_key")                                                                                                                                                  
-    delay_search        : bool                              = ItemAttribute('information', 'get_unmanagable', None, 'delay_search')                                                                                                                                                                     
-    tracked             : bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "tracked")                                                                                                                                                     
-    track_offset        : float                             = ItemAttribute("configuration", "get_item_configuration", "configure_item", "track_offset")                                                                                                                                                
+    width               : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                
+    height              : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                
+    label               : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                
+    user_data           : Any                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                
+    use_internal_label  : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                
+    callback            : Callable                          = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                
+    show                : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                
+    pos                 : Union[List[int], Tuple[int, ...]] = ItemAttribute('configuration', 'get_item_state', 'set_item_config', None)                                                                                                                                                                 
+    filter_key          : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                
+    delay_search        : bool                              = ItemAttribute('information', 'get_item_cached', None, None)                                                                                                                                                                               
+    tracked             : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                
+    track_offset        : float                             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                
 
     is_resized          : bool                              = ItemAttribute("state", "get_item_state", None, "resized")                                                                                                                                                                                 
     is_middle_clicked   : bool                              = ItemAttribute("state", "get_item_state", None, "middle_clicked")                                                                                                                                                                          
@@ -155,14 +155,14 @@ class DrawLine(Widget):
     		Union[int, str]
     """
 
-    p1                : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_configuration", "configure_item", "p1")                        
-    p2                : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_configuration", "configure_item", "p2")                        
-    label             : str                                   = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")                     
-    user_data         : Any                                   = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")                 
-    use_internal_label: bool                                  = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")        
-    show              : bool                                  = ItemAttribute("configuration", "get_item_configuration", "configure_item", "show")                      
-    color             : Union[List[int], Tuple[int, ...]]     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "color")                     
-    thickness         : float                                 = ItemAttribute("configuration", "get_item_configuration", "configure_item", "thickness")                 
+    p1                : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    p2                : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    label             : str                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    user_data         : Any                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    use_internal_label: bool                                  = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    show              : bool                                  = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    color             : Union[List[int], Tuple[int, ...]]     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    thickness         : float                                 = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
 
     _is_container     : bool                                  = False                                                                                                   
     _is_root_item     : bool                                  = False                                                                                                   
@@ -223,15 +223,15 @@ class DrawArrow(Widget):
     		Union[int, str]
     """
 
-    p1                : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_configuration", "configure_item", "p1")                        
-    p2                : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_configuration", "configure_item", "p2")                        
-    label             : str                                   = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")                     
-    user_data         : Any                                   = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")                 
-    use_internal_label: bool                                  = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")        
-    show              : bool                                  = ItemAttribute("configuration", "get_item_configuration", "configure_item", "show")                      
-    color             : Union[List[int], Tuple[int, ...]]     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "color")                     
-    thickness         : float                                 = ItemAttribute("configuration", "get_item_configuration", "configure_item", "thickness")                 
-    size              : int                                   = ItemAttribute("configuration", "get_item_configuration", "configure_item", "size")                      
+    p1                : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    p2                : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    label             : str                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    user_data         : Any                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    use_internal_label: bool                                  = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    show              : bool                                  = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    color             : Union[List[int], Tuple[int, ...]]     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    thickness         : float                                 = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    size              : int                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
 
     _is_container     : bool                                  = False                                                                                                   
     _is_root_item     : bool                                  = False                                                                                                   
@@ -295,16 +295,16 @@ class DrawTriangle(Widget):
     		Union[int, str]
     """
 
-    p1                : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_configuration", "configure_item", "p1")                        
-    p2                : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_configuration", "configure_item", "p2")                        
-    p3                : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_configuration", "configure_item", "p3")                        
-    label             : str                                   = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")                     
-    user_data         : Any                                   = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")                 
-    use_internal_label: bool                                  = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")        
-    show              : bool                                  = ItemAttribute("configuration", "get_item_configuration", "configure_item", "show")                      
-    color             : Union[List[int], Tuple[int, ...]]     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "color")                     
-    fill              : Union[List[int], Tuple[int, ...]]     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "fill")                      
-    thickness         : float                                 = ItemAttribute("configuration", "get_item_configuration", "configure_item", "thickness")                 
+    p1                : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    p2                : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    p3                : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    label             : str                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    user_data         : Any                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    use_internal_label: bool                                  = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    show              : bool                                  = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    color             : Union[List[int], Tuple[int, ...]]     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    fill              : Union[List[int], Tuple[int, ...]]     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    thickness         : float                                 = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
 
     _is_container     : bool                                  = False                                                                                                   
     _is_root_item     : bool                                  = False                                                                                                   
@@ -370,16 +370,16 @@ class DrawCircle(Widget):
     		Union[int, str]
     """
 
-    center            : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_configuration", "configure_item", "center")                    
-    radius            : float                                 = ItemAttribute("configuration", "get_item_configuration", "configure_item", "radius")                    
-    label             : str                                   = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")                     
-    user_data         : Any                                   = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")                 
-    use_internal_label: bool                                  = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")        
-    show              : bool                                  = ItemAttribute("configuration", "get_item_configuration", "configure_item", "show")                      
-    color             : Union[List[int], Tuple[int, ...]]     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "color")                     
-    fill              : Union[List[int], Tuple[int, ...]]     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "fill")                      
-    thickness         : float                                 = ItemAttribute("configuration", "get_item_configuration", "configure_item", "thickness")                 
-    segments          : int                                   = ItemAttribute("configuration", "get_item_configuration", "configure_item", "segments")                  
+    center            : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    radius            : float                                 = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    label             : str                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    user_data         : Any                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    use_internal_label: bool                                  = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    show              : bool                                  = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    color             : Union[List[int], Tuple[int, ...]]     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    fill              : Union[List[int], Tuple[int, ...]]     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    thickness         : float                                 = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    segments          : int                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
 
     _is_container     : bool                                  = False                                                                                                   
     _is_root_item     : bool                                  = False                                                                                                   
@@ -445,16 +445,16 @@ class DrawEllipse(Widget):
     		Union[int, str]
     """
 
-    pmin              : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_configuration", "configure_item", "pmin")                      
-    pmax              : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_configuration", "configure_item", "pmax")                      
-    label             : str                                   = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")                     
-    user_data         : Any                                   = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")                 
-    use_internal_label: bool                                  = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")        
-    show              : bool                                  = ItemAttribute("configuration", "get_item_configuration", "configure_item", "show")                      
-    color             : Union[List[int], Tuple[int, ...]]     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "color")                     
-    fill              : Union[List[int], Tuple[int, ...]]     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "fill")                      
-    thickness         : float                                 = ItemAttribute("configuration", "get_item_configuration", "configure_item", "thickness")                 
-    segments          : int                                   = ItemAttribute("configuration", "get_item_configuration", "configure_item", "segments")                  
+    pmin              : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    pmax              : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    label             : str                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    user_data         : Any                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    use_internal_label: bool                                  = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    show              : bool                                  = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    color             : Union[List[int], Tuple[int, ...]]     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    fill              : Union[List[int], Tuple[int, ...]]     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    thickness         : float                                 = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    segments          : int                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
 
     _is_container     : bool                                  = False                                                                                                   
     _is_root_item     : bool                                  = False                                                                                                   
@@ -521,17 +521,17 @@ class DrawBezierCubic(Widget):
     		Union[int, str]
     """
 
-    p1                : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_configuration", "configure_item", "p1")                        
-    p2                : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_configuration", "configure_item", "p2")                        
-    p3                : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_configuration", "configure_item", "p3")                        
-    p4                : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_configuration", "configure_item", "p4")                        
-    label             : str                                   = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")                     
-    user_data         : Any                                   = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")                 
-    use_internal_label: bool                                  = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")        
-    show              : bool                                  = ItemAttribute("configuration", "get_item_configuration", "configure_item", "show")                      
-    color             : Union[List[int], Tuple[int, ...]]     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "color")                     
-    thickness         : float                                 = ItemAttribute("configuration", "get_item_configuration", "configure_item", "thickness")                 
-    segments          : int                                   = ItemAttribute("configuration", "get_item_configuration", "configure_item", "segments")                  
+    p1                : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    p2                : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    p3                : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    p4                : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    label             : str                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    user_data         : Any                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    use_internal_label: bool                                  = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    show              : bool                                  = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    color             : Union[List[int], Tuple[int, ...]]     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    thickness         : float                                 = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    segments          : int                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
 
     _is_container     : bool                                  = False                                                                                                   
     _is_root_item     : bool                                  = False                                                                                                   
@@ -599,16 +599,16 @@ class DrawBezierQuadratic(Widget):
     		Union[int, str]
     """
 
-    p1                : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_configuration", "configure_item", "p1")                        
-    p2                : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_configuration", "configure_item", "p2")                        
-    p3                : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_configuration", "configure_item", "p3")                        
-    label             : str                                   = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")                     
-    user_data         : Any                                   = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")                 
-    use_internal_label: bool                                  = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")        
-    show              : bool                                  = ItemAttribute("configuration", "get_item_configuration", "configure_item", "show")                      
-    color             : Union[List[int], Tuple[int, ...]]     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "color")                     
-    thickness         : float                                 = ItemAttribute("configuration", "get_item_configuration", "configure_item", "thickness")                 
-    segments          : int                                   = ItemAttribute("configuration", "get_item_configuration", "configure_item", "segments")                  
+    p1                : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    p2                : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    p3                : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    label             : str                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    user_data         : Any                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    use_internal_label: bool                                  = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    show              : bool                                  = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    color             : Union[List[int], Tuple[int, ...]]     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    thickness         : float                                 = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    segments          : int                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
 
     _is_container     : bool                                  = False                                                                                                   
     _is_root_item     : bool                                  = False                                                                                                   
@@ -675,17 +675,17 @@ class DrawQuad(Widget):
     		Union[int, str]
     """
 
-    p1                : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_configuration", "configure_item", "p1")                        
-    p2                : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_configuration", "configure_item", "p2")                        
-    p3                : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_configuration", "configure_item", "p3")                        
-    p4                : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_configuration", "configure_item", "p4")                        
-    label             : str                                   = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")                     
-    user_data         : Any                                   = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")                 
-    use_internal_label: bool                                  = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")        
-    show              : bool                                  = ItemAttribute("configuration", "get_item_configuration", "configure_item", "show")                      
-    color             : Union[List[int], Tuple[int, ...]]     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "color")                     
-    fill              : Union[List[int], Tuple[int, ...]]     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "fill")                      
-    thickness         : float                                 = ItemAttribute("configuration", "get_item_configuration", "configure_item", "thickness")                 
+    p1                : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    p2                : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    p3                : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    p4                : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    label             : str                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    user_data         : Any                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    use_internal_label: bool                                  = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    show              : bool                                  = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    color             : Union[List[int], Tuple[int, ...]]     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    fill              : Union[List[int], Tuple[int, ...]]     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    thickness         : float                                 = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
 
     _is_container     : bool                                  = False                                                                                                   
     _is_root_item     : bool                                  = False                                                                                                   
@@ -758,21 +758,21 @@ class DrawRect(Widget):
     		Union[int, str]
     """
 
-    pmin              : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_configuration", "configure_item", "pmin")                      
-    pmax              : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_configuration", "configure_item", "pmax")                      
-    label             : str                                   = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")                     
-    user_data         : Any                                   = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")                 
-    use_internal_label: bool                                  = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")        
-    show              : bool                                  = ItemAttribute("configuration", "get_item_configuration", "configure_item", "show")                      
-    color             : Union[List[int], Tuple[int, ...]]     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "color")                     
-    color_upper_left  : Union[List[int], Tuple[int, ...]]     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "color_upper_left")          
-    color_upper_right : Union[List[int], Tuple[int, ...]]     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "color_upper_right")         
-    color_bottom_right: Union[List[int], Tuple[int, ...]]     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "color_bottom_right")        
-    color_bottom_left : Union[List[int], Tuple[int, ...]]     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "color_bottom_left")         
-    fill              : Union[List[int], Tuple[int, ...]]     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "fill")                      
-    multicolor        : bool                                  = ItemAttribute("configuration", "get_item_configuration", "configure_item", "multicolor")                
-    rounding          : float                                 = ItemAttribute("configuration", "get_item_configuration", "configure_item", "rounding")                  
-    thickness         : float                                 = ItemAttribute("configuration", "get_item_configuration", "configure_item", "thickness")                 
+    pmin              : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    pmax              : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    label             : str                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    user_data         : Any                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    use_internal_label: bool                                  = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    show              : bool                                  = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    color             : Union[List[int], Tuple[int, ...]]     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    color_upper_left  : Union[List[int], Tuple[int, ...]]     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    color_upper_right : Union[List[int], Tuple[int, ...]]     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    color_bottom_right: Union[List[int], Tuple[int, ...]]     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    color_bottom_left : Union[List[int], Tuple[int, ...]]     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    fill              : Union[List[int], Tuple[int, ...]]     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    multicolor        : bool                                  = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    rounding          : float                                 = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    thickness         : float                                 = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
 
     _is_container     : bool                                  = False                                                                                                   
     _is_root_item     : bool                                  = False                                                                                                   
@@ -846,14 +846,14 @@ class DrawText(Widget):
     		Union[int, str]
     """
 
-    pos               : Union[List[float], Tuple[float, ...]] = ItemAttribute('configuration', 'get_item_state', 'configure_item', 'pos')                               
-    text              : str                                   = ItemAttribute("configuration", "get_item_configuration", "configure_item", "text")                      
-    label             : str                                   = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")                     
-    user_data         : Any                                   = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")                 
-    use_internal_label: bool                                  = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")        
-    show              : bool                                  = ItemAttribute("configuration", "get_item_configuration", "configure_item", "show")                      
-    color             : Union[List[int], Tuple[int, ...]]     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "color")                     
-    size              : float                                 = ItemAttribute("configuration", "get_item_configuration", "configure_item", "size")                      
+    pos               : Union[List[float], Tuple[float, ...]] = ItemAttribute('configuration', 'get_item_state', 'set_item_config', None)                               
+    text              : str                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    label             : str                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    user_data         : Any                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    use_internal_label: bool                                  = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    show              : bool                                  = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    color             : Union[List[int], Tuple[int, ...]]     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    size              : float                                 = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
 
     _is_container     : bool                                  = False                                                                                                   
     _is_root_item     : bool                                  = False                                                                                                   
@@ -913,14 +913,14 @@ class DrawPolygon(Widget):
     		Union[int, str]
     """
 
-    points            : List[List[float]]                 = ItemAttribute("configuration", "get_item_configuration", "configure_item", "points")                    
-    label             : str                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")                     
-    user_data         : Any                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")                 
-    use_internal_label: bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")        
-    show              : bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "show")                      
-    color             : Union[List[int], Tuple[int, ...]] = ItemAttribute("configuration", "get_item_configuration", "configure_item", "color")                     
-    fill              : Union[List[int], Tuple[int, ...]] = ItemAttribute("configuration", "get_item_configuration", "configure_item", "fill")                      
-    thickness         : float                             = ItemAttribute("configuration", "get_item_configuration", "configure_item", "thickness")                 
+    points            : List[List[float]]                 = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    label             : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    user_data         : Any                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    use_internal_label: bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    show              : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    color             : Union[List[int], Tuple[int, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    fill              : Union[List[int], Tuple[int, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    thickness         : float                             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
 
     _is_container     : bool                              = False                                                                                                   
     _is_root_item     : bool                              = False                                                                                                   
@@ -980,14 +980,14 @@ class DrawPolyline(Widget):
     		Union[int, str]
     """
 
-    points            : List[List[float]]                 = ItemAttribute("configuration", "get_item_configuration", "configure_item", "points")                    
-    label             : str                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")                     
-    user_data         : Any                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")                 
-    use_internal_label: bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")        
-    show              : bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "show")                      
-    closed            : bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "closed")                    
-    color             : Union[List[int], Tuple[int, ...]] = ItemAttribute("configuration", "get_item_configuration", "configure_item", "color")                     
-    thickness         : float                             = ItemAttribute("configuration", "get_item_configuration", "configure_item", "thickness")                 
+    points            : List[List[float]]                 = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    label             : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    user_data         : Any                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    use_internal_label: bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    show              : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    closed            : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    color             : Union[List[int], Tuple[int, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    thickness         : float                             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
 
     _is_container     : bool                              = False                                                                                                   
     _is_root_item     : bool                              = False                                                                                                   
@@ -1049,16 +1049,16 @@ class DrawImage(Widget):
     		Union[int, str]
     """
 
-    texture_tag       : Union[int, str]                       = ItemAttribute("configuration", "get_item_configuration", "configure_item", "texture_tag")               
-    pmin              : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_configuration", "configure_item", "pmin")                      
-    pmax              : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_configuration", "configure_item", "pmax")                      
-    label             : str                                   = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")                     
-    user_data         : Any                                   = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")                 
-    use_internal_label: bool                                  = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")        
-    show              : bool                                  = ItemAttribute("configuration", "get_item_configuration", "configure_item", "show")                      
-    uv_min            : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_configuration", "configure_item", "uv_min")                    
-    uv_max            : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_configuration", "configure_item", "uv_max")                    
-    color             : Union[List[int], Tuple[int, ...]]     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "color")                     
+    texture_tag       : Union[int, str]                       = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    pmin              : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    pmax              : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    label             : str                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    user_data         : Any                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    use_internal_label: bool                                  = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    show              : bool                                  = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    uv_min            : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    uv_max            : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    color             : Union[List[int], Tuple[int, ...]]     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
 
     _is_container     : bool                                  = False                                                                                                   
     _is_root_item     : bool                                  = False                                                                                                   
@@ -1121,13 +1121,13 @@ class DrawLayer(Container):
     		Union[int, str]
     """
 
-    label             : str      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")                                                                                                                                          
-    user_data         : Any      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")                                                                                                                                      
-    use_internal_label: bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")                                                                                                                             
-    show              : bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "show")                                                                                                                                           
-    perspective_divide: bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "perspective_divide")                                                                                                                             
-    depth_clipping    : bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "depth_clipping")                                                                                                                                 
-    cull_mode         : int      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "cull_mode")                                                                                                                                      
+    label             : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                   
+    user_data         : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                   
+    use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                   
+    show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                   
+    perspective_divide: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                   
+    depth_clipping    : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                   
+    cull_mode         : int      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                   
 
     _is_container     : bool     = True                                                                                                                                                                                                                         
     _is_root_item     : bool     = False                                                                                                                                                                                                                        
@@ -1182,13 +1182,13 @@ class ViewportDrawlist(Container):
     		Union[int, str]
     """
 
-    label             : str      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")                                                                                                                                                       
-    user_data         : Any      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")                                                                                                                                                   
-    use_internal_label: bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")                                                                                                                                          
-    show              : bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "show")                                                                                                                                                        
-    filter_key        : str      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "filter_key")                                                                                                                                                  
-    delay_search      : bool     = ItemAttribute('information', 'get_unmanagable', None, 'delay_search')                                                                                                                                                                     
-    front             : bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "front")                                                                                                                                                       
+    label             : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                
+    user_data         : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                
+    use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                
+    show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                
+    filter_key        : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                
+    delay_search      : bool     = ItemAttribute('information', 'get_item_cached', None, None)                                                                                                                                                                               
+    front             : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                
 
     _is_container     : bool     = True                                                                                                                                                                                                                                      
     _is_root_item     : bool     = True                                                                                                                                                                                                                                      
@@ -1248,20 +1248,20 @@ class DrawImageQuad(Widget):
     		Union[int, str]
     """
 
-    texture_tag       : Union[int, str]                       = ItemAttribute("configuration", "get_item_configuration", "configure_item", "texture_tag")               
-    p1                : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_configuration", "configure_item", "p1")                        
-    p2                : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_configuration", "configure_item", "p2")                        
-    p3                : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_configuration", "configure_item", "p3")                        
-    p4                : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_configuration", "configure_item", "p4")                        
-    label             : str                                   = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")                     
-    user_data         : Any                                   = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")                 
-    use_internal_label: bool                                  = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")        
-    show              : bool                                  = ItemAttribute("configuration", "get_item_configuration", "configure_item", "show")                      
-    uv1               : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_configuration", "configure_item", "uv1")                       
-    uv2               : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_configuration", "configure_item", "uv2")                       
-    uv3               : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_configuration", "configure_item", "uv3")                       
-    uv4               : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_configuration", "configure_item", "uv4")                       
-    color             : Union[List[int], Tuple[int, ...]]     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "color")                     
+    texture_tag       : Union[int, str]                       = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    p1                : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    p2                : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    p3                : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    p4                : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    label             : str                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    user_data         : Any                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    use_internal_label: bool                                  = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    show              : bool                                  = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    uv1               : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    uv2               : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    uv3               : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    uv4               : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    color             : Union[List[int], Tuple[int, ...]]     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
 
     _is_container     : bool                                  = False                                                                                                   
     _is_root_item     : bool                                  = False                                                                                                   
@@ -1329,10 +1329,10 @@ class DrawNode(Container):
     		Union[int, str]
     """
 
-    label             : str      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")                                                                                                                                          
-    user_data         : Any      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")                                                                                                                                      
-    use_internal_label: bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")                                                                                                                             
-    show              : bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "show")                                                                                                                                           
+    label             : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                   
+    user_data         : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                   
+    use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                   
+    show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                   
 
     _is_container     : bool     = True                                                                                                                                                                                                                         
     _is_root_item     : bool     = False                                                                                                                                                                                                                        

@@ -45,21 +45,21 @@ class IntValue(Widget):
     		Union[int, str]
     """
 
-    label             : str             = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")             
-    user_data         : Any             = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")         
-    use_internal_label: bool            = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")
-    source            : Union[int, str] = ItemAttribute("configuration", "get_item_configuration", "configure_item", "source")            
-    default_value     : int             = ItemAttribute('information', 'get_unmanagable', None, 'default_value')                          
-    value             : int             = ItemAttribute("configuration", "get_value", "set_value", "default_value")                       
+    label             : str             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    user_data         : Any             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    use_internal_label: bool            = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    source            : Union[int, str] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    default_value     : int             = ItemAttribute('information', 'get_item_cached', None, None)                        
+    value             : int             = ItemAttribute("configuration", "get_item_value", "set_item_value", "default_value")
 
-    _is_container     : bool            = False                                                                                           
-    _is_root_item     : bool            = False                                                                                           
-    _is_value_able    : bool            = True                                                                                            
-    _unique_parents   : tuple           = ('ValueRegistry',)                                                                              
-    _unique_children  : tuple           = ()                                                                                              
-    _unique_commands  : tuple           = ()                                                                                              
-    _unique_constants : tuple           = ('mvIntValue',)                                                                                 
-    _command          : Callable        = dearpygui.add_int_value                                                                         
+    _is_container     : bool            = False                                                                              
+    _is_root_item     : bool            = False                                                                              
+    _is_value_able    : bool            = True                                                                               
+    _unique_parents   : tuple           = ('ValueRegistry',)                                                                 
+    _unique_children  : tuple           = ()                                                                                 
+    _unique_commands  : tuple           = ()                                                                                 
+    _unique_constants : tuple           = ('mvIntValue',)                                                                    
+    _command          : Callable        = dearpygui.add_int_value                                                            
 
     def __init__(
         self                                      ,
@@ -98,21 +98,21 @@ class Int4Value(Widget):
     		Union[int, str]
     """
 
-    label             : str                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")             
-    user_data         : Any                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")         
-    use_internal_label: bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")
-    source            : Union[int, str]                   = ItemAttribute("configuration", "get_item_configuration", "configure_item", "source")            
-    default_value     : Union[List[int], Tuple[int, ...]] = ItemAttribute('information', 'get_unmanagable', None, 'default_value')                          
-    value             : Union[List[int], Tuple[int, ...]] = ItemAttribute("configuration", "get_value", "set_value", "default_value")                       
+    label             : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    user_data         : Any                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    use_internal_label: bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    source            : Union[int, str]                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    default_value     : Union[List[int], Tuple[int, ...]] = ItemAttribute('information', 'get_item_cached', None, None)                        
+    value             : Union[List[int], Tuple[int, ...]] = ItemAttribute("configuration", "get_item_value", "set_item_value", "default_value")
 
-    _is_container     : bool                              = False                                                                                           
-    _is_root_item     : bool                              = False                                                                                           
-    _is_value_able    : bool                              = True                                                                                            
-    _unique_parents   : tuple                             = ('ValueRegistry',)                                                                              
-    _unique_children  : tuple                             = ()                                                                                              
-    _unique_commands  : tuple                             = ()                                                                                              
-    _unique_constants : tuple                             = ('mvInt4Value',)                                                                                
-    _command          : Callable                          = dearpygui.add_int4_value                                                                        
+    _is_container     : bool                              = False                                                                              
+    _is_root_item     : bool                              = False                                                                              
+    _is_value_able    : bool                              = True                                                                               
+    _unique_parents   : tuple                             = ('ValueRegistry',)                                                                 
+    _unique_children  : tuple                             = ()                                                                                 
+    _unique_commands  : tuple                             = ()                                                                                 
+    _unique_constants : tuple                             = ('mvInt4Value',)                                                                   
+    _command          : Callable                          = dearpygui.add_int4_value                                                           
 
     def __init__(
         self                                                                ,
@@ -151,21 +151,21 @@ class BoolValue(Widget):
     		Union[int, str]
     """
 
-    label             : str             = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")             
-    user_data         : Any             = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")         
-    use_internal_label: bool            = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")
-    source            : Union[int, str] = ItemAttribute("configuration", "get_item_configuration", "configure_item", "source")            
-    default_value     : bool            = ItemAttribute('information', 'get_unmanagable', None, 'default_value')                          
-    value             : bool            = ItemAttribute("configuration", "get_value", "set_value", "default_value")                       
+    label             : str             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    user_data         : Any             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    use_internal_label: bool            = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    source            : Union[int, str] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    default_value     : bool            = ItemAttribute('information', 'get_item_cached', None, None)                        
+    value             : bool            = ItemAttribute("configuration", "get_item_value", "set_item_value", "default_value")
 
-    _is_container     : bool            = False                                                                                           
-    _is_root_item     : bool            = False                                                                                           
-    _is_value_able    : bool            = True                                                                                            
-    _unique_parents   : tuple           = ('ValueRegistry',)                                                                              
-    _unique_children  : tuple           = ()                                                                                              
-    _unique_commands  : tuple           = ()                                                                                              
-    _unique_constants : tuple           = ('mvBoolValue',)                                                                                
-    _command          : Callable        = dearpygui.add_bool_value                                                                        
+    _is_container     : bool            = False                                                                              
+    _is_root_item     : bool            = False                                                                              
+    _is_value_able    : bool            = True                                                                               
+    _unique_parents   : tuple           = ('ValueRegistry',)                                                                 
+    _unique_children  : tuple           = ()                                                                                 
+    _unique_commands  : tuple           = ()                                                                                 
+    _unique_constants : tuple           = ('mvBoolValue',)                                                                   
+    _command          : Callable        = dearpygui.add_bool_value                                                           
 
     def __init__(
         self                                       ,
@@ -204,21 +204,21 @@ class FloatValue(Widget):
     		Union[int, str]
     """
 
-    label             : str             = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")             
-    user_data         : Any             = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")         
-    use_internal_label: bool            = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")
-    source            : Union[int, str] = ItemAttribute("configuration", "get_item_configuration", "configure_item", "source")            
-    default_value     : float           = ItemAttribute('information', 'get_unmanagable', None, 'default_value')                          
-    value             : float           = ItemAttribute("configuration", "get_value", "set_value", "default_value")                       
+    label             : str             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    user_data         : Any             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    use_internal_label: bool            = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    source            : Union[int, str] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    default_value     : float           = ItemAttribute('information', 'get_item_cached', None, None)                        
+    value             : float           = ItemAttribute("configuration", "get_item_value", "set_item_value", "default_value")
 
-    _is_container     : bool            = False                                                                                           
-    _is_root_item     : bool            = False                                                                                           
-    _is_value_able    : bool            = True                                                                                            
-    _unique_parents   : tuple           = ('ValueRegistry',)                                                                              
-    _unique_children  : tuple           = ()                                                                                              
-    _unique_commands  : tuple           = ()                                                                                              
-    _unique_constants : tuple           = ('mvFloatValue',)                                                                               
-    _command          : Callable        = dearpygui.add_float_value                                                                       
+    _is_container     : bool            = False                                                                              
+    _is_root_item     : bool            = False                                                                              
+    _is_value_able    : bool            = True                                                                               
+    _unique_parents   : tuple           = ('ValueRegistry',)                                                                 
+    _unique_children  : tuple           = ()                                                                                 
+    _unique_commands  : tuple           = ()                                                                                 
+    _unique_constants : tuple           = ('mvFloatValue',)                                                                  
+    _command          : Callable        = dearpygui.add_float_value                                                          
 
     def __init__(
         self                                      ,
@@ -257,21 +257,21 @@ class Float4Value(Widget):
     		Union[int, str]
     """
 
-    label             : str                                   = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")             
-    user_data         : Any                                   = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")         
-    use_internal_label: bool                                  = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")
-    source            : Union[int, str]                       = ItemAttribute("configuration", "get_item_configuration", "configure_item", "source")            
-    default_value     : Union[List[float], Tuple[float, ...]] = ItemAttribute('information', 'get_unmanagable', None, 'default_value')                          
-    value             : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_value", "set_value", "default_value")                       
+    label             : str                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    user_data         : Any                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    use_internal_label: bool                                  = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    source            : Union[int, str]                       = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    default_value     : Union[List[float], Tuple[float, ...]] = ItemAttribute('information', 'get_item_cached', None, None)                        
+    value             : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_value", "set_item_value", "default_value")
 
-    _is_container     : bool                                  = False                                                                                           
-    _is_root_item     : bool                                  = False                                                                                           
-    _is_value_able    : bool                                  = True                                                                                            
-    _unique_parents   : tuple                                 = ('ValueRegistry',)                                                                              
-    _unique_children  : tuple                                 = ()                                                                                              
-    _unique_commands  : tuple                                 = ()                                                                                              
-    _unique_constants : tuple                                 = ('mvFloat4Value',)                                                                              
-    _command          : Callable                              = dearpygui.add_float4_value                                                                      
+    _is_container     : bool                                  = False                                                                              
+    _is_root_item     : bool                                  = False                                                                              
+    _is_value_able    : bool                                  = True                                                                               
+    _unique_parents   : tuple                                 = ('ValueRegistry',)                                                                 
+    _unique_children  : tuple                                 = ()                                                                                 
+    _unique_commands  : tuple                                 = ()                                                                                 
+    _unique_constants : tuple                                 = ('mvFloat4Value',)                                                                 
+    _command          : Callable                              = dearpygui.add_float4_value                                                         
 
     def __init__(
         self                                                                            ,
@@ -310,21 +310,21 @@ class StringValue(Widget):
     		Union[int, str]
     """
 
-    label             : str             = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")             
-    user_data         : Any             = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")         
-    use_internal_label: bool            = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")
-    source            : Union[int, str] = ItemAttribute("configuration", "get_item_configuration", "configure_item", "source")            
-    default_value     : str             = ItemAttribute('information', 'get_unmanagable', None, 'default_value')                          
-    value             : str             = ItemAttribute("configuration", "get_value", "set_value", "default_value")                       
+    label             : str             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    user_data         : Any             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    use_internal_label: bool            = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    source            : Union[int, str] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    default_value     : str             = ItemAttribute('information', 'get_item_cached', None, None)                        
+    value             : str             = ItemAttribute("configuration", "get_item_value", "set_item_value", "default_value")
 
-    _is_container     : bool            = False                                                                                           
-    _is_root_item     : bool            = False                                                                                           
-    _is_value_able    : bool            = True                                                                                            
-    _unique_parents   : tuple           = ('ValueRegistry',)                                                                              
-    _unique_children  : tuple           = ()                                                                                              
-    _unique_commands  : tuple           = ()                                                                                              
-    _unique_constants : tuple           = ('mvStringValue',)                                                                              
-    _command          : Callable        = dearpygui.add_string_value                                                                      
+    _is_container     : bool            = False                                                                              
+    _is_root_item     : bool            = False                                                                              
+    _is_value_able    : bool            = True                                                                               
+    _unique_parents   : tuple           = ('ValueRegistry',)                                                                 
+    _unique_children  : tuple           = ()                                                                                 
+    _unique_commands  : tuple           = ()                                                                                 
+    _unique_constants : tuple           = ('mvStringValue',)                                                                 
+    _command          : Callable        = dearpygui.add_string_value                                                         
 
     def __init__(
         self                                      ,
@@ -363,21 +363,21 @@ class DoubleValue(Widget):
     		Union[int, str]
     """
 
-    label             : str             = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")             
-    user_data         : Any             = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")         
-    use_internal_label: bool            = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")
-    source            : Union[int, str] = ItemAttribute("configuration", "get_item_configuration", "configure_item", "source")            
-    default_value     : float           = ItemAttribute('information', 'get_unmanagable', None, 'default_value')                          
-    value             : float           = ItemAttribute("configuration", "get_value", "set_value", "default_value")                       
+    label             : str             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    user_data         : Any             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    use_internal_label: bool            = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    source            : Union[int, str] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    default_value     : float           = ItemAttribute('information', 'get_item_cached', None, None)                        
+    value             : float           = ItemAttribute("configuration", "get_item_value", "set_item_value", "default_value")
 
-    _is_container     : bool            = False                                                                                           
-    _is_root_item     : bool            = False                                                                                           
-    _is_value_able    : bool            = True                                                                                            
-    _unique_parents   : tuple           = ('ValueRegistry',)                                                                              
-    _unique_children  : tuple           = ()                                                                                              
-    _unique_commands  : tuple           = ()                                                                                              
-    _unique_constants : tuple           = ('mvDoubleValue',)                                                                              
-    _command          : Callable        = dearpygui.add_double_value                                                                      
+    _is_container     : bool            = False                                                                              
+    _is_root_item     : bool            = False                                                                              
+    _is_value_able    : bool            = True                                                                               
+    _unique_parents   : tuple           = ('ValueRegistry',)                                                                 
+    _unique_children  : tuple           = ()                                                                                 
+    _unique_commands  : tuple           = ()                                                                                 
+    _unique_constants : tuple           = ('mvDoubleValue',)                                                                 
+    _command          : Callable        = dearpygui.add_double_value                                                         
 
     def __init__(
         self                                      ,
@@ -416,21 +416,21 @@ class Double4Value(Widget):
     		Union[int, str]
     """
 
-    label             : str             = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")             
-    user_data         : Any             = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")         
-    use_internal_label: bool            = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")
-    source            : Union[int, str] = ItemAttribute("configuration", "get_item_configuration", "configure_item", "source")            
-    default_value     : Any             = ItemAttribute('information', 'get_unmanagable', None, 'default_value')                          
-    value             : Any             = ItemAttribute("configuration", "get_value", "set_value", "default_value")                       
+    label             : str             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    user_data         : Any             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    use_internal_label: bool            = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    source            : Union[int, str] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    default_value     : Any             = ItemAttribute('information', 'get_item_cached', None, None)                        
+    value             : Any             = ItemAttribute("configuration", "get_item_value", "set_item_value", "default_value")
 
-    _is_container     : bool            = False                                                                                           
-    _is_root_item     : bool            = False                                                                                           
-    _is_value_able    : bool            = True                                                                                            
-    _unique_parents   : tuple           = ('ValueRegistry',)                                                                              
-    _unique_children  : tuple           = ()                                                                                              
-    _unique_commands  : tuple           = ()                                                                                              
-    _unique_constants : tuple           = ('mvDouble4Value',)                                                                             
-    _command          : Callable        = dearpygui.add_double4_value                                                                     
+    _is_container     : bool            = False                                                                              
+    _is_root_item     : bool            = False                                                                              
+    _is_value_able    : bool            = True                                                                               
+    _unique_parents   : tuple           = ('ValueRegistry',)                                                                 
+    _unique_children  : tuple           = ()                                                                                 
+    _unique_commands  : tuple           = ()                                                                                 
+    _unique_constants : tuple           = ('mvDouble4Value',)                                                                
+    _command          : Callable        = dearpygui.add_double4_value                                                        
 
     def __init__(
         self                                                      ,
@@ -469,21 +469,21 @@ class ColorValue(Widget):
     		Union[int, str]
     """
 
-    label             : str                                   = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")             
-    user_data         : Any                                   = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")         
-    use_internal_label: bool                                  = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")
-    source            : Union[int, str]                       = ItemAttribute("configuration", "get_item_configuration", "configure_item", "source")            
-    default_value     : Union[List[float], Tuple[float, ...]] = ItemAttribute('information', 'get_unmanagable', None, 'default_value')                          
-    value             : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_value", "set_value", "default_value")                       
+    label             : str                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    user_data         : Any                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    use_internal_label: bool                                  = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    source            : Union[int, str]                       = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    default_value     : Union[List[float], Tuple[float, ...]] = ItemAttribute('information', 'get_item_cached', None, None)                        
+    value             : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_value", "set_item_value", "default_value")
 
-    _is_container     : bool                                  = False                                                                                           
-    _is_root_item     : bool                                  = False                                                                                           
-    _is_value_able    : bool                                  = True                                                                                            
-    _unique_parents   : tuple                                 = ('ValueRegistry',)                                                                              
-    _unique_children  : tuple                                 = ()                                                                                              
-    _unique_commands  : tuple                                 = ()                                                                                              
-    _unique_constants : tuple                                 = ('mvColorValue',)                                                                               
-    _command          : Callable                              = dearpygui.add_color_value                                                                       
+    _is_container     : bool                                  = False                                                                              
+    _is_root_item     : bool                                  = False                                                                              
+    _is_value_able    : bool                                  = True                                                                               
+    _unique_parents   : tuple                                 = ('ValueRegistry',)                                                                 
+    _unique_children  : tuple                                 = ()                                                                                 
+    _unique_commands  : tuple                                 = ()                                                                                 
+    _unique_constants : tuple                                 = ('mvColorValue',)                                                                  
+    _command          : Callable                              = dearpygui.add_color_value                                                          
 
     def __init__(
         self                                                                            ,
@@ -522,21 +522,21 @@ class FloatVectValue(Widget):
     		Union[int, str]
     """
 
-    label             : str                                   = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")             
-    user_data         : Any                                   = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")         
-    use_internal_label: bool                                  = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")
-    source            : Union[int, str]                       = ItemAttribute("configuration", "get_item_configuration", "configure_item", "source")            
-    default_value     : Union[List[float], Tuple[float, ...]] = ItemAttribute('information', 'get_unmanagable', None, 'default_value')                          
-    value             : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_value", "set_value", "default_value")                       
+    label             : str                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    user_data         : Any                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    use_internal_label: bool                                  = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    source            : Union[int, str]                       = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    default_value     : Union[List[float], Tuple[float, ...]] = ItemAttribute('information', 'get_item_cached', None, None)                        
+    value             : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_value", "set_item_value", "default_value")
 
-    _is_container     : bool                                  = False                                                                                           
-    _is_root_item     : bool                                  = False                                                                                           
-    _is_value_able    : bool                                  = True                                                                                            
-    _unique_parents   : tuple                                 = ('ValueRegistry',)                                                                              
-    _unique_children  : tuple                                 = ()                                                                                              
-    _unique_commands  : tuple                                 = ()                                                                                              
-    _unique_constants : tuple                                 = ('mvFloatVectValue',)                                                                           
-    _command          : Callable                              = dearpygui.add_float_vect_value                                                                  
+    _is_container     : bool                                  = False                                                                              
+    _is_root_item     : bool                                  = False                                                                              
+    _is_value_able    : bool                                  = True                                                                               
+    _unique_parents   : tuple                                 = ('ValueRegistry',)                                                                 
+    _unique_children  : tuple                                 = ()                                                                                 
+    _unique_commands  : tuple                                 = ()                                                                                 
+    _unique_constants : tuple                                 = ('mvFloatVectValue',)                                                              
+    _command          : Callable                              = dearpygui.add_float_vect_value                                                     
 
     def __init__(
         self                                                            ,
@@ -575,21 +575,21 @@ class SeriesValue(Widget):
     		Union[int, str]
     """
 
-    label             : str             = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")             
-    user_data         : Any             = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")         
-    use_internal_label: bool            = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")
-    source            : Union[int, str] = ItemAttribute("configuration", "get_item_configuration", "configure_item", "source")            
-    default_value     : Any             = ItemAttribute('information', 'get_unmanagable', None, 'default_value')                          
-    value             : Any             = ItemAttribute("configuration", "get_value", "set_value", "default_value")                       
+    label             : str             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    user_data         : Any             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    use_internal_label: bool            = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    source            : Union[int, str] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    default_value     : Any             = ItemAttribute('information', 'get_item_cached', None, None)                        
+    value             : Any             = ItemAttribute("configuration", "get_item_value", "set_item_value", "default_value")
 
-    _is_container     : bool            = False                                                                                           
-    _is_root_item     : bool            = False                                                                                           
-    _is_value_able    : bool            = True                                                                                            
-    _unique_parents   : tuple           = ('ValueRegistry',)                                                                              
-    _unique_children  : tuple           = ()                                                                                              
-    _unique_commands  : tuple           = ()                                                                                              
-    _unique_constants : tuple           = ('mvSeriesValue',)                                                                              
-    _command          : Callable        = dearpygui.add_series_value                                                                      
+    _is_container     : bool            = False                                                                              
+    _is_root_item     : bool            = False                                                                              
+    _is_value_able    : bool            = True                                                                               
+    _unique_parents   : tuple           = ('ValueRegistry',)                                                                 
+    _unique_children  : tuple           = ()                                                                                 
+    _unique_commands  : tuple           = ()                                                                                 
+    _unique_constants : tuple           = ('mvSeriesValue',)                                                                 
+    _command          : Callable        = dearpygui.add_series_value                                                         
 
     def __init__(
         self                                      ,

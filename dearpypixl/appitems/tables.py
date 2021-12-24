@@ -75,47 +75,47 @@ class Table(Container):
     		Union[int, str]
     """
 
-    label                  : str                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")                                                                                                                                                                                                             
-    user_data              : Any                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")                                                                                                                                                                                                         
-    use_internal_label     : bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")                                                                                                                                                                                                
-    width                  : int                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "width")                                                                                                                                                                                                             
-    height                 : int                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "height")                                                                                                                                                                                                            
-    indent                 : int                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "indent")                                                                                                                                                                                                            
-    source                 : Union[int, str]                   = ItemAttribute("configuration", "get_item_configuration", "configure_item", "source")                                                                                                                                                                                                            
-    callback               : Callable                          = ItemAttribute("configuration", "get_item_configuration", "configure_item", "callback")                                                                                                                                                                                                          
-    show                   : bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "show")                                                                                                                                                                                                              
-    pos                    : Union[List[int], Tuple[int, ...]] = ItemAttribute('configuration', 'get_item_state', 'configure_item', 'pos')                                                                                                                                                                                                                       
-    filter_key             : str                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "filter_key")                                                                                                                                                                                                        
-    delay_search           : bool                              = ItemAttribute('information', 'get_unmanagable', None, 'delay_search')                                                                                                                                                                                                                           
-    header_row             : bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "header_row")                                                                                                                                                                                                        
-    clipper                : bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "clipper")                                                                                                                                                                                                           
-    inner_width            : int                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "inner_width")                                                                                                                                                                                                       
-    policy                 : int                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "policy")                                                                                                                                                                                                            
-    freeze_rows            : int                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "freeze_rows")                                                                                                                                                                                                       
-    freeze_columns         : int                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "freeze_columns")                                                                                                                                                                                                    
-    sort_multi             : bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "sort_multi")                                                                                                                                                                                                        
-    sort_tristate          : bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "sort_tristate")                                                                                                                                                                                                     
-    resizable              : bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "resizable")                                                                                                                                                                                                         
-    reorderable            : bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "reorderable")                                                                                                                                                                                                       
-    hideable               : bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "hideable")                                                                                                                                                                                                          
-    sortable               : bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "sortable")                                                                                                                                                                                                          
-    context_menu_in_body   : bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "context_menu_in_body")                                                                                                                                                                                              
-    row_background         : bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "row_background")                                                                                                                                                                                                    
-    borders_innerH         : bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "borders_innerH")                                                                                                                                                                                                    
-    borders_outerH         : bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "borders_outerH")                                                                                                                                                                                                    
-    borders_innerV         : bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "borders_innerV")                                                                                                                                                                                                    
-    borders_outerV         : bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "borders_outerV")                                                                                                                                                                                                    
-    no_host_extendX        : bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "no_host_extendX")                                                                                                                                                                                                   
-    no_host_extendY        : bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "no_host_extendY")                                                                                                                                                                                                   
-    no_keep_columns_visible: bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "no_keep_columns_visible")                                                                                                                                                                                           
-    precise_widths         : bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "precise_widths")                                                                                                                                                                                                    
-    no_clip                : bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "no_clip")                                                                                                                                                                                                           
-    pad_outerX             : bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "pad_outerX")                                                                                                                                                                                                        
-    no_pad_outerX          : bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "no_pad_outerX")                                                                                                                                                                                                     
-    no_pad_innerX          : bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "no_pad_innerX")                                                                                                                                                                                                     
-    scrollX                : bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "scrollX")                                                                                                                                                                                                           
-    scrollY                : bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "scrollY")                                                                                                                                                                                                           
-    no_saved_settings      : bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "no_saved_settings")                                                                                                                                                                                                 
+    label                  : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                                                      
+    user_data              : Any                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                                                      
+    use_internal_label     : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                                                      
+    width                  : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                                                      
+    height                 : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                                                      
+    indent                 : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                                                      
+    source                 : Union[int, str]                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                                                      
+    callback               : Callable                          = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                                                      
+    show                   : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                                                      
+    pos                    : Union[List[int], Tuple[int, ...]] = ItemAttribute('configuration', 'get_item_state', 'set_item_config', None)                                                                                                                                                                                                                       
+    filter_key             : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                                                      
+    delay_search           : bool                              = ItemAttribute('information', 'get_item_cached', None, None)                                                                                                                                                                                                                                     
+    header_row             : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                                                      
+    clipper                : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                                                      
+    inner_width            : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                                                      
+    policy                 : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                                                      
+    freeze_rows            : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                                                      
+    freeze_columns         : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                                                      
+    sort_multi             : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                                                      
+    sort_tristate          : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                                                      
+    resizable              : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                                                      
+    reorderable            : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                                                      
+    hideable               : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                                                      
+    sortable               : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                                                      
+    context_menu_in_body   : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                                                      
+    row_background         : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                                                      
+    borders_innerH         : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                                                      
+    borders_outerH         : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                                                      
+    borders_innerV         : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                                                      
+    borders_outerV         : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                                                      
+    no_host_extendX        : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                                                      
+    no_host_extendY        : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                                                      
+    no_keep_columns_visible: bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                                                      
+    precise_widths         : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                                                      
+    no_clip                : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                                                      
+    pad_outerX             : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                                                      
+    no_pad_outerX          : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                                                      
+    no_pad_innerX          : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                                                      
+    scrollX                : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                                                      
+    scrollY                : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                                                      
+    no_saved_settings      : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                                                      
 
     is_visible             : bool                              = ItemAttribute("state", "get_item_state", None, "visible")                                                                                                                                                                                                                                       
 
@@ -258,41 +258,41 @@ class TableColumn(Widget):
     		Union[int, str]
     """
 
-    label                 : str      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")                 
-    user_data             : Any      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")             
-    use_internal_label    : bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")    
-    width                 : int      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "width")                 
-    show                  : bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "show")                  
-    enabled               : bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "enabled")               
-    init_width_or_weight  : float    = ItemAttribute("configuration", "get_item_configuration", "configure_item", "init_width_or_weight")  
-    default_hide          : bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "default_hide")          
-    default_sort          : bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "default_sort")          
-    width_stretch         : bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "width_stretch")         
-    width_fixed           : bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "width_fixed")           
-    no_resize             : bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "no_resize")             
-    no_reorder            : bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "no_reorder")            
-    no_hide               : bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "no_hide")               
-    no_clip               : bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "no_clip")               
-    no_sort               : bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "no_sort")               
-    no_sort_ascending     : bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "no_sort_ascending")     
-    no_sort_descending    : bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "no_sort_descending")    
-    no_header_width       : bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "no_header_width")       
-    prefer_sort_ascending : bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "prefer_sort_ascending") 
-    prefer_sort_descending: bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "prefer_sort_descending")
-    indent_enable         : bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "indent_enable")         
-    indent_disable        : bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "indent_disable")        
+    label                 : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    user_data             : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    use_internal_label    : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    width                 : int      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    show                  : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    enabled               : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    init_width_or_weight  : float    = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    default_hide          : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    default_sort          : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    width_stretch         : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    width_fixed           : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    no_resize             : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    no_reorder            : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    no_hide               : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    no_clip               : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    no_sort               : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    no_sort_ascending     : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    no_sort_descending    : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    no_header_width       : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    prefer_sort_ascending : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    prefer_sort_descending: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    indent_enable         : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    indent_disable        : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
-    is_hovered            : bool     = ItemAttribute("state", "get_item_state", None, "hovered")                                           
-    is_visible            : bool     = ItemAttribute("state", "get_item_state", None, "visible")                                           
+    is_hovered            : bool     = ItemAttribute("state", "get_item_state", None, "hovered")                 
+    is_visible            : bool     = ItemAttribute("state", "get_item_state", None, "visible")                 
 
-    _is_container         : bool     = False                                                                                               
-    _is_root_item         : bool     = False                                                                                               
-    _is_value_able        : bool     = False                                                                                               
-    _unique_parents       : tuple    = ('Stage', 'TemplateRegistry', 'Table')                                                              
-    _unique_children      : tuple    = ()                                                                                                  
-    _unique_commands      : tuple    = ()                                                                                                  
-    _unique_constants     : tuple    = ('mvTableColumn',)                                                                                  
-    _command              : Callable = dearpygui.add_table_column                                                                          
+    _is_container         : bool     = False                                                                     
+    _is_root_item         : bool     = False                                                                     
+    _is_value_able        : bool     = False                                                                     
+    _unique_parents       : tuple    = ('Stage', 'TemplateRegistry', 'Table')                                    
+    _unique_children      : tuple    = ()                                                                        
+    _unique_commands      : tuple    = ()                                                                        
+    _unique_constants     : tuple    = ('mvTableColumn',)                                                        
+    _command              : Callable = dearpygui.add_table_column                                                
 
     def __init__(
         self                                           ,
@@ -371,23 +371,23 @@ class TableRow(Container):
     		Union[int, str]
     """
 
-    label             : str      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")             
-    user_data         : Any      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")         
-    use_internal_label: bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")
-    height            : int      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "height")            
-    show              : bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "show")              
-    filter_key        : str      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "filter_key")        
+    label             : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    user_data         : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    height            : int      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    filter_key        : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
-    is_visible        : bool     = ItemAttribute("state", "get_item_state", None, "visible")                                       
+    is_visible        : bool     = ItemAttribute("state", "get_item_state", None, "visible")                 
 
-    _is_container     : bool     = True                                                                                            
-    _is_root_item     : bool     = False                                                                                           
-    _is_value_able    : bool     = False                                                                                           
-    _unique_parents   : tuple    = ('Stage', 'TemplateRegistry', 'Table')                                                          
-    _unique_children  : tuple    = ()                                                                                              
-    _unique_commands  : tuple    = ()                                                                                              
-    _unique_constants : tuple    = ('mvTableRow',)                                                                                 
-    _command          : Callable = dearpygui.add_table_row                                                                         
+    _is_container     : bool     = True                                                                      
+    _is_root_item     : bool     = False                                                                     
+    _is_value_able    : bool     = False                                                                     
+    _unique_parents   : tuple    = ('Stage', 'TemplateRegistry', 'Table')                                    
+    _unique_children  : tuple    = ()                                                                        
+    _unique_commands  : tuple    = ()                                                                        
+    _unique_constants : tuple    = ('mvTableRow',)                                                           
+    _command          : Callable = dearpygui.add_table_row                                                   
 
     def __init__(
         self                                      ,
@@ -432,21 +432,21 @@ class TableCell(Container):
     		Union[int, str]
     """
 
-    label             : str      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")             
-    user_data         : Any      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")         
-    use_internal_label: bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")
-    height            : int      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "height")            
-    show              : bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "show")              
-    filter_key        : str      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "filter_key")        
+    label             : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    user_data         : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    height            : int      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    filter_key        : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
-    _is_container     : bool     = True                                                                                            
-    _is_root_item     : bool     = False                                                                                           
-    _is_value_able    : bool     = False                                                                                           
-    _unique_parents   : tuple    = ('Stage', 'TemplateRegistry', 'TableRow')                                                       
-    _unique_children  : tuple    = ()                                                                                              
-    _unique_commands  : tuple    = ()                                                                                              
-    _unique_constants : tuple    = ('mvTableCell',)                                                                                
-    _command          : Callable = dearpygui.add_table_cell                                                                        
+    _is_container     : bool     = True                                                                      
+    _is_root_item     : bool     = False                                                                     
+    _is_value_able    : bool     = False                                                                     
+    _unique_parents   : tuple    = ('Stage', 'TemplateRegistry', 'TableRow')                                 
+    _unique_children  : tuple    = ()                                                                        
+    _unique_commands  : tuple    = ()                                                                        
+    _unique_constants : tuple    = ('mvTableCell',)                                                          
+    _command          : Callable = dearpygui.add_table_cell                                                  
 
     def __init__(
         self                                      ,

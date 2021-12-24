@@ -52,22 +52,22 @@ class FilterSet(Container):
     		Union[int, str]
     """
 
-    label             : str      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")             
-    user_data         : Any      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")         
-    use_internal_label: bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")
-    width             : int      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "width")             
-    indent            : int      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "indent")            
-    show              : bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "show")              
-    delay_search      : bool     = ItemAttribute('information', 'get_unmanagable', None, 'delay_search')                           
+    label             : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    user_data         : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    width             : int      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    indent            : int      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    delay_search      : bool     = ItemAttribute('information', 'get_item_cached', None, None)               
 
-    _is_container     : bool     = True                                                                                            
-    _is_root_item     : bool     = False                                                                                           
-    _is_value_able    : bool     = False                                                                                           
-    _unique_parents   : tuple    = ()                                                                                              
-    _unique_children  : tuple    = ()                                                                                              
-    _unique_commands  : tuple    = ()                                                                                              
-    _unique_constants : tuple    = ('mvFilterSet',)                                                                                
-    _command          : Callable = dearpygui.add_filter_set                                                                        
+    _is_container     : bool     = True                                                                      
+    _is_root_item     : bool     = False                                                                     
+    _is_value_able    : bool     = False                                                                     
+    _unique_parents   : tuple    = ()                                                                        
+    _unique_children  : tuple    = ()                                                                        
+    _unique_commands  : tuple    = ()                                                                        
+    _unique_constants : tuple    = ('mvFilterSet',)                                                          
+    _command          : Callable = dearpygui.add_filter_set                                                  
 
     def __init__(
         self                                       ,
@@ -115,22 +115,22 @@ class Clipper(Container):
     		Union[int, str]
     """
 
-    label             : str      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")             
-    user_data         : Any      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")         
-    use_internal_label: bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")
-    width             : int      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "width")             
-    indent            : int      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "indent")            
-    show              : bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "show")              
-    delay_search      : bool     = ItemAttribute('information', 'get_unmanagable', None, 'delay_search')                           
+    label             : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    user_data         : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    width             : int      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    indent            : int      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    delay_search      : bool     = ItemAttribute('information', 'get_item_cached', None, None)               
 
-    _is_container     : bool     = True                                                                                            
-    _is_root_item     : bool     = False                                                                                           
-    _is_value_able    : bool     = False                                                                                           
-    _unique_parents   : tuple    = ()                                                                                              
-    _unique_children  : tuple    = ()                                                                                              
-    _unique_commands  : tuple    = ()                                                                                              
-    _unique_constants : tuple    = ('mvClipper',)                                                                                  
-    _command          : Callable = dearpygui.add_clipper                                                                           
+    _is_container     : bool     = True                                                                      
+    _is_root_item     : bool     = False                                                                     
+    _is_value_able    : bool     = False                                                                     
+    _unique_parents   : tuple    = ()                                                                        
+    _unique_children  : tuple    = ()                                                                        
+    _unique_commands  : tuple    = ()                                                                        
+    _unique_constants : tuple    = ('mvClipper',)                                                            
+    _command          : Callable = dearpygui.add_clipper                                                     
 
     def __init__(
         self                                       ,
@@ -172,18 +172,18 @@ class Stage(Container):
     		Union[int, str]
     """
 
-    label             : str      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")             
-    user_data         : Any      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")         
-    use_internal_label: bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")
+    label             : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    user_data         : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
-    _is_container     : bool     = True                                                                                            
-    _is_root_item     : bool     = True                                                                                            
-    _is_value_able    : bool     = False                                                                                           
-    _unique_parents   : tuple    = ()                                                                                              
-    _unique_children  : tuple    = ()                                                                                              
-    _unique_commands  : tuple    = ()                                                                                              
-    _unique_constants : tuple    = ('mvStage',)                                                                                    
-    _command          : Callable = dearpygui.add_stage                                                                             
+    _is_container     : bool     = True                                                                      
+    _is_root_item     : bool     = True                                                                      
+    _is_value_able    : bool     = False                                                                     
+    _unique_parents   : tuple    = ()                                                                        
+    _unique_children  : tuple    = ()                                                                        
+    _unique_commands  : tuple    = ()                                                                        
+    _unique_constants : tuple    = ('mvStage',)                                                              
+    _command          : Callable = dearpygui.add_stage                                                       
 
     def __init__(
         self                           ,
@@ -231,51 +231,51 @@ class TreeNode(Container):
     		Union[int, str]
     """
 
-    label               : str                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")               
-    user_data           : Any                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")           
-    use_internal_label  : bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")  
-    indent              : int                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "indent")              
-    payload_type        : str                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "payload_type")        
-    drag_callback       : Callable                          = ItemAttribute("configuration", "get_item_configuration", "configure_item", "drag_callback")       
-    drop_callback       : Callable                          = ItemAttribute("configuration", "get_item_configuration", "configure_item", "drop_callback")       
-    show                : bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "show")                
-    pos                 : Union[List[int], Tuple[int, ...]] = ItemAttribute('configuration', 'get_item_state', 'configure_item', 'pos')                         
-    filter_key          : str                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "filter_key")          
-    delay_search        : bool                              = ItemAttribute('information', 'get_unmanagable', None, 'delay_search')                             
-    tracked             : bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "tracked")             
-    track_offset        : float                             = ItemAttribute("configuration", "get_item_configuration", "configure_item", "track_offset")        
-    default_open        : bool                              = ItemAttribute('information', 'get_unmanagable', None, 'default_open')                             
-    open_on_double_click: bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "open_on_double_click")
-    open_on_arrow       : bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "open_on_arrow")       
-    leaf                : bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "leaf")                
-    bullet              : bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "bullet")              
-    selectable          : bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "selectable")          
+    label               : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    user_data           : Any                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    use_internal_label  : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    indent              : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    payload_type        : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    drag_callback       : Callable                          = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    drop_callback       : Callable                          = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    show                : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    pos                 : Union[List[int], Tuple[int, ...]] = ItemAttribute('configuration', 'get_item_state', 'set_item_config', None) 
+    filter_key          : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    delay_search        : bool                              = ItemAttribute('information', 'get_item_cached', None, None)               
+    tracked             : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    track_offset        : float                             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    default_open        : bool                              = ItemAttribute('information', 'get_item_cached', None, None)               
+    open_on_double_click: bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    open_on_arrow       : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    leaf                : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    bullet              : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    selectable          : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
-    is_resized          : bool                              = ItemAttribute("state", "get_item_state", None, "resized")                                         
-    is_middle_clicked   : bool                              = ItemAttribute("state", "get_item_state", None, "middle_clicked")                                  
-    is_right_clicked    : bool                              = ItemAttribute("state", "get_item_state", None, "right_clicked")                                   
-    is_left_clicked     : bool                              = ItemAttribute("state", "get_item_state", None, "left_clicked")                                    
-    is_hovered          : bool                              = ItemAttribute("state", "get_item_state", None, "hovered")                                         
-    is_active           : bool                              = ItemAttribute("state", "get_item_state", None, "active")                                          
-    is_focused          : bool                              = ItemAttribute("state", "get_item_state", None, "focused")                                         
-    is_clicked          : bool                              = ItemAttribute("state", "get_item_state", None, "clicked")                                         
-    is_visible          : bool                              = ItemAttribute("state", "get_item_state", None, "visible")                                         
-    is_activated        : bool                              = ItemAttribute("state", "get_item_state", None, "activated")                                       
-    is_deactivated      : bool                              = ItemAttribute("state", "get_item_state", None, "deactivated")                                     
-    is_toggled_open     : bool                              = ItemAttribute("state", "get_item_state", None, "toggled_open")                                    
-    rect_min            : list[int, int]                    = ItemAttribute("state", "get_item_state", None, "rect_min")                                        
-    rect_max            : list[int, int]                    = ItemAttribute("state", "get_item_state", None, "rect_max")                                        
-    rect_size           : list[int, int]                    = ItemAttribute("state", "get_item_state", None, "rect_size")                                       
-    content_region_avail: list[int, int]                    = ItemAttribute("state", "get_item_state", None, "content_region_avail")                            
+    is_resized          : bool                              = ItemAttribute("state", "get_item_state", None, "resized")                 
+    is_middle_clicked   : bool                              = ItemAttribute("state", "get_item_state", None, "middle_clicked")          
+    is_right_clicked    : bool                              = ItemAttribute("state", "get_item_state", None, "right_clicked")           
+    is_left_clicked     : bool                              = ItemAttribute("state", "get_item_state", None, "left_clicked")            
+    is_hovered          : bool                              = ItemAttribute("state", "get_item_state", None, "hovered")                 
+    is_active           : bool                              = ItemAttribute("state", "get_item_state", None, "active")                  
+    is_focused          : bool                              = ItemAttribute("state", "get_item_state", None, "focused")                 
+    is_clicked          : bool                              = ItemAttribute("state", "get_item_state", None, "clicked")                 
+    is_visible          : bool                              = ItemAttribute("state", "get_item_state", None, "visible")                 
+    is_activated        : bool                              = ItemAttribute("state", "get_item_state", None, "activated")               
+    is_deactivated      : bool                              = ItemAttribute("state", "get_item_state", None, "deactivated")             
+    is_toggled_open     : bool                              = ItemAttribute("state", "get_item_state", None, "toggled_open")            
+    rect_min            : list[int, int]                    = ItemAttribute("state", "get_item_state", None, "rect_min")                
+    rect_max            : list[int, int]                    = ItemAttribute("state", "get_item_state", None, "rect_max")                
+    rect_size           : list[int, int]                    = ItemAttribute("state", "get_item_state", None, "rect_size")               
+    content_region_avail: list[int, int]                    = ItemAttribute("state", "get_item_state", None, "content_region_avail")    
 
-    _is_container       : bool                              = True                                                                                              
-    _is_root_item       : bool                              = False                                                                                             
-    _is_value_able      : bool                              = True                                                                                              
-    _unique_parents     : tuple                             = ()                                                                                                
-    _unique_children    : tuple                             = ()                                                                                                
-    _unique_commands    : tuple                             = ()                                                                                                
-    _unique_constants   : tuple                             = ('mvTreeNode',)                                                                                   
-    _command            : Callable                          = dearpygui.add_tree_node                                                                           
+    _is_container       : bool                              = True                                                                      
+    _is_root_item       : bool                              = False                                                                     
+    _is_value_able      : bool                              = True                                                                      
+    _unique_parents     : tuple                             = ()                                                                        
+    _unique_children    : tuple                             = ()                                                                        
+    _unique_commands    : tuple                             = ()                                                                        
+    _unique_constants   : tuple                             = ('mvTreeNode',)                                                           
+    _command            : Callable                          = dearpygui.add_tree_node                                                   
 
     def __init__(
         self                                                                     ,
@@ -360,43 +360,43 @@ class ChildWindow(Container):
     		Union[int, str]
     """
 
-    label               : str                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")               
-    user_data           : Any                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")           
-    use_internal_label  : bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")  
-    width               : int                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "width")               
-    height              : int                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "height")              
-    indent              : int                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "indent")              
-    payload_type        : str                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "payload_type")        
-    drop_callback       : Callable                          = ItemAttribute("configuration", "get_item_configuration", "configure_item", "drop_callback")       
-    show                : bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "show")                
-    pos                 : Union[List[int], Tuple[int, ...]] = ItemAttribute('configuration', 'get_item_state', 'configure_item', 'pos')                         
-    filter_key          : str                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "filter_key")          
-    delay_search        : bool                              = ItemAttribute('information', 'get_unmanagable', None, 'delay_search')                             
-    tracked             : bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "tracked")             
-    track_offset        : float                             = ItemAttribute("configuration", "get_item_configuration", "configure_item", "track_offset")        
-    border              : bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "border")              
-    autosize_x          : bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "autosize_x")          
-    autosize_y          : bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "autosize_y")          
-    no_scrollbar        : bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "no_scrollbar")        
-    horizontal_scrollbar: bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "horizontal_scrollbar")
-    menubar             : bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "menubar")             
+    label               : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    user_data           : Any                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    use_internal_label  : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    width               : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    height              : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    indent              : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    payload_type        : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    drop_callback       : Callable                          = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    show                : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    pos                 : Union[List[int], Tuple[int, ...]] = ItemAttribute('configuration', 'get_item_state', 'set_item_config', None) 
+    filter_key          : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    delay_search        : bool                              = ItemAttribute('information', 'get_item_cached', None, None)               
+    tracked             : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    track_offset        : float                             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    border              : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    autosize_x          : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    autosize_y          : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    no_scrollbar        : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    horizontal_scrollbar: bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    menubar             : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
-    is_resized          : bool                              = ItemAttribute("state", "get_item_state", None, "resized")                                         
-    is_hovered          : bool                              = ItemAttribute("state", "get_item_state", None, "hovered")                                         
-    is_active           : bool                              = ItemAttribute("state", "get_item_state", None, "active")                                          
-    is_focused          : bool                              = ItemAttribute("state", "get_item_state", None, "focused")                                         
-    is_deactivated      : bool                              = ItemAttribute("state", "get_item_state", None, "deactivated")                                     
-    rect_size           : list[int, int]                    = ItemAttribute("state", "get_item_state", None, "rect_size")                                       
-    content_region_avail: list[int, int]                    = ItemAttribute("state", "get_item_state", None, "content_region_avail")                            
+    is_resized          : bool                              = ItemAttribute("state", "get_item_state", None, "resized")                 
+    is_hovered          : bool                              = ItemAttribute("state", "get_item_state", None, "hovered")                 
+    is_active           : bool                              = ItemAttribute("state", "get_item_state", None, "active")                  
+    is_focused          : bool                              = ItemAttribute("state", "get_item_state", None, "focused")                 
+    is_deactivated      : bool                              = ItemAttribute("state", "get_item_state", None, "deactivated")             
+    rect_size           : list[int, int]                    = ItemAttribute("state", "get_item_state", None, "rect_size")               
+    content_region_avail: list[int, int]                    = ItemAttribute("state", "get_item_state", None, "content_region_avail")    
 
-    _is_container       : bool                              = True                                                                                              
-    _is_root_item       : bool                              = False                                                                                             
-    _is_value_able      : bool                              = True                                                                                              
-    _unique_parents     : tuple                             = ()                                                                                                
-    _unique_children    : tuple                             = ()                                                                                                
-    _unique_commands    : tuple                             = ()                                                                                                
-    _unique_constants   : tuple                             = ('mvChild',)                                                                                      
-    _command            : Callable                          = dearpygui.add_child_window                                                                        
+    _is_container       : bool                              = True                                                                      
+    _is_root_item       : bool                              = False                                                                     
+    _is_value_able      : bool                              = True                                                                      
+    _unique_parents     : tuple                             = ()                                                                        
+    _unique_children    : tuple                             = ()                                                                        
+    _unique_commands    : tuple                             = ()                                                                        
+    _unique_constants   : tuple                             = ('mvChild',)                                                              
+    _command            : Callable                          = dearpygui.add_child_window                                                
 
     def __init__(
         self                                                                     ,
@@ -480,50 +480,50 @@ class Group(Container):
     		Union[int, str]
     """
 
-    label                    : str                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")             
-    user_data                : Any                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")         
-    use_internal_label       : bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")
-    width                    : int                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "width")             
-    indent                   : int                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "indent")            
-    payload_type             : str                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "payload_type")      
-    drag_callback            : Callable                          = ItemAttribute("configuration", "get_item_configuration", "configure_item", "drag_callback")     
-    drop_callback            : Callable                          = ItemAttribute("configuration", "get_item_configuration", "configure_item", "drop_callback")     
-    show                     : bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "show")              
-    pos                      : Union[List[int], Tuple[int, ...]] = ItemAttribute('configuration', 'get_item_state', 'configure_item', 'pos')                       
-    filter_key               : str                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "filter_key")        
-    delay_search             : bool                              = ItemAttribute('information', 'get_unmanagable', None, 'delay_search')                           
-    tracked                  : bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "tracked")           
-    track_offset             : float                             = ItemAttribute("configuration", "get_item_configuration", "configure_item", "track_offset")      
-    horizontal               : bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "horizontal")        
-    horizontal_spacing       : float                             = ItemAttribute("configuration", "get_item_configuration", "configure_item", "horizontal_spacing")
-    xoffset                  : float                             = ItemAttribute("configuration", "get_item_configuration", "configure_item", "xoffset")           
+    label                    : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    user_data                : Any                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    use_internal_label       : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    width                    : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    indent                   : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    payload_type             : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    drag_callback            : Callable                          = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    drop_callback            : Callable                          = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    show                     : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    pos                      : Union[List[int], Tuple[int, ...]] = ItemAttribute('configuration', 'get_item_state', 'set_item_config', None) 
+    filter_key               : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    delay_search             : bool                              = ItemAttribute('information', 'get_item_cached', None, None)               
+    tracked                  : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    track_offset             : float                             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    horizontal               : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    horizontal_spacing       : float                             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    xoffset                  : float                             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
-    is_resized               : bool                              = ItemAttribute("state", "get_item_state", None, "resized")                                       
-    is_middle_clicked        : bool                              = ItemAttribute("state", "get_item_state", None, "middle_clicked")                                
-    is_right_clicked         : bool                              = ItemAttribute("state", "get_item_state", None, "right_clicked")                                 
-    is_left_clicked          : bool                              = ItemAttribute("state", "get_item_state", None, "left_clicked")                                  
-    is_hovered               : bool                              = ItemAttribute("state", "get_item_state", None, "hovered")                                       
-    is_active                : bool                              = ItemAttribute("state", "get_item_state", None, "active")                                        
-    is_focused               : bool                              = ItemAttribute("state", "get_item_state", None, "focused")                                       
-    is_clicked               : bool                              = ItemAttribute("state", "get_item_state", None, "clicked")                                       
-    is_visible               : bool                              = ItemAttribute("state", "get_item_state", None, "visible")                                       
-    is_edited                : bool                              = ItemAttribute("state", "get_item_state", None, "edited")                                        
-    is_activated             : bool                              = ItemAttribute("state", "get_item_state", None, "activated")                                     
-    is_deactivated           : bool                              = ItemAttribute("state", "get_item_state", None, "deactivated")                                   
-    is_deactivated_after_edit: bool                              = ItemAttribute("state", "get_item_state", None, "deactivated_after_edit")                        
-    rect_min                 : list[int, int]                    = ItemAttribute("state", "get_item_state", None, "rect_min")                                      
-    rect_max                 : list[int, int]                    = ItemAttribute("state", "get_item_state", None, "rect_max")                                      
-    rect_size                : list[int, int]                    = ItemAttribute("state", "get_item_state", None, "rect_size")                                     
-    content_region_avail     : list[int, int]                    = ItemAttribute("state", "get_item_state", None, "content_region_avail")                          
+    is_resized               : bool                              = ItemAttribute("state", "get_item_state", None, "resized")                 
+    is_middle_clicked        : bool                              = ItemAttribute("state", "get_item_state", None, "middle_clicked")          
+    is_right_clicked         : bool                              = ItemAttribute("state", "get_item_state", None, "right_clicked")           
+    is_left_clicked          : bool                              = ItemAttribute("state", "get_item_state", None, "left_clicked")            
+    is_hovered               : bool                              = ItemAttribute("state", "get_item_state", None, "hovered")                 
+    is_active                : bool                              = ItemAttribute("state", "get_item_state", None, "active")                  
+    is_focused               : bool                              = ItemAttribute("state", "get_item_state", None, "focused")                 
+    is_clicked               : bool                              = ItemAttribute("state", "get_item_state", None, "clicked")                 
+    is_visible               : bool                              = ItemAttribute("state", "get_item_state", None, "visible")                 
+    is_edited                : bool                              = ItemAttribute("state", "get_item_state", None, "edited")                  
+    is_activated             : bool                              = ItemAttribute("state", "get_item_state", None, "activated")               
+    is_deactivated           : bool                              = ItemAttribute("state", "get_item_state", None, "deactivated")             
+    is_deactivated_after_edit: bool                              = ItemAttribute("state", "get_item_state", None, "deactivated_after_edit")  
+    rect_min                 : list[int, int]                    = ItemAttribute("state", "get_item_state", None, "rect_min")                
+    rect_max                 : list[int, int]                    = ItemAttribute("state", "get_item_state", None, "rect_max")                
+    rect_size                : list[int, int]                    = ItemAttribute("state", "get_item_state", None, "rect_size")               
+    content_region_avail     : list[int, int]                    = ItemAttribute("state", "get_item_state", None, "content_region_avail")    
 
-    _is_container            : bool                              = True                                                                                            
-    _is_root_item            : bool                              = False                                                                                           
-    _is_value_able           : bool                              = False                                                                                           
-    _unique_parents          : tuple                             = ()                                                                                              
-    _unique_children         : tuple                             = ()                                                                                              
-    _unique_commands         : tuple                             = ()                                                                                              
-    _unique_constants        : tuple                             = ('mvGroup',)                                                                                    
-    _command                 : Callable                          = dearpygui.add_group                                                                             
+    _is_container            : bool                              = True                                                                      
+    _is_root_item            : bool                              = False                                                                     
+    _is_value_able           : bool                              = False                                                                     
+    _unique_parents          : tuple                             = ()                                                                        
+    _unique_children         : tuple                             = ()                                                                        
+    _unique_commands         : tuple                             = ()                                                                        
+    _unique_constants        : tuple                             = ('mvGroup',)                                                              
+    _command                 : Callable                          = dearpygui.add_group                                                       
 
     def __init__(
         self                                                                   ,
@@ -603,51 +603,51 @@ class CollapsingHeader(Container):
     		Union[int, str]
     """
 
-    label               : str                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")               
-    user_data           : Any                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")           
-    use_internal_label  : bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")  
-    indent              : int                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "indent")              
-    payload_type        : str                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "payload_type")        
-    drag_callback       : Callable                          = ItemAttribute("configuration", "get_item_configuration", "configure_item", "drag_callback")       
-    drop_callback       : Callable                          = ItemAttribute("configuration", "get_item_configuration", "configure_item", "drop_callback")       
-    show                : bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "show")                
-    pos                 : Union[List[int], Tuple[int, ...]] = ItemAttribute('configuration', 'get_item_state', 'configure_item', 'pos')                         
-    filter_key          : str                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "filter_key")          
-    delay_search        : bool                              = ItemAttribute('information', 'get_unmanagable', None, 'delay_search')                             
-    tracked             : bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "tracked")             
-    track_offset        : float                             = ItemAttribute("configuration", "get_item_configuration", "configure_item", "track_offset")        
-    closable            : bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "closable")            
-    default_open        : bool                              = ItemAttribute('information', 'get_unmanagable', None, 'default_open')                             
-    open_on_double_click: bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "open_on_double_click")
-    open_on_arrow       : bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "open_on_arrow")       
-    leaf                : bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "leaf")                
-    bullet              : bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "bullet")              
+    label               : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    user_data           : Any                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    use_internal_label  : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    indent              : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    payload_type        : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    drag_callback       : Callable                          = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    drop_callback       : Callable                          = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    show                : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    pos                 : Union[List[int], Tuple[int, ...]] = ItemAttribute('configuration', 'get_item_state', 'set_item_config', None) 
+    filter_key          : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    delay_search        : bool                              = ItemAttribute('information', 'get_item_cached', None, None)               
+    tracked             : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    track_offset        : float                             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    closable            : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    default_open        : bool                              = ItemAttribute('information', 'get_item_cached', None, None)               
+    open_on_double_click: bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    open_on_arrow       : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    leaf                : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    bullet              : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
-    is_resized          : bool                              = ItemAttribute("state", "get_item_state", None, "resized")                                         
-    is_middle_clicked   : bool                              = ItemAttribute("state", "get_item_state", None, "middle_clicked")                                  
-    is_right_clicked    : bool                              = ItemAttribute("state", "get_item_state", None, "right_clicked")                                   
-    is_left_clicked     : bool                              = ItemAttribute("state", "get_item_state", None, "left_clicked")                                    
-    is_hovered          : bool                              = ItemAttribute("state", "get_item_state", None, "hovered")                                         
-    is_active           : bool                              = ItemAttribute("state", "get_item_state", None, "active")                                          
-    is_focused          : bool                              = ItemAttribute("state", "get_item_state", None, "focused")                                         
-    is_clicked          : bool                              = ItemAttribute("state", "get_item_state", None, "clicked")                                         
-    is_visible          : bool                              = ItemAttribute("state", "get_item_state", None, "visible")                                         
-    is_activated        : bool                              = ItemAttribute("state", "get_item_state", None, "activated")                                       
-    is_deactivated      : bool                              = ItemAttribute("state", "get_item_state", None, "deactivated")                                     
-    is_toggled_open     : bool                              = ItemAttribute("state", "get_item_state", None, "toggled_open")                                    
-    rect_min            : list[int, int]                    = ItemAttribute("state", "get_item_state", None, "rect_min")                                        
-    rect_max            : list[int, int]                    = ItemAttribute("state", "get_item_state", None, "rect_max")                                        
-    rect_size           : list[int, int]                    = ItemAttribute("state", "get_item_state", None, "rect_size")                                       
-    content_region_avail: list[int, int]                    = ItemAttribute("state", "get_item_state", None, "content_region_avail")                            
+    is_resized          : bool                              = ItemAttribute("state", "get_item_state", None, "resized")                 
+    is_middle_clicked   : bool                              = ItemAttribute("state", "get_item_state", None, "middle_clicked")          
+    is_right_clicked    : bool                              = ItemAttribute("state", "get_item_state", None, "right_clicked")           
+    is_left_clicked     : bool                              = ItemAttribute("state", "get_item_state", None, "left_clicked")            
+    is_hovered          : bool                              = ItemAttribute("state", "get_item_state", None, "hovered")                 
+    is_active           : bool                              = ItemAttribute("state", "get_item_state", None, "active")                  
+    is_focused          : bool                              = ItemAttribute("state", "get_item_state", None, "focused")                 
+    is_clicked          : bool                              = ItemAttribute("state", "get_item_state", None, "clicked")                 
+    is_visible          : bool                              = ItemAttribute("state", "get_item_state", None, "visible")                 
+    is_activated        : bool                              = ItemAttribute("state", "get_item_state", None, "activated")               
+    is_deactivated      : bool                              = ItemAttribute("state", "get_item_state", None, "deactivated")             
+    is_toggled_open     : bool                              = ItemAttribute("state", "get_item_state", None, "toggled_open")            
+    rect_min            : list[int, int]                    = ItemAttribute("state", "get_item_state", None, "rect_min")                
+    rect_max            : list[int, int]                    = ItemAttribute("state", "get_item_state", None, "rect_max")                
+    rect_size           : list[int, int]                    = ItemAttribute("state", "get_item_state", None, "rect_size")               
+    content_region_avail: list[int, int]                    = ItemAttribute("state", "get_item_state", None, "content_region_avail")    
 
-    _is_container       : bool                              = True                                                                                              
-    _is_root_item       : bool                              = False                                                                                             
-    _is_value_able      : bool                              = True                                                                                              
-    _unique_parents     : tuple                             = ()                                                                                                
-    _unique_children    : tuple                             = ()                                                                                                
-    _unique_commands    : tuple                             = ()                                                                                                
-    _unique_constants   : tuple                             = ('mvCollapsingHeader',)                                                                           
-    _command            : Callable                          = dearpygui.add_collapsing_header                                                                   
+    _is_container       : bool                              = True                                                                      
+    _is_root_item       : bool                              = False                                                                     
+    _is_value_able      : bool                              = True                                                                      
+    _unique_parents     : tuple                             = ()                                                                        
+    _unique_children    : tuple                             = ()                                                                        
+    _unique_commands    : tuple                             = ()                                                                        
+    _unique_constants   : tuple                             = ('mvCollapsingHeader',)                                                   
+    _command            : Callable                          = dearpygui.add_collapsing_header                                           
 
     def __init__(
         self                                                                     ,
@@ -726,20 +726,20 @@ class Tab(Container):
     		Union[int, str]
     """
 
-    label               : str            = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")                 
-    user_data           : Any            = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")             
-    use_internal_label  : bool           = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")    
-    indent              : int            = ItemAttribute("configuration", "get_item_configuration", "configure_item", "indent")                
-    payload_type        : str            = ItemAttribute("configuration", "get_item_configuration", "configure_item", "payload_type")          
-    drop_callback       : Callable       = ItemAttribute("configuration", "get_item_configuration", "configure_item", "drop_callback")         
-    show                : bool           = ItemAttribute("configuration", "get_item_configuration", "configure_item", "show")                  
-    filter_key          : str            = ItemAttribute("configuration", "get_item_configuration", "configure_item", "filter_key")            
-    delay_search        : bool           = ItemAttribute('information', 'get_unmanagable', None, 'delay_search')                               
-    tracked             : bool           = ItemAttribute("configuration", "get_item_configuration", "configure_item", "tracked")               
-    track_offset        : float          = ItemAttribute("configuration", "get_item_configuration", "configure_item", "track_offset")          
-    closable            : bool           = ItemAttribute("configuration", "get_item_configuration", "configure_item", "closable")              
-    no_tooltip          : bool           = ItemAttribute("configuration", "get_item_configuration", "configure_item", "no_tooltip")            
-    order_mode          : bool           = ItemAttribute("configuration", "get_item_configuration", "configure_item", "order_mode")            
+    label               : str            = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                          
+    user_data           : Any            = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                          
+    use_internal_label  : bool           = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                          
+    indent              : int            = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                          
+    payload_type        : str            = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                          
+    drop_callback       : Callable       = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                          
+    show                : bool           = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                          
+    filter_key          : str            = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                          
+    delay_search        : bool           = ItemAttribute('information', 'get_item_cached', None, None)                                         
+    tracked             : bool           = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                          
+    track_offset        : float          = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                          
+    closable            : bool           = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                          
+    no_tooltip          : bool           = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                          
+    order_mode          : bool           = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                          
 
     is_resized          : bool           = ItemAttribute("state", "get_item_state", None, "resized")                                           
     is_middle_clicked   : bool           = ItemAttribute("state", "get_item_state", None, "middle_clicked")                                    
@@ -830,18 +830,18 @@ class TabBar(Container):
     		Union[int, str]
     """
 
-    label             : str                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")                                                                                                                                                       
-    user_data         : Any                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")                                                                                                                                                   
-    use_internal_label: bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")                                                                                                                                          
-    indent            : int                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "indent")                                                                                                                                                      
-    callback          : Callable                          = ItemAttribute("configuration", "get_item_configuration", "configure_item", "callback")                                                                                                                                                    
-    show              : bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "show")                                                                                                                                                        
-    pos               : Union[List[int], Tuple[int, ...]] = ItemAttribute('configuration', 'get_item_state', 'configure_item', 'pos')                                                                                                                                                                 
-    filter_key        : str                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "filter_key")                                                                                                                                                  
-    delay_search      : bool                              = ItemAttribute('information', 'get_unmanagable', None, 'delay_search')                                                                                                                                                                     
-    tracked           : bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "tracked")                                                                                                                                                     
-    track_offset      : float                             = ItemAttribute("configuration", "get_item_configuration", "configure_item", "track_offset")                                                                                                                                                
-    reorderable       : bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "reorderable")                                                                                                                                                 
+    label             : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                
+    user_data         : Any                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                
+    use_internal_label: bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                
+    indent            : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                
+    callback          : Callable                          = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                
+    show              : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                
+    pos               : Union[List[int], Tuple[int, ...]] = ItemAttribute('configuration', 'get_item_state', 'set_item_config', None)                                                                                                                                                                 
+    filter_key        : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                
+    delay_search      : bool                              = ItemAttribute('information', 'get_item_cached', None, None)                                                                                                                                                                               
+    tracked           : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                
+    track_offset      : float                             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                
+    reorderable       : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                
 
     is_visible        : bool                              = ItemAttribute("state", "get_item_state", None, "visible")                                                                                                                                                                                 
 
@@ -915,35 +915,35 @@ class Menu(Container):
     		Union[int, str]
     """
 
-    label             : str            = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")             
-    user_data         : Any            = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")         
-    use_internal_label: bool           = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")
-    indent            : int            = ItemAttribute("configuration", "get_item_configuration", "configure_item", "indent")            
-    payload_type      : str            = ItemAttribute("configuration", "get_item_configuration", "configure_item", "payload_type")      
-    drop_callback     : Callable       = ItemAttribute("configuration", "get_item_configuration", "configure_item", "drop_callback")     
-    show              : bool           = ItemAttribute("configuration", "get_item_configuration", "configure_item", "show")              
-    enabled           : bool           = ItemAttribute("configuration", "get_item_configuration", "configure_item", "enabled")           
-    filter_key        : str            = ItemAttribute("configuration", "get_item_configuration", "configure_item", "filter_key")        
-    delay_search      : bool           = ItemAttribute('information', 'get_unmanagable', None, 'delay_search')                           
-    tracked           : bool           = ItemAttribute("configuration", "get_item_configuration", "configure_item", "tracked")           
-    track_offset      : float          = ItemAttribute("configuration", "get_item_configuration", "configure_item", "track_offset")      
+    label             : str            = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    user_data         : Any            = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    use_internal_label: bool           = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    indent            : int            = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    payload_type      : str            = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    drop_callback     : Callable       = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    show              : bool           = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    enabled           : bool           = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    filter_key        : str            = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    delay_search      : bool           = ItemAttribute('information', 'get_item_cached', None, None)               
+    tracked           : bool           = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    track_offset      : float          = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
-    is_resized        : bool           = ItemAttribute("state", "get_item_state", None, "resized")                                       
-    is_hovered        : bool           = ItemAttribute("state", "get_item_state", None, "hovered")                                       
-    is_active         : bool           = ItemAttribute("state", "get_item_state", None, "active")                                        
-    is_focused        : bool           = ItemAttribute("state", "get_item_state", None, "focused")                                       
-    is_activated      : bool           = ItemAttribute("state", "get_item_state", None, "activated")                                     
-    is_deactivated    : bool           = ItemAttribute("state", "get_item_state", None, "deactivated")                                   
-    rect_size         : list[int, int] = ItemAttribute("state", "get_item_state", None, "rect_size")                                     
+    is_resized        : bool           = ItemAttribute("state", "get_item_state", None, "resized")                 
+    is_hovered        : bool           = ItemAttribute("state", "get_item_state", None, "hovered")                 
+    is_active         : bool           = ItemAttribute("state", "get_item_state", None, "active")                  
+    is_focused        : bool           = ItemAttribute("state", "get_item_state", None, "focused")                 
+    is_activated      : bool           = ItemAttribute("state", "get_item_state", None, "activated")               
+    is_deactivated    : bool           = ItemAttribute("state", "get_item_state", None, "deactivated")             
+    rect_size         : list[int, int] = ItemAttribute("state", "get_item_state", None, "rect_size")               
 
-    _is_container     : bool           = True                                                                                            
-    _is_root_item     : bool           = False                                                                                           
-    _is_value_able    : bool           = True                                                                                            
-    _unique_parents   : tuple          = ()                                                                                              
-    _unique_children  : tuple          = ()                                                                                              
-    _unique_commands  : tuple          = ()                                                                                              
-    _unique_constants : tuple          = ('mvMenu',)                                                                                     
-    _command          : Callable       = dearpygui.add_menu                                                                              
+    _is_container     : bool           = True                                                                      
+    _is_root_item     : bool           = False                                                                     
+    _is_value_able    : bool           = True                                                                      
+    _unique_parents   : tuple          = ()                                                                        
+    _unique_children  : tuple          = ()                                                                        
+    _unique_commands  : tuple          = ()                                                                        
+    _unique_constants : tuple          = ('mvMenu',)                                                               
+    _command          : Callable       = dearpygui.add_menu                                                        
 
     def __init__(
         self                                                 ,
@@ -999,23 +999,23 @@ class MenuBar(Container):
     		Union[int, str]
     """
 
-    label             : str      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")             
-    user_data         : Any      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")         
-    use_internal_label: bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")
-    indent            : int      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "indent")            
-    show              : bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "show")              
-    delay_search      : bool     = ItemAttribute('information', 'get_unmanagable', None, 'delay_search')                           
+    label             : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    user_data         : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    indent            : int      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    delay_search      : bool     = ItemAttribute('information', 'get_item_cached', None, None)               
 
-    is_visible        : bool     = ItemAttribute("state", "get_item_state", None, "visible")                                       
+    is_visible        : bool     = ItemAttribute("state", "get_item_state", None, "visible")                 
 
-    _is_container     : bool     = True                                                                                            
-    _is_root_item     : bool     = False                                                                                           
-    _is_value_able    : bool     = True                                                                                            
-    _unique_parents   : tuple    = ('Window', 'ChildWindow', 'NodeEditor', 'Stage', 'TemplateRegistry')                            
-    _unique_children  : tuple    = ()                                                                                              
-    _unique_commands  : tuple    = ()                                                                                              
-    _unique_constants : tuple    = ('mvMenuBar',)                                                                                  
-    _command          : Callable = dearpygui.add_menu_bar                                                                          
+    _is_container     : bool     = True                                                                      
+    _is_root_item     : bool     = False                                                                     
+    _is_value_able    : bool     = True                                                                      
+    _unique_parents   : tuple    = ('Window', 'ChildWindow', 'NodeEditor', 'Stage', 'TemplateRegistry')      
+    _unique_children  : tuple    = ()                                                                        
+    _unique_commands  : tuple    = ()                                                                        
+    _unique_constants : tuple    = ('mvMenuBar',)                                                            
+    _command          : Callable = dearpygui.add_menu_bar                                                    
 
     def __init__(
         self                                       ,
@@ -1055,24 +1055,24 @@ class Tooltip(Container):
     		Union[int, str]
     """
 
-    label               : str            = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")             
-    user_data           : Any            = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")         
-    use_internal_label  : bool           = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")
-    show                : bool           = ItemAttribute("configuration", "get_item_configuration", "configure_item", "show")              
+    label               : str            = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    user_data           : Any            = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    use_internal_label  : bool           = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    show                : bool           = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
-    is_resized          : bool           = ItemAttribute("state", "get_item_state", None, "resized")                                       
-    is_visible          : bool           = ItemAttribute("state", "get_item_state", None, "visible")                                       
-    rect_size           : list[int, int] = ItemAttribute("state", "get_item_state", None, "rect_size")                                     
-    content_region_avail: list[int, int] = ItemAttribute("state", "get_item_state", None, "content_region_avail")                          
+    is_resized          : bool           = ItemAttribute("state", "get_item_state", None, "resized")                 
+    is_visible          : bool           = ItemAttribute("state", "get_item_state", None, "visible")                 
+    rect_size           : list[int, int] = ItemAttribute("state", "get_item_state", None, "rect_size")               
+    content_region_avail: list[int, int] = ItemAttribute("state", "get_item_state", None, "content_region_avail")    
 
-    _is_container       : bool           = True                                                                                            
-    _is_root_item       : bool           = False                                                                                           
-    _is_value_able      : bool           = True                                                                                            
-    _unique_parents     : tuple          = ()                                                                                              
-    _unique_children    : tuple          = ()                                                                                              
-    _unique_commands    : tuple          = ()                                                                                              
-    _unique_constants   : tuple          = ('mvTooltip',)                                                                                  
-    _command            : Callable       = dearpygui.add_tooltip                                                                           
+    _is_container       : bool           = True                                                                      
+    _is_root_item       : bool           = False                                                                     
+    _is_value_able      : bool           = True                                                                      
+    _unique_parents     : tuple          = ()                                                                        
+    _unique_children    : tuple          = ()                                                                        
+    _unique_commands    : tuple          = ()                                                                        
+    _unique_constants   : tuple          = ('mvTooltip',)                                                            
+    _command            : Callable       = dearpygui.add_tooltip                                                     
 
     def __init__(
         self                                     ,
@@ -1131,34 +1131,34 @@ class Window(Container):
     		Union[int, str]
     """
 
-    label                     : str                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")                     
-    user_data                 : Any                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")                 
-    use_internal_label        : bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")        
-    width                     : int                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "width")                     
-    height                    : int                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "height")                    
-    indent                    : int                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "indent")                    
-    show                      : bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "show")                      
-    pos                       : Union[List[int], Tuple[int, ...]] = ItemAttribute('configuration', 'get_item_state', 'configure_item', 'pos')                               
-    delay_search              : bool                              = ItemAttribute('information', 'get_unmanagable', None, 'delay_search')                                   
-    min_size                  : Union[List[int], Tuple[int, ...]] = ItemAttribute("configuration", "get_item_configuration", "configure_item", "min_size")                  
-    max_size                  : Union[List[int], Tuple[int, ...]] = ItemAttribute("configuration", "get_item_configuration", "configure_item", "max_size")                  
-    menubar                   : bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "menubar")                   
-    collapsed                 : bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "collapsed")                 
-    autosize                  : bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "autosize")                  
-    no_resize                 : bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "no_resize")                 
-    no_title_bar              : bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "no_title_bar")              
-    no_move                   : bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "no_move")                   
-    no_scrollbar              : bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "no_scrollbar")              
-    no_collapse               : bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "no_collapse")               
-    horizontal_scrollbar      : bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "horizontal_scrollbar")      
-    no_focus_on_appearing     : bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "no_focus_on_appearing")     
-    no_bring_to_front_on_focus: bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "no_bring_to_front_on_focus")
-    no_close                  : bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "no_close")                  
-    no_background             : bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "no_background")             
-    modal                     : bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "modal")                     
-    popup                     : bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "popup")                     
-    no_saved_settings         : bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "no_saved_settings")         
-    on_close                  : Callable                          = ItemAttribute('information', 'get_unmanagable', None, 'on_close')                                       
+    label                     : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    user_data                 : Any                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    use_internal_label        : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    width                     : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    height                    : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    indent                    : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    show                      : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    pos                       : Union[List[int], Tuple[int, ...]] = ItemAttribute('configuration', 'get_item_state', 'set_item_config', None)                               
+    delay_search              : bool                              = ItemAttribute('information', 'get_item_cached', None, None)                                             
+    min_size                  : Union[List[int], Tuple[int, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    max_size                  : Union[List[int], Tuple[int, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    menubar                   : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    collapsed                 : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    autosize                  : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    no_resize                 : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    no_title_bar              : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    no_move                   : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    no_scrollbar              : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    no_collapse               : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    horizontal_scrollbar      : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    no_focus_on_appearing     : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    no_bring_to_front_on_focus: bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    no_close                  : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    no_background             : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    modal                     : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    popup                     : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    no_saved_settings         : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    on_close                  : Callable                          = ItemAttribute("configuration", "get_item_cached", "set_item_cached_config", None)                              
 
     is_resized                : bool                              = ItemAttribute("state", "get_item_state", None, "resized")                                               
     is_hovered                : bool                              = ItemAttribute("state", "get_item_state", None, "hovered")                                               
@@ -1243,30 +1243,29 @@ class Window(Container):
 
 class DragPayload(Container):
     """User data payload for drag and drop operations.
-
-    Args:
-        label (str, optional): Overrides 'name' as label.
-        user_data (Any, optional): User data for callbacks
-        use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
-        tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-        parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
-        show (bool, optional): Attempt to render widget.
-        drag_data (Any, optional): Drag data
-        drop_data (Any, optional): Drop data
-        payload_type (str, optional): 
-        id (Union[int, str], optional): (deprecated) 
-
-    Returns:
-        Union[int, str]
+    
+    	Args:
+    		label (str, optional): Overrides 'name' as label.
+    		user_data (Any, optional): User data for callbacks
+    		use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+    		tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+    		parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
+    		show (bool, optional): Attempt to render widget.
+    		drag_data (Any, optional): Drag data
+    		drop_data (Any, optional): Drop data
+    		payload_type (str, optional): 
+    		id (Union[int, str], optional): (deprecated) 
+    	Returns:
+    		Union[int, str]
     """
 
-    label             : str      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
-    user_data         : Any      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")                                                                                                                                                                                                                                                                                                                                                                                                                                                              
-    use_internal_label: bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")                                                                                                                                                                                                                                                                                                                                                                                                                                                     
-    show              : bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "show")                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
-    drag_data         : Any      = ItemAttribute("configuration", "get_unmanagable", "configure_item", "drag_data")                                                                                                                                                                                                                                                                                                                                                                                                                                                              
-    drop_data         : Any      = ItemAttribute("configuration", "get_unmanagable", "configure_item", "drop_data")                                                                                                                                                                                                                                                                                                                                                                                                                                                              
-    payload_type      : str      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "payload_type")                                                                                                                                                                                                                                                                                                                                                                                                                                                           
+    label             : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
+    user_data         : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
+    use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
+    show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
+    drag_data         : Any      = ItemAttribute('configuration', 'get_item_cached', 'set_item_cached_config', None)                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+    drop_data         : Any      = ItemAttribute('configuration', 'get_item_cached', 'set_item_cached_config', None)                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+    payload_type      : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
 
     _is_container     : bool     = True                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
     _is_root_item     : bool     = False                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
@@ -1319,21 +1318,21 @@ class ViewportMenuBar(Container):
     		Union[int, str]
     """
 
-    label             : str      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")             
-    user_data         : Any      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")         
-    use_internal_label: bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")
-    indent            : int      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "indent")            
-    show              : bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "show")              
-    delay_search      : bool     = ItemAttribute('information', 'get_unmanagable', None, 'delay_search')                           
+    label             : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    user_data         : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    indent            : int      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    delay_search      : bool     = ItemAttribute('information', 'get_item_cached', None, None)               
 
-    _is_container     : bool     = True                                                                                            
-    _is_root_item     : bool     = True                                                                                            
-    _is_value_able    : bool     = False                                                                                           
-    _unique_parents   : tuple    = ()                                                                                              
-    _unique_children  : tuple    = ()                                                                                              
-    _unique_commands  : tuple    = ()                                                                                              
-    _unique_constants : tuple    = ('mvViewportMenuBar',)                                                                          
-    _command          : Callable = dearpygui.add_viewport_menu_bar                                                                 
+    _is_container     : bool     = True                                                                      
+    _is_root_item     : bool     = True                                                                      
+    _is_value_able    : bool     = False                                                                     
+    _unique_parents   : tuple    = ()                                                                        
+    _unique_children  : tuple    = ()                                                                        
+    _unique_commands  : tuple    = ()                                                                        
+    _unique_constants : tuple    = ('mvViewportMenuBar',)                                                    
+    _command          : Callable = dearpygui.add_viewport_menu_bar                                           
 
     def __init__(
         self                                       ,

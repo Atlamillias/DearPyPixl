@@ -47,19 +47,19 @@ class NodeEditor(Container):
     		Union[int, str]
     """
 
-    label             : str            = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")                                                                                                                                                                  
-    user_data         : Any            = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")                                                                                                                                                              
-    use_internal_label: bool           = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")                                                                                                                                                     
-    width             : int            = ItemAttribute("configuration", "get_item_configuration", "configure_item", "width")                                                                                                                                                                  
-    height            : int            = ItemAttribute("configuration", "get_item_configuration", "configure_item", "height")                                                                                                                                                                 
-    callback          : Callable       = ItemAttribute("configuration", "get_item_configuration", "configure_item", "callback")                                                                                                                                                               
-    show              : bool           = ItemAttribute("configuration", "get_item_configuration", "configure_item", "show")                                                                                                                                                                   
-    filter_key        : str            = ItemAttribute("configuration", "get_item_configuration", "configure_item", "filter_key")                                                                                                                                                             
-    delay_search      : bool           = ItemAttribute('information', 'get_unmanagable', None, 'delay_search')                                                                                                                                                                                
-    tracked           : bool           = ItemAttribute("configuration", "get_item_configuration", "configure_item", "tracked")                                                                                                                                                                
-    track_offset      : float          = ItemAttribute("configuration", "get_item_configuration", "configure_item", "track_offset")                                                                                                                                                           
-    delink_callback   : Callable       = ItemAttribute("configuration", "get_item_configuration", "configure_item", "delink_callback")                                                                                                                                                        
-    menubar           : bool           = ItemAttribute("configuration", "get_item_configuration", "configure_item", "menubar")                                                                                                                                                                
+    label             : str            = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                           
+    user_data         : Any            = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                           
+    use_internal_label: bool           = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                           
+    width             : int            = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                           
+    height            : int            = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                           
+    callback          : Callable       = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                           
+    show              : bool           = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                           
+    filter_key        : str            = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                           
+    delay_search      : bool           = ItemAttribute('information', 'get_item_cached', None, None)                                                                                                                                                                                          
+    tracked           : bool           = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                           
+    track_offset      : float          = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                           
+    delink_callback   : Callable       = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                           
+    menubar           : bool           = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                           
 
     is_resized        : bool           = ItemAttribute("state", "get_item_state", None, "resized")                                                                                                                                                                                            
     is_hovered        : bool           = ItemAttribute("state", "get_item_state", None, "hovered")                                                                                                                                                                                            
@@ -139,19 +139,19 @@ class Node(Container):
     		Union[int, str]
     """
 
-    label             : str                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")                  
-    user_data         : Any                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")              
-    use_internal_label: bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")     
-    payload_type      : str                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "payload_type")           
-    drag_callback     : Callable                          = ItemAttribute("configuration", "get_item_configuration", "configure_item", "drag_callback")          
-    drop_callback     : Callable                          = ItemAttribute("configuration", "get_item_configuration", "configure_item", "drop_callback")          
-    show              : bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "show")                   
-    pos               : Union[List[int], Tuple[int, ...]] = ItemAttribute('configuration', 'get_item_state', 'configure_item', 'pos')                            
-    filter_key        : str                               = ItemAttribute("configuration", "get_item_configuration", "configure_item", "filter_key")             
-    delay_search      : bool                              = ItemAttribute('information', 'get_unmanagable', None, 'delay_search')                                
-    tracked           : bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "tracked")                
-    track_offset      : float                             = ItemAttribute("configuration", "get_item_configuration", "configure_item", "track_offset")           
-    draggable         : bool                              = ItemAttribute("configuration", "get_item_configuration", "configure_item", "draggable")              
+    label             : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                           
+    user_data         : Any                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                           
+    use_internal_label: bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                           
+    payload_type      : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                           
+    drag_callback     : Callable                          = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                           
+    drop_callback     : Callable                          = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                           
+    show              : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                           
+    pos               : Union[List[int], Tuple[int, ...]] = ItemAttribute('configuration', 'get_item_state', 'set_item_config', None)                            
+    filter_key        : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                           
+    delay_search      : bool                              = ItemAttribute('information', 'get_item_cached', None, None)                                          
+    tracked           : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                           
+    track_offset      : float                             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                           
+    draggable         : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                           
 
     is_resized        : bool                              = ItemAttribute("state", "get_item_state", None, "resized")                                            
     is_middle_clicked : bool                              = ItemAttribute("state", "get_item_state", None, "middle_clicked")                                     
@@ -233,17 +233,17 @@ class NodeAttribute(Container):
     		Union[int, str]
     """
 
-    label             : str      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")                                                                                                                                                                               
-    user_data         : Any      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")                                                                                                                                                                           
-    use_internal_label: bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")                                                                                                                                                                  
-    indent            : int      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "indent")                                                                                                                                                                              
-    show              : bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "show")                                                                                                                                                                                
-    filter_key        : str      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "filter_key")                                                                                                                                                                          
-    tracked           : bool     = ItemAttribute("configuration", "get_item_configuration", "configure_item", "tracked")                                                                                                                                                                             
-    track_offset      : float    = ItemAttribute("configuration", "get_item_configuration", "configure_item", "track_offset")                                                                                                                                                                        
-    attribute_type    : int      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "attribute_type")                                                                                                                                                                      
-    shape             : int      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "shape")                                                                                                                                                                               
-    category          : str      = ItemAttribute("configuration", "get_item_configuration", "configure_item", "category")                                                                                                                                                                            
+    label             : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                        
+    user_data         : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                        
+    use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                        
+    indent            : int      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                        
+    show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                        
+    filter_key        : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                        
+    tracked           : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                        
+    track_offset      : float    = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                        
+    attribute_type    : int      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                        
+    shape             : int      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                        
+    category          : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                        
 
     is_hovered        : bool     = ItemAttribute("state", "get_item_state", None, "hovered")                                                                                                                                                                                                         
 
@@ -308,23 +308,23 @@ class NodeLink(Widget):
     		Union[int, str]
     """
 
-    attr_1            : Union[int, str] = ItemAttribute("configuration", "get_item_configuration", "configure_item", "attr_1")            
-    attr_2            : Union[int, str] = ItemAttribute("configuration", "get_item_configuration", "configure_item", "attr_2")            
-    label             : str             = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")             
-    user_data         : Any             = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")         
-    use_internal_label: bool            = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")
-    show              : bool            = ItemAttribute("configuration", "get_item_configuration", "configure_item", "show")              
+    attr_1            : Union[int, str] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    attr_2            : Union[int, str] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    label             : str             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    user_data         : Any             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    use_internal_label: bool            = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    show              : bool            = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
-    is_hovered        : bool            = ItemAttribute("state", "get_item_state", None, "hovered")                                       
+    is_hovered        : bool            = ItemAttribute("state", "get_item_state", None, "hovered")                 
 
-    _is_container     : bool            = False                                                                                           
-    _is_root_item     : bool            = False                                                                                           
-    _is_value_able    : bool            = False                                                                                           
-    _unique_parents   : tuple           = ('TemplateRegistry', 'Stage', 'NodeEditor')                                                     
-    _unique_children  : tuple           = ()                                                                                              
-    _unique_commands  : tuple           = ()                                                                                              
-    _unique_constants : tuple           = ('mvNodeLink',)                                                                                 
-    _command          : Callable        = dearpygui.add_node_link                                                                         
+    _is_container     : bool            = False                                                                     
+    _is_root_item     : bool            = False                                                                     
+    _is_value_able    : bool            = False                                                                     
+    _unique_parents   : tuple           = ('TemplateRegistry', 'Stage', 'NodeEditor')                               
+    _unique_children  : tuple           = ()                                                                        
+    _unique_commands  : tuple           = ()                                                                        
+    _unique_constants : tuple           = ('mvNodeLink',)                                                           
+    _command          : Callable        = dearpygui.add_node_link                                                   
 
     def __init__(
         self                                      ,

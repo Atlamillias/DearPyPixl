@@ -38,22 +38,22 @@ class StaticTexture(Widget):
     		Union[int, str]
     """
 
-    width             : int                                   = ItemAttribute("configuration", "get_item_configuration", "configure_item", "width")             
-    height            : int                                   = ItemAttribute("configuration", "get_item_configuration", "configure_item", "height")            
-    default_value     : Union[List[float], Tuple[float, ...]] = ItemAttribute('information', 'get_unmanagable', None, 'default_value')                          
-    label             : str                                   = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")             
-    user_data         : Any                                   = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")         
-    use_internal_label: bool                                  = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")
-    value             : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_value", "set_value", "default_value")                       
+    width             : int                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    height            : int                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    default_value     : Union[List[float], Tuple[float, ...]] = ItemAttribute('information', 'get_item_cached', None, None)                        
+    label             : str                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    user_data         : Any                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    use_internal_label: bool                                  = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    value             : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_value", "set_item_value", "default_value")
 
-    _is_container     : bool                                  = False                                                                                           
-    _is_root_item     : bool                                  = False                                                                                           
-    _is_value_able    : bool                                  = True                                                                                            
-    _unique_parents   : tuple                                 = ('Stage', 'TemplateRegistry', 'TextureRegistry')                                                
-    _unique_children  : tuple                                 = ()                                                                                              
-    _unique_commands  : tuple                                 = ()                                                                                              
-    _unique_constants : tuple                                 = ('mvStaticTexture',)                                                                            
-    _command          : Callable                              = dearpygui.add_static_texture                                                                    
+    _is_container     : bool                                  = False                                                                              
+    _is_root_item     : bool                                  = False                                                                              
+    _is_value_able    : bool                                  = True                                                                               
+    _unique_parents   : tuple                                 = ('Stage', 'TemplateRegistry', 'TextureRegistry')                                   
+    _unique_children  : tuple                                 = ()                                                                                 
+    _unique_commands  : tuple                                 = ()                                                                                 
+    _unique_constants : tuple                                 = ('mvStaticTexture',)                                                               
+    _command          : Callable                              = dearpygui.add_static_texture                                                       
 
     def __init__(
         self                                                           ,
@@ -95,22 +95,22 @@ class DynamicTexture(Widget):
     		Union[int, str]
     """
 
-    width             : int                                   = ItemAttribute("configuration", "get_item_configuration", "configure_item", "width")             
-    height            : int                                   = ItemAttribute("configuration", "get_item_configuration", "configure_item", "height")            
-    default_value     : Union[List[float], Tuple[float, ...]] = ItemAttribute('information', 'get_unmanagable', None, 'default_value')                          
-    label             : str                                   = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")             
-    user_data         : Any                                   = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")         
-    use_internal_label: bool                                  = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")
-    value             : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_value", "set_value", "default_value")                       
+    width             : int                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    height            : int                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    default_value     : Union[List[float], Tuple[float, ...]] = ItemAttribute('information', 'get_item_cached', None, None)                        
+    label             : str                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    user_data         : Any                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    use_internal_label: bool                                  = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    value             : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_value", "set_item_value", "default_value")
 
-    _is_container     : bool                                  = False                                                                                           
-    _is_root_item     : bool                                  = False                                                                                           
-    _is_value_able    : bool                                  = True                                                                                            
-    _unique_parents   : tuple                                 = ('Stage', 'TemplateRegistry', 'TextureRegistry')                                                
-    _unique_children  : tuple                                 = ()                                                                                              
-    _unique_commands  : tuple                                 = ()                                                                                              
-    _unique_constants : tuple                                 = ('mvDynamicTexture',)                                                                           
-    _command          : Callable                              = dearpygui.add_dynamic_texture                                                                   
+    _is_container     : bool                                  = False                                                                              
+    _is_root_item     : bool                                  = False                                                                              
+    _is_value_able    : bool                                  = True                                                                               
+    _unique_parents   : tuple                                 = ('Stage', 'TemplateRegistry', 'TextureRegistry')                                   
+    _unique_children  : tuple                                 = ()                                                                                 
+    _unique_commands  : tuple                                 = ()                                                                                 
+    _unique_constants : tuple                                 = ('mvDynamicTexture',)                                                              
+    _command          : Callable                              = dearpygui.add_dynamic_texture                                                      
 
     def __init__(
         self                                                           ,
@@ -153,23 +153,23 @@ class RawTexture(Widget):
     		Union[int, str]
     """
 
-    width             : int                                   = ItemAttribute("configuration", "get_item_configuration", "configure_item", "width")             
-    height            : int                                   = ItemAttribute("configuration", "get_item_configuration", "configure_item", "height")            
-    default_value     : Union[List[float], Tuple[float, ...]] = ItemAttribute('information', 'get_unmanagable', None, 'default_value')                          
-    label             : str                                   = ItemAttribute("configuration", "get_item_configuration", "configure_item", "label")             
-    user_data         : Any                                   = ItemAttribute("configuration", "get_item_configuration", "configure_item", "user_data")         
-    use_internal_label: bool                                  = ItemAttribute("configuration", "get_item_configuration", "configure_item", "use_internal_label")
-    format            : int                                   = ItemAttribute("configuration", "get_item_configuration", "configure_item", "format")            
-    value             : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_value", "set_value", "default_value")                       
+    width             : int                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    height            : int                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    default_value     : Union[List[float], Tuple[float, ...]] = ItemAttribute('information', 'get_item_cached', None, None)                        
+    label             : str                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    user_data         : Any                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    use_internal_label: bool                                  = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    format            : int                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    value             : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_value", "set_item_value", "default_value")
 
-    _is_container     : bool                                  = False                                                                                           
-    _is_root_item     : bool                                  = False                                                                                           
-    _is_value_able    : bool                                  = False                                                                                           
-    _unique_parents   : tuple                                 = ('Stage', 'TemplateRegistry', 'TextureRegistry')                                                
-    _unique_children  : tuple                                 = ()                                                                                              
-    _unique_commands  : tuple                                 = ()                                                                                              
-    _unique_constants : tuple                                 = ('mvRawTexture', 'mvFormat_Float_rgba', 'mvFormat_Float_rgb')                                   
-    _command          : Callable                              = dearpygui.add_raw_texture                                                                       
+    _is_container     : bool                                  = False                                                                              
+    _is_root_item     : bool                                  = False                                                                              
+    _is_value_able    : bool                                  = False                                                                              
+    _unique_parents   : tuple                                 = ('Stage', 'TemplateRegistry', 'TextureRegistry')                                   
+    _unique_children  : tuple                                 = ()                                                                                 
+    _unique_commands  : tuple                                 = ()                                                                                 
+    _unique_constants : tuple                                 = ('mvRawTexture', 'mvFormat_Float_rgba', 'mvFormat_Float_rgb')                      
+    _command          : Callable                              = dearpygui.add_raw_texture                                                          
 
     def __init__(
         self                                                           ,
