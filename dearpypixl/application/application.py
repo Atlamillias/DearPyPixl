@@ -42,10 +42,9 @@ def _get_app_config(obj, name):
 def _set_app_config(obj, name, value):
     configure_app(**{name: value})
     if _dearpygui.is_viewport_ok():
-        warnings.warn("`Application` configuration settings cannot be changed once the viewport is showing.")
+        warnings.warn(f"`Application` configuration {name!r} cannot be changed once the viewport is showing.")
 
-# Slightly too complex for a lambda.
-def _set_theme(obj, name, value):
+def _set_theme(obj, name, value):  # too complex as a lambda.
     default_theme = ProtoItem._AppItemsRegistry.get(Theme._default_theme_uuid, None)
     if value is None and not default_theme:
         return None
@@ -355,6 +354,8 @@ class Application(ProtoItem, metaclass=AppItemType):
 
     __is_dpi_aware = True
 
+    # NOTE: This does not actually set properly on the class as it is not included
+    # as "configuration".
     @property
     def _dpi_aware(cls):
         return cls.__is_dpi_aware
@@ -367,7 +368,7 @@ class Application(ProtoItem, metaclass=AppItemType):
         def _dpi_aware(cls, value: bool):
             # Process DPI awareness can only be set prior to showing the app/viewport window.
             if _dearpygui.is_viewport_ok():
-                warnings.warn("`Application` configuration settings cannot be changed once the viewport is showing.")
+                warnings.warn(f"`Application` configuration `_dpi_aware` cannot be changed once the viewport is showing.")
             elif cls.__is_dpi_aware is not value:
                 windows.toggle_process_dpi_scaling()
                 cls.__is_dpi_aware = not cls.__is_dpi_aware

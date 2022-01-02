@@ -35,7 +35,7 @@ def _set_viewport_config(__obj, __name, value):
 
 def _set_viewport_fickle_config(obj, name, value):
     if obj.is_showing:
-        warnings.warn(f"`Viewport` configuration setting {name!r} cannot be changed once the viewport is showing.")
+        warnings.warn(f"`Viewport` configuration {name!r} cannot be changed once the viewport is showing.")
     else:
         configure_viewport(obj.tag, **{name: value})
 
@@ -288,12 +288,12 @@ class Viewport(ProtoItem, metaclass=AppItemType):
 
     if sys.platform == "win32":
         @classmethod
-        def _toggle_overlay_mode(cls) -> None:
+        def _toggle_overlay(cls) -> None:
             if cls.is_showing:
                 windows.toggle_dpg_viewport_transparency()
                 cls._is_minimized  = False
                 cls._is_maximized  = True
                 cls._is_fullscreen = False
             else:
-                warnings.warn(f"`Viewport` configuration setting `_toggle_overlay_mode` cannot be changed unless the viewport is showing.")
+                warnings.warn(f"`Viewport` configuration `_toggle_overlay_mode` cannot be changed unless the viewport is showing.")
 
