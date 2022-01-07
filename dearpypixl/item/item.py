@@ -54,7 +54,7 @@ class Template(Mapping, metaclass=ABCMeta):
         self.__target_parameters = self._target._item_init_params
         if "kwargs" not in config:
             config["kwargs"] = {}
-        elif isinstance(config["kwargs"], dict):
+        elif not isinstance(config["kwargs"], dict):
             raise TypeError("`kwargs` must be a dictionary.")
         self.kwargs = config.pop("kwargs")
         self.configure(**config)
@@ -70,7 +70,7 @@ class Template(Mapping, metaclass=ABCMeta):
         return getattr(self, attr)
 
     def __setitem__(self, attr: str, value: Any) -> None:
-        return setattr(attr, value)
+        return setattr(self, attr, value)
     
     def __iter__(self):
         yield from self.__target_parameters
