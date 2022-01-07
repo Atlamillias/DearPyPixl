@@ -6,7 +6,7 @@ import os
 # Many of these tend to be called between frames as render
 # callbacks -- trying to avoid lookup overhead with these
 # imports.
-from dearpygui import _dearpygui
+from dearpygui import _dearpygui, dearpygui
 from dearpygui._dearpygui import (
     # mainloop
     render_dearpygui_frame,
@@ -90,11 +90,12 @@ class Application(ProtoItem, metaclass=AppItemType):
     # skip_required_args     : bool = AppAttribute(CONFIGURATION, _get_app_config, _set_app_config)  # internal app config
     # skip_positional_args   : bool = AppAttribute(CONFIGURATION, _get_app_config, _set_app_config)  # internal app config
     # skip_keyword_args      : bool = AppAttribute(CONFIGURATION, _get_app_config, _set_app_config)  # internal app config
-    auto_device   : bool = AppAttribute(CONFIGURATION, _get_app_config, _set_app_config)  # internal app config
-    docking       : bool = AppAttribute(CONFIGURATION, _get_app_config, _set_app_config)  # internal app config
-    docking_space : bool = AppAttribute(CONFIGURATION, _get_app_config, _set_app_config)  # internal app config
-    device        : int  = AppAttribute(CONFIGURATION, _get_app_config, _set_app_config)  # internal app config
-    wait_for_input: bool = AppAttribute(CONFIGURATION, _get_app_config, _set_app_config)  # internal app config
+    auto_device               : bool = AppAttribute(CONFIGURATION, _get_app_config, _set_app_config)  # internal app config
+    docking                   : bool = AppAttribute(CONFIGURATION, _get_app_config, _set_app_config)  # internal app config
+    docking_space             : bool = AppAttribute(CONFIGURATION, _get_app_config, _set_app_config)  # internal app config
+    device                    : int  = AppAttribute(CONFIGURATION, _get_app_config, _set_app_config)  # internal app config
+    wait_for_input            : bool = AppAttribute(CONFIGURATION, _get_app_config, _set_app_config)  # internal app config
+    manual_callback_management: bool = AppAttribute(CONFIGURATION, _get_app_config, _set_app_config)  # internal app config
 
     font_scale    : float        = AppAttribute(CONFIGURATION,
                                                 lambda obj, name: get_global_font_scale(),
@@ -269,6 +270,36 @@ class Application(ProtoItem, metaclass=AppItemType):
         if callback:
             return wrapper(callback)
         return wrapper
+
+    @classmethod
+    def get_callback_queue(cls) -> Any:
+        """Clear and return the callbacks that were to be ran this frame.
+        `manual_callback_management` must be set to True. Call only within
+        the main render loop.
+        """
+        if not cls.manual_callback_management:
+            raise RuntimeError("`manual_callback_management` must be True.")
+        return dearpygui.get_callback_queue()
+
+    @classmethod
+    def run_callbacks(cls, callback_queue) -> None:
+        """Run all callbacks within the callback queue. `manual_callback_management`
+        must be set to True. Call only within the main render loop.
+        """
+        if not cls.manual_callback_management:
+            raise RuntimeError("`manual_callback_management` must be True.")
+        return dearpygui.run_callbacks(callback_queue)
+
+    @classmethod
+    def run_callback_queue(cls) -> None:
+        """Retrieve all callbacks scheduled to be ran this frame, clear the
+        queue, and run them. Does nothing if the callback queue is empty.
+        `manual_callback_management` must be set to True. Call only within
+        the main render loop.
+        """
+        callback_queue = cls.get_callback_queue()
+        return cls.run_callbacks(callback_queue)
+
 
     ################################
     ######## Misc. methods #########
