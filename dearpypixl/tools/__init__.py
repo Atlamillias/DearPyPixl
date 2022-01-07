@@ -10,9 +10,10 @@ from dearpypixl.tools.dpgtools import (
     show_metrics,
     show_style_editor,
 )
+from dearpypixl.components import Item, ItemT
 from dearpypixl.tools.pyconsole import PyConsole
 from dearpypixl.tools.appinfo import AppInfo
-from dearpypixl.components import Item
+
 
 __all__ = [
     # from DPG
@@ -29,13 +30,14 @@ __all__ = [
     # functions/helpers
     "stage",
     "mutex",
-    "find_reference",
+    "get_reference",
+    "get_text_size",
 ]
 
 
 @contextmanager
 def mutex() -> None:
-    """Locks the mutex within context of this call.
+    """Grabs the mutex. It is released once the code falls out-of-scope.
 
     Yields:
         None
@@ -46,7 +48,11 @@ def mutex() -> None:
         _dearpygui.unlock_mutex()
 
 
-def find_reference(tag: Union[str, int]) -> Union[Item, None]:
+def get_text_size(text : str, wrap_width: float = -1.0, font: ItemT = 0) -> tuple[int, int]:
+    return tuple(dearpygui.get_text_size(text, wrap_width=wrap_width, font=int(font)))
+
+
+def get_reference(tag: Union[str, int]) -> Union[Item, None]:
     """Returns a reference of an Item object that has a unique identifier
     of <tag>. Returns None if it doesn't exist or is not found.
 
