@@ -269,21 +269,22 @@ class Viewport(ProtoItem, metaclass=AppItemType):
         if not cls.is_showing:
             _dearpygui.show_viewport()
 
+
     @classmethod
-    def get_mouse_pos(cls, scope: str | int = 0):
-        """Fetch the mouse position at the given scope.
-        """
-        match scope:
-            case 0 | "global":
-                return get_mouse_pos(local=False)
-            case 1 | "local":
-                return get_mouse_pos(local=True)
-            case 2 | "plot":
-                return get_plot_mouse_pos()
-            case 3 | "draw" | "drawing":
-                return get_drawing_mouse_pos()
-            case _:
-                raise ValueError(f"Invalid `scope` value (got {scope!r}).")
+    def get_mouse_global_pos(cls):
+        get_mouse_pos(local=False)
+
+    @classmethod
+    def get_mouse_local_pos(cls):
+        get_mouse_pos(local=True)
+
+    @classmethod
+    def get_mouse_plot_pos(cls):
+        return get_plot_mouse_pos()
+
+    @classmethod
+    def get_mouse_drawing_pos(cls):
+        return get_drawing_mouse_pos()
 
 
     if sys.platform == "win32":
