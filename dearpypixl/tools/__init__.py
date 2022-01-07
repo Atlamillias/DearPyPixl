@@ -49,6 +49,9 @@ def mutex() -> None:
 
 
 def get_text_size(text : str, wrap_width: float = -1.0, font: ItemT = 0) -> tuple[int, int]:
+    """Return a tuple of the width and height of text rendered with a specific font
+    (default font if none is included). Must be ran after the first frame.
+    """
     return tuple(dearpygui.get_text_size(text, wrap_width=wrap_width, font=int(font)))
 
 
