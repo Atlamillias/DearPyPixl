@@ -6,7 +6,7 @@ from dearpygui import dearpygui
 
 __all__ = [
     "toggle_dpg_viewport_transparency",
-    "toggle_process_dpi_scaling",
+    "toggle_process_dpi_awareness",
 ]
 
 
@@ -252,10 +252,8 @@ def toggle_dpg_viewport_transparency(
 
 
 
-def toggle_process_dpi_scaling():
-    match _dpi_scaling:
-        case True:
-            ctypes.windll.shcore.SetProcessDpiAwareness(2)
-        case False:
-            ctypes.windll.shcore.SetProcessDpiAwareness(0)
-
+def toggle_process_dpi_awareness():
+    if _dpi_scaling:
+        ctypes.windll.shcore.SetProcessDpiAwareness(2)
+    else:
+        ctypes.windll.shcore.SetProcessDpiAwareness(0)

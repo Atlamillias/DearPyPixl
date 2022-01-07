@@ -362,7 +362,7 @@ class Application(ProtoItem, metaclass=AppItemType):
 
     if sys.platform == "win32":
         __is_dpi_aware = False
-        windows.toggle_process_dpi_scaling()
+        windows.toggle_process_dpi_awareness()
 
         @_dpi_aware.setter
         def _dpi_aware(cls, value: bool):
@@ -370,7 +370,7 @@ class Application(ProtoItem, metaclass=AppItemType):
             if _dearpygui.is_viewport_ok():
                 warnings.warn(f"`Application` configuration `_dpi_aware` cannot be changed once the viewport is showing.")
             elif cls.__is_dpi_aware is not value:
-                windows.toggle_process_dpi_scaling()
+                windows.toggle_process_dpi_awareness()
                 cls.__is_dpi_aware = not cls.__is_dpi_aware
 
     _dpi_aware = classmethod(_dpi_aware)
