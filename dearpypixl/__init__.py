@@ -33,8 +33,8 @@ def cleanup_dearpypixl():
 
 
 # I try to avoid calls to dearpygui on dearpypixl module/package import, but
-# initializing before the imports just to be safe (it's annoying to debug an
-# on-import segfault).
+# initializing before the imports just to be safe because it's annoying to debug an
+# on-import segfault.
 initialize_dearpypixl()
 
 
