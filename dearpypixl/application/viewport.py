@@ -55,15 +55,6 @@ def _set_primary_window(obj, name, value):
         obj._primary_window = int(value)
         _dearpygui.set_primary_window(obj._primary_window, True)
 
-class _ResizeUpdaterList(UpdaterList):
-    """Automatically re-sets the exit callback with the contents
-    of `self` on creation, or update through list method calls.
-    """
-
-    @staticmethod
-    def _on_update(callables):
-        _dearpygui.set_viewport_resize_callback(lambda: [c() for c in callables])
-
 
 
 class Viewport(ProtoItem, metaclass=AppItemType):
@@ -120,13 +111,13 @@ class Viewport(ProtoItem, metaclass=AppItemType):
     def client_height(cls) -> int:
         return _get_viewport_config(cls, "client_height")
 
-    
-    _calls_on_resize = _ResizeUpdaterList()
+
+    _calls_on_resize = []
 
     @classmethod
     @property
     @item_attribute(category=INFORMATION)
-    def calls_on_resize(cls) -> list:
+    def calls_on_resize(cls) -> list[tuple[Callable, dict[str, Any]]]:
         return cls._calls_on_resize
 
     @classmethod
@@ -198,11 +189,23 @@ class Viewport(ProtoItem, metaclass=AppItemType):
     ################################
     ######## Event Handling ########
     ################################
-    def on_resize(cls, callback: Callable):
-        cls._calls_on_resize.append(callback)
-        return callback
+    @classmethod
+    def on_resize(cls, callback: Callable = None, *args, **kwargs):
+        def _on_resize(callback):
+            if not callable(callback):
+                raise TypeError(f"{callback!r} is not callable.")
+            cls._calls_on_resize.append((callback, args, kwargs))
+            return callback
 
-    
+        if not callback:
+            return _on_resize
+        return _on_resize(callback)
+
+    def _on_resize_callback(*_args):
+        for call_able, args, kwargs in Viewport.calls_on_resize:
+            call_able(*args, **kwargs)
+
+    dearpygui.set_viewport_resize_callback(_on_resize_callback)
 
     ################################
     ######## Misc. methods #########
