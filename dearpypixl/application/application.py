@@ -30,7 +30,7 @@ from dearpygui._dearpygui import (
 from dearpypixl.application import AppItemType, AppAttribute
 from dearpypixl.constants import AppUUID, ViewportUUID, Key
 from dearpypixl.components import ItemT, item_attribute, Theme, UpdaterList, ProtoItem
-from dearpypixl.item.configuration import CONFIGURATION, INFORMATION, STATE
+from dearpypixl.components.configuration import CONFIGURATION, INFORMATION, STATE
 if sys.platform == "win32":
     from dearpypixl.platforms import windows
 

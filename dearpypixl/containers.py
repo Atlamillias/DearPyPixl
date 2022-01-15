@@ -5,7 +5,7 @@ from dearpygui import _dearpygui
 
 import dearpypixl.appitems.containers
 from dearpypixl.appitems.containers import *
-from dearpypixl.components import Container, Widget, ItemEvents, item_attribute, ItemAttribute, ContainerItemT, PixlItemT
+from dearpypixl.components import Container, Widget, ItemEvents, item_attribute, ItemAttribute, ContainerItemT, WidgetItemT
 from dearpypixl.components.handlers import (
     ClickedHandler,
     HoverHandler,
@@ -48,7 +48,7 @@ class Tooltip(Window):
     # all other items when it is not focused. Awaiting DPG update.
     def __init__(
         self,
-        target  : PixlItemT = None,
+        target  : WidgetItemT = None,
         delay   : int      = 0,
         x_offset: int      = 25,
         y_offset: int      = 0,
@@ -67,7 +67,7 @@ class Tooltip(Window):
             **kwargs,
         )
         VisibleHandler(parent=self.events, callback=self.__call_on_visible)
-        self.__target              : PixlItemT     = None
+        self.__target              : WidgetItemT     = None
         self.__target_uuid         : int          = None
         self.__target_hover_handler: HoverHandler = None
         # This is only used if a delay is needed.
@@ -80,12 +80,12 @@ class Tooltip(Window):
 
     @property
     @item_attribute(category="configuration")
-    def target(self) -> Union[PixlItemT, None]:
+    def target(self) -> Union[WidgetItemT, None]:
         """The item that, when hovered, will cause this item to display.
         """
         return self.__target
     @target.setter
-    def target(self, value: Union[PixlItemT, None]):
+    def target(self, value: Union[WidgetItemT, None]):
         if not isinstance(value, Widget) and value is not None:
             raise TypeError(f"`target` must `Widget` or `None` type (got {type(value).__qualname__!r}).")
         elif value and not hasattr(value, "is_hovered"):
@@ -147,7 +147,7 @@ class Popup(Window):
     """
     def __init__(
         self,
-        target: Union[PixlItemT, None] = None,
+        target: Union[WidgetItemT, None] = None,
         button: Union[Mouse, int]     = Mouse.ANY,
         modal : bool                  = False,
         **kwargs,
@@ -183,12 +183,12 @@ class Popup(Window):
             
     @property
     @item_attribute(category="configuration")
-    def target(self) -> Union[PixlItemT, None]:
+    def target(self) -> Union[WidgetItemT, None]:
         """The item that, when clicked, will cause this item to display.
         """
         return self.__target
     @target.setter
-    def target(self, value: Union[PixlItemT, None]) -> None:
+    def target(self, value: Union[WidgetItemT, None]) -> None:
         if not isinstance(value, Widget) and value is not None:
             raise TypeError(f"`target` must `Widget` or `None` type (got {type(value).__qualname__!r}).")
         elif value and not hasattr(value, "is_clicked"):

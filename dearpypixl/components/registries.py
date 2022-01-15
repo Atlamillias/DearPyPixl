@@ -5,8 +5,8 @@ from typing import Any, Callable, Union
 from dearpygui import dearpygui, _dearpygui
 
 from dearpypixl.constants import Key, Mouse
-from dearpypixl.item.configuration import ItemAttribute, item_attribute
-from dearpypixl.item.item import Item, ItemT
+from dearpypixl.components.configuration import ItemAttribute, item_attribute
+from dearpypixl.components.item import Item, ItemT
 from dearpypixl.components.items.handlers import *
 from dearpypixl.components.items.registries import (
     ValueRegistry,

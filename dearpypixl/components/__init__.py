@@ -5,24 +5,26 @@ from dearpygui._dearpygui import (
     push_container_stack,
     pop_container_stack,
     get_item_info,
-    bind_item_theme,
-    bind_item_handler_registry,
 )
-from dearpypixl.item import (
-    item_attribute,
-    ItemAttribute,
 
+from dearpypixl.components.configuration import ItemAttribute, item_attribute
+from dearpypixl.components.item import (
     ItemT,
     TemplateT,
     ItemLikeT,
-
     Template,
     ProtoItem,
     Item,  
     ItemLike,  
 )
 from dearpypixl.components.registries import *
-from dearpypixl.components.themes import Theme, ThemeComponent, ThemeColorComponent, ThemeStyleComponent, Font
+from dearpypixl.components.themes import (
+    Theme,
+    ThemeComponent,
+    ThemeColorComponent,
+    ThemeStyleComponent,
+    Font
+)
 from dearpypixl.components.other import UniqueItemMeta, UpdaterList
 
 
@@ -35,8 +37,9 @@ __all__ = [
     "Widget",
 ]
 
-PixlItemT       = TypeVar("PixlItemT"      , bound='Widget')
-ContainerItemT  = TypeVar("ContainerItemT", bound='Container')
+
+WidgetItemT     = TypeVar("WidgetItemT"      , bound='Widget'   )
+ContainerItemT  = TypeVar("ContainerItemT"   , bound='Container')
 
 
 

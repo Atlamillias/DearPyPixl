@@ -8,8 +8,8 @@ from typing import (
     List,
 )
 from dearpygui import dearpygui
-from dearpypixl.item.item import Item
-from dearpypixl.item.configuration import ItemAttribute
+from dearpypixl.components.item import Item
+from dearpypixl.components.configuration import ItemAttribute
 
 ##################################################
 ####### NOTE: This file is auto-generated. #######

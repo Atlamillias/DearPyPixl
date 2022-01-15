@@ -1,5 +1,4 @@
 from contextlib import contextmanager
-from typing import Union
 from dearpygui import _dearpygui, dearpygui
 from dearpypixl.tools.dpgtools import (
     show_about,
@@ -48,21 +47,19 @@ def mutex() -> None:
         _dearpygui.unlock_mutex()
 
 
-def get_text_size(text : str, wrap_width: float = -1.0, font: ItemT = 0) -> tuple[int, int]:
+def get_text_size(text: str, wrap_width: float = -1.0, font: ItemT = 0) -> tuple[int, int]:
     """Return a tuple of the width and height of text rendered with a specific font
     (default font if none is included). Must be ran after the first frame.
     """
     return tuple(dearpygui.get_text_size(text, wrap_width=wrap_width, font=int(font)))
 
 
-def get_reference(tag: Union[str, int]) -> Union[Item, None]:
-    """Returns a reference of an Item object that has a unique identifier
-    of <tag>. Returns None if it doesn't exist or is not found.
+def get_reference(tag: str | int) -> Item | None:
+    """Returns a reference of an Item object that uses the provided unique
+    identifier. Returns None if it doesn't exist or is not found.
 
     Args:
         * tag (Union[str, int]): Unique identifier of an item.
 
-    Returns:
-        Union[Item, None]
     """
     return Item._AppItemsRegistry.get(tag, None)

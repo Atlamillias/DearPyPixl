@@ -22,10 +22,9 @@ from dearpygui.dearpygui import (
     # misc
     pop_container_stack,
     push_container_stack,
-    get_text_size,
 )
-from dearpypixl.item.configuration import item_attribute, ItemAttribute
-from dearpypixl.item.item import Item
+from dearpypixl.components.configuration import item_attribute, ItemAttribute
+from dearpypixl.components.item import Item
 from dearpypixl.constants import (
     CoreThemeElement,
     PlotThemeElement,
