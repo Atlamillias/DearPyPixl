@@ -2,7 +2,7 @@ from typing import Callable, Union, Any, TYPE_CHECKING
 import sys
 import warnings
 
-from dearpygui import _dearpygui
+from dearpygui import _dearpygui, dearpygui
 from dearpygui._dearpygui import (
     # getters
     get_mouse_drag_delta,
@@ -19,7 +19,7 @@ from dearpypixl.application import AppItemType, AppAttribute
 from dearpypixl.constants import ViewportUUID
 from dearpypixl.components import ItemT, item_attribute, UpdaterList, ProtoItem
 from dearpypixl.containers import Window
-from dearpypixl.item.configuration import CONFIGURATION, INFORMATION, STATE
+from dearpypixl.components.configuration import CONFIGURATION, INFORMATION, STATE
 
 if sys.platform == "win32":
     from dearpypixl.platforms import windows
@@ -59,6 +59,7 @@ class _ResizeUpdaterList(UpdaterList):
     """Automatically re-sets the exit callback with the contents
     of `self` on creation, or update through list method calls.
     """
+
     @staticmethod
     def _on_update(callables):
         _dearpygui.set_viewport_resize_callback(lambda: [c() for c in callables])
@@ -194,21 +195,14 @@ class Viewport(ProtoItem, metaclass=AppItemType):
     def is_fullscreen(cls) -> bool:
         return cls._is_fullscreen
 
-
-    _is_using_primary_window = False
-
-    @classmethod
-    @property
-    @item_attribute(category=STATE)
-    def is_using_primary_window(cls) -> bool:
-        return cls._is_using_primary_window
-
     ################################
     ######## Event Handling ########
     ################################
     def on_resize(cls, callback: Callable):
         cls._calls_on_resize.append(callback)
         return callback
+
+    
 
     ################################
     ######## Misc. methods #########
@@ -270,20 +264,20 @@ class Viewport(ProtoItem, metaclass=AppItemType):
             _dearpygui.show_viewport()
 
 
-    @classmethod
-    def get_mouse_global_pos(cls):
+    @staticmethod
+    def get_mouse_global_pos():
         get_mouse_pos(local=False)
 
-    @classmethod
-    def get_mouse_local_pos(cls):
+    @staticmethod
+    def get_mouse_local_pos():
         get_mouse_pos(local=True)
 
-    @classmethod
-    def get_mouse_plot_pos(cls):
+    @staticmethod
+    def get_mouse_plot_pos():
         return get_plot_mouse_pos()
 
-    @classmethod
-    def get_mouse_drawing_pos(cls):
+    @staticmethod
+    def get_mouse_drawing_pos():
         return get_drawing_mouse_pos()
 
 
