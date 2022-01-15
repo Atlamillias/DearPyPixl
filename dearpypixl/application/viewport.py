@@ -190,20 +190,20 @@ class Viewport(ProtoItem, metaclass=AppItemType):
     ######## Event Handling ########
     ################################
     @classmethod
-    def on_resize(cls, callback: Callable = None, *args, **kwargs):
+    def on_resize(cls, _callback: Callable = ..., **kwargs):
         def _on_resize(callback):
             if not callable(callback):
                 raise TypeError(f"{callback!r} is not callable.")
-            cls._calls_on_resize.append((callback, args, kwargs))
+            cls._calls_on_resize.append((callback, kwargs))
             return callback
 
-        if not callback:
+        if _callback == ...:
             return _on_resize
-        return _on_resize(callback)
+        return _on_resize(_callback)
 
-    def _on_resize_callback(*_args):
-        for call_able, args, kwargs in Viewport.calls_on_resize:
-            call_able(*args, **kwargs)
+    def _on_resize_callback(*args):
+        for call_able, kwargs in Viewport.calls_on_resize:
+            call_able(**kwargs)
 
     dearpygui.set_viewport_resize_callback(_on_resize_callback)
 
