@@ -7,7 +7,7 @@ from dearpygui import dearpygui, _dearpygui
 from dearpypixl.constants import Key, Mouse
 from dearpypixl.components.configuration import ItemAttribute, item_attribute
 from dearpypixl.components.item import Item, ItemT
-from dearpypixl.components.items.handlers import *
+from dearpypixl.components.handlers import *
 from dearpypixl.components.items.registries import (
     ValueRegistry,
     TextureRegistry,
@@ -32,11 +32,13 @@ __all__ = [
 def _manage_handler(handler: Item):
     def wrapped_method(_method):
         @functools.wraps(_method)
-        def register_callback(self, callback: Callable = None, *args, **kwargs):
+        def register_callback(self, callback: Callable = None, **kwargs):
             @functools.wraps(callback)
             def set_handler(callback):
                 handler(label=callback.__name__,  # lambdas have `<lambda>`
-                        callback=callback, parent=int(self), *args, **kwargs)
+                        callback=callback,
+                        parent=int(self),
+                        **kwargs)
                 return callback
 
             if not callback:
