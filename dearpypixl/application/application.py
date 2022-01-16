@@ -27,9 +27,9 @@ from dearpygui._dearpygui import (
     set_global_font_scale,
     configure_app,
 )
-from dearpypixl.application import AppItemType, AppAttribute
+from dearpypixl.application import AppItem, AppAttribute
 from dearpypixl.constants import AppUUID, ViewportUUID, Key
-from dearpypixl.components import ItemT, item_attribute, Theme, UpdaterList, ProtoItem
+from dearpypixl.components import Item, item_attribute, Theme, ProtoItem
 from dearpypixl.components.configuration import CONFIGURATION, INFORMATION, STATE
 if sys.platform == "win32":
     from dearpypixl.platforms import windows
@@ -53,26 +53,9 @@ def _set_theme(obj, name, value):  # too complex as a lambda.
     value.bind()
 
 
-class _StartupUpdaterList(UpdaterList):
-    """Automatically re-sets the startup callback with the contents
-    of `self` on creation, or update through list method calls.
-    """
-    @staticmethod
-    def _on_update(callables):
-        set_frame_callback(1, lambda: [c() for c in callables])
-
-class _ExitUpdaterList(UpdaterList):
-    """Automatically re-sets the exit callback with the contents
-    of `self` on creation, or update through list method calls.
-    """
-    @staticmethod
-    def _on_update(callables):
-        _dearpygui.set_exit_callback(lambda: [c() for c in callables])
 
 
-
-
-class Application(ProtoItem, metaclass=AppItemType):
+class Application(AppItem):
     # NOTE: This class is basically an inheritable module -- Methods defined are either classmethods or staticmethods.
     # While "configuration" attributes aren't technically defined as such, all `Application` instances will get and set from
     # the same pool of information. Trying to redefine a configuration attribute on `Application` or its decendants is not
@@ -112,9 +95,9 @@ class Application(ProtoItem, metaclass=AppItemType):
     def tag(cls) -> int:
         return AppUUID
 
-    _calls_on_startup = _StartupUpdaterList()
-    _calls_on_exit    = _ExitUpdaterList()
-    _calls_on_render = []
+    _calls_on_startup = []
+    _calls_on_exit    = []
+    _calls_on_render  = []
 
     @classmethod
     @property
@@ -199,7 +182,7 @@ class Application(ProtoItem, metaclass=AppItemType):
             _dearpygui.show_viewport()
         # Avoiding lookup overhead in the loop as it is the most "sensitive"
         # spot in the entire framework.
-        is_running = cls.is_running
+        is_running   = cls.is_running
         render_frame = cls.render_frame  
 
         # NOTE: This is the render loop.
@@ -228,49 +211,95 @@ class Application(ProtoItem, metaclass=AppItemType):
         """Renders a frame. Only for use in the main render loop (see the
         `start` method).
         """
-        for render_callable in cls._calls_on_render:
-            render_callable()
+        for call_able, kwargs in cls._calls_on_render:
+            call_able(cls, None, **kwargs)
         render_dearpygui_frame()
 
     ################################
     ######## Event Handling ########
     ################################
     @classmethod
-    def on_startup(cls, callback: Callable) -> Callable:
-        """Adds *callback* to a list of callables that will run within the first
-        few frames.
-        """
-        cls._calls_on_startup.append(callback)
-        return callback
+    def on_startup(cls, _callback: Callable = None, **kwargs) -> Callable:
+        """Adds *callback* to a list of callables that will run after the first
+        frame is rendered.
 
-    @classmethod
-    def on_render(cls, callback: Callable) -> Callable:
-        """Adds *callback* to a list of callables that will after a frame is rendered.
+        Args:
+            * kwargs (optional, keyword-only): Keyword arguments to pass to the callback.
         """
-        cls._calls_on_render.append(callback)
-        return callback
-
-    @classmethod
-    def on_exit(cls, callback: Callable) -> Callable:
-        """Adds *callback* to a list of callables that will run on the last frame.
-        """
-        cls._calls_on_exit.append(callback)
-        return callback
-
-    @classmethod
-    def on_frame(cls, frame: int, callback: Callable = None) -> Callable:
-        """Schedule a callback to run on frame *frame*.
-        """
-        # No list attribute/property for this one. No reasonable reason for it
-        # to exist, and not worth the work implementing and keeping track of it.
-        def wrapper(callback):
-            set_frame_callback(frame, callback)
+        def _on_startup(callback):
+            if not callable(callback):
+                raise TypeError(f"{callback!r} is not callable.")
+            cls._calls_on_startup.append((callback, kwargs))
             return callback
 
-        if callback:
-            return wrapper(callback)
-        return wrapper
+        if not _callback:
+            return _on_startup
+        return _on_startup(_callback)
 
+    @classmethod
+    def on_exit(cls, _callback: Callable = None, **kwargs) -> Callable:
+        """Adds *callback* to a list of callables that will run on the last frame.
+
+        Args:
+            * kwargs (optional, keyword-only): Keyword arguments to pass to the callback.
+        """
+        def _on_exit(callback):
+            if not callable(callback):
+                raise TypeError(f"{callback!r} is not callable.")
+            cls._calls_on_exit.append((callback, kwargs))
+            return callback
+
+        if not _callback:
+            return _on_exit
+        return _on_exit(_callback)
+
+    def _on_event_callback(sender, app_data, user_data):  # user_data = list of callables
+        # TODO: Pass `cls` instead of explicitly passing `Application`
+        for call_able, kwargs in user_data:
+            call_able(Application, app_data, **kwargs)
+
+    dearpygui.set_frame_callback(1, _on_event_callback, user_data=_calls_on_startup)
+    dearpygui.set_exit_callback(_on_event_callback, user_data=_calls_on_exit)
+
+
+    @classmethod
+    def on_render(cls, _callback: Callable = None, **kwargs) -> Callable:
+        """Adds *callback* to a list of callables that will run after a frame is rendered.
+
+        Args:
+            * kwargs (optional, keyword-only): Keyword arguments to pass to the callback.    
+        """
+        def _on_render(callback):
+            if not callable(callback):
+                raise TypeError(f"{callback!r} is not callable.")
+            # NOTE: `render_frame` method calls these before rendering a frame.
+            cls._calls_on_render.append((callback, kwargs))
+            return callback
+
+        if not _callback:
+            return _on_render
+        return _on_render(_callback)
+
+    @classmethod
+    def on_frame(cls, _frame: int, _callback: Callable = None, **kwargs) -> Callable:
+        """Schedule a callback to run on frame *frame*.
+        """
+        # Keeping track of all callables to run per frame would be slow -- this is
+        # already done by dearpygui.
+        def _on_frame(callback):
+            # callback is wrapped to pass unpacked user_data (kwargs)
+            set_frame_callback(_frame, 
+                               lambda sender, app_data, user_data: \
+                                   callback(sender, app_data, **user_data),
+                               user_data=kwargs)
+            return callback
+
+        if _callback:
+            return _on_frame(_callback)
+        return _on_frame
+        
+
+    # Callback debugging
     @classmethod
     def get_callback_queue(cls) -> Any:
         """Clear and return the callbacks that were to be ran this frame.
@@ -405,6 +434,4 @@ class Application(ProtoItem, metaclass=AppItemType):
                 cls.__is_dpi_aware = not cls.__is_dpi_aware
 
     _dpi_aware = classmethod(_dpi_aware)
-
-
 

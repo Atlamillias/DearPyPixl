@@ -15,9 +15,9 @@ from dearpygui._dearpygui import (
     configure_viewport
 )
 
-from dearpypixl.application import AppItemType, AppAttribute
+from dearpypixl.application import AppItem, AppAttribute
 from dearpypixl.constants import ViewportUUID
-from dearpypixl.components import ItemT, item_attribute, UpdaterList, ProtoItem
+from dearpypixl.components import ItemT, item_attribute
 from dearpypixl.containers import Window
 from dearpypixl.components.configuration import CONFIGURATION, INFORMATION, STATE
 
@@ -57,7 +57,7 @@ def _set_primary_window(obj, name, value):
 
 
 
-class Viewport(ProtoItem, metaclass=AppItemType):
+class Viewport(AppItem):
     # NOTE: This class is basically an inheritable module -- Methods defined are either classmethods or staticmethods.
     # While "configuration" attributes aren't technically defined as such, all `Viewport` instances will get and set from
     # the same pool of information. Trying to redefine a configuration attribute on `Viewport` or its decendants is not
@@ -190,22 +190,22 @@ class Viewport(ProtoItem, metaclass=AppItemType):
     ######## Event Handling ########
     ################################
     @classmethod
-    def on_resize(cls, _callback: Callable = ..., **kwargs):
+    def on_resize(cls, _callback: Callable = None, **kwargs):
         def _on_resize(callback):
             if not callable(callback):
                 raise TypeError(f"{callback!r} is not callable.")
             cls._calls_on_resize.append((callback, kwargs))
             return callback
 
-        if _callback == ...:
+        if not _callback:
             return _on_resize
         return _on_resize(_callback)
 
-    def _on_resize_callback(*args):
-        for call_able, kwargs in Viewport.calls_on_resize:
-            call_able(**kwargs)
+    def _on_event_callback(sender, app_data, user_data):  # user_data = list of callables
+        for call_able, kwargs in user_data:
+            call_able(sender, app_data, **kwargs)
 
-    dearpygui.set_viewport_resize_callback(_on_resize_callback)
+    dearpygui.set_viewport_resize_callback(_on_event_callback, user_data=_calls_on_resize)
 
     ################################
     ######## Misc. methods #########
