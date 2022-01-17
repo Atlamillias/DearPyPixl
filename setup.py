@@ -2,6 +2,7 @@ import shutil
 import setuptools
 import subprocess
 
+
 class Cleanup(setuptools.Command):
     user_options = []
 
@@ -15,7 +16,7 @@ class Cleanup(setuptools.Command):
         print("Building...")
         subprocess.run(["python", "setup.py", "sdist", "bdist_wheel"])
         print("\nCleaning up...", end="")
-        dirs = ("./build", "./pixlengine.egg-info")
+        dirs = ("./build", "./dearpypixl.egg-info")
         for dir in dirs:
             try:
                 shutil.rmtree(dir)
