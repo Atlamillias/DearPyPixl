@@ -25,7 +25,6 @@ from dearpypixl.components.themes import (
     ThemeStyleComponent,
     Font
 )
-from dearpypixl.components.other import UniqueItemMeta, UpdaterList
 
 
 __all__ = [
