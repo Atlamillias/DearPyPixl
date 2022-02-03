@@ -218,12 +218,57 @@ class AppItem(Mapping):
         return [info.strip() for info in re.split(r"[,| ]", new_text) if info]
 
 
-APPITEM_SRC_DIR  = Path(r"E:\code\repos\dearpygui-definitions\dearpygui_src\DearPyGui\src\ui\AppItems")
+APPITEM_SRC_DIR  = Path(__file__).parent / r"dearpygui_src/DearPyGui/src/ui/AppItems"
 ITEM_DESC_FLAGS  = ("MV_ITEM_DESC_ROOT"     ,  # top-level item that cannot be parented
                     "MV_ITEM_DESC_CONTAINER",  # item can parent other non-root items
                     "MV_ITEM_DESC_HANDLER"  ,    
                     "MV_ITEM_DESC_DRAW_CMP" ,) # has draw component
-
+TYPE_HINT_CONVS  = {
+                        "Integer"       : int,
+                        "Float"         : float,
+                        "Double"        : float,
+                        "String"        : str,
+                        "Bool"          : bool,
+                        "Object"        : object,
+                        "Callable"      : Callable,
+                        "Dict"          : dict,
+                        "IntList"       : list[int],
+                        "FloatList"     : list[float],
+                        "DoubleList"    : list[float],
+                        "StringList"    : list[str],
+                        "ListAny"       : list[Any],
+                        "ListListInt"   : list[list[int]],   # ListListInt is likely a typo (ListIntList). Addtl entry below in case it's fixed.
+                        "ListIntList"   : list[list[int]],
+                        "ListFloatList" : list[list[float]],
+                        "ListDoubleList": list[list[float]],
+                        "ListStrList"   : list[list[str]],
+                        "UUID"          : int,               # DPG supports int | str, but dearpypixl uses int only.
+                        "UUIDList"      : list[int],
+                        "Long"          : int,
+                        "Any"           : Any,
+                        "None"          : None,
+                    }
+_KEYWORD_ONLY   = Parameter.KEYWORD_ONLY
+_POS 
+CMN_PARAMETERS  = {
+                    "MV_PARSER_ARG_ID"           : Parameter("tag",),
+                    "MV_PARSER_ARG_WIDTH"        : ,
+                    "MV_PARSER_ARG_HEIGHT"       : ,
+                    "MV_PARSER_ARG_INDENT"       : ,
+                    "MV_PARSER_ARG_PARENT"       : ,
+                    "MV_PARSER_ARG_BEFORE"       : ,
+                    "MV_PARSER_ARG_SOURCE"       : ,
+                    "MV_PARSER_ARG_CALLBACK"     : ,
+                    "MV_PARSER_ARG_SHOW"         : ,
+                    "MV_PARSER_ARG_ENABLED"      : ,
+                    "MV_PARSER_ARG_POS"          : ,
+                    "MV_PARSER_ARG_DROP_CALLBACK": ,
+                    "MV_PARSER_ARG_DRAG_CALLBACK": ,
+                    "MV_PARSER_ARG_PAYLOAD_TYPE" : ,
+                    "MV_PARSER_ARG_TRACKED"      : ,
+                    "MV_PARSER_ARG_FILTER"       : ,
+                    "MV_PARSER_ARG_SEARCH_DELAY" : ,
+                  }
 
 
 
