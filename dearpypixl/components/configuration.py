@@ -1,6 +1,5 @@
 """Contains objects used in defining, caching, or managing an item's internal configuration."""
 import functools
-import inspect
 from typing import Callable, Any, Union
 from dearpygui._dearpygui import (
     # getters
@@ -39,6 +38,7 @@ def item_attr_command(func: Callable):
 def set_item_config(__obj: object, __name: str, value: Any):
     configure_item(__obj._tag, **{__name: value})
 
+
 @item_attr_command
 def set_item_cached_config(__obj: object, __name: str, value: Any):
     # Set DPG configuration and cache the change on instance.
@@ -47,9 +47,12 @@ def set_item_cached_config(__obj: object, __name: str, value: Any):
     # Set as private attribute
     setattr(__obj, f"_{__name}", value)
 
+
 @item_attr_command
 def set_item_value(__obj: object, __name: str, value: Any):
+    # `value`, `default_value`
     set_value(__obj._tag, value)
+
 
 @item_attr_command
 def set_item_cached_colormap(__obj: object, __name: str, value: Any):
@@ -63,22 +66,37 @@ def set_item_cached_colormap(__obj: object, __name: str, value: Any):
     # other instances.
     setattr(__obj, f"_{__name}", value)
 
+
+@item_attr_command
+def set_item_callback(__obj: object, __name: str, value: Any):
+    @functools.wraps(value)
+    def on_call(sender, app_data, user_data):
+        return value(appitems.get(sender, sender), app_data, user_data)
+
+    appitems = __obj._AppItemsRegistry
+    configure_item(__obj._tag, callback=on_call if value else value)
+
+
 # Getters
 @item_attr_command
 def get_item_config(__o: object, __name: str):
     return get_item_configuration(__o._tag)[__name]
 
+
 @item_attr_command
 def get_item_info(__o: object, __name: str):
     return _get_item_info(__o._tag)[__name]
+
 
 @item_attr_command
 def get_item_state(__o: object, __name: str):
     return _get_item_state(__o._tag)[__name]
 
+
 @item_attr_command
 def get_item_value(__o: object, __name: str = None):
     return get_value(__o._tag)
+
 
 @item_attr_command
 def get_item_cached(__o: object, __name: str):
