@@ -107,6 +107,9 @@ def get_item_cached(__o: object, __name: str):
 ##################################
 #### Configuration Management ####
 ##################################
+
+# NOTE: Do not register the following as item attributes: `before`, `parent`, `tag`.
+
 class ItemAttribute:
     """Descriptor object for accessing DearPyGui item attributes. Functionally similar
     to the `property` built-in, but cannot be used as a decorator.
@@ -244,8 +247,5 @@ def item_attribute(cls_attribute: Union[Callable, str] = None, *, category: str)
     if cls_attribute:
         return register(cls_attribute)
     return register
-
-
-
-
+    
 
