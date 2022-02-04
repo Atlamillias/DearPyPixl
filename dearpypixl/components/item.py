@@ -159,6 +159,7 @@ class ProtoItem(metaclass=ABCMeta):
                 # attributes can be unregistered for the newest object by redefining them.
                 if item_attr not in cls_attributes:
                     getattr(cls, coll_name).add(item_attr)
+
         # Creating/binding a new `Template` obj for `cls`. 
         cls._item_template_obj = type(
             f"{cls.__qualname__}{Template.__qualname__}",
@@ -166,6 +167,7 @@ class ProtoItem(metaclass=ABCMeta):
             {"__slots__": tuple(cls._item_init_params.keys())}
         )
         cls._item_template_obj._target = cls  # code inspection
+        
         # Registernew item class
         cls._ItemTypeRegistry[cls.__qualname__] = cls
 
