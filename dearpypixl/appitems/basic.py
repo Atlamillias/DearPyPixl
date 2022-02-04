@@ -22,6 +22,10 @@ __all__ = [
     "Selectable",
     "Combo",
     "InputText",
+    "InputInt",
+    "InputIntMulti",
+    "InputFloat",
+    "InputFloatMulti",
     "SliderFloat",
     "DragFloat",
     "Text",
@@ -29,6 +33,614 @@ __all__ = [
     "MenuItem",
     "Image",
 ]
+
+
+class InputFloat(Widget):
+    """Adds input for an float. +/- buttons can be activated by setting the value of step.
+
+    Args:
+        label (str, optional): Overrides 'name' as label.
+        user_data (Any, optional): User data for callbacks
+        use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+        tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+        width (int, optional): Width of the item.
+        indent (int, optional): Offsets the widget to the right the specified number multiplied by the indent style.
+        parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
+        before (Union[int, str], optional): This item will be displayed before the specified item in the parent.
+        source (Union[int, str], optional): Overrides 'id' as value storage key.
+        payload_type (str, optional): Sender string type must be the same as the target for the target to run the payload_callback.
+        callback (Callable, optional): Registers a callback.
+        drag_callback (Callable, optional): Registers a drag callback for drag and drop.
+        drop_callback (Callable, optional): Registers a drop callback for drag and drop.
+        show (bool, optional): Attempt to render widget.
+        enabled (bool, optional): Turns off functionality of widget and applies the disabled theme.
+        pos (Union[List[int], Tuple[int, ...]], optional): Places the item relative to window coordinates, [0,0] is top left.
+        filter_key (str, optional): Used by filter widget.
+        tracked (bool, optional): Scroll tracking
+        track_offset (float, optional): 0.0f:top, 0.5f:center, 1.0f:bottom
+        default_value (float, optional): 
+        format (str, optional): Determines the format the float will be displayed as use python string formatting.
+        min_value (float, optional): Value for lower limit of input. By default this limits the step buttons. Use min_clamped to limit manual input.
+        max_value (float, optional): Value for upper limit of input. By default this limits the step buttons. Use max_clamped to limit manual input.
+        step (float, optional): Increment to change value by when the step buttons are pressed. Setting this to a value of 0 or smaller will turn off step buttons.
+        step_fast (float, optional): After holding the step buttons for extended time the increments will switch to this value.
+        min_clamped (bool, optional): Activates and deactivates the enforcment of min_value.
+        max_clamped (bool, optional): Activates and deactivates the enforcment of max_value.
+        on_enter (bool, optional): Only runs callback on enter key press.
+        readonly (bool, optional): Activates read only mode where no text can be input but text can still be highlighted.
+        id (Union[int, str], optional): (deprecated) 
+    """
+    label                    : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    user_data                : Any                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    use_internal_label       : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    width                    : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)      
+    indent                   : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    source                   : ItemT                             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    payload_type             : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    callback                 : Callable                          = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    drag_callback            : Callable                          = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    drop_callback            : Callable                          = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    show                     : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    enabled                  : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    pos                      : list[int] | tuple[int, ...]       = ItemAttribute('configuration', 'get_item_state' , 'set_item_config', None)          
+    filter_key               : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    tracked                  : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    track_offset             : float                             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    default_value            : float                             = ItemAttribute('information'  , 'get_item_cached', None             , None)
+    format                   : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    min_value                : float                             = ItemAttribute("configuration", "get_item_config", "set_item_config", None) 
+    max_value                : float                             = ItemAttribute("configuration", "get_item_config", "set_item_config", None) 
+    step                     : float                             = ItemAttribute("configuration", "get_item_config", "set_item_config", None) 
+    step_fast                : float                             = ItemAttribute("configuration", "get_item_config", "set_item_config", None) 
+    min_clamped              : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None) 
+    max_clamped              : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None) 
+    on_enter                 : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None) 
+    readonly                 : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None) 
+    value                    : float                             = ItemAttribute("configuration", "get_item_value" , "set_item_value" , None)
+
+    is_middle_clicked        : bool                              = ItemAttribute("state", "get_item_state", None, "middle_clicked")                   
+    is_right_clicked         : bool                              = ItemAttribute("state", "get_item_state", None, "right_clicked")                    
+    is_left_clicked          : bool                              = ItemAttribute("state", "get_item_state", None, "left_clicked")                     
+    is_hovered               : bool                              = ItemAttribute("state", "get_item_state", None, "hovered")                          
+    is_active                : bool                              = ItemAttribute("state", "get_item_state", None, "active")                           
+    is_focused               : bool                              = ItemAttribute("state", "get_item_state", None, "focused")                          
+    is_clicked               : bool                              = ItemAttribute("state", "get_item_state", None, "clicked")                          
+    is_visible               : bool                              = ItemAttribute("state", "get_item_state", None, "visible")                          
+    is_edited                : bool                              = ItemAttribute("state", "get_item_state", None, "edited")                           
+    is_activated             : bool                              = ItemAttribute("state", "get_item_state", None, "activated")                        
+    is_deactivated           : bool                              = ItemAttribute("state", "get_item_state", None, "deactivated")                      
+    is_deactivated_after_edit: bool                              = ItemAttribute("state", "get_item_state", None, "deactivated_after_edit")           
+    rect_min                 : list[int, int]                    = ItemAttribute("state", "get_item_state", None, "rect_min")                         
+    rect_max                 : list[int, int]                    = ItemAttribute("state", "get_item_state", None, "rect_max")                         
+    rect_size                : list[int, int]                    = ItemAttribute("state", "get_item_state", None, "rect_size")                        
+    content_region_avail     : list[int, int]                    = ItemAttribute("state", "get_item_state", None, "content_region_avail")             
+
+    _is_container            : bool                              = False                                                                              
+    _is_root_item            : bool                              = False                                                                              
+    _is_value_able           : bool                              = True                                                                               
+    _unique_parents          : tuple                             = ()                                                                                 
+    _unique_children         : tuple                             = ()                                                                                 
+    _unique_commands         : tuple                             = ()                                                                                 
+    _unique_constants        : tuple                             = ('mvInputFloat',)                                                                       
+    _command                 : Callable                          = dearpygui.add_input_float
+
+
+    def __init__(
+        self,
+        label             : str = None,
+        user_data         : Any = None,
+        use_internal_label: bool = True,
+        width             : int = 0,
+        indent            : int = -1,
+        parent            : int | str = 0,
+        before            : int | str = 0,
+        source            : int | str = 0,
+        payload_type      : str = '$$DPG_PAYLOAD',
+        callback          : Callable = None,
+        drag_callback     : Callable = None,
+        drop_callback     : Callable = None,
+        show              : bool = True,
+        enabled           : bool = True,
+        pos               : list[int] | tuple[int,...] = (),
+        filter_key        : str = '',
+        tracked           : bool = False,
+        track_offset      : float = 0.5,
+        default_value     : float = 0.0,
+        format            : str = '%.3f',
+        min_value         : float = 0.0,
+        max_value         : float = 100.0,
+        step              : float = 0.1,
+        step_fast         : float = 1.0,
+        min_clamped       : bool = False,
+        max_clamped       : bool = False,
+        on_enter          : bool = False,
+        readonly          : bool = False,
+        **kwargs
+    ) -> None:
+        super().__init__(
+            label=label,
+            user_data=user_data,
+            use_internal_label=use_internal_label,
+            width=width,
+            indent=indent,
+            parent=parent,
+            before=before,
+            source=source,
+            payload_type=payload_type,
+            callback=callback,
+            drag_callback=drag_callback,
+            drop_callback=drop_callback,
+            show=show,
+            enabled=enabled,
+            pos=pos,
+            filter_key=filter_key,
+            tracked=tracked,
+            track_offset=track_offset,
+            default_value=default_value,
+            format=format,
+            min_value=min_value,
+            max_value=max_value,
+            step=step,
+            step_fast=step_fast,
+            min_clamped=min_clamped,
+            max_clamped=max_clamped,
+            on_enter=on_enter,
+            readonly=readonly,
+            **kwargs
+        )
+    
+
+
+class InputFloatMulti(Widget):
+    """Adds multi float input for up to 4 float values.
+
+    Args:
+        label (str, optional): Overrides 'name' as label.
+        user_data (Any, optional): User data for callbacks
+        use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+        tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+        width (int, optional): Width of the item.
+        indent (int, optional): Offsets the widget to the right the specified number multiplied by the indent style.
+        parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
+        before (Union[int, str], optional): This item will be displayed before the specified item in the parent.
+        source (Union[int, str], optional): Overrides 'id' as value storage key.
+        payload_type (str, optional): Sender string type must be the same as the target for the target to run the payload_callback.
+        callback (Callable, optional): Registers a callback.
+        drag_callback (Callable, optional): Registers a drag callback for drag and drop.
+        drop_callback (Callable, optional): Registers a drop callback for drag and drop.
+        show (bool, optional): Attempt to render widget.
+        enabled (bool, optional): Turns off functionality of widget and applies the disabled theme.
+        pos (Union[List[int], Tuple[int, ...]], optional): Places the item relative to window coordinates, [0,0] is top left.
+        filter_key (str, optional): Used by filter widget.
+        tracked (bool, optional): Scroll tracking
+        track_offset (float, optional): 0.0f:top, 0.5f:center, 1.0f:bottom
+        default_value (Union[List[float], Tuple[float, ...]], optional): 
+        format (str, optional): Determines the format the float will be displayed as (use python string formatting).
+        min_value (float, optional): Value for lower limit of input for each cell. Use min_clamped to turn on.
+        max_value (float, optional): Value for upper limit of input for each cell. Use max_clamped to turn on.
+        size (int, optional): Number of components displayed for input.
+        min_clamped (bool, optional): Activates and deactivates the enforcment of min_value.
+        max_clamped (bool, optional): Activates and deactivates the enforcment of max_value.
+        on_enter (bool, optional): Only runs callback on enter key press.
+        readonly (bool, optional): Activates read only mode where no text can be input but text can still be highlighted.
+        id (Union[int, str], optional): (deprecated) 
+    """
+    label                    : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    user_data                : Any                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    use_internal_label       : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    width                    : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)          
+    indent                   : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    source                   : ItemT                             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    payload_type             : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    callback                 : Callable                          = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    drag_callback            : Callable                          = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    drop_callback            : Callable                          = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    show                     : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    enabled                  : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    pos                      : list[int] | tuple[int, ...]       = ItemAttribute('configuration', 'get_item_state' , 'set_item_config', None)          
+    filter_key               : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    tracked                  : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    track_offset             : float                             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    format                   : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    min_value                : float                             = ItemAttribute("configuration", "get_item_config", "set_item_config", None) 
+    max_value                : float                             = ItemAttribute("configuration", "get_item_config", "set_item_config", None) 
+    size                     : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None) 
+    min_clamped              : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None) 
+    max_clamped              : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None) 
+    on_enter                 : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None) 
+    readonly                 : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None) 
+    value                    : list[float] | tuple[float, ...]   = ItemAttribute("configuration", "get_item_value", "set_item_value"  , None)
+    
+    default_value            : list[float] | tuple[float, ...]   = ItemAttribute('information'  , 'get_item_cached', None             , None)
+
+    is_middle_clicked        : bool                              = ItemAttribute("state", "get_item_state", None, "middle_clicked")                   
+    is_right_clicked         : bool                              = ItemAttribute("state", "get_item_state", None, "right_clicked")                    
+    is_left_clicked          : bool                              = ItemAttribute("state", "get_item_state", None, "left_clicked")                     
+    is_hovered               : bool                              = ItemAttribute("state", "get_item_state", None, "hovered")                          
+    is_active                : bool                              = ItemAttribute("state", "get_item_state", None, "active")                           
+    is_focused               : bool                              = ItemAttribute("state", "get_item_state", None, "focused")                          
+    is_clicked               : bool                              = ItemAttribute("state", "get_item_state", None, "clicked")                          
+    is_visible               : bool                              = ItemAttribute("state", "get_item_state", None, "visible")                          
+    is_edited                : bool                              = ItemAttribute("state", "get_item_state", None, "edited")                           
+    is_activated             : bool                              = ItemAttribute("state", "get_item_state", None, "activated")                        
+    is_deactivated           : bool                              = ItemAttribute("state", "get_item_state", None, "deactivated")                      
+    is_deactivated_after_edit: bool                              = ItemAttribute("state", "get_item_state", None, "deactivated_after_edit")           
+    rect_min                 : list[int, int]                    = ItemAttribute("state", "get_item_state", None, "rect_min")                         
+    rect_max                 : list[int, int]                    = ItemAttribute("state", "get_item_state", None, "rect_max")                         
+    rect_size                : list[int, int]                    = ItemAttribute("state", "get_item_state", None, "rect_size")                        
+    content_region_avail     : list[int, int]                    = ItemAttribute("state", "get_item_state", None, "content_region_avail")             
+
+    _is_container            : bool                              = False                                                                              
+    _is_root_item            : bool                              = False                                                                              
+    _is_value_able           : bool                              = True                                                                               
+    _unique_parents          : tuple                             = ()                                                                                 
+    _unique_children         : tuple                             = ()                                                                                 
+    _unique_commands         : tuple                             = ()                                                                                 
+    _unique_constants        : tuple                             = ('mvInputFloatMulti',)                                                                       
+    _command                 : Callable                          = dearpygui.add_input_floatx
+
+    def __init__(
+        self, 
+        label: str = None, 
+        user_data: Any = None, 
+        use_internal_label: bool = True,  
+        width: int = 0, 
+        indent: int = -1, 
+        parent: Union[int, str] = 0, 
+        before: Union[int, str] = 0, 
+        source: Union[int, str] = 0, 
+        payload_type: str = '$$DPG_PAYLOAD', 
+        callback: Callable = None, 
+        drag_callback: Callable = None, 
+        drop_callback: Callable = None, 
+        show: bool = True, 
+        enabled: bool = True, 
+        pos: Union[List[int], Tuple[int, ...]] = [], 
+        filter_key: str = '', 
+        tracked: bool = False, 
+        track_offset: float = 0.5, 
+        default_value: Union[List[float], Tuple[float, ...]] = (0.0, 0.0, 0.0, 0.0), 
+        format: str = '%.3f', 
+        min_value: float = 0.0, 
+        max_value: float = 100.0, 
+        size: int = 4, 
+        min_clamped: bool = False, 
+        max_clamped: bool = False, 
+        on_enter: bool = False, 
+        readonly: bool = False, 
+        **kwargs
+    ) -> None:
+        super().__init__(
+            label=label,
+            user_data=user_data,
+            use_internal_label=use_internal_label,
+            width=width,
+            indent=indent,
+            parent=parent,
+            before=before,
+            source=source,
+            payload_type=payload_type,
+            callback=callback,
+            drag_callback=drag_callback,
+            drop_callback=drop_callback,
+            show=show,
+            enabled=enabled,
+            pos=pos,
+            filter_key=filter_key,
+            tracked=tracked,
+            track_offset=track_offset,
+            default_value=default_value,
+            format=format,
+            min_value=min_value,
+            max_value=max_value,
+            size=size,
+            min_clamped=min_clamped,
+            max_clamped=max_clamped,
+            on_enter=on_enter,
+            readonly=readonly,
+            **kwargs
+        )
+
+
+
+class InputInt(Widget):
+    """Adds input for an int. +/- buttons can be activated by setting the value of step.
+
+    Args:
+        label (str, optional): Overrides 'name' as label.
+        user_data (Any, optional): User data for callbacks
+        use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+        tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+        width (int, optional): Width of the item.
+        indent (int, optional): Offsets the widget to the right the specified number multiplied by the indent style.
+        parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
+        before (Union[int, str], optional): This item will be displayed before the specified item in the parent.
+        source (Union[int, str], optional): Overrides 'id' as value storage key.
+        payload_type (str, optional): Sender string type must be the same as the target for the target to run the payload_callback.
+        callback (Callable, optional): Registers a callback.
+        drag_callback (Callable, optional): Registers a drag callback for drag and drop.
+        drop_callback (Callable, optional): Registers a drop callback for drag and drop.
+        show (bool, optional): Attempt to render widget.
+        enabled (bool, optional): Turns off functionality of widget and applies the disabled theme.
+        pos (Union[List[int], Tuple[int, ...]], optional): Places the item relative to window coordinates, [0,0] is top left.
+        filter_key (str, optional): Used by filter widget.
+        tracked (bool, optional): Scroll tracking
+        track_offset (float, optional): 0.0f:top, 0.5f:center, 1.0f:bottom
+        default_value (int, optional): 
+        min_value (int, optional): Value for lower limit of input. By default this limits the step buttons. Use min_clamped to limit manual input.
+        max_value (int, optional): Value for upper limit of input. By default this limits the step buttons. Use max_clamped to limit manual input.
+        step (int, optional): Increment to change value by when the step buttons are pressed. Setting this to a value of 0 or smaller will turn off step buttons.
+        step_fast (int, optional): After holding the step buttons for extended time the increments will switch to this value.
+        min_clamped (bool, optional): Activates and deactivates the enforcment of min_value.
+        max_clamped (bool, optional): Activates and deactivates the enforcment of max_value.
+        on_enter (bool, optional): Only runs callback on enter key press.
+        readonly (bool, optional): Activates read only mode where no text can be input but text can still be highlighted.
+        id (Union[int, str], optional): (deprecated)
+    """
+    label                    : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    user_data                : Any                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    use_internal_label       : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    width                    : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)      
+    indent                   : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    source                   : ItemT                             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    payload_type             : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    callback                 : Callable                          = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    drag_callback            : Callable                          = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    drop_callback            : Callable                          = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    show                     : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    enabled                  : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    pos                      : list[int] | tuple[int, ...]       = ItemAttribute('configuration', 'get_item_state' , 'set_item_config', None)          
+    filter_key               : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    tracked                  : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    track_offset             : float                             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    min_value                : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None) 
+    max_value                : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None) 
+    step                     : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None) 
+    step_fast                : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None) 
+    min_clamped              : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None) 
+    max_clamped              : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None) 
+    on_enter                 : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None) 
+    readonly                 : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None) 
+    value                    : int                               = ItemAttribute("configuration", "get_item_value", "set_item_value"  , None)
+
+    default_value            : int                               = ItemAttribute('information'  , 'get_item_cached', None             , None)
+                       
+    is_middle_clicked        : bool                              = ItemAttribute("state", "get_item_state", None, "middle_clicked")                   
+    is_right_clicked         : bool                              = ItemAttribute("state", "get_item_state", None, "right_clicked")                    
+    is_left_clicked          : bool                              = ItemAttribute("state", "get_item_state", None, "left_clicked")                     
+    is_hovered               : bool                              = ItemAttribute("state", "get_item_state", None, "hovered")                          
+    is_active                : bool                              = ItemAttribute("state", "get_item_state", None, "active")                           
+    is_focused               : bool                              = ItemAttribute("state", "get_item_state", None, "focused")                          
+    is_clicked               : bool                              = ItemAttribute("state", "get_item_state", None, "clicked")                          
+    is_visible               : bool                              = ItemAttribute("state", "get_item_state", None, "visible")                          
+    is_edited                : bool                              = ItemAttribute("state", "get_item_state", None, "edited")                           
+    is_activated             : bool                              = ItemAttribute("state", "get_item_state", None, "activated")                        
+    is_deactivated           : bool                              = ItemAttribute("state", "get_item_state", None, "deactivated")                      
+    is_deactivated_after_edit: bool                              = ItemAttribute("state", "get_item_state", None, "deactivated_after_edit")           
+    rect_min                 : list[int, int]                    = ItemAttribute("state", "get_item_state", None, "rect_min")                         
+    rect_max                 : list[int, int]                    = ItemAttribute("state", "get_item_state", None, "rect_max")                         
+    rect_size                : list[int, int]                    = ItemAttribute("state", "get_item_state", None, "rect_size")                        
+    content_region_avail     : list[int, int]                    = ItemAttribute("state", "get_item_state", None, "content_region_avail")             
+
+    _is_container            : bool                              = False                                                                              
+    _is_root_item            : bool                              = False                                                                              
+    _is_value_able           : bool                              = True                                                                               
+    _unique_parents          : tuple                             = ()                                                                                 
+    _unique_children         : tuple                             = ()                                                                                 
+    _unique_commands         : tuple                             = ()                                                                                 
+    _unique_constants        : tuple                             = ('mvInputInt',)                                                                       
+    _command                 : Callable                          = dearpygui.add_input_int 
+
+
+    def __init__(
+        self, 
+        label: str = None, 
+        user_data: Any = None, 
+        use_internal_label: bool = True, 
+        width: int = 0, 
+        indent: int = -1, 
+        parent: Union[int, str] = 0, 
+        before: Union[int, str] = 0, 
+        source: Union[int, str] = 0, 
+        payload_type: str = '$$DPG_PAYLOAD', 
+        callback: Callable = None, 
+        drag_callback: Callable = None, 
+        drop_callback: Callable = None, 
+        show: bool = True, 
+        enabled: bool = True, 
+        pos: Union[List[int], Tuple[int, ...]] = [], 
+        filter_key: str = '', 
+        tracked: bool = False, 
+        track_offset: float = 0.5, 
+        default_value: int = 0, 
+        min_value: int = 0, 
+        max_value: int = 100, 
+        step: int = 1, 
+        step_fast: int = 100, 
+        min_clamped: bool = False, 
+        max_clamped: bool = False, 
+        on_enter: bool = False, 
+        readonly: bool = False, 
+        **kwargs
+    ) -> None:
+        super().__init__(
+            label=label,
+            user_data=user_data,
+            use_internal_label=use_internal_label,
+            width=width,
+            indent=indent,
+            parent=parent,
+            before=before,
+            source=source,
+            payload_type=payload_type,
+            callback=callback,
+            drag_callback=drag_callback,
+            drop_callback=drop_callback,
+            show=show,
+            enabled=enabled,
+            pos=pos,
+            filter_key=filter_key,
+            tracked=tracked,
+            track_offset=track_offset,
+            default_value=default_value,
+            min_value=min_value,
+            max_value=max_value,
+            step=step,
+            step_fast=step_fast,
+            min_clamped=min_clamped,
+            max_clamped=max_clamped,
+            on_enter=on_enter,
+            readonly=readonly,
+            **kwargs
+        )
+
+
+class InputIntMulti(Widget):
+    """Adds multi int input for up to 4 integer values.
+
+    Args:
+        label (str, optional): Overrides 'name' as label.
+        user_data (Any, optional): User data for callbacks
+        use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+        tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+        width (int, optional): Width of the item.
+        indent (int, optional): Offsets the widget to the right the specified number multiplied by the indent style.
+        parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
+        before (Union[int, str], optional): This item will be displayed before the specified item in the parent.
+        source (Union[int, str], optional): Overrides 'id' as value storage key.
+        payload_type (str, optional): Sender string type must be the same as the target for the target to run the payload_callback.
+        callback (Callable, optional): Registers a callback.
+        drag_callback (Callable, optional): Registers a drag callback for drag and drop.
+        drop_callback (Callable, optional): Registers a drop callback for drag and drop.
+        show (bool, optional): Attempt to render widget.
+        enabled (bool, optional): Turns off functionality of widget and applies the disabled theme.
+        pos (Union[List[int], Tuple[int, ...]], optional): Places the item relative to window coordinates, [0,0] is top left.
+        filter_key (str, optional): Used by filter widget.
+        tracked (bool, optional): Scroll tracking
+        track_offset (float, optional): 0.0f:top, 0.5f:center, 1.0f:bottom
+        default_value (Union[List[int], Tuple[int, ...]], optional): 
+        min_value (int, optional): Value for lower limit of input for each cell. Use min_clamped to turn on.
+        max_value (int, optional): Value for upper limit of input for each cell. Use max_clamped to turn on.
+        size (int, optional): Number of components displayed for input.
+        min_clamped (bool, optional): Activates and deactivates the enforcment of min_value.
+        max_clamped (bool, optional): Activates and deactivates the enforcment of max_value.
+        on_enter (bool, optional): Only runs callback on enter.
+        readonly (bool, optional): Activates read only mode where no text can be input but text can still be highlighted.
+        id (Union[int, str], optional): (deprecated) 
+    """
+    label                    : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    user_data                : Any                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    use_internal_label       : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    width                    : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)          
+    indent                   : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    source                   : ItemT                             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    payload_type             : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    callback                 : Callable                          = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    drag_callback            : Callable                          = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    drop_callback            : Callable                          = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    show                     : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    enabled                  : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    pos                      : list[int] | tuple[int, ...]       = ItemAttribute('configuration', 'get_item_state' , 'set_item_config', None)          
+    filter_key               : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    tracked                  : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    track_offset             : float                             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    min_value                : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None) 
+    max_value                : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None) 
+    size                     : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None) 
+    min_clamped              : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None) 
+    max_clamped              : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None) 
+    on_enter                 : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None) 
+    readonly                 : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None) 
+    value                    : list[int] | tuple[int, ...]       = ItemAttribute("configuration", "get_item_value" , "set_item_value" , None)
+
+    default_value            : list[int] | tuple[int, ...]       = ItemAttribute('information'  , 'get_item_cached', None             , None)
+                     
+    is_middle_clicked        : bool                              = ItemAttribute("state", "get_item_state", None, "middle_clicked")                   
+    is_right_clicked         : bool                              = ItemAttribute("state", "get_item_state", None, "right_clicked")                    
+    is_left_clicked          : bool                              = ItemAttribute("state", "get_item_state", None, "left_clicked")                     
+    is_hovered               : bool                              = ItemAttribute("state", "get_item_state", None, "hovered")                          
+    is_active                : bool                              = ItemAttribute("state", "get_item_state", None, "active")                           
+    is_focused               : bool                              = ItemAttribute("state", "get_item_state", None, "focused")                          
+    is_clicked               : bool                              = ItemAttribute("state", "get_item_state", None, "clicked")                          
+    is_visible               : bool                              = ItemAttribute("state", "get_item_state", None, "visible")                          
+    is_edited                : bool                              = ItemAttribute("state", "get_item_state", None, "edited")                           
+    is_activated             : bool                              = ItemAttribute("state", "get_item_state", None, "activated")                        
+    is_deactivated           : bool                              = ItemAttribute("state", "get_item_state", None, "deactivated")                      
+    is_deactivated_after_edit: bool                              = ItemAttribute("state", "get_item_state", None, "deactivated_after_edit")           
+    rect_min                 : list[int, int]                    = ItemAttribute("state", "get_item_state", None, "rect_min")                         
+    rect_max                 : list[int, int]                    = ItemAttribute("state", "get_item_state", None, "rect_max")                         
+    rect_size                : list[int, int]                    = ItemAttribute("state", "get_item_state", None, "rect_size")                        
+    content_region_avail     : list[int, int]                    = ItemAttribute("state", "get_item_state", None, "content_region_avail")             
+
+    _is_container            : bool                              = False                                                                              
+    _is_root_item            : bool                              = False                                                                              
+    _is_value_able           : bool                              = True                                                                               
+    _unique_parents          : tuple                             = ()                                                                                 
+    _unique_children         : tuple                             = ()                                                                                 
+    _unique_commands         : tuple                             = ()                                                                                 
+    _unique_constants        : tuple                             = ('mvInputIntMulti',)                                                                       
+    _command                 : Callable                          = dearpygui.add_input_intx
+
+
+    def __init__(
+        self, 
+        label: str = None, 
+        user_data: Any = None, 
+        use_internal_label: bool = True, 
+        width: int = 0, 
+        indent: int = -1, 
+        parent: Union[int, str] = 0, 
+        before: Union[int, str] = 0, 
+        source: Union[int, str] = 0, 
+        payload_type: str = '$$DPG_PAYLOAD', 
+        callback: Callable = None, 
+        drag_callback: Callable = None, 
+        drop_callback: Callable = None, 
+        show: bool = True, 
+        enabled: bool = True, 
+        pos: Union[List[int], Tuple[int, ...]] = (), 
+        filter_key: str = '', 
+        tracked: bool = False, 
+        track_offset: float = 0.5, 
+        default_value: Union[List[int], Tuple[int, ...]] = (0, 0, 0, 0), 
+        min_value: int = 0, 
+        max_value: int = 100, 
+        size: int = 4, 
+        min_clamped: bool = False, 
+        max_clamped: bool = False, 
+        on_enter: bool = False, 
+        readonly: bool = False, 
+        **kwargs
+    ) -> None:
+        super().__init__(
+            label=label,
+            user_data=user_data,
+            use_internal_label=use_internal_label,
+            width=width,
+            indent=indent,
+            parent=parent,
+            before=before,
+            source=source,
+            payload_type=payload_type,
+            callback=callback,
+            drag_callback=drag_callback,
+            drop_callback=drop_callback,
+            show=show,
+            enabled=enabled,
+            pos=pos,
+            filter_key=filter_key,
+            tracked=tracked,
+            track_offset=track_offset,
+            default_value=default_value,
+            min_value=min_value,
+            max_value=max_value,
+            size=size,
+            min_clamped=min_clamped,
+            max_clamped=max_clamped,
+            on_enter=on_enter,
+            readonly=readonly,
+            **kwargs
+        )
 
 
 class RadioButton(Widget):
