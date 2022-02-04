@@ -32,6 +32,7 @@ __all__ = [
     "ItemAttribute",
     "item_attribute",
 
+    "ItemT",
     "Container",
     "Widget",
 ]
