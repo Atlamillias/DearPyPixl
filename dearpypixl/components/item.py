@@ -207,6 +207,10 @@ class Item(ProtoItem, metaclass=ABCMeta):
         self._tag = kwargs.pop("tag", generate_uuid())
 
         _cached_attrs = self._item_cached_attrs
+
+        # `user_data` needs to be excluded from type casting as it is allowed
+        # to be anything.
+        user_data = kwargs.pop("user_data", None)
         for kw, val in kwargs.items():
             # Recasting int-like values.
             if isinstance(val, (Item, IntEnum)):
@@ -215,7 +219,7 @@ class Item(ProtoItem, metaclass=ABCMeta):
             if kw in _cached_attrs:
                 setattr(self, f"_{kw}", val)
 
-        type(self)._command(tag=self._tag, **kwargs)
+        type(self)._command(tag=self._tag, user_data=user_data, **kwargs)
         self._AppItemsRegistry[self._tag] = self  # Registering Item obj
 
     def __repr__(self):
