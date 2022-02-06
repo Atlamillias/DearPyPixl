@@ -190,7 +190,6 @@ class InputFloat(Widget):
         )
     
 
-
 class InputFloatMulti(Widget):
     """Adds multi float input for up to 4 float values.
 
@@ -342,7 +341,6 @@ class InputFloatMulti(Widget):
         )
 
 
-
 class InputInt(Widget):
     """Adds input for an int. +/- buttons can be activated by setting the value of step.
 
@@ -430,7 +428,6 @@ class InputInt(Widget):
     _unique_commands         : tuple                             = ()                                                                                 
     _unique_constants        : tuple                             = ('mvInputInt',)                                                                       
     _command                 : Callable                          = dearpygui.add_input_int 
-
 
     def __init__(
         self, 
