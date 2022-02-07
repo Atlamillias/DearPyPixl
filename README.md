@@ -12,7 +12,7 @@ The newest version of this library is currently not available on PyPi. To instal
 
 # Usage (WIP)
 ## Basic Example
-DearPyPixl maintains the same flow and structure as DearPyGui. Below is an example of how to create an application viewport, a window item, and a text item in DearPyGui:
+DearPyPixl maintains the same flow and structure of DearPyGui. Below is an example of how to create an application viewport, a window item, and a text item in DearPyGui:
 
 ```python
 from dearpygui import dearpygui as dpg
