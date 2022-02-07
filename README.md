@@ -54,6 +54,7 @@ Application.start()
 
 The largest difference between these is that it is not necessary for the user to set up the library, application, or viewport as it is done automatically. However, DearPyPixl does not obfuscate the important bits from the user -- for example, the main render loop can still be created manually instead of calling `Application.start`.
 
+
 ## The `Item` Object
 All objects representing an item(s) in DearPyGui are descendants of the [`Item`](https://github.com/Atlamillias/dearpypixl/blob/384f064e1ce328e860717db85c2984325718d76d/dearpypixl/components/item.py#L175) abstract class. It has several methods for setting and fetching various data regarding the object's state, configuration, specific parents, etc. An item's configuration are also bound as attributes, and can be fetched and set with ease.
 
@@ -99,8 +100,18 @@ Application.start()
 
 Something to keep in mind is that all descendants of the `Item` object can accept the `tag` parameter in its constructor, much like every item in DearPyGui can. One of the key differences between DearPyPixl and DearPyGui is that the use of **aliases is not supported** -- the value of `tag` is always expected to be `int`. It is suggested that you do not pass your own tags as it is done automatically, and can be accessed after creation using via the `tag` attribute.
 
+
 ## Application and Viewport
-The `Application` and `Viewport` objects are  
+Coming soon...
+
+
+## Events and Callbacks
+Coming soon...
+
+
+## Theming
+Coming soon...
+
 
 ## License
 DearPyPixl is licensed under [MIT License](https://github.com/Atlamillias/DPG-Widgets/blob/main/LICENSE).
