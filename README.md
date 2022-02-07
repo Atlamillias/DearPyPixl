@@ -95,7 +95,7 @@ Application.start()
 ```
 
 The result:
-![](https://github.com/Atlamillias/dearpypixl/tree/main/dearpypixl/examples/images/config_ex1.png)
+![](https://github.com/Atlamillias/dearpypixl/blob/main/examples/images/config_ex1.png)
 
 
 Something to keep in mind is that all descendants of the `Item` object can accept the `tag` parameter in its constructor, much like every item in DearPyGui can. One of the key differences between DearPyPixl and DearPyGui is that the use of **aliases is not supported** -- the value of `tag` is always expected to be `int`. It is suggested that you do not pass your own tags as it is done automatically, and can be accessed after creation using via the `tag` attribute.
