@@ -45,14 +45,14 @@ from dearpypixl.containers import Window
 from dearpypixl.basic import Text
 
 
-with Window() as main_window:  # `main_window` = `Window` instance
+with Window() as main_window:  # `main_window` == `Window` instance
     txt = Text("Hello!")
 
 
 Application.start()
 ```
 
-The largest difference between these is that it is not necessary for the user to set up the library, application, or viewport as it is done automatically. However, DearPyPixl does not obfuscate the important bits from the user -- for example, the main render loop can still be created manually instead of calling `Application.start`.
+The most notable difference between these is that it is not necessary for the user to set up the library, application, or viewport as it is done automatically. However, DearPyPixl does not obfuscate the important bits from the user -- for example, the main render loop can still be created manually instead of calling `Application.start`.
 
 
 ## The `Item` Object
@@ -62,7 +62,7 @@ All objects representing an item(s) in DearPyGui are descendants of the [`Item`]
 * **information**: Data that is unique to the item and is either read-only (like the `tag` attribute), or not as freely editable as "configuration" (such as `parent`). This data rarely changes.
 * **state**: Read-only data regarding an item's condition. Can update frequently.
 
-The data sorted into these categories can vary per item type, and can contain different information than DearPyGui's `get_item_configuration/info/state` functions. For example, the return of `get_item_configuration` may contain a key-value pair that cannot be passed to `configure_item` without raising an error. In DearPyPixl, data such as this would be categorized as "information" instead. Another example is that the return of `get_item_state` includes `pos` (if applicable for the item, like a button) despite being an accepted parameter for `configure_item`. DearPyPixl categorizes `pos` as "configuration" and is included in the return of an item's `configuration` method, not the `state` method.
+The data sorted into these categories can vary per item type, and do not always contain the same data of DearPyGui's `get_item_configuration/info/state` getter functions. For example, the return of `get_item_configuration` may contain a key-value pair that cannot be passed to `configure_item` without raising an error. In DearPyPixl, data such as this would be categorized as "information" instead. Another example is that the return of `get_item_state` includes `pos` (if applicable for the item, like a button) despite being an accepted parameter for `configure_item`. DearPyPixl categorizes `pos` as "configuration" and is included in the return of an item's `configuration` method, not the `state` method.
 
 ```python
 from dearpypixl import Application
