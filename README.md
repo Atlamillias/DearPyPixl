@@ -1,8 +1,5 @@
 DearPyPixl is a graphical user interface library offering object-oriented bindings and extensions of [DearPyGui](https://github.com/hoffstadt/DearPyGui).
 
-Documentation is always a work-in-progress, however most of the documentation for DearPyGui will also apply to DearPyPixl. It can be found [here](https://dearpygui.readthedocs.io/en/latest/index.html). DearPyPixl also has its own channel in the official [DearPyGui Discord server](https://discord.gg/tyE7Gu4) where you can ask me questions.
-
-
 ## Installation
 The newest version of this library is currently not available on PyPi. To install:
 * Clone the repo.
@@ -11,8 +8,13 @@ The newest version of this library is currently not available on PyPi. To instal
 
 
 # Usage (WIP)
+Documentation is a work-in-progress. DearPyPixl maintains the same flow and structure of DearPyGui, and almost all of the documentation for DearPyGui will also apply to DearPyPixl (found [here](https://dearpygui.readthedocs.io/en/latest/index.html)). As such, documentation in the short-term will focus primarily on things that DearPyGui's documentation does *not* cover. Docstrings of wrapped items are taken directly from DearPyGui, while more custom objects unique to DearPyPixl have more detailed information.
+
+DearPyPixl also has its own channel in the official [DearPyGui Discord server](https://discord.gg/tyE7Gu4) where you can ask me questions.
+
+
 ## Basic Example
-DearPyPixl maintains the same flow and structure of DearPyGui. Below is an example of how to create an application viewport, a window item, and a text item in DearPyGui:
+Below is an example of how to create an application viewport, a window item, and a text item in DearPyGui:
 
 ```python
 from dearpygui import dearpygui as dpg
@@ -43,10 +45,8 @@ from dearpypixl.containers import Window
 from dearpypixl.basic import Text
 
 
-# NOTE: In DearPyGui, `main_window` is bound to the `tag` of the window. When using DearPyPixl,
-# it is bound to the newly created instance of `Window`.
-with Window() as main_window:
-    txt = Text("Hello!")  # `txt` is bound to the created instance of `Text`
+with Window() as main_window:  # `main_window` = `Window` instance
+    txt = Text("Hello!")
 
 
 Application.start()
@@ -56,8 +56,13 @@ The largest difference between these is that it is not necessary for the user to
 
 
 ## The `Item` Object
-All objects representing an item(s) in DearPyGui are descendants of the [`Item`](https://github.com/Atlamillias/dearpypixl/blob/384f064e1ce328e860717db85c2984325718d76d/dearpypixl/components/item.py#L175) abstract class. It has several methods for setting and fetching various data regarding the object's state, configuration, specific parents, etc. An item's configuration are also bound as attributes, and can be fetched and set with ease.
+All objects representing an item(s) in DearPyGui are descendants of the [`Item`](https://github.com/Atlamillias/dearpypixl/blob/384f064e1ce328e860717db85c2984325718d76d/dearpypixl/components/item.py#L175) abstract class. It has several methods for setting and fetching various data regarding `Item` instances or the item type. Most item data is sorted into three categories:
 
+* **configuration**: Editable attributes that are used internally to manage the item. 
+* **information**: Data that is unique to the item and is either read-only (like the `tag` attribute), or not as freely editable as "configuration" (such as `parent`). This data rarely changes.
+* **state**: Read-only data regarding an item's condition. Can update frequently.
+
+The data sorted into these categories can vary per item type, and can contain different information than DearPyGui's `get_item_configuration/info/state` functions. For example, the return of `get_item_configuration` may contain a key-value pair that cannot be passed to `configure_item` without raising an error. In DearPyPixl, data such as this would be categorized as "information" instead. Another example is that the return of `get_item_state` includes `pos` (if applicable for the item, like a button) despite being an accepted parameter for `configure_item`. DearPyPixl categorizes `pos` as "configuration" and is included in the return of an item's `configuration` method, not the `state` method.
 
 ```python
 from dearpypixl import Application
@@ -74,11 +79,13 @@ with Window(height=750, width=400) as main_window:
     # Configuration can also be changed just like you'd expect.
     main_window.label = "main_window"
 
-    # The `configure` method allows for several options to be changed.
+    # The `configure` method allows for several options to be changed, similar to the
+    # `configure_item` function in DearPyGui.
     main_window.configure(no_close=True, no_collapse=True)
 
     # Similarly, calling the `configuration` method will return a dict of the item's
-    # current and editable configuration.
+    # current and editable configuration. Calling this method is similar to calling
+    # DearPyGui's `get_item_configuration` on an item.
     config_title_txt = Text("MY CONFIGURATION")
     title_txt_sep    = Separator()
     for option, value in main_window.configuration().items():
@@ -98,7 +105,11 @@ Application.start()
 <img src="https://github.com/Atlamillias/dearpypixl/blob/main/examples/images/config_ex1.png">
 
 
-Something to keep in mind is that all descendants of the `Item` object can accept the `tag` parameter in its constructor, much like every item in DearPyGui can. One of the key differences between DearPyPixl and DearPyGui is that the use of **aliases is not supported** -- the value of `tag` is always expected to be `int`. It is suggested that you do not pass your own tags as it is done automatically, and can be accessed after creation using via the `tag` attribute.
+Some methods such as `unique_parents` and `unique_children` offer information that is not directly accessable using DearPyGui -- many of which are classmethods. Others are instance methods that simply replace common functions called on items in DearPyGui like `move_up` (`move_item_up`) and `delete` (`delete_item`) methods. More information regarding each of these can be found within each method's docstring.
+
+
+
+Something to keep in mind is that all descendants of the `Item` object can accept the `tag` parameter in its constructor, much like every item in DearPyGui can. One of the key differences between DearPyPixl and DearPyGui is that the use of **aliases is not supported** -- the value of `tag` is always expected to be `int`. It is suggested that you do not commonly pass your own tags as they are generated automatically, and can be accessed after creation using via the `tag` property.
 
 
 ## Application and Viewport
