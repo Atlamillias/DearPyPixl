@@ -11,11 +11,9 @@ from dearpypixl.components.configuration import ItemAttribute, item_attribute
 from dearpypixl.components.item import (
     ItemT,
     TemplateT,
-    ItemLikeT,
     Template,
     ProtoItem,
-    Item,  
-    ItemLike,  
+    Item,    
 )
 from dearpypixl.components.registries import *
 from dearpypixl.components.themes import (

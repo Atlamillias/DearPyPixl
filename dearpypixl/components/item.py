@@ -36,12 +36,10 @@ __all__ = [
     # Useful objects
     "ProtoItem",
     "Item",
-    "ItemLike"
     ]
 
 
 ItemT     = TypeVar("ItemT"    , bound="ProtoItem")
-ItemLikeT = TypeVar("ItemLikeT", bound="ItemLike" )
 TemplateT = TypeVar("TemplateT", bound="Template" )
         
 
@@ -282,9 +280,9 @@ class Item(ProtoItem, metaclass=ABCMeta):
     @property
     @item_attribute(category="information")
     def unique_parents(cls) -> tuple[str, ...]:
-        """Return the names of all item types that can parent this item.
-        If the returned tuple is empty, then this type of item can be parented by
-        any item type that doesn't parent any unique children.
+        """Return the names of all item types that can parent this item IF the item requires
+        specific parent items. If the returned tuple is empty, then the item can be parented by
+        most non-root container items.
         """
         return cls._unique_parents
 
@@ -292,9 +290,8 @@ class Item(ProtoItem, metaclass=ABCMeta):
     @property
     @item_attribute(category="information")
     def unique_children(cls) -> tuple[str, ...]:
-        """Return the names of all item types that this item can parent.
-        If the returned tuple is empty, then this type of item can parent any
-        item type that doesn't require a unique parent.
+        """Return the names of all item types that this item can parent. If the returned tuple
+        is empty, then this type of item can parent most non-root items.
         """
         return cls._unique_children
 
@@ -510,19 +507,3 @@ class Item(ProtoItem, metaclass=ABCMeta):
         # TODO: How df do I summarize this?
         ...
 
-
-class ItemLike(ProtoItem, metaclass=ABCMeta):
-    """A template for implementing limited `Item` API.
-    """
-    __slots__ = ()
-    __repr__  = Item.__repr__
-    __int__   = Item.__int__
-
-    @abstractmethod
-    def tag()           -> int | str: ...
-    @abstractmethod
-    def configuration() -> Callable : ...
-    @abstractmethod
-    def information()   -> Callable : ...
-    @abstractmethod
-    def state()         -> Callable : ...
