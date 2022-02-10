@@ -108,12 +108,61 @@ Application.start()
 Some methods such as `unique_parents` and `unique_children` offer information that is not directly accessable using DearPyGui -- many of which are classmethods. Others are instance methods that simply replace common functions called on items in DearPyGui like `move_up` (`move_item_up`) and `delete` (`delete_item`) methods. More information regarding each of these can be found within each method's docstring.
 
 
-
 Something to keep in mind is that all descendants of the `Item` object can accept the `tag` parameter in its constructor, much like every item in DearPyGui can. One of the key differences between DearPyPixl and DearPyGui is that the use of **aliases is not supported** -- the value of `tag` is always expected to be `int`. It is suggested that you do not commonly pass your own tags as they are generated automatically, and can be accessed after creation using via the `tag` property.
 
 
 ## Application and Viewport
-Coming soon...
+`Application` and `Viewport` are among the more unique objects in DearPyPixl. They aren't derived from the `Item` object, but *its* parent class. As such, they have limited functionality in comparison to other `Item` subclasses. Like all `Item` derivatives, they have access to the `configure`, `configuration`, `information`, and `state` methods, as well as the `tag` attribute. Other methods are unique to each object.
+
+
+```python
+from dearpypixl import Application, Viewport
+from dearpypixl.containers import Window, TreeNode, CollapsingHeader
+
+
+Viewport.height         = 800
+Viewport.width          = 1000
+Viewport.configure(title="Clever Viewport Title", resizable=False)
+
+with Window() as main_window:
+    with Group(horizontal=True):
+        TreeNodeTemplate = TreeNode.as_template(bullet=True, selectable=False)
+
+        with ChildWindow(width=490):
+            with CollapsingHeader("Application Config", default_open=True):
+                for option, value in Application.configuration().items():
+                    TreeNodeTemplate(label=f"{option}: {value}")
+            with CollapsingHeader("Application Info", default_open=True):
+                for option, value in Application.information().items():
+                    TreeNodeTemplate(label=f"{option}: {value}")
+            with CollapsingHeader("Application State", default_open=True):
+                for option, value in Application.state().items():
+                    TreeNodeTemplate(label=f"{option}: {value}")
+
+        with ChildWindow():
+            with CollapsingHeader("Viewport Config", default_open=True):
+                for option, value in Viewport.configuration().items():
+                    TreeNodeTemplate(label=f"{option}: {value}")
+            with CollapsingHeader("Viewport Info", default_open=True):
+                for option, value in Viewport.information().items():
+                    TreeNodeTemplate(label=f"{option}: {value}")
+            with CollapsingHeader("Viewport State", default_open=True):
+                for option, value in Viewport.state().items():
+                    TreeNodeTemplate(label=f"{option}: {value}")
+
+Viewport.primary_window = main_window
+
+Application.start()
+```
+
+<img src="https://github.com/Atlamillias/dearpypixl/blob/main/examples/images/app_vp_ex1.png">
+
+
+The thing to note here is that *all* functionality is class-bound, not instance-bound. This is important because:
+* you do not need to create instances of each to access and change their settings
+* you are not limited to stuffing all of your UI code within a single module (each module can simply import `Application`/`Viewport`)
+* unlike modules, supports inheritance
+With that said, creating `Application`/`Viewport` instances will not in any way create additional application windows -- only 1 "application" and 1 "viewport" can exist, and is set up upon importing DearPyPixl. This will change once DearPyGui offers multi-viewport support.
 
 
 ## Events and Callbacks
