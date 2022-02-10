@@ -14,6 +14,10 @@ from srcwriter import PyTextNamespace, PyTextClass, PyTextObject, PyFile
 # Output target path
 DIRPATH = Path(__file__).parent / "_appitems"
 EXCL_DPATH = DIRPATH.parent / "_item"
+
+CONFIGURATION = "configuration"
+INFORMATION   = "information"
+STATE         = "state"
 # By default, all parameters are included as class attributes bound
 # to the ItemAttribute descriptor. If the param name is listed here,
 # it will not be included, but will still be used in __init__.
@@ -73,17 +77,39 @@ ITEM_ATTRIBUTE_SETTINGS = {
             "colormap"     : ("configuration", "get_item_cached", "set_item_cached_colormap", None),
             "value"        : ("configuration", "get_item_value", "set_item_value", "default_value"),},
     # DPG BUGFIX's
-    "Window"       : {"on_close"   : ("configuration", "get_item_cached", "set_item_cached_config", None),},
-    "InputText"    : {"multiline"  : ("configuration", "get_item_config", "set_item_config", "multline"),},
-    "SubPlots"     : {"columns"    : ("configuration", "get_item_config", "set_item_config", "cols"),},
-    "DragPayload"  : {"drag_data"  : ("configuration", "get_item_cached", "set_item_cached_config", None),
-                      "drop_data"  : ("configuration", "get_item_cached", "set_item_cached_config", None),},
-    "KnobFloat"    : {"min_value"  : ("configuration", "get_item_config", "set_item_config", "min_scale"),
-                      "max_value"  : ("configuration", "get_item_config", "set_item_config", "max_scale"),},
-    "FileExtension": {"extension"  : ("configuration", "get_item_cached", "set_item_cached_config", None),},
-    "ColorMap"     : {"colors"     : ("configuration", "get_item_cached", None, None),
-                      "qualitative": ("configuration", "get_item_cached", None, None),},
-    "PlotAxis"     : {"axis"       : ("configuration", "get_item_cached", "set_item_cached_config", None),},
+    "Window"          : {"on_close"   : ("configuration", "get_item_cached", "set_item_cached_config", None),},
+    "InputText"       : {"multiline"  : ("configuration", "get_item_config", "set_item_config", "multline"),},
+    "SubPlots"        : {"columns"    : ("configuration", "get_item_config", "set_item_config", "cols"),},
+    "DragPayload"     : {"drag_data"  : ("configuration", "get_item_cached", "set_item_cached_config", None),
+                         "drop_data"  : ("configuration", "get_item_cached", "set_item_cached_config", None),},
+    "KnobFloat"       : {"min_value"  : ("configuration", "get_item_config", "set_item_config", "min_scale"),
+                         "max_value"  : ("configuration", "get_item_config", "set_item_config", "max_scale"),},
+    "FileExtension"   : {"extension"  : ("configuration", "get_item_cached", "set_item_cached_config", None),},
+    "ColorMap"        : {"colors"     : ("configuration", "get_item_cached", None, None),
+                         "qualitative": ("configuration", "get_item_cached", None, None),},
+    "PlotAxis"        : {"axis"       : ("configuration", "get_item_cached", "set_item_cached_config", None),},
+}
+ITEM_ATTRIBUTE_ADDTL_PARAMS  = {
+    "CollapsingHeader": {
+                            CONFIGURATION: (
+                                                Parameter(name="collapsed",
+                                                kind=Parameter.POSITIONAL_OR_KEYWORD,
+                                                annotation=bool,
+                                                default='ItemAttribute("configuration", "get_item_value", "set_item_value", "default_open")'),
+                                           ),
+                            STATE        : (
+                                                Parameter(name="is_collapsed",
+                                                kind=Parameter.POSITIONAL_OR_KEYWORD,
+                                                annotation=bool,
+                                                default='ItemAttribute("state", "get_item_value", None, None)'),
+                                           )
+                        }                       
+}
+ITEM_ATTRIBUTE_ADDL_STATE  = {
+    "CollapsingHeader": (Parameter(name="is_collapsed",
+                                   kind=Parameter.POSITIONAL_OR_KEYWORD,
+                                   annotation=bool,
+                                   default='ItemAttribute("configuration", "get_item_value", "set_item_value", "default_open")'),)
 }
 
 RENAME_CATEGORY = {
@@ -155,7 +181,7 @@ def make_textclass(appitem: AppItem, public: bool = True):
         else:
             value = PyTextObject(f'ItemAttribute("configuration", "get_item_config", "set_item_config", None)')
         param._default = value
-        # If an appitem has a default value, create a `value` parameter.
+        # If an appitem has `default_value``, create a `value` parameter.
         if param.name == "default_value":
             value_param = Parameter(
                 "value",
@@ -166,6 +192,7 @@ def make_textclass(appitem: AppItem, public: bool = True):
     if value_param:
         class_attrs.append(value_param)
 
+    # TODO: Add `ITEM_ATTRIBUTE_ADDTL_PARAMS`
 
 
     # ItemAttribute "state"

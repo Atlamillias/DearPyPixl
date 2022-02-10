@@ -14,18 +14,18 @@ DEARPYGUI_DIR      = r"dearpygui_src\DearPyGui\dearpygui\dearpygui.py"
 DearPyGui_Commands = {}
 
 # NOTE: Importing the source version of `dearpygui` and not the installed one.
-spec = importlib.util.spec_from_file_location("dearpygui", DEARPYGUI_DIR)
-dearpygui = importlib.util.module_from_spec(spec)
-spec.loader.exec_module(dearpygui)
-
-for cmd in dir(dearpygui):
-    try:
-        module_name = getmodule(getattr(dearpygui, cmd)).__name__
-        if module_name not in ("_dearpygui", "dearpygui"):
-            continue
-    except AttributeError:  # dunders
-        continue
-    DearPyGui_Commands[cmd] = getattr(dearpygui, cmd)
+#spec = importlib.util.spec_from_file_location("dearpygui", DEARPYGUI_DIR)
+#dearpygui = importlib.util.module_from_spec(spec)
+#spec.loader.exec_module(dearpygui)
+#
+#for cmd in dir(dearpygui):
+#    try:
+#        module_name = getmodule(getattr(dearpygui, cmd)).__name__
+#        if module_name not in ("_dearpygui", "dearpygui"):
+#            continue
+#    except AttributeError:  # dunders
+#        continue
+#    DearPyGui_Commands[cmd] = getattr(dearpygui, cmd)
 
 
 
@@ -273,14 +273,17 @@ _KEYWORD_ONLY   = Parameter.KEYWORD_ONLY
 
 
 
-def _read_src_file(filename: str, func: Callable = None):
-    @functools.wraps(func)
-    def wrapper(*args, **kwargs):
-        with open(APPITEM_SRC_DIR / filename) as file:
-            raw_text = file.read()
-        return func(raw_text, *args, **kwargs)
+def _read_src_file(filename: str):
+    def wrapper1(func: Callable):
+        @functools.wraps(func)
+        def wrapper2(*args, **kwargs):
+            with open(APPITEM_SRC_DIR / filename) as file:
+                raw_text = file.read()
+            return func(raw_text, *args, **kwargs)
+        return wrapper2
 
-    return wrapper
+    return wrapper1
+
 
 
 def _remove_addtl_whtspace(text: str) -> str:
@@ -377,7 +380,3 @@ def _get_appitem_states(text: str) -> dict[str, list[str]]:
 
 def import_appitem_data():
     appitem_names = _get_appitem_indexes()
-
-
-
-
