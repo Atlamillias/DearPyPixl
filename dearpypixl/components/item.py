@@ -44,12 +44,12 @@ TemplateT = TypeVar("TemplateT", bound="Template" )
         
 
 class Template(Mapping, metaclass=ABCMeta):
-    __slots__ = ("__target_parameters", "kwargs")
+    __slots__ = ("_target_parameters", "kwargs")
 
-    _target: ItemT
+    _target_factory: ItemT
 
     def __init__(self, **config):
-        self.__target_parameters = self._target._item_init_params
+        self._target_parameters = self._target_factory._item_init_params
         if "kwargs" not in config:
             config["kwargs"] = {}
         elif not isinstance(config["kwargs"], dict):
@@ -58,11 +58,14 @@ class Template(Mapping, metaclass=ABCMeta):
         self.configure(**config)
 
     def __repr__(self) -> str:
-        return f"{type(self).__qualname__}(target_factory={self.target_factory()!r}"
+        return f"<class {type(self).__qualname__!r}>"
 
     def __call__(self, **config) -> ItemT:
-        config = self.configuration() | config
-        return self._target(**config)
+        config_overrides = config
+        config = self.configuration()
+        kwargs = config.pop("kwargs", {})
+        params = config | kwargs | config_overrides
+        return self._target_factory(**params)
 
     def __getitem__(self, attr: str) -> Any:
         return getattr(self, attr)
@@ -71,35 +74,16 @@ class Template(Mapping, metaclass=ABCMeta):
         return setattr(self, attr, value)
     
     def __iter__(self):
-        yield from self.__target_parameters
+        yield from self._target_parameters
 
     def __len__(self) -> int:
-        return len(self.__target_parameters)
-
-    @classmethod
-    @property
-    def target_factory(cls: type[Self]) -> ItemT:
-        """Return the bound item type. When called, this object will return
-        an instance of that type.
-        """
-        # Name chosen as to avoid collisions w/Item attributes.
-        return cls._target
-
-    @classmethod
-    @property
-    def target_parameters(cls: type[Self]) -> tuple[Parameter, ...]:
-        """Return a tuple containing the signature parameters of `cls.target_factory()`.
-        """
-        return tuple(cls.__target_parameters.values())
+        return len(self._target_parameters)
 
     def configure(self, **config) -> None:
-        for attr, val in config.items():
-            setattr(self, attr, val)
+        return Item.configure(self, **config)
 
     def configuration(self) -> dict[str, Any]:
-        slots = self.__slots__
-        return {attr:getattr(self, attr) for
-                attr in dir(self) if attr in slots}
+        return {attr:getattr(self, attr) for attr in self._target_parameters}
         
 
 class ProtoItem(metaclass=ABCMeta):
@@ -158,13 +142,13 @@ class ProtoItem(metaclass=ABCMeta):
                 if item_attr not in cls_attributes:
                     getattr(cls, coll_name).add(item_attr)
 
-        # Creating/binding a new `Template` obj for `cls`. 
+        # Creating and binding a new `Template` obj for `cls`. 
         cls._item_template_obj = type(
             f"{cls.__qualname__}{Template.__qualname__}",
             (Template,),
             {"__slots__": tuple(cls._item_init_params.keys())}
         )
-        cls._item_template_obj._target = cls  # code inspection
+        cls._item_template_obj._target_factory = cls
         
         # Registernew item class
         cls._ItemTypeRegistry[cls.__qualname__] = cls
@@ -195,8 +179,6 @@ class Item(ProtoItem, metaclass=ABCMeta):
     _unique_children : tuple[str, ...] = ()
     _unique_commands : tuple[str, ...] = ()
     _unique_constants: tuple[str, ...] = ()
-
-    _item_template_obj: TemplateT
 
     @abstractmethod
     def _command() -> Callable[..., Any]: ...
@@ -235,7 +217,7 @@ class Item(ProtoItem, metaclass=ABCMeta):
         return (type(self), self._tag) == (type(other), other._tag)
 
     @classmethod
-    def raw_init(cls: type[Self], **config) -> Union[int, str]:
+    def raw_init(cls, **config) -> Union[int, str]:
         """Skip normal initialization -- Directly call the DearPyGui command used
         to create the item and return its unique identifier. Useful when creating
         several items (hundreds/thousands) or when object orientation for an item
@@ -250,7 +232,7 @@ class Item(ProtoItem, metaclass=ABCMeta):
         return cls._command(**config)
 
     @classmethod
-    def as_template(cls: type[Self], **config) -> TemplateT:
+    def as_template(cls, **config) -> type[Self]:
         """Return an instance of `ItemTemplate` -- a mapping-like factory object 
         that can create instances of items from a freely-customizable default
         configuration. <config> will be merged into a copy of the default parameters
@@ -261,7 +243,7 @@ class Item(ProtoItem, metaclass=ABCMeta):
             as initial default configuration for future items.
         """
         config = {p.name:p.default for p in cls._item_init_params.values()
-                    if p.default is not p.empty} | config
+                  if p.default is not p.empty} | config
 
         return cls._item_template_obj(**config)
 
