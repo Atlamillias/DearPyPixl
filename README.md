@@ -161,7 +161,8 @@ Application.start()
 The thing to note here is that *all* functionality is class-bound, not instance-bound. This is important because:
 * you do not need to create instances of each to access and change their settings
 * you are not limited to stuffing all of your UI code within a single module (each module can simply import `Application`/`Viewport`)
-* unlike modules, supports inheritance
+* unlike modules, they supports inheritance
+
 With that said, creating `Application`/`Viewport` instances will not in any way create additional application windows -- only 1 "application" and 1 "viewport" can exist, and is set up upon importing DearPyPixl. This will change once DearPyGui offers multi-viewport support.
 
 
