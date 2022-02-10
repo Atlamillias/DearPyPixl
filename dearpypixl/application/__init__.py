@@ -1,4 +1,4 @@
-from typing import Callable
+from typing import Callable, Any
 from abc import abstractmethod, ABCMeta, ABC
 from dearpypixl.components import ItemAttribute, Item, ProtoItem
 
@@ -21,13 +21,9 @@ class AppItemMeta(type):
 
 class AppItem(ProtoItem, ABC, metaclass=type("AppItemType", (AppItemMeta, ABCMeta), {})):
     @abstractmethod
-    def tag()           -> int | str: ...
+    def tag()           -> int | str     : ...
     @abstractmethod
-    def configuration() -> Callable : ...
-    @abstractmethod
-    def information()   -> Callable : ...
-    @abstractmethod
-    def state()         -> Callable : ...
+    def configuration() -> dict[str, Any]: ...
 
     __slots__    = ()
     __instance__ = None
@@ -36,6 +32,18 @@ class AppItem(ProtoItem, ABC, metaclass=type("AppItemType", (AppItemMeta, ABCMet
         super().__init_subclass__()
         if cls.mro()[1] == AppItem:
             cls.__instance__ = cls()
+
+    @classmethod
+    def configure(cls, **config) -> None:
+        return Item.configure(cls, **config)
+
+    @classmethod
+    def information(cls) -> dict[str, Any]:
+        return {attr: getattr(cls, attr) for attr in cls._item_inform_attrs}
+
+    @classmethod
+    def state(cls) -> dict[str, Any]:
+        return {attr: getattr(cls, attr) for attr in cls._item_states_attrs}
 
 
 class AppAttribute(ItemAttribute):

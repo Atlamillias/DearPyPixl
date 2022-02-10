@@ -218,14 +218,6 @@ class Viewport(AppItem):
                 getattr(cls, attr)) for attr in item_config_attrs}
 
     @classmethod
-    def information(cls) -> dict[str, Any]:
-        return {attr: getattr(cls, attr) for attr in cls._item_inform_attrs}
-
-    @classmethod
-    def state(cls) -> dict[str, Any]:
-        return {attr: getattr(cls, attr) for attr in cls._item_states_attrs}
-
-    @classmethod
     def children(cls) -> tuple[ItemT, ...]:
         """Return a tuple of all items.
         """
