@@ -241,12 +241,12 @@ class Item(ProtoItem, metaclass=ABCMeta):
         raise NotImplemented("This slice or index operation is not supported.")
 
     @__getitem__.register
-    def __getslice(self, value: slice) -> list[Item]:
+    def __getslice(self, value: slice) -> list[ItemT]:
         # `value` is a slice: `[0:4:0]`, `[:]`
         return self.children(slot=1)[value.start: value.stop: value.step]
 
     @__getitem__.register
-    def __getindex(self, value: int) -> Item:
+    def __getindex(self, value: int) -> ItemT:
         # `value` is an index: `[0]`
         # Not calling the `children` method as it is unnecessarily slow only to fetch 1 item.
         child_idx = get_item_info(self._tag)["children"][1][value]
@@ -379,7 +379,7 @@ class Item(ProtoItem, metaclass=ABCMeta):
 
     @property
     @item_attribute(category="information")
-    def parent(self) -> Item:
+    def parent(self) -> 'Item':
         """Return the direct progenitor of this item.
         """
         return self._AppItemsRegistry.get(get_item_info(self._tag)["parent"], None)
@@ -442,7 +442,7 @@ class Item(ProtoItem, metaclass=ABCMeta):
         for key, value in config.items():
             setattr(self, key, value)
 
-    def children(self, slot: int = None) -> tuple[Item, ...]:
+    def children(self, slot: int = None) -> tuple['Item', ...]:
         """Return a tuple of the item's children. If a slot number is passed, then
         the list will only contain the children in that slot (in the order of their
         current positions).
@@ -457,7 +457,7 @@ class Item(ProtoItem, metaclass=ABCMeta):
         """
         focus_item(self._tag)
 
-    def move(self, parent: Union[Item, int] = 0, before: Union[Item, int] = 0) -> None:
+    def move(self, parent: Union[ItemT, int] = 0, before: Union[ItemT, int] = 0) -> None:
         """If the item is a child, it will be appended to <parent>'s list
         of children, or inserted before/above <before>. An error will be raised if
         this item does not require a parenting item to exist.
@@ -522,6 +522,27 @@ class Item(ProtoItem, metaclass=ABCMeta):
         if not children_only:
             del self
 
+    def item_tree(self) -> dict['Item', list[list['Item', list]]]:
+        """Return the entire parential tree for this item.
+        """
+        # Find the root parent first.
+        root_item    = None
+        current_item = self
+        while root_item is None:
+            if current_item.is_root_item:
+                root_item = current_item
+            current_item = current_item.parent
+        
+        tree = root_item.__item_tree()
+        return {tree[0]: tree[1]}
+
+    def __item_tree(self) -> list['Item', list['Item', list]]:
+        tree = [self, []]
+        for child in self.children():
+            child_tree = child.__item_tree()
+            tree[1].append(child_tree)
+        return tree
+
 
     #### Work-In-Progress ####
     def _export_configuration(self) -> dict[str, Any]:
@@ -534,26 +555,7 @@ class Item(ProtoItem, metaclass=ABCMeta):
         }
         return export_config | dft_init_params | self.configuration()
 
-    def _item_tree(self) -> list[Item, list[Item, list]]:
-        tree = [self, []]
-        for child in self.children():
-            child_tree = child._item_tree()
-            tree[1].append(child_tree)
-        return tree
 
-    def item_tree(self) -> dict[Item, list[list[Item, list]]]:
-        """Return the entire parential tree for this item.
-        """
-        # Find the root parent first.
-        root_item    = None
-        current_item = self
-        while root_item is None:
-            if current_item.is_root_item:
-                root_item = current_item
-            current_item = current_item.parent
-        
-        tree = root_item._item_tree()
-        return {tree[0]: tree[1]}
 
                 
 
