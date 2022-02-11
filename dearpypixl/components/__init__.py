@@ -10,8 +10,6 @@ from dearpygui._dearpygui import (
 from dearpypixl.components.configuration import ItemAttribute, item_attribute
 from dearpypixl.components.item import (
     ItemT,
-    TemplateT,
-    Template,
     ProtoItem,
     Item,    
 )
