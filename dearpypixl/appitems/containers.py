@@ -1178,7 +1178,8 @@ class Window(Container):
     _unique_children           : tuple                             = ()                                                                                                      
     _unique_commands           : tuple                             = ('set_x_scroll', 'set_y_scroll', 'get_x_scroll', 'get_y_scroll', 'get_x_scroll_max', 'get_y_scroll_max')
     _unique_constants          : tuple                             = ('mvWindowAppItem',)                                                                                    
-    _command                   : Callable                          = dearpygui.add_window                                                                                    
+    _command                   : Callable                          = dearpygui.add_window
+    _dock_uuid                 : int                               = 0                                                                                 
 
     def __init__(
         self                                                                          ,
@@ -1222,8 +1223,9 @@ class Window(Container):
             show=show,
             pos=pos,
             delay_search=delay_search,
-            min_size=min_size,
-            max_size=max_size,
+            # BUG: Temp fix for https://github.com/hoffstadt/DearPyGui/issues/1591
+            min_size=[int(x) for x in min_size],
+            max_size=[int(x) for x in max_size],
             menubar=menubar,
             collapsed=collapsed,
             autosize=autosize,

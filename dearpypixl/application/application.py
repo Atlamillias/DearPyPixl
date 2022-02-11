@@ -334,6 +334,10 @@ class Application(AppItem):
     ######## Misc. methods #########
     ################################
     @classmethod
+    def _export_configuration(cls) -> dict:
+        ...
+        
+    @classmethod
     def configuration(cls) -> dict[str, Any]:
         config = get_app_configuration()  # The only change from `Item.configuration`
         item_config_attrs = cls._item_config_attrs
