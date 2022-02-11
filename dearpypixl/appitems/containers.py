@@ -621,12 +621,11 @@ class CollapsingHeader(Container):
     open_on_arrow       : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     leaf                : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     bullet              : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    collapsed           : bool                              = ItemAttribute("configuration", "get_item_value",  "set_item_value" , None)
+    open                : bool                              = ItemAttribute("configuration", "get_item_value",  "set_item_value" , None)
 
     default_open        : bool                              = ItemAttribute('information'  , 'get_item_cached', None             , None)
     delay_search        : bool                              = ItemAttribute('information'  , 'get_item_cached', None             , None)    
 
-    is_collapsed        : bool                              = ItemAttribute("state", "get_item_value", None, None)
     is_resized          : bool                              = ItemAttribute("state", "get_item_state", None, "resized")                 
     is_middle_clicked   : bool                              = ItemAttribute("state", "get_item_state", None, "middle_clicked")          
     is_right_clicked    : bool                              = ItemAttribute("state", "get_item_state", None, "right_clicked")           
