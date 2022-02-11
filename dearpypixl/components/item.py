@@ -5,7 +5,9 @@ from typing import Callable, Any, TypeVar, Union, Mapping
 from typing_extensions import Self
 from enum import IntEnum
 from inspect import Parameter
+import functools
 import inspect
+import sys
 
 from dearpygui import dearpygui
 from dearpygui._dearpygui import (
@@ -101,6 +103,9 @@ class ProtoItem(metaclass=ABCMeta):
 
     _AppItemsRegistry : dict[int, ItemT]       = {}
     _ItemTypeRegistry : dict[str, type[ItemT]] = {}
+    _RootItemRegistry : list[str]              = []
+
+    _is_root_item     : bool  = False
 
     _item_init_params : dict[str, Parameter]   = {}
     _item_config_attrs: set[str]               = set()
@@ -116,10 +121,10 @@ class ProtoItem(metaclass=ABCMeta):
                                  dict(inspect.signature(cls).parameters)
         # Import categorized item attributes registered from `ItemAttribute`,
         # `item_attribute`.
-        cls._item_config_attrs = {*ItemAttribute.next_class_item_attrs["configuration"]}
-        cls._item_inform_attrs = {*ItemAttribute.next_class_item_attrs["information"]}
-        cls._item_states_attrs = {*ItemAttribute.next_class_item_attrs["state"]}
-        cls._item_cached_attrs = {*ItemAttribute.next_class_item_attrs["cached"]}
+        cls._item_config_attrs = [*ItemAttribute.next_class_item_attrs["configuration"]]
+        cls._item_inform_attrs = [*ItemAttribute.next_class_item_attrs["information"]]
+        cls._item_states_attrs = [*ItemAttribute.next_class_item_attrs["state"]]
+        cls._item_cached_attrs = [*ItemAttribute.next_class_item_attrs["cached"]]
         # Reset `next_class_item_attrs.values()` for the next class.
         for collection in ItemAttribute.next_class_item_attrs.values():
             collection.clear()
@@ -140,7 +145,12 @@ class ProtoItem(metaclass=ABCMeta):
                 # for expected inheritance of registered attributes. It also means that
                 # attributes can be unregistered for the newest object by redefining them.
                 if item_attr not in cls_attributes:
-                    getattr(cls, coll_name).add(item_attr)
+                    getattr(cls, coll_name).append(item_attr)
+
+        cls._item_config_attrs = tuple(cls._item_config_attrs)
+        cls._item_inform_attrs = tuple(cls._item_inform_attrs)
+        cls._item_states_attrs = tuple(cls._item_states_attrs)
+        cls._item_cached_attrs = tuple(cls._item_cached_attrs)
 
         # Creating and binding a new `Template` obj for `cls`. 
         cls._item_template_obj = type(
@@ -152,6 +162,8 @@ class ProtoItem(metaclass=ABCMeta):
         
         # Registernew item class
         cls._ItemTypeRegistry[cls.__qualname__] = cls
+        if cls._is_root_item:
+            cls._RootItemRegistry.append(cls.__qualname__)
 
 
 class Item(ProtoItem, metaclass=ABCMeta):
@@ -175,10 +187,13 @@ class Item(ProtoItem, metaclass=ABCMeta):
 
     _is_container    : bool  = False
     _is_root_item    : bool  = False
+    _is_value_able   : bool  = False
     _unique_parents  : tuple[str, ...] = ()
     _unique_children : tuple[str, ...] = ()
     _unique_commands : tuple[str, ...] = ()
     _unique_constants: tuple[str, ...] = ()
+
+
 
     @abstractmethod
     def _command() -> Callable[..., Any]: ...
@@ -191,30 +206,48 @@ class Item(ProtoItem, metaclass=ABCMeta):
         # `user_data` needs to be excluded from type casting as it is allowed
         # to be anything.
         user_data = kwargs.pop("user_data", None)
-        for kw, val in kwargs.items():
+        for arg, val in kwargs.items():
             # Recasting int-like values.
             if isinstance(val, (Item, IntEnum)):
-                kwargs[kw] = int(val)
+                kwargs[arg] = int(val)
             # Storing attributes that cannot be fetched from DPG on instance. 
-            if kw in _cached_attrs:
-                setattr(self, f"_{kw}", val)
+            if arg in _cached_attrs:
+                setattr(self, f"_{arg}", val)
 
         type(self)._command(tag=self._tag, user_data=user_data, **kwargs)
         self._AppItemsRegistry[self._tag] = self  # Registering Item obj
 
     def __repr__(self):
-        return f"{type(self).__qualname__}(tag={self.tag!r})"
+        return f"{type(self).__qualname__}(tag={self._tag!r})"
  
     def __int__(self):
-        return self.tag
+        return self._tag
 
-    def __hash__(self, other: Any):
+    def __iter__(self):
+        yield from self.children()
+
+    def __hash__(self):
         return hash((type(self), self._tag))
 
     def __eq__(self, other):
-        if not isinstance(other, Item):
+        if not isinstance(other, ProtoItem):
             return False
-        return (type(self), self._tag) == (type(other), other._tag)
+        return hash(self) == hash(other)
+
+
+
+
+
+    @classmethod
+    @property
+    @item_attribute(category="information")
+    def _item_index(cls) -> ItemIndex:
+        """The enum member that represents the item's type.
+        """
+        try:
+            return ItemIndex[cls.__qualname__]
+        except (AttributeError, KeyError):
+            return None
 
     @classmethod
     def raw_init(cls, **config) -> Union[int, str]:
@@ -246,17 +279,6 @@ class Item(ProtoItem, metaclass=ABCMeta):
                   if p.default is not p.empty} | config
 
         return cls._item_template_obj(**config)
-
-    @classmethod
-    @property
-    @item_attribute(category="information")
-    def item_index(cls) -> ItemIndex:
-        """The enum member that represents the item's type.
-        """
-        try:
-            return ItemIndex[cls.__qualname__]
-        except (AttributeError, KeyError):
-            return None
 
     @classmethod
     @property
@@ -371,12 +393,10 @@ class Item(ProtoItem, metaclass=ABCMeta):
         the list will only contain the children in that slot (in the order of their
         current positions).
         """
-        children = [val for val in get_item_info(self._tag)["children"].values()]
-        children = children if slot is None else children[slot]
-        appitems = self._AppItemsRegistry
-        return tuple([child_item for childs in children
-                     for child in childs if
-                     (child_item := appitems.get(child, None))])
+        child_slots = [*get_item_info(self._tag)["children"].values()]
+        child_ids   = sum(child_slots, []) if slot is None else child_slots[slot]
+        appitems    = self._AppItemsRegistry
+        return tuple([appitems[child_id] for child_id in child_ids])
 
     def focus(self) -> None:
         """Brings a visual item into focus. Does nothing to un-viewable items.
@@ -461,11 +481,6 @@ class Item(ProtoItem, metaclass=ABCMeta):
         cls = type(self)
         configuration = self.configuration() | config
 
-        # BUG: Quickfix -- will remove after DPG update.
-        if cls.__qualname__ == "Window":
-            configuration["min_size"] = [int(n) for n in configuration["min_size"]]
-            configuration["max_size"] = [int(n) for n in configuration["max_size"]]
-
         if configuration.get("pos", None) == [0, 0]:
             configuration["pos"] = []
 
@@ -485,7 +500,42 @@ class Item(ProtoItem, metaclass=ABCMeta):
 
         return self_copy
 
-    def item_tree(self):
-        # TODO: How df do I summarize this?
-        ...
+
+    #### Work-In-Progress ####
+    def _export_configuration(self) -> dict[str, Any]:
+        item_type       = type(self)
+        dft_init_params = {p.name: p.default for p in item_type._item_init_params.values()}
+        export_config   = {
+            "item"  : item_type.__qualname__,
+            "tag"   : self._tag,
+            "parent": self.parent
+        }
+        return export_config | dft_init_params | self.configuration()
+
+    def _item_tree(self) -> list[Item, list[Item, list]]:
+        tree = [self, []]
+        for child in self.children():
+            child_tree = child._item_tree()
+            tree[1].append(child_tree)
+        return tree
+
+    def item_tree(self) -> dict[Item, list[list[Item, list]]]:
+        """Return the entire parential tree for this item.
+        """
+        # Find the root parent first.
+        root_item    = None
+        current_item = self
+        while root_item is None:
+            if current_item.is_root_item:
+                root_item = current_item
+            current_item = current_item.parent
+        
+        tree = root_item._item_tree()
+        return {tree[0]: tree[1]}
+
+                
+
+
+
+
 
