@@ -241,12 +241,12 @@ class Item(ProtoItem, metaclass=ABCMeta):
         raise NotImplemented("This slice or index operation is not supported.")
 
     @__getitem__.register
-    def __getslice(self, value: slice) -> list[ItemT]:
+    def __getslice(self, value: slice) -> list[Item]:
         # `value` is a slice: `[0:4:0]`, `[:]`
         return self.children(slot=1)[value.start: value.stop: value.step]
 
     @__getitem__.register
-    def __getindex(self, value: int) -> ItemT:
+    def __getindex(self, value: int) -> Item:
         # `value` is an index: `[0]`
         # Not calling the `children` method as it is unnecessarily slow only to fetch 1 item.
         child_idx = get_item_info(self._tag)["children"][1][value]
@@ -276,6 +276,7 @@ class Item(ProtoItem, metaclass=ABCMeta):
 
         if not cls._is_root_item and "parent" not in config:
             configuration["parent"] = self.parent
+
         # `value` isn't typically a valid argument. Usually it's `default_value`,
         # but it's not consistent. To be safe, the value is set after item
         # creation.
@@ -286,7 +287,7 @@ class Item(ProtoItem, metaclass=ABCMeta):
 
         if recursive:
             for child in self.children():
-                child.duplicate(recursive=recursive, parent=self_copy)
+                child.copy(recursive=recursive, parent=self_copy)
 
         return self_copy
 
@@ -378,7 +379,7 @@ class Item(ProtoItem, metaclass=ABCMeta):
 
     @property
     @item_attribute(category="information")
-    def parent(self) -> ItemT:
+    def parent(self) -> Item:
         """Return the direct progenitor of this item.
         """
         return self._AppItemsRegistry.get(get_item_info(self._tag)["parent"], None)
@@ -441,7 +442,7 @@ class Item(ProtoItem, metaclass=ABCMeta):
         for key, value in config.items():
             setattr(self, key, value)
 
-    def children(self, slot: int = None) -> tuple[ItemT, ...]:
+    def children(self, slot: int = None) -> tuple[Item, ...]:
         """Return a tuple of the item's children. If a slot number is passed, then
         the list will only contain the children in that slot (in the order of their
         current positions).
@@ -456,7 +457,7 @@ class Item(ProtoItem, metaclass=ABCMeta):
         """
         focus_item(self._tag)
 
-    def move(self, parent: Union[ItemT, int] = 0, before: Union[ItemT, int] = 0) -> None:
+    def move(self, parent: Union[Item, int] = 0, before: Union[Item, int] = 0) -> None:
         """If the item is a child, it will be appended to <parent>'s list
         of children, or inserted before/above <before>. An error will be raised if
         this item does not require a parenting item to exist.
