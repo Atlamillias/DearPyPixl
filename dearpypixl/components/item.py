@@ -235,7 +235,28 @@ class Item(ProtoItem, metaclass=ABCMeta):
         return hash(self) == hash(other)
 
 
+    ## list-like methods
+    @functools.singledispatchmethod
+    def __getitem__(self, value):
+        raise NotImplemented("This slice or index operation is not supported.")
 
+    @__getitem__.register
+    def __getslice(self, value: slice) -> list[ItemT]:
+        # `value` is a slice: `[0:4:0]`, `[:]`
+        return self.children(slot=1)[value.start: value.stop: value.step]
+
+    @__getitem__.register
+    def __getindex(self, value: int) -> ItemT:
+        # `value` is an index: `[0]`
+        # Not calling the `children` method as it is unnecessarily slow only to fetch 1 item.
+        child_idx = get_item_info(self._tag)["children"][1][value]
+        return self._AppItemsRegistry[child_idx]
+
+    def index(self, __value: ItemT, __start: int = 0, __stop: int = None) -> int:
+        """Return first index of `value`. Raises `ValueError` if the value is not present.
+        """
+        children = self.children(slot=1)
+        return children.index(__value, __start, __stop or len(children))
 
 
     @classmethod
