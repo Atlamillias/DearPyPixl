@@ -258,6 +258,38 @@ class Item(ProtoItem, metaclass=ABCMeta):
         children = self.children(slot=1)
         return children.index(__value, __start, __stop or len(children))
 
+    def copy(self, recursive: bool = False, **config) -> Self:
+        """Create and return a copy of this item. Children of the copied item
+        will not be duplicated unless `recursive` is True.
+
+        Args:
+            * recursive (bool, optional): If True, all item children will also be
+            duplicated. Default is False.
+            * config (keyword-only, optional): Configuration that will override
+            the copied configuration for the returned Item instance.
+        """
+        cls = type(self)
+        configuration = self.configuration() | config
+
+        if configuration.get("pos", None) == [0, 0]:
+            configuration["pos"] = []
+
+        if not cls._is_root_item and "parent" not in config:
+            configuration["parent"] = self.parent
+        # `value` isn't typically a valid argument. Usually it's `default_value`,
+        # but it's not consistent. To be safe, the value is set after item
+        # creation.
+        value = configuration.pop("value", None)
+        self_copy = cls(**configuration)
+        # Applying value (if the item isn't value-able then it simply won't "stick")
+        dearpygui.set_value(self_copy._tag, value)
+
+        if recursive:
+            for child in self.children():
+                child.duplicate(recursive=recursive, parent=self_copy)
+
+        return self_copy
+
 
     @classmethod
     @property
@@ -488,38 +520,6 @@ class Item(ProtoItem, metaclass=ABCMeta):
 
         if not children_only:
             del self
-
-    def duplicate(self, recursive: bool = False, **config) -> Self:
-        """Create and return a copy of this item. Children of the copied item
-        will not be duplicated unless `recursive` is True.
-
-        Args:
-            * recursive (bool, optional): If True, all item children will also be
-            duplicated. Default is False.
-            * config (keyword-only, optional): Configuration that will override
-            the copied configuration for the returned Item instance.
-        """
-        cls = type(self)
-        configuration = self.configuration() | config
-
-        if configuration.get("pos", None) == [0, 0]:
-            configuration["pos"] = []
-
-        if not cls._is_root_item and "parent" not in config:
-            configuration["parent"] = self.parent
-        # `value` isn't typically a valid argument. Usually it's `default_value`,
-        # but it's not consistent. To be safe, the value is set after item
-        # creation.
-        value = configuration.pop("value", None)
-        self_copy = cls(**configuration)
-        # Applying value (if the item isn't value-able then it simply won't "stick")
-        dearpygui.set_value(self_copy._tag, value)
-
-        if recursive:
-            for child in self.children():
-                child.duplicate(recursive=recursive, parent=self_copy)
-
-        return self_copy
 
 
     #### Work-In-Progress ####
