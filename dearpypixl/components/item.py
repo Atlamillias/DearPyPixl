@@ -604,7 +604,10 @@ class Item(ProtoItem, metaclass=ABCMeta):
         return self._AppItemsRegistry[children[value]]
 
     @__getitem__.register
-    def __getitem_from_matrix(self, value: tuple[int, int]) -> ItemT:
+    def __getitem_from_matrix(self, value: tuple) -> ItemT:
+        # NOTE: The `dispatch` wrapper in `singledispatch` can't properly deal
+        # w/parameterized generics. This is why the type hint for `value` is `tuple`
+        # and not `tuple[int, int]`.
         if self._item_index() != 47:  # `Table`
             raise NotImplemented("This slice or index operation is not supported.")
 
