@@ -1,13 +1,13 @@
 """Lowest-level types for DearPyPixl."""
 from __future__ import annotations
 from abc import ABCMeta, abstractmethod
-from typing import Callable, Any, TypeVar, Union, Mapping
+from typing import Callable, Any, TypeVar, Union, Mapping, Iterator
 from typing_extensions import Self
 from enum import IntEnum
 from inspect import Parameter
 import functools
 import inspect
-import sys
+import itertools
 
 from dearpygui import dearpygui
 from dearpygui._dearpygui import (
@@ -332,25 +332,57 @@ class Item(ProtoItem, metaclass=ABCMeta):
 
     def configure(self, **config) -> None:
         """Update the item's configuration, or other instance attributes.
+
         """
         for key, value in config.items():
             setattr(self, key, value)
 
-    def children(self, slot: int = None) -> tuple['Item', ...]:
-        """Return a tuple of the item's children. If a slot number is passed, then
-        the list will only contain the children in that slot (in the order of their
-        current positions).
-        """
-        child_slots = [*get_item_info(self._tag)["children"].values()]
-        child_ids   = sum(child_slots, []) if slot is None else child_slots[slot]
-        appitems    = self._AppItemsRegistry
-        return tuple([appitems[child_id] for child_id in child_ids])
+    def children(self, slot: int = None) -> list['Item']:
+        """Return a list of the item's children.
 
-    def index(self, __value: ItemT, __start: int = 0, __stop: int = None) -> int:  # mimic list method
-        """Return first index of `value`. Raises `ValueError` if the value is not present.
+        Args:
+            * slot (int, optional): Return children only in this slot.
+            Default is None (from all slots). 
         """
-        children = self.children(slot=1)
-        return children.index(__value, __start, __stop or len(children))
+        appitems    = self._AppItemsRegistry
+        child_slots = [slot for slot in self._children()]
+        if slot is None:
+            return [appitems[child_id] for child_id in itertools.chain.from_iterable(child_slots)]
+        return [appitems[child_id] for child_id in child_slots[slot]]
+
+    def get_item_slot_info(self, *, start: int = 0, stop: int = None) -> tuple[int, int] | None:
+        """Search the child slots of this item's parent; return the slot number the item is in, and
+        its position/index in that slot. Returns None if the item's parent is None.
+
+        Args:
+            * start (int, optional): Used in slicing the child slot to limit the search to a
+            particular sequence of that child slot. Default is 0.
+            * stop (int, optional): Used in slicing the child slot to limit the search to a
+            particular sequence of that child slot. Default is None.
+        """
+        try:
+            return self.parent.get_child_slot_info(self, start=start, stop=stop)
+        except AttributeError:  # parent is None
+            return None
+
+    def get_child_slot_info(self, value: ItemT, *, start: int = 0, stop: int = None) -> tuple[int, int]:
+        """Return the slot number of value and its position/index in that slot. Raises ValueError if
+        the item does not parent value.
+
+        Args:
+            * value (ItemT): A child item that this item parents.
+            * start (int, optional): Used in slicing the child slot to limit the search to a
+            particular sequence of that child slot. Default is 0.
+            * stop (int, optional): Used in slicing the child slot to limit the search to a
+            particular sequence of that child slot. Default is None.
+        """
+        item_id     = value._tag
+        child_slots = [slot for slot in self._children()]
+        for slot, children in enumerate(child_slots):
+            if item_id in children:
+                return slot, children.index()
+        else:
+            raise ValueError(f"{self!r} is not the parent of value {value!r}.")
 
     def item_tree(self, descendants_only: bool = False) -> dict['Item', list[list['Item', list]]]:
         """Return the entire parential tree that includes the item starting from the
@@ -364,7 +396,7 @@ class Item(ProtoItem, metaclass=ABCMeta):
 
         Args:
             * item (int | str): The tag of an item.
-            * descendants_only (bool, optional): If True, the tree will start from <item>
+            * descendants_only (bool, optional): If True, the tree will start from this item
             and not its root parent. Default is False.
         """
         root_item = self if descendants_only else None
@@ -374,20 +406,7 @@ class Item(ProtoItem, metaclass=ABCMeta):
                 root_item = current_item
             current_item = current_item.parent
         
-        tree = root_item._item_tree()
-        return {tree[0]: tree[1]}
-        
-    def _item_tree(self) -> list['Item', list['Item', list]]:
-        tree        = [self, []]
-        child_slots = [*get_item_info(self._tag)["children"].values()]
-        # slots 1 (most items) and 2 (draw items)
-        appitems = self._AppItemsRegistry
-        children = [*child_slots[1], *child_slots[2]]
-        for child in children:
-            child = appitems[child]
-            child_tree = child._item_tree()
-            tree[1].append(child_tree)
-        return tree
+        return root_item._item_tree()
 
     def move(self, parent: Union[ItemT, int] = 0, before: Union[ItemT, int] = 0) -> None:
         """If the item is a child, it will be appended to <parent>'s list
@@ -506,10 +525,32 @@ class Item(ProtoItem, metaclass=ABCMeta):
     _unique_commands : tuple[str, ...] = ()
     _unique_constants: tuple[str, ...] = ()
 
+    __draw_item_types = (
+        51,  # DrawArrow
+        55,  # DrawBezierCubic
+        56,  # DrawBezierQuadratic
+        53,  # DrawCircle
+        54,  # DrawEllipse
+        62,  # DrawImage
+        98,  # DrawLayer
+        50,  # DrawLine
+        60,  # DrawPolygon
+        61,  # DrawPolyline
+        57,  # DrawQuad
+        58,  # DrawRect
+        59,  # DrawText
+        52,  # DrawTriangle
+        32,  # Drawlist
+        99,  # ViewportDrawlist
+    )
+
+
+    ## Abstract Methods ##
     @abstractmethod
     def _command() -> Callable[..., Any]: ...
 
 
+    ## Special Methods ##
     def __init__(self, **kwargs):
         self._tag = kwargs.pop("tag", generate_uuid())
 
@@ -545,32 +586,60 @@ class Item(ProtoItem, metaclass=ABCMeta):
             return False
         return hash(self) == hash(other)
 
-    # list-like stuff
+    # indexing and slicing
     @functools.singledispatchmethod
     def __getitem__(self, value):
         raise NotImplemented("This slice or index operation is not supported.")
 
     @__getitem__.register
-    def __getslice(self, value: slice) -> list[ItemT]:
-        # `value` is a slice: `[0:4:0]`, `[:]`
+    def __getitem_from_slice(self, value: slice) -> list[ItemT]:
         return self.children(slot=1)[value.start: value.stop: value.step]
 
     @__getitem__.register
-    def __getindex(self, value: int) -> ItemT:
-        # `value` is an index: `[0]`
-        # Not calling the `children` method as it is unnecessarily slow only to fetch 1 item.
-        child_idx = get_item_info(self._tag)["children"][1][value]
-        return self._AppItemsRegistry[child_idx]
+    def __getitem_from_index(self, value: int) -> ItemT:
+        child_slots = [slot for slot in self._children()]
+        # If this item is a drawing item, search slot 2. Otherwise search slot 1.
+        slot_target = 2 if self._is_draw_item() else 1
+        children    = child_slots[slot_target]
+        return self._AppItemsRegistry[children[value]]
+
+    @__getitem__.register
+    def __getitem_from_matrix(self, value: tuple[int, int]) -> ItemT:
+        if self._item_index() != 47:  # `Table`
+            raise NotImplemented("This slice or index operation is not supported.")
+
+        row_idx, col_idx = value
+        row_id           = get_item_info(self._tag)["children"][1][row_idx]
+        row_child_id     = get_item_info(row_id)["children"][1][col_idx]
+        return self._AppItemsRegistry[row_child_id]
+
+
+    ## private/internal methods ##
+    def _children(self) -> Iterator[list[int]]:
+        yield from get_item_info(self._tag)["children"].values()
+
+    def _item_tree(self) -> list['Item', list['Item', list]]:
+        tree        = [self, []]
+        child_slots = [*get_item_info(self._tag)["children"].values()]
+        # slots 1 (most items) and 2 (draw items)
+        appitems = self._AppItemsRegistry
+        children = child_slots[2 if self._is_draw_item() else 1]
+        for child in children:
+            child = appitems[child]
+            child_tree = child._item_tree()
+            tree[1].append(child_tree)
+        return tree
 
     @classmethod
-    @property
-    def _item_index(cls) -> ItemIndex:
-        """The enum member that represents the item's type.
+    def _item_index(cls) -> int:
+        """Return the integer that represents the item's type.
         """
-        try:
-            return ItemIndex[cls.__qualname__]
-        except (AttributeError, KeyError):
-            return None
+        return int(ItemIndex[cls.__qualname__])
+
+    @classmethod
+    def _is_draw_item(cls) -> bool:
+        return cls._item_index() in cls.__draw_item_types
+
 
     #### Work-In-Progress ####
     def _export_configuration(self) -> dict[str, Any]:
