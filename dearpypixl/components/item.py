@@ -17,6 +17,7 @@ from dearpygui._dearpygui import (
     get_item_info,
     get_item_state,
     get_all_items,
+    get_value,
     get_item_configuration,
     move_item,
     move_item_up,
@@ -380,7 +381,7 @@ class Item(ProtoItem, metaclass=ABCMeta):
         child_slots = [slot for slot in self._children()]
         for slot, children in enumerate(child_slots):
             if item_id in children:
-                return slot, children.index()
+                return slot, children.index(value, start=start, stop=stop or len(children))
         else:
             raise ValueError(f"{self!r} is not the parent of value {value!r}.")
 
@@ -442,7 +443,7 @@ class Item(ProtoItem, metaclass=ABCMeta):
             * recursive (bool, optional): If True, all item children will also be
             duplicated. Default is False.
             * config (keyword-only, optional): Configuration that will override
-            the copied configuration for the returned Item instance.
+            the copied configuration for the new item copy.
         """
         cls = type(self)
         configuration = self.configuration() | config
@@ -476,8 +477,8 @@ class Item(ProtoItem, metaclass=ABCMeta):
             * slot (int, optional): Only children in this slot will be deleted if
             <children_only> is True. Default is -1 (all slots).
 
-        NOTE: The `del` does not properly delete items -- use this method instead
-        of `del.
+        NOTE: The `del` statement does not properly delete items -- use this method
+        instead of `del.
         """
         appitems = self._AppItemsRegistry
         try:
@@ -494,17 +495,13 @@ class Item(ProtoItem, metaclass=ABCMeta):
             del self
 
     def focus(self) -> None:
-        """Brings a visual item into focus. Does nothing to un-viewable items.
+        """Brings an item into focus. Does nothing to items that cannot be
+        displayed.
         """
         focus_item(self._tag)
 
     def unstage(self) -> None:
         """Sets this item to be rendered as normal if it has been staged.
-
-        NOTE: An item is **staged** when it is the child of a `Stage` or
-        Stage-like item. Staged items are created and can be configured,
-        but are not set for rendering until they have been **unstaged** or
-        **moved**. 
         """
         try:
             unstage(self._tag)
@@ -570,7 +567,10 @@ class Item(ProtoItem, metaclass=ABCMeta):
         self._AppItemsRegistry[self._tag] = self  # Registering Item obj
 
     def __repr__(self):
-        return f"{type(self).__qualname__}(tag={self._tag!r})"
+        item_id = self._tag
+        label   = get_item_configuration(item_id)["label"]
+        value   = get_value(item_id)
+        return f"{type(self).__qualname__}(tag={item_id!r}, label={label!r})"
  
     def __int__(self):
         return self._tag
