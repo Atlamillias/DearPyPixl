@@ -38,7 +38,6 @@ WidgetItemT     = TypeVar("WidgetItemT"      , bound='Widget'   )
 ContainerItemT  = TypeVar("ContainerItemT"   , bound='Container')
 
 
-
 class Widget(Item, metaclass=ABCMeta):
     __slots__ = ("__events_uuid")
 
@@ -48,7 +47,11 @@ class Widget(Item, metaclass=ABCMeta):
     def __init__(self, theme: Union[Theme, bool, None] = None, events: Union[ItemEvents, bool, None] = None, **kwargs):
         super().__init__(**kwargs)
 
-        self.__events_uuid = None  # Temporary fix
+        # Unlike themes, DearPyGui does not include a way of fetching the item handler
+        # registry bound to an item, so it needs to be saved. However, this info can
+        # become outdated if the `events` property isn't used to bind them. So this is,
+        # at best, a quick tempfix.
+        self.__events_uuid = None
 
         if not theme and not events:
             return None
@@ -94,7 +97,6 @@ class Widget(Item, metaclass=ABCMeta):
             return None
         self.__events_uuid = value._tag
         value.bind(self)
-
 
 
 class Container(Widget, metaclass=ABCMeta):
