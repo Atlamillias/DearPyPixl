@@ -191,7 +191,7 @@ class Application(AppItem):
         cls.end()
 
     @classmethod
-    def stop(cls) -> None:
+    def stop(cls, *args, **kwargs) -> None:
         """Break the main render loop and stop the application
         if it is running. This is the equivelent to pressing the
         "close"/"exit" button on the application title bar.
@@ -200,7 +200,7 @@ class Application(AppItem):
             stop_dearpygui()
 
     @classmethod
-    def end(cls) -> None:
+    def end(cls, *args, **kwargs) -> None:
         """Post-process clean-up. Must be called following the render
         loop to ensure proper 'cleanup'.
         """
@@ -311,7 +311,7 @@ class Application(AppItem):
         return dearpygui.get_callback_queue()
 
     @classmethod
-    def run_callbacks(cls, callback_queue) -> None:
+    def run_callbacks(cls, callback_queue, *args, **kwargs) -> None:
         """Run all callbacks within the callback queue. `manual_callback_management`
         must be set to True. Call only within the main render loop.
         """
@@ -320,7 +320,7 @@ class Application(AppItem):
         return dearpygui.run_callbacks(callback_queue)
 
     @classmethod
-    def run_callback_queue(cls) -> None:
+    def run_callback_queue(cls, *args, **kwargs) -> None:
         """Retrieve all callbacks scheduled to be ran this frame, clear the
         queue, and run them. Does nothing if the callback queue is empty.
         `manual_callback_management` must be set to True. Call only within

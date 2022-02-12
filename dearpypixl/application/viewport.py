@@ -224,7 +224,7 @@ class Viewport(AppItem):
         return tuple(cls._AppItemsRegistry.values())
 
     @classmethod
-    def maximize(cls) -> None:
+    def maximize(cls, *args, **kwargs) -> None:
         """Maximizes the viewport.
         """
         if cls.is_fullscreen:
@@ -234,7 +234,7 @@ class Viewport(AppItem):
         _dearpygui.maximize_viewport()
 
     @classmethod
-    def minimize(cls) -> None:
+    def minimize(cls, *args, **kwargs) -> None:
         """Minimizes the viewport.
         """
         if cls.is_fullscreen:
@@ -244,7 +244,7 @@ class Viewport(AppItem):
         _dearpygui.minimize_viewport()
 
     @classmethod
-    def toggle_fullscreen(cls) -> None:
+    def toggle_fullscreen(cls, *args, **kwargs) -> None:
         cls._is_maximized  = False
         cls._is_minimized  = False
         cls._is_fullscreen = not cls._is_fullscreen
