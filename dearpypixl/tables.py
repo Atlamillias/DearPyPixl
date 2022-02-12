@@ -34,33 +34,6 @@ class Table(Table):
     ##########################
     #### List-ish methods ####
     ##########################
-    @singledispatchmethod
-    def __getitem__(self, value):
-        raise NotImplemented("Not all slicing/index operations supported.")
-
-    @__getitem__.register
-    def _(self, value: slice) -> list[TableRow]:
-        # value is a slice as `[row_start:row_stop:step]`
-        row_uuids = get_item_info(self._tag)["children"][1]
-        sliced_row_uuids = row_uuids[value.start: value.stop: value.step]
-        appitems = self._AppItemsRegistry
-        return [appitems[row_uuid] for row_uuid in sliced_row_uuids]
-
-    @__getitem__.register
-    def _(self, value: tuple) -> Union[TableCell, Item]:
-        # value is a tuple(int,int) as `[row, column]`
-        row_index, col_index = value
-        row_uuid = get_item_info(self._tag)["children"][1][row_index]
-        item_at_pos_uuid = get_item_info(row_uuid)["children"][1][col_index]
-        # `TableRow` child (`TableCell`, `Text`, etc.)
-        return self._AppItemsRegistry[item_at_pos_uuid]
-
-    @__getitem__.register
-    def _(self, value: int) -> TableRow:
-        # value is a int as `[row]`
-        row_uuid = get_item_info(self._tag)["children"][1][value]
-        return self._AppItemsRegistry[row_uuid]
-
     def index(self, row_col_cell_item: Union[TableRow, TableColumn, TableCell]) -> Union[list[int], int]:
         """Return the position of a row, column, or cell item in this table. An `int`
         is returned for `TableRow` and `TableColumn` items. If the item is a `TableCell`,
