@@ -48,3 +48,22 @@ from dearpypixl.components import (
     AppEvents,
     ItemEvents
 )
+# Ensuring item registration...
+# BUG: importing the `color` module is somehow a circular import, yet
+# all of the modules below have the identical structure and import fine.
+from dearpypixl import (
+    # item modules
+    basic,
+    containers,
+    # colors,
+    drawing,
+    misc,
+    nodes,
+    plotting,
+    tables,
+    textures,
+    values,
+
+    # misc modules
+    constants,
+)
