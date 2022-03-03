@@ -1,5 +1,9 @@
 from contextlib import contextmanager
 from dearpygui import _dearpygui, dearpygui
+from dearpygui.dearpygui import (
+    save_image,  # https://dearpygui.readthedocs.io/en/latest/documentation/textures.html#saving-images
+    mutex,
+)
 from dearpypixl.tools.dpgtools import (
     show_about,
     show_debug,
@@ -23,6 +27,7 @@ __all__ = [
     "show_item_registry",
     "show_metrics",
     "show_style_editor",
+    "save_image",
     # classes
     "PyConsole",
     "AppInfo",
