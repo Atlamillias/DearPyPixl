@@ -28,6 +28,7 @@ __all__ = [
     "show_metrics",
     "show_style_editor",
     "save_image",
+    "mutex",
     # classes
     "PyConsole",
     "AppInfo",
@@ -37,19 +38,6 @@ __all__ = [
     "get_reference",
     "get_text_size",
 ]
-
-
-@contextmanager
-def mutex() -> None:
-    """Grabs the mutex. It is released once the code falls out-of-scope.
-
-    Yields:
-        None
-    """
-    try:
-        yield _dearpygui.lock_mutex()
-    finally:
-        _dearpygui.unlock_mutex()
 
 
 def get_text_size(text: str, wrap_width: float = -1.0, font: ItemT = 0) -> tuple[int, int]:
