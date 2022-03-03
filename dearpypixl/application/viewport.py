@@ -40,20 +40,20 @@ def _set_viewport_fickle_config(obj, name, value):
         configure_viewport(obj.tag, **{name: value})
 
 def _get_primary_window(obj, name):
-        p_window = obj._AppItemsRegistry.get(obj._primary_window, None)
+        p_window = obj._AppItemsRegistry.get(Viewport._primary_window, None)
         if p_window is None:
-            obj._primary_window = None  # possibly deleted
+            Viewport._primary_window = None  # possibly deleted
         return p_window
 
 def _set_primary_window(obj, name, value):
-    if not value and obj._primary_window:
-        _dearpygui.set_primary_window(obj._primary_window, False)
-        obj._primary_window = None
+    if not value and Viewport._primary_window:
+        _dearpygui.set_primary_window(Viewport._primary_window, False)
+        Viewport._primary_window = None
     elif not value:
-        obj._primary_window = None
+        Viewport._primary_window = None
     else:
-        obj._primary_window = int(value)
-        _dearpygui.set_primary_window(obj._primary_window, True)
+        Viewport._primary_window = int(value)
+        _dearpygui.set_primary_window(Viewport._primary_window, True)
 
 
 
