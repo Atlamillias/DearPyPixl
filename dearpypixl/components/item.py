@@ -67,10 +67,9 @@ class Template(Mapping, metaclass=ABCMeta):
         return f"<class {type(self).__qualname__!r}>"
 
     def __call__(self, **config) -> ItemT:
-        config_overrides = config
-        config = self.configuration()
-        kwargs = config.pop("kwargs", {})
-        params = config | kwargs | config_overrides
+        configuration = self.configuration()
+        kwargs = configuration.pop("kwargs", {})
+        params = configuration | kwargs | config
         return self._target_factory(**params)
 
     def __getitem__(self, attr: str) -> Any:
@@ -219,10 +218,16 @@ class Item(ProtoItem, metaclass=ABCMeta):
             * config (keyword-only, optional): Overriding configuration to be used
             as initial default configuration for future items.
         """
-        config = {p.name:p.default for p in cls._item_init_params.values()
-                  if p.default is not p.empty} | config
+        configuration = {}
+        empty         = inspect.Parameter.empty
+        for param in cls._item_init_params.values():
+            default = None if param.default is empty else param.default
+            configuration[param.name] = default
 
-        return cls._item_template_obj(**config)
+        configuration.pop("kwargs", None)
+        configuration |= config
+
+        return cls._item_template_obj(**configuration)
 
     @classmethod
     @property
