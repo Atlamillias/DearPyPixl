@@ -32,6 +32,7 @@ __all__ = [
     "TabButton",
     "MenuItem",
     "Image",
+    "ImageButton",
 ]
 
 
@@ -54,7 +55,7 @@ class InputFloat(Widget):
         drop_callback (Callable, optional): Registers a drop callback for drag and drop.
         show (bool, optional): Attempt to render widget.
         enabled (bool, optional): Turns off functionality of widget and applies the disabled theme.
-        pos (Union[List[int], Tuple[int, ...]], optional): Places the item relative to window coordinates, [0,0] is top left.
+        pos (list[int] | tuple[int, ...], optional): Places the item relative to window coordinates, [0,0] is top left.
         filter_key (str, optional): Used by filter widget.
         tracked (bool, optional): Scroll tracking
         track_offset (float, optional): 0.0f:top, 0.5f:center, 1.0f:bottom
@@ -209,11 +210,11 @@ class InputFloatMulti(Widget):
         drop_callback (Callable, optional): Registers a drop callback for drag and drop.
         show (bool, optional): Attempt to render widget.
         enabled (bool, optional): Turns off functionality of widget and applies the disabled theme.
-        pos (Union[List[int], Tuple[int, ...]], optional): Places the item relative to window coordinates, [0,0] is top left.
+        pos (list[int] | tuple[int, ...], optional): Places the item relative to window coordinates, [0,0] is top left.
         filter_key (str, optional): Used by filter widget.
         tracked (bool, optional): Scroll tracking
         track_offset (float, optional): 0.0f:top, 0.5f:center, 1.0f:bottom
-        default_value (Union[List[float], Tuple[float, ...]], optional): 
+        default_value (list[float] | tuple[float, ...], optional): 
         format (str, optional): Determines the format the float will be displayed as (use python string formatting).
         min_value (float, optional): Value for lower limit of input for each cell. Use min_clamped to turn on.
         max_value (float, optional): Value for upper limit of input for each cell. Use max_clamped to turn on.
@@ -294,11 +295,11 @@ class InputFloatMulti(Widget):
         drop_callback: Callable = None, 
         show: bool = True, 
         enabled: bool = True, 
-        pos: Union[List[int], Tuple[int, ...]] = [], 
+        pos: list[int] | tuple[int, ...]       = [], 
         filter_key: str = '', 
         tracked: bool = False, 
         track_offset: float = 0.5, 
-        default_value: Union[List[float], Tuple[float, ...]] = (0.0, 0.0, 0.0, 0.0), 
+        default_value: list[float] | tuple[float, ...]       = (0.0, 0.0, 0.0, 0.0), 
         format: str = '%.3f', 
         min_value: float = 0.0, 
         max_value: float = 100.0, 
@@ -360,7 +361,7 @@ class InputInt(Widget):
         drop_callback (Callable, optional): Registers a drop callback for drag and drop.
         show (bool, optional): Attempt to render widget.
         enabled (bool, optional): Turns off functionality of widget and applies the disabled theme.
-        pos (Union[List[int], Tuple[int, ...]], optional): Places the item relative to window coordinates, [0,0] is top left.
+        pos (list[int] | tuple[int, ...], optional): Places the item relative to window coordinates, [0,0] is top left.
         filter_key (str, optional): Used by filter widget.
         tracked (bool, optional): Scroll tracking
         track_offset (float, optional): 0.0f:top, 0.5f:center, 1.0f:bottom
@@ -445,7 +446,7 @@ class InputInt(Widget):
         drop_callback: Callable = None, 
         show: bool = True, 
         enabled: bool = True, 
-        pos: Union[List[int], Tuple[int, ...]] = [], 
+        pos: list[int] | tuple[int, ...]       = [], 
         filter_key: str = '', 
         tracked: bool = False, 
         track_offset: float = 0.5, 
@@ -511,11 +512,11 @@ class InputIntMulti(Widget):
         drop_callback (Callable, optional): Registers a drop callback for drag and drop.
         show (bool, optional): Attempt to render widget.
         enabled (bool, optional): Turns off functionality of widget and applies the disabled theme.
-        pos (Union[List[int], Tuple[int, ...]], optional): Places the item relative to window coordinates, [0,0] is top left.
+        pos (list[int] | tuple[int, ...], optional): Places the item relative to window coordinates, [0,0] is top left.
         filter_key (str, optional): Used by filter widget.
         tracked (bool, optional): Scroll tracking
         track_offset (float, optional): 0.0f:top, 0.5f:center, 1.0f:bottom
-        default_value (Union[List[int], Tuple[int, ...]], optional): 
+        default_value (list[int] | tuple[int, ...], optional): 
         min_value (int, optional): Value for lower limit of input for each cell. Use min_clamped to turn on.
         max_value (int, optional): Value for upper limit of input for each cell. Use max_clamped to turn on.
         size (int, optional): Number of components displayed for input.
@@ -595,11 +596,11 @@ class InputIntMulti(Widget):
         drop_callback: Callable = None, 
         show: bool = True, 
         enabled: bool = True, 
-        pos: Union[List[int], Tuple[int, ...]] = (), 
+        pos: list[int] | tuple[int, ...]       = (), 
         filter_key: str = '', 
         tracked: bool = False, 
         track_offset: float = 0.5, 
-        default_value: Union[List[int], Tuple[int, ...]] = (0, 0, 0, 0), 
+        default_value: list[int] | tuple[int, ...]       = (0, 0, 0, 0), 
         min_value: int = 0, 
         max_value: int = 100, 
         size: int = 4, 
@@ -659,7 +660,7 @@ class RadioButton(Widget):
     		drop_callback (Callable, optional): Registers a drop callback for drag and drop.
     		show (bool, optional): Attempt to render widget.
     		enabled (bool, optional): Turns off functionality of widget and applies the disabled theme.
-    		pos (Union[List[int], Tuple[int, ...]], optional): Places the item relative to window coordinates, [0,0] is top left.
+    		pos (list[int] | tuple[int, ...], optional): Places the item relative to window coordinates, [0,0] is top left.
     		filter_key (str, optional): Used by filter widget.
     		tracked (bool, optional): Scroll tracking
     		track_offset (float, optional): 0.0f:top, 0.5f:center, 1.0f:bottom
@@ -682,7 +683,7 @@ class RadioButton(Widget):
     drop_callback            : Callable                          = ItemAttribute("configuration", "get_item_config", "set_item_callback", None)         
     show                     : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     enabled                  : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
-    pos                      : Union[List[int], Tuple[int, ...]] = ItemAttribute('configuration', 'get_item_state', 'set_item_config', None)          
+    pos                      : list[int] | tuple[int, ...]       = ItemAttribute('configuration', 'get_item_state', 'set_item_config', None)          
     filter_key               : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     tracked                  : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     track_offset             : float                             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
@@ -733,7 +734,7 @@ class RadioButton(Widget):
         drop_callback     : Callable                          = None           ,
         show              : bool                              = True           ,
         enabled           : bool                              = True           ,
-        pos               : Union[List[int], Tuple[int, ...]] = []             ,
+        pos               : list[int] | tuple[int, ...]       = []             ,
         filter_key        : str                               = ''             ,
         tracked           : bool                              = False          ,
         track_offset      : float                             = 0.5            ,
@@ -786,7 +787,7 @@ class Listbox(Widget):
     		drop_callback (Callable, optional): Registers a drop callback for drag and drop.
     		show (bool, optional): Attempt to render widget.
     		enabled (bool, optional): Turns off functionality of widget and applies the disabled theme.
-    		pos (Union[List[int], Tuple[int, ...]], optional): Places the item relative to window coordinates, [0,0] is top left.
+    		pos (list[int] | tuple[int, ...], optional): Places the item relative to window coordinates, [0,0] is top left.
     		filter_key (str, optional): Used by filter widget.
     		tracked (bool, optional): Scroll tracking
     		track_offset (float, optional): 0.0f:top, 0.5f:center, 1.0f:bottom
@@ -810,7 +811,7 @@ class Listbox(Widget):
     drop_callback            : Callable                          = ItemAttribute("configuration", "get_item_config", "set_item_callback", None)         
     show                     : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     enabled                  : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
-    pos                      : Union[List[int], Tuple[int, ...]] = ItemAttribute('configuration', 'get_item_state', 'set_item_config', None)          
+    pos                      : list[int] | tuple[int, ...]       = ItemAttribute('configuration', 'get_item_state', 'set_item_config', None)          
     filter_key               : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     tracked                  : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     track_offset             : float                             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
@@ -862,7 +863,7 @@ class Listbox(Widget):
         drop_callback     : Callable                          = None           ,
         show              : bool                              = True           ,
         enabled           : bool                              = True           ,
-        pos               : Union[List[int], Tuple[int, ...]] = []             ,
+        pos               : list[int] | tuple[int, ...]       = []             ,
         filter_key        : str                               = ''             ,
         tracked           : bool                              = False          ,
         track_offset      : float                             = 0.5            ,
@@ -914,7 +915,7 @@ class Checkbox(Widget):
     		drop_callback (Callable, optional): Registers a drop callback for drag and drop.
     		show (bool, optional): Attempt to render widget.
     		enabled (bool, optional): Turns off functionality of widget and applies the disabled theme.
-    		pos (Union[List[int], Tuple[int, ...]], optional): Places the item relative to window coordinates, [0,0] is top left.
+    		pos (list[int] | tuple[int, ...], optional): Places the item relative to window coordinates, [0,0] is top left.
     		filter_key (str, optional): Used by filter widget.
     		tracked (bool, optional): Scroll tracking
     		track_offset (float, optional): 0.0f:top, 0.5f:center, 1.0f:bottom
@@ -935,7 +936,7 @@ class Checkbox(Widget):
     drop_callback            : Callable                          = ItemAttribute("configuration", "get_item_config", "set_item_callback", None)         
     show                     : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     enabled                  : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
-    pos                      : Union[List[int], Tuple[int, ...]] = ItemAttribute('configuration', 'get_item_state', 'set_item_config', None)          
+    pos                      : list[int] | tuple[int, ...]       = ItemAttribute('configuration', 'get_item_state', 'set_item_config', None)          
     filter_key               : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     tracked                  : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     track_offset             : float                             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
@@ -983,7 +984,7 @@ class Checkbox(Widget):
         drop_callback     : Callable                          = None           ,
         show              : bool                              = True           ,
         enabled           : bool                              = True           ,
-        pos               : Union[List[int], Tuple[int, ...]] = []             ,
+        pos               : list[int] | tuple[int, ...]       = []             ,
         filter_key        : str                               = ''             ,
         tracked           : bool                              = False          ,
         track_offset      : float                             = 0.5            ,
@@ -1032,7 +1033,7 @@ class Button(Widget):
     		drop_callback (Callable, optional): Registers a drop callback for drag and drop.
     		show (bool, optional): Attempt to render widget.
     		enabled (bool, optional): Turns off functionality of widget and applies the disabled theme.
-    		pos (Union[List[int], Tuple[int, ...]], optional): Places the item relative to window coordinates, [0,0] is top left.
+    		pos (list[int] | tuple[int, ...], optional): Places the item relative to window coordinates, [0,0] is top left.
     		filter_key (str, optional): Used by filter widget.
     		tracked (bool, optional): Scroll tracking
     		track_offset (float, optional): 0.0f:top, 0.5f:center, 1.0f:bottom
@@ -1056,7 +1057,7 @@ class Button(Widget):
     drop_callback       : Callable                          = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                   
     show                : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                   
     enabled             : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                   
-    pos                 : Union[List[int], Tuple[int, ...]] = ItemAttribute('configuration', 'get_item_state', 'set_item_config', None)                                                                                                                                                                                    
+    pos                 : list[int] | tuple[int, ...]       = ItemAttribute('configuration', 'get_item_state', 'set_item_config', None)                                                                                                                                                                                    
     filter_key          : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                   
     tracked             : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                   
     track_offset        : float                             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                   
@@ -1105,7 +1106,7 @@ class Button(Widget):
         drop_callback     : Callable                          = None           ,
         show              : bool                              = True           ,
         enabled           : bool                              = True           ,
-        pos               : Union[List[int], Tuple[int, ...]] = []             ,
+        pos               : list[int] | tuple[int, ...]       = []             ,
         filter_key        : str                               = ''             ,
         tracked           : bool                              = False          ,
         track_offset      : float                             = 0.5            ,
@@ -1160,7 +1161,7 @@ class Selectable(Widget):
     		drop_callback (Callable, optional): Registers a drop callback for drag and drop.
     		show (bool, optional): Attempt to render widget.
     		enabled (bool, optional): Turns off functionality of widget and applies the disabled theme.
-    		pos (Union[List[int], Tuple[int, ...]], optional): Places the item relative to window coordinates, [0,0] is top left.
+    		pos (list[int] | tuple[int, ...], optional): Places the item relative to window coordinates, [0,0] is top left.
     		filter_key (str, optional): Used by filter widget.
     		tracked (bool, optional): Scroll tracking
     		track_offset (float, optional): 0.0f:top, 0.5f:center, 1.0f:bottom
@@ -1184,7 +1185,7 @@ class Selectable(Widget):
     drop_callback            : Callable                          = ItemAttribute("configuration", "get_item_config", "set_item_callback", None)         
     show                     : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     enabled                  : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
-    pos                      : Union[List[int], Tuple[int, ...]] = ItemAttribute('configuration', 'get_item_state', 'set_item_config', None)          
+    pos                      : list[int] | tuple[int, ...]       = ItemAttribute('configuration', 'get_item_state', 'set_item_config', None)          
     filter_key               : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     tracked                  : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     track_offset             : float                             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
@@ -1237,7 +1238,7 @@ class Selectable(Widget):
         drop_callback     : Callable                          = None           ,
         show              : bool                              = True           ,
         enabled           : bool                              = True           ,
-        pos               : Union[List[int], Tuple[int, ...]] = []             ,
+        pos               : list[int] | tuple[int, ...]       = []             ,
         filter_key        : str                               = ''             ,
         tracked           : bool                              = False          ,
         track_offset      : float                             = 0.5            ,
@@ -1291,7 +1292,7 @@ class Combo(Widget):
     		drop_callback (Callable, optional): Registers a drop callback for drag and drop.
     		show (bool, optional): Attempt to render widget.
     		enabled (bool, optional): Turns off functionality of widget and applies the disabled theme.
-    		pos (Union[List[int], Tuple[int, ...]], optional): Places the item relative to window coordinates, [0,0] is top left.
+    		pos (list[int] | tuple[int, ...], optional): Places the item relative to window coordinates, [0,0] is top left.
     		filter_key (str, optional): Used by filter widget.
     		tracked (bool, optional): Scroll tracking
     		track_offset (float, optional): 0.0f:top, 0.5f:center, 1.0f:bottom
@@ -1318,7 +1319,7 @@ class Combo(Widget):
     drop_callback            : Callable                          = ItemAttribute("configuration", "get_item_config", "set_item_callback", None)                                 
     show                     : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                 
     enabled                  : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                 
-    pos                      : Union[List[int], Tuple[int, ...]] = ItemAttribute('configuration', 'get_item_state', 'set_item_config', None)                                  
+    pos                      : list[int] | tuple[int, ...]       = ItemAttribute('configuration', 'get_item_state', 'set_item_config', None)                                  
     filter_key               : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                 
     tracked                  : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                 
     track_offset             : float                             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                 
@@ -1373,7 +1374,7 @@ class Combo(Widget):
         drop_callback     : Callable                          = None           ,
         show              : bool                              = True           ,
         enabled           : bool                              = True           ,
-        pos               : Union[List[int], Tuple[int, ...]] = []             ,
+        pos               : list[int] | tuple[int, ...]       = []             ,
         filter_key        : str                               = ''             ,
         tracked           : bool                              = False          ,
         track_offset      : float                             = 0.5            ,
@@ -1433,7 +1434,7 @@ class InputText(Widget):
     		drop_callback (Callable, optional): Registers a drop callback for drag and drop.
     		show (bool, optional): Attempt to render widget.
     		enabled (bool, optional): Turns off functionality of widget and applies the disabled theme.
-    		pos (Union[List[int], Tuple[int, ...]], optional): Places the item relative to window coordinates, [0,0] is top left.
+    		pos (list[int] | tuple[int, ...], optional): Places the item relative to window coordinates, [0,0] is top left.
     		filter_key (str, optional): Used by filter widget.
     		tracked (bool, optional): Scroll tracking
     		track_offset (float, optional): 0.0f:top, 0.5f:center, 1.0f:bottom
@@ -1467,7 +1468,7 @@ class InputText(Widget):
     drop_callback            : Callable                          = ItemAttribute("configuration", "get_item_config", "set_item_callback", None)         
     show                     : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     enabled                  : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
-    pos                      : Union[List[int], Tuple[int, ...]] = ItemAttribute('configuration', 'get_item_state', 'set_item_config', None)          
+    pos                      : list[int] | tuple[int, ...]       = ItemAttribute('configuration', 'get_item_state', 'set_item_config', None)          
     filter_key               : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     tracked                  : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     track_offset             : float                             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
@@ -1529,7 +1530,7 @@ class InputText(Widget):
         drop_callback     : Callable                          = None           ,
         show              : bool                              = True           ,
         enabled           : bool                              = True           ,
-        pos               : Union[List[int], Tuple[int, ...]] = []             ,
+        pos               : list[int] | tuple[int, ...]       = []             ,
         filter_key        : str                               = ''             ,
         tracked           : bool                              = False          ,
         track_offset      : float                             = 0.5            ,
@@ -1603,7 +1604,7 @@ class SliderFloat(Widget):
     		drop_callback (Callable, optional): Registers a drop callback for drag and drop.
     		show (bool, optional): Attempt to render widget.
     		enabled (bool, optional): Turns off functionality of widget and applies the disabled theme.
-    		pos (Union[List[int], Tuple[int, ...]], optional): Places the item relative to window coordinates, [0,0] is top left.
+    		pos (list[int] | tuple[int, ...], optional): Places the item relative to window coordinates, [0,0] is top left.
     		filter_key (str, optional): Used by filter widget.
     		tracked (bool, optional): Scroll tracking
     		track_offset (float, optional): 0.0f:top, 0.5f:center, 1.0f:bottom
@@ -1632,7 +1633,7 @@ class SliderFloat(Widget):
     drop_callback            : Callable                          = ItemAttribute("configuration", "get_item_config", "set_item_callback", None)         
     show                     : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     enabled                  : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
-    pos                      : Union[List[int], Tuple[int, ...]] = ItemAttribute('configuration', 'get_item_state', 'set_item_config', None)          
+    pos                      : list[int] | tuple[int, ...]       = ItemAttribute('configuration', 'get_item_state', 'set_item_config', None)          
     filter_key               : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     tracked                  : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     track_offset             : float                             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
@@ -1689,7 +1690,7 @@ class SliderFloat(Widget):
         drop_callback     : Callable                          = None           ,
         show              : bool                              = True           ,
         enabled           : bool                              = True           ,
-        pos               : Union[List[int], Tuple[int, ...]] = []             ,
+        pos               : list[int] | tuple[int, ...]       = []             ,
         filter_key        : str                               = ''             ,
         tracked           : bool                              = False          ,
         track_offset      : float                             = 0.5            ,
@@ -1752,7 +1753,7 @@ class DragFloat(Widget):
     		drop_callback (Callable, optional): Registers a drop callback for drag and drop.
     		show (bool, optional): Attempt to render widget.
     		enabled (bool, optional): Turns off functionality of widget and applies the disabled theme.
-    		pos (Union[List[int], Tuple[int, ...]], optional): Places the item relative to window coordinates, [0,0] is top left.
+    		pos (list[int] | tuple[int, ...], optional): Places the item relative to window coordinates, [0,0] is top left.
     		filter_key (str, optional): Used by filter widget.
     		tracked (bool, optional): Scroll tracking
     		track_offset (float, optional): 0.0f:top, 0.5f:center, 1.0f:bottom
@@ -1780,7 +1781,7 @@ class DragFloat(Widget):
     drop_callback            : Callable                          = ItemAttribute("configuration", "get_item_config", "set_item_callback", None)         
     show                     : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     enabled                  : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
-    pos                      : Union[List[int], Tuple[int, ...]] = ItemAttribute('configuration', 'get_item_state', 'set_item_config', None)          
+    pos                      : list[int] | tuple[int, ...]       = ItemAttribute('configuration', 'get_item_state', 'set_item_config', None)          
     filter_key               : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     tracked                  : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     track_offset             : float                             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
@@ -1836,7 +1837,7 @@ class DragFloat(Widget):
         drop_callback     : Callable                          = None           ,
         show              : bool                              = True           ,
         enabled           : bool                              = True           ,
-        pos               : Union[List[int], Tuple[int, ...]] = []             ,
+        pos               : list[int] | tuple[int, ...]       = []             ,
         filter_key        : str                               = ''             ,
         tracked           : bool                              = False          ,
         track_offset      : float                             = 0.5            ,
@@ -1896,13 +1897,13 @@ class Text(Widget):
     		drag_callback (Callable, optional): Registers a drag callback for drag and drop.
     		drop_callback (Callable, optional): Registers a drop callback for drag and drop.
     		show (bool, optional): Attempt to render widget.
-    		pos (Union[List[int], Tuple[int, ...]], optional): Places the item relative to window coordinates, [0,0] is top left.
+    		pos (list[int] | tuple[int, ...], optional): Places the item relative to window coordinates, [0,0] is top left.
     		filter_key (str, optional): Used by filter widget.
     		tracked (bool, optional): Scroll tracking
     		track_offset (float, optional): 0.0f:top, 0.5f:center, 1.0f:bottom
     		wrap (int, optional): Number of pixels from the start of the item until wrapping starts.
     		bullet (bool, optional): Places a bullet to the left of the text.
-    		color (Union[List[int], Tuple[int, ...]], optional): Color of the text (rgba).
+    		color (list[int] | tuple[int, ...], optional): Color of the text (rgba).
     		show_label (bool, optional): Displays the label to the right of the text.
     		id (Union[int, str], optional): (deprecated) 
     	Returns:
@@ -1919,13 +1920,13 @@ class Text(Widget):
     drag_callback       : Callable                          = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     drop_callback       : Callable                          = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     show                : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
-    pos                 : Union[List[int], Tuple[int, ...]] = ItemAttribute('configuration', 'get_item_state', 'set_item_config', None)          
+    pos                 : list[int] | tuple[int, ...]       = ItemAttribute('configuration', 'get_item_state', 'set_item_config', None)          
     filter_key          : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     tracked             : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     track_offset        : float                             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     wrap                : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     bullet              : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
-    color               : Union[List[int], Tuple[int, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    color               : list[int] | tuple[int, ...]       = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     show_label          : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     value               : str                               = ItemAttribute("configuration", "get_item_value", "set_item_value", "default_value")
 
@@ -1964,13 +1965,13 @@ class Text(Widget):
         drag_callback     : Callable                          = None             ,
         drop_callback     : Callable                          = None             ,
         show              : bool                              = True             ,
-        pos               : Union[List[int], Tuple[int, ...]] = []               ,
+        pos               : list[int] | tuple[int, ...]       = []               ,
         filter_key        : str                               = ''               ,
         tracked           : bool                              = False            ,
         track_offset      : float                             = 0.5              ,
         wrap              : int                               = -1               ,
         bullet            : bool                              = False            ,
-        color             : Union[List[int], Tuple[int, ...]] = (-255, 0, 0, 255),
+        color             : list[int] | tuple[int, ...]       = (-255, 0, 0, 255),
         show_label        : bool                              = False            ,
         **kwargs                                                                 ,
     ) -> None:
@@ -2214,14 +2215,14 @@ class Image(Widget):
     		drag_callback (Callable, optional): Registers a drag callback for drag and drop.
     		drop_callback (Callable, optional): Registers a drop callback for drag and drop.
     		show (bool, optional): Attempt to render widget.
-    		pos (Union[List[int], Tuple[int, ...]], optional): Places the item relative to window coordinates, [0,0] is top left.
+    		pos (list[int] | tuple[int, ...], optional): Places the item relative to window coordinates, [0,0] is top left.
     		filter_key (str, optional): Used by filter widget.
     		tracked (bool, optional): Scroll tracking
     		track_offset (float, optional): 0.0f:top, 0.5f:center, 1.0f:bottom
-    		tint_color (Union[List[float], Tuple[float, ...]], optional): Applies a color tint to the entire texture.
-    		border_color (Union[List[float], Tuple[float, ...]], optional): Displays a border of the specified color around the texture. If the theme style has turned off the border it will not be shown.
-    		uv_min (Union[List[float], Tuple[float, ...]], optional): Normalized texture coordinates min point.
-    		uv_max (Union[List[float], Tuple[float, ...]], optional): Normalized texture coordinates max point.
+    		tint_color (list[float] | tuple[float, ...], optional): Applies a color tint to the entire texture.
+    		border_color (list[float] | tuple[float, ...], optional): Displays a border of the specified color around the texture. If the theme style has turned off the border it will not be shown.
+    		uv_min (list[float] | tuple[float, ...], optional): Normalized texture coordinates min point.
+    		uv_max (list[float] | tuple[float, ...], optional): Normalized texture coordinates max point.
     		id (Union[int, str], optional): (deprecated) 
     	Returns:
     		Union[int, str]
@@ -2239,14 +2240,14 @@ class Image(Widget):
     drag_callback       : Callable                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     drop_callback       : Callable                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     show                : bool                                  = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    pos                 : Union[List[int], Tuple[int, ...]]     = ItemAttribute('configuration', 'get_item_state', 'set_item_config', None) 
+    pos                 : list[int] | tuple[int, ...]           = ItemAttribute('configuration', 'get_item_state', 'set_item_config', None) 
     filter_key          : str                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     tracked             : bool                                  = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     track_offset        : float                                 = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    tint_color          : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    border_color        : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    uv_min              : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    uv_max              : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    tint_color          : list[float] | tuple[float, ...]       = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    border_color        : list[float] | tuple[float, ...]       = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    uv_min              : list[float] | tuple[float, ...]       = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    uv_max              : list[float] | tuple[float, ...]       = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
     is_resized          : bool                                  = ItemAttribute("state", "get_item_state", None, "resized")                 
     is_middle_clicked   : bool                                  = ItemAttribute("state", "get_item_state", None, "middle_clicked")          
@@ -2285,14 +2286,14 @@ class Image(Widget):
         drag_callback     : Callable                              = None                ,
         drop_callback     : Callable                              = None                ,
         show              : bool                                  = True                ,
-        pos               : Union[List[int], Tuple[int, ...]]     = []                  ,
+        pos               : list[int] | tuple[int, ...]           = []                  ,
         filter_key        : str                                   = ''                  ,
         tracked           : bool                                  = False               ,
         track_offset      : float                                 = 0.5                 ,
-        tint_color        : Union[List[float], Tuple[float, ...]] = (255, 255, 255, 255),
-        border_color      : Union[List[float], Tuple[float, ...]] = (0, 0, 0, 0)        ,
-        uv_min            : Union[List[float], Tuple[float, ...]] = (0.0, 0.0)          ,
-        uv_max            : Union[List[float], Tuple[float, ...]] = (1.0, 1.0)          ,
+        tint_color        : list[float] | tuple[float, ...]       = (255, 255, 255, 255),
+        border_color      : list[float] | tuple[float, ...]       = (0, 0, 0, 0)        ,
+        uv_min            : list[float] | tuple[float, ...]       = (0.0, 0.0)          ,
+        uv_max            : list[float] | tuple[float, ...]       = (1.0, 1.0)          ,
         **kwargs                                                                        ,
     ) -> None:
         super().__init__(
@@ -2320,3 +2321,110 @@ class Image(Widget):
             uv_max=uv_max,
             **kwargs,
         )
+
+
+class ImageButton(Widget):
+    texture_tag         : ItemT                                 = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    label               : str                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    user_data           : Any                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    use_internal_label  : bool                                  = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    width               : int                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    height              : int                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    indent              : int                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    source              : ItemT                                 = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    payload_type        : str                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    drag_callback       : Callable                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    drop_callback       : Callable                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    show                : bool                                  = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    pos                 : list[int] | tuple[int, ...]           = ItemAttribute('configuration', 'get_item_state', 'set_item_config', None) 
+    filter_key          : str                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    tracked             : bool                                  = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    track_offset        : float                                 = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    frame_padding       : int                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    tint_color          : list[float] | tuple[float, ...]       = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    background_color    : list[float] | tuple[float, ...]       = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    border_color        : list[float] | tuple[float, ...]       = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    uv_min              : list[float] | tuple[float, ...]       = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    uv_max              : list[float] | tuple[float, ...]       = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+
+    is_resized          : bool                                  = ItemAttribute("state", "get_item_state", None, "resized")                                                                                                                                                                                                    
+    is_middle_clicked   : bool                                  = ItemAttribute("state", "get_item_state", None, "middle_clicked")                                                                                                                                                                                             
+    is_right_clicked    : bool                                  = ItemAttribute("state", "get_item_state", None, "right_clicked")                                                                                                                                                                                              
+    is_left_clicked     : bool                                  = ItemAttribute("state", "get_item_state", None, "left_clicked")                                                                                                                                                                                               
+    is_hovered          : bool                                  = ItemAttribute("state", "get_item_state", None, "hovered")                                                                                                                                                                                                    
+    is_active           : bool                                  = ItemAttribute("state", "get_item_state", None, "active")                                                                                                                                                                                                     
+    is_focused          : bool                                  = ItemAttribute("state", "get_item_state", None, "focused")                                                                                                                                                                                                    
+    is_clicked          : bool                                  = ItemAttribute("state", "get_item_state", None, "clicked")                                                                                                                                                                                                    
+    is_visible          : bool                                  = ItemAttribute("state", "get_item_state", None, "visible")                                                                                                                                                                                                    
+    is_activated        : bool                                  = ItemAttribute("state", "get_item_state", None, "activated")                                                                                                                                                                                                  
+    is_deactivated      : bool                                  = ItemAttribute("state", "get_item_state", None, "deactivated")                                                                                                                                                                                                
+    rect_min            : list[int, int]                        = ItemAttribute("state", "get_item_state", None, "rect_min")                                                                                                                                                                                                   
+    rect_max            : list[int, int]                        = ItemAttribute("state", "get_item_state", None, "rect_max")                                                                                                                                                                                                   
+    rect_size           : list[int, int]                        = ItemAttribute("state", "get_item_state", None, "rect_size")                                                                                                                                                                                                  
+    content_region_avail: list[int, int]                        = ItemAttribute("state", "get_item_state", None, "content_region_avail")                                                                                                                                                                                       
+
+    _is_container       : bool                                  = False                                                                                                                                                                                                                                                        
+    _is_root_item       : bool                                  = False                                                                                                                                                                                                                                                        
+    _is_value_able      : bool                                  = False                                                                                                                                                                                                                                                        
+    _unique_parents     : tuple                                 = ()                                                                                                                                                                                                                                                           
+    _unique_children    : tuple                                 = ()                                                                                                                                                                                                                                                           
+    _unique_commands    : tuple                                 = ()     
+    _command            : Callable                              = dearpygui.add_image_button
+
+    def __init__(self, 
+        texture_tag       : ItemT                                                  , 
+        label             : str                              = None                , 
+        user_data         : Any                              = None                , 
+        use_internal_label: bool                             = True                , 
+        width             : int                              = 0                   , 
+        height            : int                              = 0                   , 
+        indent            : int                              = -1                  , 
+        parent            : ItemT                            = 0                   , 
+        before            : ItemT                            = 0                   , 
+        source            : ItemT                            = 0                   , 
+        payload_type      : str                              = '$$DPG_PAYLOAD'     , 
+        callback          : Callable                         = None                , 
+        drag_callback     : Callable                         = None                , 
+        drop_callback     : Callable                         = None                , 
+        show              : bool                             = True                , 
+        enabled           : bool                             = True                , 
+        pos               : list[int] | tuple[int, ...]      = []                  , 
+        filter_key        : str                              = ''                  , 
+        tracked           : bool                             = False               , 
+        track_offset      : float                            = 0.5                 , 
+        frame_padding     : int                              = -1                  , 
+        tint_color        : list[float] | tuple[float, ...]  = (255, 255, 255, 255), 
+        background_color  : list[float] | tuple[float, ...]  = (0, 0, 0, 0)        , 
+        uv_min            : list[float] | tuple[float, ...]  = (0.0, 0.0)          , 
+        uv_max            : list[float] | tuple[float, ...]  = (1.0, 1.0)          , 
+        **kwargs
+    ) -> None: 
+        super().__init__(
+            texture_tag=texture_tag,
+            label=label,
+            user_data=user_data,
+            use_internal_label=use_internal_label,
+            width=width,
+            height=height,
+            indent=indent,
+            parent=parent,
+            before=before,
+            source=source,
+            payload_type=payload_type,
+            callback=callback,
+            drag_callback=drag_callback,
+            drop_callback=drop_callback,
+            show=show,
+            enabled=enabled,
+            pos=pos,
+            filter_key=filter_key,
+            tracked=tracked,
+            track_offset=track_offset,
+            frame_padding=frame_padding,
+            tint_color=tint_color,
+            background_color=background_color,
+            uv_min=uv_min,
+            uv_max=uv_max,
+            **kwargs,
+        )
+    
