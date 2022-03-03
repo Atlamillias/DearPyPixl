@@ -223,12 +223,26 @@ class Viewport(AppItem):
         """
         return tuple(cls._AppItemsRegistry.values())
 
+    _restore_width  = None
+    _restore_height = None
+    _restore_pos    = None
+
+    @classmethod
+    def _save_restore_states(cls, *args, **kwargs) -> None:
+        cls._restore_width  = cls.width
+        cls._restore_height = cls.height
+        cls._restore_pos    = cls.x_pos, cls.y_pos
+
     @classmethod
     def maximize(cls, *args, **kwargs) -> None:
         """Maximizes the viewport.
         """
         if cls.is_fullscreen:
             cls.toggle_fullscreen()
+
+        if not cls._is_maximized and not cls._is_maximized:
+            cls._save_restore_states()
+
         cls._is_maximized = True
         cls._is_minimized = False
         _dearpygui.maximize_viewport()
@@ -239,9 +253,32 @@ class Viewport(AppItem):
         """
         if cls.is_fullscreen:
             cls.toggle_fullscreen()
+
+        if not cls.is_maximized and not cls.is_maximized:
+            cls._save_restore_states
+
         cls._is_maximized = False
         cls._is_minimized = True
         _dearpygui.minimize_viewport()
+    
+    @classmethod
+    def restore_down(cls, *args, **kwargs) -> None:
+        """Restores the viewport to its previous non-maximized, non-
+        minimized size and position.
+        """
+        if cls.is_fullscreen:
+            cls.toggle_fullscreen()
+
+        width    = cls._restore_width
+        height   = cls._restore_height
+        position = cls._restore_pos
+
+        if width and height and position:
+            cls.configure(width=width, height=height, x_pos=position[0], y_pos=position[1])
+            cls._restore_width  = None
+            cls._restore_height = None
+            cls._restore_pos    = None
+
 
     @classmethod
     def toggle_fullscreen(cls, *args, **kwargs) -> None:
