@@ -571,13 +571,13 @@ class Item(ProtoItem, metaclass=ABCMeta):
 
     __slots__ = ("_tag",)
 
-    _is_container    : bool  = False
-    _is_root_item    : bool  = False
-    _is_value_able   : bool  = False
-    _unique_parents  : tuple[str, ...] = ()
-    _unique_children : tuple[str, ...] = ()
-    _unique_commands : tuple[str, ...] = ()
-    _unique_constants: tuple[str, ...] = ()
+    _is_container    : bool
+    _is_root_item    : bool
+    _is_value_able   : bool
+    _unique_parents  : tuple[str, ...]
+    _unique_children : tuple[str, ...]
+    _unique_commands : tuple[str, ...]
+    _unique_constants: tuple[str, ...]
 
     __draw_item_types = (  # used for `item_tree`
         51,  # DrawArrow
@@ -601,7 +601,21 @@ class Item(ProtoItem, metaclass=ABCMeta):
 
     ## Abstract Methods ##
     @abstractmethod
-    def _command() -> Callable[..., Any]: ...
+    def _command()          -> Callable[..., Any]: ...
+    @abstractmethod
+    def _is_container()     -> bool              : ...
+    @abstractmethod
+    def _is_root_item()     -> bool              : ...
+    @abstractmethod
+    def _is_value_able()    -> bool              : ...
+    @abstractmethod
+    def _unique_parents()   -> tuple[str, ...]   : ...
+    @abstractmethod
+    def _unique_children()  -> tuple[str, ...]   : ...
+    @abstractmethod
+    def _unique_commands()  -> tuple[str, ...]   : ...
+    @abstractmethod
+    def _unique_constants() -> tuple[str, ...]   : ...
 
 
     ## Special Methods ##
