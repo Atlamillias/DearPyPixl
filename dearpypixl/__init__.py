@@ -40,10 +40,6 @@ initialize_dearpypixl()
 
 from dearpypixl.application.application import Application
 from dearpypixl.application.viewport import Viewport
-from dearpypixl.components import (
-    AppEvents,
-    ItemEvents
-)
 # Item classes are registered when they are created. Importing each module
 # ensures that they are registered. Otherwise, they may not exist in the
 # registry when they are required. 
