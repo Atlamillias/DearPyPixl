@@ -4,8 +4,8 @@ from typing import Union, NamedTuple
 from dearpygui import dearpygui, _dearpygui
 
 
-InvalidUUID = 0
-AppUUID = 1
+InvalidUUID  = 0
+AppUUID      = 1
 ViewportUUID = "DPG NOT USED YET"
 
 
@@ -347,23 +347,24 @@ class ThemeElementTData(NamedTuple):
         * category (int): DearPyGui `mvThemeCat` constant value.
         * element_type (int): Integer index of the target's type (color = 0, style = 1).
         * target (int): DearPyGui's `ThemeCol`/`StyleVar` constant value for the item.
-        * values (int): The number of values the target uses. Ranges from 1 to 4. 
+        * components (int): The number of values the target uses. Ranges from 1 to 4. 
         * value_type (int): The object that all `values` must be instances of.
         * value_min (int): The floor of every value supported by `target`.
         * value_max (int): The ceiling of every value supported by `target`. A value of
         `...` or `None` indicates "no maximum".
     """
-    category: int
+    category    : int
     element_type: int
-    target: int
-    values: int
-    value_type: type
-    value_min: Union[int, float]
-    value_max: Union[int, float]
+    target      : int
+    components  : int
+    value_type  : type
+    value_min   : Union[int, float]
+    value_max   : Union[int, float]
 
-class _ThemeElementT: ...  # type checking
+class _ThemeCategoryT: ...  # type checking
 
-class CoreThemeElement(_ThemeElementT, Enum):
+class ThemeCategoryCore(_ThemeCategoryT, Enum):
+    # Color
     Text                      = ThemeElementTData(  0 ,   0 ,   0 ,   4 ,  int ,    0  ,   255  )
     TextDisabled              = ThemeElementTData(  0 ,   0 ,   1 ,   4 ,  int ,    0  ,   255  )
     WindowBg                  = ThemeElementTData(  0 ,   0 ,   2 ,   4 ,  int ,    0  ,   255  )
@@ -419,7 +420,7 @@ class CoreThemeElement(_ThemeElementT, Enum):
     NavWindowingHighlight     = ThemeElementTData(  0 ,   0 ,  52 ,   4 ,  int ,    0  ,   255  )
     NavWindowingDimBg         = ThemeElementTData(  0 ,   0 ,  53 ,   4 ,  int ,    0  ,   255  )
     ModalWindowDimBg          = ThemeElementTData(  0 ,   0 ,  54 ,   4 ,  int ,    0  ,   255  )
-
+    # Style
     Alpha                     = ThemeElementTData(  0 ,   1 ,   0 ,   1 , float,   0.0 ,   1.0  )
     WindowPadding             = ThemeElementTData(  0 ,   1 ,   1 ,   2 ,  int ,    0  ,   20   )
     WindowRounding            = ThemeElementTData(  0 ,   1 ,   2 ,   1 ,  int ,    0  ,   12   )
@@ -446,7 +447,8 @@ class CoreThemeElement(_ThemeElementT, Enum):
     SelectableTextAlign       = ThemeElementTData(  0 ,   1 ,  23 ,   2 , float,   0.0 ,   1.0  )
 
 
-class PlotThemeElement(_ThemeElementT, Enum):
+class ThemeCategoryPlot(_ThemeCategoryT, Enum):
+    # Color
     Line                      = ThemeElementTData(  1 ,   0 ,   0 ,   4 ,  int ,    0  ,   255  )
     Fill                      = ThemeElementTData(  1 ,   0 ,   1 ,   4 ,  int ,    0  ,   255  )
     MarkerOutline             = ThemeElementTData(  1 ,   0 ,   2 ,   4 ,  int ,    0  ,   255  )
@@ -471,9 +473,9 @@ class PlotThemeElement(_ThemeElementT, Enum):
     Selection                 = ThemeElementTData(  1 ,   0 ,  21 ,   4 ,  int ,    0  ,   255  )
     Query                     = ThemeElementTData(  1 ,   0 ,  22 ,   4 ,  int ,    0  ,   255  )
     Crosshairs                = ThemeElementTData(  1 ,   0 ,  23 ,   4 ,  int ,    0  ,   255  )
-
+    # Style
     LineWeight                = ThemeElementTData(  1 ,   1 ,   0 ,   1 , float,   0.0 ,   5.0  )
-    Marker                    = ThemeElementTData(  1 ,   1 ,   1 ,   1 , float,   0.0 ,   None )
+    Marker                    = ThemeElementTData(  1 ,   1 ,   1 ,   1 , float,   0.0 ,  None  )
     MarkerSize                = ThemeElementTData(  1 ,   1 ,   2 ,   1 , float,   0.0 ,  10.0  )
     MarkerWeight              = ThemeElementTData(  1 ,   1 ,   3 ,   1 , float,   0.0 ,   5.0  )
     FillAlpha                 = ThemeElementTData(  1 ,   1 ,   4 ,   1 , float,   0.0 ,   1.0  )
@@ -501,42 +503,63 @@ class PlotThemeElement(_ThemeElementT, Enum):
     PlotMinSize               = ThemeElementTData(  1 ,   1 ,  26 ,   2 ,  int ,   0.0 ,   300  )
 
 
-class NodeThemeElement(_ThemeElementT, Enum):
-    NodeBackground            = ThemeElementTData(  2 ,   0 ,   0 ,   4 ,  int ,    0  ,   255  )
-    NodeBackgroundHovered     = ThemeElementTData(  2 ,   0 ,   1 ,   4 ,  int ,    0  ,   255  )
-    NodeBackgroundSelected    = ThemeElementTData(  2 ,   0 ,   2 ,   4 ,  int ,    0  ,   255  )
-    NodeOutline               = ThemeElementTData(  2 ,   0 ,   3 ,   4 ,  int ,    0  ,   255  )
-    TitleBar                  = ThemeElementTData(  2 ,   0 ,   4 ,   4 ,  int ,    0  ,   255  )
-    TitleBarHovered           = ThemeElementTData(  2 ,   0 ,   5 ,   4 ,  int ,    0  ,   255  )
-    TitleBarSelected          = ThemeElementTData(  2 ,   0 ,   6 ,   4 ,  int ,    0  ,   255  )
-    Link                      = ThemeElementTData(  2 ,   0 ,   7 ,   4 ,  int ,    0  ,   255  )
-    LinkHovered               = ThemeElementTData(  2 ,   0 ,   8 ,   4 ,  int ,    0  ,   255  )
-    LinkSelected              = ThemeElementTData(  2 ,   0 ,   9 ,   4 ,  int ,    0  ,   255  )
-    Pin                       = ThemeElementTData(  2 ,   0 ,  10 ,   4 ,  int ,    0  ,   255  )
-    PinHovered                = ThemeElementTData(  2 ,   0 ,  11 ,   4 ,  int ,    0  ,   255  )
-    BoxSelector               = ThemeElementTData(  2 ,   0 ,  12 ,   4 ,  int ,    0  ,   255  )
-    BoxSelectorOutline        = ThemeElementTData(  2 ,   0 ,  13 ,   4 ,  int ,    0  ,   255  )
-    GridBackground            = ThemeElementTData(  2 ,   0 ,  14 ,   4 ,  int ,    0  ,   255  )
-    GridLine                  = ThemeElementTData(  2 ,   0 ,  15 ,   4 ,  int ,    0  ,   255  )
-
-    GridSpacing               = ThemeElementTData(  2 ,   1 ,   0 ,   1 , float,   0.0 ,  32.0  )
-    NodeCornerRounding        = ThemeElementTData(  2 ,   1 ,   1 ,   1 , float,   0.0 ,  10.0  )
-    NodePaddingHorizontal     = ThemeElementTData(  2 ,   1 ,   2 ,   1 , float,   0.0 ,  10.0  )
-    NodePaddingVertical       = ThemeElementTData(  2 ,   1 ,   3 ,   1 , float,   0.0 ,  10.0  )
-    NodeBorderThickness       = ThemeElementTData(  2 ,   1 ,   4 ,   1 , float,   0.0 ,  10.0  )
-    LinkThickness             = ThemeElementTData(  2 ,   1 ,   5 ,   1 , float,   0.0 ,  10.0  )
-    LinkLineSegmentsPerLength = ThemeElementTData(  2 ,   1 ,   6 ,   1 , float,   0.0 ,  10.0  )
-    LinkHoverDistance         = ThemeElementTData(  2 ,   1 ,   7 ,   1 , float,   0.0 ,  10.0  )
-    PinCircleRadius           = ThemeElementTData(  2 ,   1 ,   8 ,   1 , float,   0.0 ,  10.0  )
-    PinQuadSideLength         = ThemeElementTData(  2 ,   1 ,   9 ,   1 , float,   0.0 ,  10.0  )
-    PinTriangleSideLength     = ThemeElementTData(  2 ,   1 ,  10 ,   1 , float,   0.0 ,  10.0  )
-    PinLineThickness          = ThemeElementTData(  2 ,   1 ,  11 ,   1 , float,   0.0 ,  10.0  )
-    PinHoverRadius            = ThemeElementTData(  2 ,   1 ,  12 ,   1 , float,   0.0 ,  10.0  )
-    PinOffset                 = ThemeElementTData(  2 ,   1 ,  13 ,   1 , float,   0.0 ,  10.0  )
+class ThemeCategoryNode(_ThemeCategoryT, Enum):
+    # Color
+    NodeBackground                = ThemeElementTData(  2 ,   0 ,   0 ,   4 ,  int ,    0  ,   255  )
+    NodeBackgroundHovered         = ThemeElementTData(  2 ,   0 ,   1 ,   4 ,  int ,    0  ,   255  )
+    NodeBackgroundSelected        = ThemeElementTData(  2 ,   0 ,   2 ,   4 ,  int ,    0  ,   255  )
+    NodeOutline                   = ThemeElementTData(  2 ,   0 ,   3 ,   4 ,  int ,    0  ,   255  )
+    TitleBar                      = ThemeElementTData(  2 ,   0 ,   4 ,   4 ,  int ,    0  ,   255  )
+    TitleBarHovered               = ThemeElementTData(  2 ,   0 ,   5 ,   4 ,  int ,    0  ,   255  )
+    TitleBarSelected              = ThemeElementTData(  2 ,   0 ,   6 ,   4 ,  int ,    0  ,   255  )
+    Link                          = ThemeElementTData(  2 ,   0 ,   7 ,   4 ,  int ,    0  ,   255  )
+    LinkHovered                   = ThemeElementTData(  2 ,   0 ,   8 ,   4 ,  int ,    0  ,   255  )
+    LinkSelected                  = ThemeElementTData(  2 ,   0 ,   9 ,   4 ,  int ,    0  ,   255  )
+    Pin                           = ThemeElementTData(  2 ,   0 ,  10 ,   4 ,  int ,    0  ,   255  )
+    PinHovered                    = ThemeElementTData(  2 ,   0 ,  11 ,   4 ,  int ,    0  ,   255  )
+    BoxSelector                   = ThemeElementTData(  2 ,   0 ,  12 ,   4 ,  int ,    0  ,   255  )
+    BoxSelectorOutline            = ThemeElementTData(  2 ,   0 ,  13 ,   4 ,  int ,    0  ,   255  )
+    GridBackground                = ThemeElementTData(  2 ,   0 ,  14 ,   4 ,  int ,    0  ,   255  )
+    GridLine                      = ThemeElementTData(  2 ,   0 ,  15 ,   4 ,  int ,    0  ,   255  )
+    GridLinePrimary               = ThemeElementTData(  2 ,   0 ,  16 ,   4 ,  int ,    0  ,   255  )
+    MiniMapBackground             = ThemeElementTData(  2 ,   0 ,  17 ,   4 ,  int ,    0  ,   255  )
+    MiniMapBackgroundHovered      = ThemeElementTData(  2 ,   0 ,  18 ,   4 ,  int ,    0  ,   255  )
+    MiniMapOutline                = ThemeElementTData(  2 ,   0 ,  19 ,   4 ,  int ,    0  ,   255  )
+    MiniMapOutlineHovered         = ThemeElementTData(  2 ,   0 ,  20 ,   4 ,  int ,    0  ,   255  )
+    MiniMapNodeBackground         = ThemeElementTData(  2 ,   0 ,  21 ,   4 ,  int ,    0  ,   255  )
+    MiniMapNodeBackgroundHovered  = ThemeElementTData(  2 ,   0 ,  22 ,   4 ,  int ,    0  ,   255  )
+    MiniMapNodeBackgroundSelected = ThemeElementTData(  2 ,   0 ,  23 ,   4 ,  int ,    0  ,   255  )
+    MiniMapNodeOutline            = ThemeElementTData(  2 ,   0 ,  24 ,   4 ,  int ,    0  ,   255  )
+    MiniMapLink                   = ThemeElementTData(  2 ,   0 ,  25 ,   4 ,  int ,    0  ,   255  )
+    MiniMapLinkSelected           = ThemeElementTData(  2 ,   0 ,  26 ,   4 ,  int ,    0  ,   255  )
+    MiniMapCanvas                 = ThemeElementTData(  2 ,   0 ,  27 ,   4 ,  int ,    0  ,   255  )
+    MiniMapCanvasOutline          = ThemeElementTData(  2 ,   0 ,  28 ,   4 ,  int ,    0  ,   255  )
+    # Style
+    GridSpacing               = ThemeElementTData(  2 ,   1 ,   0 ,   1 , float,   0.0 ,  None  )
+    NodeCornerRounding        = ThemeElementTData(  2 ,   1 ,   1 ,   1 , float,   0.0 ,  None  )
+    NodePadding               = ThemeElementTData(  2 ,   1 ,   2 ,   1 , float,   0.0 ,  None  )
+    NodeBorderThickness       = ThemeElementTData(  2 ,   1 ,   3 ,   1 , float,   0.0 ,  None  )
+    LinkThickness             = ThemeElementTData(  2 ,   1 ,   4 ,   1 , float,   0.0 ,  None  )
+    LinkLineSegmentsPerLength = ThemeElementTData(  2 ,   1 ,   5 ,   1 , float,   0.0 ,  None  )
+    LinkHoverDistance         = ThemeElementTData(  2 ,   1 ,   6 ,   1 , float,   0.0 ,  None  )
+    PinCircleRadius           = ThemeElementTData(  2 ,   1 ,   7 ,   1 , float,   0.0 ,  None  )
+    PinQuadSideLength         = ThemeElementTData(  2 ,   1 ,   8 ,   1 , float,   0.0 ,  None  )
+    PinTriangleSideLength     = ThemeElementTData(  2 ,   1 ,   9 ,   1 , float,   0.0 ,  None  )
+    PinLineThickness          = ThemeElementTData(  2 ,   1 ,  10 ,   1 , float,   0.0 ,  None  )
+    PinHoverRadius            = ThemeElementTData(  2 ,   1 ,  11 ,   1 , float,   0.0 ,  None  )
+    PinOffset                 = ThemeElementTData(  2 ,   1 ,  12 ,   1 , float,   0.0 ,  None  )
+    MiniMapPadding            = ThemeElementTData(  2 ,   1 ,  13 ,   2 , float,   0.0 ,  None  )
+    MiniMapOffset             = ThemeElementTData(  2 ,   1 ,  14 ,   2 , float,   0.0 ,  None  )
 
 #############################
 ########### Misc. ###########
 #############################
+class Platform(IntEnum):
+    Windows = 0
+    Linux   = 1
+    MacOS   = 2
+
+
 class Dir(IntEnum):
     NONE = -1
     Left = 0
@@ -558,6 +581,13 @@ class NodePinShape(IntEnum):
     TriangleFilled = 3
     Quad = 4
     QuadFilled = 5
+
+
+class NodeMinimapLoc(IntEnum):
+    BottomLeft  = 0
+    BottomRight = 1
+    TopLeft     = 2
+    TopRight    = 3
 
 
 class DatePickerLevel(IntEnum):
@@ -629,13 +659,13 @@ class PlotLocation(IntEnum):
 
 
 class ColorEditType(IntEnum):
-    FLOAT = 16777216
-    HEX = 4194304
-    HSV = 2097152
+    FLOAT     = 16777216
+    HEX       = 4194304
+    HSV       = 2097152
     INPUT_HSV = 268435456
     INPUT_RGB = 134217728
-    RGB = 1048576
-    UINT_8 = 8388608
+    RGB       = 1048576
+    UINT_8    = 8388608
 
 
 class ColorEditorAlpha(IntEnum):
@@ -694,7 +724,7 @@ class Tool(IntEnum):
 
 
 class FormatFloat(IntEnum):
-    RGB = 1
+    RGB  = 1
     RGBA = 0
 
 

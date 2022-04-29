@@ -17,7 +17,6 @@ with Theme("DEFAULT") as dearpygui_internal_theme:
     t_color = dearpygui_internal_theme.color
     t_style = dearpygui_internal_theme.style
 
-
     t_color.border                             = border_color
     t_color.border_shadow                      = border_color
     t_color.button                             = panel_color_idle
@@ -90,6 +89,19 @@ with Theme("DEFAULT") as dearpygui_internal_theme:
     t_color.node_title_bar                     =  37,  37,  38, 255
     t_color.node_title_bar_hovered             =  75,  75,  75, 255
     t_color.node_title_bar_selected            =  75,  75,  75, 255
+    t_color.node_grid_line_primary             = 240, 240, 240,  60
+    t_color.node_minimap_bg                    =  25,  25,  25, 150
+    t_color.node_minimap_bg_hovered            =  25,  25,  25, 200
+    t_color.node_minimap_outline               = 150, 150, 150, 100
+    t_color.node_minimap_outline_hovered       = 150, 150, 150, 200
+    t_color.node_minimap_node_bg               = 200, 200, 200, 100
+    t_color.node_minimap_node_bg_hovered       = 200, 200, 200, 255
+    t_color.node_minimap_node_bg_selected      = 200, 200, 200, 255
+    t_color.node_minimap_node_outline          = 200, 200, 200, 100
+    t_color.node_minimap_link                  =  61, 133, 224, 200
+    t_color.node_minimap_link_selected         =  66, 150, 250, 255
+    t_color.node_minimap_canvas                = 200, 200, 200,  25
+    t_color.node_minimap_canvas_outline        = 200, 200, 200, 200
  
     t_color.plot_bg                            =   0,   0,   0, -255
     t_color.plot_border                        =   0,   0,   0, -255
@@ -148,14 +160,15 @@ with Theme("DEFAULT") as dearpygui_internal_theme:
     t_style.node_link_hover_distance           =  10
     t_style.node_link_line_segments_per_length =   0
     t_style.node_link_thickness                =   3
-    t_style.node_padding_horizontal            =   8
-    t_style.node_padding_vertical              =   8
+    t_style.node_padding                       =   8
     t_style.node_pin_circle_radius             =   4
     t_style.node_pin_hover_radius              =  10
     t_style.node_pin_line_thickness            =   1
     t_style.node_pin_offset                    =   0
     t_style.node_pin_quad_side_length          =   7
     t_style.node_pin_triangle_side_length      =  10
+    t_style.node_minimap_padding               =   8,   8
+    # t_style.node_minimap_offset                =   4, 0  DPG 1.6.1 not working
 
     t_style.plot_annotation_padding            =   2,   2
     t_style.plot_border_size                   =   1

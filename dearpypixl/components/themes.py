@@ -1,6 +1,7 @@
 from __future__ import annotations
 from collections.abc import Mapping
-from typing import Callable, Union, Sequence, Any, Optional
+from typing import Callable, Union, Sequence, Any, Optional, TypeAlias
+import decimal
 import functools
 from warnings import warn
 from dearpygui import _dearpygui
@@ -26,12 +27,12 @@ from dearpygui.dearpygui import (
 from dearpypixl.components.configuration import item_attribute, ItemAttribute
 from dearpypixl.components.item import Item
 from dearpypixl.constants import (
-    CoreThemeElement,
-    PlotThemeElement,
-    NodeThemeElement,
+    ThemeCategoryCore,
+    ThemeCategoryPlot,
+    ThemeCategoryNode,
     ItemIndex,
     FontRangeHint,
-    _ThemeElementT,
+    _ThemeCategoryT,
     ThemeElementTData,
 )
 
@@ -45,16 +46,12 @@ __all__ = [
 ]
 
 
-# Type hints
-Numeric: Union[int, float]
-ThemeElementColorValue: Union[tuple[Numeric, Optional[Numeric], Optional[Numeric], Optional[Numeric]], None]
-ThemeElementStyleValue: Union[tuple[Numeric, Optional[Numeric]], None]
-ThemeElement: Union[
-    "_ThemeElementT",
-    "CoreThemeElement",
-    "NodeThemeElement",
-    "PlotThemeElement",
-]
+# Type aliases
+Numeric               : TypeAlias = int | float
+ThemeElementColorValue: TypeAlias = tuple[Numeric, Optional[Numeric], Optional[Numeric], Optional[Numeric]] | None
+ThemeElementStyleValue: TypeAlias = tuple[Numeric, Optional[Numeric]] | None
+ThemeElement          : TypeAlias = ThemeCategoryCore | ThemeCategoryNode | ThemeCategoryPlot
+
 
 
 
@@ -266,7 +263,7 @@ class ThemeComponent(Item):
         super().__init_subclass__()
         element_aliases = cls.__element_aliases = {}
         for attr in dir(cls):
-            if attr.startswith("_") or not isinstance((enum_member := getattr(cls, attr)), _ThemeElementT):
+            if attr.startswith("_") or not isinstance((enum_member := getattr(cls, attr)), _ThemeCategoryT):
                 continue
             # Applicable class attributes are bound as elements (equivelent to calling
             # `bind` but stored on the class).
@@ -345,7 +342,7 @@ class ThemeComponent(Item):
         element_data: ThemeElementTData = target.value
         value = list(value)
 
-        number_of_vals = element_data.values
+        number_of_vals = element_data.components
         new_vals_len = len(value)
 
         if new_vals_len > number_of_vals:
@@ -425,7 +422,7 @@ class ThemeComponent(Item):
                     f"{attribute!r} is already bound to an element and can't be set.")
             elif not isinstance(attribute, str):
                 raise TypeError(f"`str` expected for `attribute` parameter, got {type(attribute)!r}.")
-            elif not isinstance(element, _ThemeElementT):
+            elif not isinstance(element, _ThemeCategoryT):
                 raise TypeError(f"`ThemeElement` expected for `element` parameter, got {type(attribute)!r}.")
             element_aliases[attribute] = element
             element_uuids.setdefault(element, None)
@@ -454,176 +451,190 @@ class ThemeColorComponent(ThemeComponent):
     """A theme component with pre-bound elements that affect
     color for all theme categories.
     """
-    border                   : ThemeElementColorValue = CoreThemeElement.Border                
-    border_shadow            : ThemeElementColorValue = CoreThemeElement.BorderShadow          
-    button                   : ThemeElementColorValue = CoreThemeElement.Button                
-    button_active            : ThemeElementColorValue = CoreThemeElement.ButtonActive          
-    button_hovered           : ThemeElementColorValue = CoreThemeElement.ButtonHovered         
-    check_mark               : ThemeElementColorValue = CoreThemeElement.CheckMark             
-    child_bg                 : ThemeElementColorValue = CoreThemeElement.ChildBg               
-    docking_empty_bg         : ThemeElementColorValue = CoreThemeElement.DockingEmptyBg        
-    docking_preview          : ThemeElementColorValue = CoreThemeElement.DockingPreview        
-    drag_drop_target         : ThemeElementColorValue = CoreThemeElement.DragDropTarget        
-    frame_bg                 : ThemeElementColorValue = CoreThemeElement.FrameBg               
-    frame_bg_active          : ThemeElementColorValue = CoreThemeElement.FrameBgActive         
-    frame_bg_hovered         : ThemeElementColorValue = CoreThemeElement.FrameBgHovered        
-    header                   : ThemeElementColorValue = CoreThemeElement.Header                
-    header_active            : ThemeElementColorValue = CoreThemeElement.HeaderActive          
-    header_hovered           : ThemeElementColorValue = CoreThemeElement.HeaderHovered         
-    menu_bar_bg              : ThemeElementColorValue = CoreThemeElement.MenuBarBg             
-    modal_window_dim_bg      : ThemeElementColorValue = CoreThemeElement.ModalWindowDimBg      
-    nav_highlight            : ThemeElementColorValue = CoreThemeElement.NavHighlight          
-    nav_windowing_dim_bg     : ThemeElementColorValue = CoreThemeElement.NavWindowingDimBg     
-    nav_windowing_highlight  : ThemeElementColorValue = CoreThemeElement.NavWindowingHighlight 
-    plot_histogram           : ThemeElementColorValue = CoreThemeElement.PlotHistogram         
-    plot_histogram_hovered   : ThemeElementColorValue = CoreThemeElement.PlotHistogramHovered  
-    plot_lines               : ThemeElementColorValue = CoreThemeElement.PlotLines             
-    plot_lines_hovered       : ThemeElementColorValue = CoreThemeElement.PlotLinesHovered      
-    popup_bg                 : ThemeElementColorValue = CoreThemeElement.PopupBg               
-    resize_grip              : ThemeElementColorValue = CoreThemeElement.ResizeGrip            
-    resize_grip_active       : ThemeElementColorValue = CoreThemeElement.ResizeGripActive      
-    resize_grip_hovered      : ThemeElementColorValue = CoreThemeElement.ResizeGripHovered     
-    scrollbar_bg             : ThemeElementColorValue = CoreThemeElement.ScrollbarBg           
-    scrollbar_grab           : ThemeElementColorValue = CoreThemeElement.ScrollbarGrab         
-    scrollbar_grab_active    : ThemeElementColorValue = CoreThemeElement.ScrollbarGrabActive   
-    scrollbar_grab_hovered   : ThemeElementColorValue = CoreThemeElement.ScrollbarGrabHovered  
-    separator                : ThemeElementColorValue = CoreThemeElement.Separator             
-    separator_active         : ThemeElementColorValue = CoreThemeElement.SeparatorActive       
-    separator_hovered        : ThemeElementColorValue = CoreThemeElement.SeparatorHovered      
-    slider_grab              : ThemeElementColorValue = CoreThemeElement.SliderGrab            
-    slider_grab_active       : ThemeElementColorValue = CoreThemeElement.SliderGrabActive      
-    tab                      : ThemeElementColorValue = CoreThemeElement.Tab                   
-    tab_active               : ThemeElementColorValue = CoreThemeElement.TabActive             
-    tab_hovered              : ThemeElementColorValue = CoreThemeElement.TabHovered            
-    tab_unfocused            : ThemeElementColorValue = CoreThemeElement.TabUnfocused          
-    tab_unfocused_active     : ThemeElementColorValue = CoreThemeElement.TabUnfocusedActive    
-    table_border_light       : ThemeElementColorValue = CoreThemeElement.TableBorderLight      
-    table_border_strong      : ThemeElementColorValue = CoreThemeElement.TableBorderStrong     
-    table_header_bg          : ThemeElementColorValue = CoreThemeElement.TableHeaderBg         
-    table_row_bg             : ThemeElementColorValue = CoreThemeElement.TableRowBg            
-    table_row_bg_alt         : ThemeElementColorValue = CoreThemeElement.TableRowBgAlt         
-    text                     : ThemeElementColorValue = CoreThemeElement.Text                  
-    text_disabled            : ThemeElementColorValue = CoreThemeElement.TextDisabled          
-    text_selected_bg         : ThemeElementColorValue = CoreThemeElement.TextSelectedBg        
-    title_bg                 : ThemeElementColorValue = CoreThemeElement.TitleBg               
-    title_bg_active          : ThemeElementColorValue = CoreThemeElement.TitleBgActive         
-    title_bg_collapsed       : ThemeElementColorValue = CoreThemeElement.TitleBgCollapsed      
-    window_bg                : ThemeElementColorValue = CoreThemeElement.WindowBg           
+    border                       : ThemeElementColorValue = ThemeCategoryCore.Border                
+    border_shadow                : ThemeElementColorValue = ThemeCategoryCore.BorderShadow          
+    button                       : ThemeElementColorValue = ThemeCategoryCore.Button                
+    button_active                : ThemeElementColorValue = ThemeCategoryCore.ButtonActive          
+    button_hovered               : ThemeElementColorValue = ThemeCategoryCore.ButtonHovered         
+    check_mark                   : ThemeElementColorValue = ThemeCategoryCore.CheckMark             
+    child_bg                     : ThemeElementColorValue = ThemeCategoryCore.ChildBg               
+    docking_empty_bg             : ThemeElementColorValue = ThemeCategoryCore.DockingEmptyBg        
+    docking_preview              : ThemeElementColorValue = ThemeCategoryCore.DockingPreview        
+    drag_drop_target             : ThemeElementColorValue = ThemeCategoryCore.DragDropTarget        
+    frame_bg                     : ThemeElementColorValue = ThemeCategoryCore.FrameBg               
+    frame_bg_active              : ThemeElementColorValue = ThemeCategoryCore.FrameBgActive         
+    frame_bg_hovered             : ThemeElementColorValue = ThemeCategoryCore.FrameBgHovered        
+    header                       : ThemeElementColorValue = ThemeCategoryCore.Header                
+    header_active                : ThemeElementColorValue = ThemeCategoryCore.HeaderActive          
+    header_hovered               : ThemeElementColorValue = ThemeCategoryCore.HeaderHovered         
+    menu_bar_bg                  : ThemeElementColorValue = ThemeCategoryCore.MenuBarBg             
+    modal_window_dim_bg          : ThemeElementColorValue = ThemeCategoryCore.ModalWindowDimBg      
+    nav_highlight                : ThemeElementColorValue = ThemeCategoryCore.NavHighlight          
+    nav_windowing_dim_bg         : ThemeElementColorValue = ThemeCategoryCore.NavWindowingDimBg     
+    nav_windowing_highlight      : ThemeElementColorValue = ThemeCategoryCore.NavWindowingHighlight 
+    plot_histogram               : ThemeElementColorValue = ThemeCategoryCore.PlotHistogram         
+    plot_histogram_hovered       : ThemeElementColorValue = ThemeCategoryCore.PlotHistogramHovered  
+    plot_lines                   : ThemeElementColorValue = ThemeCategoryCore.PlotLines             
+    plot_lines_hovered           : ThemeElementColorValue = ThemeCategoryCore.PlotLinesHovered      
+    popup_bg                     : ThemeElementColorValue = ThemeCategoryCore.PopupBg               
+    resize_grip                  : ThemeElementColorValue = ThemeCategoryCore.ResizeGrip            
+    resize_grip_active           : ThemeElementColorValue = ThemeCategoryCore.ResizeGripActive      
+    resize_grip_hovered          : ThemeElementColorValue = ThemeCategoryCore.ResizeGripHovered     
+    scrollbar_bg                 : ThemeElementColorValue = ThemeCategoryCore.ScrollbarBg           
+    scrollbar_grab               : ThemeElementColorValue = ThemeCategoryCore.ScrollbarGrab         
+    scrollbar_grab_active        : ThemeElementColorValue = ThemeCategoryCore.ScrollbarGrabActive   
+    scrollbar_grab_hovered       : ThemeElementColorValue = ThemeCategoryCore.ScrollbarGrabHovered  
+    separator                    : ThemeElementColorValue = ThemeCategoryCore.Separator             
+    separator_active             : ThemeElementColorValue = ThemeCategoryCore.SeparatorActive       
+    separator_hovered            : ThemeElementColorValue = ThemeCategoryCore.SeparatorHovered      
+    slider_grab                  : ThemeElementColorValue = ThemeCategoryCore.SliderGrab            
+    slider_grab_active           : ThemeElementColorValue = ThemeCategoryCore.SliderGrabActive      
+    tab                          : ThemeElementColorValue = ThemeCategoryCore.Tab                   
+    tab_active                   : ThemeElementColorValue = ThemeCategoryCore.TabActive             
+    tab_hovered                  : ThemeElementColorValue = ThemeCategoryCore.TabHovered            
+    tab_unfocused                : ThemeElementColorValue = ThemeCategoryCore.TabUnfocused          
+    tab_unfocused_active         : ThemeElementColorValue = ThemeCategoryCore.TabUnfocusedActive    
+    table_border_light           : ThemeElementColorValue = ThemeCategoryCore.TableBorderLight      
+    table_border_strong          : ThemeElementColorValue = ThemeCategoryCore.TableBorderStrong     
+    table_header_bg              : ThemeElementColorValue = ThemeCategoryCore.TableHeaderBg         
+    table_row_bg                 : ThemeElementColorValue = ThemeCategoryCore.TableRowBg            
+    table_row_bg_alt             : ThemeElementColorValue = ThemeCategoryCore.TableRowBgAlt         
+    text                         : ThemeElementColorValue = ThemeCategoryCore.Text                  
+    text_disabled                : ThemeElementColorValue = ThemeCategoryCore.TextDisabled          
+    text_selected_bg             : ThemeElementColorValue = ThemeCategoryCore.TextSelectedBg        
+    title_bg                     : ThemeElementColorValue = ThemeCategoryCore.TitleBg               
+    title_bg_active              : ThemeElementColorValue = ThemeCategoryCore.TitleBgActive         
+    title_bg_collapsed           : ThemeElementColorValue = ThemeCategoryCore.TitleBgCollapsed      
+    window_bg                    : ThemeElementColorValue = ThemeCategoryCore.WindowBg           
 
-    node_bg                  : ThemeElementColorValue = NodeThemeElement.NodeBackground        
-    node_bg_hovered          : ThemeElementColorValue = NodeThemeElement.NodeBackgroundHovered 
-    node_bg_selected         : ThemeElementColorValue = NodeThemeElement.NodeBackgroundSelected
-    node_box_selector        : ThemeElementColorValue = NodeThemeElement.BoxSelector           
-    node_box_selector_outline: ThemeElementColorValue = NodeThemeElement.BoxSelectorOutline    
-    node_grid_bg             : ThemeElementColorValue = NodeThemeElement.GridBackground        
-    node_grid_line           : ThemeElementColorValue = NodeThemeElement.GridLine              
-    node_link                : ThemeElementColorValue = NodeThemeElement.Link                  
-    node_link_hovered        : ThemeElementColorValue = NodeThemeElement.LinkHovered           
-    node_link_selected       : ThemeElementColorValue = NodeThemeElement.LinkSelected          
-    node_outline             : ThemeElementColorValue = NodeThemeElement.NodeOutline           
-    node_pin                 : ThemeElementColorValue = NodeThemeElement.Pin                   
-    node_pin_hovered         : ThemeElementColorValue = NodeThemeElement.PinHovered            
-    node_title_bar           : ThemeElementColorValue = NodeThemeElement.TitleBar              
-    node_title_bar_hovered   : ThemeElementColorValue = NodeThemeElement.TitleBarHovered       
-    node_title_bar_selected  : ThemeElementColorValue = NodeThemeElement.TitleBarSelected      
+    node_bg                      : ThemeElementColorValue = ThemeCategoryNode.NodeBackground        
+    node_bg_hovered              : ThemeElementColorValue = ThemeCategoryNode.NodeBackgroundHovered 
+    node_bg_selected             : ThemeElementColorValue = ThemeCategoryNode.NodeBackgroundSelected
+    node_box_selector            : ThemeElementColorValue = ThemeCategoryNode.BoxSelector           
+    node_box_selector_outline    : ThemeElementColorValue = ThemeCategoryNode.BoxSelectorOutline    
+    node_grid_bg                 : ThemeElementColorValue = ThemeCategoryNode.GridBackground        
+    node_grid_line               : ThemeElementColorValue = ThemeCategoryNode.GridLine   
+    node_grid_line_primary       : ThemeElementColorValue = ThemeCategoryNode.GridLinePrimary        
+    node_link                    : ThemeElementColorValue = ThemeCategoryNode.Link                  
+    node_link_hovered            : ThemeElementColorValue = ThemeCategoryNode.LinkHovered           
+    node_link_selected           : ThemeElementColorValue = ThemeCategoryNode.LinkSelected          
+    node_outline                 : ThemeElementColorValue = ThemeCategoryNode.NodeOutline 
+    node_minimap_bg              : ThemeElementColorValue = ThemeCategoryNode.MiniMapBackground
+    node_minimap_bg_hovered      : ThemeElementColorValue = ThemeCategoryNode.MiniMapBackgroundHovered
+    node_minimap_outline         : ThemeElementColorValue = ThemeCategoryNode.MiniMapOutline
+    node_minimap_outline_hovered : ThemeElementColorValue = ThemeCategoryNode.MiniMapOutlineHovered
+    node_minimap_node_bg         : ThemeElementColorValue = ThemeCategoryNode.MiniMapNodeBackground
+    node_minimap_node_bg_hovered : ThemeElementColorValue = ThemeCategoryNode.MiniMapNodeBackgroundHovered
+    node_minimap_node_bg_selected: ThemeElementColorValue = ThemeCategoryNode.MiniMapNodeBackgroundSelected
+    node_minimap_node_outline    : ThemeElementColorValue = ThemeCategoryNode.MiniMapNodeOutline
+    node_minimap_link            : ThemeElementColorValue = ThemeCategoryNode.MiniMapLink
+    node_minimap_link_selected   : ThemeElementColorValue = ThemeCategoryNode.MiniMapLinkSelected
+    node_minimap_canvas          : ThemeElementColorValue = ThemeCategoryNode.MiniMapCanvas
+    node_minimap_canvas_outline  : ThemeElementColorValue = ThemeCategoryNode.MiniMapCanvasOutline
+    node_pin                     : ThemeElementColorValue = ThemeCategoryNode.Pin                   
+    node_pin_hovered             : ThemeElementColorValue = ThemeCategoryNode.PinHovered            
+    node_title_bar               : ThemeElementColorValue = ThemeCategoryNode.TitleBar              
+    node_title_bar_hovered       : ThemeElementColorValue = ThemeCategoryNode.TitleBarHovered       
+    node_title_bar_selected      : ThemeElementColorValue = ThemeCategoryNode.TitleBarSelected      
     
-    plot_bg                  : ThemeElementColorValue = PlotThemeElement.PlotBg                
-    plot_border              : ThemeElementColorValue = PlotThemeElement.PlotBorder            
-    plot_crosshairs          : ThemeElementColorValue = PlotThemeElement.Crosshairs            
-    plot_error_bar           : ThemeElementColorValue = PlotThemeElement.ErrorBar              
-    plot_fill                : ThemeElementColorValue = PlotThemeElement.Fill                  
-    plot_frame_bg            : ThemeElementColorValue = PlotThemeElement.FrameBg               
-    plot_inlay_text          : ThemeElementColorValue = PlotThemeElement.InlayText             
-    plot_legend_bg           : ThemeElementColorValue = PlotThemeElement.LegendBg              
-    plot_legend_border       : ThemeElementColorValue = PlotThemeElement.LegendBorder          
-    plot_legend_text         : ThemeElementColorValue = PlotThemeElement.LegendText            
-    plot_line                : ThemeElementColorValue = PlotThemeElement.Line                  
-    plot_marker_fill         : ThemeElementColorValue = PlotThemeElement.MarkerFill            
-    plot_marker_outline      : ThemeElementColorValue = PlotThemeElement.MarkerOutline         
-    plot_query               : ThemeElementColorValue = PlotThemeElement.Query                 
-    plot_selection           : ThemeElementColorValue = PlotThemeElement.Selection             
-    plot_title_text          : ThemeElementColorValue = PlotThemeElement.TitleText             
-    plot_x_axis              : ThemeElementColorValue = PlotThemeElement.XAxis                 
-    plot_x_axis_grid         : ThemeElementColorValue = PlotThemeElement.XAxisGrid             
-    plot_y_axis              : ThemeElementColorValue = PlotThemeElement.YAxis                 
-    plot_y_axis2             : ThemeElementColorValue = PlotThemeElement.YAxis2                
-    plot_y_axis3             : ThemeElementColorValue = PlotThemeElement.YAxis3                
-    plot_y_axis_grid         : ThemeElementColorValue = PlotThemeElement.YAxisGrid             
-    plot_y_axis_grid2        : ThemeElementColorValue = PlotThemeElement.YAxisGrid2            
-    plot_y_axis_grid3        : ThemeElementColorValue = PlotThemeElement.YAxisGrid3 
+    plot_bg                      : ThemeElementColorValue = ThemeCategoryPlot.PlotBg                
+    plot_border                  : ThemeElementColorValue = ThemeCategoryPlot.PlotBorder            
+    plot_crosshairs              : ThemeElementColorValue = ThemeCategoryPlot.Crosshairs            
+    plot_error_bar               : ThemeElementColorValue = ThemeCategoryPlot.ErrorBar              
+    plot_fill                    : ThemeElementColorValue = ThemeCategoryPlot.Fill                  
+    plot_frame_bg                : ThemeElementColorValue = ThemeCategoryPlot.FrameBg               
+    plot_inlay_text              : ThemeElementColorValue = ThemeCategoryPlot.InlayText             
+    plot_legend_bg               : ThemeElementColorValue = ThemeCategoryPlot.LegendBg              
+    plot_legend_border           : ThemeElementColorValue = ThemeCategoryPlot.LegendBorder          
+    plot_legend_text             : ThemeElementColorValue = ThemeCategoryPlot.LegendText            
+    plot_line                    : ThemeElementColorValue = ThemeCategoryPlot.Line                  
+    plot_marker_fill             : ThemeElementColorValue = ThemeCategoryPlot.MarkerFill            
+    plot_marker_outline          : ThemeElementColorValue = ThemeCategoryPlot.MarkerOutline         
+    plot_query                   : ThemeElementColorValue = ThemeCategoryPlot.Query                 
+    plot_selection               : ThemeElementColorValue = ThemeCategoryPlot.Selection             
+    plot_title_text              : ThemeElementColorValue = ThemeCategoryPlot.TitleText             
+    plot_x_axis                  : ThemeElementColorValue = ThemeCategoryPlot.XAxis                 
+    plot_x_axis_grid             : ThemeElementColorValue = ThemeCategoryPlot.XAxisGrid             
+    plot_y_axis                  : ThemeElementColorValue = ThemeCategoryPlot.YAxis                 
+    plot_y_axis2                 : ThemeElementColorValue = ThemeCategoryPlot.YAxis2                
+    plot_y_axis3                 : ThemeElementColorValue = ThemeCategoryPlot.YAxis3                
+    plot_y_axis_grid             : ThemeElementColorValue = ThemeCategoryPlot.YAxisGrid             
+    plot_y_axis_grid2            : ThemeElementColorValue = ThemeCategoryPlot.YAxisGrid2            
+    plot_y_axis_grid3            : ThemeElementColorValue = ThemeCategoryPlot.YAxisGrid3 
 
 
 class ThemeStyleComponent(ThemeComponent):
     """A theme component with pre-bound elements that affect
     styling for all theme categories.
     """
-    alpha                             : ThemeElementStyleValue = CoreThemeElement.Alpha                    
-    button_text_align                 : ThemeElementStyleValue = CoreThemeElement.ButtonTextAlign          
-    cell_padding                      : ThemeElementStyleValue = CoreThemeElement.CellPadding              
-    child_border_size                 : ThemeElementStyleValue = CoreThemeElement.ChildBorderSize          
-    child_rounding                    : ThemeElementStyleValue = CoreThemeElement.ChildRounding            
-    frame_border_size                 : ThemeElementStyleValue = CoreThemeElement.FrameBorderSize          
-    frame_padding                     : ThemeElementStyleValue = CoreThemeElement.FramePadding             
-    frame_rounding                    : ThemeElementStyleValue = CoreThemeElement.FrameRounding            
-    grab_min_size                     : ThemeElementStyleValue = CoreThemeElement.GrabMinSize              
-    grab_rounding                     : ThemeElementStyleValue = CoreThemeElement.GrabRounding             
-    indent_spacing                    : ThemeElementStyleValue = CoreThemeElement.IndentSpacing            
-    item_inner_spacing                : ThemeElementStyleValue = CoreThemeElement.ItemInnerSpacing         
-    item_spacing                      : ThemeElementStyleValue = CoreThemeElement.ItemSpacing              
-    popup_border_size                 : ThemeElementStyleValue = CoreThemeElement.PopupBorderSize          
-    popup_rounding                    : ThemeElementStyleValue = CoreThemeElement.PopupRounding            
-    scrollbar_rounding                : ThemeElementStyleValue = CoreThemeElement.ScrollbarRounding        
-    scrollbar_size                    : ThemeElementStyleValue = CoreThemeElement.ScrollbarSize            
-    selectable_text_align             : ThemeElementStyleValue = CoreThemeElement.SelectableTextAlign      
-    tab_rounding                      : ThemeElementStyleValue = CoreThemeElement.TabRounding              
-    window_border_size                : ThemeElementStyleValue = CoreThemeElement.WindowBorderSize         
-    window_min_size                   : ThemeElementStyleValue = CoreThemeElement.WindowMinSize            
-    window_padding                    : ThemeElementStyleValue = CoreThemeElement.WindowPadding            
-    window_rounding                   : ThemeElementStyleValue = CoreThemeElement.WindowRounding           
-    window_title_align                : ThemeElementStyleValue = CoreThemeElement.WindowTitleAlign  
+    alpha                             : ThemeElementStyleValue = ThemeCategoryCore.Alpha                    
+    button_text_align                 : ThemeElementStyleValue = ThemeCategoryCore.ButtonTextAlign          
+    cell_padding                      : ThemeElementStyleValue = ThemeCategoryCore.CellPadding              
+    child_border_size                 : ThemeElementStyleValue = ThemeCategoryCore.ChildBorderSize          
+    child_rounding                    : ThemeElementStyleValue = ThemeCategoryCore.ChildRounding            
+    frame_border_size                 : ThemeElementStyleValue = ThemeCategoryCore.FrameBorderSize          
+    frame_padding                     : ThemeElementStyleValue = ThemeCategoryCore.FramePadding             
+    frame_rounding                    : ThemeElementStyleValue = ThemeCategoryCore.FrameRounding            
+    grab_min_size                     : ThemeElementStyleValue = ThemeCategoryCore.GrabMinSize              
+    grab_rounding                     : ThemeElementStyleValue = ThemeCategoryCore.GrabRounding             
+    indent_spacing                    : ThemeElementStyleValue = ThemeCategoryCore.IndentSpacing            
+    item_inner_spacing                : ThemeElementStyleValue = ThemeCategoryCore.ItemInnerSpacing         
+    item_spacing                      : ThemeElementStyleValue = ThemeCategoryCore.ItemSpacing              
+    popup_border_size                 : ThemeElementStyleValue = ThemeCategoryCore.PopupBorderSize          
+    popup_rounding                    : ThemeElementStyleValue = ThemeCategoryCore.PopupRounding            
+    scrollbar_rounding                : ThemeElementStyleValue = ThemeCategoryCore.ScrollbarRounding        
+    scrollbar_size                    : ThemeElementStyleValue = ThemeCategoryCore.ScrollbarSize            
+    selectable_text_align             : ThemeElementStyleValue = ThemeCategoryCore.SelectableTextAlign      
+    tab_rounding                      : ThemeElementStyleValue = ThemeCategoryCore.TabRounding              
+    window_border_size                : ThemeElementStyleValue = ThemeCategoryCore.WindowBorderSize         
+    window_min_size                   : ThemeElementStyleValue = ThemeCategoryCore.WindowMinSize            
+    window_padding                    : ThemeElementStyleValue = ThemeCategoryCore.WindowPadding            
+    window_rounding                   : ThemeElementStyleValue = ThemeCategoryCore.WindowRounding           
+    window_title_align                : ThemeElementStyleValue = ThemeCategoryCore.WindowTitleAlign  
 
-    node_border_thickness             : ThemeElementStyleValue = NodeThemeElement.NodeBorderThickness      
-    node_corner_rounding              : ThemeElementStyleValue = NodeThemeElement.NodeCornerRounding       
-    node_grid_spacing                 : ThemeElementStyleValue = NodeThemeElement.GridSpacing              
-    node_link_hover_distance          : ThemeElementStyleValue = NodeThemeElement.LinkHoverDistance        
-    node_link_line_segments_per_length: ThemeElementStyleValue = NodeThemeElement.LinkLineSegmentsPerLength
-    node_link_thickness               : ThemeElementStyleValue = NodeThemeElement.LinkThickness            
-    node_padding_horizontal           : ThemeElementStyleValue = NodeThemeElement.NodePaddingHorizontal    
-    node_padding_vertical             : ThemeElementStyleValue = NodeThemeElement.NodePaddingVertical      
-    node_pin_circle_radius            : ThemeElementStyleValue = NodeThemeElement.PinCircleRadius          
-    node_pin_hover_radius             : ThemeElementStyleValue = NodeThemeElement.PinHoverRadius           
-    node_pin_line_thickness           : ThemeElementStyleValue = NodeThemeElement.LinkThickness            
-    node_pin_offset                   : ThemeElementStyleValue = NodeThemeElement.PinOffset                
-    node_pin_quad_side_length         : ThemeElementStyleValue = NodeThemeElement.PinQuadSideLength        
-    node_pin_triangle_side_length     : ThemeElementStyleValue = NodeThemeElement.PinTriangleSideLength
+    node_border_thickness             : ThemeElementStyleValue = ThemeCategoryNode.NodeBorderThickness      
+    node_corner_rounding              : ThemeElementStyleValue = ThemeCategoryNode.NodeCornerRounding       
+    node_grid_spacing                 : ThemeElementStyleValue = ThemeCategoryNode.GridSpacing              
+    node_link_hover_distance          : ThemeElementStyleValue = ThemeCategoryNode.LinkHoverDistance        
+    node_link_line_segments_per_length: ThemeElementStyleValue = ThemeCategoryNode.LinkLineSegmentsPerLength
+    node_link_thickness               : ThemeElementStyleValue = ThemeCategoryNode.LinkThickness            
+    node_padding                      : ThemeElementStyleValue = ThemeCategoryNode.NodePadding   
+    node_minimap_padding              : ThemeElementStyleValue = ThemeCategoryNode.MiniMapPadding
+    node_minimap_offset               : ThemeElementStyleValue = ThemeCategoryNode.MiniMapOffset
+    node_pin_circle_radius            : ThemeElementStyleValue = ThemeCategoryNode.PinCircleRadius          
+    node_pin_hover_radius             : ThemeElementStyleValue = ThemeCategoryNode.PinHoverRadius           
+    node_pin_line_thickness           : ThemeElementStyleValue = ThemeCategoryNode.LinkThickness            
+    node_pin_offset                   : ThemeElementStyleValue = ThemeCategoryNode.PinOffset                
+    node_pin_quad_side_length         : ThemeElementStyleValue = ThemeCategoryNode.PinQuadSideLength        
+    node_pin_triangle_side_length     : ThemeElementStyleValue = ThemeCategoryNode.PinTriangleSideLength
 
-    plot_annotation_padding           : ThemeElementStyleValue = PlotThemeElement.AnnotationPadding        
-    plot_border_size                  : ThemeElementStyleValue = PlotThemeElement.PlotBorderSize           
-    plot_default_size                 : ThemeElementStyleValue = PlotThemeElement.PlotDefaultSize          
-    plot_digital_bit_gap              : ThemeElementStyleValue = PlotThemeElement.DigitalBitGap            
-    plot_digital_bit_height           : ThemeElementStyleValue = PlotThemeElement.DigitalBitHeight         
-    plot_error_bar_size               : ThemeElementStyleValue = PlotThemeElement.ErrorBarSize             
-    plot_error_bar_weight             : ThemeElementStyleValue = PlotThemeElement.ErrorBarWeight           
-    plot_fill_alpha                   : ThemeElementStyleValue = PlotThemeElement.FillAlpha                
-    plot_fit_padding                  : ThemeElementStyleValue = PlotThemeElement.FitPadding               
-    plot_label_padding                : ThemeElementStyleValue = PlotThemeElement.LabelPadding             
-    plot_legend_inner_padding         : ThemeElementStyleValue = PlotThemeElement.LegendInnerPadding       
-    plot_legend_padding               : ThemeElementStyleValue = PlotThemeElement.LegendPadding            
-    plot_legend_spacing               : ThemeElementStyleValue = PlotThemeElement.LegendSpacing            
-    plot_line_weight                  : ThemeElementStyleValue = PlotThemeElement.LineWeight               
-    plot_major_grid_size              : ThemeElementStyleValue = PlotThemeElement.MajorGridSize            
-    plot_major_tick_len               : ThemeElementStyleValue = PlotThemeElement.MajorTickLen             
-    plot_major_tick_size              : ThemeElementStyleValue = PlotThemeElement.MajorTickSize            
-    plot_marker                       : ThemeElementStyleValue = PlotThemeElement.Marker                   
-    plot_marker_size                  : ThemeElementStyleValue = PlotThemeElement.MarkerSize               
-    plot_marker_weight                : ThemeElementStyleValue = PlotThemeElement.MarkerWeight             
-    plot_min_size                     : ThemeElementStyleValue = PlotThemeElement.PlotMinSize              
-    plot_minor_alpha                  : ThemeElementStyleValue = PlotThemeElement.MinorAlpha               
-    plot_minor_grid_size              : ThemeElementStyleValue = PlotThemeElement.MinorGridSize            
-    plot_minor_tick_len               : ThemeElementStyleValue = PlotThemeElement.MinorTickLen             
-    plot_minor_tick_size              : ThemeElementStyleValue = PlotThemeElement.MinorTickSize            
-    plot_mouse_pos_padding            : ThemeElementStyleValue = PlotThemeElement.MousePosPadding          
-    plot_padding                      : ThemeElementStyleValue = PlotThemeElement.PlotPadding  
+    plot_annotation_padding           : ThemeElementStyleValue = ThemeCategoryPlot.AnnotationPadding        
+    plot_border_size                  : ThemeElementStyleValue = ThemeCategoryPlot.PlotBorderSize           
+    plot_default_size                 : ThemeElementStyleValue = ThemeCategoryPlot.PlotDefaultSize          
+    plot_digital_bit_gap              : ThemeElementStyleValue = ThemeCategoryPlot.DigitalBitGap            
+    plot_digital_bit_height           : ThemeElementStyleValue = ThemeCategoryPlot.DigitalBitHeight         
+    plot_error_bar_size               : ThemeElementStyleValue = ThemeCategoryPlot.ErrorBarSize             
+    plot_error_bar_weight             : ThemeElementStyleValue = ThemeCategoryPlot.ErrorBarWeight           
+    plot_fill_alpha                   : ThemeElementStyleValue = ThemeCategoryPlot.FillAlpha                
+    plot_fit_padding                  : ThemeElementStyleValue = ThemeCategoryPlot.FitPadding               
+    plot_label_padding                : ThemeElementStyleValue = ThemeCategoryPlot.LabelPadding             
+    plot_legend_inner_padding         : ThemeElementStyleValue = ThemeCategoryPlot.LegendInnerPadding       
+    plot_legend_padding               : ThemeElementStyleValue = ThemeCategoryPlot.LegendPadding            
+    plot_legend_spacing               : ThemeElementStyleValue = ThemeCategoryPlot.LegendSpacing            
+    plot_line_weight                  : ThemeElementStyleValue = ThemeCategoryPlot.LineWeight               
+    plot_major_grid_size              : ThemeElementStyleValue = ThemeCategoryPlot.MajorGridSize            
+    plot_major_tick_len               : ThemeElementStyleValue = ThemeCategoryPlot.MajorTickLen             
+    plot_major_tick_size              : ThemeElementStyleValue = ThemeCategoryPlot.MajorTickSize            
+    plot_marker                       : ThemeElementStyleValue = ThemeCategoryPlot.Marker                   
+    plot_marker_size                  : ThemeElementStyleValue = ThemeCategoryPlot.MarkerSize               
+    plot_marker_weight                : ThemeElementStyleValue = ThemeCategoryPlot.MarkerWeight             
+    plot_min_size                     : ThemeElementStyleValue = ThemeCategoryPlot.PlotMinSize              
+    plot_minor_alpha                  : ThemeElementStyleValue = ThemeCategoryPlot.MinorAlpha               
+    plot_minor_grid_size              : ThemeElementStyleValue = ThemeCategoryPlot.MinorGridSize            
+    plot_minor_tick_len               : ThemeElementStyleValue = ThemeCategoryPlot.MinorTickLen             
+    plot_minor_tick_size              : ThemeElementStyleValue = ThemeCategoryPlot.MinorTickSize            
+    plot_mouse_pos_padding            : ThemeElementStyleValue = ThemeCategoryPlot.MousePosPadding          
+    plot_padding                      : ThemeElementStyleValue = ThemeCategoryPlot.PlotPadding  
 
 
 
