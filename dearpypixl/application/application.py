@@ -31,7 +31,7 @@ from dearpypixl.application import AppItem, AppAttribute
 from dearpypixl.constants import AppUUID, ViewportUUID, Key
 from dearpypixl.components import Item, item_attribute, Theme, ProtoItem
 from dearpypixl.components.configuration import CONFIGURATION, INFORMATION, STATE
-from dearpypixl.themes import dearpygui_internal_theme
+from dearpypixl.themes import dearpygui_internal
 if sys.platform == "win32":
     from dearpypixl.platforms import windows
 
@@ -438,4 +438,4 @@ class Application(AppItem):
     _dpi_aware = classmethod(_dpi_aware)
 
 
-Application.theme = dearpygui_internal_theme
+Application.theme = dearpygui_internal

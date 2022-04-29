@@ -1,9 +1,23 @@
-from dearpypixl.components import Theme
+from dearpypixl.components.themes import (
+    Theme,
+    ThemeComponent,
+    ThemeColorComponent,
+    ThemeStyleComponent,
+    Font
+)
+
+__all__ = [
+    "Theme", 
+    "ThemeComponent",
+    "ThemeColorComponent",
+    "ThemeStyleComponent",
+    "Font",
+    # Pre-made themes
+    "dearpygui_internal",
+]
 
 
-
-
-with Theme("DEFAULT") as dearpygui_internal_theme:
+with Theme("DEFAULT") as dearpygui_internal:
     bg_color_normal     =  37,  37,  38, 255
     bg_color_light      =  82,  82,  85, 255
     bg_color_bright     =  90,  90,  95, 255
@@ -14,8 +28,8 @@ with Theme("DEFAULT") as dearpygui_internal_theme:
     text_color_disabled = 151, 151, 151, 255
     border_color        =  78,  78,  78, 255
 
-    t_color = dearpygui_internal_theme.color
-    t_style = dearpygui_internal_theme.style
+
+    t_color = dearpygui_internal.color
 
     t_color.border                             = border_color
     t_color.border_shadow                      = border_color
@@ -129,6 +143,8 @@ with Theme("DEFAULT") as dearpygui_internal_theme:
     t_color.plot_y_axis_grid3                  =   0,   0,   0, -255
 
 
+    t_style = dearpygui_internal.style
+
     t_style.alpha                              = 1.0
     t_style.button_text_align                  = 0.5, 0.5
     t_style.cell_padding                       =   4,   2
@@ -187,7 +203,7 @@ with Theme("DEFAULT") as dearpygui_internal_theme:
     t_style.plot_major_grid_size               = 1.0, 1.0
     t_style.plot_major_tick_len                =  10,  10
     t_style.plot_major_tick_size               = 1.0, 1.0
-    t_style.plot_marker                        =   0         # PlotMarker.DEFAULT
+    t_style.plot_marker                        =   0
     t_style.plot_marker_size                   = 4.0
     t_style.plot_marker_weight                 = 1.0
     t_style.plot_min_size                      = 200, 150
