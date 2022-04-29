@@ -1,11 +1,15 @@
 import dearpypixl.appitems.colors
 from dearpypixl.appitems.colors import *
+from dearpypixl.components.registries import ColorMapRegistry
 
 from typing import Union, Any
 from dearpygui import dearpygui
 
 
-__all__ = [*dearpypixl.appitems.colors.__all__]
+__all__ = [
+    *dearpypixl.appitems.colors.__all__,
+    "ColorMapRegistry"
+]
 
 
 class ColorMap(ColorMap):

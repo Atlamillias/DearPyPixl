@@ -13,7 +13,7 @@ from dearpypixl.components.items.registries import (
     TextureRegistry,
     ColorMapRegistry,
     TemplateRegistry,
-    FontRegistry,
+    FontRegistry,       # Unused
 )
 
 
@@ -242,30 +242,3 @@ class ItemEvents(Item):
     @_manage_handler(VisibleHandler)
     def on_visible(self, callback: Callable = None, *, user_data: Any = None, **kwargs) -> Callable:
         ...
-
-
-class ColorMapRegistry(ColorMapRegistry):
-    def __enter__(self):
-        _dearpygui.push_container_stack(self._tag)
-        return self
-
-    def __exit__(self, exc_type, exc_instance, traceback):
-        _dearpygui.pop_container_stack()
-
-
-class TemplateRegistry(TemplateRegistry):
-    def __enter__(self):
-        _dearpygui.push_container_stack(self._tag)
-        return self
-
-    def __exit__(self, exc_type, exc_instance, traceback):
-        _dearpygui.pop_container_stack()
-
-
-class TextureRegistry(TextureRegistry):
-    def __enter__(self):
-        _dearpygui.push_container_stack(self._tag)
-        return self
-
-    def __exit__(self, exc_type, exc_instance, traceback):
-        _dearpygui.pop_container_stack()
