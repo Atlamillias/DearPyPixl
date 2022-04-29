@@ -25,54 +25,54 @@ __all__ = [
 class Table(Widget):
     """Adds a table.
     
-    	Args:
-    		label (str, optional): Overrides 'name' as label.
-    		user_data (Any, optional): User data for callbacks
-    		use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
-    		tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-    		width (int, optional): Width of the item.
-    		height (int, optional): Height of the item.
-    		indent (int, optional): Offsets the widget to the right the specified number multiplied by the indent style.
-    		parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
-    		before (Union[int, str], optional): This item will be displayed before the specified item in the parent.
-    		source (Union[int, str], optional): Overrides 'id' as value storage key.
-    		callback (Callable, optional): Registers a callback.
-    		show (bool, optional): Attempt to render widget.
-    		pos (Union[List[int], Tuple[int, ...]], optional): Places the item relative to window coordinates, [0,0] is top left.
-    		filter_key (str, optional): Used by filter widget.
-    		delay_search (bool, optional): Delays searching container for specified items until the end of the app. Possible optimization when a container has many children that are not accessed often.
-    		header_row (bool, optional): show headers at the top of the columns
-    		clipper (bool, optional): Use clipper (rows must be same height).
-    		inner_width (int, optional): 
-    		policy (int, optional): 
-    		freeze_rows (int, optional): 
-    		freeze_columns (int, optional): 
-    		sort_multi (bool, optional): Hold shift when clicking headers to sort on multiple column.
-    		sort_tristate (bool, optional): Allow no sorting, disable default sorting.
-    		resizable (bool, optional): Enable resizing columns
-    		reorderable (bool, optional): Enable reordering columns in header row (need calling TableSetupColumn() + TableHeadersRow() to display headers)
-    		hideable (bool, optional): Enable hiding/disabling columns in context menu.
-    		sortable (bool, optional): Enable sorting. Call TableGetSortSpecs() to obtain sort specs. Also see ImGuiTableFlags_SortMulti and ImGuiTableFlags_SortTristate.
-    		context_menu_in_body (bool, optional): Right-click on columns body/contents will display table context menu. By default it is available in TableHeadersRow().
-    		row_background (bool, optional): Set each RowBg color with ImGuiCol_TableRowBg or ImGuiCol_TableRowBgAlt (equivalent of calling TableSetBgColor with ImGuiTableBgFlags_RowBg0 on each row manually)
-    		borders_innerH (bool, optional): Draw horizontal borders between rows.
-    		borders_outerH (bool, optional): Draw horizontal borders at the top and bottom.
-    		borders_innerV (bool, optional): Draw vertical borders between columns.
-    		borders_outerV (bool, optional): Draw vertical borders on the left and right sides.
-    		no_host_extendX (bool, optional): Make outer width auto-fit to columns, overriding outer_size.x value. Only available when ScrollX/ScrollY are disabled and Stretch columns are not used.
-    		no_host_extendY (bool, optional): Make outer height stop exactly at outer_size.y (prevent auto-extending table past the limit). Only available when ScrollX/ScrollY are disabled. Data below the limit will be clipped and not visible.
-    		no_keep_columns_visible (bool, optional): Disable keeping column always minimally visible when ScrollX is off and table gets too small. Not recommended if columns are resizable.
-    		precise_widths (bool, optional): Disable distributing remainder width to stretched columns (width allocation on a 100-wide table with 3 columns: Without this flag: 33,33,34. With this flag: 33,33,33). With larger number of columns, resizing will appear to be less smooth.
-    		no_clip (bool, optional): Disable clipping rectangle for every individual columns.
-    		pad_outerX (bool, optional): Default if BordersOuterV is on. Enable outer-most padding. Generally desirable if you have headers.
-    		no_pad_outerX (bool, optional): Default if BordersOuterV is off. Disable outer-most padding.
-    		no_pad_innerX (bool, optional): Disable inner padding between columns (double inner padding if BordersOuterV is on, single inner padding if BordersOuterV is off).
-    		scrollX (bool, optional): Enable horizontal scrolling. Require 'outer_size' parameter of BeginTable() to specify the container size. Changes default sizing policy. Because this create a child window, ScrollY is currently generally recommended when using ScrollX.
-    		scrollY (bool, optional): Enable vertical scrolling.
-    		no_saved_settings (bool, optional): Never load/save settings in .ini file.
-    		id (Union[int, str], optional): (deprecated) 
-    	Returns:
-    		Union[int, str]
+        Args:
+            label (str, optional): Overrides 'name' as label.
+            user_data (Any, optional): User data for callbacks
+            use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+            tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            width (int, optional): Width of the item.
+            height (int, optional): Height of the item.
+            indent (int, optional): Offsets the widget to the right the specified number multiplied by the indent style.
+            parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
+            before (Union[int, str], optional): This item will be displayed before the specified item in the parent.
+            source (Union[int, str], optional): Overrides 'id' as value storage key.
+            callback (Callable, optional): Registers a callback.
+            show (bool, optional): Attempt to render widget.
+            pos (Union[List[int], Tuple[int, ...]], optional): Places the item relative to window coordinates, [0,0] is top left.
+            filter_key (str, optional): Used by filter widget.
+            delay_search (bool, optional): Delays searching container for specified items until the end of the app. Possible optimization when a container has many children that are not accessed often.
+            header_row (bool, optional): show headers at the top of the columns
+            clipper (bool, optional): Use clipper (rows must be same height).
+            inner_width (int, optional): 
+            policy (int, optional): 
+            freeze_rows (int, optional): 
+            freeze_columns (int, optional): 
+            sort_multi (bool, optional): Hold shift when clicking headers to sort on multiple column.
+            sort_tristate (bool, optional): Allow no sorting, disable default sorting.
+            resizable (bool, optional): Enable resizing columns
+            reorderable (bool, optional): Enable reordering columns in header row (need calling TableSetupColumn() + TableHeadersRow() to display headers)
+            hideable (bool, optional): Enable hiding/disabling columns in context menu.
+            sortable (bool, optional): Enable sorting. Call TableGetSortSpecs() to obtain sort specs. Also see ImGuiTableFlags_SortMulti and ImGuiTableFlags_SortTristate.
+            context_menu_in_body (bool, optional): Right-click on columns body/contents will display table context menu. By default it is available in TableHeadersRow().
+            row_background (bool, optional): Set each RowBg color with ImGuiCol_TableRowBg or ImGuiCol_TableRowBgAlt (equivalent of calling TableSetBgColor with ImGuiTableBgFlags_RowBg0 on each row manually)
+            borders_innerH (bool, optional): Draw horizontal borders between rows.
+            borders_outerH (bool, optional): Draw horizontal borders at the top and bottom.
+            borders_innerV (bool, optional): Draw vertical borders between columns.
+            borders_outerV (bool, optional): Draw vertical borders on the left and right sides.
+            no_host_extendX (bool, optional): Make outer width auto-fit to columns, overriding outer_size.x value. Only available when ScrollX/ScrollY are disabled and Stretch columns are not used.
+            no_host_extendY (bool, optional): Make outer height stop exactly at outer_size.y (prevent auto-extending table past the limit). Only available when ScrollX/ScrollY are disabled. Data below the limit will be clipped and not visible.
+            no_keep_columns_visible (bool, optional): Disable keeping column always minimally visible when ScrollX is off and table gets too small. Not recommended if columns are resizable.
+            precise_widths (bool, optional): Disable distributing remainder width to stretched columns (width allocation on a 100-wide table with 3 columns: Without this flag: 33,33,34. With this flag: 33,33,33). With larger number of columns, resizing will appear to be less smooth.
+            no_clip (bool, optional): Disable clipping rectangle for every individual columns.
+            pad_outerX (bool, optional): Default if BordersOuterV is on. Enable outer-most padding. Generally desirable if you have headers.
+            no_pad_outerX (bool, optional): Default if BordersOuterV is off. Disable outer-most padding.
+            no_pad_innerX (bool, optional): Disable inner padding between columns (double inner padding if BordersOuterV is on, single inner padding if BordersOuterV is off).
+            scrollX (bool, optional): Enable horizontal scrolling. Require 'outer_size' parameter of BeginTable() to specify the container size. Changes default sizing policy. Because this create a child window, ScrollY is currently generally recommended when using ScrollX.
+            scrollY (bool, optional): Enable vertical scrolling.
+            no_saved_settings (bool, optional): Never load/save settings in .ini file.
+            id (Union[int, str], optional): (deprecated) 
+        Returns:
+            Union[int, str]
     """
 
     label                  : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                                                      
@@ -226,36 +226,36 @@ class Table(Widget):
 class TableColumn(Widget):
     """Adds a table column.
     
-    	Args:
-    		label (str, optional): Overrides 'name' as label.
-    		user_data (Any, optional): User data for callbacks
-    		use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
-    		tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-    		width (int, optional): Width of the item.
-    		parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
-    		before (Union[int, str], optional): This item will be displayed before the specified item in the parent.
-    		show (bool, optional): Attempt to render widget.
-    		enabled (bool, optional): Turns off functionality of widget and applies the disabled theme.
-    		init_width_or_weight (float, optional): 
-    		default_hide (bool, optional): Default as a hidden/disabled column.
-    		default_sort (bool, optional): Default as a sorting column.
-    		width_stretch (bool, optional): Column will stretch. Preferable with horizontal scrolling disabled (default if table sizing policy is _SizingStretchSame or _SizingStretchProp).
-    		width_fixed (bool, optional): Column will not stretch. Preferable with horizontal scrolling enabled (default if table sizing policy is _SizingFixedFit and table is resizable).
-    		no_resize (bool, optional): Disable manual resizing.
-    		no_reorder (bool, optional): Disable manual reordering this column, this will also prevent other columns from crossing over this column.
-    		no_hide (bool, optional): Disable ability to hide/disable this column.
-    		no_clip (bool, optional): Disable clipping for this column (all NoClip columns will render in a same draw command).
-    		no_sort (bool, optional): Disable ability to sort on this field (even if ImGuiTableFlags_Sortable is set on the table).
-    		no_sort_ascending (bool, optional): Disable ability to sort in the ascending direction.
-    		no_sort_descending (bool, optional): Disable ability to sort in the descending direction.
-    		no_header_width (bool, optional): Disable header text width contribution to automatic column width.
-    		prefer_sort_ascending (bool, optional): Make the initial sort direction Ascending when first sorting on this column (default).
-    		prefer_sort_descending (bool, optional): Make the initial sort direction Descending when first sorting on this column.
-    		indent_enable (bool, optional): Use current Indent value when entering cell (default for column 0).
-    		indent_disable (bool, optional): Ignore current Indent value when entering cell (default for columns > 0). Indentation changes _within_ the cell will still be honored.
-    		id (Union[int, str], optional): (deprecated) 
-    	Returns:
-    		Union[int, str]
+        Args:
+            label (str, optional): Overrides 'name' as label.
+            user_data (Any, optional): User data for callbacks
+            use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+            tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            width (int, optional): Width of the item.
+            parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
+            before (Union[int, str], optional): This item will be displayed before the specified item in the parent.
+            show (bool, optional): Attempt to render widget.
+            enabled (bool, optional): Turns off functionality of widget and applies the disabled theme.
+            init_width_or_weight (float, optional): 
+            default_hide (bool, optional): Default as a hidden/disabled column.
+            default_sort (bool, optional): Default as a sorting column.
+            width_stretch (bool, optional): Column will stretch. Preferable with horizontal scrolling disabled (default if table sizing policy is _SizingStretchSame or _SizingStretchProp).
+            width_fixed (bool, optional): Column will not stretch. Preferable with horizontal scrolling enabled (default if table sizing policy is _SizingFixedFit and table is resizable).
+            no_resize (bool, optional): Disable manual resizing.
+            no_reorder (bool, optional): Disable manual reordering this column, this will also prevent other columns from crossing over this column.
+            no_hide (bool, optional): Disable ability to hide/disable this column.
+            no_clip (bool, optional): Disable clipping for this column (all NoClip columns will render in a same draw command).
+            no_sort (bool, optional): Disable ability to sort on this field (even if ImGuiTableFlags_Sortable is set on the table).
+            no_sort_ascending (bool, optional): Disable ability to sort in the ascending direction.
+            no_sort_descending (bool, optional): Disable ability to sort in the descending direction.
+            no_header_width (bool, optional): Disable header text width contribution to automatic column width.
+            prefer_sort_ascending (bool, optional): Make the initial sort direction Ascending when first sorting on this column (default).
+            prefer_sort_descending (bool, optional): Make the initial sort direction Descending when first sorting on this column.
+            indent_enable (bool, optional): Use current Indent value when entering cell (default for column 0).
+            indent_disable (bool, optional): Ignore current Indent value when entering cell (default for columns > 0). Indentation changes _within_ the cell will still be honored.
+            id (Union[int, str], optional): (deprecated) 
+        Returns:
+            Union[int, str]
     """
 
     label                 : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
@@ -356,19 +356,19 @@ class TableColumn(Widget):
 class TableRow(Widget):
     """Adds a table row.
     
-    	Args:
-    		label (str, optional): Overrides 'name' as label.
-    		user_data (Any, optional): User data for callbacks
-    		use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
-    		tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-    		height (int, optional): Height of the item.
-    		parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
-    		before (Union[int, str], optional): This item will be displayed before the specified item in the parent.
-    		show (bool, optional): Attempt to render widget.
-    		filter_key (str, optional): Used by filter widget.
-    		id (Union[int, str], optional): (deprecated) 
-    	Returns:
-    		Union[int, str]
+        Args:
+            label (str, optional): Overrides 'name' as label.
+            user_data (Any, optional): User data for callbacks
+            use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+            tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            height (int, optional): Height of the item.
+            parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
+            before (Union[int, str], optional): This item will be displayed before the specified item in the parent.
+            show (bool, optional): Attempt to render widget.
+            filter_key (str, optional): Used by filter widget.
+            id (Union[int, str], optional): (deprecated) 
+        Returns:
+            Union[int, str]
     """
 
     label             : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
@@ -417,19 +417,19 @@ class TableRow(Widget):
 class TableCell(Widget):
     """Adds a table.
     
-    	Args:
-    		label (str, optional): Overrides 'name' as label.
-    		user_data (Any, optional): User data for callbacks
-    		use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
-    		tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-    		height (int, optional): Height of the item.
-    		parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
-    		before (Union[int, str], optional): This item will be displayed before the specified item in the parent.
-    		show (bool, optional): Attempt to render widget.
-    		filter_key (str, optional): Used by filter widget.
-    		id (Union[int, str], optional): (deprecated) 
-    	Returns:
-    		Union[int, str]
+        Args:
+            label (str, optional): Overrides 'name' as label.
+            user_data (Any, optional): User data for callbacks
+            use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+            tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            height (int, optional): Height of the item.
+            parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
+            before (Union[int, str], optional): This item will be displayed before the specified item in the parent.
+            show (bool, optional): Attempt to render widget.
+            filter_key (str, optional): Used by filter widget.
+            id (Union[int, str], optional): (deprecated) 
+        Returns:
+            Union[int, str]
     """
 
     label             : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)

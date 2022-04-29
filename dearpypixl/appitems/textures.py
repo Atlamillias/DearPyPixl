@@ -24,18 +24,18 @@ __all__ = [
 class StaticTexture(Widget):
     """Adds a static texture.
     
-    	Args:
-    		width (int): 
-    		height (int): 
-    		default_value (Union[List[float], Tuple[float, ...]]): 
-    		label (str, optional): Overrides 'name' as label.
-    		user_data (Any, optional): User data for callbacks
-    		use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
-    		tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-    		parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
-    		id (Union[int, str], optional): (deprecated) 
-    	Returns:
-    		Union[int, str]
+        Args:
+            width (int): 
+            height (int): 
+            default_value (Union[List[float], Tuple[float, ...]]): 
+            label (str, optional): Overrides 'name' as label.
+            user_data (Any, optional): User data for callbacks
+            use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+            tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
+            id (Union[int, str], optional): (deprecated) 
+        Returns:
+            Union[int, str]
     """
 
     width             : int                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
@@ -81,18 +81,18 @@ class StaticTexture(Widget):
 class DynamicTexture(Widget):
     """Adds a dynamic texture.
     
-    	Args:
-    		width (int): 
-    		height (int): 
-    		default_value (Union[List[float], Tuple[float, ...]]): 
-    		label (str, optional): Overrides 'name' as label.
-    		user_data (Any, optional): User data for callbacks
-    		use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
-    		tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-    		parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
-    		id (Union[int, str], optional): (deprecated) 
-    	Returns:
-    		Union[int, str]
+        Args:
+            width (int): 
+            height (int): 
+            default_value (Union[List[float], Tuple[float, ...]]): 
+            label (str, optional): Overrides 'name' as label.
+            user_data (Any, optional): User data for callbacks
+            use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+            tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
+            id (Union[int, str], optional): (deprecated) 
+        Returns:
+            Union[int, str]
     """
 
     width             : int                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
@@ -138,19 +138,19 @@ class DynamicTexture(Widget):
 class RawTexture(Widget):
     """Adds a raw texture.
     
-    	Args:
-    		width (int): 
-    		height (int): 
-    		default_value (Union[List[float], Tuple[float, ...]]): 
-    		label (str, optional): Overrides 'name' as label.
-    		user_data (Any, optional): User data for callbacks
-    		use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
-    		tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-    		format (int, optional): Data format.
-    		parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
-    		id (Union[int, str], optional): (deprecated) 
-    	Returns:
-    		Union[int, str]
+        Args:
+            width (int): 
+            height (int): 
+            default_value (Union[List[float], Tuple[float, ...]]): 
+            label (str, optional): Overrides 'name' as label.
+            user_data (Any, optional): User data for callbacks
+            use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+            tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            format (int, optional): Data format.
+            parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
+            id (Union[int, str], optional): (deprecated) 
+        Returns:
+            Union[int, str]
     """
 
     width             : int                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         

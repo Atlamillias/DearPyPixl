@@ -644,31 +644,31 @@ class InputIntMulti(Widget):
 class RadioButton(Widget):
     """Adds a set of radio buttons. If items keyword is empty, nothing will be shown.
     
-    	Args:
-    		items (Union[List[str], Tuple[str, ...]], optional): A tuple of items to be shown as radio options. Can consist of any combination of types. All types will be shown as strings.
-    		label (str, optional): Overrides 'name' as label.
-    		user_data (Any, optional): User data for callbacks
-    		use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
-    		tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-    		indent (int, optional): Offsets the widget to the right the specified number multiplied by the indent style.
-    		parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
-    		before (Union[int, str], optional): This item will be displayed before the specified item in the parent.
-    		source (Union[int, str], optional): Overrides 'id' as value storage key.
-    		payload_type (str, optional): Sender string type must be the same as the target for the target to run the payload_callback.
-    		callback (Callable, optional): Registers a callback.
-    		drag_callback (Callable, optional): Registers a drag callback for drag and drop.
-    		drop_callback (Callable, optional): Registers a drop callback for drag and drop.
-    		show (bool, optional): Attempt to render widget.
-    		enabled (bool, optional): Turns off functionality of widget and applies the disabled theme.
-    		pos (list[int] | tuple[int, ...], optional): Places the item relative to window coordinates, [0,0] is top left.
-    		filter_key (str, optional): Used by filter widget.
-    		tracked (bool, optional): Scroll tracking
-    		track_offset (float, optional): 0.0f:top, 0.5f:center, 1.0f:bottom
-    		default_value (str, optional): Default selected radio option. Set by using the string value of the item.
-    		horizontal (bool, optional): Displays the radio options horizontally.
-    		id (Union[int, str], optional): (deprecated) 
-    	Returns:
-    		Union[int, str]
+        Args:
+            items (Union[List[str], Tuple[str, ...]], optional): A tuple of items to be shown as radio options. Can consist of any combination of types. All types will be shown as strings.
+            label (str, optional): Overrides 'name' as label.
+            user_data (Any, optional): User data for callbacks
+            use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+            tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            indent (int, optional): Offsets the widget to the right the specified number multiplied by the indent style.
+            parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
+            before (Union[int, str], optional): This item will be displayed before the specified item in the parent.
+            source (Union[int, str], optional): Overrides 'id' as value storage key.
+            payload_type (str, optional): Sender string type must be the same as the target for the target to run the payload_callback.
+            callback (Callable, optional): Registers a callback.
+            drag_callback (Callable, optional): Registers a drag callback for drag and drop.
+            drop_callback (Callable, optional): Registers a drop callback for drag and drop.
+            show (bool, optional): Attempt to render widget.
+            enabled (bool, optional): Turns off functionality of widget and applies the disabled theme.
+            pos (list[int] | tuple[int, ...], optional): Places the item relative to window coordinates, [0,0] is top left.
+            filter_key (str, optional): Used by filter widget.
+            tracked (bool, optional): Scroll tracking
+            track_offset (float, optional): 0.0f:top, 0.5f:center, 1.0f:bottom
+            default_value (str, optional): Default selected radio option. Set by using the string value of the item.
+            horizontal (bool, optional): Displays the radio options horizontally.
+            id (Union[int, str], optional): (deprecated) 
+        Returns:
+            Union[int, str]
     """
 
     items                    : Union[List[str], Tuple[str, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
@@ -770,32 +770,32 @@ class RadioButton(Widget):
 class Listbox(Widget):
     """Adds a listbox. If height is not large enough to show all items a scroll bar will appear.
     
-    	Args:
-    		items (Union[List[str], Tuple[str, ...]], optional): A tuple of items to be shown in the listbox. Can consist of any combination of types. All items will be displayed as strings.
-    		label (str, optional): Overrides 'name' as label.
-    		user_data (Any, optional): User data for callbacks
-    		use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
-    		tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-    		width (int, optional): Width of the item.
-    		indent (int, optional): Offsets the widget to the right the specified number multiplied by the indent style.
-    		parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
-    		before (Union[int, str], optional): This item will be displayed before the specified item in the parent.
-    		source (Union[int, str], optional): Overrides 'id' as value storage key.
-    		payload_type (str, optional): Sender string type must be the same as the target for the target to run the payload_callback.
-    		callback (Callable, optional): Registers a callback.
-    		drag_callback (Callable, optional): Registers a drag callback for drag and drop.
-    		drop_callback (Callable, optional): Registers a drop callback for drag and drop.
-    		show (bool, optional): Attempt to render widget.
-    		enabled (bool, optional): Turns off functionality of widget and applies the disabled theme.
-    		pos (list[int] | tuple[int, ...], optional): Places the item relative to window coordinates, [0,0] is top left.
-    		filter_key (str, optional): Used by filter widget.
-    		tracked (bool, optional): Scroll tracking
-    		track_offset (float, optional): 0.0f:top, 0.5f:center, 1.0f:bottom
-    		default_value (str, optional): String value fo the item that will be selected by default.
-    		num_items (int, optional): Expands the height of the listbox to show specified number of items.
-    		id (Union[int, str], optional): (deprecated) 
-    	Returns:
-    		Union[int, str]
+        Args:
+            items (Union[List[str], Tuple[str, ...]], optional): A tuple of items to be shown in the listbox. Can consist of any combination of types. All items will be displayed as strings.
+            label (str, optional): Overrides 'name' as label.
+            user_data (Any, optional): User data for callbacks
+            use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+            tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            width (int, optional): Width of the item.
+            indent (int, optional): Offsets the widget to the right the specified number multiplied by the indent style.
+            parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
+            before (Union[int, str], optional): This item will be displayed before the specified item in the parent.
+            source (Union[int, str], optional): Overrides 'id' as value storage key.
+            payload_type (str, optional): Sender string type must be the same as the target for the target to run the payload_callback.
+            callback (Callable, optional): Registers a callback.
+            drag_callback (Callable, optional): Registers a drag callback for drag and drop.
+            drop_callback (Callable, optional): Registers a drop callback for drag and drop.
+            show (bool, optional): Attempt to render widget.
+            enabled (bool, optional): Turns off functionality of widget and applies the disabled theme.
+            pos (list[int] | tuple[int, ...], optional): Places the item relative to window coordinates, [0,0] is top left.
+            filter_key (str, optional): Used by filter widget.
+            tracked (bool, optional): Scroll tracking
+            track_offset (float, optional): 0.0f:top, 0.5f:center, 1.0f:bottom
+            default_value (str, optional): String value fo the item that will be selected by default.
+            num_items (int, optional): Expands the height of the listbox to show specified number of items.
+            id (Union[int, str], optional): (deprecated) 
+        Returns:
+            Union[int, str]
     """
 
     items                    : Union[List[str], Tuple[str, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
@@ -900,29 +900,29 @@ class Listbox(Widget):
 class Checkbox(Widget):
     """Adds a checkbox.
     
-    	Args:
-    		label (str, optional): Overrides 'name' as label.
-    		user_data (Any, optional): User data for callbacks
-    		use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
-    		tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-    		indent (int, optional): Offsets the widget to the right the specified number multiplied by the indent style.
-    		parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
-    		before (Union[int, str], optional): This item will be displayed before the specified item in the parent.
-    		source (Union[int, str], optional): Overrides 'id' as value storage key.
-    		payload_type (str, optional): Sender string type must be the same as the target for the target to run the payload_callback.
-    		callback (Callable, optional): Registers a callback.
-    		drag_callback (Callable, optional): Registers a drag callback for drag and drop.
-    		drop_callback (Callable, optional): Registers a drop callback for drag and drop.
-    		show (bool, optional): Attempt to render widget.
-    		enabled (bool, optional): Turns off functionality of widget and applies the disabled theme.
-    		pos (list[int] | tuple[int, ...], optional): Places the item relative to window coordinates, [0,0] is top left.
-    		filter_key (str, optional): Used by filter widget.
-    		tracked (bool, optional): Scroll tracking
-    		track_offset (float, optional): 0.0f:top, 0.5f:center, 1.0f:bottom
-    		default_value (bool, optional): Sets the default value of the checkmark
-    		id (Union[int, str], optional): (deprecated) 
-    	Returns:
-    		Union[int, str]
+        Args:
+            label (str, optional): Overrides 'name' as label.
+            user_data (Any, optional): User data for callbacks
+            use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+            tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            indent (int, optional): Offsets the widget to the right the specified number multiplied by the indent style.
+            parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
+            before (Union[int, str], optional): This item will be displayed before the specified item in the parent.
+            source (Union[int, str], optional): Overrides 'id' as value storage key.
+            payload_type (str, optional): Sender string type must be the same as the target for the target to run the payload_callback.
+            callback (Callable, optional): Registers a callback.
+            drag_callback (Callable, optional): Registers a drag callback for drag and drop.
+            drop_callback (Callable, optional): Registers a drop callback for drag and drop.
+            show (bool, optional): Attempt to render widget.
+            enabled (bool, optional): Turns off functionality of widget and applies the disabled theme.
+            pos (list[int] | tuple[int, ...], optional): Places the item relative to window coordinates, [0,0] is top left.
+            filter_key (str, optional): Used by filter widget.
+            tracked (bool, optional): Scroll tracking
+            track_offset (float, optional): 0.0f:top, 0.5f:center, 1.0f:bottom
+            default_value (bool, optional): Sets the default value of the checkmark
+            id (Union[int, str], optional): (deprecated) 
+        Returns:
+            Union[int, str]
     """
 
     label                    : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
@@ -1017,32 +1017,32 @@ class Checkbox(Widget):
 class Button(Widget):
     """Adds a button.
     
-    	Args:
-    		label (str, optional): Overrides 'name' as label.
-    		user_data (Any, optional): User data for callbacks
-    		use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
-    		tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-    		width (int, optional): Width of the item.
-    		height (int, optional): Height of the item.
-    		indent (int, optional): Offsets the widget to the right the specified number multiplied by the indent style.
-    		parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
-    		before (Union[int, str], optional): This item will be displayed before the specified item in the parent.
-    		payload_type (str, optional): Sender string type must be the same as the target for the target to run the payload_callback.
-    		callback (Callable, optional): Registers a callback.
-    		drag_callback (Callable, optional): Registers a drag callback for drag and drop.
-    		drop_callback (Callable, optional): Registers a drop callback for drag and drop.
-    		show (bool, optional): Attempt to render widget.
-    		enabled (bool, optional): Turns off functionality of widget and applies the disabled theme.
-    		pos (list[int] | tuple[int, ...], optional): Places the item relative to window coordinates, [0,0] is top left.
-    		filter_key (str, optional): Used by filter widget.
-    		tracked (bool, optional): Scroll tracking
-    		track_offset (float, optional): 0.0f:top, 0.5f:center, 1.0f:bottom
-    		small (bool, optional): Shrinks the size of the button to the text of the label it contains. Useful for embedding in text.
-    		arrow (bool, optional): Displays an arrow in place of the text string. This requires the direction keyword.
-    		direction (int, optional): Sets the cardinal direction for the arrow buy using constants mvDir_Left, mvDir_Up, mvDir_Down, mvDir_Right, mvDir_None. Arrow keyword must be set to True.
-    		id (Union[int, str], optional): (deprecated) 
-    	Returns:
-    		Union[int, str]
+        Args:
+            label (str, optional): Overrides 'name' as label.
+            user_data (Any, optional): User data for callbacks
+            use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+            tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            width (int, optional): Width of the item.
+            height (int, optional): Height of the item.
+            indent (int, optional): Offsets the widget to the right the specified number multiplied by the indent style.
+            parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
+            before (Union[int, str], optional): This item will be displayed before the specified item in the parent.
+            payload_type (str, optional): Sender string type must be the same as the target for the target to run the payload_callback.
+            callback (Callable, optional): Registers a callback.
+            drag_callback (Callable, optional): Registers a drag callback for drag and drop.
+            drop_callback (Callable, optional): Registers a drop callback for drag and drop.
+            show (bool, optional): Attempt to render widget.
+            enabled (bool, optional): Turns off functionality of widget and applies the disabled theme.
+            pos (list[int] | tuple[int, ...], optional): Places the item relative to window coordinates, [0,0] is top left.
+            filter_key (str, optional): Used by filter widget.
+            tracked (bool, optional): Scroll tracking
+            track_offset (float, optional): 0.0f:top, 0.5f:center, 1.0f:bottom
+            small (bool, optional): Shrinks the size of the button to the text of the label it contains. Useful for embedding in text.
+            arrow (bool, optional): Displays an arrow in place of the text string. This requires the direction keyword.
+            direction (int, optional): Sets the cardinal direction for the arrow buy using constants mvDir_Left, mvDir_Up, mvDir_Down, mvDir_Right, mvDir_None. Arrow keyword must be set to True.
+            id (Union[int, str], optional): (deprecated) 
+        Returns:
+            Union[int, str]
     """
 
     label               : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                   
@@ -1144,32 +1144,32 @@ class Button(Widget):
 class Selectable(Widget):
     """Adds a selectable. Similar to a button but can indicate its selected state.
     
-    	Args:
-    		label (str, optional): Overrides 'name' as label.
-    		user_data (Any, optional): User data for callbacks
-    		use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
-    		tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-    		width (int, optional): Width of the item.
-    		height (int, optional): Height of the item.
-    		indent (int, optional): Offsets the widget to the right the specified number multiplied by the indent style.
-    		parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
-    		before (Union[int, str], optional): This item will be displayed before the specified item in the parent.
-    		source (Union[int, str], optional): Overrides 'id' as value storage key.
-    		payload_type (str, optional): Sender string type must be the same as the target for the target to run the payload_callback.
-    		callback (Callable, optional): Registers a callback.
-    		drag_callback (Callable, optional): Registers a drag callback for drag and drop.
-    		drop_callback (Callable, optional): Registers a drop callback for drag and drop.
-    		show (bool, optional): Attempt to render widget.
-    		enabled (bool, optional): Turns off functionality of widget and applies the disabled theme.
-    		pos (list[int] | tuple[int, ...], optional): Places the item relative to window coordinates, [0,0] is top left.
-    		filter_key (str, optional): Used by filter widget.
-    		tracked (bool, optional): Scroll tracking
-    		track_offset (float, optional): 0.0f:top, 0.5f:center, 1.0f:bottom
-    		default_value (bool, optional): 
-    		span_columns (bool, optional): Forces the selectable to span the width of all columns if placed in a table.
-    		id (Union[int, str], optional): (deprecated) 
-    	Returns:
-    		Union[int, str]
+        Args:
+            label (str, optional): Overrides 'name' as label.
+            user_data (Any, optional): User data for callbacks
+            use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+            tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            width (int, optional): Width of the item.
+            height (int, optional): Height of the item.
+            indent (int, optional): Offsets the widget to the right the specified number multiplied by the indent style.
+            parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
+            before (Union[int, str], optional): This item will be displayed before the specified item in the parent.
+            source (Union[int, str], optional): Overrides 'id' as value storage key.
+            payload_type (str, optional): Sender string type must be the same as the target for the target to run the payload_callback.
+            callback (Callable, optional): Registers a callback.
+            drag_callback (Callable, optional): Registers a drag callback for drag and drop.
+            drop_callback (Callable, optional): Registers a drop callback for drag and drop.
+            show (bool, optional): Attempt to render widget.
+            enabled (bool, optional): Turns off functionality of widget and applies the disabled theme.
+            pos (list[int] | tuple[int, ...], optional): Places the item relative to window coordinates, [0,0] is top left.
+            filter_key (str, optional): Used by filter widget.
+            tracked (bool, optional): Scroll tracking
+            track_offset (float, optional): 0.0f:top, 0.5f:center, 1.0f:bottom
+            default_value (bool, optional): 
+            span_columns (bool, optional): Forces the selectable to span the width of all columns if placed in a table.
+            id (Union[int, str], optional): (deprecated) 
+        Returns:
+            Union[int, str]
     """
 
     label                    : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
@@ -1275,35 +1275,35 @@ class Selectable(Widget):
 class Combo(Widget):
     """Adds a combo dropdown that allows a user to select a single option from a drop down window. All items will be shown as selectables on the dropdown.
     
-    	Args:
-    		items (Union[List[str], Tuple[str, ...]], optional): A tuple of items to be shown in the drop down window. Can consist of any combination of types but will convert all items to strings to be shown.
-    		label (str, optional): Overrides 'name' as label.
-    		user_data (Any, optional): User data for callbacks
-    		use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
-    		tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-    		width (int, optional): Width of the item.
-    		indent (int, optional): Offsets the widget to the right the specified number multiplied by the indent style.
-    		parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
-    		before (Union[int, str], optional): This item will be displayed before the specified item in the parent.
-    		source (Union[int, str], optional): Overrides 'id' as value storage key.
-    		payload_type (str, optional): Sender string type must be the same as the target for the target to run the payload_callback.
-    		callback (Callable, optional): Registers a callback.
-    		drag_callback (Callable, optional): Registers a drag callback for drag and drop.
-    		drop_callback (Callable, optional): Registers a drop callback for drag and drop.
-    		show (bool, optional): Attempt to render widget.
-    		enabled (bool, optional): Turns off functionality of widget and applies the disabled theme.
-    		pos (list[int] | tuple[int, ...], optional): Places the item relative to window coordinates, [0,0] is top left.
-    		filter_key (str, optional): Used by filter widget.
-    		tracked (bool, optional): Scroll tracking
-    		track_offset (float, optional): 0.0f:top, 0.5f:center, 1.0f:bottom
-    		default_value (str, optional): Sets a selected item from the drop down by specifying the string value.
-    		popup_align_left (bool, optional): Align the contents on the popup toward the left.
-    		no_arrow_button (bool, optional): Display the preview box without the square arrow button indicating dropdown activity.
-    		no_preview (bool, optional): Display only the square arrow button and not the selected value.
-    		height_mode (int, optional): Controlls the number of items shown in the dropdown by the constants mvComboHeight_Small, mvComboHeight_Regular, mvComboHeight_Large, mvComboHeight_Largest
-    		id (Union[int, str], optional): (deprecated) 
-    	Returns:
-    		Union[int, str]
+        Args:
+            items (Union[List[str], Tuple[str, ...]], optional): A tuple of items to be shown in the drop down window. Can consist of any combination of types but will convert all items to strings to be shown.
+            label (str, optional): Overrides 'name' as label.
+            user_data (Any, optional): User data for callbacks
+            use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+            tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            width (int, optional): Width of the item.
+            indent (int, optional): Offsets the widget to the right the specified number multiplied by the indent style.
+            parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
+            before (Union[int, str], optional): This item will be displayed before the specified item in the parent.
+            source (Union[int, str], optional): Overrides 'id' as value storage key.
+            payload_type (str, optional): Sender string type must be the same as the target for the target to run the payload_callback.
+            callback (Callable, optional): Registers a callback.
+            drag_callback (Callable, optional): Registers a drag callback for drag and drop.
+            drop_callback (Callable, optional): Registers a drop callback for drag and drop.
+            show (bool, optional): Attempt to render widget.
+            enabled (bool, optional): Turns off functionality of widget and applies the disabled theme.
+            pos (list[int] | tuple[int, ...], optional): Places the item relative to window coordinates, [0,0] is top left.
+            filter_key (str, optional): Used by filter widget.
+            tracked (bool, optional): Scroll tracking
+            track_offset (float, optional): 0.0f:top, 0.5f:center, 1.0f:bottom
+            default_value (str, optional): Sets a selected item from the drop down by specifying the string value.
+            popup_align_left (bool, optional): Align the contents on the popup toward the left.
+            no_arrow_button (bool, optional): Display the preview box without the square arrow button indicating dropdown activity.
+            no_preview (bool, optional): Display only the square arrow button and not the selected value.
+            height_mode (int, optional): Controlls the number of items shown in the dropdown by the constants mvComboHeight_Small, mvComboHeight_Regular, mvComboHeight_Large, mvComboHeight_Largest
+            id (Union[int, str], optional): (deprecated) 
+        Returns:
+            Union[int, str]
     """
 
     items                    : Union[List[str], Tuple[str, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                 
@@ -1417,42 +1417,42 @@ class Combo(Widget):
 class InputText(Widget):
     """Adds input for text.
     
-    	Args:
-    		label (str, optional): Overrides 'name' as label.
-    		user_data (Any, optional): User data for callbacks
-    		use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
-    		tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-    		width (int, optional): Width of the item.
-    		height (int, optional): Height of the item.
-    		indent (int, optional): Offsets the widget to the right the specified number multiplied by the indent style.
-    		parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
-    		before (Union[int, str], optional): This item will be displayed before the specified item in the parent.
-    		source (Union[int, str], optional): Overrides 'id' as value storage key.
-    		payload_type (str, optional): Sender string type must be the same as the target for the target to run the payload_callback.
-    		callback (Callable, optional): Registers a callback.
-    		drag_callback (Callable, optional): Registers a drag callback for drag and drop.
-    		drop_callback (Callable, optional): Registers a drop callback for drag and drop.
-    		show (bool, optional): Attempt to render widget.
-    		enabled (bool, optional): Turns off functionality of widget and applies the disabled theme.
-    		pos (list[int] | tuple[int, ...], optional): Places the item relative to window coordinates, [0,0] is top left.
-    		filter_key (str, optional): Used by filter widget.
-    		tracked (bool, optional): Scroll tracking
-    		track_offset (float, optional): 0.0f:top, 0.5f:center, 1.0f:bottom
-    		default_value (str, optional): 
-    		hint (str, optional): Displayed only when value is an empty string. Will reappear if input value is set to empty string. Will not show if default value is anything other than default empty string.
-    		multiline (bool, optional): Allows for multiline text input.
-    		no_spaces (bool, optional): Filter out spaces and tabs.
-    		uppercase (bool, optional): Automatically make all inputs uppercase.
-    		tab_input (bool, optional): Allows tabs to be input into the string value instead of changing item focus.
-    		decimal (bool, optional): Only allow characters 0123456789.+-*/
-    		hexadecimal (bool, optional): Only allow characters 0123456789ABCDEFabcdef
-    		readonly (bool, optional): Activates read only mode where no text can be input but text can still be highlighted.
-    		password (bool, optional): Display all input characters as '*'.
-    		scientific (bool, optional): Only allow characters 0123456789.+-*/eE (Scientific notation input)
-    		on_enter (bool, optional): Only runs callback on enter key press.
-    		id (Union[int, str], optional): (deprecated) 
-    	Returns:
-    		Union[int, str]
+        Args:
+            label (str, optional): Overrides 'name' as label.
+            user_data (Any, optional): User data for callbacks
+            use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+            tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            width (int, optional): Width of the item.
+            height (int, optional): Height of the item.
+            indent (int, optional): Offsets the widget to the right the specified number multiplied by the indent style.
+            parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
+            before (Union[int, str], optional): This item will be displayed before the specified item in the parent.
+            source (Union[int, str], optional): Overrides 'id' as value storage key.
+            payload_type (str, optional): Sender string type must be the same as the target for the target to run the payload_callback.
+            callback (Callable, optional): Registers a callback.
+            drag_callback (Callable, optional): Registers a drag callback for drag and drop.
+            drop_callback (Callable, optional): Registers a drop callback for drag and drop.
+            show (bool, optional): Attempt to render widget.
+            enabled (bool, optional): Turns off functionality of widget and applies the disabled theme.
+            pos (list[int] | tuple[int, ...], optional): Places the item relative to window coordinates, [0,0] is top left.
+            filter_key (str, optional): Used by filter widget.
+            tracked (bool, optional): Scroll tracking
+            track_offset (float, optional): 0.0f:top, 0.5f:center, 1.0f:bottom
+            default_value (str, optional): 
+            hint (str, optional): Displayed only when value is an empty string. Will reappear if input value is set to empty string. Will not show if default value is anything other than default empty string.
+            multiline (bool, optional): Allows for multiline text input.
+            no_spaces (bool, optional): Filter out spaces and tabs.
+            uppercase (bool, optional): Automatically make all inputs uppercase.
+            tab_input (bool, optional): Allows tabs to be input into the string value instead of changing item focus.
+            decimal (bool, optional): Only allow characters 0123456789.+-*/
+            hexadecimal (bool, optional): Only allow characters 0123456789ABCDEFabcdef
+            readonly (bool, optional): Activates read only mode where no text can be input but text can still be highlighted.
+            password (bool, optional): Display all input characters as '*'.
+            scientific (bool, optional): Only allow characters 0123456789.+-*/eE (Scientific notation input)
+            on_enter (bool, optional): Only runs callback on enter key press.
+            id (Union[int, str], optional): (deprecated) 
+        Returns:
+            Union[int, str]
     """
 
     label                    : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
@@ -1587,37 +1587,37 @@ class InputText(Widget):
 class SliderFloat(Widget):
     """Adds slider for a single float value. Directly entry can be done with double click or CTRL+Click. Min and Max alone are a soft limit for the slider. Use clamped keyword to also apply limits to the direct entry modes.
     
-    	Args:
-    		label (str, optional): Overrides 'name' as label.
-    		user_data (Any, optional): User data for callbacks
-    		use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
-    		tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-    		width (int, optional): Width of the item.
-    		height (int, optional): Height of the item.
-    		indent (int, optional): Offsets the widget to the right the specified number multiplied by the indent style.
-    		parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
-    		before (Union[int, str], optional): This item will be displayed before the specified item in the parent.
-    		source (Union[int, str], optional): Overrides 'id' as value storage key.
-    		payload_type (str, optional): Sender string type must be the same as the target for the target to run the payload_callback.
-    		callback (Callable, optional): Registers a callback.
-    		drag_callback (Callable, optional): Registers a drag callback for drag and drop.
-    		drop_callback (Callable, optional): Registers a drop callback for drag and drop.
-    		show (bool, optional): Attempt to render widget.
-    		enabled (bool, optional): Turns off functionality of widget and applies the disabled theme.
-    		pos (list[int] | tuple[int, ...], optional): Places the item relative to window coordinates, [0,0] is top left.
-    		filter_key (str, optional): Used by filter widget.
-    		tracked (bool, optional): Scroll tracking
-    		track_offset (float, optional): 0.0f:top, 0.5f:center, 1.0f:bottom
-    		default_value (float, optional): 
-    		vertical (bool, optional): Sets orientation of the slidebar and slider to vertical.
-    		no_input (bool, optional): Disable direct entry methods double-click or ctrl+click or Enter key allowing to input text directly into the item.
-    		clamped (bool, optional): Applies the min and max limits to direct entry methods also such as double click and CTRL+Click.
-    		min_value (float, optional): Applies a limit only to sliding entry only.
-    		max_value (float, optional): Applies a limit only to sliding entry only.
-    		format (str, optional): Determines the format the float will be displayed as use python string formatting.
-    		id (Union[int, str], optional): (deprecated) 
-    	Returns:
-    		Union[int, str]
+        Args:
+            label (str, optional): Overrides 'name' as label.
+            user_data (Any, optional): User data for callbacks
+            use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+            tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            width (int, optional): Width of the item.
+            height (int, optional): Height of the item.
+            indent (int, optional): Offsets the widget to the right the specified number multiplied by the indent style.
+            parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
+            before (Union[int, str], optional): This item will be displayed before the specified item in the parent.
+            source (Union[int, str], optional): Overrides 'id' as value storage key.
+            payload_type (str, optional): Sender string type must be the same as the target for the target to run the payload_callback.
+            callback (Callable, optional): Registers a callback.
+            drag_callback (Callable, optional): Registers a drag callback for drag and drop.
+            drop_callback (Callable, optional): Registers a drop callback for drag and drop.
+            show (bool, optional): Attempt to render widget.
+            enabled (bool, optional): Turns off functionality of widget and applies the disabled theme.
+            pos (list[int] | tuple[int, ...], optional): Places the item relative to window coordinates, [0,0] is top left.
+            filter_key (str, optional): Used by filter widget.
+            tracked (bool, optional): Scroll tracking
+            track_offset (float, optional): 0.0f:top, 0.5f:center, 1.0f:bottom
+            default_value (float, optional): 
+            vertical (bool, optional): Sets orientation of the slidebar and slider to vertical.
+            no_input (bool, optional): Disable direct entry methods double-click or ctrl+click or Enter key allowing to input text directly into the item.
+            clamped (bool, optional): Applies the min and max limits to direct entry methods also such as double click and CTRL+Click.
+            min_value (float, optional): Applies a limit only to sliding entry only.
+            max_value (float, optional): Applies a limit only to sliding entry only.
+            format (str, optional): Determines the format the float will be displayed as use python string formatting.
+            id (Union[int, str], optional): (deprecated) 
+        Returns:
+            Union[int, str]
     """
 
     label                    : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
@@ -1737,36 +1737,36 @@ class SliderFloat(Widget):
 class DragFloat(Widget):
     """Adds drag for a single float value. Directly entry can be done with double click or CTRL+Click. Min and Max alone are a soft limit for the drag. Use clamped keyword to also apply limits to the direct entry modes.
     
-    	Args:
-    		label (str, optional): Overrides 'name' as label.
-    		user_data (Any, optional): User data for callbacks
-    		use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
-    		tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-    		width (int, optional): Width of the item.
-    		indent (int, optional): Offsets the widget to the right the specified number multiplied by the indent style.
-    		parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
-    		before (Union[int, str], optional): This item will be displayed before the specified item in the parent.
-    		source (Union[int, str], optional): Overrides 'id' as value storage key.
-    		payload_type (str, optional): Sender string type must be the same as the target for the target to run the payload_callback.
-    		callback (Callable, optional): Registers a callback.
-    		drag_callback (Callable, optional): Registers a drag callback for drag and drop.
-    		drop_callback (Callable, optional): Registers a drop callback for drag and drop.
-    		show (bool, optional): Attempt to render widget.
-    		enabled (bool, optional): Turns off functionality of widget and applies the disabled theme.
-    		pos (list[int] | tuple[int, ...], optional): Places the item relative to window coordinates, [0,0] is top left.
-    		filter_key (str, optional): Used by filter widget.
-    		tracked (bool, optional): Scroll tracking
-    		track_offset (float, optional): 0.0f:top, 0.5f:center, 1.0f:bottom
-    		default_value (float, optional): 
-    		format (str, optional): Determines the format the float will be displayed as use python string formatting.
-    		speed (float, optional): Sets the sensitivity the float will be modified while dragging.
-    		min_value (float, optional): Applies a limit only to draging entry only.
-    		max_value (float, optional): Applies a limit only to draging entry only.
-    		no_input (bool, optional): Disable direct entry methods or Enter key allowing to input text directly into the widget.
-    		clamped (bool, optional): Applies the min and max limits to direct entry methods also such as double click and CTRL+Click.
-    		id (Union[int, str], optional): (deprecated) 
-    	Returns:
-    		Union[int, str]
+        Args:
+            label (str, optional): Overrides 'name' as label.
+            user_data (Any, optional): User data for callbacks
+            use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+            tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            width (int, optional): Width of the item.
+            indent (int, optional): Offsets the widget to the right the specified number multiplied by the indent style.
+            parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
+            before (Union[int, str], optional): This item will be displayed before the specified item in the parent.
+            source (Union[int, str], optional): Overrides 'id' as value storage key.
+            payload_type (str, optional): Sender string type must be the same as the target for the target to run the payload_callback.
+            callback (Callable, optional): Registers a callback.
+            drag_callback (Callable, optional): Registers a drag callback for drag and drop.
+            drop_callback (Callable, optional): Registers a drop callback for drag and drop.
+            show (bool, optional): Attempt to render widget.
+            enabled (bool, optional): Turns off functionality of widget and applies the disabled theme.
+            pos (list[int] | tuple[int, ...], optional): Places the item relative to window coordinates, [0,0] is top left.
+            filter_key (str, optional): Used by filter widget.
+            tracked (bool, optional): Scroll tracking
+            track_offset (float, optional): 0.0f:top, 0.5f:center, 1.0f:bottom
+            default_value (float, optional): 
+            format (str, optional): Determines the format the float will be displayed as use python string formatting.
+            speed (float, optional): Sets the sensitivity the float will be modified while dragging.
+            min_value (float, optional): Applies a limit only to draging entry only.
+            max_value (float, optional): Applies a limit only to draging entry only.
+            no_input (bool, optional): Disable direct entry methods or Enter key allowing to input text directly into the widget.
+            clamped (bool, optional): Applies the min and max limits to direct entry methods also such as double click and CTRL+Click.
+            id (Union[int, str], optional): (deprecated) 
+        Returns:
+            Union[int, str]
     """
 
     label                    : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
@@ -1883,31 +1883,31 @@ class DragFloat(Widget):
 class Text(Widget):
     """Adds text. Text can have an optional label that will display to the right of the text.
     
-    	Args:
-    		default_value (str, optional): 
-    		label (str, optional): Overrides 'name' as label.
-    		user_data (Any, optional): User data for callbacks
-    		use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
-    		tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-    		indent (int, optional): Offsets the widget to the right the specified number multiplied by the indent style.
-    		parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
-    		before (Union[int, str], optional): This item will be displayed before the specified item in the parent.
-    		source (Union[int, str], optional): Overrides 'id' as value storage key.
-    		payload_type (str, optional): Sender string type must be the same as the target for the target to run the payload_callback.
-    		drag_callback (Callable, optional): Registers a drag callback for drag and drop.
-    		drop_callback (Callable, optional): Registers a drop callback for drag and drop.
-    		show (bool, optional): Attempt to render widget.
-    		pos (list[int] | tuple[int, ...], optional): Places the item relative to window coordinates, [0,0] is top left.
-    		filter_key (str, optional): Used by filter widget.
-    		tracked (bool, optional): Scroll tracking
-    		track_offset (float, optional): 0.0f:top, 0.5f:center, 1.0f:bottom
-    		wrap (int, optional): Number of pixels from the start of the item until wrapping starts.
-    		bullet (bool, optional): Places a bullet to the left of the text.
-    		color (list[int] | tuple[int, ...], optional): Color of the text (rgba).
-    		show_label (bool, optional): Displays the label to the right of the text.
-    		id (Union[int, str], optional): (deprecated) 
-    	Returns:
-    		Union[int, str]
+        Args:
+            default_value (str, optional): 
+            label (str, optional): Overrides 'name' as label.
+            user_data (Any, optional): User data for callbacks
+            use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+            tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            indent (int, optional): Offsets the widget to the right the specified number multiplied by the indent style.
+            parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
+            before (Union[int, str], optional): This item will be displayed before the specified item in the parent.
+            source (Union[int, str], optional): Overrides 'id' as value storage key.
+            payload_type (str, optional): Sender string type must be the same as the target for the target to run the payload_callback.
+            drag_callback (Callable, optional): Registers a drag callback for drag and drop.
+            drop_callback (Callable, optional): Registers a drop callback for drag and drop.
+            show (bool, optional): Attempt to render widget.
+            pos (list[int] | tuple[int, ...], optional): Places the item relative to window coordinates, [0,0] is top left.
+            filter_key (str, optional): Used by filter widget.
+            tracked (bool, optional): Scroll tracking
+            track_offset (float, optional): 0.0f:top, 0.5f:center, 1.0f:bottom
+            wrap (int, optional): Number of pixels from the start of the item until wrapping starts.
+            bullet (bool, optional): Places a bullet to the left of the text.
+            color (list[int] | tuple[int, ...], optional): Color of the text (rgba).
+            show_label (bool, optional): Displays the label to the right of the text.
+            id (Union[int, str], optional): (deprecated) 
+        Returns:
+            Union[int, str]
     """
 
     default_value       : str                               = ItemAttribute('information', 'get_item_cached', None, None)                        
@@ -2003,29 +2003,29 @@ class Text(Widget):
 class TabButton(Widget):
     """Adds a tab button to a tab bar.
     
-    	Args:
-    		label (str, optional): Overrides 'name' as label.
-    		user_data (Any, optional): User data for callbacks
-    		use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
-    		tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-    		indent (int, optional): Offsets the widget to the right the specified number multiplied by the indent style.
-    		parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
-    		before (Union[int, str], optional): This item will be displayed before the specified item in the parent.
-    		payload_type (str, optional): Sender string type must be the same as the target for the target to run the payload_callback.
-    		callback (Callable, optional): Registers a callback.
-    		drag_callback (Callable, optional): Registers a drag callback for drag and drop.
-    		drop_callback (Callable, optional): Registers a drop callback for drag and drop.
-    		show (bool, optional): Attempt to render widget.
-    		filter_key (str, optional): Used by filter widget.
-    		tracked (bool, optional): Scroll tracking
-    		track_offset (float, optional): 0.0f:top, 0.5f:center, 1.0f:bottom
-    		no_reorder (bool, optional): Disable reordering this tab or having another tab cross over this tab. Fixes the position of this tab in relation to the order of neighboring tabs at start. 
-    		leading (bool, optional): Enforce the tab position to the left of the tab bar (after the tab list popup button).
-    		trailing (bool, optional): Enforce the tab position to the right of the tab bar (before the scrolling buttons).
-    		no_tooltip (bool, optional): Disable tooltip for the given tab.
-    		id (Union[int, str], optional): (deprecated) 
-    	Returns:
-    		Union[int, str]
+        Args:
+            label (str, optional): Overrides 'name' as label.
+            user_data (Any, optional): User data for callbacks
+            use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+            tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            indent (int, optional): Offsets the widget to the right the specified number multiplied by the indent style.
+            parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
+            before (Union[int, str], optional): This item will be displayed before the specified item in the parent.
+            payload_type (str, optional): Sender string type must be the same as the target for the target to run the payload_callback.
+            callback (Callable, optional): Registers a callback.
+            drag_callback (Callable, optional): Registers a drag callback for drag and drop.
+            drop_callback (Callable, optional): Registers a drop callback for drag and drop.
+            show (bool, optional): Attempt to render widget.
+            filter_key (str, optional): Used by filter widget.
+            tracked (bool, optional): Scroll tracking
+            track_offset (float, optional): 0.0f:top, 0.5f:center, 1.0f:bottom
+            no_reorder (bool, optional): Disable reordering this tab or having another tab cross over this tab. Fixes the position of this tab in relation to the order of neighboring tabs at start. 
+            leading (bool, optional): Enforce the tab position to the left of the tab bar (after the tab list popup button).
+            trailing (bool, optional): Enforce the tab position to the right of the tab bar (before the scrolling buttons).
+            no_tooltip (bool, optional): Disable tooltip for the given tab.
+            id (Union[int, str], optional): (deprecated) 
+        Returns:
+            Union[int, str]
     """
 
     label             : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
@@ -2102,29 +2102,29 @@ class TabButton(Widget):
 class MenuItem(Widget):
     """Adds a menu item to an existing menu. Menu items act similar to selectables and has a bool value. When placed in a menu the checkmark will reflect its value.
     
-    	Args:
-    		label (str, optional): Overrides 'name' as label.
-    		user_data (Any, optional): User data for callbacks
-    		use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
-    		tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-    		indent (int, optional): Offsets the widget to the right the specified number multiplied by the indent style.
-    		parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
-    		before (Union[int, str], optional): This item will be displayed before the specified item in the parent.
-    		payload_type (str, optional): Sender string type must be the same as the target for the target to run the payload_callback.
-    		callback (Callable, optional): Registers a callback.
-    		drop_callback (Callable, optional): Registers a drop callback for drag and drop.
-    		show (bool, optional): Attempt to render widget.
-    		enabled (bool, optional): Turns off functionality of widget and applies the disabled theme.
-    		filter_key (str, optional): Used by filter widget.
-    		tracked (bool, optional): Scroll tracking
-    		track_offset (float, optional): 0.0f:top, 0.5f:center, 1.0f:bottom
-    		default_value (bool, optional): This value also controls the checkmark when shown.
-    		shortcut (str, optional): Displays text on the menu item. Typically used to show a shortcut key command.
-    		check (bool, optional): Displays a checkmark on the menu item when it is selected and placed in a menu.
-    		id (Union[int, str], optional): (deprecated) 
-    		drag_callback (Callable, optional): (deprecated) 
-    	Returns:
-    		Union[int, str]
+        Args:
+            label (str, optional): Overrides 'name' as label.
+            user_data (Any, optional): User data for callbacks
+            use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+            tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            indent (int, optional): Offsets the widget to the right the specified number multiplied by the indent style.
+            parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
+            before (Union[int, str], optional): This item will be displayed before the specified item in the parent.
+            payload_type (str, optional): Sender string type must be the same as the target for the target to run the payload_callback.
+            callback (Callable, optional): Registers a callback.
+            drop_callback (Callable, optional): Registers a drop callback for drag and drop.
+            show (bool, optional): Attempt to render widget.
+            enabled (bool, optional): Turns off functionality of widget and applies the disabled theme.
+            filter_key (str, optional): Used by filter widget.
+            tracked (bool, optional): Scroll tracking
+            track_offset (float, optional): 0.0f:top, 0.5f:center, 1.0f:bottom
+            default_value (bool, optional): This value also controls the checkmark when shown.
+            shortcut (str, optional): Displays text on the menu item. Typically used to show a shortcut key command.
+            check (bool, optional): Displays a checkmark on the menu item when it is selected and placed in a menu.
+            id (Union[int, str], optional): (deprecated) 
+            drag_callback (Callable, optional): (deprecated) 
+        Returns:
+            Union[int, str]
     """
 
     label             : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
@@ -2199,33 +2199,33 @@ class MenuItem(Widget):
 class Image(Widget):
     """Adds an image from a specified texture. uv_min and uv_max represent the normalized texture coordinates of the original image that will be shown. Using range (0.0,0.0)->(1.0,1.0) for texture coordinates will generally display the entire texture.
     
-    	Args:
-    		texture_tag (Union[int, str]): The texture_tag should come from a texture that was added to a texture registry.
-    		label (str, optional): Overrides 'name' as label.
-    		user_data (Any, optional): User data for callbacks
-    		use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
-    		tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-    		width (int, optional): Width of the item.
-    		height (int, optional): Height of the item.
-    		indent (int, optional): Offsets the widget to the right the specified number multiplied by the indent style.
-    		parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
-    		before (Union[int, str], optional): This item will be displayed before the specified item in the parent.
-    		source (Union[int, str], optional): Overrides 'id' as value storage key.
-    		payload_type (str, optional): Sender string type must be the same as the target for the target to run the payload_callback.
-    		drag_callback (Callable, optional): Registers a drag callback for drag and drop.
-    		drop_callback (Callable, optional): Registers a drop callback for drag and drop.
-    		show (bool, optional): Attempt to render widget.
-    		pos (list[int] | tuple[int, ...], optional): Places the item relative to window coordinates, [0,0] is top left.
-    		filter_key (str, optional): Used by filter widget.
-    		tracked (bool, optional): Scroll tracking
-    		track_offset (float, optional): 0.0f:top, 0.5f:center, 1.0f:bottom
-    		tint_color (list[float] | tuple[float, ...], optional): Applies a color tint to the entire texture.
-    		border_color (list[float] | tuple[float, ...], optional): Displays a border of the specified color around the texture. If the theme style has turned off the border it will not be shown.
-    		uv_min (list[float] | tuple[float, ...], optional): Normalized texture coordinates min point.
-    		uv_max (list[float] | tuple[float, ...], optional): Normalized texture coordinates max point.
-    		id (Union[int, str], optional): (deprecated) 
-    	Returns:
-    		Union[int, str]
+        Args:
+            texture_tag (Union[int, str]): The texture_tag should come from a texture that was added to a texture registry.
+            label (str, optional): Overrides 'name' as label.
+            user_data (Any, optional): User data for callbacks
+            use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+            tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            width (int, optional): Width of the item.
+            height (int, optional): Height of the item.
+            indent (int, optional): Offsets the widget to the right the specified number multiplied by the indent style.
+            parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
+            before (Union[int, str], optional): This item will be displayed before the specified item in the parent.
+            source (Union[int, str], optional): Overrides 'id' as value storage key.
+            payload_type (str, optional): Sender string type must be the same as the target for the target to run the payload_callback.
+            drag_callback (Callable, optional): Registers a drag callback for drag and drop.
+            drop_callback (Callable, optional): Registers a drop callback for drag and drop.
+            show (bool, optional): Attempt to render widget.
+            pos (list[int] | tuple[int, ...], optional): Places the item relative to window coordinates, [0,0] is top left.
+            filter_key (str, optional): Used by filter widget.
+            tracked (bool, optional): Scroll tracking
+            track_offset (float, optional): 0.0f:top, 0.5f:center, 1.0f:bottom
+            tint_color (list[float] | tuple[float, ...], optional): Applies a color tint to the entire texture.
+            border_color (list[float] | tuple[float, ...], optional): Displays a border of the specified color around the texture. If the theme style has turned off the border it will not be shown.
+            uv_min (list[float] | tuple[float, ...], optional): Normalized texture coordinates min point.
+            uv_max (list[float] | tuple[float, ...], optional): Normalized texture coordinates max point.
+            id (Union[int, str], optional): (deprecated) 
+        Returns:
+            Union[int, str]
     """
 
     texture_tag         : Union[int, str]                       = ItemAttribute("configuration", "get_item_config", "set_item_config", None)

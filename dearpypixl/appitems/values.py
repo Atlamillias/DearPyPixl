@@ -32,17 +32,17 @@ __all__ = [
 class IntValue(Widget):
     """Adds a int value.
     
-    	Args:
-    		label (str, optional): Overrides 'name' as label.
-    		user_data (Any, optional): User data for callbacks
-    		use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
-    		tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-    		source (Union[int, str], optional): Overrides 'id' as value storage key.
-    		default_value (int, optional): 
-    		parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
-    		id (Union[int, str], optional): (deprecated) 
-    	Returns:
-    		Union[int, str]
+        Args:
+            label (str, optional): Overrides 'name' as label.
+            user_data (Any, optional): User data for callbacks
+            use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+            tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            source (Union[int, str], optional): Overrides 'id' as value storage key.
+            default_value (int, optional): 
+            parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
+            id (Union[int, str], optional): (deprecated) 
+        Returns:
+            Union[int, str]
     """
 
     label             : str             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
@@ -85,17 +85,17 @@ class IntValue(Widget):
 class Int4Value(Widget):
     """Adds a int4 value.
     
-    	Args:
-    		label (str, optional): Overrides 'name' as label.
-    		user_data (Any, optional): User data for callbacks
-    		use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
-    		tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-    		source (Union[int, str], optional): Overrides 'id' as value storage key.
-    		default_value (Union[List[int], Tuple[int, ...]], optional): 
-    		parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
-    		id (Union[int, str], optional): (deprecated) 
-    	Returns:
-    		Union[int, str]
+        Args:
+            label (str, optional): Overrides 'name' as label.
+            user_data (Any, optional): User data for callbacks
+            use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+            tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            source (Union[int, str], optional): Overrides 'id' as value storage key.
+            default_value (Union[List[int], Tuple[int, ...]], optional): 
+            parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
+            id (Union[int, str], optional): (deprecated) 
+        Returns:
+            Union[int, str]
     """
 
     label             : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
@@ -138,17 +138,17 @@ class Int4Value(Widget):
 class BoolValue(Widget):
     """Adds a bool value.
     
-    	Args:
-    		label (str, optional): Overrides 'name' as label.
-    		user_data (Any, optional): User data for callbacks
-    		use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
-    		tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-    		source (Union[int, str], optional): Overrides 'id' as value storage key.
-    		default_value (bool, optional): 
-    		parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
-    		id (Union[int, str], optional): (deprecated) 
-    	Returns:
-    		Union[int, str]
+        Args:
+            label (str, optional): Overrides 'name' as label.
+            user_data (Any, optional): User data for callbacks
+            use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+            tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            source (Union[int, str], optional): Overrides 'id' as value storage key.
+            default_value (bool, optional): 
+            parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
+            id (Union[int, str], optional): (deprecated) 
+        Returns:
+            Union[int, str]
     """
 
     label             : str             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
@@ -191,17 +191,17 @@ class BoolValue(Widget):
 class FloatValue(Widget):
     """Adds a float value.
     
-    	Args:
-    		label (str, optional): Overrides 'name' as label.
-    		user_data (Any, optional): User data for callbacks
-    		use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
-    		tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-    		source (Union[int, str], optional): Overrides 'id' as value storage key.
-    		default_value (float, optional): 
-    		parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
-    		id (Union[int, str], optional): (deprecated) 
-    	Returns:
-    		Union[int, str]
+        Args:
+            label (str, optional): Overrides 'name' as label.
+            user_data (Any, optional): User data for callbacks
+            use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+            tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            source (Union[int, str], optional): Overrides 'id' as value storage key.
+            default_value (float, optional): 
+            parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
+            id (Union[int, str], optional): (deprecated) 
+        Returns:
+            Union[int, str]
     """
 
     label             : str             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
@@ -244,17 +244,17 @@ class FloatValue(Widget):
 class Float4Value(Widget):
     """Adds a float4 value.
     
-    	Args:
-    		label (str, optional): Overrides 'name' as label.
-    		user_data (Any, optional): User data for callbacks
-    		use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
-    		tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-    		source (Union[int, str], optional): Overrides 'id' as value storage key.
-    		default_value (Union[List[float], Tuple[float, ...]], optional): 
-    		parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
-    		id (Union[int, str], optional): (deprecated) 
-    	Returns:
-    		Union[int, str]
+        Args:
+            label (str, optional): Overrides 'name' as label.
+            user_data (Any, optional): User data for callbacks
+            use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+            tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            source (Union[int, str], optional): Overrides 'id' as value storage key.
+            default_value (Union[List[float], Tuple[float, ...]], optional): 
+            parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
+            id (Union[int, str], optional): (deprecated) 
+        Returns:
+            Union[int, str]
     """
 
     label             : str                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
@@ -297,17 +297,17 @@ class Float4Value(Widget):
 class StringValue(Widget):
     """Adds a string value.
     
-    	Args:
-    		label (str, optional): Overrides 'name' as label.
-    		user_data (Any, optional): User data for callbacks
-    		use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
-    		tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-    		source (Union[int, str], optional): Overrides 'id' as value storage key.
-    		default_value (str, optional): 
-    		parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
-    		id (Union[int, str], optional): (deprecated) 
-    	Returns:
-    		Union[int, str]
+        Args:
+            label (str, optional): Overrides 'name' as label.
+            user_data (Any, optional): User data for callbacks
+            use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+            tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            source (Union[int, str], optional): Overrides 'id' as value storage key.
+            default_value (str, optional): 
+            parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
+            id (Union[int, str], optional): (deprecated) 
+        Returns:
+            Union[int, str]
     """
 
     label             : str             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
@@ -350,17 +350,17 @@ class StringValue(Widget):
 class DoubleValue(Widget):
     """Adds a double value.
     
-    	Args:
-    		label (str, optional): Overrides 'name' as label.
-    		user_data (Any, optional): User data for callbacks
-    		use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
-    		tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-    		source (Union[int, str], optional): Overrides 'id' as value storage key.
-    		default_value (float, optional): 
-    		parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
-    		id (Union[int, str], optional): (deprecated) 
-    	Returns:
-    		Union[int, str]
+        Args:
+            label (str, optional): Overrides 'name' as label.
+            user_data (Any, optional): User data for callbacks
+            use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+            tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            source (Union[int, str], optional): Overrides 'id' as value storage key.
+            default_value (float, optional): 
+            parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
+            id (Union[int, str], optional): (deprecated) 
+        Returns:
+            Union[int, str]
     """
 
     label             : str             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
@@ -403,17 +403,17 @@ class DoubleValue(Widget):
 class Double4Value(Widget):
     """Adds a double value.
     
-    	Args:
-    		label (str, optional): Overrides 'name' as label.
-    		user_data (Any, optional): User data for callbacks
-    		use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
-    		tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-    		source (Union[int, str], optional): Overrides 'id' as value storage key.
-    		default_value (Any, optional): 
-    		parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
-    		id (Union[int, str], optional): (deprecated) 
-    	Returns:
-    		Union[int, str]
+        Args:
+            label (str, optional): Overrides 'name' as label.
+            user_data (Any, optional): User data for callbacks
+            use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+            tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            source (Union[int, str], optional): Overrides 'id' as value storage key.
+            default_value (Any, optional): 
+            parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
+            id (Union[int, str], optional): (deprecated) 
+        Returns:
+            Union[int, str]
     """
 
     label             : str             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
@@ -456,17 +456,17 @@ class Double4Value(Widget):
 class ColorValue(Widget):
     """Adds a color value.
     
-    	Args:
-    		label (str, optional): Overrides 'name' as label.
-    		user_data (Any, optional): User data for callbacks
-    		use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
-    		tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-    		source (Union[int, str], optional): Overrides 'id' as value storage key.
-    		default_value (Union[List[float], Tuple[float, ...]], optional): 
-    		parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
-    		id (Union[int, str], optional): (deprecated) 
-    	Returns:
-    		Union[int, str]
+        Args:
+            label (str, optional): Overrides 'name' as label.
+            user_data (Any, optional): User data for callbacks
+            use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+            tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            source (Union[int, str], optional): Overrides 'id' as value storage key.
+            default_value (Union[List[float], Tuple[float, ...]], optional): 
+            parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
+            id (Union[int, str], optional): (deprecated) 
+        Returns:
+            Union[int, str]
     """
 
     label             : str                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
@@ -509,17 +509,17 @@ class ColorValue(Widget):
 class FloatVectValue(Widget):
     """Adds a float vect value.
     
-    	Args:
-    		label (str, optional): Overrides 'name' as label.
-    		user_data (Any, optional): User data for callbacks
-    		use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
-    		tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-    		source (Union[int, str], optional): Overrides 'id' as value storage key.
-    		default_value (Union[List[float], Tuple[float, ...]], optional): 
-    		parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
-    		id (Union[int, str], optional): (deprecated) 
-    	Returns:
-    		Union[int, str]
+        Args:
+            label (str, optional): Overrides 'name' as label.
+            user_data (Any, optional): User data for callbacks
+            use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+            tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            source (Union[int, str], optional): Overrides 'id' as value storage key.
+            default_value (Union[List[float], Tuple[float, ...]], optional): 
+            parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
+            id (Union[int, str], optional): (deprecated) 
+        Returns:
+            Union[int, str]
     """
 
     label             : str                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
@@ -562,17 +562,17 @@ class FloatVectValue(Widget):
 class SeriesValue(Widget):
     """Adds a plot series value.
     
-    	Args:
-    		label (str, optional): Overrides 'name' as label.
-    		user_data (Any, optional): User data for callbacks
-    		use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
-    		tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-    		source (Union[int, str], optional): Overrides 'id' as value storage key.
-    		default_value (Any, optional): 
-    		parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
-    		id (Union[int, str], optional): (deprecated) 
-    	Returns:
-    		Union[int, str]
+        Args:
+            label (str, optional): Overrides 'name' as label.
+            user_data (Any, optional): User data for callbacks
+            use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+            tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            source (Union[int, str], optional): Overrides 'id' as value storage key.
+            default_value (Any, optional): 
+            parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
+            id (Union[int, str], optional): (deprecated) 
+        Returns:
+            Union[int, str]
     """
 
     label             : str             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         

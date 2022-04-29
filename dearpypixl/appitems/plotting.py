@@ -45,51 +45,51 @@ __all__ = [
 class Plot(Widget):
     """Adds a plot which is used to hold series, and can be drawn to with draw commands.
     
-    	Args:
-    		label (str, optional): Overrides 'name' as label.
-    		user_data (Any, optional): User data for callbacks
-    		use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
-    		tag (int | str      , optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-    		width (int, optional): Width of the item.
-    		height (int, optional): Height of the item.
-    		indent (int, optional): Offsets the widget to the right the specified number multiplied by the indent style.
-    		parent (int | str      , optional): Parent to add this item to. (runtime adding)
-    		before (int | str      , optional): This item will be displayed before the specified item in the parent.
-    		payload_type (str, optional): Sender string type must be the same as the target for the target to run the payload_callback.
-    		callback (Callable, optional): Registers a callback.
-    		drag_callback (Callable, optional): Registers a drag callback for drag and drop.
-    		drop_callback (Callable, optional): Registers a drop callback for drag and drop.
-    		show (bool, optional): Attempt to render widget.
-    		pos (list[int] | tuple[int, ...]      , optional): Places the item relative to window coordinates, [0,0] is top left.
-    		filter_key (str, optional): Used by filter widget.
-    		delay_search (bool, optional): Delays searching container for specified items until the end of the app. Possible optimization when a container has many children that are not accessed often.
-    		tracked (bool, optional): Scroll tracking
-    		track_offset (float, optional): 0.0f:top, 0.5f:center, 1.0f:bottom
-    		no_title (bool, optional): 
-    		no_menus (bool, optional): 
-    		no_box_select (bool, optional): 
-    		no_mouse_pos (bool, optional): 
-    		no_highlight (bool, optional): 
-    		no_child (bool, optional): 
-    		query (bool, optional): 
-    		crosshairs (bool, optional): 
-    		anti_aliased (bool, optional): 
-    		equal_aspects (bool, optional): 
-    		pan_button (int, optional): enables panning when held
-    		pan_mod (int, optional): optional modifier that must be held for panning
-    		fit_button (int, optional): fits visible data when double clicked
-    		context_menu_button (int, optional): opens plot context menu (if enabled) when clicked
-    		box_select_button (int, optional): begins box selection when pressed and confirms selection when released
-    		box_select_mod (int, optional): begins box selection when pressed and confirms selection when released
-    		box_select_cancel_button (int, optional): cancels active box selection when pressed
-    		query_button (int, optional): begins query selection when pressed and end query selection when released
-    		query_mod (int, optional): optional modifier that must be held for query selection
-    		query_toggle_mod (int, optional): when held, active box selections turn into queries
-    		horizontal_mod (int, optional): expands active box selection/query horizontally to plot edge when held
-    		vertical_mod (int, optional): expands active box selection/query vertically to plot edge when held
-    		id (int | str      , optional): (deprecated) 
-    	Returns:
-    		int | str      
+        Args:
+            label (str, optional): Overrides 'name' as label.
+            user_data (Any, optional): User data for callbacks
+            use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+            tag (int | str, optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            width (int, optional): Width of the item.
+            height (int, optional): Height of the item.
+            indent (int, optional): Offsets the widget to the right the specified number multiplied by the indent style.
+            parent (int | str, optional): Parent to add this item to. (runtime adding)
+            before (int | str, optional): This item will be displayed before the specified item in the parent.
+            payload_type (str, optional): Sender string type must be the same as the target for the target to run the payload_callback.
+            callback (Callable, optional): Registers a callback.
+            drag_callback (Callable, optional): Registers a drag callback for drag and drop.
+            drop_callback (Callable, optional): Registers a drop callback for drag and drop.
+            show (bool, optional): Attempt to render widget.
+            pos (list[int] | tuple[int, ...]      , optional): Places the item relative to window coordinates, [0,0] is top left.
+            filter_key (str, optional): Used by filter widget.
+            delay_search (bool, optional): Delays searching container for specified items until the end of the app. Possible optimization when a container has many children that are not accessed often.
+            tracked (bool, optional): Scroll tracking
+            track_offset (float, optional): 0.0f:top, 0.5f:center, 1.0f:bottom
+            no_title (bool, optional): 
+            no_menus (bool, optional): 
+            no_box_select (bool, optional): 
+            no_mouse_pos (bool, optional): 
+            no_highlight (bool, optional): 
+            no_child (bool, optional): 
+            query (bool, optional): 
+            crosshairs (bool, optional): 
+            anti_aliased (bool, optional): 
+            equal_aspects (bool, optional): 
+            pan_button (int, optional): enables panning when held
+            pan_mod (int, optional): optional modifier that must be held for panning
+            fit_button (int, optional): fits visible data when double clicked
+            context_menu_button (int, optional): opens plot context menu (if enabled) when clicked
+            box_select_button (int, optional): begins box selection when pressed and confirms selection when released
+            box_select_mod (int, optional): begins box selection when pressed and confirms selection when released
+            box_select_cancel_button (int, optional): cancels active box selection when pressed
+            query_button (int, optional): begins query selection when pressed and end query selection when released
+            query_mod (int, optional): optional modifier that must be held for query selection
+            query_toggle_mod (int, optional): when held, active box selections turn into queries
+            horizontal_mod (int, optional): expands active box selection/query horizontally to plot edge when held
+            vertical_mod (int, optional): expands active box selection/query vertically to plot edge when held
+            id (int | str, optional): (deprecated) 
+        Returns:
+            int | str      
     """
 
     label                   : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                                                                                                                                                                                                                                                                                     
@@ -248,21 +248,21 @@ class Plot(Widget):
 class PlotLegend(Widget):
     """Adds a plot legend to a plot.
     
-    	Args:
-    		label (str, optional): Overrides 'name' as label.
-    		user_data (Any, optional): User data for callbacks
-    		use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
-    		tag (int | str      , optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-    		parent (int | str      , optional): Parent to add this item to. (runtime adding)
-    		payload_type (str, optional): Sender string type must be the same as the target for the target to run the payload_callback.
-    		drop_callback (Callable, optional): Registers a drop callback for drag and drop.
-    		show (bool, optional): Attempt to render widget.
-    		location (int, optional): location, mvPlot_Location_*
-    		horizontal (bool, optional): 
-    		outside (bool, optional): 
-    		id (int | str      , optional): (deprecated) 
-    	Returns:
-    		int | str      
+        Args:
+            label (str, optional): Overrides 'name' as label.
+            user_data (Any, optional): User data for callbacks
+            use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+            tag (int | str, optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            parent (int | str, optional): Parent to add this item to. (runtime adding)
+            payload_type (str, optional): Sender string type must be the same as the target for the target to run the payload_callback.
+            drop_callback (Callable, optional): Registers a drop callback for drag and drop.
+            show (bool, optional): Attempt to render widget.
+            location (int, optional): location, mvPlot_Location_*
+            horizontal (bool, optional): 
+            outside (bool, optional): 
+            id (int | str, optional): (deprecated) 
+        Returns:
+            int | str      
     """
 
     label             : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                      
@@ -316,27 +316,27 @@ class PlotLegend(Widget):
 class PlotAxis(Widget):
     """Adds an axis to a plot.
     
-    	Args:
-    		axis (int): 
-    		label (str, optional): Overrides 'name' as label.
-    		user_data (Any, optional): User data for callbacks
-    		use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
-    		tag (int | str      , optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-    		parent (int | str      , optional): Parent to add this item to. (runtime adding)
-    		payload_type (str, optional): Sender string type must be the same as the target for the target to run the payload_callback.
-    		drop_callback (Callable, optional): Registers a drop callback for drag and drop.
-    		show (bool, optional): Attempt to render widget.
-    		no_gridlines (bool, optional): 
-    		no_tick_marks (bool, optional): 
-    		no_tick_labels (bool, optional): 
-    		log_scale (bool, optional): 
-    		invert (bool, optional): 
-    		lock_min (bool, optional): 
-    		lock_max (bool, optional): 
-    		time (bool, optional): 
-    		id (int | str      , optional): (deprecated) 
-    	Returns:
-    		int | str      
+        Args:
+            axis (int): 
+            label (str, optional): Overrides 'name' as label.
+            user_data (Any, optional): User data for callbacks
+            use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+            tag (int | str, optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            parent (int | str, optional): Parent to add this item to. (runtime adding)
+            payload_type (str, optional): Sender string type must be the same as the target for the target to run the payload_callback.
+            drop_callback (Callable, optional): Registers a drop callback for drag and drop.
+            show (bool, optional): Attempt to render widget.
+            no_gridlines (bool, optional): 
+            no_tick_marks (bool, optional): 
+            no_tick_labels (bool, optional): 
+            log_scale (bool, optional): 
+            invert (bool, optional): 
+            lock_min (bool, optional): 
+            lock_max (bool, optional): 
+            time (bool, optional): 
+            id (int | str, optional): (deprecated) 
+        Returns:
+            int | str      
     """
 
     axis              : int      = ItemAttribute("configuration", "get_item_cached", "set_item_cached_config", None)                                       
@@ -408,23 +408,23 @@ class PlotAxis(Widget):
 class DragPoint(Widget):
     """Adds a drag point to a plot.
     
-    	Args:
-    		label (str, optional): Overrides 'name' as label.
-    		user_data (Any, optional): User data for callbacks
-    		use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
-    		tag (int | str      , optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-    		parent (int | str      , optional): Parent to add this item to. (runtime adding)
-    		before (int | str      , optional): This item will be displayed before the specified item in the parent.
-    		source (int | str      , optional): Overrides 'id' as value storage key.
-    		callback (Callable, optional): Registers a callback.
-    		show (bool, optional): Attempt to render widget.
-    		default_value (Any, optional): 
-    		color (list[int] | tuple[int, ...]      , optional): 
-    		thickness (float, optional): 
-    		show_label (bool, optional): 
-    		id (int | str      , optional): (deprecated) 
-    	Returns:
-    		int | str      
+        Args:
+            label (str, optional): Overrides 'name' as label.
+            user_data (Any, optional): User data for callbacks
+            use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+            tag (int | str, optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            parent (int | str, optional): Parent to add this item to. (runtime adding)
+            before (int | str, optional): This item will be displayed before the specified item in the parent.
+            source (int | str, optional): Overrides 'id' as value storage key.
+            callback (Callable, optional): Registers a callback.
+            show (bool, optional): Attempt to render widget.
+            default_value (Any, optional): 
+            color (list[int] | tuple[int, ...]      , optional): 
+            thickness (float, optional): 
+            show_label (bool, optional): 
+            id (int | str, optional): (deprecated) 
+        Returns:
+            int | str      
     """
 
     label             : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
@@ -484,24 +484,24 @@ class DragPoint(Widget):
 class DragLine(Widget):
     """Adds a drag line to a plot.
     
-    	Args:
-    		label (str, optional): Overrides 'name' as label.
-    		user_data (Any, optional): User data for callbacks
-    		use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
-    		tag (int | str      , optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-    		parent (int | str      , optional): Parent to add this item to. (runtime adding)
-    		before (int | str      , optional): This item will be displayed before the specified item in the parent.
-    		source (int | str      , optional): Overrides 'id' as value storage key.
-    		callback (Callable, optional): Registers a callback.
-    		show (bool, optional): Attempt to render widget.
-    		default_value (Any, optional): 
-    		color (list[int] | tuple[int, ...]      , optional): 
-    		thickness (float, optional): 
-    		show_label (bool, optional): 
-    		vertical (bool, optional): 
-    		id (int | str      , optional): (deprecated) 
-    	Returns:
-    		int | str      
+        Args:
+            label (str, optional): Overrides 'name' as label.
+            user_data (Any, optional): User data for callbacks
+            use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+            tag (int | str, optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            parent (int | str, optional): Parent to add this item to. (runtime adding)
+            before (int | str, optional): This item will be displayed before the specified item in the parent.
+            source (int | str, optional): Overrides 'id' as value storage key.
+            callback (Callable, optional): Registers a callback.
+            show (bool, optional): Attempt to render widget.
+            default_value (Any, optional): 
+            color (list[int] | tuple[int, ...]      , optional): 
+            thickness (float, optional): 
+            show_label (bool, optional): 
+            vertical (bool, optional): 
+            id (int | str, optional): (deprecated) 
+        Returns:
+            int | str      
     """
 
     label             : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
@@ -564,22 +564,22 @@ class DragLine(Widget):
 class Annotation(Widget):
     """Adds an annotation to a plot.
     
-    	Args:
-    		label (str, optional): Overrides 'name' as label.
-    		user_data (Any, optional): User data for callbacks
-    		use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
-    		tag (int | str      , optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-    		parent (int | str      , optional): Parent to add this item to. (runtime adding)
-    		before (int | str      , optional): This item will be displayed before the specified item in the parent.
-    		source (int | str      , optional): Overrides 'id' as value storage key.
-    		show (bool, optional): Attempt to render widget.
-    		default_value (Any, optional): 
-    		offset (Union[List[float], Tuple[float, ...]], optional): 
-    		color (list[int] | tuple[int, ...]      , optional): 
-    		clamped (bool, optional): 
-    		id (int | str      , optional): (deprecated) 
-    	Returns:
-    		int | str      
+        Args:
+            label (str, optional): Overrides 'name' as label.
+            user_data (Any, optional): User data for callbacks
+            use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+            tag (int | str, optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            parent (int | str, optional): Parent to add this item to. (runtime adding)
+            before (int | str, optional): This item will be displayed before the specified item in the parent.
+            source (int | str, optional): Overrides 'id' as value storage key.
+            show (bool, optional): Attempt to render widget.
+            default_value (Any, optional): 
+            offset (Union[List[float], Tuple[float, ...]], optional): 
+            color (list[int] | tuple[int, ...]      , optional): 
+            clamped (bool, optional): 
+            id (int | str, optional): (deprecated) 
+        Returns:
+            int | str      
     """
 
     label             : str                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
@@ -636,39 +636,39 @@ class Annotation(Widget):
 class SubPlots(Widget):
     """Adds a collection of plots.
     
-    	Args:
-    		rows (int): 
-    		columns (int): 
-    		label (str, optional): Overrides 'name' as label.
-    		user_data (Any, optional): User data for callbacks
-    		use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
-    		tag (int | str      , optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-    		width (int, optional): Width of the item.
-    		height (int, optional): Height of the item.
-    		indent (int, optional): Offsets the widget to the right the specified number multiplied by the indent style.
-    		parent (int | str      , optional): Parent to add this item to. (runtime adding)
-    		before (int | str      , optional): This item will be displayed before the specified item in the parent.
-    		callback (Callable, optional): Registers a callback.
-    		show (bool, optional): Attempt to render widget.
-    		pos (list[int] | tuple[int, ...]      , optional): Places the item relative to window coordinates, [0,0] is top left.
-    		filter_key (str, optional): Used by filter widget.
-    		delay_search (bool, optional): Delays searching container for specified items until the end of the app. Possible optimization when a container has many children that are not accessed often.
-    		tracked (bool, optional): Scroll tracking
-    		track_offset (float, optional): 0.0f:top, 0.5f:center, 1.0f:bottom
-    		row_ratios (Union[List[float], Tuple[float, ...]], optional): 
-    		column_ratios (Union[List[float], Tuple[float, ...]], optional): 
-    		no_title (bool, optional): 
-    		no_menus (bool, optional): the user will not be able to open context menus with right-click
-    		no_resize (bool, optional): resize splitters between subplot cells will be not be provided
-    		no_align (bool, optional): subplot edges will not be aligned vertically or horizontally
-    		link_rows (bool, optional): link the y-axis limits of all plots in each row (does not apply auxiliary y-axes)
-    		link_columns (bool, optional): link the x-axis limits of all plots in each column
-    		link_all_x (bool, optional): link the x-axis limits in every plot in the subplot
-    		link_all_y (bool, optional): link the y-axis limits in every plot in the subplot (does not apply to auxiliary y-axes)
-    		column_major (bool, optional): subplots are added in column major order instead of the default row major order
-    		id (int | str      , optional): (deprecated) 
-    	Returns:
-    		int | str      
+        Args:
+            rows (int): 
+            columns (int): 
+            label (str, optional): Overrides 'name' as label.
+            user_data (Any, optional): User data for callbacks
+            use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+            tag (int | str, optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            width (int, optional): Width of the item.
+            height (int, optional): Height of the item.
+            indent (int, optional): Offsets the widget to the right the specified number multiplied by the indent style.
+            parent (int | str, optional): Parent to add this item to. (runtime adding)
+            before (int | str, optional): This item will be displayed before the specified item in the parent.
+            callback (Callable, optional): Registers a callback.
+            show (bool, optional): Attempt to render widget.
+            pos (list[int] | tuple[int, ...]      , optional): Places the item relative to window coordinates, [0,0] is top left.
+            filter_key (str, optional): Used by filter widget.
+            delay_search (bool, optional): Delays searching container for specified items until the end of the app. Possible optimization when a container has many children that are not accessed often.
+            tracked (bool, optional): Scroll tracking
+            track_offset (float, optional): 0.0f:top, 0.5f:center, 1.0f:bottom
+            row_ratios (Union[List[float], Tuple[float, ...]], optional): 
+            column_ratios (Union[List[float], Tuple[float, ...]], optional): 
+            no_title (bool, optional): 
+            no_menus (bool, optional): the user will not be able to open context menus with right-click
+            no_resize (bool, optional): resize splitters between subplot cells will be not be provided
+            no_align (bool, optional): subplot edges will not be aligned vertically or horizontally
+            link_rows (bool, optional): link the y-axis limits of all plots in each row (does not apply auxiliary y-axes)
+            link_columns (bool, optional): link the x-axis limits of all plots in each column
+            link_all_x (bool, optional): link the x-axis limits in every plot in the subplot
+            link_all_y (bool, optional): link the y-axis limits in every plot in the subplot (does not apply to auxiliary y-axes)
+            column_major (bool, optional): subplots are added in column major order instead of the default row major order
+            id (int | str, optional): (deprecated) 
+        Returns:
+            int | str      
     """
 
     rows              : int                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)  
@@ -775,33 +775,33 @@ class SubPlots(Widget):
 class SimplePlot(Widget):
     """Adds a simple plot for visualization of a 1 dimensional set of values.
     
-    	Args:
-    		label (str, optional): Overrides 'name' as label.
-    		user_data (Any, optional): User data for callbacks
-    		use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
-    		tag (int | str      , optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-    		width (int, optional): Width of the item.
-    		height (int, optional): Height of the item.
-    		indent (int, optional): Offsets the widget to the right the specified number multiplied by the indent style.
-    		parent (int | str      , optional): Parent to add this item to. (runtime adding)
-    		before (int | str      , optional): This item will be displayed before the specified item in the parent.
-    		source (int | str      , optional): Overrides 'id' as value storage key.
-    		payload_type (str, optional): Sender string type must be the same as the target for the target to run the payload_callback.
-    		drag_callback (Callable, optional): Registers a drag callback for drag and drop.
-    		drop_callback (Callable, optional): Registers a drop callback for drag and drop.
-    		show (bool, optional): Attempt to render widget.
-    		filter_key (str, optional): Used by filter widget.
-    		tracked (bool, optional): Scroll tracking
-    		track_offset (float, optional): 0.0f:top, 0.5f:center, 1.0f:bottom
-    		default_value (Union[List[float], Tuple[float, ...]], optional): 
-    		overlay (str, optional): overlays text (similar to a plot title)
-    		histogram (bool, optional): 
-    		autosize (bool, optional): 
-    		min_scale (float, optional): 
-    		max_scale (float, optional): 
-    		id (int | str      , optional): (deprecated) 
-    	Returns:
-    		int | str      
+        Args:
+            label (str, optional): Overrides 'name' as label.
+            user_data (Any, optional): User data for callbacks
+            use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+            tag (int | str, optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            width (int, optional): Width of the item.
+            height (int, optional): Height of the item.
+            indent (int, optional): Offsets the widget to the right the specified number multiplied by the indent style.
+            parent (int | str, optional): Parent to add this item to. (runtime adding)
+            before (int | str, optional): This item will be displayed before the specified item in the parent.
+            source (int | str, optional): Overrides 'id' as value storage key.
+            payload_type (str, optional): Sender string type must be the same as the target for the target to run the payload_callback.
+            drag_callback (Callable, optional): Registers a drag callback for drag and drop.
+            drop_callback (Callable, optional): Registers a drop callback for drag and drop.
+            show (bool, optional): Attempt to render widget.
+            filter_key (str, optional): Used by filter widget.
+            tracked (bool, optional): Scroll tracking
+            track_offset (float, optional): 0.0f:top, 0.5f:center, 1.0f:bottom
+            default_value (Union[List[float], Tuple[float, ...]], optional): 
+            overlay (str, optional): overlays text (similar to a plot title)
+            histogram (bool, optional): 
+            autosize (bool, optional): 
+            min_scale (float, optional): 
+            max_scale (float, optional): 
+            id (int | str, optional): (deprecated) 
+        Returns:
+            int | str      
     """
 
     label             : str                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
@@ -891,20 +891,20 @@ class SimplePlot(Widget):
 class LineSeries(Widget):
     """Adds a line series to a plot.
     
-    	Args:
-    		x (Any): 
-    		y (Any): 
-    		label (str, optional): Overrides 'name' as label.
-    		user_data (Any, optional): User data for callbacks
-    		use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
-    		tag (int | str      , optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-    		parent (int | str      , optional): Parent to add this item to. (runtime adding)
-    		before (int | str      , optional): This item will be displayed before the specified item in the parent.
-    		source (int | str      , optional): Overrides 'id' as value storage key.
-    		show (bool, optional): Attempt to render widget.
-    		id (int | str      , optional): (deprecated) 
-    	Returns:
-    		int | str      
+        Args:
+            x (Any): 
+            y (Any): 
+            label (str, optional): Overrides 'name' as label.
+            user_data (Any, optional): User data for callbacks
+            use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+            tag (int | str, optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            parent (int | str, optional): Parent to add this item to. (runtime adding)
+            before (int | str, optional): This item will be displayed before the specified item in the parent.
+            source (int | str, optional): Overrides 'id' as value storage key.
+            show (bool, optional): Attempt to render widget.
+            id (int | str, optional): (deprecated) 
+        Returns:
+            int | str      
     """
 
     x                 : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
@@ -954,22 +954,22 @@ class LineSeries(Widget):
 class BarSeries(Widget):
     """Adds a bar series to a plot.
     
-    	Args:
-    		x (Any): 
-    		y (Any): 
-    		label (str, optional): Overrides 'name' as label.
-    		user_data (Any, optional): User data for callbacks
-    		use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
-    		tag (int | str      , optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-    		parent (int | str      , optional): Parent to add this item to. (runtime adding)
-    		before (int | str      , optional): This item will be displayed before the specified item in the parent.
-    		source (int | str      , optional): Overrides 'id' as value storage key.
-    		show (bool, optional): Attempt to render widget.
-    		weight (float, optional): 
-    		horizontal (bool, optional): 
-    		id (int | str      , optional): (deprecated) 
-    	Returns:
-    		int | str      
+        Args:
+            x (Any): 
+            y (Any): 
+            label (str, optional): Overrides 'name' as label.
+            user_data (Any, optional): User data for callbacks
+            use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+            tag (int | str, optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            parent (int | str, optional): Parent to add this item to. (runtime adding)
+            before (int | str, optional): This item will be displayed before the specified item in the parent.
+            source (int | str, optional): Overrides 'id' as value storage key.
+            show (bool, optional): Attempt to render widget.
+            weight (float, optional): 
+            horizontal (bool, optional): 
+            id (int | str, optional): (deprecated) 
+        Returns:
+            int | str      
     """
 
     x                 : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
@@ -1025,20 +1025,20 @@ class BarSeries(Widget):
 class ScatterSeries(Widget):
     """Adds a scatter series to a plot.
     
-    	Args:
-    		x (Any): 
-    		y (Any): 
-    		label (str, optional): Overrides 'name' as label.
-    		user_data (Any, optional): User data for callbacks
-    		use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
-    		tag (int | str      , optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-    		parent (int | str      , optional): Parent to add this item to. (runtime adding)
-    		before (int | str      , optional): This item will be displayed before the specified item in the parent.
-    		source (int | str      , optional): Overrides 'id' as value storage key.
-    		show (bool, optional): Attempt to render widget.
-    		id (int | str      , optional): (deprecated) 
-    	Returns:
-    		int | str      
+        Args:
+            x (Any): 
+            y (Any): 
+            label (str, optional): Overrides 'name' as label.
+            user_data (Any, optional): User data for callbacks
+            use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+            tag (int | str, optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            parent (int | str, optional): Parent to add this item to. (runtime adding)
+            before (int | str, optional): This item will be displayed before the specified item in the parent.
+            source (int | str, optional): Overrides 'id' as value storage key.
+            show (bool, optional): Attempt to render widget.
+            id (int | str, optional): (deprecated) 
+        Returns:
+            int | str      
     """
 
     x                 : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
@@ -1088,22 +1088,22 @@ class ScatterSeries(Widget):
 class AreaSeries(Widget):
     """Adds an area series to a plot.
     
-    	Args:
-    		x (Any): 
-    		y (Any): 
-    		label (str, optional): Overrides 'name' as label.
-    		user_data (Any, optional): User data for callbacks
-    		use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
-    		tag (int | str      , optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-    		parent (int | str      , optional): Parent to add this item to. (runtime adding)
-    		before (int | str      , optional): This item will be displayed before the specified item in the parent.
-    		source (int | str      , optional): Overrides 'id' as value storage key.
-    		show (bool, optional): Attempt to render widget.
-    		fill (list[int] | tuple[int, ...]      , optional): 
-    		contribute_to_bounds (bool, optional): 
-    		id (int | str      , optional): (deprecated) 
-    	Returns:
-    		int | str      
+        Args:
+            x (Any): 
+            y (Any): 
+            label (str, optional): Overrides 'name' as label.
+            user_data (Any, optional): User data for callbacks
+            use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+            tag (int | str, optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            parent (int | str, optional): Parent to add this item to. (runtime adding)
+            before (int | str, optional): This item will be displayed before the specified item in the parent.
+            source (int | str, optional): Overrides 'id' as value storage key.
+            show (bool, optional): Attempt to render widget.
+            fill (list[int] | tuple[int, ...]      , optional): 
+            contribute_to_bounds (bool, optional): 
+            id (int | str, optional): (deprecated) 
+        Returns:
+            int | str      
     """
 
     x                   : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
@@ -1159,21 +1159,21 @@ class AreaSeries(Widget):
 class StemSeries(Widget):
     """Adds a stem series to a plot.
     
-    	Args:
-    		x (Any): 
-    		y (Any): 
-    		label (str, optional): Overrides 'name' as label.
-    		user_data (Any, optional): User data for callbacks
-    		use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
-    		tag (int | str      , optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-    		indent (int, optional): Offsets the widget to the right the specified number multiplied by the indent style.
-    		parent (int | str      , optional): Parent to add this item to. (runtime adding)
-    		before (int | str      , optional): This item will be displayed before the specified item in the parent.
-    		source (int | str      , optional): Overrides 'id' as value storage key.
-    		show (bool, optional): Attempt to render widget.
-    		id (int | str      , optional): (deprecated) 
-    	Returns:
-    		int | str      
+        Args:
+            x (Any): 
+            y (Any): 
+            label (str, optional): Overrides 'name' as label.
+            user_data (Any, optional): User data for callbacks
+            use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+            tag (int | str, optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            indent (int, optional): Offsets the widget to the right the specified number multiplied by the indent style.
+            parent (int | str, optional): Parent to add this item to. (runtime adding)
+            before (int | str, optional): This item will be displayed before the specified item in the parent.
+            source (int | str, optional): Overrides 'id' as value storage key.
+            show (bool, optional): Attempt to render widget.
+            id (int | str, optional): (deprecated) 
+        Returns:
+            int | str      
     """
 
     x                 : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
@@ -1226,23 +1226,23 @@ class StemSeries(Widget):
 class LabelSeries(Widget):
     """Adds a label series to a plot.
     
-    	Args:
-    		x (float): 
-    		y (float): 
-    		label (str, optional): Overrides 'name' as label.
-    		user_data (Any, optional): User data for callbacks
-    		use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
-    		tag (int | str      , optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-    		parent (int | str      , optional): Parent to add this item to. (runtime adding)
-    		before (int | str      , optional): This item will be displayed before the specified item in the parent.
-    		source (int | str      , optional): Overrides 'id' as value storage key.
-    		show (bool, optional): Attempt to render widget.
-    		x_offset (int, optional): 
-    		y_offset (int, optional): 
-    		vertical (bool, optional): 
-    		id (int | str      , optional): (deprecated) 
-    	Returns:
-    		int | str      
+        Args:
+            x (float): 
+            y (float): 
+            label (str, optional): Overrides 'name' as label.
+            user_data (Any, optional): User data for callbacks
+            use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+            tag (int | str, optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            parent (int | str, optional): Parent to add this item to. (runtime adding)
+            before (int | str, optional): This item will be displayed before the specified item in the parent.
+            source (int | str, optional): Overrides 'id' as value storage key.
+            show (bool, optional): Attempt to render widget.
+            x_offset (int, optional): 
+            y_offset (int, optional): 
+            vertical (bool, optional): 
+            id (int | str, optional): (deprecated) 
+        Returns:
+            int | str      
     """
 
     x                 : float           = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
@@ -1301,26 +1301,26 @@ class LabelSeries(Widget):
 class PieSeries(Widget):
     """Adds an pie series to a plot.
     
-    	Args:
-    		x (float): 
-    		y (float): 
-    		radius (float): 
-    		values (Any): 
-    		labels (Union[List[str], Tuple[str, ...]]): 
-    		label (str, optional): Overrides 'name' as label.
-    		user_data (Any, optional): User data for callbacks
-    		use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
-    		tag (int | str      , optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-    		parent (int | str      , optional): Parent to add this item to. (runtime adding)
-    		before (int | str      , optional): This item will be displayed before the specified item in the parent.
-    		source (int | str      , optional): Overrides 'id' as value storage key.
-    		show (bool, optional): Attempt to render widget.
-    		format (str, optional): 
-    		angle (float, optional): 
-    		normalize (bool, optional): 
-    		id (int | str      , optional): (deprecated) 
-    	Returns:
-    		int | str      
+        Args:
+            x (float): 
+            y (float): 
+            radius (float): 
+            values (Any): 
+            labels (Union[List[str], Tuple[str, ...]]): 
+            label (str, optional): Overrides 'name' as label.
+            user_data (Any, optional): User data for callbacks
+            use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+            tag (int | str, optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            parent (int | str, optional): Parent to add this item to. (runtime adding)
+            before (int | str, optional): This item will be displayed before the specified item in the parent.
+            source (int | str, optional): Overrides 'id' as value storage key.
+            show (bool, optional): Attempt to render widget.
+            format (str, optional): 
+            angle (float, optional): 
+            normalize (bool, optional): 
+            id (int | str, optional): (deprecated) 
+        Returns:
+            int | str      
     """
 
     x                 : float                                 = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
@@ -1388,21 +1388,21 @@ class PieSeries(Widget):
 class ShadeSeries(Widget):
     """Adds a shade series to a plot.
     
-    	Args:
-    		x (Any): 
-    		y1 (Any): 
-    		label (str, optional): Overrides 'name' as label.
-    		user_data (Any, optional): User data for callbacks
-    		use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
-    		tag (int | str      , optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-    		parent (int | str      , optional): Parent to add this item to. (runtime adding)
-    		before (int | str      , optional): This item will be displayed before the specified item in the parent.
-    		source (int | str      , optional): Overrides 'id' as value storage key.
-    		show (bool, optional): Attempt to render widget.
-    		y2 (Any, optional): 
-    		id (int | str      , optional): (deprecated) 
-    	Returns:
-    		int | str      
+        Args:
+            x (Any): 
+            y1 (Any): 
+            label (str, optional): Overrides 'name' as label.
+            user_data (Any, optional): User data for callbacks
+            use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+            tag (int | str, optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            parent (int | str, optional): Parent to add this item to. (runtime adding)
+            before (int | str, optional): This item will be displayed before the specified item in the parent.
+            source (int | str, optional): Overrides 'id' as value storage key.
+            show (bool, optional): Attempt to render widget.
+            y2 (Any, optional): 
+            id (int | str, optional): (deprecated) 
+        Returns:
+            int | str      
     """
 
     x                 : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
@@ -1455,24 +1455,24 @@ class ShadeSeries(Widget):
 class ErrorSeries(Widget):
     """Adds an error series to a plot.
     
-    	Args:
-    		x (Any): 
-    		y (Any): 
-    		negative (Any): 
-    		positive (Any): 
-    		label (str, optional): Overrides 'name' as label.
-    		user_data (Any, optional): User data for callbacks
-    		use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
-    		tag (int | str      , optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-    		parent (int | str      , optional): Parent to add this item to. (runtime adding)
-    		before (int | str      , optional): This item will be displayed before the specified item in the parent.
-    		source (int | str      , optional): Overrides 'id' as value storage key.
-    		show (bool, optional): Attempt to render widget.
-    		contribute_to_bounds (bool, optional): 
-    		horizontal (bool, optional): 
-    		id (int | str      , optional): (deprecated) 
-    	Returns:
-    		int | str      
+        Args:
+            x (Any): 
+            y (Any): 
+            negative (Any): 
+            positive (Any): 
+            label (str, optional): Overrides 'name' as label.
+            user_data (Any, optional): User data for callbacks
+            use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+            tag (int | str, optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            parent (int | str, optional): Parent to add this item to. (runtime adding)
+            before (int | str, optional): This item will be displayed before the specified item in the parent.
+            source (int | str, optional): Overrides 'id' as value storage key.
+            show (bool, optional): Attempt to render widget.
+            contribute_to_bounds (bool, optional): 
+            horizontal (bool, optional): 
+            id (int | str, optional): (deprecated) 
+        Returns:
+            int | str      
     """
 
     x                   : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
@@ -1534,27 +1534,27 @@ class ErrorSeries(Widget):
 class HeatSeries(Widget):
     """Adds a heat series to a plot.
     
-    	Args:
-    		x (Any): 
-    		rows (int): 
-    		cols (int): 
-    		label (str, optional): Overrides 'name' as label.
-    		user_data (Any, optional): User data for callbacks
-    		use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
-    		tag (int | str      , optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-    		parent (int | str      , optional): Parent to add this item to. (runtime adding)
-    		before (int | str      , optional): This item will be displayed before the specified item in the parent.
-    		source (int | str      , optional): Overrides 'id' as value storage key.
-    		show (bool, optional): Attempt to render widget.
-    		scale_min (float, optional): Sets the color scale min. Typically paired with the color scale widget scale_min.
-    		scale_max (float, optional): Sets the color scale max. Typically paired with the color scale widget scale_max.
-    		bounds_min (Any, optional): 
-    		bounds_max (Any, optional): 
-    		format (str, optional): 
-    		contribute_to_bounds (bool, optional): 
-    		id (int | str      , optional): (deprecated) 
-    	Returns:
-    		int | str      
+        Args:
+            x (Any): 
+            rows (int): 
+            cols (int): 
+            label (str, optional): Overrides 'name' as label.
+            user_data (Any, optional): User data for callbacks
+            use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+            tag (int | str, optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            parent (int | str, optional): Parent to add this item to. (runtime adding)
+            before (int | str, optional): This item will be displayed before the specified item in the parent.
+            source (int | str, optional): Overrides 'id' as value storage key.
+            show (bool, optional): Attempt to render widget.
+            scale_min (float, optional): Sets the color scale min. Typically paired with the color scale widget scale_min.
+            scale_max (float, optional): Sets the color scale max. Typically paired with the color scale widget scale_max.
+            bounds_min (Any, optional): 
+            bounds_max (Any, optional): 
+            format (str, optional): 
+            contribute_to_bounds (bool, optional): 
+            id (int | str, optional): (deprecated) 
+        Returns:
+            int | str      
     """
 
     x                   : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
@@ -1625,24 +1625,24 @@ class HeatSeries(Widget):
 class ImageSeries(Widget):
     """Adds an image series to a plot.
     
-    	Args:
-    		texture_tag (int | str      ): 
-    		bounds_min (Any): 
-    		bounds_max (Any): 
-    		label (str, optional): Overrides 'name' as label.
-    		user_data (Any, optional): User data for callbacks
-    		use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
-    		tag (int | str      , optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-    		parent (int | str      , optional): Parent to add this item to. (runtime adding)
-    		before (int | str      , optional): This item will be displayed before the specified item in the parent.
-    		source (int | str      , optional): Overrides 'id' as value storage key.
-    		show (bool, optional): Attempt to render widget.
-    		uv_min (Union[List[float], Tuple[float, ...]], optional): normalized texture coordinates
-    		uv_max (Union[List[float], Tuple[float, ...]], optional): normalized texture coordinates
-    		tint_color (list[int] | tuple[int, ...]      , optional): 
-    		id (int | str      , optional): (deprecated) 
-    	Returns:
-    		int | str      
+        Args:
+            texture_tag (int | str      ): 
+            bounds_min (Any): 
+            bounds_max (Any): 
+            label (str, optional): Overrides 'name' as label.
+            user_data (Any, optional): User data for callbacks
+            use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+            tag (int | str, optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            parent (int | str, optional): Parent to add this item to. (runtime adding)
+            before (int | str, optional): This item will be displayed before the specified item in the parent.
+            source (int | str, optional): Overrides 'id' as value storage key.
+            show (bool, optional): Attempt to render widget.
+            uv_min (Union[List[float], Tuple[float, ...]], optional): normalized texture coordinates
+            uv_max (Union[List[float], Tuple[float, ...]], optional): normalized texture coordinates
+            tint_color (list[int] | tuple[int, ...]      , optional): 
+            id (int | str, optional): (deprecated) 
+        Returns:
+            int | str      
     """
 
     texture_tag       : int | str                             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
@@ -1704,20 +1704,20 @@ class ImageSeries(Widget):
 class StairSeries(Widget):
     """Adds a stair series to a plot.
     
-    	Args:
-    		x (Any): 
-    		y (Any): 
-    		label (str, optional): Overrides 'name' as label.
-    		user_data (Any, optional): User data for callbacks
-    		use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
-    		tag (int | str      , optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-    		parent (int | str      , optional): Parent to add this item to. (runtime adding)
-    		before (int | str      , optional): This item will be displayed before the specified item in the parent.
-    		source (int | str      , optional): Overrides 'id' as value storage key.
-    		show (bool, optional): Attempt to render widget.
-    		id (int | str      , optional): (deprecated) 
-    	Returns:
-    		int | str      
+        Args:
+            x (Any): 
+            y (Any): 
+            label (str, optional): Overrides 'name' as label.
+            user_data (Any, optional): User data for callbacks
+            use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+            tag (int | str, optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            parent (int | str, optional): Parent to add this item to. (runtime adding)
+            before (int | str, optional): This item will be displayed before the specified item in the parent.
+            source (int | str, optional): Overrides 'id' as value storage key.
+            show (bool, optional): Attempt to render widget.
+            id (int | str, optional): (deprecated) 
+        Returns:
+            int | str      
     """
 
     x                 : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
@@ -1767,27 +1767,27 @@ class StairSeries(Widget):
 class CandleSeries(Widget):
     """Adds a candle series to a plot.
     
-    	Args:
-    		dates (Any): 
-    		opens (Any): 
-    		closes (Any): 
-    		lows (Any): 
-    		highs (Any): 
-    		label (str, optional): Overrides 'name' as label.
-    		user_data (Any, optional): User data for callbacks
-    		use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
-    		tag (int | str      , optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-    		parent (int | str      , optional): Parent to add this item to. (runtime adding)
-    		before (int | str      , optional): This item will be displayed before the specified item in the parent.
-    		source (int | str      , optional): Overrides 'id' as value storage key.
-    		show (bool, optional): Attempt to render widget.
-    		bull_color (list[int] | tuple[int, ...]      , optional): 
-    		bear_color (list[int] | tuple[int, ...]      , optional): 
-    		weight (int, optional): 
-    		tooltip (bool, optional): 
-    		id (int | str      , optional): (deprecated) 
-    	Returns:
-    		int | str      
+        Args:
+            dates (Any): 
+            opens (Any): 
+            closes (Any): 
+            lows (Any): 
+            highs (Any): 
+            label (str, optional): Overrides 'name' as label.
+            user_data (Any, optional): User data for callbacks
+            use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+            tag (int | str, optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            parent (int | str, optional): Parent to add this item to. (runtime adding)
+            before (int | str, optional): This item will be displayed before the specified item in the parent.
+            source (int | str, optional): Overrides 'id' as value storage key.
+            show (bool, optional): Attempt to render widget.
+            bull_color (list[int] | tuple[int, ...]      , optional): 
+            bear_color (list[int] | tuple[int, ...]      , optional): 
+            weight (int, optional): 
+            tooltip (bool, optional): 
+            id (int | str, optional): (deprecated) 
+        Returns:
+            int | str      
     """
 
     dates             : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
@@ -1858,19 +1858,19 @@ class CandleSeries(Widget):
 class VLineSeries(Widget):
     """Adds an infinite vertical line series to a plot.
     
-    	Args:
-    		x (Any): 
-    		label (str, optional): Overrides 'name' as label.
-    		user_data (Any, optional): User data for callbacks
-    		use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
-    		tag (int | str      , optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-    		parent (int | str      , optional): Parent to add this item to. (runtime adding)
-    		before (int | str      , optional): This item will be displayed before the specified item in the parent.
-    		source (int | str      , optional): Overrides 'id' as value storage key.
-    		show (bool, optional): Attempt to render widget.
-    		id (int | str      , optional): (deprecated) 
-    	Returns:
-    		int | str      
+        Args:
+            x (Any): 
+            label (str, optional): Overrides 'name' as label.
+            user_data (Any, optional): User data for callbacks
+            use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+            tag (int | str, optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            parent (int | str, optional): Parent to add this item to. (runtime adding)
+            before (int | str, optional): This item will be displayed before the specified item in the parent.
+            source (int | str, optional): Overrides 'id' as value storage key.
+            show (bool, optional): Attempt to render widget.
+            id (int | str, optional): (deprecated) 
+        Returns:
+            int | str      
     """
 
     x                 : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
@@ -1917,27 +1917,27 @@ class VLineSeries(Widget):
 class HistogramSeries(Widget):
     """Adds a histogram series to a plot.
     
-    	Args:
-    		x (Any): 
-    		label (str, optional): Overrides 'name' as label.
-    		user_data (Any, optional): User data for callbacks
-    		use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
-    		tag (int | str      , optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-    		parent (int | str      , optional): Parent to add this item to. (runtime adding)
-    		before (int | str      , optional): This item will be displayed before the specified item in the parent.
-    		source (int | str      , optional): Overrides 'id' as value storage key.
-    		show (bool, optional): Attempt to render widget.
-    		bins (int, optional): 
-    		bar_scale (float, optional): 
-    		min_range (float, optional): 
-    		max_range (float, optional): 
-    		cumlative (bool, optional): 
-    		density (bool, optional): 
-    		outliers (bool, optional): 
-    		contribute_to_bounds (bool, optional): 
-    		id (int | str      , optional): (deprecated) 
-    	Returns:
-    		int | str      
+        Args:
+            x (Any): 
+            label (str, optional): Overrides 'name' as label.
+            user_data (Any, optional): User data for callbacks
+            use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+            tag (int | str, optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            parent (int | str, optional): Parent to add this item to. (runtime adding)
+            before (int | str, optional): This item will be displayed before the specified item in the parent.
+            source (int | str, optional): Overrides 'id' as value storage key.
+            show (bool, optional): Attempt to render widget.
+            bins (int, optional): 
+            bar_scale (float, optional): 
+            min_range (float, optional): 
+            max_range (float, optional): 
+            cumlative (bool, optional): 
+            density (bool, optional): 
+            outliers (bool, optional): 
+            contribute_to_bounds (bool, optional): 
+            id (int | str, optional): (deprecated) 
+        Returns:
+            int | str      
     """
 
     x                   : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                       
@@ -2008,28 +2008,28 @@ class HistogramSeries(Widget):
 class HistogramSeries2D(Widget):
     """Adds a 2d histogram series.
     
-    	Args:
-    		x (Any): 
-    		y (Any): 
-    		label (str, optional): Overrides 'name' as label.
-    		user_data (Any, optional): User data for callbacks
-    		use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
-    		tag (int | str      , optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-    		parent (int | str      , optional): Parent to add this item to. (runtime adding)
-    		before (int | str      , optional): This item will be displayed before the specified item in the parent.
-    		source (int | str      , optional): Overrides 'id' as value storage key.
-    		show (bool, optional): Attempt to render widget.
-    		xbins (int, optional): 
-    		ybins (int, optional): 
-    		xmin_range (float, optional): 
-    		xmax_range (float, optional): 
-    		ymin_range (float, optional): 
-    		ymax_range (float, optional): 
-    		density (bool, optional): 
-    		outliers (bool, optional): 
-    		id (int | str      , optional): (deprecated) 
-    	Returns:
-    		int | str      
+        Args:
+            x (Any): 
+            y (Any): 
+            label (str, optional): Overrides 'name' as label.
+            user_data (Any, optional): User data for callbacks
+            use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+            tag (int | str, optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            parent (int | str, optional): Parent to add this item to. (runtime adding)
+            before (int | str, optional): This item will be displayed before the specified item in the parent.
+            source (int | str, optional): Overrides 'id' as value storage key.
+            show (bool, optional): Attempt to render widget.
+            xbins (int, optional): 
+            ybins (int, optional): 
+            xmin_range (float, optional): 
+            xmax_range (float, optional): 
+            ymin_range (float, optional): 
+            ymax_range (float, optional): 
+            density (bool, optional): 
+            outliers (bool, optional): 
+            id (int | str, optional): (deprecated) 
+        Returns:
+            int | str      
     """
 
     x                 : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)

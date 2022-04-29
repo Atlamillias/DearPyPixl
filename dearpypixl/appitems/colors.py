@@ -28,33 +28,33 @@ __all__ = [
 class ColorButton(Widget):
     """Adds a color button.
     
-    	Args:
-    		default_value (Union[List[int], Tuple[int, ...]], optional): 
-    		label (str, optional): Overrides 'name' as label.
-    		user_data (Any, optional): User data for callbacks
-    		use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
-    		tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-    		width (int, optional): Width of the item.
-    		height (int, optional): Height of the item.
-    		indent (int, optional): Offsets the widget to the right the specified number multiplied by the indent style.
-    		parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
-    		before (Union[int, str], optional): This item will be displayed before the specified item in the parent.
-    		payload_type (str, optional): Sender string type must be the same as the target for the target to run the payload_callback.
-    		callback (Callable, optional): Registers a callback.
-    		drag_callback (Callable, optional): Registers a drag callback for drag and drop.
-    		drop_callback (Callable, optional): Registers a drop callback for drag and drop.
-    		show (bool, optional): Attempt to render widget.
-    		enabled (bool, optional): Turns off functionality of widget and applies the disabled theme.
-    		pos (Union[List[int], Tuple[int, ...]], optional): Places the item relative to window coordinates, [0,0] is top left.
-    		filter_key (str, optional): Used by filter widget.
-    		tracked (bool, optional): Scroll tracking
-    		track_offset (float, optional): 0.0f:top, 0.5f:center, 1.0f:bottom
-    		no_alpha (bool, optional): Removes the displayed slider that can change alpha channel.
-    		no_border (bool, optional): Disable border around the image.
-    		no_drag_drop (bool, optional): Disable ability to drag and drop small preview (color square) to apply colors to other items.
-    		id (Union[int, str], optional): (deprecated) 
-    	Returns:
-    		Union[int, str]
+        Args:
+            default_value (Union[List[int], Tuple[int, ...]], optional): 
+            label (str, optional): Overrides 'name' as label.
+            user_data (Any, optional): User data for callbacks
+            use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+            tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            width (int, optional): Width of the item.
+            height (int, optional): Height of the item.
+            indent (int, optional): Offsets the widget to the right the specified number multiplied by the indent style.
+            parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
+            before (Union[int, str], optional): This item will be displayed before the specified item in the parent.
+            payload_type (str, optional): Sender string type must be the same as the target for the target to run the payload_callback.
+            callback (Callable, optional): Registers a callback.
+            drag_callback (Callable, optional): Registers a drag callback for drag and drop.
+            drop_callback (Callable, optional): Registers a drop callback for drag and drop.
+            show (bool, optional): Attempt to render widget.
+            enabled (bool, optional): Turns off functionality of widget and applies the disabled theme.
+            pos (Union[List[int], Tuple[int, ...]], optional): Places the item relative to window coordinates, [0,0] is top left.
+            filter_key (str, optional): Used by filter widget.
+            tracked (bool, optional): Scroll tracking
+            track_offset (float, optional): 0.0f:top, 0.5f:center, 1.0f:bottom
+            no_alpha (bool, optional): Removes the displayed slider that can change alpha channel.
+            no_border (bool, optional): Disable border around the image.
+            no_drag_drop (bool, optional): Disable ability to drag and drop small preview (color square) to apply colors to other items.
+            id (Union[int, str], optional): (deprecated) 
+        Returns:
+            Union[int, str]
     """
 
     default_value       : Union[List[int], Tuple[int, ...]] = ItemAttribute('information', 'get_item_cached', None, None)                        
@@ -160,44 +160,44 @@ class ColorButton(Widget):
 class ColorEdit(Widget):
     """Adds an RGBA color editor. Left clicking the small color preview will provide a color picker. Click and draging the small color preview will copy the color to be applied on any other color widget.
     
-    	Args:
-    		default_value (Union[List[int], Tuple[int, ...]], optional): 
-    		label (str, optional): Overrides 'name' as label.
-    		user_data (Any, optional): User data for callbacks
-    		use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
-    		tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-    		width (int, optional): Width of the item.
-    		height (int, optional): Height of the item.
-    		indent (int, optional): Offsets the widget to the right the specified number multiplied by the indent style.
-    		parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
-    		before (Union[int, str], optional): This item will be displayed before the specified item in the parent.
-    		source (Union[int, str], optional): Overrides 'id' as value storage key.
-    		payload_type (str, optional): Sender string type must be the same as the target for the target to run the payload_callback.
-    		callback (Callable, optional): Registers a callback.
-    		drag_callback (Callable, optional): Registers a drag callback for drag and drop.
-    		drop_callback (Callable, optional): Registers a drop callback for drag and drop.
-    		show (bool, optional): Attempt to render widget.
-    		enabled (bool, optional): Turns off functionality of widget and applies the disabled theme.
-    		pos (Union[List[int], Tuple[int, ...]], optional): Places the item relative to window coordinates, [0,0] is top left.
-    		filter_key (str, optional): Used by filter widget.
-    		tracked (bool, optional): Scroll tracking
-    		track_offset (float, optional): 0.0f:top, 0.5f:center, 1.0f:bottom
-    		no_alpha (bool, optional): Removes the displayed slider that can change alpha channel.
-    		no_picker (bool, optional): Disable picker popup when color square is clicked.
-    		no_options (bool, optional): Disable toggling options menu when right-clicking on inputs/small preview.
-    		no_small_preview (bool, optional): Disable colored square preview next to the inputs. (e.g. to show only the inputs). This only displays if the side preview is not shown.
-    		no_inputs (bool, optional): Disable inputs sliders/text widgets. (e.g. to show only the small preview colored square)
-    		no_tooltip (bool, optional): Disable tooltip when hovering the preview.
-    		no_label (bool, optional): Disable display of inline text label.
-    		no_drag_drop (bool, optional): Disable ability to drag and drop small preview (color square) to apply colors to other items.
-    		alpha_bar (bool, optional): Show vertical alpha bar/gradient in picker.
-    		alpha_preview (int, optional): mvColorEdit_AlphaPreviewNone, mvColorEdit_AlphaPreview, or mvColorEdit_AlphaPreviewHalf
-    		display_mode (int, optional): mvColorEdit_rgb, mvColorEdit_hsv, or mvColorEdit_hex
-    		display_type (int, optional): mvColorEdit_uint8 or mvColorEdit_float
-    		input_mode (int, optional): mvColorEdit_input_rgb or mvColorEdit_input_hsv
-    		id (Union[int, str], optional): (deprecated) 
-    	Returns:
-    		Union[int, str]
+        Args:
+            default_value (Union[List[int], Tuple[int, ...]], optional): 
+            label (str, optional): Overrides 'name' as label.
+            user_data (Any, optional): User data for callbacks
+            use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+            tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            width (int, optional): Width of the item.
+            height (int, optional): Height of the item.
+            indent (int, optional): Offsets the widget to the right the specified number multiplied by the indent style.
+            parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
+            before (Union[int, str], optional): This item will be displayed before the specified item in the parent.
+            source (Union[int, str], optional): Overrides 'id' as value storage key.
+            payload_type (str, optional): Sender string type must be the same as the target for the target to run the payload_callback.
+            callback (Callable, optional): Registers a callback.
+            drag_callback (Callable, optional): Registers a drag callback for drag and drop.
+            drop_callback (Callable, optional): Registers a drop callback for drag and drop.
+            show (bool, optional): Attempt to render widget.
+            enabled (bool, optional): Turns off functionality of widget and applies the disabled theme.
+            pos (Union[List[int], Tuple[int, ...]], optional): Places the item relative to window coordinates, [0,0] is top left.
+            filter_key (str, optional): Used by filter widget.
+            tracked (bool, optional): Scroll tracking
+            track_offset (float, optional): 0.0f:top, 0.5f:center, 1.0f:bottom
+            no_alpha (bool, optional): Removes the displayed slider that can change alpha channel.
+            no_picker (bool, optional): Disable picker popup when color square is clicked.
+            no_options (bool, optional): Disable toggling options menu when right-clicking on inputs/small preview.
+            no_small_preview (bool, optional): Disable colored square preview next to the inputs. (e.g. to show only the inputs). This only displays if the side preview is not shown.
+            no_inputs (bool, optional): Disable inputs sliders/text widgets. (e.g. to show only the small preview colored square)
+            no_tooltip (bool, optional): Disable tooltip when hovering the preview.
+            no_label (bool, optional): Disable display of inline text label.
+            no_drag_drop (bool, optional): Disable ability to drag and drop small preview (color square) to apply colors to other items.
+            alpha_bar (bool, optional): Show vertical alpha bar/gradient in picker.
+            alpha_preview (int, optional): mvColorEdit_AlphaPreviewNone, mvColorEdit_AlphaPreview, or mvColorEdit_AlphaPreviewHalf
+            display_mode (int, optional): mvColorEdit_rgb, mvColorEdit_hsv, or mvColorEdit_hex
+            display_type (int, optional): mvColorEdit_uint8 or mvColorEdit_float
+            input_mode (int, optional): mvColorEdit_input_rgb or mvColorEdit_input_hsv
+            id (Union[int, str], optional): (deprecated) 
+        Returns:
+            Union[int, str]
     """
 
     default_value            : Union[List[int], Tuple[int, ...]] = ItemAttribute('information', 'get_item_cached', None, None)                                                                                                                                                                                                     
@@ -338,45 +338,45 @@ class ColorEdit(Widget):
 class ColorPicker(Widget):
     """Adds an RGB color picker. Right click the color picker for options. Click and drag the color preview to copy the color and drop on any other color widget to apply. Right Click allows the style of the color picker to be changed.
     
-    	Args:
-    		default_value (Union[List[int], Tuple[int, ...]], optional): 
-    		label (str, optional): Overrides 'name' as label.
-    		user_data (Any, optional): User data for callbacks
-    		use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
-    		tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-    		width (int, optional): Width of the item.
-    		height (int, optional): Height of the item.
-    		indent (int, optional): Offsets the widget to the right the specified number multiplied by the indent style.
-    		parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
-    		before (Union[int, str], optional): This item will be displayed before the specified item in the parent.
-    		source (Union[int, str], optional): Overrides 'id' as value storage key.
-    		payload_type (str, optional): Sender string type must be the same as the target for the target to run the payload_callback.
-    		callback (Callable, optional): Registers a callback.
-    		drag_callback (Callable, optional): Registers a drag callback for drag and drop.
-    		drop_callback (Callable, optional): Registers a drop callback for drag and drop.
-    		show (bool, optional): Attempt to render widget.
-    		enabled (bool, optional): Turns off functionality of widget and applies the disabled theme.
-    		pos (Union[List[int], Tuple[int, ...]], optional): Places the item relative to window coordinates, [0,0] is top left.
-    		filter_key (str, optional): Used by filter widget.
-    		tracked (bool, optional): Scroll tracking
-    		track_offset (float, optional): 0.0f:top, 0.5f:center, 1.0f:bottom
-    		no_alpha (bool, optional): Removes the displayed slider that can change alpha channel.
-    		no_side_preview (bool, optional): Disable bigger color preview on right side of the picker, use small colored square preview instead , unless small preview is also hidden.
-    		no_small_preview (bool, optional): Disable colored square preview next to the inputs. (e.g. to show only the inputs). This only displays if the side preview is not shown.
-    		no_inputs (bool, optional): Disable inputs sliders/text widgets. (e.g. to show only the small preview colored square)
-    		no_tooltip (bool, optional): Disable tooltip when hovering the preview.
-    		no_label (bool, optional): Disable display of inline text label.
-    		alpha_bar (bool, optional): Show vertical alpha bar/gradient in picker.
-    		display_rgb (bool, optional): Override _display_ type among RGB/HSV/Hex.
-    		display_hsv (bool, optional): Override _display_ type among RGB/HSV/Hex.
-    		display_hex (bool, optional): Override _display_ type among RGB/HSV/Hex.
-    		picker_mode (int, optional): mvColorPicker_bar or mvColorPicker_wheel
-    		alpha_preview (int, optional): mvColorEdit_AlphaPreviewNone, mvColorEdit_AlphaPreview, or mvColorEdit_AlphaPreviewHalf
-    		display_type (int, optional): mvColorEdit_uint8 or mvColorEdit_float
-    		input_mode (int, optional): mvColorEdit_input_rgb or mvColorEdit_input_hsv
-    		id (Union[int, str], optional): (deprecated) 
-    	Returns:
-    		Union[int, str]
+        Args:
+            default_value (Union[List[int], Tuple[int, ...]], optional): 
+            label (str, optional): Overrides 'name' as label.
+            user_data (Any, optional): User data for callbacks
+            use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+            tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            width (int, optional): Width of the item.
+            height (int, optional): Height of the item.
+            indent (int, optional): Offsets the widget to the right the specified number multiplied by the indent style.
+            parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
+            before (Union[int, str], optional): This item will be displayed before the specified item in the parent.
+            source (Union[int, str], optional): Overrides 'id' as value storage key.
+            payload_type (str, optional): Sender string type must be the same as the target for the target to run the payload_callback.
+            callback (Callable, optional): Registers a callback.
+            drag_callback (Callable, optional): Registers a drag callback for drag and drop.
+            drop_callback (Callable, optional): Registers a drop callback for drag and drop.
+            show (bool, optional): Attempt to render widget.
+            enabled (bool, optional): Turns off functionality of widget and applies the disabled theme.
+            pos (Union[List[int], Tuple[int, ...]], optional): Places the item relative to window coordinates, [0,0] is top left.
+            filter_key (str, optional): Used by filter widget.
+            tracked (bool, optional): Scroll tracking
+            track_offset (float, optional): 0.0f:top, 0.5f:center, 1.0f:bottom
+            no_alpha (bool, optional): Removes the displayed slider that can change alpha channel.
+            no_side_preview (bool, optional): Disable bigger color preview on right side of the picker, use small colored square preview instead , unless small preview is also hidden.
+            no_small_preview (bool, optional): Disable colored square preview next to the inputs. (e.g. to show only the inputs). This only displays if the side preview is not shown.
+            no_inputs (bool, optional): Disable inputs sliders/text widgets. (e.g. to show only the small preview colored square)
+            no_tooltip (bool, optional): Disable tooltip when hovering the preview.
+            no_label (bool, optional): Disable display of inline text label.
+            alpha_bar (bool, optional): Show vertical alpha bar/gradient in picker.
+            display_rgb (bool, optional): Override _display_ type among RGB/HSV/Hex.
+            display_hsv (bool, optional): Override _display_ type among RGB/HSV/Hex.
+            display_hex (bool, optional): Override _display_ type among RGB/HSV/Hex.
+            picker_mode (int, optional): mvColorPicker_bar or mvColorPicker_wheel
+            alpha_preview (int, optional): mvColorEdit_AlphaPreviewNone, mvColorEdit_AlphaPreview, or mvColorEdit_AlphaPreviewHalf
+            display_type (int, optional): mvColorEdit_uint8 or mvColorEdit_float
+            input_mode (int, optional): mvColorEdit_input_rgb or mvColorEdit_input_hsv
+            id (Union[int, str], optional): (deprecated) 
+        Returns:
+            Union[int, str]
     """
 
     default_value            : Union[List[int], Tuple[int, ...]] = ItemAttribute('information', 'get_item_cached', None, None)                        
@@ -520,28 +520,28 @@ class ColorPicker(Widget):
 class ColorMapScale(Widget):
     """Adds a legend that pairs values with colors. This is typically used with a heat series. 
     
-    	Args:
-    		label (str, optional): Overrides 'name' as label.
-    		user_data (Any, optional): User data for callbacks
-    		use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
-    		tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-    		width (int, optional): Width of the item.
-    		height (int, optional): Height of the item.
-    		indent (int, optional): Offsets the widget to the right the specified number multiplied by the indent style.
-    		parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
-    		before (Union[int, str], optional): This item will be displayed before the specified item in the parent.
-    		source (Union[int, str], optional): Overrides 'id' as value storage key.
-    		payload_type (str, optional): Sender string type must be the same as the target for the target to run the payload_callback.
-    		drop_callback (Callable, optional): Registers a drop callback for drag and drop.
-    		show (bool, optional): Attempt to render widget.
-    		pos (Union[List[int], Tuple[int, ...]], optional): Places the item relative to window coordinates, [0,0] is top left.
-    		colormap (Union[int, str], optional): mvPlotColormap_* constants or mvColorMap uuid from a color map registry
-    		min_scale (float, optional): Sets the min number of the color scale. Typically is the same as the min scale from the heat series.
-    		max_scale (float, optional): Sets the max number of the color scale. Typically is the same as the max scale from the heat series.
-    		id (Union[int, str], optional): (deprecated) 
-    		drag_callback (Callable, optional): (deprecated) 
-    	Returns:
-    		Union[int, str]
+        Args:
+            label (str, optional): Overrides 'name' as label.
+            user_data (Any, optional): User data for callbacks
+            use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+            tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            width (int, optional): Width of the item.
+            height (int, optional): Height of the item.
+            indent (int, optional): Offsets the widget to the right the specified number multiplied by the indent style.
+            parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
+            before (Union[int, str], optional): This item will be displayed before the specified item in the parent.
+            source (Union[int, str], optional): Overrides 'id' as value storage key.
+            payload_type (str, optional): Sender string type must be the same as the target for the target to run the payload_callback.
+            drop_callback (Callable, optional): Registers a drop callback for drag and drop.
+            show (bool, optional): Attempt to render widget.
+            pos (Union[List[int], Tuple[int, ...]], optional): Places the item relative to window coordinates, [0,0] is top left.
+            colormap (Union[int, str], optional): mvPlotColormap_* constants or mvColorMap uuid from a color map registry
+            min_scale (float, optional): Sets the min number of the color scale. Typically is the same as the min scale from the heat series.
+            max_scale (float, optional): Sets the max number of the color scale. Typically is the same as the max scale from the heat series.
+            id (Union[int, str], optional): (deprecated) 
+            drag_callback (Callable, optional): (deprecated) 
+        Returns:
+            Union[int, str]
     """
 
     label               : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
@@ -624,18 +624,18 @@ class ColorMapScale(Widget):
 class ColorMap(Widget):
     """Adds a legend that pairs colors with normalized value 0.0->1.0. Each color will be  This is typically used with a heat series. (ex. [[0, 0, 0, 255], [255, 255, 255, 255]] will be mapped to a soft transition from 0.0-1.0)
     
-    	Args:
-    		colors (Any): colors that will be mapped to the normalized value 0.0->1.0
-    		qualitative (bool): Qualitative will create hard transitions for color boundries across the value range when enabled.
-    		label (str, optional): Overrides 'name' as label.
-    		user_data (Any, optional): User data for callbacks
-    		use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
-    		tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-    		show (bool, optional): Attempt to render widget.
-    		parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
-    		id (Union[int, str], optional): (deprecated) 
-    	Returns:
-    		Union[int, str]
+        Args:
+            colors (Any): colors that will be mapped to the normalized value 0.0->1.0
+            qualitative (bool): Qualitative will create hard transitions for color boundries across the value range when enabled.
+            label (str, optional): Overrides 'name' as label.
+            user_data (Any, optional): User data for callbacks
+            use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+            tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            show (bool, optional): Attempt to render widget.
+            parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
+            id (Union[int, str], optional): (deprecated) 
+        Returns:
+            Union[int, str]
     """
 
     colors            : List[Union[List[int], Tuple[int, ...]]] = ItemAttribute("configuration", "get_item_cached", None, None)                                                                                                                                                                                                                                                                                                                                                              
@@ -680,30 +680,30 @@ class ColorMap(Widget):
 class ColorMapButton(Widget):
     """Adds a button that a color map can be bound to.
     
-    	Args:
-    		default_value (Union[List[int], Tuple[int, ...]], optional): 
-    		label (str, optional): Overrides 'name' as label.
-    		user_data (Any, optional): User data for callbacks
-    		use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
-    		tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-    		width (int, optional): Width of the item.
-    		height (int, optional): Height of the item.
-    		indent (int, optional): Offsets the widget to the right the specified number multiplied by the indent style.
-    		parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
-    		before (Union[int, str], optional): This item will be displayed before the specified item in the parent.
-    		payload_type (str, optional): Sender string type must be the same as the target for the target to run the payload_callback.
-    		callback (Callable, optional): Registers a callback.
-    		drag_callback (Callable, optional): Registers a drag callback for drag and drop.
-    		drop_callback (Callable, optional): Registers a drop callback for drag and drop.
-    		show (bool, optional): Attempt to render widget.
-    		enabled (bool, optional): Turns off functionality of widget and applies the disabled theme.
-    		pos (Union[List[int], Tuple[int, ...]], optional): Places the item relative to window coordinates, [0,0] is top left.
-    		filter_key (str, optional): Used by filter widget.
-    		tracked (bool, optional): Scroll tracking
-    		track_offset (float, optional): 0.0f:top, 0.5f:center, 1.0f:bottom
-    		id (Union[int, str], optional): (deprecated) 
-    	Returns:
-    		Union[int, str]
+        Args:
+            default_value (Union[List[int], Tuple[int, ...]], optional): 
+            label (str, optional): Overrides 'name' as label.
+            user_data (Any, optional): User data for callbacks
+            use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+            tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            width (int, optional): Width of the item.
+            height (int, optional): Height of the item.
+            indent (int, optional): Offsets the widget to the right the specified number multiplied by the indent style.
+            parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
+            before (Union[int, str], optional): This item will be displayed before the specified item in the parent.
+            payload_type (str, optional): Sender string type must be the same as the target for the target to run the payload_callback.
+            callback (Callable, optional): Registers a callback.
+            drag_callback (Callable, optional): Registers a drag callback for drag and drop.
+            drop_callback (Callable, optional): Registers a drop callback for drag and drop.
+            show (bool, optional): Attempt to render widget.
+            enabled (bool, optional): Turns off functionality of widget and applies the disabled theme.
+            pos (Union[List[int], Tuple[int, ...]], optional): Places the item relative to window coordinates, [0,0] is top left.
+            filter_key (str, optional): Used by filter widget.
+            tracked (bool, optional): Scroll tracking
+            track_offset (float, optional): 0.0f:top, 0.5f:center, 1.0f:bottom
+            id (Union[int, str], optional): (deprecated) 
+        Returns:
+            Union[int, str]
     """
 
     default_value       : Union[List[int], Tuple[int, ...]] = ItemAttribute('information', 'get_item_cached', None, None)                        
@@ -800,29 +800,29 @@ class ColorMapButton(Widget):
 class ColorMapSlider(Widget):
     """Adds a color slider that a color map can be bound to.
     
-    	Args:
-    		label (str, optional): Overrides 'name' as label.
-    		user_data (Any, optional): User data for callbacks
-    		use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
-    		tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
-    		width (int, optional): Width of the item.
-    		height (int, optional): Height of the item.
-    		indent (int, optional): Offsets the widget to the right the specified number multiplied by the indent style.
-    		parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
-    		before (Union[int, str], optional): This item will be displayed before the specified item in the parent.
-    		payload_type (str, optional): Sender string type must be the same as the target for the target to run the payload_callback.
-    		callback (Callable, optional): Registers a callback.
-    		drop_callback (Callable, optional): Registers a drop callback for drag and drop.
-    		show (bool, optional): Attempt to render widget.
-    		pos (Union[List[int], Tuple[int, ...]], optional): Places the item relative to window coordinates, [0,0] is top left.
-    		filter_key (str, optional): Used by filter widget.
-    		tracked (bool, optional): Scroll tracking
-    		track_offset (float, optional): 0.0f:top, 0.5f:center, 1.0f:bottom
-    		default_value (float, optional): 
-    		id (Union[int, str], optional): (deprecated) 
-    		drag_callback (Callable, optional): (deprecated) 
-    	Returns:
-    		Union[int, str]
+        Args:
+            label (str, optional): Overrides 'name' as label.
+            user_data (Any, optional): User data for callbacks
+            use_internal_label (bool, optional): Use generated internal label instead of user specified (appends ### uuid).
+            tag (Union[int, str], optional): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+            width (int, optional): Width of the item.
+            height (int, optional): Height of the item.
+            indent (int, optional): Offsets the widget to the right the specified number multiplied by the indent style.
+            parent (Union[int, str], optional): Parent to add this item to. (runtime adding)
+            before (Union[int, str], optional): This item will be displayed before the specified item in the parent.
+            payload_type (str, optional): Sender string type must be the same as the target for the target to run the payload_callback.
+            callback (Callable, optional): Registers a callback.
+            drop_callback (Callable, optional): Registers a drop callback for drag and drop.
+            show (bool, optional): Attempt to render widget.
+            pos (Union[List[int], Tuple[int, ...]], optional): Places the item relative to window coordinates, [0,0] is top left.
+            filter_key (str, optional): Used by filter widget.
+            tracked (bool, optional): Scroll tracking
+            track_offset (float, optional): 0.0f:top, 0.5f:center, 1.0f:bottom
+            default_value (float, optional): 
+            id (Union[int, str], optional): (deprecated) 
+            drag_callback (Callable, optional): (deprecated) 
+        Returns:
+            Union[int, str]
     """
 
     label                    : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
