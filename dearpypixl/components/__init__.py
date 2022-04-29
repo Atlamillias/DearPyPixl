@@ -14,22 +14,15 @@ from dearpypixl.components.item import (
     Item,    
 )
 from dearpypixl.components.registries import *
-from dearpypixl.components.themes import (
-    Theme,
-    ThemeComponent,
-    ThemeColorComponent,
-    ThemeStyleComponent,
-    Font
-)
+from dearpypixl.components.themes import Theme
 
 
 __all__ = [
-    # NOTE: Limiting what objects are exported to appitem modules.
+    # Limiting what objects are exported to appitem modules that import using `*`.
     "ItemAttribute",
     "item_attribute",
 
     "ItemT",
-    "Widget",
     "Widget",
 ]
 

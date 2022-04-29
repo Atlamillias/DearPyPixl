@@ -41,21 +41,20 @@ initialize_dearpypixl()
 from dearpypixl.application.application import Application
 from dearpypixl.application.viewport import Viewport
 from dearpypixl.components import (
-    Theme,
-    ThemeColorComponent,
-    ThemeComponent,
-    ThemeStyleComponent,
     AppEvents,
     ItemEvents
 )
-# Ensuring item registration...
-# BUG: importing the `color` module is somehow a circular import, yet
+# Item classes are registered when they are created. Importing each module
+# ensures that they are registered. Otherwise, they may not exist in the
+# registry when they are required. 
+
+# BUG: importing the `colors` module is somehow a circular import, yet
 # all of the modules below have the identical structure and import fine.
 from dearpypixl import (
     # item modules
     basic,
     containers,
-    # colors,
+    colors,
     drawing,
     misc,
     nodes,
@@ -63,6 +62,7 @@ from dearpypixl import (
     tables,
     textures,
     values,
+    themes,
 
     # misc modules
     constants,
