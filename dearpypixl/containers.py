@@ -5,13 +5,13 @@ from dearpygui import _dearpygui
 
 import dearpypixl.appitems.containers
 from dearpypixl.appitems.containers import *
-from dearpypixl.components import Container, Widget, ItemEvents, item_attribute, ItemAttribute, ContainerItemT, WidgetItemT
+from dearpypixl.components import Widget, ItemEvents, item_attribute, ItemAttribute, WidgetItemT
 from dearpypixl.components.handlers import (
     ClickedHandler,
     HoverHandler,
     VisibleHandler
 )
-from dearpypixl.constants import Key, Mouse
+from dearpypixl.constants import Mouse
 
 __all__ = [
     *dearpypixl.appitems.containers.__all__,
@@ -23,26 +23,13 @@ __all__ = [
 ######## Rewrites ########
 ##########################
 class Tooltip(Window):
+    """A tooltip window that is displayed only when its target item is
+    hovered.
+    """
     x_offset = item_attribute("x_offset", category="configuration")
     y_offset = item_attribute("y_offset", category="configuration")
     delay    = item_attribute("delay"   , category="configuration")
 
-    """A tooltip window that is displayed only when its target item is
-    hovered.
-
-    Args:
-        * target (Union[Container, Widget], optional): the item that causes this
-        item to be shown when hovered. Defaults to None.
-        * delay (int, optional): the time (milliseconds) between the hovering the
-        target and showing the item.
-        * x_offset (int, optional): the horizontal distance (pixels) between the
-        cursor and the position of the item when displayed. Defaults to 25.
-        * y_offset (int, optional): the vertical distance (pixels) between the
-        cursor and the position of the item when displayed. Defaults to 0.
-
-    Returns:
-        *Tooltip*
-    """
     # BUG: Focus is dropped on the currently (previously?) focused item
     # when this item is displayed. Also, this item does not display above
     # all other items when it is not focused. Awaiting DPG update.
@@ -54,6 +41,16 @@ class Tooltip(Window):
         y_offset: int      = 0,
         **kwargs,
     ):
+        """Args:
+            * target (Union[Container, Widget], optional): the item that causes this
+        item to be shown when hovered. Defaults to None.
+            * delay (int, optional): the time (milliseconds) between the hovering the
+        target and showing the item.
+            * x_offset (int, optional): the horizontal distance (pixels) between the
+        cursor and the position of the item when displayed. Defaults to 25.
+            * y_offset (int, optional): the vertical distance (pixels) between the
+        cursor and the position of the item when displayed. Defaults to 0.
+        """
         super().__init__(
             autosize=True,
             min_size=[10, 10],
@@ -133,17 +130,6 @@ class Popup(Window):
     """A popup window that is displayed only when its target item is
     clicked. It hides when anything other than itself is clicked.
 
-
-    Args:
-        * target (Container, Widget): the item that causes this item to
-        be displayed when clicked.
-        * button (int, optional): the mouse button that must be clicked to
-        display this item. Defaults to -1 (all/any).
-        * modal (bool, optional): if True, all other items in the interface
-        are disabled until the popup is closed. Defaults to False.
-
-    Returns:
-        *Popup*
     """
     def __init__(
         self,
@@ -152,6 +138,14 @@ class Popup(Window):
         modal : bool                  = False,
         **kwargs,
     ):
+        """Args:
+            * target (Container, Widget): the item that causes this item to
+        be displayed when clicked.
+            * button (int, optional): the mouse button that must be clicked to
+        display this item. Defaults to -1 (all/any).
+            * modal (bool, optional): if True, all other items in the interface
+        are disabled until the popup is closed. Defaults to False.
+        """
         popup = not modal
         super().__init__(
             autosize=True,

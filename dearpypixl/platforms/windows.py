@@ -171,7 +171,8 @@ def unset_transparent_color() -> None:
     _is_transparent = False
     SetLayeredWindowAttributes(_APP_HANDLE, (255, 255, 255, 255), _LWA_ALPHA)
 
-
+import win32gui
+win32gui.SetLayeredWindowAttributes
 
 
 # For DearPyPixl

@@ -36,7 +36,7 @@ __all__ = [
 ]
 
 
-class Drawlist(Container):
+class Drawlist(Widget):
     """Adds a drawing canvas.
     
     	Args:
@@ -1102,7 +1102,7 @@ class DrawImage(Widget):
         )
 
 
-class DrawLayer(Container):
+class DrawLayer(Widget):
     """New in 1.1. Creates a layer useful for grouping drawlist items.
     
     	Args:
@@ -1165,7 +1165,7 @@ class DrawLayer(Container):
         )
 
 
-class ViewportDrawlist(Container):
+class ViewportDrawlist(Widget):
     """A container that is used to present draw items or layers directly to the viewport. By default this will draw to the back of the viewport. Layers and draw items should be added to this widget as children.
     
     	Args:
@@ -1313,7 +1313,7 @@ class DrawImageQuad(Widget):
         )
 
 
-class DrawNode(Container):
+class DrawNode(Widget):
     """New in 1.1. Creates a drawing node to associate a transformation matrix. Child node matricies will concatenate.
     
     	Args:

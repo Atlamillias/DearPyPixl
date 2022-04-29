@@ -22,7 +22,7 @@ __all__ = [
 ]
 
 
-class Table(Container):
+class Table(Widget):
     """Adds a table.
     
     	Args:
@@ -353,7 +353,7 @@ class TableColumn(Widget):
         )
 
 
-class TableRow(Container):
+class TableRow(Widget):
     """Adds a table row.
     
     	Args:
@@ -414,7 +414,7 @@ class TableRow(Container):
         )
 
 
-class TableCell(Container):
+class TableCell(Widget):
     """Adds a table.
     
     	Args:

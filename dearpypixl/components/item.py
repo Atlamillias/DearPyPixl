@@ -11,6 +11,10 @@ import itertools
 
 from dearpygui import dearpygui
 from dearpygui._dearpygui import (
+    push_container_stack,
+    pop_container_stack,
+    reset_pos,
+
     generate_uuid,
     get_all_items,
     unstage,
@@ -89,6 +93,14 @@ class Template(Mapping, metaclass=ABCMeta):
 
     def configuration(self) -> dict[str, Any]:
         return {attr:getattr(self, attr) for attr in self._target_parameters}
+
+
+def _enter(self: ItemT):
+    push_container_stack(self._tag)
+    return self
+
+def _exit(self: ItemT, exc_type, exc_instance, traceback):
+    pop_container_stack()
         
 
 class ProtoItem(metaclass=ABCMeta):
@@ -104,9 +116,9 @@ class ProtoItem(metaclass=ABCMeta):
     #       managed attributes is defined on `Item`.
     __slots__ = ()
 
-    _AppItemsRegistry : dict[int, ItemT]       = {}
-    _ItemTypeRegistry : dict[str, type[ItemT]] = {}
-    _RootItemRegistry : list[str]              = []
+    _AppItemsRegistry : dict[int, ItemT]       = {}  # Item instances
+    _ItemTypeRegistry : dict[str, type[ItemT]] = {}  # Item types (All)
+    _RootItemRegistry : list[str]              = []  # Item types (root items only)
 
     _is_root_item     : bool  = False
 
@@ -119,16 +131,29 @@ class ProtoItem(metaclass=ABCMeta):
 
     def __init_subclass__(cls):
         super().__init_subclass__()
+        ###############################################################
+        # [Section 1] Controlling Inherited (Managed) Item Attributes #
+        # [Section 2] Item Class Template                             #
+        # [Section 3] Container Context Control                       #
+        # [Section 4] Item Registration                               #
+        #
+        # The only things that aren't done here are 
+        ###############################################################
+
+        #### [Section 1] ####
         parent_cls = cls.mro()[1]
+        # Merging the parent class's __init__ parameters into its own. That way,
+        # the "total signature" of the item class can be easily retrieved.
         cls._item_init_params  = getattr(parent_cls, "_item_init_params", {}) | \
                                  dict(inspect.signature(cls).parameters)
-        # Import categorized item attributes registered from `ItemAttribute`,
-        # `item_attribute`.
+        # Import categorized managed item attributes (registered from `ItemAttribute`
+        # and `item_attribute`).
         cls._item_config_attrs = [*ItemAttribute.next_class_item_attrs["configuration"]]
         cls._item_inform_attrs = [*ItemAttribute.next_class_item_attrs[INFORMATION]]
         cls._item_states_attrs = [*ItemAttribute.next_class_item_attrs["state"]]
         cls._item_cached_attrs = [*ItemAttribute.next_class_item_attrs["cached"]]
-        # Reset `next_class_item_attrs.values()` for the next class.
+
+        # Reset `next_class_item_attrs.values()` for the next item class.
         for collection in ItemAttribute.next_class_item_attrs.values():
             collection.clear()
 
@@ -143,10 +168,10 @@ class ProtoItem(metaclass=ABCMeta):
         for coll_name in inherits:
             collection = getattr(parent_cls, coll_name)
             for item_attr in collection:
-                # If the attribute is defined anywhere on `cls` (newest object) or is
-                # in its an `_item x_attrs` collection, the attribute is ignored. This allows
-                # for expected inheritance of registered attributes. It also means that
-                # attributes can be unregistered for the newest object by redefining them.
+                # If the attribute is defined anywhere on `cls` (newest object) or is in its an
+                # `_item x_attrs` collection, the attribute is ignored. This allows for expected
+                # inheritance of registered attributes. It also means that attributes can be
+                # for the newest object simply by redefining them.
                 if item_attr not in cls_attributes:
                     getattr(cls, coll_name).append(item_attr)
 
@@ -155,15 +180,30 @@ class ProtoItem(metaclass=ABCMeta):
         cls._item_states_attrs = tuple(cls._item_states_attrs)
         cls._item_cached_attrs = tuple(cls._item_cached_attrs)
 
-        # Creating and binding a new `Template` obj for `cls`. 
+
+        #### [Section 2] ####
+        # Creating new `Template` type for this item class, and binding it to it. 
         cls._item_template_obj = type(
             f"{cls.__qualname__}{Template.__qualname__}",
             (Template,),
             {"__slots__": tuple(cls._item_init_params.keys())}
         )
         cls._item_template_obj._target_factory = cls
-        
-        # Registernew item class
+
+
+        #### [Section 3] ####
+        # If the item is a container, it can be used as a context manager.
+        if hasattr(cls, "_is_container") and cls._is_container:
+            # Don't want accidentally redefine an existing __enter__/__exit__ method.
+            if not hasattr(cls, "__enter__"):
+                cls.__enter__ = _enter
+            if not hasattr(cls, "__exit__"):
+                cls.__exit__  = _exit
+
+
+        #### [Section 4] ####
+        # Register new item class. This is mainly for item duplication and 
+        # UI reconstitution/creation from a data file.
         cls._ItemTypeRegistry[cls.__qualname__] = cls
         if cls._is_root_item:
             cls._RootItemRegistry.append(cls.__qualname__)
@@ -513,6 +553,14 @@ class Item(ProtoItem, metaclass=ABCMeta):
         except SystemError:
             pass
 
+    def reset_pos(self) -> None:
+        """Returns the item at its original position (`pos`).
+        """
+        try:
+            reset_pos(self.tag)
+        except SystemError:
+            raise TypeError(f"")
+
     ######################
     ###### END API #######
     ######################
@@ -527,7 +575,7 @@ class Item(ProtoItem, metaclass=ABCMeta):
     _unique_commands : tuple[str, ...] = ()
     _unique_constants: tuple[str, ...] = ()
 
-    __draw_item_types = (
+    __draw_item_types = (  # used for `item_tree`
         51,  # DrawArrow
         55,  # DrawBezierCubic
         56,  # DrawBezierQuadratic

@@ -29,17 +29,16 @@ __all__ = [
     "item_attribute",
 
     "ItemT",
-    "Container",
+    "Widget",
     "Widget",
 ]
 
 
 WidgetItemT     = TypeVar("WidgetItemT"      , bound='Widget'   )
-ContainerItemT  = TypeVar("ContainerItemT"   , bound='Container')
 
 
 class Widget(Item, metaclass=ABCMeta):
-    __slots__ = ("__events_uuid")
+    __slots__ = ("__events_uuid",)
 
     @abstractmethod
     def _command() -> Callable: ...
@@ -99,21 +98,4 @@ class Widget(Item, metaclass=ABCMeta):
         value.bind(self)
 
 
-class Container(Widget, metaclass=ABCMeta):
-    __slots__ = ()
-    
-    @abstractmethod
-    def _command() -> Callable: ...
 
-    def __enter__(self):
-        push_container_stack(self._tag)
-        return self
-
-    def __exit__(self, exc_type, exc_instance, traceback):
-        pop_container_stack()
-
-    # TODO: This really should be handled the same way `default_value` and `value` is handled.
-    def reset_pos(self) -> None:
-        """Sets the item position (`pos`) to it's original position.
-        """
-        reset_pos(self.tag)

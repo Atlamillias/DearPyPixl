@@ -857,7 +857,7 @@ class LoadingIndicator(Widget):
         )
 
 
-class FileDialog(Container):
+class FileDialog(Widget):
     """Displays a file or directory selector depending on keywords. Displays a file dialog by default. Callback will be ran when the file or directory picker is closed. The app_data arguemnt will be populated with information related to the file and directory as a dictionary.
     
     	Args:

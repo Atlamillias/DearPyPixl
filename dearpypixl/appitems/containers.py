@@ -33,7 +33,7 @@ __all__ = [
 ]
 
 
-class FilterSet(Container):
+class FilterSet(Widget):
     """Helper to parse and apply text filters (e.g. aaaaa[, bbbbb][, ccccc])
     
     	Args:
@@ -96,7 +96,7 @@ class FilterSet(Container):
         )
 
 
-class Clipper(Container):
+class Clipper(Widget):
     """Helper to manually clip large list of items. Increases performance by not searching or drawing widgets outside of the clipped region.
     
     	Args:
@@ -159,7 +159,7 @@ class Clipper(Container):
         )
 
 
-class Stage(Container):
+class Stage(Widget):
     """Adds a stage.
     
     	Args:
@@ -200,7 +200,7 @@ class Stage(Container):
         )
 
 
-class TreeNode(Container):
+class TreeNode(Widget):
     """Adds a tree node to add items to.
     
     	Args:
@@ -328,7 +328,7 @@ class TreeNode(Container):
         )
 
 
-class ChildWindow(Container):
+class ChildWindow(Widget):
     """Adds an embedded child window. Will show scrollbars when items do not fit.
     
     	Args:
@@ -451,7 +451,7 @@ class ChildWindow(Container):
         )
 
 
-class Group(Container):
+class Group(Widget):
     """Creates a group that other widgets can belong to. The group allows item commands to be issued for all of its members.
     
     	Args:
@@ -572,7 +572,7 @@ class Group(Container):
         )
 
 
-class CollapsingHeader(Container):
+class CollapsingHeader(Widget):
     """Adds a collapsing header to add items to. Must be closed with the end command.
     
     	Args:
@@ -703,7 +703,7 @@ class CollapsingHeader(Container):
         )
 
 
-class Tab(Container):
+class Tab(Widget):
     """Adds a tab to a tab bar.
     
     	Args:
@@ -809,7 +809,7 @@ class Tab(Container):
         )
 
 
-class TabBar(Container):
+class TabBar(Widget):
     """Adds a tab bar.
     
     	Args:
@@ -894,7 +894,7 @@ class TabBar(Container):
         )
 
 
-class Menu(Container):
+class Menu(Widget):
     """Adds a menu to an existing menu bar.
     
     	Args:
@@ -985,7 +985,7 @@ class Menu(Container):
         )
 
 
-class MenuBar(Container):
+class MenuBar(Widget):
     """Adds a menu bar to a window.
     
     	Args:
@@ -1043,7 +1043,7 @@ class MenuBar(Container):
         )
 
 
-class Tooltip(Container):
+class Tooltip(Widget):
     """Adds a tooltip window.
     
     	Args:
@@ -1096,7 +1096,7 @@ class Tooltip(Container):
         )
 
 
-class Window(Container):
+class Window(Widget):
     """Creates a new window for following items to be added to.
     
     	Args:
@@ -1247,7 +1247,7 @@ class Window(Container):
         )
 
 
-class DragPayload(Container):
+class DragPayload(Widget):
     """User data payload for drag and drop operations.
     
     	Args:
@@ -1307,7 +1307,7 @@ class DragPayload(Container):
         )
 
 
-class ViewportMenuBar(Container):
+class ViewportMenuBar(Widget):
     """Adds a menubar to the viewport.
     
     	Args:

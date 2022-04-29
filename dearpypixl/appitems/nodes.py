@@ -22,7 +22,7 @@ __all__ = [
 ]
 
 
-class NodeEditor(Container):
+class NodeEditor(Widget):
     """Adds a node editor.
     
     	Args:
@@ -42,6 +42,8 @@ class NodeEditor(Container):
     		track_offset (float, optional): 0.0f:top, 0.5f:center, 1.0f:bottom
     		delink_callback (Callable, optional): Callback ran when a link is detached.
     		menubar (bool, optional): Shows or hides the menubar.
+		    minimap (bool, optional): Shows or hides the minimap.
+		    minimap_location (int, optional): mvNodeMiniMap_Location_* constants.
     		id (Union[int, str], optional): (deprecated) 
     	Returns:
     		Union[int, str]
@@ -59,7 +61,9 @@ class NodeEditor(Container):
     tracked           : bool           = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                           
     track_offset      : float          = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                           
     delink_callback   : Callable       = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                           
-    menubar           : bool           = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                           
+    menubar           : bool           = ItemAttribute("configuration", "get_item_config", "set_item_config", None)   
+    minimap           : bool           = ItemAttribute("configuration", "get_item_config", "set_item_config", None)  # Needs testing   
+    minimap_location  : int            = ItemAttribute("configuration", "get_item_config", "set_item_config", None)  # Needs testing                                                                                                                                                                  
 
     is_resized        : bool           = ItemAttribute("state", "get_item_state", None, "resized")                                                                                                                                                                                            
     is_hovered        : bool           = ItemAttribute("state", "get_item_state", None, "hovered")                                                                                                                                                                                            
@@ -114,7 +118,7 @@ class NodeEditor(Container):
         )
 
 
-class Node(Container):
+class Node(Widget):
     """Adds a node to a node editor.
     
     	Args:
@@ -210,7 +214,7 @@ class Node(Container):
         )
 
 
-class NodeAttribute(Container):
+class NodeAttribute(Widget):
     """Adds a node attribute to a node.
     
     	Args:
