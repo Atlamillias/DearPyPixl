@@ -137,7 +137,10 @@ class ProtoItem(metaclass=ABCMeta):
         # [Section 3] Container Context Control                       #
         # [Section 4] Item Registration                               #
         #
-        # The only things that aren't done here are 
+        # The process in which new Item subtypes are created is not
+        # overly complex, but not completely straight-forward either.
+        # It involves registering both the new type as well as regi-
+        # stering any "managed item attributes" it may use. 
         ###############################################################
 
         #### [Section 1] ####
@@ -192,6 +195,7 @@ class ProtoItem(metaclass=ABCMeta):
 
 
         #### [Section 3] ####
+        # NOTE: The `Container` class was removed in favor of this.
         # If the item is a container, it can be used as a context manager.
         if hasattr(cls, "_is_container") and cls._is_container:
             # Don't want accidentally redefine an existing __enter__/__exit__ method.
