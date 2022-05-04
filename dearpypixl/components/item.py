@@ -13,10 +13,12 @@ from dearpygui import dearpygui
 from dearpygui._dearpygui import (
     push_container_stack,
     pop_container_stack,
+    does_item_exist,
     reset_pos,
-
+    add_alias,
     generate_uuid,
     get_all_items,
+    get_item_alias,
     unstage,
     get_item_info,
     get_item_state,
@@ -95,14 +97,8 @@ class Template(Mapping, metaclass=ABCMeta):
         return {attr:getattr(self, attr) for attr in self._target_parameters}
 
 
-def _enter(self: ItemT):
-    push_container_stack(self._tag)
-    return self
 
-def _exit(self: ItemT, exc_type, exc_instance, traceback):
-    pop_container_stack()
         
-
 class ProtoItem(metaclass=ABCMeta):
     """Updates attribute dictionaries for `Item` class derivatives, ensuring
     that the new subclass has all configuration, information, and state attributes/keys
@@ -121,12 +117,14 @@ class ProtoItem(metaclass=ABCMeta):
     _RootItemRegistry : list[str]              = []  # Item types (root items only)
 
     _is_root_item     : bool  = False
+    _is_container     : bool  = False
 
     _item_init_params : dict[str, Parameter]   = {}
     _item_config_attrs: set[str]               = set()
     _item_inform_attrs: set[str]               = set()
     _item_states_attrs: set[str]               = set()
     _item_cached_attrs: set[str]               = set()
+
     _item_template_obj: TemplateT
 
     def __init_subclass__(cls):
@@ -136,11 +134,24 @@ class ProtoItem(metaclass=ABCMeta):
         # [Section 2] Item Class Template                             #
         # [Section 3] Container Context Control                       #
         # [Section 4] Item Registration                               #
-        #
-        # The process in which new Item subtypes are created is not
-        # overly complex, but not completely straight-forward either.
-        # It involves registering both the new type as well as regi-
-        # stering any "managed item attributes" it may use. 
+        #                                                             #
+        # The process in which new Item subtypes are created is not   #
+        # overly complex, but not completely straight-forward either. #
+        # It involves registering both the new type as well as regi-  #
+        # stering any "managed item attributes" it may use. Inheriti- #
+        # ng from `ProtoItem` or `Item` will handle the item type     #
+        # registration. The bulk of the attribute registration is     #
+        # handled by the `ItemAttribute` descriptor class and the     #
+        # `item_attribute` decorator function defined in              #
+        # "configuration.py".                                         #
+        #                                                             #
+        # As attributes are used with either object they are cached   #
+        # under a specific category (configuration, state, or inform- #
+        # tion). They are then registered to the NEXT subclass that   #
+        # is initialzed (defined below). The initialization clears    #
+        # the cache for the FOLLOWING class. It's VERY important that #
+        # `ItemAttribute` and `item_attribute` only be used in the    #
+        # body of a class derived from `ProtoItem` or `Item`.         #           
         ###############################################################
 
         #### [Section 1] ####
@@ -200,9 +211,9 @@ class ProtoItem(metaclass=ABCMeta):
         if hasattr(cls, "_is_container") and cls._is_container:
             # Don't want accidentally redefine an existing __enter__/__exit__ method.
             if not hasattr(cls, "__enter__"):
-                cls.__enter__ = _enter
+                cls.__enter__ = cls.__enter
             if not hasattr(cls, "__exit__"):
-                cls.__exit__  = _exit
+                cls.__exit__  = cls.__exit
 
 
         #### [Section 4] ####
@@ -211,6 +222,15 @@ class ProtoItem(metaclass=ABCMeta):
         cls._ItemTypeRegistry[cls.__qualname__] = cls
         if cls._is_root_item:
             cls._RootItemRegistry.append(cls.__qualname__)
+
+    def __enter(self):
+        push_container_stack(self.tag)
+        return self
+
+    def __exit(self: ItemT, exc_type, exc_instance, traceback):
+        pop_container_stack()
+
+
 
 
 class Item(ProtoItem, metaclass=ABCMeta):
@@ -273,6 +293,8 @@ class Item(ProtoItem, metaclass=ABCMeta):
 
         return cls._item_template_obj(**configuration)
 
+
+    ## Information Properties ##
     @classmethod
     @property
     @item_attribute(category=INFORMATION)
@@ -320,9 +342,16 @@ class Item(ProtoItem, metaclass=ABCMeta):
     @property
     @item_attribute(category=INFORMATION)
     def tag(self) -> int:
-        """This item's unique identifier.
+        """Return this item's unique integer identifier.
         """
         return self._tag
+
+    @property
+    @item_attribute(category=INFORMATION)
+    def alias(self) -> str | None:
+        """Return this item's unique string identifier.
+        """
+        return get_item_alias(self._tag) or None
 
     @property
     @item_attribute(category=INFORMATION)
@@ -331,6 +360,7 @@ class Item(ProtoItem, metaclass=ABCMeta):
         """
         return self._AppItemsRegistry.get(get_item_info(self._tag)["parent"], None)
 
+    ## State Properties ##
     @property
     @item_attribute(category="state")
     def is_ok(self) -> bool:
@@ -382,7 +412,6 @@ class Item(ProtoItem, metaclass=ABCMeta):
 
     def configure(self, **config) -> None:
         """Update the item's configuration, or other instance attributes.
-
         """
         for key, value in config.items():
             setattr(self, key, value)
@@ -438,16 +467,14 @@ class Item(ProtoItem, metaclass=ABCMeta):
         """Return the entire parential tree that includes the item starting from the
         root parent. Non-table items are represented as 2-item lists `[item, [childs]]`
         where each child of that item is also represented as a 2-item list `[item, [childs]]`.
-        Table items (only `mvAppItemType::Table`) are represented as
-        `[table_item, [rows], [columns]]`.
+        Table items (only `mvAppItemType::Table`) are represented as `[table_item, [rows], [columns]]`.
 
         `FileExtension`, `FontRangeHint`, `NodeLink`, `Annotation`, `DragLine`,
         `DragPoint`, `DragPayload`, and `Legend` items are excluded from the tree.
 
         Args:
-            * item (int | str): The tag of an item.
-            * descendants_only (bool, optional): If True, the tree will start from this item
-            and not its root parent. Default is False.
+            * descendants_only (bool, optional): If True, this item will be root of the
+            tree and not this item's root parent. Default is False.
         """
         root_item = self if descendants_only else None
         current_item = self
@@ -458,7 +485,7 @@ class Item(ProtoItem, metaclass=ABCMeta):
         
         return root_item._item_tree()
 
-    def move(self, parent: Union[ItemT, int] = 0, before: Union[ItemT, int] = 0) -> None:
+    def move(self, parent: Union[ItemT, int] = 0, before: Union[ItemT, int] = 0, **kwargs) -> None:
         """If the item is a child, it will be appended to <parent>'s list
         of children, or inserted before/above <before>. An error will be raised if
         this item does not require a parenting item to exist.
@@ -468,21 +495,54 @@ class Item(ProtoItem, metaclass=ABCMeta):
             * before (int, optional): id of the child item that the widget 
             will be placed above/before.
         """
-        move_item(self._tag, parent=int(parent), before=int(before))
+        try:
+            move_item(self._tag, parent=int(parent), before=int(before))
+        except SystemError:
+            if self._is_root_item:
+                raise TypeError(f"Item cannot be moved; {type(self).__qualname__!r} is a root item.")
+            elif not does_item_exist(self._tag):
+                raise SystemError(f"This item does not or no longer exists; possibly deleted.")
 
-    def move_up(self) -> None:
+            # Troubleshooting problem for user (DPG errors are not always descriptive/convenient).
+            if parent and not does_item_exist(parent) or before and not does_item_exist(before):
+                raise ValueError(f"`parent` or `before` does not exist; possibly deleted.")
+            if parent and before:
+                if get_item_info(before)["parent"] != parent:
+                    raise ValueError(f"`before` is not a child of `parent`.")
+                ValueError(f"Could not move item; is `parent` not appropriate for this item?")
+            elif parent:
+                ValueError(f"Could not move item; is `parent` not appropriate for this item?")
+            elif before:
+                ...
+            raise
+
+    def move_up(self, **kwargs) -> None:
         """If the item is a child, it is moved above/before the item
-        that immediately precedes it. An error will be raised if this item
-        does not require a parenting item to exist.
+        that immediately precedes it. An error will be thrown if this item
+        is not (and cannot be) parented by another item.
         """
-        move_item_up(self._tag)
+        try:
+            move_item_up(self._tag)
+        except SystemError:
+            if self._is_root_item:
+                raise TypeError(f"Item cannot be moved; {type(self).__qualname__!r} can't be parented.")
+            elif not does_item_exist(self._tag):
+                raise SystemError(f"This item does not or no longer exists; possibly deleted.")
+            raise
 
-    def move_down(self) -> None:
+    def move_down(self, **kwargs) -> None:
         """If the item is a child, it is placed below/after the item
-        that immediately procedes it. An error will be raised if this item
-        does not require a parenting item to exist.
+        that immediately procedes it. An error will be thrown if this item
+        is not (and cannot be) parented by another item.
         """
-        move_item_down(self._tag)
+        try:
+            move_item_down(self._tag)
+        except SystemError:
+            if self._is_root_item:
+                raise TypeError(f"Item cannot be moved; {type(self).__qualname__!r} can't be parented.")
+            elif not does_item_exist(self._tag):
+                raise SystemError(f"This item does not or no longer exists; possibly deleted.")
+            raise
 
     def copy(self, recursive: bool = False, **config) -> Self:  # kinda mimic list method
         """Create and return a copy of this item. Children of the copied item
@@ -517,7 +577,7 @@ class Item(ProtoItem, metaclass=ABCMeta):
 
         return self_copy
 
-    def delete(self, children_only: bool = False, slot: int = -1) -> None:
+    def delete(self, children_only: bool = False, slot: int = -1, **kwargs) -> None:
         """Deletes the item and all children.
 
         Args:
@@ -543,13 +603,13 @@ class Item(ProtoItem, metaclass=ABCMeta):
         if not children_only:
             del self
 
-    def focus(self) -> None:
+    def focus(self, **kwargs) -> None:
         """Brings an item into focus. Does nothing to items that cannot be
         displayed.
         """
         focus_item(self._tag)
 
-    def unstage(self) -> None:
+    def unstage(self, **kwargs) -> None:
         """Sets this item to be rendered as normal if it has been staged.
         """
         try:
@@ -557,27 +617,20 @@ class Item(ProtoItem, metaclass=ABCMeta):
         except SystemError:
             pass
 
-    def reset_pos(self) -> None:
-        """Returns the item at its original position (`pos`).
+    def reset_pos(self, **kwargs) -> None:
+        """If the item supports positioning (`pos`), return the item to its
+        original position. Does nothing if positioning is unsupported.
         """
         try:
             reset_pos(self.tag)
         except SystemError:
-            raise TypeError(f"")
+            pass
 
     ######################
     ###### END API #######
     ######################
 
     __slots__ = ("_tag",)
-
-    _is_container    : bool
-    _is_root_item    : bool
-    _is_value_able   : bool
-    _unique_parents  : tuple[str, ...]
-    _unique_children : tuple[str, ...]
-    _unique_commands : tuple[str, ...]
-    _unique_constants: tuple[str, ...]
 
     __draw_item_types = (  # used for `item_tree`
         51,  # DrawArrow
@@ -598,6 +651,13 @@ class Item(ProtoItem, metaclass=ABCMeta):
         99,  # ViewportDrawlist
     )
 
+    _is_container    : bool
+    _is_root_item    : bool
+    _is_value_able   : bool
+    _unique_parents  : tuple[str, ...]
+    _unique_children : tuple[str, ...]
+    _unique_commands : tuple[str, ...]
+    _unique_constants: tuple[str, ...]
 
     ## Abstract Methods ##
     @abstractmethod
@@ -617,11 +677,9 @@ class Item(ProtoItem, metaclass=ABCMeta):
     @abstractmethod
     def _unique_constants() -> tuple[str, ...]   : ...
 
-
     ## Special Methods ##
     def __init__(self, **kwargs):
-        self._tag = kwargs.pop("tag", generate_uuid())
-
+        # Type casting certain arguments
         cached_attrs = self._item_cached_attrs
         # `user_data` needs to be excluded from type casting as it is allowed
         # to be anything.
@@ -634,13 +692,22 @@ class Item(ProtoItem, metaclass=ABCMeta):
             if arg in cached_attrs:
                 setattr(self, f"_{arg}", val)
 
-        type(self)._command(tag=self._tag, user_data=user_data, **kwargs)
-        self._AppItemsRegistry[self._tag] = self  # Registering Item obj
+        # Creation and registration
+        identifier = kwargs.pop("tag", None) or generate_uuid()
+        alias      = None
+        if isinstance(identifier, str):
+            alias      = identifier
+            identifier = generate_uuid()
+        try:
+            self._tag = type(self)._command(tag=identifier, user_data=user_data, **kwargs)
+        except SystemError:
+            raise SystemError("Could not create the item. Verify that the arguments are appropriate.")
+        alias and add_alias(alias, identifier)
+        self._AppItemsRegistry[self._tag] = self
 
     def __repr__(self):
         item_id = self._tag
         label   = get_item_configuration(item_id)["label"]
-        value   = get_value(item_id)
         return f"{type(self).__qualname__}(tag={item_id!r}, label={label!r})"
  
     def __int__(self):
@@ -650,7 +717,7 @@ class Item(ProtoItem, metaclass=ABCMeta):
         yield from self.children()
 
     def __hash__(self):
-        return hash((type(self), self._tag))
+        return hash((type(self), self._tag, self.alias))
 
     def __eq__(self, other):
         if not isinstance(other, ProtoItem):
@@ -660,14 +727,46 @@ class Item(ProtoItem, metaclass=ABCMeta):
     # indexing and slicing
     @functools.singledispatchmethod
     def __getitem__(self, value):
-        raise NotImplemented("This slice or index operation is not supported.")
+        """Indexing and slicing support for Item instances. Usually returns
+        a child of the item, or a list of child items. Behavior is altered
+        for some item types, and not implemented for others.
+        """
+        return NotImplemented
 
     @__getitem__.register
     def __getitem_from_slice(self, value: slice) -> list[ItemT]:
+        """Return the result of slicing the return of self.children().
+
+        Example:
+            >>> with Window(tag=5000) as window:
+            ...     button1 = Button(tag=6000)
+            ...     button2 = Button(tag=6001)
+            ...     childw1 = ChildWindow(tag=7000)
+            >>> 
+            >>> # The result should be the same regardless of slicing
+            >>> # `window` or the result of `window.children()`.
+            >>> 
+            >>> window.children()[::-1] == window[::-1]
+            True
+        """
         return self.children(slot=1)[value.start: value.stop: value.step]
 
     @__getitem__.register
     def __getitem_from_index(self, value: int) -> ItemT:
+        """Return the child of this item from self.children() at index.
+
+        Example:
+            >>> with Window(tag=5000) as window:
+            ...     button1 = Button(tag=6000)
+            ...     button2 = Button(tag=6001)
+            ...     childw1 = ChildWindow(tag=7000)
+            >>> 
+            >>> # The result should be the same regardless of indexing
+            >>> # `window` or the result of `window.children()`.
+            >>> 
+            >>> window.children()[1].tag == window[1].tag
+            True
+        """
         child_slots = [slot for slot in self._children()]
         # If this item is a drawing item, search slot 2. Otherwise search slot 1.
         slot_target = 2 if self._is_draw_item() else 1
@@ -676,6 +775,22 @@ class Item(ProtoItem, metaclass=ABCMeta):
 
     @__getitem__.register
     def __getitem_from_matrix(self, value: tuple) -> ItemT:
+        """If one index is included, return the row of this table item at index.
+        If a second index is included, return the cell resulting from indexing
+        the former row (similar to a numpy matrix).
+
+        Example:
+            >>> with Table(tag=5000) as table:
+            ...     col = TableColumn(tag=6000)
+            ...     row = TableRow(tag=7000)
+            ...     with row:
+            ...         cell = TableCell(tag=8000)
+            >>> 
+            >>> table[0].tag
+            7000  # row
+            >>> table[0, 0].tag
+            8000  # cell
+        """
         # NOTE: The `dispatch` wrapper in `singledispatch` can't properly deal
         # w/parameterized generics. This is why the type hint for `value` is `tuple`
         # and not `tuple[int, int]`.
@@ -690,6 +805,11 @@ class Item(ProtoItem, metaclass=ABCMeta):
 
     ## private/internal methods ##
     def _children(self) -> Iterator[list[int]]:
+        """Private `children` method. Yields children's tags.
+        """
+        # Unlike the public `children` method, this one is an iterator
+        # yielding "raw" children. This is preferrable functionality
+        # for some things.
         yield from get_item_info(self._tag)["children"].values()
 
     def _item_tree(self) -> list['Item', list['Item', list]]:
@@ -699,9 +819,14 @@ class Item(ProtoItem, metaclass=ABCMeta):
         appitems = self._AppItemsRegistry
         children = child_slots[2 if self._is_draw_item() else 1]
         for child in children:
-            child = appitems[child]
+            child      = appitems[child]
             child_tree = child._item_tree()
             tree[1].append(child_tree)
+        if self._item_index() == 47:  # `Table`
+            for child in child_slots[0]:  # `TableColumn` items
+                child      = appitems[child]
+                child_tree = child._item_tree()
+                tree[2].append(child_tree)
         return tree
 
     @classmethod
@@ -716,7 +841,7 @@ class Item(ProtoItem, metaclass=ABCMeta):
 
 
     #### Work-In-Progress ####
-    def _export_configuration(self) -> dict[str, Any]:
+    def _export_configuration(self, **kwargs) -> dict[str, Any]:
         item_type       = type(self)
         dft_init_params = {p.name: p.default for p in item_type._item_init_params.values()}
         export_config   = {
