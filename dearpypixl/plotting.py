@@ -27,7 +27,7 @@ class PlotAxis(PlotAxis):
 
         Args:
             * label_pairs (tuple[tuple[str, float | int], ...]): A sequence of 2-item tuples.
-            The first item of each inner tuple is the tick label, while the second is value
+            The first item of each inner tuple is the tick label, while the second is the value
             at which to set the tick.
         """
         return dpg.set_axis_ticks(self.tag, label_pairs, **kwargs)
