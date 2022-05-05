@@ -75,14 +75,14 @@ class KeyDownHandler(HandlerItem):
 
     show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
-    _is_container     : bool     = False                                                                     
-    _is_root_item     : bool     = False                                                                     
-    _is_value_able    : bool     = False                                                                     
-    _unique_parents   : tuple    = ('Stage', 'TemplateRegistry', 'HandlerRegistry')                          
-    _unique_children  : tuple    = ()                                                                        
-    _unique_commands  : tuple    = ()                                                                        
-    _unique_constants : tuple    = ('mvKeyDownHandler',)                                                     
-    _command          : Callable = dearpygui.add_key_down_handler                                            
+    __is_container__ : bool     = False                                                                     
+    __is_root_item__ : bool     = False                                                                     
+    __is_value_able__: bool     = False                                                                     
+    __able_parents__ : tuple    = ('Stage', 'TemplateRegistry', 'HandlerRegistry')                          
+    __able_children__: tuple    = ()                                                                        
+    __commands__     : tuple    = ()                                                                        
+    __constants__    : tuple    = ('mvKeyDownHandler',)                                                     
+    __command__      : Callable = dearpygui.add_key_down_handler                                            
 
     def __init__(
         self                                      ,
@@ -131,14 +131,14 @@ class KeyPressHandler(HandlerItem):
 
     show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
-    _is_container     : bool     = False                                                                     
-    _is_root_item     : bool     = False                                                                     
-    _is_value_able    : bool     = False                                                                     
-    _unique_parents   : tuple    = ('Stage', 'TemplateRegistry', 'HandlerRegistry')                          
-    _unique_children  : tuple    = ()                                                                        
-    _unique_commands  : tuple    = ()                                                                        
-    _unique_constants : tuple    = ('mvKeyPressHandler',)                                                    
-    _command          : Callable = dearpygui.add_key_press_handler                                           
+    __is_container__ : bool     = False                                                                     
+    __is_root_item__ : bool     = False                                                                     
+    __is_value_able__: bool     = False                                                                     
+    __able_parents__ : tuple    = ('Stage', 'TemplateRegistry', 'HandlerRegistry')                          
+    __able_children__: tuple    = ()                                                                        
+    __commands__     : tuple    = ()                                                                        
+    __constants__    : tuple    = ('mvKeyPressHandler',)                                                    
+    __command__      : Callable = dearpygui.add_key_press_handler                                           
 
     def __init__(
         self                                      ,
@@ -187,14 +187,14 @@ class KeyReleaseHandler(HandlerItem):
 
     show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
-    _is_container     : bool     = False                                                                     
-    _is_root_item     : bool     = False                                                                     
-    _is_value_able    : bool     = False                                                                     
-    _unique_parents   : tuple    = ('Stage', 'TemplateRegistry', 'HandlerRegistry')                          
-    _unique_children  : tuple    = ()                                                                        
-    _unique_commands  : tuple    = ()                                                                        
-    _unique_constants : tuple    = ('mvKeyReleaseHandler',)                                                  
-    _command          : Callable = dearpygui.add_key_release_handler                                         
+    __is_container__ : bool     = False                                                                     
+    __is_root_item__ : bool     = False                                                                     
+    __is_value_able__: bool     = False                                                                     
+    __able_parents__ : tuple    = ('Stage', 'TemplateRegistry', 'HandlerRegistry')                          
+    __able_children__: tuple    = ()                                                                        
+    __commands__     : tuple    = ()                                                                        
+    __constants__    : tuple    = ('mvKeyReleaseHandler',)                                                  
+    __command__      : Callable = dearpygui.add_key_release_handler                                         
 
     def __init__(
         self                                      ,
@@ -241,14 +241,14 @@ class MouseMoveHandler(HandlerItem):
 
     show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
-    _is_container     : bool     = False                                                                     
-    _is_root_item     : bool     = False                                                                     
-    _is_value_able    : bool     = False                                                                     
-    _unique_parents   : tuple    = ('TemplateRegistry', 'Stage', 'HandlerRegistry')                          
-    _unique_children  : tuple    = ()                                                                        
-    _unique_commands  : tuple    = ()                                                                        
-    _unique_constants : tuple    = ('mvMouseMoveHandler',)                                                   
-    _command          : Callable = dearpygui.add_mouse_move_handler                                          
+    __is_container__ : bool     = False                                                                     
+    __is_root_item__ : bool     = False                                                                     
+    __is_value_able__: bool     = False                                                                     
+    __able_parents__ : tuple    = ('TemplateRegistry', 'Stage', 'HandlerRegistry')                          
+    __able_children__: tuple    = ()                                                                        
+    __commands__     : tuple    = ()                                                                        
+    __constants__    : tuple    = ('mvMouseMoveHandler',)                                                   
+    __command__      : Callable = dearpygui.add_mouse_move_handler                                          
 
     def __init__(
         self                                      ,
@@ -293,14 +293,14 @@ class MouseWheelHandler(HandlerItem):
 
     show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
-    _is_container     : bool     = False                                                                     
-    _is_root_item     : bool     = False                                                                     
-    _is_value_able    : bool     = False                                                                     
-    _unique_parents   : tuple    = ('TemplateRegistry', 'Stage', 'HandlerRegistry')                          
-    _unique_children  : tuple    = ()                                                                        
-    _unique_commands  : tuple    = ()                                                                        
-    _unique_constants : tuple    = ('mvMouseWheelHandler',)                                                  
-    _command          : Callable = dearpygui.add_mouse_wheel_handler                                         
+    __is_container__ : bool     = False                                                                     
+    __is_root_item__ : bool     = False                                                                     
+    __is_value_able__: bool     = False                                                                     
+    __able_parents__ : tuple    = ('TemplateRegistry', 'Stage', 'HandlerRegistry')                          
+    __able_children__: tuple    = ()                                                                        
+    __commands__     : tuple    = ()                                                                        
+    __constants__    : tuple    = ('mvMouseWheelHandler',)                                                  
+    __command__      : Callable = dearpygui.add_mouse_wheel_handler                                         
 
     def __init__(
         self                                      ,
@@ -347,14 +347,14 @@ class MouseClickHandler(HandlerItem):
 
     show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
-    _is_container     : bool     = False                                                                     
-    _is_root_item     : bool     = False                                                                     
-    _is_value_able    : bool     = False                                                                     
-    _unique_parents   : tuple    = ('Stage', 'TemplateRegistry', 'HandlerRegistry')                          
-    _unique_children  : tuple    = ()                                                                        
-    _unique_commands  : tuple    = ()                                                                        
-    _unique_constants : tuple    = ('mvMouseClickHandler',)                                                  
-    _command          : Callable = dearpygui.add_mouse_click_handler                                         
+    __is_container__ : bool     = False                                                                     
+    __is_root_item__ : bool     = False                                                                     
+    __is_value_able__: bool     = False                                                                     
+    __able_parents__ : tuple    = ('Stage', 'TemplateRegistry', 'HandlerRegistry')                          
+    __able_children__: tuple    = ()                                                                        
+    __commands__     : tuple    = ()                                                                        
+    __constants__    : tuple    = ('mvMouseClickHandler',)                                                  
+    __command__      : Callable = dearpygui.add_mouse_click_handler                                         
 
     def __init__(
         self                                      ,
@@ -403,14 +403,14 @@ class MouseDoubleClickHandler(HandlerItem):
 
     show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
-    _is_container     : bool     = False                                                                     
-    _is_root_item     : bool     = False                                                                     
-    _is_value_able    : bool     = False                                                                     
-    _unique_parents   : tuple    = ('TemplateRegistry', 'Stage', 'HandlerRegistry')                          
-    _unique_children  : tuple    = ()                                                                        
-    _unique_commands  : tuple    = ()                                                                        
-    _unique_constants : tuple    = ('mvMouseDoubleClickHandler',)                                            
-    _command          : Callable = dearpygui.add_mouse_double_click_handler                                  
+    __is_container__ : bool     = False                                                                     
+    __is_root_item__ : bool     = False                                                                     
+    __is_value_able__: bool     = False                                                                     
+    __able_parents__ : tuple    = ('TemplateRegistry', 'Stage', 'HandlerRegistry')                          
+    __able_children__: tuple    = ()                                                                        
+    __commands__     : tuple    = ()                                                                        
+    __constants__    : tuple    = ('mvMouseDoubleClickHandler',)                                            
+    __command__      : Callable = dearpygui.add_mouse_double_click_handler                                  
 
     def __init__(
         self                                      ,
@@ -459,14 +459,14 @@ class MouseDownHandler(HandlerItem):
 
     show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
-    _is_container     : bool     = False                                                                     
-    _is_root_item     : bool     = False                                                                     
-    _is_value_able    : bool     = False                                                                     
-    _unique_parents   : tuple    = ('TemplateRegistry', 'Stage', 'HandlerRegistry')                          
-    _unique_children  : tuple    = ()                                                                        
-    _unique_commands  : tuple    = ()                                                                        
-    _unique_constants : tuple    = ('mvMouseDownHandler',)                                                   
-    _command          : Callable = dearpygui.add_mouse_down_handler                                          
+    __is_container__ : bool     = False                                                                     
+    __is_root_item__ : bool     = False                                                                     
+    __is_value_able__: bool     = False                                                                     
+    __able_parents__ : tuple    = ('TemplateRegistry', 'Stage', 'HandlerRegistry')                          
+    __able_children__: tuple    = ()                                                                        
+    __commands__     : tuple    = ()                                                                        
+    __constants__    : tuple    = ('mvMouseDownHandler',)                                                   
+    __command__      : Callable = dearpygui.add_mouse_down_handler                                          
 
     def __init__(
         self                                      ,
@@ -515,14 +515,14 @@ class MouseReleaseHandler(HandlerItem):
 
     show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
-    _is_container     : bool     = False                                                                     
-    _is_root_item     : bool     = False                                                                     
-    _is_value_able    : bool     = False                                                                     
-    _unique_parents   : tuple    = ('TemplateRegistry', 'Stage', 'HandlerRegistry')                          
-    _unique_children  : tuple    = ()                                                                        
-    _unique_commands  : tuple    = ()                                                                        
-    _unique_constants : tuple    = ('mvMouseReleaseHandler',)                                                
-    _command          : Callable = dearpygui.add_mouse_release_handler                                       
+    __is_container__ : bool     = False                                                                     
+    __is_root_item__ : bool     = False                                                                     
+    __is_value_able__: bool     = False                                                                     
+    __able_parents__ : tuple    = ('TemplateRegistry', 'Stage', 'HandlerRegistry')                          
+    __able_children__: tuple    = ()                                                                        
+    __commands__     : tuple    = ()                                                                        
+    __constants__    : tuple    = ('mvMouseReleaseHandler',)                                                
+    __command__      : Callable = dearpygui.add_mouse_release_handler                                       
 
     def __init__(
         self                                      ,
@@ -573,14 +573,14 @@ class MouseDragHandler(HandlerItem):
 
     show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
-    _is_container     : bool     = False                                                                     
-    _is_root_item     : bool     = False                                                                     
-    _is_value_able    : bool     = False                                                                     
-    _unique_parents   : tuple    = ('TemplateRegistry', 'Stage', 'HandlerRegistry')                          
-    _unique_children  : tuple    = ()                                                                        
-    _unique_commands  : tuple    = ()                                                                        
-    _unique_constants : tuple    = ('mvMouseDragHandler',)                                                   
-    _command          : Callable = dearpygui.add_mouse_drag_handler                                          
+    __is_container__ : bool     = False                                                                     
+    __is_root_item__ : bool     = False                                                                     
+    __is_value_able__: bool     = False                                                                     
+    __able_parents__ : tuple    = ('TemplateRegistry', 'Stage', 'HandlerRegistry')                          
+    __able_children__: tuple    = ()                                                                        
+    __commands__     : tuple    = ()                                                                        
+    __constants__    : tuple    = ('mvMouseDragHandler',)                                                   
+    __command__      : Callable = dearpygui.add_mouse_drag_handler                                          
 
     def __init__(
         self                                      ,
@@ -629,14 +629,14 @@ class HoverHandler(HandlerItem):
 
     show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
-    _is_container     : bool     = False                                                                     
-    _is_root_item     : bool     = False                                                                     
-    _is_value_able    : bool     = False                                                                     
-    _unique_parents   : tuple    = ('Stage', 'TemplateRegistry', 'ItemHandlerRegistry')                      
-    _unique_children  : tuple    = ()                                                                        
-    _unique_commands  : tuple    = ()                                                                        
-    _unique_constants : tuple    = ('mvHoverHandler',)                                                       
-    _command          : Callable = dearpygui.add_item_hover_handler                                          
+    __is_container__ : bool     = False                                                                     
+    __is_root_item__ : bool     = False                                                                     
+    __is_value_able__: bool     = False                                                                     
+    __able_parents__ : tuple    = ('Stage', 'TemplateRegistry', 'ItemHandlerRegistry')                      
+    __able_children__: tuple    = ()                                                                        
+    __commands__     : tuple    = ()                                                                        
+    __constants__    : tuple    = ('mvHoverHandler',)                                                       
+    __command__      : Callable = dearpygui.add_item_hover_handler                                          
 
     def __init__(
         self                                      ,
@@ -681,14 +681,14 @@ class ResizeHandler(HandlerItem):
 
     show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
-    _is_container     : bool     = False                                                                     
-    _is_root_item     : bool     = False                                                                     
-    _is_value_able    : bool     = False                                                                     
-    _unique_parents   : tuple    = ('Stage', 'TemplateRegistry', 'ItemHandlerRegistry')                      
-    _unique_children  : tuple    = ()                                                                        
-    _unique_commands  : tuple    = ()                                                                        
-    _unique_constants : tuple    = ('mvResizeHandler',)                                                      
-    _command          : Callable = dearpygui.add_item_resize_handler                                         
+    __is_container__ : bool     = False                                                                     
+    __is_root_item__ : bool     = False                                                                     
+    __is_value_able__: bool     = False                                                                     
+    __able_parents__ : tuple    = ('Stage', 'TemplateRegistry', 'ItemHandlerRegistry')                      
+    __able_children__: tuple    = ()                                                                        
+    __commands__     : tuple    = ()                                                                        
+    __constants__    : tuple    = ('mvResizeHandler',)                                                      
+    __command__      : Callable = dearpygui.add_item_resize_handler                                         
 
     def __init__(
         self                                      ,
@@ -733,14 +733,14 @@ class FocusHandler(HandlerItem):
 
     show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
-    _is_container     : bool     = False                                                                     
-    _is_root_item     : bool     = False                                                                     
-    _is_value_able    : bool     = False                                                                     
-    _unique_parents   : tuple    = ('Stage', 'TemplateRegistry', 'ItemHandlerRegistry')                      
-    _unique_children  : tuple    = ()                                                                        
-    _unique_commands  : tuple    = ()                                                                        
-    _unique_constants : tuple    = ('mvFocusHandler',)                                                       
-    _command          : Callable = dearpygui.add_item_focus_handler                                          
+    __is_container__ : bool     = False                                                                     
+    __is_root_item__ : bool     = False                                                                     
+    __is_value_able__: bool     = False                                                                     
+    __able_parents__ : tuple    = ('Stage', 'TemplateRegistry', 'ItemHandlerRegistry')                      
+    __able_children__: tuple    = ()                                                                        
+    __commands__     : tuple    = ()                                                                        
+    __constants__    : tuple    = ('mvFocusHandler',)                                                       
+    __command__      : Callable = dearpygui.add_item_focus_handler                                          
 
     def __init__(
         self                                      ,
@@ -785,14 +785,14 @@ class ActiveHandler(HandlerItem):
 
     show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
-    _is_container     : bool     = False                                                                     
-    _is_root_item     : bool     = False                                                                     
-    _is_value_able    : bool     = False                                                                     
-    _unique_parents   : tuple    = ('Stage', 'TemplateRegistry', 'ItemHandlerRegistry')                      
-    _unique_children  : tuple    = ()                                                                        
-    _unique_commands  : tuple    = ()                                                                        
-    _unique_constants : tuple    = ('mvActiveHandler',)                                                      
-    _command          : Callable = dearpygui.add_item_active_handler                                         
+    __is_container__ : bool     = False                                                                     
+    __is_root_item__ : bool     = False                                                                     
+    __is_value_able__: bool     = False                                                                     
+    __able_parents__ : tuple    = ('Stage', 'TemplateRegistry', 'ItemHandlerRegistry')                      
+    __able_children__: tuple    = ()                                                                        
+    __commands__     : tuple    = ()                                                                        
+    __constants__    : tuple    = ('mvActiveHandler',)                                                      
+    __command__      : Callable = dearpygui.add_item_active_handler                                         
 
     def __init__(
         self                                      ,
@@ -837,14 +837,14 @@ class VisibleHandler(HandlerItem):
 
     show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
-    _is_container     : bool     = False                                                                     
-    _is_root_item     : bool     = False                                                                     
-    _is_value_able    : bool     = False                                                                     
-    _unique_parents   : tuple    = ('Stage', 'TemplateRegistry', 'ItemHandlerRegistry')                      
-    _unique_children  : tuple    = ()                                                                        
-    _unique_commands  : tuple    = ()                                                                        
-    _unique_constants : tuple    = ('mvVisibleHandler',)                                                     
-    _command          : Callable = dearpygui.add_item_visible_handler                                        
+    __is_container__ : bool     = False                                                                     
+    __is_root_item__ : bool     = False                                                                     
+    __is_value_able__: bool     = False                                                                     
+    __able_parents__ : tuple    = ('Stage', 'TemplateRegistry', 'ItemHandlerRegistry')                      
+    __able_children__: tuple    = ()                                                                        
+    __commands__     : tuple    = ()                                                                        
+    __constants__    : tuple    = ('mvVisibleHandler',)                                                     
+    __command__      : Callable = dearpygui.add_item_visible_handler                                        
 
     def __init__(
         self                                      ,
@@ -889,14 +889,14 @@ class ActivatedHandler(HandlerItem):
 
     show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
-    _is_container     : bool     = False                                                                     
-    _is_root_item     : bool     = False                                                                     
-    _is_value_able    : bool     = False                                                                     
-    _unique_parents   : tuple    = ('Stage', 'TemplateRegistry', 'ItemHandlerRegistry')                      
-    _unique_children  : tuple    = ()                                                                        
-    _unique_commands  : tuple    = ()                                                                        
-    _unique_constants : tuple    = ('mvActivatedHandler',)                                                   
-    _command          : Callable = dearpygui.add_item_activated_handler                                      
+    __is_container__ : bool     = False                                                                     
+    __is_root_item__ : bool     = False                                                                     
+    __is_value_able__: bool     = False                                                                     
+    __able_parents__ : tuple    = ('Stage', 'TemplateRegistry', 'ItemHandlerRegistry')                      
+    __able_children__: tuple    = ()                                                                        
+    __commands__     : tuple    = ()                                                                        
+    __constants__    : tuple    = ('mvActivatedHandler',)                                                   
+    __command__      : Callable = dearpygui.add_item_activated_handler                                      
 
     def __init__(
         self                                      ,
@@ -941,14 +941,14 @@ class DeactivatedHandler(HandlerItem):
 
     show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
-    _is_container     : bool     = False                                                                     
-    _is_root_item     : bool     = False                                                                     
-    _is_value_able    : bool     = False                                                                     
-    _unique_parents   : tuple    = ('Stage', 'TemplateRegistry', 'ItemHandlerRegistry')                      
-    _unique_children  : tuple    = ()                                                                        
-    _unique_commands  : tuple    = ()                                                                        
-    _unique_constants : tuple    = ('mvDeactivatedHandler',)                                                 
-    _command          : Callable = dearpygui.add_item_deactivated_handler                                    
+    __is_container__ : bool     = False                                                                     
+    __is_root_item__ : bool     = False                                                                     
+    __is_value_able__: bool     = False                                                                     
+    __able_parents__ : tuple    = ('Stage', 'TemplateRegistry', 'ItemHandlerRegistry')                      
+    __able_children__: tuple    = ()                                                                        
+    __commands__     : tuple    = ()                                                                        
+    __constants__    : tuple    = ('mvDeactivatedHandler',)                                                 
+    __command__      : Callable = dearpygui.add_item_deactivated_handler                                    
 
     def __init__(
         self                                      ,
@@ -993,14 +993,14 @@ class EditedHandler(HandlerItem):
 
     show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
-    _is_container     : bool     = False                                                                     
-    _is_root_item     : bool     = False                                                                     
-    _is_value_able    : bool     = False                                                                     
-    _unique_parents   : tuple    = ('Stage', 'TemplateRegistry', 'ItemHandlerRegistry')                      
-    _unique_children  : tuple    = ()                                                                        
-    _unique_commands  : tuple    = ()                                                                        
-    _unique_constants : tuple    = ('mvEditedHandler',)                                                      
-    _command          : Callable = dearpygui.add_item_edited_handler                                         
+    __is_container__ : bool     = False                                                                     
+    __is_root_item__ : bool     = False                                                                     
+    __is_value_able__: bool     = False                                                                     
+    __able_parents__ : tuple    = ('Stage', 'TemplateRegistry', 'ItemHandlerRegistry')                      
+    __able_children__: tuple    = ()                                                                        
+    __commands__     : tuple    = ()                                                                        
+    __constants__    : tuple    = ('mvEditedHandler',)                                                      
+    __command__      : Callable = dearpygui.add_item_edited_handler                                         
 
     def __init__(
         self                                      ,
@@ -1045,14 +1045,14 @@ class DeactivatedAfterEditHandler(HandlerItem):
 
     show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
-    _is_container     : bool     = False                                                                     
-    _is_root_item     : bool     = False                                                                     
-    _is_value_able    : bool     = False                                                                     
-    _unique_parents   : tuple    = ('Stage', 'TemplateRegistry', 'ItemHandlerRegistry')                      
-    _unique_children  : tuple    = ()                                                                        
-    _unique_commands  : tuple    = ()                                                                        
-    _unique_constants : tuple    = ('mvDeactivatedAfterEditHandler',)                                        
-    _command          : Callable = dearpygui.add_item_deactivated_after_edit_handler                         
+    __is_container__ : bool     = False                                                                     
+    __is_root_item__ : bool     = False                                                                     
+    __is_value_able__: bool     = False                                                                     
+    __able_parents__ : tuple    = ('Stage', 'TemplateRegistry', 'ItemHandlerRegistry')                      
+    __able_children__: tuple    = ()                                                                        
+    __commands__     : tuple    = ()                                                                        
+    __constants__    : tuple    = ('mvDeactivatedAfterEditHandler',)                                        
+    __command__      : Callable = dearpygui.add_item_deactivated_after_edit_handler                         
 
     def __init__(
         self                                      ,
@@ -1097,14 +1097,14 @@ class ToggledOpenHandler(HandlerItem):
 
     show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
-    _is_container     : bool     = False                                                                     
-    _is_root_item     : bool     = False                                                                     
-    _is_value_able    : bool     = False                                                                     
-    _unique_parents   : tuple    = ('Stage', 'TemplateRegistry', 'ItemHandlerRegistry')                      
-    _unique_children  : tuple    = ()                                                                        
-    _unique_commands  : tuple    = ()                                                                        
-    _unique_constants : tuple    = ('mvToggledOpenHandler',)                                                 
-    _command          : Callable = dearpygui.add_item_toggled_open_handler                                   
+    __is_container__ : bool     = False                                                                     
+    __is_root_item__ : bool     = False                                                                     
+    __is_value_able__: bool     = False                                                                     
+    __able_parents__ : tuple    = ('Stage', 'TemplateRegistry', 'ItemHandlerRegistry')                      
+    __able_children__: tuple    = ()                                                                        
+    __commands__     : tuple    = ()                                                                        
+    __constants__    : tuple    = ('mvToggledOpenHandler',)                                                 
+    __command__      : Callable = dearpygui.add_item_toggled_open_handler                                   
 
     def __init__(
         self                                      ,
@@ -1151,14 +1151,14 @@ class ClickedHandler(HandlerItem):
 
     show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
-    _is_container     : bool     = False                                                                     
-    _is_root_item     : bool     = False                                                                     
-    _is_value_able    : bool     = False                                                                     
-    _unique_parents   : tuple    = ('Stage', 'TemplateRegistry', 'ItemHandlerRegistry')                      
-    _unique_children  : tuple    = ()                                                                        
-    _unique_commands  : tuple    = ()                                                                        
-    _unique_constants : tuple    = ('mvClickedHandler',)                                                     
-    _command          : Callable = dearpygui.add_item_clicked_handler                                        
+    __is_container__ : bool     = False                                                                     
+    __is_root_item__ : bool     = False                                                                     
+    __is_value_able__: bool     = False                                                                     
+    __able_parents__ : tuple    = ('Stage', 'TemplateRegistry', 'ItemHandlerRegistry')                      
+    __able_children__: tuple    = ()                                                                        
+    __commands__     : tuple    = ()                                                                        
+    __constants__    : tuple    = ('mvClickedHandler',)                                                     
+    __command__      : Callable = dearpygui.add_item_clicked_handler                                        
 
     def __init__(
         self                                      ,

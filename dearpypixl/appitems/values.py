@@ -52,14 +52,14 @@ class IntValue(Widget):
     default_value     : int             = ItemAttribute('information', 'get_item_cached', None, None)                        
     value             : int             = ItemAttribute("configuration", "get_item_value", "set_item_value", "default_value")
 
-    _is_container     : bool            = False                                                                              
-    _is_root_item     : bool            = False                                                                              
-    _is_value_able    : bool            = True                                                                               
-    _unique_parents   : tuple           = ('ValueRegistry',)                                                                 
-    _unique_children  : tuple           = ()                                                                                 
-    _unique_commands  : tuple           = ()                                                                                 
-    _unique_constants : tuple           = ('mvIntValue',)                                                                    
-    _command          : Callable        = dearpygui.add_int_value                                                            
+    __is_container__ : bool            = False                                                                              
+    __is_root_item__ : bool            = False                                                                              
+    __is_value_able__: bool            = True                                                                               
+    __able_parents__ : tuple           = ('ValueRegistry',)                                                                 
+    __able_children__: tuple           = ()                                                                                 
+    __commands__     : tuple           = ()                                                                                 
+    __constants__    : tuple           = ('mvIntValue',)                                                                    
+    __command__      : Callable        = dearpygui.add_int_value                                                            
 
     def __init__(
         self                                      ,
@@ -105,14 +105,14 @@ class Int4Value(Widget):
     default_value     : Union[List[int], Tuple[int, ...]] = ItemAttribute('information', 'get_item_cached', None, None)                        
     value             : Union[List[int], Tuple[int, ...]] = ItemAttribute("configuration", "get_item_value", "set_item_value", "default_value")
 
-    _is_container     : bool                              = False                                                                              
-    _is_root_item     : bool                              = False                                                                              
-    _is_value_able    : bool                              = True                                                                               
-    _unique_parents   : tuple                             = ('ValueRegistry',)                                                                 
-    _unique_children  : tuple                             = ()                                                                                 
-    _unique_commands  : tuple                             = ()                                                                                 
-    _unique_constants : tuple                             = ('mvInt4Value',)                                                                   
-    _command          : Callable                          = dearpygui.add_int4_value                                                           
+    __is_container__ : bool                              = False                                                                              
+    __is_root_item__ : bool                              = False                                                                              
+    __is_value_able__: bool                              = True                                                                               
+    __able_parents__ : tuple                             = ('ValueRegistry',)                                                                 
+    __able_children__: tuple                             = ()                                                                                 
+    __commands__     : tuple                             = ()                                                                                 
+    __constants__    : tuple                             = ('mvInt4Value',)                                                                   
+    __command__      : Callable                          = dearpygui.add_int4_value                                                           
 
     def __init__(
         self                                                                ,
@@ -158,14 +158,14 @@ class BoolValue(Widget):
     default_value     : bool            = ItemAttribute('information', 'get_item_cached', None, None)                        
     value             : bool            = ItemAttribute("configuration", "get_item_value", "set_item_value", "default_value")
 
-    _is_container     : bool            = False                                                                              
-    _is_root_item     : bool            = False                                                                              
-    _is_value_able    : bool            = True                                                                               
-    _unique_parents   : tuple           = ('ValueRegistry',)                                                                 
-    _unique_children  : tuple           = ()                                                                                 
-    _unique_commands  : tuple           = ()                                                                                 
-    _unique_constants : tuple           = ('mvBoolValue',)                                                                   
-    _command          : Callable        = dearpygui.add_bool_value                                                           
+    __is_container__ : bool            = False                                                                              
+    __is_root_item__ : bool            = False                                                                              
+    __is_value_able__: bool            = True                                                                               
+    __able_parents__ : tuple           = ('ValueRegistry',)                                                                 
+    __able_children__: tuple           = ()                                                                                 
+    __commands__     : tuple           = ()                                                                                 
+    __constants__    : tuple           = ('mvBoolValue',)                                                                   
+    __command__      : Callable        = dearpygui.add_bool_value                                                           
 
     def __init__(
         self                                       ,
@@ -211,14 +211,14 @@ class FloatValue(Widget):
     default_value     : float           = ItemAttribute('information', 'get_item_cached', None, None)                        
     value             : float           = ItemAttribute("configuration", "get_item_value", "set_item_value", "default_value")
 
-    _is_container     : bool            = False                                                                              
-    _is_root_item     : bool            = False                                                                              
-    _is_value_able    : bool            = True                                                                               
-    _unique_parents   : tuple           = ('ValueRegistry',)                                                                 
-    _unique_children  : tuple           = ()                                                                                 
-    _unique_commands  : tuple           = ()                                                                                 
-    _unique_constants : tuple           = ('mvFloatValue',)                                                                  
-    _command          : Callable        = dearpygui.add_float_value                                                          
+    __is_container__ : bool            = False                                                                              
+    __is_root_item__ : bool            = False                                                                              
+    __is_value_able__: bool            = True                                                                               
+    __able_parents__ : tuple           = ('ValueRegistry',)                                                                 
+    __able_children__: tuple           = ()                                                                                 
+    __commands__     : tuple           = ()                                                                                 
+    __constants__    : tuple           = ('mvFloatValue',)                                                                  
+    __command__      : Callable        = dearpygui.add_float_value                                                          
 
     def __init__(
         self                                      ,
@@ -264,14 +264,14 @@ class Float4Value(Widget):
     default_value     : Union[List[float], Tuple[float, ...]] = ItemAttribute('information', 'get_item_cached', None, None)                        
     value             : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_value", "set_item_value", "default_value")
 
-    _is_container     : bool                                  = False                                                                              
-    _is_root_item     : bool                                  = False                                                                              
-    _is_value_able    : bool                                  = True                                                                               
-    _unique_parents   : tuple                                 = ('ValueRegistry',)                                                                 
-    _unique_children  : tuple                                 = ()                                                                                 
-    _unique_commands  : tuple                                 = ()                                                                                 
-    _unique_constants : tuple                                 = ('mvFloat4Value',)                                                                 
-    _command          : Callable                              = dearpygui.add_float4_value                                                         
+    __is_container__ : bool                                  = False                                                                              
+    __is_root_item__ : bool                                  = False                                                                              
+    __is_value_able__: bool                                  = True                                                                               
+    __able_parents__ : tuple                                 = ('ValueRegistry',)                                                                 
+    __able_children__: tuple                                 = ()                                                                                 
+    __commands__     : tuple                                 = ()                                                                                 
+    __constants__    : tuple                                 = ('mvFloat4Value',)                                                                 
+    __command__      : Callable                              = dearpygui.add_float4_value                                                         
 
     def __init__(
         self                                                                            ,
@@ -317,14 +317,14 @@ class StringValue(Widget):
     default_value     : str             = ItemAttribute('information', 'get_item_cached', None, None)                        
     value             : str             = ItemAttribute("configuration", "get_item_value", "set_item_value", "default_value")
 
-    _is_container     : bool            = False                                                                              
-    _is_root_item     : bool            = False                                                                              
-    _is_value_able    : bool            = True                                                                               
-    _unique_parents   : tuple           = ('ValueRegistry',)                                                                 
-    _unique_children  : tuple           = ()                                                                                 
-    _unique_commands  : tuple           = ()                                                                                 
-    _unique_constants : tuple           = ('mvStringValue',)                                                                 
-    _command          : Callable        = dearpygui.add_string_value                                                         
+    __is_container__ : bool            = False                                                                              
+    __is_root_item__ : bool            = False                                                                              
+    __is_value_able__: bool            = True                                                                               
+    __able_parents__ : tuple           = ('ValueRegistry',)                                                                 
+    __able_children__: tuple           = ()                                                                                 
+    __commands__     : tuple           = ()                                                                                 
+    __constants__    : tuple           = ('mvStringValue',)                                                                 
+    __command__      : Callable        = dearpygui.add_string_value                                                         
 
     def __init__(
         self                                      ,
@@ -370,14 +370,14 @@ class DoubleValue(Widget):
     default_value     : float           = ItemAttribute('information', 'get_item_cached', None, None)                        
     value             : float           = ItemAttribute("configuration", "get_item_value", "set_item_value", "default_value")
 
-    _is_container     : bool            = False                                                                              
-    _is_root_item     : bool            = False                                                                              
-    _is_value_able    : bool            = True                                                                               
-    _unique_parents   : tuple           = ('ValueRegistry',)                                                                 
-    _unique_children  : tuple           = ()                                                                                 
-    _unique_commands  : tuple           = ()                                                                                 
-    _unique_constants : tuple           = ('mvDoubleValue',)                                                                 
-    _command          : Callable        = dearpygui.add_double_value                                                         
+    __is_container__ : bool            = False                                                                              
+    __is_root_item__ : bool            = False                                                                              
+    __is_value_able__: bool            = True                                                                               
+    __able_parents__ : tuple           = ('ValueRegistry',)                                                                 
+    __able_children__: tuple           = ()                                                                                 
+    __commands__     : tuple           = ()                                                                                 
+    __constants__    : tuple           = ('mvDoubleValue',)                                                                 
+    __command__      : Callable        = dearpygui.add_double_value                                                         
 
     def __init__(
         self                                      ,
@@ -423,14 +423,14 @@ class Double4Value(Widget):
     default_value     : Any             = ItemAttribute('information', 'get_item_cached', None, None)                        
     value             : Any             = ItemAttribute("configuration", "get_item_value", "set_item_value", "default_value")
 
-    _is_container     : bool            = False                                                                              
-    _is_root_item     : bool            = False                                                                              
-    _is_value_able    : bool            = True                                                                               
-    _unique_parents   : tuple           = ('ValueRegistry',)                                                                 
-    _unique_children  : tuple           = ()                                                                                 
-    _unique_commands  : tuple           = ()                                                                                 
-    _unique_constants : tuple           = ('mvDouble4Value',)                                                                
-    _command          : Callable        = dearpygui.add_double4_value                                                        
+    __is_container__ : bool            = False                                                                              
+    __is_root_item__ : bool            = False                                                                              
+    __is_value_able__: bool            = True                                                                               
+    __able_parents__ : tuple           = ('ValueRegistry',)                                                                 
+    __able_children__: tuple           = ()                                                                                 
+    __commands__     : tuple           = ()                                                                                 
+    __constants__    : tuple           = ('mvDouble4Value',)                                                                
+    __command__      : Callable        = dearpygui.add_double4_value                                                        
 
     def __init__(
         self                                                      ,
@@ -476,14 +476,14 @@ class ColorValue(Widget):
     default_value     : Union[List[float], Tuple[float, ...]] = ItemAttribute('information', 'get_item_cached', None, None)                        
     value             : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_value", "set_item_value", "default_value")
 
-    _is_container     : bool                                  = False                                                                              
-    _is_root_item     : bool                                  = False                                                                              
-    _is_value_able    : bool                                  = True                                                                               
-    _unique_parents   : tuple                                 = ('ValueRegistry',)                                                                 
-    _unique_children  : tuple                                 = ()                                                                                 
-    _unique_commands  : tuple                                 = ()                                                                                 
-    _unique_constants : tuple                                 = ('mvColorValue',)                                                                  
-    _command          : Callable                              = dearpygui.add_color_value                                                          
+    __is_container__ : bool                                  = False                                                                              
+    __is_root_item__ : bool                                  = False                                                                              
+    __is_value_able__: bool                                  = True                                                                               
+    __able_parents__ : tuple                                 = ('ValueRegistry',)                                                                 
+    __able_children__: tuple                                 = ()                                                                                 
+    __commands__     : tuple                                 = ()                                                                                 
+    __constants__    : tuple                                 = ('mvColorValue',)                                                                  
+    __command__      : Callable                              = dearpygui.add_color_value                                                          
 
     def __init__(
         self                                                                            ,
@@ -529,14 +529,14 @@ class FloatVectValue(Widget):
     default_value     : Union[List[float], Tuple[float, ...]] = ItemAttribute('information', 'get_item_cached', None, None)                        
     value             : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_value", "set_item_value", "default_value")
 
-    _is_container     : bool                                  = False                                                                              
-    _is_root_item     : bool                                  = False                                                                              
-    _is_value_able    : bool                                  = True                                                                               
-    _unique_parents   : tuple                                 = ('ValueRegistry',)                                                                 
-    _unique_children  : tuple                                 = ()                                                                                 
-    _unique_commands  : tuple                                 = ()                                                                                 
-    _unique_constants : tuple                                 = ('mvFloatVectValue',)                                                              
-    _command          : Callable                              = dearpygui.add_float_vect_value                                                     
+    __is_container__ : bool                                  = False                                                                              
+    __is_root_item__ : bool                                  = False                                                                              
+    __is_value_able__: bool                                  = True                                                                               
+    __able_parents__ : tuple                                 = ('ValueRegistry',)                                                                 
+    __able_children__: tuple                                 = ()                                                                                 
+    __commands__     : tuple                                 = ()                                                                                 
+    __constants__    : tuple                                 = ('mvFloatVectValue',)                                                              
+    __command__      : Callable                              = dearpygui.add_float_vect_value                                                     
 
     def __init__(
         self                                                            ,
@@ -582,14 +582,14 @@ class SeriesValue(Widget):
     default_value     : Any             = ItemAttribute('information', 'get_item_cached', None, None)                        
     value             : Any             = ItemAttribute("configuration", "get_item_value", "set_item_value", "default_value")
 
-    _is_container     : bool            = False                                                                              
-    _is_root_item     : bool            = False                                                                              
-    _is_value_able    : bool            = True                                                                               
-    _unique_parents   : tuple           = ('ValueRegistry',)                                                                 
-    _unique_children  : tuple           = ()                                                                                 
-    _unique_commands  : tuple           = ()                                                                                 
-    _unique_constants : tuple           = ('mvSeriesValue',)                                                                 
-    _command          : Callable        = dearpygui.add_series_value                                                         
+    __is_container__ : bool            = False                                                                              
+    __is_root_item__ : bool            = False                                                                              
+    __is_value_able__: bool            = True                                                                               
+    __able_parents__ : tuple           = ('ValueRegistry',)                                                                 
+    __able_children__: tuple           = ()                                                                                 
+    __commands__     : tuple           = ()                                                                                 
+    __constants__    : tuple           = ('mvSeriesValue',)                                                                 
+    __command__      : Callable        = dearpygui.add_series_value                                                         
 
     def __init__(
         self                                      ,

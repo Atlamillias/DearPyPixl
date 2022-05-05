@@ -95,14 +95,14 @@ class ColorButton(Widget):
     rect_size           : list[int, int]                    = ItemAttribute("state", "get_item_state", None, "rect_size")                        
     content_region_avail: list[int, int]                    = ItemAttribute("state", "get_item_state", None, "content_region_avail")             
 
-    _is_container       : bool                              = False                                                                              
-    _is_root_item       : bool                              = False                                                                              
-    _is_value_able      : bool                              = False                                                                              
-    _unique_parents     : tuple                             = ()                                                                                 
-    _unique_children    : tuple                             = ()                                                                                 
-    _unique_commands    : tuple                             = ()                                                                                 
-    _unique_constants   : tuple                             = ('mvColorButton',)                                                                 
-    _command            : Callable                          = dearpygui.add_color_button                                                         
+    __is_container__   : bool                              = False                                                                              
+    __is_root_item__   : bool                              = False                                                                              
+    __is_value_able__  : bool                              = False                                                                              
+    __able_parents__   : tuple                             = ()                                                                                 
+    __able_children__  : tuple                             = ()                                                                                 
+    __commands__       : tuple                             = ()                                                                                 
+    __constants__      : tuple                             = ('mvColorButton',)                                                                 
+    __command__        : Callable                          = dearpygui.add_color_button                                                         
 
     def __init__(
         self                                                                   ,
@@ -251,14 +251,14 @@ class ColorEdit(Widget):
     rect_size                : list[int, int]                    = ItemAttribute("state", "get_item_state", None, "rect_size")                                                                                                                                                                                                     
     content_region_avail     : list[int, int]                    = ItemAttribute("state", "get_item_state", None, "content_region_avail")                                                                                                                                                                                          
 
-    _is_container            : bool                              = False                                                                                                                                                                                                                                                           
-    _is_root_item            : bool                              = False                                                                                                                                                                                                                                                           
-    _is_value_able           : bool                              = True                                                                                                                                                                                                                                                            
-    _unique_parents          : tuple                             = ()                                                                                                                                                                                                                                                              
-    _unique_children         : tuple                             = ()                                                                                                                                                                                                                                                              
-    _unique_commands         : tuple                             = ()                                                                                                                                                                                                                                                              
-    _unique_constants        : tuple                             = ('mvColorEdit', 'mvColorEdit_AlphaPreviewNone', 'mvColorEdit_AlphaPreview', 'mvColorEdit_AlphaPreviewHalf', 'mvColorEdit_uint8', 'mvColorEdit_float', 'mvColorEdit_rgb', 'mvColorEdit_hsv', 'mvColorEdit_hex', 'mvColorEdit_input_rgb', 'mvColorEdit_input_hsv')
-    _command                 : Callable                          = dearpygui.add_color_edit                                                                                                                                                                                                                                        
+    __is_container__        : bool                              = False                                                                                                                                                                                                                                                           
+    __is_root_item__        : bool                              = False                                                                                                                                                                                                                                                           
+    __is_value_able__       : bool                              = True                                                                                                                                                                                                                                                            
+    __able_parents__        : tuple                             = ()                                                                                                                                                                                                                                                              
+    __able_children__       : tuple                             = ()                                                                                                                                                                                                                                                              
+    __commands__            : tuple                             = ()                                                                                                                                                                                                                                                              
+    __constants__           : tuple                             = ('mvColorEdit', 'mvColorEdit_AlphaPreviewNone', 'mvColorEdit_AlphaPreview', 'mvColorEdit_AlphaPreviewHalf', 'mvColorEdit_uint8', 'mvColorEdit_float', 'mvColorEdit_rgb', 'mvColorEdit_hsv', 'mvColorEdit_hex', 'mvColorEdit_input_rgb', 'mvColorEdit_input_hsv')
+    __command__             : Callable                          = dearpygui.add_color_edit                                                                                                                                                                                                                                        
 
     def __init__(
         self                                                                   ,
@@ -431,14 +431,14 @@ class ColorPicker(Widget):
     rect_size                : list[int, int]                    = ItemAttribute("state", "get_item_state", None, "rect_size")                        
     content_region_avail     : list[int, int]                    = ItemAttribute("state", "get_item_state", None, "content_region_avail")             
 
-    _is_container            : bool                              = False                                                                              
-    _is_root_item            : bool                              = False                                                                              
-    _is_value_able           : bool                              = True                                                                               
-    _unique_parents          : tuple                             = ()                                                                                 
-    _unique_children         : tuple                             = ()                                                                                 
-    _unique_commands         : tuple                             = ()                                                                                 
-    _unique_constants        : tuple                             = ('mvColorPicker', 'mvColorPicker_bar', 'mvColorPicker_wheel')                      
-    _command                 : Callable                          = dearpygui.add_color_picker                                                         
+    __is_container__        : bool                              = False                                                                              
+    __is_root_item__        : bool                              = False                                                                              
+    __is_value_able__       : bool                              = True                                                                               
+    __able_parents__        : tuple                             = ()                                                                                 
+    __able_children__       : tuple                             = ()                                                                                 
+    __commands__            : tuple                             = ()                                                                                 
+    __constants__           : tuple                             = ('mvColorPicker', 'mvColorPicker_bar', 'mvColorPicker_wheel')                      
+    __command__             : Callable                          = dearpygui.add_color_picker                                                         
 
     def __init__(
         self                                                                   ,
@@ -571,14 +571,14 @@ class ColorMapScale(Widget):
     rect_size           : list[int, int]                    = ItemAttribute("state", "get_item_state", None, "rect_size")                        
     content_region_avail: list[int, int]                    = ItemAttribute("state", "get_item_state", None, "content_region_avail")             
 
-    _is_container       : bool                              = False                                                                              
-    _is_root_item       : bool                              = False                                                                              
-    _is_value_able      : bool                              = False                                                                              
-    _unique_parents     : tuple                             = ()                                                                                 
-    _unique_children    : tuple                             = ()                                                                                 
-    _unique_commands    : tuple                             = ()                                                                                 
-    _unique_constants   : tuple                             = ('mvColorMapScale',)                                                               
-    _command            : Callable                          = dearpygui.add_colormap_scale                                                       
+    __is_container__   : bool                              = False                                                                              
+    __is_root_item__   : bool                              = False                                                                              
+    __is_value_able__  : bool                              = False                                                                              
+    __able_parents__   : tuple                             = ()                                                                                 
+    __able_children__  : tuple                             = ()                                                                                 
+    __commands__       : tuple                             = ()                                                                                 
+    __constants__      : tuple                             = ('mvColorMapScale',)                                                               
+    __command__        : Callable                          = dearpygui.add_colormap_scale                                                       
 
     def __init__(
         self                                                                   ,
@@ -645,14 +645,14 @@ class ColorMap(Widget):
     use_internal_label: bool                                    = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                                                                                                                                                                                              
     show              : bool                                    = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                                                                                                                                                                                              
 
-    _is_container     : bool                                    = False                                                                                                                                                                                                                                                                                                                                                                                                                                   
-    _is_root_item     : bool                                    = False                                                                                                                                                                                                                                                                                                                                                                                                                                   
-    _is_value_able    : bool                                    = False                                                                                                                                                                                                                                                                                                                                                                                                                                   
-    _unique_parents   : tuple                                   = ('ColorMapRegistry', 'TemplateRegistry')                                                                                                                                                                                                                                                                                                                                                                                                
-    _unique_children  : tuple                                   = ()                                                                                                                                                                                                                                                                                                                                                                                                                                      
-    _unique_commands  : tuple                                   = ('bind_colormap', 'sample_colormap', 'get_colormap_color')                                                                                                                                                                                                                                                                                                                                                                              
-    _unique_constants : tuple                                   = ('mvColorMap', 'mvPlotColormap_Default', 'mvPlotColormap_Deep', 'mvPlotColormap_Dark', 'mvPlotColormap_Pastel', 'mvPlotColormap_Paired', 'mvPlotColormap_Viridis', 'mvPlotColormap_Plasma', 'mvPlotColormap_Hot', 'mvPlotColormap_Cool', 'mvPlotColormap_Pink', 'mvPlotColormap_Jet', 'mvPlotColormap_Twilight', 'mvPlotColormap_RdBu', 'mvPlotColormap_BrBG', 'mvPlotColormap_PiYG', 'mvPlotColormap_Spectral', 'mvPlotColormap_Greys')
-    _command          : Callable                                = dearpygui.add_colormap                                                                                                                                                                                                                                                                                                                                                                                                                  
+    __is_container__ : bool                                    = False                                                                                                                                                                                                                                                                                                                                                                                                                                   
+    __is_root_item__ : bool                                    = False                                                                                                                                                                                                                                                                                                                                                                                                                                   
+    __is_value_able__: bool                                    = False                                                                                                                                                                                                                                                                                                                                                                                                                                   
+    __able_parents__ : tuple                                   = ('ColorMapRegistry', 'TemplateRegistry')                                                                                                                                                                                                                                                                                                                                                                                                
+    __able_children__: tuple                                   = ()                                                                                                                                                                                                                                                                                                                                                                                                                                      
+    __commands__     : tuple                                   = ('bind_colormap', 'sample_colormap', 'get_colormap_color')                                                                                                                                                                                                                                                                                                                                                                              
+    __constants__    : tuple                                   = ('mvColorMap', 'mvPlotColormap_Default', 'mvPlotColormap_Deep', 'mvPlotColormap_Dark', 'mvPlotColormap_Pastel', 'mvPlotColormap_Paired', 'mvPlotColormap_Viridis', 'mvPlotColormap_Plasma', 'mvPlotColormap_Hot', 'mvPlotColormap_Cool', 'mvPlotColormap_Pink', 'mvPlotColormap_Jet', 'mvPlotColormap_Twilight', 'mvPlotColormap_RdBu', 'mvPlotColormap_BrBG', 'mvPlotColormap_PiYG', 'mvPlotColormap_Spectral', 'mvPlotColormap_Greys')
+    __command__      : Callable                                = dearpygui.add_colormap                                                                                                                                                                                                                                                                                                                                                                                                                  
 
     def __init__(
         self                                                             ,
@@ -741,14 +741,14 @@ class ColorMapButton(Widget):
     rect_size           : list[int, int]                    = ItemAttribute("state", "get_item_state", None, "rect_size")                        
     content_region_avail: list[int, int]                    = ItemAttribute("state", "get_item_state", None, "content_region_avail")             
 
-    _is_container       : bool                              = False                                                                              
-    _is_root_item       : bool                              = False                                                                              
-    _is_value_able      : bool                              = False                                                                              
-    _unique_parents     : tuple                             = ()                                                                                 
-    _unique_children    : tuple                             = ()                                                                                 
-    _unique_commands    : tuple                             = ()                                                                                 
-    _unique_constants   : tuple                             = ('mvColorMapButton',)                                                              
-    _command            : Callable                          = dearpygui.add_colormap_button                                                      
+    __is_container__   : bool                              = False                                                                              
+    __is_root_item__   : bool                              = False                                                                              
+    __is_value_able__  : bool                              = False                                                                              
+    __able_parents__   : tuple                             = ()                                                                                 
+    __able_children__  : tuple                             = ()                                                                                 
+    __commands__       : tuple                             = ()                                                                                 
+    __constants__      : tuple                             = ('mvColorMapButton',)                                                              
+    __command__        : Callable                          = dearpygui.add_colormap_button                                                      
 
     def __init__(
         self                                                                   ,
@@ -860,14 +860,14 @@ class ColorMapSlider(Widget):
     rect_size                : list[int, int]                    = ItemAttribute("state", "get_item_state", None, "rect_size")                        
     content_region_avail     : list[int, int]                    = ItemAttribute("state", "get_item_state", None, "content_region_avail")             
 
-    _is_container            : bool                              = False                                                                              
-    _is_root_item            : bool                              = False                                                                              
-    _is_value_able           : bool                              = True                                                                               
-    _unique_parents          : tuple                             = ()                                                                                 
-    _unique_children         : tuple                             = ()                                                                                 
-    _unique_commands         : tuple                             = ()                                                                                 
-    _unique_constants        : tuple                             = ('mvColorMapSlider',)                                                              
-    _command                 : Callable                          = dearpygui.add_colormap_slider                                                      
+    __is_container__        : bool                              = False                                                                              
+    __is_root_item__        : bool                              = False                                                                              
+    __is_value_able__       : bool                              = True                                                                               
+    __able_parents__        : tuple                             = ()                                                                                 
+    __able_children__       : tuple                             = ()                                                                                 
+    __commands__            : tuple                             = ()                                                                                 
+    __constants__           : tuple                             = ('mvColorMapSlider',)                                                              
+    __command__             : Callable                          = dearpygui.add_colormap_slider                                                      
 
     def __init__(
         self                                                                   ,

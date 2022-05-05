@@ -56,14 +56,14 @@ class AppEvents(Item):
     use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", "use_internal_label")                                                                                                                  
     show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", "show")                                                                                                                                
 
-    _is_container     : bool     = True                                                                                                                                                                                                              
-    _is_root_item     : bool     = True                                                                                                                                                                                                              
-    _is_value_able    : bool     = False                                                                                                                                                                                                             
-    _unique_parents   : tuple    = ()                                                                                                                                                                                                                
-    _unique_children  : tuple    = ('KeyDownHandler', 'KeyPressHandler', 'KeyReleaseHandler', 'MouseMoveHandler', 'MouseWheelHandler', 'MouseClickHandler', 'MouseDoubleClickHandler', 'MouseDownHandler', 'MouseReleaseHandler', 'MouseDragHandler')
-    _unique_commands  : tuple    = ()                                                                                                                                                                                                                
-    _unique_constants : tuple    = ('mvHandlerRegistry',)                                                                                                                                                                                            
-    _command          : Callable = dearpygui.add_handler_registry                                                                                                                                                                                    
+    __is_container__ : bool     = True                                                                                                                                                                                                              
+    __is_root_item__ : bool     = True                                                                                                                                                                                                              
+    __is_value_able__: bool     = False                                                                                                                                                                                                             
+    __able_parents__ : tuple    = ()                                                                                                                                                                                                                
+    __able_children__: tuple    = ('KeyDownHandler', 'KeyPressHandler', 'KeyReleaseHandler', 'MouseMoveHandler', 'MouseWheelHandler', 'MouseClickHandler', 'MouseDoubleClickHandler', 'MouseDownHandler', 'MouseReleaseHandler', 'MouseDragHandler')
+    __commands__     : tuple    = ()                                                                                                                                                                                                                
+    __constants__    : tuple    = ('mvHandlerRegistry',)                                                                                                                                                                                            
+    __command__      : Callable = dearpygui.add_handler_registry                                                                                                                                                                                    
 
     def __init__(
         self                           ,
@@ -138,14 +138,14 @@ class ItemEvents(Item):
     use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", "use_internal_label")                                                                                                                      
     show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", "show")                                                                                                                                    
 
-    _is_container     : bool     = True                                                                                                                                                                                                                  
-    _is_root_item     : bool     = True                                                                                                                                                                                                                  
-    _is_value_able    : bool     = False                                                                                                                                                                                                                 
-    _unique_parents   : tuple    = ()                                                                                                                                                                                                                    
-    _unique_children  : tuple    = ('ActivatedHandler', 'ActiveHandler', 'ClickedHandler', 'DeactivatedAfterEditHandler', 'DeactivatedHandler', 'EditedHandler', 'FocusHandler', 'HoverHandler', 'ResizeHandler', 'ToggledOpenHandler', 'VisibleHandler')
-    _unique_commands  : tuple    = ()                                                                                                                                                                                                                    
-    _unique_constants : tuple    = ('mvItemHandlerRegistry',)                                                                                                                                                                                            
-    _command          : Callable = dearpygui.add_item_handler_registry                                                                                                                                                                                   
+    __is_container__ : bool     = True                                                                                                                                                                                                                  
+    __is_root_item__ : bool     = True                                                                                                                                                                                                                  
+    __is_value_able__: bool     = False                                                                                                                                                                                                                 
+    __able_parents__ : tuple    = ()                                                                                                                                                                                                                    
+    __able_children__: tuple    = ('ActivatedHandler', 'ActiveHandler', 'ClickedHandler', 'DeactivatedAfterEditHandler', 'DeactivatedHandler', 'EditedHandler', 'FocusHandler', 'HoverHandler', 'ResizeHandler', 'ToggledOpenHandler', 'VisibleHandler')
+    __commands__     : tuple    = ()                                                                                                                                                                                                                    
+    __constants__    : tuple    = ('mvItemHandlerRegistry',)                                                                                                                                                                                            
+    __command__      : Callable = dearpygui.add_item_handler_registry                                                                                                                                                                                   
 
     def __init__(
         self                           ,

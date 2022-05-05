@@ -46,14 +46,14 @@ class StaticTexture(Widget):
     use_internal_label: bool                                  = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     value             : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_value", "set_item_value", "default_value")
 
-    _is_container     : bool                                  = False                                                                              
-    _is_root_item     : bool                                  = False                                                                              
-    _is_value_able    : bool                                  = True                                                                               
-    _unique_parents   : tuple                                 = ('Stage', 'TemplateRegistry', 'TextureRegistry')                                   
-    _unique_children  : tuple                                 = ()                                                                                 
-    _unique_commands  : tuple                                 = ()                                                                                 
-    _unique_constants : tuple                                 = ('mvStaticTexture',)                                                               
-    _command          : Callable                              = dearpygui.add_static_texture                                                       
+    __is_container__ : bool                                  = False                                                                              
+    __is_root_item__ : bool                                  = False                                                                              
+    __is_value_able__: bool                                  = True                                                                               
+    __able_parents__ : tuple                                 = ('Stage', 'TemplateRegistry', 'TextureRegistry')                                   
+    __able_children__: tuple                                 = ()                                                                                 
+    __commands__     : tuple                                 = ()                                                                                 
+    __constants__    : tuple                                 = ('mvStaticTexture',)                                                               
+    __command__      : Callable                              = dearpygui.add_static_texture                                                       
 
     def __init__(
         self                                                           ,
@@ -103,14 +103,14 @@ class DynamicTexture(Widget):
     use_internal_label: bool                                  = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     value             : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_value", "set_item_value", "default_value")
 
-    _is_container     : bool                                  = False                                                                              
-    _is_root_item     : bool                                  = False                                                                              
-    _is_value_able    : bool                                  = True                                                                               
-    _unique_parents   : tuple                                 = ('Stage', 'TemplateRegistry', 'TextureRegistry')                                   
-    _unique_children  : tuple                                 = ()                                                                                 
-    _unique_commands  : tuple                                 = ()                                                                                 
-    _unique_constants : tuple                                 = ('mvDynamicTexture',)                                                              
-    _command          : Callable                              = dearpygui.add_dynamic_texture                                                      
+    __is_container__ : bool                                  = False                                                                              
+    __is_root_item__ : bool                                  = False                                                                              
+    __is_value_able__: bool                                  = True                                                                               
+    __able_parents__ : tuple                                 = ('Stage', 'TemplateRegistry', 'TextureRegistry')                                   
+    __able_children__: tuple                                 = ()                                                                                 
+    __commands__     : tuple                                 = ()                                                                                 
+    __constants__    : tuple                                 = ('mvDynamicTexture',)                                                              
+    __command__      : Callable                              = dearpygui.add_dynamic_texture                                                      
 
     def __init__(
         self                                                           ,
@@ -162,14 +162,14 @@ class RawTexture(Widget):
     format            : int                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     value             : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_value", "set_item_value", "default_value")
 
-    _is_container     : bool                                  = False                                                                              
-    _is_root_item     : bool                                  = False                                                                              
-    _is_value_able    : bool                                  = False                                                                              
-    _unique_parents   : tuple                                 = ('Stage', 'TemplateRegistry', 'TextureRegistry')                                   
-    _unique_children  : tuple                                 = ()                                                                                 
-    _unique_commands  : tuple                                 = ()                                                                                 
-    _unique_constants : tuple                                 = ('mvRawTexture', 'mvFormat_Float_rgba', 'mvFormat_Float_rgb')                      
-    _command          : Callable                              = dearpygui.add_raw_texture                                                          
+    __is_container__ : bool                                  = False                                                                              
+    __is_root_item__ : bool                                  = False                                                                              
+    __is_value_able__: bool                                  = False                                                                              
+    __able_parents__ : tuple                                 = ('Stage', 'TemplateRegistry', 'TextureRegistry')                                   
+    __able_children__: tuple                                 = ()                                                                                 
+    __commands__     : tuple                                 = ()                                                                                 
+    __constants__    : tuple                                 = ('mvRawTexture', 'mvFormat_Float_rgba', 'mvFormat_Float_rgb')                      
+    __command__      : Callable                              = dearpygui.add_raw_texture                                                          
 
     def __init__(
         self                                                           ,

@@ -43,14 +43,14 @@ class ValueRegistry(Item):
     user_data         : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                      
     use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                      
 
-    _is_container     : bool     = True                                                                                                                                                            
-    _is_root_item     : bool     = True                                                                                                                                                            
-    _is_value_able    : bool     = False                                                                                                                                                           
-    _unique_parents   : tuple    = ()                                                                                                                                                              
-    _unique_children  : tuple    = ('BoolValue', 'IntValue', 'Int4Value', 'FloatValue', 'Float4Value', 'StringValue', 'DoubleValue', 'Double4Value', 'ColorValue', 'FloatVectValue', 'SeriesValue')
-    _unique_commands  : tuple    = ()                                                                                                                                                              
-    _unique_constants : tuple    = ('mvValueRegistry',)                                                                                                                                            
-    _command          : Callable = dearpygui.add_value_registry                                                                                                                                    
+    __is_container__ : bool     = True                                                                                                                                                            
+    __is_root_item__ : bool     = True                                                                                                                                                            
+    __is_value_able__: bool     = False                                                                                                                                                           
+    __able_parents__ : tuple    = ()                                                                                                                                                              
+    __able_children__: tuple    = ('BoolValue', 'IntValue', 'Int4Value', 'FloatValue', 'Float4Value', 'StringValue', 'DoubleValue', 'Double4Value', 'ColorValue', 'FloatVectValue', 'SeriesValue')
+    __commands__     : tuple    = ()                                                                                                                                                              
+    __constants__    : tuple    = ('mvValueRegistry',)                                                                                                                                            
+    __command__      : Callable = dearpygui.add_value_registry                                                                                                                                    
 
     def __init__(
         self                           ,
@@ -86,14 +86,14 @@ class TextureRegistry(Item):
     use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
-    _is_container     : bool     = True                                                                      
-    _is_root_item     : bool     = True                                                                      
-    _is_value_able    : bool     = False                                                                     
-    _unique_parents   : tuple    = ()                                                                        
-    _unique_children  : tuple    = ('StaticTexture', 'DynamicTexture', 'RawTexture')                         
-    _unique_commands  : tuple    = ()                                                                        
-    _unique_constants : tuple    = ('mvTextureRegistry',)                                                    
-    _command          : Callable = dearpygui.add_texture_registry                                            
+    __is_container__ : bool     = True                                                                      
+    __is_root_item__ : bool     = True                                                                      
+    __is_value_able__: bool     = False                                                                     
+    __able_parents__ : tuple    = ()                                                                        
+    __able_children__: tuple    = ('StaticTexture', 'DynamicTexture', 'RawTexture')                         
+    __commands__     : tuple    = ()                                                                        
+    __constants__    : tuple    = ('mvTextureRegistry',)                                                    
+    __command__      : Callable = dearpygui.add_texture_registry                                            
 
     def __init__(
         self                            ,
@@ -131,14 +131,14 @@ class HandlerRegistry(Item):
     use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                        
     show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                        
 
-    _is_container     : bool     = True                                                                                                                                                                                                              
-    _is_root_item     : bool     = True                                                                                                                                                                                                              
-    _is_value_able    : bool     = False                                                                                                                                                                                                             
-    _unique_parents   : tuple    = ()                                                                                                                                                                                                                
-    _unique_children  : tuple    = ('KeyDownHandler', 'KeyPressHandler', 'KeyReleaseHandler', 'MouseMoveHandler', 'MouseWheelHandler', 'MouseClickHandler', 'MouseDoubleClickHandler', 'MouseDownHandler', 'MouseReleaseHandler', 'MouseDragHandler')
-    _unique_commands  : tuple    = ()                                                                                                                                                                                                                
-    _unique_constants : tuple    = ('mvHandlerRegistry',)                                                                                                                                                                                            
-    _command          : Callable = dearpygui.add_handler_registry                                                                                                                                                                                    
+    __is_container__ : bool     = True                                                                                                                                                                                                              
+    __is_root_item__ : bool     = True                                                                                                                                                                                                              
+    __is_value_able__: bool     = False                                                                                                                                                                                                             
+    __able_parents__ : tuple    = ()                                                                                                                                                                                                                
+    __able_children__: tuple    = ('KeyDownHandler', 'KeyPressHandler', 'KeyReleaseHandler', 'MouseMoveHandler', 'MouseWheelHandler', 'MouseClickHandler', 'MouseDoubleClickHandler', 'MouseDownHandler', 'MouseReleaseHandler', 'MouseDragHandler')
+    __commands__     : tuple    = ()                                                                                                                                                                                                                
+    __constants__    : tuple    = ('mvHandlerRegistry',)                                                                                                                                                                                            
+    __command__      : Callable = dearpygui.add_handler_registry                                                                                                                                                                                    
 
     def __init__(
         self                           ,
@@ -176,14 +176,14 @@ class ItemHandlerRegistry(Item):
     use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                            
     show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                            
 
-    _is_container     : bool     = True                                                                                                                                                                                                                  
-    _is_root_item     : bool     = True                                                                                                                                                                                                                  
-    _is_value_able    : bool     = False                                                                                                                                                                                                                 
-    _unique_parents   : tuple    = ()                                                                                                                                                                                                                    
-    _unique_children  : tuple    = ('ActivatedHandler', 'ActiveHandler', 'ClickedHandler', 'DeactivatedAfterEditHandler', 'DeactivatedHandler', 'EditedHandler', 'FocusHandler', 'HoverHandler', 'ResizeHandler', 'ToggledOpenHandler', 'VisibleHandler')
-    _unique_commands  : tuple    = ()                                                                                                                                                                                                                    
-    _unique_constants : tuple    = ('mvItemHandlerRegistry',)                                                                                                                                                                                            
-    _command          : Callable = dearpygui.add_item_handler_registry                                                                                                                                                                                   
+    __is_container__ : bool     = True                                                                                                                                                                                                                  
+    __is_root_item__ : bool     = True                                                                                                                                                                                                                  
+    __is_value_able__: bool     = False                                                                                                                                                                                                                 
+    __able_parents__ : tuple    = ()                                                                                                                                                                                                                    
+    __able_children__: tuple    = ('ActivatedHandler', 'ActiveHandler', 'ClickedHandler', 'DeactivatedAfterEditHandler', 'DeactivatedHandler', 'EditedHandler', 'FocusHandler', 'HoverHandler', 'ResizeHandler', 'ToggledOpenHandler', 'VisibleHandler')
+    __commands__     : tuple    = ()                                                                                                                                                                                                                    
+    __constants__    : tuple    = ('mvItemHandlerRegistry',)                                                                                                                                                                                            
+    __command__      : Callable = dearpygui.add_item_handler_registry                                                                                                                                                                                   
 
     def __init__(
         self                           ,
@@ -221,14 +221,14 @@ class ColorMapRegistry(Item):
     use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
-    _is_container     : bool     = True                                                                      
-    _is_root_item     : bool     = True                                                                      
-    _is_value_able    : bool     = False                                                                     
-    _unique_parents   : tuple    = ()                                                                        
-    _unique_children  : tuple    = ('ColorMap',)                                                             
-    _unique_commands  : tuple    = ()                                                                        
-    _unique_constants : tuple    = ('mvColorMapRegistry',)                                                   
-    _command          : Callable = dearpygui.add_colormap_registry                                           
+    __is_container__ : bool     = True                                                                      
+    __is_root_item__ : bool     = True                                                                      
+    __is_value_able__: bool     = False                                                                     
+    __able_parents__ : tuple    = ()                                                                        
+    __able_children__: tuple    = ('ColorMap',)                                                             
+    __commands__     : tuple    = ()                                                                        
+    __constants__    : tuple    = ('mvColorMapRegistry',)                                                   
+    __command__      : Callable = dearpygui.add_colormap_registry                                           
 
     def __init__(
         self                            ,
@@ -264,14 +264,14 @@ class TemplateRegistry(Item):
     user_data         : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
-    _is_container     : bool     = True                                                                      
-    _is_root_item     : bool     = True                                                                      
-    _is_value_able    : bool     = False                                                                     
-    _unique_parents   : tuple    = ()                                                                        
-    _unique_children  : tuple    = ()                                                                        
-    _unique_commands  : tuple    = ()                                                                        
-    _unique_constants : tuple    = ('mvTemplateRegistry',)                                                   
-    _command          : Callable = dearpygui.add_template_registry                                           
+    __is_container__ : bool     = True                                                                      
+    __is_root_item__ : bool     = True                                                                      
+    __is_value_able__: bool     = False                                                                     
+    __able_parents__ : tuple    = ()                                                                        
+    __able_children__: tuple    = ()                                                                        
+    __commands__     : tuple    = ()                                                                        
+    __constants__    : tuple    = ('mvTemplateRegistry',)                                                   
+    __command__      : Callable = dearpygui.add_template_registry                                           
 
     def __init__(
         self                           ,
@@ -307,14 +307,14 @@ class FontRegistry(Item):
     use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
-    _is_container     : bool     = True                                                                      
-    _is_root_item     : bool     = True                                                                      
-    _is_value_able    : bool     = False                                                                     
-    _unique_parents   : tuple    = ()                                                                        
-    _unique_children  : tuple    = ('Font',)                                                                 
-    _unique_commands  : tuple    = ()                                                                        
-    _unique_constants : tuple    = ('mvFontRegistry',)                                                       
-    _command          : Callable = dearpygui.add_font_registry                                               
+    __is_container__ : bool     = True                                                                      
+    __is_root_item__ : bool     = True                                                                      
+    __is_value_able__: bool     = False                                                                     
+    __able_parents__ : tuple    = ()                                                                        
+    __able_children__: tuple    = ('Font',)                                                                 
+    __commands__     : tuple    = ()                                                                        
+    __constants__    : tuple    = ('mvFontRegistry',)                                                       
+    __command__      : Callable = dearpygui.add_font_registry                                               
 
     def __init__(
         self                           ,

@@ -89,14 +89,14 @@ class Drawlist(Widget):
     rect_size           : list[int, int]                    = ItemAttribute("state", "get_item_state", None, "rect_size")                                                                                                                                                                               
     content_region_avail: list[int, int]                    = ItemAttribute("state", "get_item_state", None, "content_region_avail")                                                                                                                                                                    
 
-    _is_container       : bool                              = True                                                                                                                                                                                                                                      
-    _is_root_item       : bool                              = False                                                                                                                                                                                                                                     
-    _is_value_able      : bool                              = False                                                                                                                                                                                                                                     
-    _unique_parents     : tuple                             = ()                                                                                                                                                                                                                                        
-    _unique_children    : tuple                             = ('DrawLayer', 'DrawLine', 'DrawArrow', 'DrawTriangle', 'DrawCircle', 'DrawEllipse', 'DrawBezierCubic', 'DrawBezierQuadratic', 'DrawQuad', 'DrawRect', 'DrawText', 'DrawPolygon', 'DrawPolyline', 'DrawImageQuad', 'DrawImage', 'DrawNode')
-    _unique_commands    : tuple                             = ()                                                                                                                                                                                                                                        
-    _unique_constants   : tuple                             = ('mvDrawlist',)                                                                                                                                                                                                                           
-    _command            : Callable                          = dearpygui.add_drawlist                                                                                                                                                                                                                    
+    __is_container__   : bool                              = True                                                                                                                                                                                                                                      
+    __is_root_item__   : bool                              = False                                                                                                                                                                                                                                     
+    __is_value_able__  : bool                              = False                                                                                                                                                                                                                                     
+    __able_parents__   : tuple                             = ()                                                                                                                                                                                                                                        
+    __able_children__  : tuple                             = ('DrawLayer', 'DrawLine', 'DrawArrow', 'DrawTriangle', 'DrawCircle', 'DrawEllipse', 'DrawBezierCubic', 'DrawBezierQuadratic', 'DrawQuad', 'DrawRect', 'DrawText', 'DrawPolygon', 'DrawPolyline', 'DrawImageQuad', 'DrawImage', 'DrawNode')
+    __commands__       : tuple                             = ()                                                                                                                                                                                                                                        
+    __constants__      : tuple                             = ('mvDrawlist',)                                                                                                                                                                                                                           
+    __command__        : Callable                          = dearpygui.add_drawlist                                                                                                                                                                                                                    
 
     def __init__(
         self                                                         ,
@@ -164,14 +164,14 @@ class DrawLine(Widget):
     color             : Union[List[int], Tuple[int, ...]]     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
     thickness         : float                                 = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
 
-    _is_container     : bool                                  = False                                                                                                   
-    _is_root_item     : bool                                  = False                                                                                                   
-    _is_value_able    : bool                                  = False                                                                                                   
-    _unique_parents   : tuple                                 = ('TemplateRegistry', 'Stage', 'Drawlist', 'DrawLayer', 'Window', 'Plot', 'DrawNode', 'ViewportDrawlist')
-    _unique_children  : tuple                                 = ()                                                                                                      
-    _unique_commands  : tuple                                 = ()                                                                                                      
-    _unique_constants : tuple                                 = ('mvDrawLine',)                                                                                         
-    _command          : Callable                              = dearpygui.draw_line                                                                                     
+    __is_container__ : bool                                  = False                                                                                                   
+    __is_root_item__ : bool                                  = False                                                                                                   
+    __is_value_able__: bool                                  = False                                                                                                   
+    __able_parents__ : tuple                                 = ('TemplateRegistry', 'Stage', 'Drawlist', 'DrawLayer', 'Window', 'Plot', 'DrawNode', 'ViewportDrawlist')
+    __able_children__: tuple                                 = ()                                                                                                      
+    __commands__     : tuple                                 = ()                                                                                                      
+    __constants__    : tuple                                 = ('mvDrawLine',)                                                                                         
+    __command__      : Callable                              = dearpygui.draw_line                                                                                     
 
     def __init__(
         self                                                                           ,
@@ -233,14 +233,14 @@ class DrawArrow(Widget):
     thickness         : float                                 = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
     size              : int                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
 
-    _is_container     : bool                                  = False                                                                                                   
-    _is_root_item     : bool                                  = False                                                                                                   
-    _is_value_able    : bool                                  = False                                                                                                   
-    _unique_parents   : tuple                                 = ('Stage', 'Drawlist', 'DrawLayer', 'Window', 'Plot', 'DrawNode', 'ViewportDrawlist', 'TemplateRegistry')
-    _unique_children  : tuple                                 = ()                                                                                                      
-    _unique_commands  : tuple                                 = ()                                                                                                      
-    _unique_constants : tuple                                 = ('mvDrawArrow',)                                                                                        
-    _command          : Callable                              = dearpygui.draw_arrow                                                                                    
+    __is_container__ : bool                                  = False                                                                                                   
+    __is_root_item__ : bool                                  = False                                                                                                   
+    __is_value_able__: bool                                  = False                                                                                                   
+    __able_parents__ : tuple                                 = ('Stage', 'Drawlist', 'DrawLayer', 'Window', 'Plot', 'DrawNode', 'ViewportDrawlist', 'TemplateRegistry')
+    __able_children__: tuple                                 = ()                                                                                                      
+    __commands__     : tuple                                 = ()                                                                                                      
+    __constants__    : tuple                                 = ('mvDrawArrow',)                                                                                        
+    __command__      : Callable                              = dearpygui.draw_arrow                                                                                    
 
     def __init__(
         self                                                                           ,
@@ -306,14 +306,14 @@ class DrawTriangle(Widget):
     fill              : Union[List[int], Tuple[int, ...]]     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
     thickness         : float                                 = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
 
-    _is_container     : bool                                  = False                                                                                                   
-    _is_root_item     : bool                                  = False                                                                                                   
-    _is_value_able    : bool                                  = False                                                                                                   
-    _unique_parents   : tuple                                 = ('TemplateRegistry', 'Stage', 'Drawlist', 'DrawLayer', 'DrawNode', 'Window', 'Plot', 'ViewportDrawlist')
-    _unique_children  : tuple                                 = ()                                                                                                      
-    _unique_commands  : tuple                                 = ()                                                                                                      
-    _unique_constants : tuple                                 = ('mvDrawTriangle', 'mvCullMode_None', 'mvCullMode_Back', 'mvCullMode_Front')                            
-    _command          : Callable                              = dearpygui.draw_triangle                                                                                 
+    __is_container__ : bool                                  = False                                                                                                   
+    __is_root_item__ : bool                                  = False                                                                                                   
+    __is_value_able__: bool                                  = False                                                                                                   
+    __able_parents__ : tuple                                 = ('TemplateRegistry', 'Stage', 'Drawlist', 'DrawLayer', 'DrawNode', 'Window', 'Plot', 'ViewportDrawlist')
+    __able_children__: tuple                                 = ()                                                                                                      
+    __commands__     : tuple                                 = ()                                                                                                      
+    __constants__    : tuple                                 = ('mvDrawTriangle', 'mvCullMode_None', 'mvCullMode_Back', 'mvCullMode_Front')                            
+    __command__      : Callable                              = dearpygui.draw_triangle                                                                                 
 
     def __init__(
         self                                                                           ,
@@ -381,14 +381,14 @@ class DrawCircle(Widget):
     thickness         : float                                 = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
     segments          : int                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
 
-    _is_container     : bool                                  = False                                                                                                   
-    _is_root_item     : bool                                  = False                                                                                                   
-    _is_value_able    : bool                                  = False                                                                                                   
-    _unique_parents   : tuple                                 = ('TemplateRegistry', 'Stage', 'Drawlist', 'DrawLayer', 'Window', 'Plot', 'DrawNode', 'ViewportDrawlist')
-    _unique_children  : tuple                                 = ()                                                                                                      
-    _unique_commands  : tuple                                 = ()                                                                                                      
-    _unique_constants : tuple                                 = ('mvDrawCircle',)                                                                                       
-    _command          : Callable                              = dearpygui.draw_circle                                                                                   
+    __is_container__ : bool                                  = False                                                                                                   
+    __is_root_item__ : bool                                  = False                                                                                                   
+    __is_value_able__: bool                                  = False                                                                                                   
+    __able_parents__ : tuple                                 = ('TemplateRegistry', 'Stage', 'Drawlist', 'DrawLayer', 'Window', 'Plot', 'DrawNode', 'ViewportDrawlist')
+    __able_children__: tuple                                 = ()                                                                                                      
+    __commands__     : tuple                                 = ()                                                                                                      
+    __constants__    : tuple                                 = ('mvDrawCircle',)                                                                                       
+    __command__      : Callable                              = dearpygui.draw_circle                                                                                   
 
     def __init__(
         self                                                                           ,
@@ -456,14 +456,14 @@ class DrawEllipse(Widget):
     thickness         : float                                 = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
     segments          : int                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
 
-    _is_container     : bool                                  = False                                                                                                   
-    _is_root_item     : bool                                  = False                                                                                                   
-    _is_value_able    : bool                                  = False                                                                                                   
-    _unique_parents   : tuple                                 = ('TemplateRegistry', 'Stage', 'Drawlist', 'DrawLayer', 'Window', 'Plot', 'DrawNode', 'ViewportDrawlist')
-    _unique_children  : tuple                                 = ()                                                                                                      
-    _unique_commands  : tuple                                 = ()                                                                                                      
-    _unique_constants : tuple                                 = ('mvDrawEllipse',)                                                                                      
-    _command          : Callable                              = dearpygui.draw_ellipse                                                                                  
+    __is_container__ : bool                                  = False                                                                                                   
+    __is_root_item__ : bool                                  = False                                                                                                   
+    __is_value_able__: bool                                  = False                                                                                                   
+    __able_parents__ : tuple                                 = ('TemplateRegistry', 'Stage', 'Drawlist', 'DrawLayer', 'Window', 'Plot', 'DrawNode', 'ViewportDrawlist')
+    __able_children__: tuple                                 = ()                                                                                                      
+    __commands__     : tuple                                 = ()                                                                                                      
+    __constants__    : tuple                                 = ('mvDrawEllipse',)                                                                                      
+    __command__      : Callable                              = dearpygui.draw_ellipse                                                                                  
 
     def __init__(
         self                                                                           ,
@@ -533,14 +533,14 @@ class DrawBezierCubic(Widget):
     thickness         : float                                 = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
     segments          : int                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
 
-    _is_container     : bool                                  = False                                                                                                   
-    _is_root_item     : bool                                  = False                                                                                                   
-    _is_value_able    : bool                                  = False                                                                                                   
-    _unique_parents   : tuple                                 = ('Stage', 'TemplateRegistry', 'Drawlist', 'DrawLayer', 'Window', 'Plot', 'DrawNode', 'ViewportDrawlist')
-    _unique_children  : tuple                                 = ()                                                                                                      
-    _unique_commands  : tuple                                 = ()                                                                                                      
-    _unique_constants : tuple                                 = ('mvDrawBezierCubic',)                                                                                  
-    _command          : Callable                              = dearpygui.draw_bezier_cubic                                                                             
+    __is_container__ : bool                                  = False                                                                                                   
+    __is_root_item__ : bool                                  = False                                                                                                   
+    __is_value_able__: bool                                  = False                                                                                                   
+    __able_parents__ : tuple                                 = ('Stage', 'TemplateRegistry', 'Drawlist', 'DrawLayer', 'Window', 'Plot', 'DrawNode', 'ViewportDrawlist')
+    __able_children__: tuple                                 = ()                                                                                                      
+    __commands__     : tuple                                 = ()                                                                                                      
+    __constants__    : tuple                                 = ('mvDrawBezierCubic',)                                                                                  
+    __command__      : Callable                              = dearpygui.draw_bezier_cubic                                                                             
 
     def __init__(
         self                                                                           ,
@@ -610,14 +610,14 @@ class DrawBezierQuadratic(Widget):
     thickness         : float                                 = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
     segments          : int                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
 
-    _is_container     : bool                                  = False                                                                                                   
-    _is_root_item     : bool                                  = False                                                                                                   
-    _is_value_able    : bool                                  = False                                                                                                   
-    _unique_parents   : tuple                                 = ('TemplateRegistry', 'Stage', 'Drawlist', 'DrawLayer', 'Window', 'Plot', 'DrawNode', 'ViewportDrawlist')
-    _unique_children  : tuple                                 = ()                                                                                                      
-    _unique_commands  : tuple                                 = ()                                                                                                      
-    _unique_constants : tuple                                 = ('mvDrawBezierQuadratic',)                                                                              
-    _command          : Callable                              = dearpygui.draw_bezier_quadratic                                                                         
+    __is_container__ : bool                                  = False                                                                                                   
+    __is_root_item__ : bool                                  = False                                                                                                   
+    __is_value_able__: bool                                  = False                                                                                                   
+    __able_parents__ : tuple                                 = ('TemplateRegistry', 'Stage', 'Drawlist', 'DrawLayer', 'Window', 'Plot', 'DrawNode', 'ViewportDrawlist')
+    __able_children__: tuple                                 = ()                                                                                                      
+    __commands__     : tuple                                 = ()                                                                                                      
+    __constants__    : tuple                                 = ('mvDrawBezierQuadratic',)                                                                              
+    __command__      : Callable                              = dearpygui.draw_bezier_quadratic                                                                         
 
     def __init__(
         self                                                                           ,
@@ -687,14 +687,14 @@ class DrawQuad(Widget):
     fill              : Union[List[int], Tuple[int, ...]]     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
     thickness         : float                                 = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
 
-    _is_container     : bool                                  = False                                                                                                   
-    _is_root_item     : bool                                  = False                                                                                                   
-    _is_value_able    : bool                                  = False                                                                                                   
-    _unique_parents   : tuple                                 = ('TemplateRegistry', 'Stage', 'Drawlist', 'DrawLayer', 'Window', 'Plot', 'DrawNode', 'ViewportDrawlist')
-    _unique_children  : tuple                                 = ()                                                                                                      
-    _unique_commands  : tuple                                 = ()                                                                                                      
-    _unique_constants : tuple                                 = ('mvDrawQuad',)                                                                                         
-    _command          : Callable                              = dearpygui.draw_quad                                                                                     
+    __is_container__ : bool                                  = False                                                                                                   
+    __is_root_item__ : bool                                  = False                                                                                                   
+    __is_value_able__: bool                                  = False                                                                                                   
+    __able_parents__ : tuple                                 = ('TemplateRegistry', 'Stage', 'Drawlist', 'DrawLayer', 'Window', 'Plot', 'DrawNode', 'ViewportDrawlist')
+    __able_children__: tuple                                 = ()                                                                                                      
+    __commands__     : tuple                                 = ()                                                                                                      
+    __constants__    : tuple                                 = ('mvDrawQuad',)                                                                                         
+    __command__      : Callable                              = dearpygui.draw_quad                                                                                     
 
     def __init__(
         self                                                                           ,
@@ -774,14 +774,14 @@ class DrawRect(Widget):
     rounding          : float                                 = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
     thickness         : float                                 = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
 
-    _is_container     : bool                                  = False                                                                                                   
-    _is_root_item     : bool                                  = False                                                                                                   
-    _is_value_able    : bool                                  = False                                                                                                   
-    _unique_parents   : tuple                                 = ('TemplateRegistry', 'Stage', 'Drawlist', 'DrawLayer', 'Window', 'Plot', 'DrawNode', 'ViewportDrawlist')
-    _unique_children  : tuple                                 = ()                                                                                                      
-    _unique_commands  : tuple                                 = ()                                                                                                      
-    _unique_constants : tuple                                 = ('mvDrawRect',)                                                                                         
-    _command          : Callable                              = dearpygui.draw_rectangle                                                                                
+    __is_container__ : bool                                  = False                                                                                                   
+    __is_root_item__ : bool                                  = False                                                                                                   
+    __is_value_able__: bool                                  = False                                                                                                   
+    __able_parents__ : tuple                                 = ('TemplateRegistry', 'Stage', 'Drawlist', 'DrawLayer', 'Window', 'Plot', 'DrawNode', 'ViewportDrawlist')
+    __able_children__: tuple                                 = ()                                                                                                      
+    __commands__     : tuple                                 = ()                                                                                                      
+    __constants__    : tuple                                 = ('mvDrawRect',)                                                                                         
+    __command__      : Callable                              = dearpygui.draw_rectangle                                                                                
 
     def __init__(
         self                                                                           ,
@@ -855,14 +855,14 @@ class DrawText(Widget):
     color             : Union[List[int], Tuple[int, ...]]     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
     size              : float                                 = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
 
-    _is_container     : bool                                  = False                                                                                                   
-    _is_root_item     : bool                                  = False                                                                                                   
-    _is_value_able    : bool                                  = False                                                                                                   
-    _unique_parents   : tuple                                 = ('TemplateRegistry', 'Stage', 'Drawlist', 'DrawLayer', 'Window', 'Plot', 'DrawNode', 'ViewportDrawlist')
-    _unique_children  : tuple                                 = ()                                                                                                      
-    _unique_commands  : tuple                                 = ()                                                                                                      
-    _unique_constants : tuple                                 = ('mvDrawText',)                                                                                         
-    _command          : Callable                              = dearpygui.draw_text                                                                                     
+    __is_container__ : bool                                  = False                                                                                                   
+    __is_root_item__ : bool                                  = False                                                                                                   
+    __is_value_able__: bool                                  = False                                                                                                   
+    __able_parents__ : tuple                                 = ('TemplateRegistry', 'Stage', 'Drawlist', 'DrawLayer', 'Window', 'Plot', 'DrawNode', 'ViewportDrawlist')
+    __able_children__: tuple                                 = ()                                                                                                      
+    __commands__     : tuple                                 = ()                                                                                                      
+    __constants__    : tuple                                 = ('mvDrawText',)                                                                                         
+    __command__      : Callable                              = dearpygui.draw_text                                                                                     
 
     def __init__(
         self                                                                           ,
@@ -922,14 +922,14 @@ class DrawPolygon(Widget):
     fill              : Union[List[int], Tuple[int, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
     thickness         : float                             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
 
-    _is_container     : bool                              = False                                                                                                   
-    _is_root_item     : bool                              = False                                                                                                   
-    _is_value_able    : bool                              = False                                                                                                   
-    _unique_parents   : tuple                             = ('TemplateRegistry', 'Stage', 'Drawlist', 'DrawLayer', 'Window', 'Plot', 'DrawNode', 'ViewportDrawlist')
-    _unique_children  : tuple                             = ()                                                                                                      
-    _unique_commands  : tuple                             = ()                                                                                                      
-    _unique_constants : tuple                             = ('mvDrawPolygon',)                                                                                      
-    _command          : Callable                          = dearpygui.draw_polygon                                                                                  
+    __is_container__ : bool                              = False                                                                                                   
+    __is_root_item__ : bool                              = False                                                                                                   
+    __is_value_able__: bool                              = False                                                                                                   
+    __able_parents__ : tuple                             = ('TemplateRegistry', 'Stage', 'Drawlist', 'DrawLayer', 'Window', 'Plot', 'DrawNode', 'ViewportDrawlist')
+    __able_children__: tuple                             = ()                                                                                                      
+    __commands__     : tuple                             = ()                                                                                                      
+    __constants__    : tuple                             = ('mvDrawPolygon',)                                                                                      
+    __command__      : Callable                          = dearpygui.draw_polygon                                                                                  
 
     def __init__(
         self                                                                        ,
@@ -989,14 +989,14 @@ class DrawPolyline(Widget):
     color             : Union[List[int], Tuple[int, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
     thickness         : float                             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
 
-    _is_container     : bool                              = False                                                                                                   
-    _is_root_item     : bool                              = False                                                                                                   
-    _is_value_able    : bool                              = False                                                                                                   
-    _unique_parents   : tuple                             = ('TemplateRegistry', 'Stage', 'Drawlist', 'DrawLayer', 'Window', 'Plot', 'DrawNode', 'ViewportDrawlist')
-    _unique_children  : tuple                             = ()                                                                                                      
-    _unique_commands  : tuple                             = ()                                                                                                      
-    _unique_constants : tuple                             = ('mvDrawPolyline',)                                                                                     
-    _command          : Callable                          = dearpygui.draw_polyline                                                                                 
+    __is_container__ : bool                              = False                                                                                                   
+    __is_root_item__ : bool                              = False                                                                                                   
+    __is_value_able__: bool                              = False                                                                                                   
+    __able_parents__ : tuple                             = ('TemplateRegistry', 'Stage', 'Drawlist', 'DrawLayer', 'Window', 'Plot', 'DrawNode', 'ViewportDrawlist')
+    __able_children__: tuple                             = ()                                                                                                      
+    __commands__     : tuple                             = ()                                                                                                      
+    __constants__    : tuple                             = ('mvDrawPolyline',)                                                                                     
+    __command__      : Callable                          = dearpygui.draw_polyline                                                                                 
 
     def __init__(
         self                                                                        ,
@@ -1060,14 +1060,14 @@ class DrawImage(Widget):
     uv_max            : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
     color             : Union[List[int], Tuple[int, ...]]     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
 
-    _is_container     : bool                                  = False                                                                                                   
-    _is_root_item     : bool                                  = False                                                                                                   
-    _is_value_able    : bool                                  = False                                                                                                   
-    _unique_parents   : tuple                                 = ('TemplateRegistry', 'Stage', 'Drawlist', 'DrawLayer', 'Window', 'Plot', 'DrawNode', 'ViewportDrawlist')
-    _unique_children  : tuple                                 = ()                                                                                                      
-    _unique_commands  : tuple                                 = ()                                                                                                      
-    _unique_constants : tuple                                 = ('mvDrawImage',)                                                                                        
-    _command          : Callable                              = dearpygui.draw_image                                                                                    
+    __is_container__ : bool                                  = False                                                                                                   
+    __is_root_item__ : bool                                  = False                                                                                                   
+    __is_value_able__: bool                                  = False                                                                                                   
+    __able_parents__ : tuple                                 = ('TemplateRegistry', 'Stage', 'Drawlist', 'DrawLayer', 'Window', 'Plot', 'DrawNode', 'ViewportDrawlist')
+    __able_children__: tuple                                 = ()                                                                                                      
+    __commands__     : tuple                                 = ()                                                                                                      
+    __constants__    : tuple                                 = ('mvDrawImage',)                                                                                        
+    __command__      : Callable                              = dearpygui.draw_image                                                                                    
 
     def __init__(
         self                                                                            ,
@@ -1129,14 +1129,14 @@ class DrawLayer(Widget):
     depth_clipping    : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                   
     cull_mode         : int      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                   
 
-    _is_container     : bool     = True                                                                                                                                                                                                                         
-    _is_root_item     : bool     = False                                                                                                                                                                                                                        
-    _is_value_able    : bool     = False                                                                                                                                                                                                                        
-    _unique_parents   : tuple    = ('TemplateRegistry', 'Stage', 'Drawlist', 'Window', 'Plot', 'ViewportDrawlist')                                                                                                                                              
-    _unique_children  : tuple    = ('DrawLine', 'DrawArrow', 'DrawTriangle', 'DrawCircle', 'DrawEllipse', 'DrawBezierCubic', 'DrawBezierQuadratic', 'DrawQuad', 'DrawRect', 'DrawText', 'DrawPolygon', 'DrawPolyline', 'DrawImage', 'DrawImageQuad', 'DrawNode')
-    _unique_commands  : tuple    = ('set_clip_space',)                                                                                                                                                                                                          
-    _unique_constants : tuple    = ('mvDrawLayer',)                                                                                                                                                                                                             
-    _command          : Callable = dearpygui.add_draw_layer                                                                                                                                                                                                     
+    __is_container__ : bool     = True                                                                                                                                                                                                                         
+    __is_root_item__ : bool     = False                                                                                                                                                                                                                        
+    __is_value_able__: bool     = False                                                                                                                                                                                                                        
+    __able_parents__ : tuple    = ('TemplateRegistry', 'Stage', 'Drawlist', 'Window', 'Plot', 'ViewportDrawlist')                                                                                                                                              
+    __able_children__: tuple    = ('DrawLine', 'DrawArrow', 'DrawTriangle', 'DrawCircle', 'DrawEllipse', 'DrawBezierCubic', 'DrawBezierQuadratic', 'DrawQuad', 'DrawRect', 'DrawText', 'DrawPolygon', 'DrawPolyline', 'DrawImage', 'DrawImageQuad', 'DrawNode')
+    __commands__     : tuple    = ('set_clip_space',)                                                                                                                                                                                                          
+    __constants__    : tuple    = ('mvDrawLayer',)                                                                                                                                                                                                             
+    __command__      : Callable = dearpygui.add_draw_layer                                                                                                                                                                                                     
 
     def __init__(
         self                                       ,
@@ -1190,14 +1190,14 @@ class ViewportDrawlist(Widget):
     delay_search      : bool     = ItemAttribute('information', 'get_item_cached', None, None)                                                                                                                                                                               
     front             : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                
 
-    _is_container     : bool     = True                                                                                                                                                                                                                                      
-    _is_root_item     : bool     = True                                                                                                                                                                                                                                      
-    _is_value_able    : bool     = False                                                                                                                                                                                                                                     
-    _unique_parents   : tuple    = ()                                                                                                                                                                                                                                        
-    _unique_children  : tuple    = ('DrawLine', 'DrawLayer', 'DrawArrow', 'DrawTriangle', 'DrawCircle', 'DrawEllipse', 'DrawBezierCubic', 'DrawBezierQuadratic', 'DrawQuad', 'DrawRect', 'DrawText', 'DrawPolygon', 'DrawPolyline', 'DrawImage', 'DrawImageQuad', 'DrawNode')
-    _unique_commands  : tuple    = ()                                                                                                                                                                                                                                        
-    _unique_constants : tuple    = ('mvViewportDrawlist',)                                                                                                                                                                                                                   
-    _command          : Callable = dearpygui.add_viewport_drawlist                                                                                                                                                                                                           
+    __is_container__ : bool     = True                                                                                                                                                                                                                                      
+    __is_root_item__ : bool     = True                                                                                                                                                                                                                                      
+    __is_value_able__: bool     = False                                                                                                                                                                                                                                     
+    __able_parents__ : tuple    = ()                                                                                                                                                                                                                                        
+    __able_children__: tuple    = ('DrawLine', 'DrawLayer', 'DrawArrow', 'DrawTriangle', 'DrawCircle', 'DrawEllipse', 'DrawBezierCubic', 'DrawBezierQuadratic', 'DrawQuad', 'DrawRect', 'DrawText', 'DrawPolygon', 'DrawPolyline', 'DrawImage', 'DrawImageQuad', 'DrawNode')
+    __commands__     : tuple    = ()                                                                                                                                                                                                                                        
+    __constants__    : tuple    = ('mvViewportDrawlist',)                                                                                                                                                                                                                   
+    __command__      : Callable = dearpygui.add_viewport_drawlist                                                                                                                                                                                                           
 
     def __init__(
         self                            ,
@@ -1263,14 +1263,14 @@ class DrawImageQuad(Widget):
     uv4               : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
     color             : Union[List[int], Tuple[int, ...]]     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
 
-    _is_container     : bool                                  = False                                                                                                   
-    _is_root_item     : bool                                  = False                                                                                                   
-    _is_value_able    : bool                                  = False                                                                                                   
-    _unique_parents   : tuple                                 = ('TemplateRegistry', 'Stage', 'Drawlist', 'DrawLayer', 'Window', 'Plot', 'DrawNode', 'ViewportDrawlist')
-    _unique_children  : tuple                                 = ()                                                                                                      
-    _unique_commands  : tuple                                 = ()                                                                                                      
-    _unique_constants : tuple                                 = ('mvDrawImageQuad',)                                                                                    
-    _command          : Callable                              = dearpygui.draw_image_quad                                                                               
+    __is_container__ : bool                                  = False                                                                                                   
+    __is_root_item__ : bool                                  = False                                                                                                   
+    __is_value_able__: bool                                  = False                                                                                                   
+    __able_parents__ : tuple                                 = ('TemplateRegistry', 'Stage', 'Drawlist', 'DrawLayer', 'Window', 'Plot', 'DrawNode', 'ViewportDrawlist')
+    __able_children__: tuple                                 = ()                                                                                                      
+    __commands__     : tuple                                 = ()                                                                                                      
+    __constants__    : tuple                                 = ('mvDrawImageQuad',)                                                                                    
+    __command__      : Callable                              = dearpygui.draw_image_quad                                                                               
 
     def __init__(
         self                                                                            ,
@@ -1334,14 +1334,14 @@ class DrawNode(Widget):
     use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                   
     show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                   
 
-    _is_container     : bool     = True                                                                                                                                                                                                                         
-    _is_root_item     : bool     = False                                                                                                                                                                                                                        
-    _is_value_able    : bool     = False                                                                                                                                                                                                                        
-    _unique_parents   : tuple    = ('TemplateRegistry', 'Stage', 'Drawlist', 'DrawLayer', 'Window', 'Plot', 'ViewportDrawlist', 'DrawNode')                                                                                                                     
-    _unique_children  : tuple    = ('DrawLine', 'DrawArrow', 'DrawTriangle', 'DrawCircle', 'DrawEllipse', 'DrawBezierCubic', 'DrawBezierQuadratic', 'DrawQuad', 'DrawRect', 'DrawText', 'DrawPolygon', 'DrawPolyline', 'DrawImage', 'DrawNode', 'DrawImageQuad')
-    _unique_commands  : tuple    = ('apply_transform', 'create_rotation_matrix', 'create_translation_matrix', 'create_scale_matrix', 'create_lookat_matrix', 'create_perspective_matrix', 'create_orthographic_matrix', 'create_fps_matrix')                    
-    _unique_constants : tuple    = ('mvDrawNode',)                                                                                                                                                                                                              
-    _command          : Callable = dearpygui.add_draw_node                                                                                                                                                                                                      
+    __is_container__ : bool     = True                                                                                                                                                                                                                         
+    __is_root_item__ : bool     = False                                                                                                                                                                                                                        
+    __is_value_able__: bool     = False                                                                                                                                                                                                                        
+    __able_parents__ : tuple    = ('TemplateRegistry', 'Stage', 'Drawlist', 'DrawLayer', 'Window', 'Plot', 'ViewportDrawlist', 'DrawNode')                                                                                                                     
+    __able_children__: tuple    = ('DrawLine', 'DrawArrow', 'DrawTriangle', 'DrawCircle', 'DrawEllipse', 'DrawBezierCubic', 'DrawBezierQuadratic', 'DrawQuad', 'DrawRect', 'DrawText', 'DrawPolygon', 'DrawPolyline', 'DrawImage', 'DrawNode', 'DrawImageQuad')
+    __commands__     : tuple    = ('apply_transform', 'create_rotation_matrix', 'create_translation_matrix', 'create_scale_matrix', 'create_lookat_matrix', 'create_perspective_matrix', 'create_orthographic_matrix', 'create_fps_matrix')                    
+    __constants__    : tuple    = ('mvDrawNode',)                                                                                                                                                                                                              
+    __command__      : Callable = dearpygui.add_draw_node                                                                                                                                                                                                      
 
     def __init__(
         self                                      ,

@@ -147,14 +147,14 @@ class Plot(Widget):
     rect_size               : list[int, int]                    = ItemAttribute("state", "get_item_state", None, "rect_size")                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
     content_region_avail    : list[int, int]                    = ItemAttribute("state", "get_item_state", None, "content_region_avail")                                                                                                                                                                                                                                                                                                                                                                                                                                                         
 
-    _is_container           : bool                              = True                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
-    _is_root_item           : bool                              = False                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
-    _is_value_able          : bool                              = False                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
-    _unique_parents         : tuple                             = ()                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
-    _unique_children        : tuple                             = ('PlotLegend', 'PlotAxis', 'DragPoint', 'DragLine', 'Annotation', 'DrawLine', 'DrawArrow', 'DrawTriangle', 'DrawCircle', 'DrawEllipse', 'DrawBezierCubic', 'DrawBezierQuadratic', 'DrawQuad', 'DrawRect', 'DrawText', 'DrawPolygon', 'DrawPolyline', 'DrawImage', 'DrawLayer', 'ActivatedHandler', 'ActiveHandler', 'ClickedHandler', 'DeactivatedAfterEditHandler', 'DeactivatedHandler', 'EditedHandler', 'FocusHandler', 'HoverHandler', 'ResizeHandler', 'ToggledOpenHandler', 'VisibleHandler', 'DragPayload', 'DrawNode')
-    _unique_commands        : tuple                             = ('is_plot_queried', 'get_plot_query_area')                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
-    _unique_constants       : tuple                             = ('mvPlot', 'mvPlotMarker_None', 'mvPlotMarker_Circle', 'mvPlotMarker_Square', 'mvPlotMarker_Diamond', 'mvPlotMarker_Up', 'mvPlotMarker_Down', 'mvPlotMarker_Left', 'mvPlotMarker_Right', 'mvPlotMarker_Cross', 'mvPlotMarker_Plus', 'mvPlotMarker_Asterisk')                                                                                                                                                                                                                                                                   
-    _command                : Callable                          = dearpygui.add_plot                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
+    __is_container__       : bool                              = True                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
+    __is_root_item__       : bool                              = False                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
+    __is_value_able__      : bool                              = False                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
+    __able_parents__       : tuple                             = ()                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
+    __able_children__      : tuple                             = ('PlotLegend', 'PlotAxis', 'DragPoint', 'DragLine', 'Annotation', 'DrawLine', 'DrawArrow', 'DrawTriangle', 'DrawCircle', 'DrawEllipse', 'DrawBezierCubic', 'DrawBezierQuadratic', 'DrawQuad', 'DrawRect', 'DrawText', 'DrawPolygon', 'DrawPolyline', 'DrawImage', 'DrawLayer', 'ActivatedHandler', 'ActiveHandler', 'ClickedHandler', 'DeactivatedAfterEditHandler', 'DeactivatedHandler', 'EditedHandler', 'FocusHandler', 'HoverHandler', 'ResizeHandler', 'ToggledOpenHandler', 'VisibleHandler', 'DragPayload', 'DrawNode')
+    __commands__           : tuple                             = ('is_plot_queried', 'get_plot_query_area')                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
+    __constants__          : tuple                             = ('mvPlot', 'mvPlotMarker_None', 'mvPlotMarker_Circle', 'mvPlotMarker_Square', 'mvPlotMarker_Diamond', 'mvPlotMarker_Up', 'mvPlotMarker_Down', 'mvPlotMarker_Left', 'mvPlotMarker_Right', 'mvPlotMarker_Cross', 'mvPlotMarker_Plus', 'mvPlotMarker_Asterisk')                                                                                                                                                                                                                                                                   
+    __command__            : Callable                          = dearpygui.add_plot                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
 
     def __init__(
         self                                                                         ,
@@ -275,14 +275,14 @@ class PlotLegend(Widget):
     horizontal        : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                      
     outside           : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                      
 
-    _is_container     : bool     = True                                                                                                                                                                                                                                                            
-    _is_root_item     : bool     = False                                                                                                                                                                                                                                                           
-    _is_value_able    : bool     = False                                                                                                                                                                                                                                                           
-    _unique_parents   : tuple    = ('Stage', 'TemplateRegistry', 'Plot', 'SubPlots')                                                                                                                                                                                                               
-    _unique_children  : tuple    = ()                                                                                                                                                                                                                                                              
-    _unique_commands  : tuple    = ()                                                                                                                                                                                                                                                              
-    _unique_constants : tuple    = ('mvPlotLegend', 'mvPlot_Location_Center', 'mvPlot_Location_North', 'mvPlot_Location_South', 'mvPlot_Location_West', 'mvPlot_Location_East', 'mvPlot_Location_NorthWest', 'mvPlot_Location_NorthEast', 'mvPlot_Location_SouthWest', 'mvPlot_Location_SouthEast')
-    _command          : Callable = dearpygui.add_plot_legend                                                                                                                                                                                                                                       
+    __is_container__ : bool     = True                                                                                                                                                                                                                                                            
+    __is_root_item__ : bool     = False                                                                                                                                                                                                                                                           
+    __is_value_able__: bool     = False                                                                                                                                                                                                                                                           
+    __able_parents__ : tuple    = ('Stage', 'TemplateRegistry', 'Plot', 'SubPlots')                                                                                                                                                                                                               
+    __able_children__: tuple    = ()                                                                                                                                                                                                                                                              
+    __commands__     : tuple    = ()                                                                                                                                                                                                                                                              
+    __constants__    : tuple    = ('mvPlotLegend', 'mvPlot_Location_Center', 'mvPlot_Location_North', 'mvPlot_Location_South', 'mvPlot_Location_West', 'mvPlot_Location_East', 'mvPlot_Location_NorthWest', 'mvPlot_Location_NorthEast', 'mvPlot_Location_SouthWest', 'mvPlot_Location_SouthEast')
+    __command__      : Callable = dearpygui.add_plot_legend                                                                                                                                                                                                                                       
 
     def __init__(
         self                                                 ,
@@ -355,14 +355,14 @@ class PlotAxis(Widget):
     lock_max          : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                           
     time              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                           
 
-    _is_container     : bool     = True                                                                                                                 
-    _is_root_item     : bool     = False                                                                                                                
-    _is_value_able    : bool     = False                                                                                                                
-    _unique_parents   : tuple    = ('Stage', 'TemplateRegistry', 'Plot')                                                                                
-    _unique_children  : tuple    = ()                                                                                                                   
-    _unique_commands  : tuple    = ('reset_axis_ticks', 'set_axis_ticks', 'set_axis_limits', 'set_axis_limits_auto', 'get_axis_limits', 'fit_axis_data')
-    _unique_constants : tuple    = ('mvPlotAxis', 'mvXAxis', 'mvYAxis')                                                                                 
-    _command          : Callable = dearpygui.add_plot_axis                                                                                              
+    __is_container__ : bool     = True                                                                                                                 
+    __is_root_item__ : bool     = False                                                                                                                
+    __is_value_able__: bool     = False                                                                                                                
+    __able_parents__ : tuple    = ('Stage', 'TemplateRegistry', 'Plot')                                                                                
+    __able_children__: tuple    = ()                                                                                                                   
+    __commands__     : tuple    = ('reset_axis_ticks', 'set_axis_ticks', 'set_axis_limits', 'set_axis_limits_auto', 'get_axis_limits', 'fit_axis_data')
+    __constants__    : tuple    = ('mvPlotAxis', 'mvXAxis', 'mvYAxis')                                                                                 
+    __command__      : Callable = dearpygui.add_plot_axis                                                                                              
 
     def __init__(
         self                                                 ,
@@ -439,14 +439,14 @@ class DragPoint(Widget):
     show_label        : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     value             : Any                               = ItemAttribute("configuration", "get_item_value", "set_item_value", "default_value")
 
-    _is_container     : bool                              = False                                                                              
-    _is_root_item     : bool                              = False                                                                              
-    _is_value_able    : bool                              = True                                                                               
-    _unique_parents   : tuple                             = ('Stage', 'TemplateRegistry', 'Plot')                                              
-    _unique_children  : tuple                             = ()                                                                                 
-    _unique_commands  : tuple                             = ()                                                                                 
-    _unique_constants : tuple                             = ('mvDragPoint',)                                                                   
-    _command          : Callable                          = dearpygui.add_drag_point                                                           
+    __is_container__ : bool                              = False                                                                              
+    __is_root_item__ : bool                              = False                                                                              
+    __is_value_able__: bool                              = True                                                                               
+    __able_parents__ : tuple                             = ('Stage', 'TemplateRegistry', 'Plot')                                              
+    __able_children__: tuple                             = ()                                                                                 
+    __commands__     : tuple                             = ()                                                                                 
+    __constants__    : tuple                             = ('mvDragPoint',)                                                                   
+    __command__      : Callable                          = dearpygui.add_drag_point                                                           
 
     def __init__(
         self                                                                   ,
@@ -517,14 +517,14 @@ class DragLine(Widget):
     vertical          : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     value             : Any                               = ItemAttribute("configuration", "get_item_value", "set_item_value", "default_value")
 
-    _is_container     : bool                              = False                                                                              
-    _is_root_item     : bool                              = False                                                                              
-    _is_value_able    : bool                              = True                                                                               
-    _unique_parents   : tuple                             = ('Stage', 'TemplateRegistry', 'Plot')                                              
-    _unique_children  : tuple                             = ()                                                                                 
-    _unique_commands  : tuple                             = ()                                                                                 
-    _unique_constants : tuple                             = ('mvDragLine',)                                                                    
-    _command          : Callable                          = dearpygui.add_drag_line                                                            
+    __is_container__ : bool                              = False                                                                              
+    __is_root_item__ : bool                              = False                                                                              
+    __is_value_able__: bool                              = True                                                                               
+    __able_parents__ : tuple                             = ('Stage', 'TemplateRegistry', 'Plot')                                              
+    __able_children__: tuple                             = ()                                                                                 
+    __commands__     : tuple                             = ()                                                                                 
+    __constants__    : tuple                             = ('mvDragLine',)                                                                    
+    __command__      : Callable                          = dearpygui.add_drag_line                                                            
 
     def __init__(
         self                                                                   ,
@@ -593,14 +593,14 @@ class Annotation(Widget):
     clamped           : bool                                  = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     value             : Any                                   = ItemAttribute("configuration", "get_item_value", "set_item_value", "default_value")
 
-    _is_container     : bool                                  = False                                                                              
-    _is_root_item     : bool                                  = False                                                                              
-    _is_value_able    : bool                                  = True                                                                               
-    _unique_parents   : tuple                                 = ('Stage', 'TemplateRegistry', 'Plot')                                              
-    _unique_children  : tuple                                 = ()                                                                                 
-    _unique_commands  : tuple                                 = ()                                                                                 
-    _unique_constants : tuple                                 = ('mvAnnotation',)                                                                  
-    _command          : Callable                              = dearpygui.add_plot_annotation                                                      
+    __is_container__ : bool                                  = False                                                                              
+    __is_root_item__ : bool                                  = False                                                                              
+    __is_value_able__: bool                                  = True                                                                               
+    __able_parents__ : tuple                                 = ('Stage', 'TemplateRegistry', 'Plot')                                              
+    __able_children__: tuple                                 = ()                                                                                 
+    __commands__     : tuple                                 = ()                                                                                 
+    __constants__    : tuple                                 = ('mvAnnotation',)                                                                  
+    __command__      : Callable                              = dearpygui.add_plot_annotation                                                      
 
     def __init__(
         self                                                                       ,
@@ -698,14 +698,14 @@ class SubPlots(Widget):
     link_all_y        : bool                                  = ItemAttribute("configuration", "get_item_config", "set_item_config", None)  
     column_major      : bool                                  = ItemAttribute("configuration", "get_item_config", "set_item_config", None)  
 
-    _is_container     : bool                                  = True                                                                        
-    _is_root_item     : bool                                  = False                                                                       
-    _is_value_able    : bool                                  = False                                                                       
-    _unique_parents   : tuple                                 = ()                                                                          
-    _unique_children  : tuple                                 = ('Plot', 'PlotLegend')                                                      
-    _unique_commands  : tuple                                 = ()                                                                          
-    _unique_constants : tuple                                 = ('mvSubPlots',)                                                             
-    _command          : Callable                              = dearpygui.add_subplots                                                      
+    __is_container__ : bool                                  = True                                                                        
+    __is_root_item__ : bool                                  = False                                                                       
+    __is_value_able__: bool                                  = False                                                                       
+    __able_parents__ : tuple                                 = ()                                                                          
+    __able_children__: tuple                                 = ('Plot', 'PlotLegend')                                                      
+    __commands__     : tuple                                 = ()                                                                          
+    __constants__    : tuple                                 = ('mvSubPlots',)                                                             
+    __command__      : Callable                              = dearpygui.add_subplots                                                      
 
     def __init__(
         self                                                             ,
@@ -826,14 +826,14 @@ class SimplePlot(Widget):
     max_scale         : float                                 = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     value             : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_value", "set_item_value", "default_value")
 
-    _is_container     : bool                                  = False                                                                              
-    _is_root_item     : bool                                  = False                                                                              
-    _is_value_able    : bool                                  = True                                                                               
-    _unique_parents   : tuple                                 = ()                                                                                 
-    _unique_children  : tuple                                 = ()                                                                                 
-    _unique_commands  : tuple                                 = ()                                                                                 
-    _unique_constants : tuple                                 = ('mvSimplePlot',)                                                                  
-    _command          : Callable                              = dearpygui.add_simple_plot                                                          
+    __is_container__ : bool                                  = False                                                                              
+    __is_root_item__ : bool                                  = False                                                                              
+    __is_value_able__: bool                                  = True                                                                               
+    __able_parents__ : tuple                                 = ()                                                                                 
+    __able_children__: tuple                                 = ()                                                                                 
+    __commands__     : tuple                                 = ()                                                                                 
+    __constants__    : tuple                                 = ('mvSimplePlot',)                                                                  
+    __command__      : Callable                              = dearpygui.add_simple_plot                                                          
 
     def __init__(
         self                                                                       ,
@@ -915,14 +915,14 @@ class LineSeries(Widget):
     source            : int | str                             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     show              : bool                                  = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
-    _is_container     : bool                                  = True                                                                      
-    _is_root_item     : bool                                  = False                                                                     
-    _is_value_able    : bool                                  = True                                                                      
-    _unique_parents   : tuple                                 = ('PlotAxis', 'TemplateRegistry')                                          
-    _unique_children  : tuple                                 = ()                                                                        
-    _unique_commands  : tuple                                 = ()                                                                        
-    _unique_constants : tuple                                 = ('mvLineSeries',)                                                         
-    _command          : Callable                              = dearpygui.add_line_series                                                 
+    __is_container__ : bool                                  = True                                                                      
+    __is_root_item__ : bool                                  = False                                                                     
+    __is_value_able__: bool                                  = True                                                                      
+    __able_parents__ : tuple                                 = ('PlotAxis', 'TemplateRegistry')                                          
+    __able_children__: tuple                                 = ()                                                                        
+    __commands__     : tuple                                 = ()                                                                        
+    __constants__    : tuple                                 = ('mvLineSeries',)                                                         
+    __command__      : Callable                              = dearpygui.add_line_series                                                 
 
     def __init__(
         self                                                           ,
@@ -982,14 +982,14 @@ class BarSeries(Widget):
     weight            : float                                 = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     horizontal        : bool                                  = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
-    _is_container     : bool                                  = True                                                                      
-    _is_root_item     : bool                                  = False                                                                     
-    _is_value_able    : bool                                  = True                                                                      
-    _unique_parents   : tuple                                 = ('PlotAxis', 'TemplateRegistry')                                          
-    _unique_children  : tuple                                 = ()                                                                        
-    _unique_commands  : tuple                                 = ()                                                                        
-    _unique_constants : tuple                                 = ('mvBarSeries',)                                                          
-    _command          : Callable                              = dearpygui.add_bar_series                                                  
+    __is_container__ : bool                                  = True                                                                      
+    __is_root_item__ : bool                                  = False                                                                     
+    __is_value_able__: bool                                  = True                                                                      
+    __able_parents__ : tuple                                 = ('PlotAxis', 'TemplateRegistry')                                          
+    __able_children__: tuple                                 = ()                                                                        
+    __commands__     : tuple                                 = ()                                                                        
+    __constants__    : tuple                                 = ('mvBarSeries',)                                                          
+    __command__      : Callable                              = dearpygui.add_bar_series                                                  
 
     def __init__(
         self                                                            ,
@@ -1049,14 +1049,14 @@ class ScatterSeries(Widget):
     source            : int | str                             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     show              : bool                                  = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
-    _is_container     : bool                                  = True                                                                      
-    _is_root_item     : bool                                  = False                                                                     
-    _is_value_able    : bool                                  = True                                                                      
-    _unique_parents   : tuple                                 = ('PlotAxis', 'TemplateRegistry')                                          
-    _unique_children  : tuple                                 = ()                                                                        
-    _unique_commands  : tuple                                 = ()                                                                        
-    _unique_constants : tuple                                 = ('mvScatterSeries',)                                                      
-    _command          : Callable                              = dearpygui.add_scatter_series                                              
+    __is_container__ : bool                                  = True                                                                      
+    __is_root_item__ : bool                                  = False                                                                     
+    __is_value_able__: bool                                  = True                                                                      
+    __able_parents__ : tuple                                 = ('PlotAxis', 'TemplateRegistry')                                          
+    __able_children__: tuple                                 = ()                                                                        
+    __commands__     : tuple                                 = ()                                                                        
+    __constants__    : tuple                                 = ('mvScatterSeries',)                                                      
+    __command__      : Callable                              = dearpygui.add_scatter_series                                              
 
     def __init__(
         self                                                           ,
@@ -1116,14 +1116,14 @@ class AreaSeries(Widget):
     fill                : list[int] | tuple[int, ...]           = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     contribute_to_bounds: bool                                  = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
-    _is_container       : bool                                  = True                                                                      
-    _is_root_item       : bool                                  = False                                                                     
-    _is_value_able      : bool                                  = True                                                                      
-    _unique_parents     : tuple                                 = ('PlotAxis', 'TemplateRegistry')                                          
-    _unique_children    : tuple                                 = ()                                                                        
-    _unique_commands    : tuple                                 = ()                                                                        
-    _unique_constants   : tuple                                 = ('mvAreaSeries',)                                                         
-    _command            : Callable                              = dearpygui.add_area_series                                                 
+    __is_container__   : bool                                  = True                                                                      
+    __is_root_item__   : bool                                  = False                                                                     
+    __is_value_able__  : bool                                  = True                                                                      
+    __able_parents__   : tuple                                 = ('PlotAxis', 'TemplateRegistry')                                          
+    __able_children__  : tuple                                 = ()                                                                        
+    __commands__       : tuple                                 = ()                                                                        
+    __constants__      : tuple                                 = ('mvAreaSeries',)                                                         
+    __command__        : Callable                              = dearpygui.add_area_series                                                 
 
     def __init__(
         self                                                                        ,
@@ -1185,14 +1185,14 @@ class StemSeries(Widget):
     source            : int | str                             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     show              : bool                                  = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
-    _is_container     : bool                                  = True                                                                      
-    _is_root_item     : bool                                  = False                                                                     
-    _is_value_able    : bool                                  = True                                                                      
-    _unique_parents   : tuple                                 = ('PlotAxis', 'TemplateRegistry')                                          
-    _unique_children  : tuple                                 = ()                                                                        
-    _unique_commands  : tuple                                 = ()                                                                        
-    _unique_constants : tuple                                 = ('mvStemSeries',)                                                         
-    _command          : Callable                              = dearpygui.add_stem_series                                                 
+    __is_container__ : bool                                  = True                                                                      
+    __is_root_item__ : bool                                  = False                                                                     
+    __is_value_able__: bool                                  = True                                                                      
+    __able_parents__ : tuple                                 = ('PlotAxis', 'TemplateRegistry')                                          
+    __able_children__: tuple                                 = ()                                                                        
+    __commands__     : tuple                                 = ()                                                                        
+    __constants__    : tuple                                 = ('mvStemSeries',)                                                         
+    __command__      : Callable                              = dearpygui.add_stem_series                                                 
 
     def __init__(
         self                                                           ,
@@ -1256,14 +1256,14 @@ class LabelSeries(Widget):
     y_offset          : int             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     vertical          : bool            = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
-    _is_container     : bool            = True                                                                      
-    _is_root_item     : bool            = False                                                                     
-    _is_value_able    : bool            = True                                                                      
-    _unique_parents   : tuple           = ('PlotAxis', 'TemplateRegistry')                                          
-    _unique_children  : tuple           = ()                                                                        
-    _unique_commands  : tuple           = ()                                                                        
-    _unique_constants : tuple           = ('mvLabelSeries',)                                                        
-    _command          : Callable        = dearpygui.add_text_point                                                  
+    __is_container__ : bool            = True                                                                      
+    __is_root_item__ : bool            = False                                                                     
+    __is_value_able__: bool            = True                                                                      
+    __able_parents__ : tuple           = ('PlotAxis', 'TemplateRegistry')                                          
+    __able_children__: tuple           = ()                                                                        
+    __commands__     : tuple           = ()                                                                        
+    __constants__    : tuple           = ('mvLabelSeries',)                                                        
+    __command__      : Callable        = dearpygui.add_text_point                                                  
 
     def __init__(
         self                                          ,
@@ -1337,14 +1337,14 @@ class PieSeries(Widget):
     angle             : float                                 = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     normalize         : bool                                  = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
-    _is_container     : bool                                  = True                                                                      
-    _is_root_item     : bool                                  = False                                                                     
-    _is_value_able    : bool                                  = True                                                                      
-    _unique_parents   : tuple                                 = ('PlotAxis', 'TemplateRegistry')                                          
-    _unique_children  : tuple                                 = ()                                                                        
-    _unique_commands  : tuple                                 = ()                                                                        
-    _unique_constants : tuple                                 = ('mvPieSeries',)                                                          
-    _command          : Callable                              = dearpygui.add_pie_series                                                  
+    __is_container__ : bool                                  = True                                                                      
+    __is_root_item__ : bool                                  = False                                                                     
+    __is_value_able__: bool                                  = True                                                                      
+    __able_parents__ : tuple                                 = ('PlotAxis', 'TemplateRegistry')                                          
+    __able_children__: tuple                                 = ()                                                                        
+    __commands__     : tuple                                 = ()                                                                        
+    __constants__    : tuple                                 = ('mvPieSeries',)                                                          
+    __command__      : Callable                              = dearpygui.add_pie_series                                                  
 
     def __init__(
         self                                                              ,
@@ -1414,14 +1414,14 @@ class ShadeSeries(Widget):
     show              : bool                                  = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     y2                : Any                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
-    _is_container     : bool                                  = True                                                                      
-    _is_root_item     : bool                                  = False                                                                     
-    _is_value_able    : bool                                  = True                                                                      
-    _unique_parents   : tuple                                 = ('PlotAxis', 'TemplateRegistry')                                          
-    _unique_children  : tuple                                 = ()                                                                        
-    _unique_commands  : tuple                                 = ()                                                                        
-    _unique_constants : tuple                                 = ('mvShadeSeries',)                                                        
-    _command          : Callable                              = dearpygui.add_shade_series                                                
+    __is_container__ : bool                                  = True                                                                      
+    __is_root_item__ : bool                                  = False                                                                     
+    __is_value_able__: bool                                  = True                                                                      
+    __able_parents__ : tuple                                 = ('PlotAxis', 'TemplateRegistry')                                          
+    __able_children__: tuple                                 = ()                                                                        
+    __commands__     : tuple                                 = ()                                                                        
+    __constants__    : tuple                                 = ('mvShadeSeries',)                                                        
+    __command__      : Callable                              = dearpygui.add_shade_series                                                
 
     def __init__(
         self                                                           ,
@@ -1487,14 +1487,14 @@ class ErrorSeries(Widget):
     contribute_to_bounds: bool                                  = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     horizontal          : bool                                  = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
-    _is_container       : bool                                  = True                                                                      
-    _is_root_item       : bool                                  = False                                                                     
-    _is_value_able      : bool                                  = True                                                                      
-    _unique_parents     : tuple                                 = ('PlotAxis', 'TemplateRegistry')                                          
-    _unique_children    : tuple                                 = ()                                                                        
-    _unique_commands    : tuple                                 = ()                                                                        
-    _unique_constants   : tuple                                 = ('mvErrorSeries',)                                                        
-    _command            : Callable                              = dearpygui.add_error_series                                                
+    __is_container__   : bool                                  = True                                                                      
+    __is_root_item__   : bool                                  = False                                                                     
+    __is_value_able__  : bool                                  = True                                                                      
+    __able_parents__   : tuple                                 = ('PlotAxis', 'TemplateRegistry')                                          
+    __able_children__  : tuple                                 = ()                                                                        
+    __commands__       : tuple                                 = ()                                                                        
+    __constants__      : tuple                                 = ('mvErrorSeries',)                                                        
+    __command__        : Callable                              = dearpygui.add_error_series                                                
 
     def __init__(
         self                                                              ,
@@ -1572,14 +1572,14 @@ class HeatSeries(Widget):
     format              : str                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     contribute_to_bounds: bool                                  = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
-    _is_container       : bool                                  = True                                                                      
-    _is_root_item       : bool                                  = False                                                                     
-    _is_value_able      : bool                                  = True                                                                      
-    _unique_parents     : tuple                                 = ('PlotAxis', 'TemplateRegistry')                                          
-    _unique_children    : tuple                                 = ()                                                                        
-    _unique_commands    : tuple                                 = ()                                                                        
-    _unique_constants   : tuple                                 = ('mvHeatSeries',)                                                         
-    _command            : Callable                              = dearpygui.add_heat_series                                                 
+    __is_container__   : bool                                  = True                                                                      
+    __is_root_item__   : bool                                  = False                                                                     
+    __is_value_able__  : bool                                  = True                                                                      
+    __able_parents__   : tuple                                 = ('PlotAxis', 'TemplateRegistry')                                          
+    __able_children__  : tuple                                 = ()                                                                        
+    __commands__       : tuple                                 = ()                                                                        
+    __constants__      : tuple                                 = ('mvHeatSeries',)                                                         
+    __command__        : Callable                              = dearpygui.add_heat_series                                                 
 
     def __init__(
         self                                                                   ,
@@ -1657,14 +1657,14 @@ class ImageSeries(Widget):
     uv_max            : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     tint_color        : list[int] | tuple[int, ...]           = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
-    _is_container     : bool                                  = True                                                                      
-    _is_root_item     : bool                                  = False                                                                     
-    _is_value_able    : bool                                  = True                                                                      
-    _unique_parents   : tuple                                 = ('PlotAxis', 'TemplateRegistry')                                          
-    _unique_children  : tuple                                 = ()                                                                        
-    _unique_commands  : tuple                                 = ()                                                                        
-    _unique_constants : tuple                                 = ('mvImageSeries',)                                                        
-    _command          : Callable                              = dearpygui.add_image_series                                                
+    __is_container__ : bool                                  = True                                                                      
+    __is_root_item__ : bool                                  = False                                                                     
+    __is_value_able__: bool                                  = True                                                                      
+    __able_parents__ : tuple                                 = ('PlotAxis', 'TemplateRegistry')                                          
+    __able_children__: tuple                                 = ()                                                                        
+    __commands__     : tuple                                 = ()                                                                        
+    __constants__    : tuple                                 = ('mvImageSeries',)                                                        
+    __command__      : Callable                              = dearpygui.add_image_series                                                
 
     def __init__(
         self                                                                            ,
@@ -1728,14 +1728,14 @@ class StairSeries(Widget):
     source            : int | str                             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     show              : bool                                  = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
-    _is_container     : bool                                  = True                                                                      
-    _is_root_item     : bool                                  = False                                                                     
-    _is_value_able    : bool                                  = True                                                                      
-    _unique_parents   : tuple                                 = ('PlotAxis', 'TemplateRegistry')                                          
-    _unique_children  : tuple                                 = ()                                                                        
-    _unique_commands  : tuple                                 = ()                                                                        
-    _unique_constants : tuple                                 = ('mvStairSeries',)                                                        
-    _command          : Callable                              = dearpygui.add_stair_series                                                
+    __is_container__ : bool                                  = True                                                                      
+    __is_root_item__ : bool                                  = False                                                                     
+    __is_value_able__: bool                                  = True                                                                      
+    __able_parents__ : tuple                                 = ('PlotAxis', 'TemplateRegistry')                                          
+    __able_children__: tuple                                 = ()                                                                        
+    __commands__     : tuple                                 = ()                                                                        
+    __constants__    : tuple                                 = ('mvStairSeries',)                                                        
+    __command__      : Callable                              = dearpygui.add_stair_series                                                
 
     def __init__(
         self                                                           ,
@@ -1805,14 +1805,14 @@ class CandleSeries(Widget):
     weight            : int                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     tooltip           : bool                                  = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
-    _is_container     : bool                                  = True                                                                      
-    _is_root_item     : bool                                  = False                                                                     
-    _is_value_able    : bool                                  = True                                                                      
-    _unique_parents   : tuple                                 = ('PlotAxis', 'TemplateRegistry')                                          
-    _unique_children  : tuple                                 = ()                                                                        
-    _unique_commands  : tuple                                 = ()                                                                        
-    _unique_constants : tuple                                 = ('mvCandleSeries',)                                                       
-    _command          : Callable                              = dearpygui.add_candle_series                                               
+    __is_container__ : bool                                  = True                                                                      
+    __is_root_item__ : bool                                  = False                                                                     
+    __is_value_able__: bool                                  = True                                                                      
+    __able_parents__ : tuple                                 = ('PlotAxis', 'TemplateRegistry')                                          
+    __able_children__: tuple                                 = ()                                                                        
+    __commands__     : tuple                                 = ()                                                                        
+    __constants__    : tuple                                 = ('mvCandleSeries',)                                                       
+    __command__      : Callable                              = dearpygui.add_candle_series                                               
 
     def __init__(
         self                                                                         ,
@@ -1880,14 +1880,14 @@ class VLineSeries(Widget):
     source            : int | str                             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     show              : bool                                  = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
-    _is_container     : bool                                  = True                                                                      
-    _is_root_item     : bool                                  = False                                                                     
-    _is_value_able    : bool                                  = True                                                                      
-    _unique_parents   : tuple                                 = ('PlotAxis', 'TemplateRegistry')                                          
-    _unique_children  : tuple                                 = ()                                                                        
-    _unique_commands  : tuple                                 = ()                                                                        
-    _unique_constants : tuple                                 = ('mvInfiniteLineSeries',)                                                 
-    _command          : Callable                              = dearpygui.add_vline_series                                                
+    __is_container__ : bool                                  = True                                                                      
+    __is_root_item__ : bool                                  = False                                                                     
+    __is_value_able__: bool                                  = True                                                                      
+    __able_parents__ : tuple                                 = ('PlotAxis', 'TemplateRegistry')                                          
+    __able_children__: tuple                                 = ()                                                                        
+    __commands__     : tuple                                 = ()                                                                        
+    __constants__    : tuple                                 = ('mvInfiniteLineSeries',)                                                 
+    __command__      : Callable                              = dearpygui.add_vline_series                                                
 
     def __init__(
         self                                                           ,
@@ -1955,14 +1955,14 @@ class HistogramSeries(Widget):
     outliers            : bool                                  = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                       
     contribute_to_bounds: bool                                  = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                       
 
-    _is_container       : bool                                  = True                                                                                             
-    _is_root_item       : bool                                  = False                                                                                            
-    _is_value_able      : bool                                  = True                                                                                             
-    _unique_parents     : tuple                                 = ('PlotAxis', 'TemplateRegistry')                                                                 
-    _unique_children    : tuple                                 = ()                                                                                               
-    _unique_commands    : tuple                                 = ()                                                                                               
-    _unique_constants   : tuple                                 = ('mvHistogramSeries', 'mvPlotBin_Sqrt', 'mvPlotBin_Sturges', 'mvPlotBin_Rice', 'mvPlotBin_Scott')
-    _command            : Callable                              = dearpygui.add_histogram_series                                                                   
+    __is_container__   : bool                                  = True                                                                                             
+    __is_root_item__   : bool                                  = False                                                                                            
+    __is_value_able__  : bool                                  = True                                                                                             
+    __able_parents__   : tuple                                 = ('PlotAxis', 'TemplateRegistry')                                                                 
+    __able_children__  : tuple                                 = ()                                                                                               
+    __commands__       : tuple                                 = ()                                                                                               
+    __constants__      : tuple                                 = ('mvHistogramSeries', 'mvPlotBin_Sqrt', 'mvPlotBin_Sturges', 'mvPlotBin_Rice', 'mvPlotBin_Scott')
+    __command__        : Callable                              = dearpygui.add_histogram_series                                                                   
 
     def __init__(
         self                                                              ,
@@ -2048,14 +2048,14 @@ class HistogramSeries2D(Widget):
     density           : bool                                  = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     outliers          : bool                                  = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
-    _is_container     : bool                                  = True                                                                      
-    _is_root_item     : bool                                  = False                                                                     
-    _is_value_able    : bool                                  = True                                                                      
-    _unique_parents   : tuple                                 = ('PlotAxis', 'TemplateRegistry')                                          
-    _unique_children  : tuple                                 = ()                                                                        
-    _unique_commands  : tuple                                 = ()                                                                        
-    _unique_constants : tuple                                 = ('mv2dHistogramSeries',)                                                  
-    _command          : Callable                              = dearpygui.add_2d_histogram_series                                         
+    __is_container__ : bool                                  = True                                                                      
+    __is_root_item__ : bool                                  = False                                                                     
+    __is_value_able__: bool                                  = True                                                                      
+    __able_parents__ : tuple                                 = ('PlotAxis', 'TemplateRegistry')                                          
+    __able_children__: tuple                                 = ()                                                                        
+    __commands__     : tuple                                 = ()                                                                        
+    __constants__    : tuple                                 = ('mv2dHistogramSeries',)                                                  
+    __command__      : Callable                              = dearpygui.add_2d_histogram_series                                         
 
     def __init__(
         self                                                            ,

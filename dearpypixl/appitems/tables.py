@@ -119,14 +119,14 @@ class Table(Widget):
 
     is_visible             : bool                              = ItemAttribute("state", "get_item_state", None, "visible")                                                                                                                                                                                                                                       
 
-    _is_container          : bool                              = True                                                                                                                                                                                                                                                                                            
-    _is_root_item          : bool                              = False                                                                                                                                                                                                                                                                                           
-    _is_value_able         : bool                              = False                                                                                                                                                                                                                                                                                           
-    _unique_parents        : tuple                             = ()                                                                                                                                                                                                                                                                                              
-    _unique_children       : tuple                             = ('TableRow', 'TableColumn')                                                                                                                                                                                                                                                                     
-    _unique_commands       : tuple                             = ('highlight_table_column', 'unhighlight_table_column', 'set_table_row_color', 'unset_table_row_color', 'highlight_table_cell', 'unhighlight_table_cell', 'highlight_table_row', 'unhighlight_table_row', 'is_table_column_highlighted', 'is_table_row_highlighted', 'is_table_cell_highlighted')
-    _unique_constants      : tuple                             = ('mvTable', 'mvTable_SizingFixedFit', 'mvTable_SizingFixedSame', 'mvTable_SizingStretchProp', 'mvTable_SizingStretchSame')                                                                                                                                                                      
-    _command               : Callable                          = dearpygui.add_table                                                                                                                                                                                                                                                                             
+    __is_container__      : bool                              = True                                                                                                                                                                                                                                                                                            
+    __is_root_item__      : bool                              = False                                                                                                                                                                                                                                                                                           
+    __is_value_able__     : bool                              = False                                                                                                                                                                                                                                                                                           
+    __able_parents__      : tuple                             = ()                                                                                                                                                                                                                                                                                              
+    __able_children__     : tuple                             = ('TableRow', 'TableColumn')                                                                                                                                                                                                                                                                     
+    __commands__          : tuple                             = ('highlight_table_column', 'unhighlight_table_column', 'set_table_row_color', 'unset_table_row_color', 'highlight_table_cell', 'unhighlight_table_cell', 'highlight_table_row', 'unhighlight_table_row', 'is_table_column_highlighted', 'is_table_row_highlighted', 'is_table_cell_highlighted')
+    __constants__         : tuple                             = ('mvTable', 'mvTable_SizingFixedFit', 'mvTable_SizingFixedSame', 'mvTable_SizingStretchProp', 'mvTable_SizingStretchSame')                                                                                                                                                                      
+    __command__           : Callable                          = dearpygui.add_table                                                                                                                                                                                                                                                                             
 
     def __init__(
         self                                                              ,
@@ -285,14 +285,14 @@ class TableColumn(Widget):
     is_hovered            : bool     = ItemAttribute("state", "get_item_state", None, "hovered")                 
     is_visible            : bool     = ItemAttribute("state", "get_item_state", None, "visible")                 
 
-    _is_container         : bool     = False                                                                     
-    _is_root_item         : bool     = False                                                                     
-    _is_value_able        : bool     = False                                                                     
-    _unique_parents       : tuple    = ('Stage', 'TemplateRegistry', 'Table')                                    
-    _unique_children      : tuple    = ()                                                                        
-    _unique_commands      : tuple    = ()                                                                        
-    _unique_constants     : tuple    = ('mvTableColumn',)                                                        
-    _command              : Callable = dearpygui.add_table_column                                                
+    __is_container__     : bool     = False                                                                     
+    __is_root_item__     : bool     = False                                                                     
+    __is_value_able__    : bool     = False                                                                     
+    __able_parents__     : tuple    = ('Stage', 'TemplateRegistry', 'Table')                                    
+    __able_children__    : tuple    = ()                                                                        
+    __commands__         : tuple    = ()                                                                        
+    __constants__        : tuple    = ('mvTableColumn',)                                                        
+    __command__          : Callable = dearpygui.add_table_column                                                
 
     def __init__(
         self                                           ,
@@ -380,14 +380,14 @@ class TableRow(Widget):
 
     is_visible        : bool     = ItemAttribute("state", "get_item_state", None, "visible")                 
 
-    _is_container     : bool     = True                                                                      
-    _is_root_item     : bool     = False                                                                     
-    _is_value_able    : bool     = False                                                                     
-    _unique_parents   : tuple    = ('Stage', 'TemplateRegistry', 'Table')                                    
-    _unique_children  : tuple    = ()                                                                        
-    _unique_commands  : tuple    = ()                                                                        
-    _unique_constants : tuple    = ('mvTableRow',)                                                           
-    _command          : Callable = dearpygui.add_table_row                                                   
+    __is_container__ : bool     = True                                                                      
+    __is_root_item__ : bool     = False                                                                     
+    __is_value_able__: bool     = False                                                                     
+    __able_parents__ : tuple    = ('Stage', 'TemplateRegistry', 'Table')                                    
+    __able_children__: tuple    = ()                                                                        
+    __commands__     : tuple    = ()                                                                        
+    __constants__    : tuple    = ('mvTableRow',)                                                           
+    __command__      : Callable = dearpygui.add_table_row                                                   
 
     def __init__(
         self                                      ,
@@ -439,14 +439,14 @@ class TableCell(Widget):
     show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     filter_key        : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
-    _is_container     : bool     = True                                                                      
-    _is_root_item     : bool     = False                                                                     
-    _is_value_able    : bool     = False                                                                     
-    _unique_parents   : tuple    = ('Stage', 'TemplateRegistry', 'TableRow')                                 
-    _unique_children  : tuple    = ()                                                                        
-    _unique_commands  : tuple    = ()                                                                        
-    _unique_constants : tuple    = ('mvTableCell',)                                                          
-    _command          : Callable = dearpygui.add_table_cell                                                  
+    __is_container__ : bool     = True                                                                      
+    __is_root_item__ : bool     = False                                                                     
+    __is_value_able__: bool     = False                                                                     
+    __able_parents__ : tuple    = ('Stage', 'TemplateRegistry', 'TableRow')                                 
+    __able_children__: tuple    = ()                                                                        
+    __commands__     : tuple    = ()                                                                        
+    __constants__    : tuple    = ('mvTableCell',)                                                          
+    __command__      : Callable = dearpygui.add_table_cell                                                  
 
     def __init__(
         self                                      ,

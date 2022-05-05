@@ -1,5 +1,5 @@
 from abc import ABCMeta, abstractmethod
-from typing import Callable, TypeVar, Union
+from typing import Callable, TypeVar, Union, Any
 from dearpygui._dearpygui import (
     reset_pos,
     push_container_stack,
@@ -31,33 +31,6 @@ WidgetItemT     = TypeVar("WidgetItemT"      , bound='Widget'   )
 
 
 class Widget(Item, metaclass=ABCMeta):
-    __slots__ = ("__events_uuid",)
-
-    @abstractmethod
-    def _command() -> Callable: ...
-
-    def __init__(self, theme: Union[Theme, bool, None] = None, events: Union[ItemEvents, bool, None] = None, **kwargs):
-        super().__init__(**kwargs)
-
-        # Unlike themes, DearPyGui does not include a way of fetching the item handler
-        # registry bound to an item, so it needs to be saved. However, this info can
-        # become outdated if the `events` property isn't used to bind them. So this is,
-        # at best, a quick tempfix.
-        self.__events_uuid = None
-
-        if not theme and not events:
-            return None
-        if theme:
-            if theme is True:
-                self.theme = Theme()
-            else:
-                self.theme = theme
-        if events:
-            if events is True:
-                self.events = ItemEvents()
-            else:
-                self.events = events
-
     @property
     @item_attribute(category="configuration")
     def theme(self) -> Theme:
@@ -91,4 +64,48 @@ class Widget(Item, metaclass=ABCMeta):
         value.bind(self)
 
 
+    __slots__ = ("__events_uuid",)
 
+    __is_container__ : bool
+    __is_root_item__ : bool
+    __is_value_able__: bool
+    __able_parents__ : tuple[str, ...]
+    __able_children__: tuple[str, ...]
+    __commands__     : tuple[str, ...]
+    __constants__    : tuple[str, ...]
+
+    ## Abstract Methods ##
+    @abstractmethod
+    def __command__()       -> Callable[..., Any]: ...
+    @abstractmethod
+    def __is_container__()  -> bool              : ...
+    @abstractmethod
+    def __is_root_item__()  -> bool              : ...
+    @abstractmethod
+    def __is_value_able__() -> bool              : ...
+    @abstractmethod
+    def __able_parents__()  -> tuple[str, ...]   : ...
+    @abstractmethod
+    def __able_children__() -> tuple[str, ...]   : ...
+
+    def __init__(self, theme: Union[Theme, bool, None] = None, events: Union[ItemEvents, bool, None] = None, **kwargs):
+        super().__init__(**kwargs)
+
+        # Unlike themes, DearPyGui does not include a way of fetching the item handler
+        # registry bound to an item, so it needs to be saved. However, this info can
+        # become outdated if the `events` property isn't used to bind them. So this is,
+        # at best, a quick tempfix.
+        self.__events_uuid = None
+
+        if not theme and not events:
+            return None
+        if theme:
+            if theme is True:
+                self.theme = Theme()
+            else:
+                self.theme = theme
+        if events:
+            if events is True:
+                self.events = ItemEvents()
+            else:
+                self.events = events

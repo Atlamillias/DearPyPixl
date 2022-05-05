@@ -47,14 +47,14 @@ class Font(Item):
     user_data         : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)  
     use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)  
 
-    _is_container     : bool     = True                                                                        
-    _is_root_item     : bool     = False                                                                       
-    _is_value_able    : bool     = False                                                                       
-    _unique_parents   : tuple    = ('FontRegistry',)                                                           
-    _unique_children  : tuple    = ('FontChars', 'FontRange', 'CharRemap', 'FontRangeHint', 'TemplateRegistry')
-    _unique_commands  : tuple    = ('bind_font', 'get_text_size')                                              
-    _unique_constants : tuple    = ('mvFont',)                                                                 
-    _command          : Callable = dearpygui.add_font                                                          
+    __is_container__ : bool     = True                                                                        
+    __is_root_item__ : bool     = False                                                                       
+    __is_value_able__: bool     = False                                                                       
+    __able_parents__ : tuple    = ('FontRegistry',)                                                           
+    __able_children__: tuple    = ('FontChars', 'FontRange', 'CharRemap', 'FontRangeHint', 'TemplateRegistry')
+    __commands__     : tuple    = ('bind_font', 'get_text_size')                                              
+    __constants__    : tuple    = ('mvFont',)                                                                 
+    __command__      : Callable = dearpygui.add_font                                                          
 
     def __init__(
         self                                      ,
@@ -97,14 +97,14 @@ class FontChars(Item):
     user_data         : Any                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     use_internal_label: bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
-    _is_container     : bool                              = False                                                                     
-    _is_root_item     : bool                              = False                                                                     
-    _is_value_able    : bool                              = False                                                                     
-    _unique_parents   : tuple                             = ('Font', 'TemplateRegistry')                                              
-    _unique_children  : tuple                             = ()                                                                        
-    _unique_commands  : tuple                             = ()                                                                        
-    _unique_constants : tuple                             = ('mvFontChars',)                                                          
-    _command          : Callable                          = dearpygui.add_font_chars                                                  
+    __is_container__ : bool                              = False                                                                     
+    __is_root_item__ : bool                              = False                                                                     
+    __is_value_able__: bool                              = False                                                                     
+    __able_parents__ : tuple                             = ('Font', 'TemplateRegistry')                                              
+    __able_children__: tuple                             = ()                                                                        
+    __commands__     : tuple                             = ()                                                                        
+    __constants__    : tuple                             = ('mvFontChars',)                                                          
+    __command__      : Callable                          = dearpygui.add_font_chars                                                  
 
     def __init__(
         self                                                       ,
@@ -147,14 +147,14 @@ class FontRange(Item):
     user_data         : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
-    _is_container     : bool     = False                                                                     
-    _is_root_item     : bool     = False                                                                     
-    _is_value_able    : bool     = False                                                                     
-    _unique_parents   : tuple    = ('Font', 'TemplateRegistry')                                              
-    _unique_children  : tuple    = ()                                                                        
-    _unique_commands  : tuple    = ()                                                                        
-    _unique_constants : tuple    = ('mvFontRange',)                                                          
-    _command          : Callable = dearpygui.add_font_range                                                  
+    __is_container__ : bool     = False                                                                     
+    __is_root_item__ : bool     = False                                                                     
+    __is_value_able__: bool     = False                                                                     
+    __able_parents__ : tuple    = ('Font', 'TemplateRegistry')                                              
+    __able_children__: tuple    = ()                                                                        
+    __commands__     : tuple    = ()                                                                        
+    __constants__    : tuple    = ('mvFontRange',)                                                          
+    __command__      : Callable = dearpygui.add_font_range                                                  
 
     def __init__(
         self                                      ,
@@ -197,14 +197,14 @@ class FontRangeHint(Item):
     user_data         : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                         
     use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                         
 
-    _is_container     : bool     = False                                                                                                                                                                                                                                                              
-    _is_root_item     : bool     = False                                                                                                                                                                                                                                                              
-    _is_value_able    : bool     = False                                                                                                                                                                                                                                                              
-    _unique_parents   : tuple    = ('Font', 'TemplateRegistry')                                                                                                                                                                                                                                       
-    _unique_children  : tuple    = ()                                                                                                                                                                                                                                                                 
-    _unique_commands  : tuple    = ()                                                                                                                                                                                                                                                                 
-    _unique_constants : tuple    = ('mvFontRangeHint', 'mvFontRangeHint_Default', 'mvFontRangeHint_Japanese', 'mvFontRangeHint_Korean', 'mvFontRangeHint_Chinese_Full', 'mvFontRangeHint_Chinese_Simplified_Common', 'mvFontRangeHint_Cyrillic', 'mvFontRangeHint_Thai', 'mvFontRangeHint_Vietnamese')
-    _command          : Callable = dearpygui.add_font_range_hint                                                                                                                                                                                                                                      
+    __is_container__ : bool     = False                                                                                                                                                                                                                                                              
+    __is_root_item__ : bool     = False                                                                                                                                                                                                                                                              
+    __is_value_able__: bool     = False                                                                                                                                                                                                                                                              
+    __able_parents__ : tuple    = ('Font', 'TemplateRegistry')                                                                                                                                                                                                                                       
+    __able_children__: tuple    = ()                                                                                                                                                                                                                                                                 
+    __commands__     : tuple    = ()                                                                                                                                                                                                                                                                 
+    __constants__    : tuple    = ('mvFontRangeHint', 'mvFontRangeHint_Default', 'mvFontRangeHint_Japanese', 'mvFontRangeHint_Korean', 'mvFontRangeHint_Chinese_Full', 'mvFontRangeHint_Chinese_Simplified_Common', 'mvFontRangeHint_Cyrillic', 'mvFontRangeHint_Thai', 'mvFontRangeHint_Vietnamese')
+    __command__      : Callable = dearpygui.add_font_range_hint                                                                                                                                                                                                                                      
 
     def __init__(
         self                                      ,
@@ -247,14 +247,14 @@ class CharRemap(Item):
     user_data         : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
-    _is_container     : bool     = False                                                                     
-    _is_root_item     : bool     = False                                                                     
-    _is_value_able    : bool     = False                                                                     
-    _unique_parents   : tuple    = ('Font', 'TemplateRegistry')                                              
-    _unique_children  : tuple    = ()                                                                        
-    _unique_commands  : tuple    = ()                                                                        
-    _unique_constants : tuple    = ('mvCharRemap',)                                                          
-    _command          : Callable = dearpygui.add_char_remap                                                  
+    __is_container__ : bool     = False                                                                     
+    __is_root_item__ : bool     = False                                                                     
+    __is_value_able__: bool     = False                                                                     
+    __able_parents__ : tuple    = ('Font', 'TemplateRegistry')                                              
+    __able_children__: tuple    = ()                                                                        
+    __commands__     : tuple    = ()                                                                        
+    __constants__    : tuple    = ('mvCharRemap',)                                                          
+    __command__      : Callable = dearpygui.add_char_remap                                                  
 
     def __init__(
         self                                      ,

@@ -70,14 +70,14 @@ class NodeEditor(Widget):
     is_visible        : bool           = ItemAttribute("state", "get_item_state", None, "visible")                                                                                                                                                                                            
     rect_size         : list[int, int] = ItemAttribute("state", "get_item_state", None, "rect_size")                                                                                                                                                                                          
 
-    _is_container     : bool           = True                                                                                                                                                                                                                                                 
-    _is_root_item     : bool           = False                                                                                                                                                                                                                                                
-    _is_value_able    : bool           = False                                                                                                                                                                                                                                                
-    _unique_parents   : tuple          = ()                                                                                                                                                                                                                                                   
-    _unique_children  : tuple          = ('MenuBar', 'Node', 'NodeLink', 'ActivatedHandler', 'ActiveHandler', 'ClickedHandler', 'DeactivatedAfterEditHandler', 'DeactivatedHandler', 'EditedHandler', 'FocusHandler', 'HoverHandler', 'ResizeHandler', 'ToggledOpenHandler', 'VisibleHandler')
-    _unique_commands  : tuple          = ('get_selected_nodes', 'get_selected_links', 'clear_selected_nodes', 'clear_selected_links')                                                                                                                                                         
-    _unique_constants : tuple          = ('mvNodeEditor',)                                                                                                                                                                                                                                    
-    _command          : Callable       = dearpygui.add_node_editor                                                                                                                                                                                                                            
+    __is_container__ : bool           = True                                                                                                                                                                                                                                                 
+    __is_root_item__ : bool           = False                                                                                                                                                                                                                                                
+    __is_value_able__: bool           = False                                                                                                                                                                                                                                                
+    __able_parents__ : tuple          = ()                                                                                                                                                                                                                                                   
+    __able_children__: tuple          = ('MenuBar', 'Node', 'NodeLink', 'ActivatedHandler', 'ActiveHandler', 'ClickedHandler', 'DeactivatedAfterEditHandler', 'DeactivatedHandler', 'EditedHandler', 'FocusHandler', 'HoverHandler', 'ResizeHandler', 'ToggledOpenHandler', 'VisibleHandler')
+    __commands__     : tuple          = ('get_selected_nodes', 'get_selected_links', 'clear_selected_nodes', 'clear_selected_links')                                                                                                                                                         
+    __constants__    : tuple          = ('mvNodeEditor',)                                                                                                                                                                                                                                    
+    __command__      : Callable       = dearpygui.add_node_editor                                                                                                                                                                                                                            
 
     def __init__(
         self                                       ,
@@ -166,14 +166,14 @@ class Node(Widget):
     is_visible        : bool                              = ItemAttribute("state", "get_item_state", None, "visible")                                            
     rect_size         : list[int, int]                    = ItemAttribute("state", "get_item_state", None, "rect_size")                                          
 
-    _is_container     : bool                              = True                                                                                                 
-    _is_root_item     : bool                              = False                                                                                                
-    _is_value_able    : bool                              = False                                                                                                
-    _unique_parents   : tuple                             = ('TemplateRegistry', 'Stage', 'NodeEditor')                                                          
-    _unique_children  : tuple                             = ('NodeAttribute', 'ActiveHandler', 'ClickedHandler', 'HoverHandler', 'VisibleHandler', 'DragPayload')
-    _unique_commands  : tuple                             = ()                                                                                                   
-    _unique_constants : tuple                             = ('mvNode',)                                                                                          
-    _command          : Callable                          = dearpygui.add_node                                                                                   
+    __is_container__ : bool                              = True                                                                                                 
+    __is_root_item__ : bool                              = False                                                                                                
+    __is_value_able__: bool                              = False                                                                                                
+    __able_parents__ : tuple                             = ('TemplateRegistry', 'Stage', 'NodeEditor')                                                          
+    __able_children__: tuple                             = ('NodeAttribute', 'ActiveHandler', 'ClickedHandler', 'HoverHandler', 'VisibleHandler', 'DragPayload')
+    __commands__     : tuple                             = ()                                                                                                   
+    __constants__    : tuple                             = ('mvNode',)                                                                                          
+    __command__      : Callable                          = dearpygui.add_node                                                                                   
 
     def __init__(
         self                                                                   ,
@@ -251,14 +251,14 @@ class NodeAttribute(Widget):
 
     is_hovered        : bool     = ItemAttribute("state", "get_item_state", None, "hovered")                                                                                                                                                                                                         
 
-    _is_container     : bool     = True                                                                                                                                                                                                                                                              
-    _is_root_item     : bool     = False                                                                                                                                                                                                                                                             
-    _is_value_able    : bool     = False                                                                                                                                                                                                                                                             
-    _unique_parents   : tuple    = ('TemplateRegistry', 'Stage', 'Node')                                                                                                                                                                                                                             
-    _unique_children  : tuple    = ()                                                                                                                                                                                                                                                                
-    _unique_commands  : tuple    = ()                                                                                                                                                                                                                                                                
-    _unique_constants : tuple    = ('mvNodeAttribute', 'mvNode_PinShape_Circle', 'mvNode_PinShape_CircleFilled', 'mvNode_PinShape_Triangle', 'mvNode_PinShape_TriangleFilled', 'mvNode_PinShape_Quad', 'mvNode_PinShape_QuadFilled', 'mvNode_Attr_Input', 'mvNode_Attr_Output', 'mvNode_Attr_Static')
-    _command          : Callable = dearpygui.add_node_attribute                                                                                                                                                                                                                                      
+    __is_container__ : bool     = True                                                                                                                                                                                                                                                              
+    __is_root_item__ : bool     = False                                                                                                                                                                                                                                                             
+    __is_value_able__: bool     = False                                                                                                                                                                                                                                                             
+    __able_parents__ : tuple    = ('TemplateRegistry', 'Stage', 'Node')                                                                                                                                                                                                                             
+    __able_children__: tuple    = ()                                                                                                                                                                                                                                                                
+    __commands__     : tuple    = ()                                                                                                                                                                                                                                                                
+    __constants__    : tuple    = ('mvNodeAttribute', 'mvNode_PinShape_Circle', 'mvNode_PinShape_CircleFilled', 'mvNode_PinShape_Triangle', 'mvNode_PinShape_TriangleFilled', 'mvNode_PinShape_Quad', 'mvNode_PinShape_QuadFilled', 'mvNode_Attr_Input', 'mvNode_Attr_Output', 'mvNode_Attr_Static')
+    __command__      : Callable = dearpygui.add_node_attribute                                                                                                                                                                                                                                      
 
     def __init__(
         self                                           ,
@@ -321,14 +321,14 @@ class NodeLink(Widget):
 
     is_hovered        : bool            = ItemAttribute("state", "get_item_state", None, "hovered")                 
 
-    _is_container     : bool            = False                                                                     
-    _is_root_item     : bool            = False                                                                     
-    _is_value_able    : bool            = False                                                                     
-    _unique_parents   : tuple           = ('TemplateRegistry', 'Stage', 'NodeEditor')                               
-    _unique_children  : tuple           = ()                                                                        
-    _unique_commands  : tuple           = ()                                                                        
-    _unique_constants : tuple           = ('mvNodeLink',)                                                           
-    _command          : Callable        = dearpygui.add_node_link                                                   
+    __is_container__ : bool            = False                                                                     
+    __is_root_item__ : bool            = False                                                                     
+    __is_value_able__: bool            = False                                                                     
+    __able_parents__ : tuple           = ('TemplateRegistry', 'Stage', 'NodeEditor')                               
+    __able_children__: tuple           = ()                                                                        
+    __commands__     : tuple           = ()                                                                        
+    __constants__    : tuple           = ('mvNodeLink',)                                                           
+    __command__      : Callable        = dearpygui.add_node_link                                                   
 
     def __init__(
         self                                      ,

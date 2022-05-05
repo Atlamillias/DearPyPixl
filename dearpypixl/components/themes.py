@@ -70,14 +70,14 @@ class Theme(Item):
     user_data         : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", "user_data")         
     use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", "use_internal_label")
 
-    _is_container     : bool     = True                                                                                            
-    _is_root_item     : bool     = True                                                                                            
-    _is_value_able    : bool     = False                                                                                           
-    _unique_parents   : tuple    = ()                                                                                              
-    _unique_children  : tuple    = ('ThemeComponent',)                                                                             
-    _unique_commands  : tuple    = ('bind_theme',)                                                                                 
-    _unique_constants : tuple    = ('mvTheme', 'mvThemeCat_Core', 'mvThemeCat_Plots', 'mvThemeCat_Nodes')                          
-    _command          : Callable = add_theme      
+    __is_container__ : bool     = True                                                                                            
+    __is_root_item__ : bool     = True                                                                                            
+    __is_value_able__: bool     = False                                                                                           
+    __able_parents__ : tuple    = ()                                                                                              
+    __able_children__: tuple    = ('ThemeComponent',)                                                                             
+    __commands__     : tuple    = ('bind_theme',)                                                                                 
+    __constants__    : tuple    = ('mvTheme', 'mvThemeCat_Core', 'mvThemeCat_Plots', 'mvThemeCat_Nodes')                          
+    __command__      : Callable = add_theme      
 
     def __init__(
         self,
@@ -220,14 +220,14 @@ class ThemeComponent(Item):
     use_internal_label: bool                     =  ItemAttribute("configuration", "get_item_config", "set_item_config", "use_internal_label")
     enabled_state     : bool                     =  ItemAttribute("configuration", "get_item_config", "set_item_config", "enabled_state")     
 
-    _is_container     : bool                     =  True                                                                                            
-    _is_root_item     : bool                     =  False                                                                                           
-    _is_value_able    : bool                     =  False                                                                                           
-    _unique_parents   : tuple                    =  ('Theme',)                                                                                      
-    _unique_children  : tuple                    =  ('ThemeColor', 'ThemeStyle')                                                                    
-    _unique_commands  : tuple                    =  ()                                                                                              
-    _unique_constants : tuple                    =  ('mvThemeComponent',)                                                                           
-    _command          : Callable                 =  add_theme_component  
+    __is_container__ : bool                     =  True                                                                                            
+    __is_root_item__ : bool                     =  False                                                                                           
+    __is_value_able__: bool                     =  False                                                                                           
+    __able_parents__ : tuple                    =  ('Theme',)                                                                                      
+    __able_children__: tuple                    =  ('ThemeColor', 'ThemeStyle')                                                                    
+    __commands__     : tuple                    =  ()                                                                                              
+    __constants__    : tuple                    =  ('mvThemeComponent',)                                                                           
+    __command__      : Callable                 =  add_theme_component  
 
     def __init__(
         self                                               ,

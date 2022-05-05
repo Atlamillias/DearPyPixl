@@ -116,14 +116,14 @@ class InputFloat(Widget):
     rect_size                : list[int, int]                    = ItemAttribute("state", "get_item_state", None, "rect_size")                        
     content_region_avail     : list[int, int]                    = ItemAttribute("state", "get_item_state", None, "content_region_avail")             
 
-    _is_container            : bool                              = False                                                                              
-    _is_root_item            : bool                              = False                                                                              
-    _is_value_able           : bool                              = True                                                                               
-    _unique_parents          : tuple                             = ()                                                                                 
-    _unique_children         : tuple                             = ()                                                                                 
-    _unique_commands         : tuple                             = ()                                                                                 
-    _unique_constants        : tuple                             = ('mvInputFloat',)                                                                       
-    _command                 : Callable                          = dearpygui.add_input_float
+    __is_container__        : bool                              = False                                                                              
+    __is_root_item__        : bool                              = False                                                                              
+    __is_value_able__       : bool                              = True                                                                               
+    __able_parents__        : tuple                             = ()                                                                                 
+    __able_children__       : tuple                             = ()                                                                                 
+    __commands__            : tuple                             = ()                                                                                 
+    __constants__           : tuple                             = ('mvInputFloat',)                                                                       
+    __command__             : Callable                          = dearpygui.add_input_float
 
 
     def __init__(
@@ -270,14 +270,14 @@ class InputFloatMulti(Widget):
     rect_size                : list[int, int]                    = ItemAttribute("state", "get_item_state", None, "rect_size")                        
     content_region_avail     : list[int, int]                    = ItemAttribute("state", "get_item_state", None, "content_region_avail")             
 
-    _is_container            : bool                              = False                                                                              
-    _is_root_item            : bool                              = False                                                                              
-    _is_value_able           : bool                              = True                                                                               
-    _unique_parents          : tuple                             = ()                                                                                 
-    _unique_children         : tuple                             = ()                                                                                 
-    _unique_commands         : tuple                             = ()                                                                                 
-    _unique_constants        : tuple                             = ('mvInputFloatMulti',)                                                                       
-    _command                 : Callable                          = dearpygui.add_input_floatx
+    __is_container__        : bool                              = False                                                                              
+    __is_root_item__        : bool                              = False                                                                              
+    __is_value_able__       : bool                              = True                                                                               
+    __able_parents__        : tuple                             = ()                                                                                 
+    __able_children__       : tuple                             = ()                                                                                 
+    __commands__            : tuple                             = ()                                                                                 
+    __constants__           : tuple                             = ('mvInputFloatMulti',)                                                                       
+    __command__             : Callable                          = dearpygui.add_input_floatx
 
     def __init__(
         self, 
@@ -421,14 +421,14 @@ class InputInt(Widget):
     rect_size                : list[int, int]                    = ItemAttribute("state", "get_item_state", None, "rect_size")                        
     content_region_avail     : list[int, int]                    = ItemAttribute("state", "get_item_state", None, "content_region_avail")             
 
-    _is_container            : bool                              = False                                                                              
-    _is_root_item            : bool                              = False                                                                              
-    _is_value_able           : bool                              = True                                                                               
-    _unique_parents          : tuple                             = ()                                                                                 
-    _unique_children         : tuple                             = ()                                                                                 
-    _unique_commands         : tuple                             = ()                                                                                 
-    _unique_constants        : tuple                             = ('mvInputInt',)                                                                       
-    _command                 : Callable                          = dearpygui.add_input_int 
+    __is_container__        : bool                              = False                                                                              
+    __is_root_item__        : bool                              = False                                                                              
+    __is_value_able__       : bool                              = True                                                                               
+    __able_parents__        : tuple                             = ()                                                                                 
+    __able_children__       : tuple                             = ()                                                                                 
+    __commands__            : tuple                             = ()                                                                                 
+    __constants__           : tuple                             = ('mvInputInt',)                                                                       
+    __command__             : Callable                          = dearpygui.add_input_int 
 
     def __init__(
         self, 
@@ -570,14 +570,14 @@ class InputIntMulti(Widget):
     rect_size                : list[int, int]                    = ItemAttribute("state", "get_item_state", None, "rect_size")                        
     content_region_avail     : list[int, int]                    = ItemAttribute("state", "get_item_state", None, "content_region_avail")             
 
-    _is_container            : bool                              = False                                                                              
-    _is_root_item            : bool                              = False                                                                              
-    _is_value_able           : bool                              = True                                                                               
-    _unique_parents          : tuple                             = ()                                                                                 
-    _unique_children         : tuple                             = ()                                                                                 
-    _unique_commands         : tuple                             = ()                                                                                 
-    _unique_constants        : tuple                             = ('mvInputIntMulti',)                                                                       
-    _command                 : Callable                          = dearpygui.add_input_intx
+    __is_container__        : bool                              = False                                                                              
+    __is_root_item__        : bool                              = False                                                                              
+    __is_value_able__       : bool                              = True                                                                               
+    __able_parents__        : tuple                             = ()                                                                                 
+    __able_children__       : tuple                             = ()                                                                                 
+    __commands__            : tuple                             = ()                                                                                 
+    __constants__           : tuple                             = ('mvInputIntMulti',)                                                                       
+    __command__             : Callable                          = dearpygui.add_input_intx
 
 
     def __init__(
@@ -709,14 +709,14 @@ class RadioButton(Widget):
     rect_size                : list[int, int]                    = ItemAttribute("state", "get_item_state", None, "rect_size")                        
     content_region_avail     : list[int, int]                    = ItemAttribute("state", "get_item_state", None, "content_region_avail")             
 
-    _is_container            : bool                              = False                                                                              
-    _is_root_item            : bool                              = False                                                                              
-    _is_value_able           : bool                              = True                                                                               
-    _unique_parents          : tuple                             = ()                                                                                 
-    _unique_children         : tuple                             = ()                                                                                 
-    _unique_commands         : tuple                             = ()                                                                                 
-    _unique_constants        : tuple                             = ('mvRadioButton',)                                                                 
-    _command                 : Callable                          = dearpygui.add_radio_button                                                         
+    __is_container__        : bool                              = False                                                                              
+    __is_root_item__        : bool                              = False                                                                              
+    __is_value_able__       : bool                              = True                                                                               
+    __able_parents__        : tuple                             = ()                                                                                 
+    __able_children__       : tuple                             = ()                                                                                 
+    __commands__            : tuple                             = ()                                                                                 
+    __constants__           : tuple                             = ('mvRadioButton',)                                                                 
+    __command__             : Callable                          = dearpygui.add_radio_button                                                         
 
     def __init__(
         self                                                                   ,
@@ -837,14 +837,14 @@ class Listbox(Widget):
     rect_size                : list[int, int]                    = ItemAttribute("state", "get_item_state", None, "rect_size")                        
     content_region_avail     : list[int, int]                    = ItemAttribute("state", "get_item_state", None, "content_region_avail")             
 
-    _is_container            : bool                              = False                                                                              
-    _is_root_item            : bool                              = False                                                                              
-    _is_value_able           : bool                              = True                                                                               
-    _unique_parents          : tuple                             = ()                                                                                 
-    _unique_children         : tuple                             = ()                                                                                 
-    _unique_commands         : tuple                             = ()                                                                                 
-    _unique_constants        : tuple                             = ('mvListbox',)                                                                     
-    _command                 : Callable                          = dearpygui.add_listbox                                                              
+    __is_container__        : bool                              = False                                                                              
+    __is_root_item__        : bool                              = False                                                                              
+    __is_value_able__       : bool                              = True                                                                               
+    __able_parents__        : tuple                             = ()                                                                                 
+    __able_children__       : tuple                             = ()                                                                                 
+    __commands__            : tuple                             = ()                                                                                 
+    __constants__           : tuple                             = ('mvListbox',)                                                                     
+    __command__             : Callable                          = dearpygui.add_listbox                                                              
 
     def __init__(
         self                                                                   ,
@@ -960,14 +960,14 @@ class Checkbox(Widget):
     rect_size                : list[int, int]                    = ItemAttribute("state", "get_item_state", None, "rect_size")                        
     content_region_avail     : list[int, int]                    = ItemAttribute("state", "get_item_state", None, "content_region_avail")             
 
-    _is_container            : bool                              = False                                                                              
-    _is_root_item            : bool                              = False                                                                              
-    _is_value_able           : bool                              = True                                                                               
-    _unique_parents          : tuple                             = ()                                                                                 
-    _unique_children         : tuple                             = ()                                                                                 
-    _unique_commands         : tuple                             = ()                                                                                 
-    _unique_constants        : tuple                             = ('mvCheckbox',)                                                                    
-    _command                 : Callable                          = dearpygui.add_checkbox                                                             
+    __is_container__        : bool                              = False                                                                              
+    __is_root_item__        : bool                              = False                                                                              
+    __is_value_able__       : bool                              = True                                                                               
+    __able_parents__        : tuple                             = ()                                                                                 
+    __able_children__       : tuple                             = ()                                                                                 
+    __commands__            : tuple                             = ()                                                                                 
+    __constants__           : tuple                             = ('mvCheckbox',)                                                                    
+    __command__             : Callable                          = dearpygui.add_checkbox                                                             
 
     def __init__(
         self                                                                   ,
@@ -1081,14 +1081,14 @@ class Button(Widget):
     rect_size           : list[int, int]                    = ItemAttribute("state", "get_item_state", None, "rect_size")                                                                                                                                                                                                  
     content_region_avail: list[int, int]                    = ItemAttribute("state", "get_item_state", None, "content_region_avail")                                                                                                                                                                                       
 
-    _is_container       : bool                              = False                                                                                                                                                                                                                                                        
-    _is_root_item       : bool                              = False                                                                                                                                                                                                                                                        
-    _is_value_able      : bool                              = False                                                                                                                                                                                                                                                        
-    _unique_parents     : tuple                             = ()                                                                                                                                                                                                                                                           
-    _unique_children    : tuple                             = ()                                                                                                                                                                                                                                                           
-    _unique_commands    : tuple                             = ()                                                                                                                                                                                                                                                           
-    _unique_constants   : tuple                             = ('mvButton', 'mvAll', 'mvTool_About', 'mvTool_Debug', 'mvTool_Doc', 'mvTool_ItemRegistry', 'mvTool_Metrics', 'mvTool_Style', 'mvTool_Font', 'mvFontAtlas', 'mvAppUUID', 'mvInvalidUUID', 'mvDir_None', 'mvDir_Left', 'mvDir_Right', 'mvDir_Up', 'mvDir_Down')
-    _command            : Callable                          = dearpygui.add_button                                                                                                                                                                                                                                         
+    __is_container__   : bool                              = False                                                                                                                                                                                                                                                        
+    __is_root_item__   : bool                              = False                                                                                                                                                                                                                                                        
+    __is_value_able__  : bool                              = False                                                                                                                                                                                                                                                        
+    __able_parents__   : tuple                             = ()                                                                                                                                                                                                                                                           
+    __able_children__  : tuple                             = ()                                                                                                                                                                                                                                                           
+    __commands__       : tuple                             = ()                                                                                                                                                                                                                                                           
+    __constants__      : tuple                             = ('mvButton', 'mvAll', 'mvTool_About', 'mvTool_Debug', 'mvTool_Doc', 'mvTool_ItemRegistry', 'mvTool_Metrics', 'mvTool_Style', 'mvTool_Font', 'mvFontAtlas', 'mvAppUUID', 'mvInvalidUUID', 'mvDir_None', 'mvDir_Left', 'mvDir_Right', 'mvDir_Up', 'mvDir_Down')
+    __command__        : Callable                          = dearpygui.add_button                                                                                                                                                                                                                                         
 
     def __init__(
         self                                                                   ,
@@ -1212,14 +1212,14 @@ class Selectable(Widget):
     rect_size                : list[int, int]                    = ItemAttribute("state", "get_item_state", None, "rect_size")                        
     content_region_avail     : list[int, int]                    = ItemAttribute("state", "get_item_state", None, "content_region_avail")             
 
-    _is_container            : bool                              = False                                                                              
-    _is_root_item            : bool                              = False                                                                              
-    _is_value_able           : bool                              = True                                                                               
-    _unique_parents          : tuple                             = ()                                                                                 
-    _unique_children         : tuple                             = ()                                                                                 
-    _unique_commands         : tuple                             = ()                                                                                 
-    _unique_constants        : tuple                             = ('mvSelectable',)                                                                  
-    _command                 : Callable                          = dearpygui.add_selectable                                                           
+    __is_container__        : bool                              = False                                                                              
+    __is_root_item__        : bool                              = False                                                                              
+    __is_value_able__       : bool                              = True                                                                               
+    __able_parents__        : tuple                             = ()                                                                                 
+    __able_children__       : tuple                             = ()                                                                                 
+    __commands__            : tuple                             = ()                                                                                 
+    __constants__           : tuple                             = ('mvSelectable',)                                                                  
+    __command__             : Callable                          = dearpygui.add_selectable                                                           
 
     def __init__(
         self                                                                   ,
@@ -1348,14 +1348,14 @@ class Combo(Widget):
     rect_size                : list[int, int]                    = ItemAttribute("state", "get_item_state", None, "rect_size")                                                
     content_region_avail     : list[int, int]                    = ItemAttribute("state", "get_item_state", None, "content_region_avail")                                     
 
-    _is_container            : bool                              = False                                                                                                      
-    _is_root_item            : bool                              = False                                                                                                      
-    _is_value_able           : bool                              = True                                                                                                       
-    _unique_parents          : tuple                             = ()                                                                                                         
-    _unique_children         : tuple                             = ()                                                                                                         
-    _unique_commands         : tuple                             = ()                                                                                                         
-    _unique_constants        : tuple                             = ('mvCombo', 'mvComboHeight_Small', 'mvComboHeight_Regular', 'mvComboHeight_Large', 'mvComboHeight_Largest')
-    _command                 : Callable                          = dearpygui.add_combo                                                                                        
+    __is_container__        : bool                              = False                                                                                                      
+    __is_root_item__        : bool                              = False                                                                                                      
+    __is_value_able__       : bool                              = True                                                                                                       
+    __able_parents__        : tuple                             = ()                                                                                                         
+    __able_children__       : tuple                             = ()                                                                                                         
+    __commands__            : tuple                             = ()                                                                                                         
+    __constants__           : tuple                             = ('mvCombo', 'mvComboHeight_Small', 'mvComboHeight_Regular', 'mvComboHeight_Large', 'mvComboHeight_Largest')
+    __command__             : Callable                          = dearpygui.add_combo                                                                                        
 
     def __init__(
         self                                                                   ,
@@ -1504,14 +1504,14 @@ class InputText(Widget):
     rect_size                : list[int, int]                    = ItemAttribute("state", "get_item_state", None, "rect_size")                        
     content_region_avail     : list[int, int]                    = ItemAttribute("state", "get_item_state", None, "content_region_avail")             
 
-    _is_container            : bool                              = False                                                                              
-    _is_root_item            : bool                              = False                                                                              
-    _is_value_able           : bool                              = True                                                                               
-    _unique_parents          : tuple                             = ()                                                                                 
-    _unique_children         : tuple                             = ()                                                                                 
-    _unique_commands         : tuple                             = ()                                                                                 
-    _unique_constants        : tuple                             = ('mvInput',)                                                                       
-    _command                 : Callable                          = dearpygui.add_input_text                                                           
+    __is_container__        : bool                              = False                                                                              
+    __is_root_item__        : bool                              = False                                                                              
+    __is_value_able__       : bool                              = True                                                                               
+    __able_parents__        : tuple                             = ()                                                                                 
+    __able_children__       : tuple                             = ()                                                                                 
+    __commands__            : tuple                             = ()                                                                                 
+    __constants__           : tuple                             = ('mvInput',)                                                                       
+    __command__             : Callable                          = dearpygui.add_input_text                                                           
 
     def __init__(
         self                                                                   ,
@@ -1664,14 +1664,14 @@ class SliderFloat(Widget):
     rect_size                : list[int, int]                    = ItemAttribute("state", "get_item_state", None, "rect_size")                        
     content_region_avail     : list[int, int]                    = ItemAttribute("state", "get_item_state", None, "content_region_avail")             
 
-    _is_container            : bool                              = False                                                                              
-    _is_root_item            : bool                              = False                                                                              
-    _is_value_able           : bool                              = True                                                                               
-    _unique_parents          : tuple                             = ()                                                                                 
-    _unique_children         : tuple                             = ()                                                                                 
-    _unique_commands         : tuple                             = ()                                                                                 
-    _unique_constants        : tuple                             = ('mvSlider',)                                                                      
-    _command                 : Callable                          = dearpygui.add_slider_float                                                         
+    __is_container__        : bool                              = False                                                                              
+    __is_root_item__        : bool                              = False                                                                              
+    __is_value_able__       : bool                              = True                                                                               
+    __able_parents__        : tuple                             = ()                                                                                 
+    __able_children__       : tuple                             = ()                                                                                 
+    __commands__            : tuple                             = ()                                                                                 
+    __constants__           : tuple                             = ('mvSlider',)                                                                      
+    __command__             : Callable                          = dearpygui.add_slider_float                                                         
 
     def __init__(
         self                                                                   ,
@@ -1812,14 +1812,14 @@ class DragFloat(Widget):
     rect_size                : list[int, int]                    = ItemAttribute("state", "get_item_state", None, "rect_size")                        
     content_region_avail     : list[int, int]                    = ItemAttribute("state", "get_item_state", None, "content_region_avail")             
 
-    _is_container            : bool                              = False                                                                              
-    _is_root_item            : bool                              = False                                                                              
-    _is_value_able           : bool                              = True                                                                               
-    _unique_parents          : tuple                             = ()                                                                                 
-    _unique_children         : tuple                             = ()                                                                                 
-    _unique_commands         : tuple                             = ()                                                                                 
-    _unique_constants        : tuple                             = ('mvDrag',)                                                                        
-    _command                 : Callable                          = dearpygui.add_drag_float                                                           
+    __is_container__        : bool                              = False                                                                              
+    __is_root_item__        : bool                              = False                                                                              
+    __is_value_able__       : bool                              = True                                                                               
+    __able_parents__        : tuple                             = ()                                                                                 
+    __able_children__       : tuple                             = ()                                                                                 
+    __commands__            : tuple                             = ()                                                                                 
+    __constants__           : tuple                             = ('mvDrag',)                                                                        
+    __command__             : Callable                          = dearpygui.add_drag_float                                                           
 
     def __init__(
         self                                                                   ,
@@ -1942,14 +1942,14 @@ class Text(Widget):
     rect_size           : list[int, int]                    = ItemAttribute("state", "get_item_state", None, "rect_size")                        
     content_region_avail: list[int, int]                    = ItemAttribute("state", "get_item_state", None, "content_region_avail")             
 
-    _is_container       : bool                              = False                                                                              
-    _is_root_item       : bool                              = False                                                                              
-    _is_value_able      : bool                              = True                                                                               
-    _unique_parents     : tuple                             = ()                                                                                 
-    _unique_children    : tuple                             = ()                                                                                 
-    _unique_commands    : tuple                             = ()                                                                                 
-    _unique_constants   : tuple                             = ('mvText',)                                                                        
-    _command            : Callable                          = dearpygui.add_text                                                                 
+    __is_container__   : bool                              = False                                                                              
+    __is_root_item__   : bool                              = False                                                                              
+    __is_value_able__  : bool                              = True                                                                               
+    __able_parents__   : tuple                             = ()                                                                                 
+    __able_children__  : tuple                             = ()                                                                                 
+    __commands__       : tuple                             = ()                                                                                 
+    __constants__      : tuple                             = ('mvText',)                                                                        
+    __command__        : Callable                          = dearpygui.add_text                                                                 
 
     def __init__(
         self                                                                     ,
@@ -2045,14 +2045,14 @@ class TabButton(Widget):
     trailing          : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     no_tooltip        : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
-    _is_container     : bool     = False                                                                     
-    _is_root_item     : bool     = False                                                                     
-    _is_value_able    : bool     = False                                                                     
-    _unique_parents   : tuple    = ('TabBar', 'Stage', 'TemplateRegistry')                                   
-    _unique_children  : tuple    = ()                                                                        
-    _unique_commands  : tuple    = ()                                                                        
-    _unique_constants : tuple    = ('mvTabButton',)                                                          
-    _command          : Callable = dearpygui.add_tab_button                                                  
+    __is_container__ : bool     = False                                                                     
+    __is_root_item__ : bool     = False                                                                     
+    __is_value_able__: bool     = False                                                                     
+    __able_parents__ : tuple    = ('TabBar', 'Stage', 'TemplateRegistry')                                   
+    __able_children__: tuple    = ()                                                                        
+    __commands__     : tuple    = ()                                                                        
+    __constants__    : tuple    = ('mvTabButton',)                                                          
+    __command__      : Callable = dearpygui.add_tab_button                                                  
 
     def __init__(
         self                                                 ,
@@ -2144,14 +2144,14 @@ class MenuItem(Widget):
     check             : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     value             : bool     = ItemAttribute("configuration", "get_item_value", "set_item_value", "default_value")
 
-    _is_container     : bool     = False                                                                              
-    _is_root_item     : bool     = False                                                                              
-    _is_value_able    : bool     = True                                                                               
-    _unique_parents   : tuple    = ()                                                                                 
-    _unique_children  : tuple    = ()                                                                                 
-    _unique_commands  : tuple    = ()                                                                                 
-    _unique_constants : tuple    = ('mvMenuItem',)                                                                    
-    _command          : Callable = dearpygui.add_menu_item                                                            
+    __is_container__ : bool     = False                                                                              
+    __is_root_item__ : bool     = False                                                                              
+    __is_value_able__: bool     = True                                                                               
+    __able_parents__ : tuple    = ()                                                                                 
+    __able_children__: tuple    = ()                                                                                 
+    __commands__     : tuple    = ()                                                                                 
+    __constants__    : tuple    = ('mvMenuItem',)                                                                    
+    __command__      : Callable = dearpygui.add_menu_item                                                            
 
     def __init__(
         self                                                 ,
@@ -2261,14 +2261,14 @@ class Image(Widget):
     rect_size           : list[int, int]                        = ItemAttribute("state", "get_item_state", None, "rect_size")               
     content_region_avail: list[int, int]                        = ItemAttribute("state", "get_item_state", None, "content_region_avail")    
 
-    _is_container       : bool                                  = False                                                                     
-    _is_root_item       : bool                                  = False                                                                     
-    _is_value_able      : bool                                  = False                                                                     
-    _unique_parents     : tuple                                 = ()                                                                        
-    _unique_children    : tuple                                 = ()                                                                        
-    _unique_commands    : tuple                                 = ()                                                                        
-    _unique_constants   : tuple                                 = ('mvImageItems',)                                                         
-    _command            : Callable                              = dearpygui.add_image                                                       
+    __is_container__   : bool                                  = False                                                                     
+    __is_root_item__   : bool                                  = False                                                                     
+    __is_value_able__  : bool                                  = False                                                                     
+    __able_parents__   : tuple                                 = ()                                                                        
+    __able_children__  : tuple                                 = ()                                                                        
+    __commands__       : tuple                                 = ()                                                                        
+    __constants__      : tuple                                 = ('mvImageItems',)                                                         
+    __command__        : Callable                              = dearpygui.add_image                                                       
 
     def __init__(
         self                                                                            ,
@@ -2363,13 +2363,13 @@ class ImageButton(Widget):
     rect_size           : list[int, int]                        = ItemAttribute("state", "get_item_state", None, "rect_size")                                                                                                                                                                                                  
     content_region_avail: list[int, int]                        = ItemAttribute("state", "get_item_state", None, "content_region_avail")                                                                                                                                                                                       
 
-    _is_container       : bool                                  = False                                                                                                                                                                                                                                                        
-    _is_root_item       : bool                                  = False                                                                                                                                                                                                                                                        
-    _is_value_able      : bool                                  = False                                                                                                                                                                                                                                                        
-    _unique_parents     : tuple                                 = ()                                                                                                                                                                                                                                                           
-    _unique_children    : tuple                                 = ()                                                                                                                                                                                                                                                           
-    _unique_commands    : tuple                                 = ()     
-    _command            : Callable                              = dearpygui.add_image_button
+    __is_container__   : bool                                  = False                                                                                                                                                                                                                                                        
+    __is_root_item__   : bool                                  = False                                                                                                                                                                                                                                                        
+    __is_value_able__  : bool                                  = False                                                                                                                                                                                                                                                        
+    __able_parents__   : tuple                                 = ()                                                                                                                                                                                                                                                           
+    __able_children__  : tuple                                 = ()                                                                                                                                                                                                                                                           
+    __commands__       : tuple                                 = ()     
+    __command__        : Callable                              = dearpygui.add_image_button
 
     def __init__(self, 
         texture_tag       : ItemT                                                  , 
