@@ -43,9 +43,6 @@ from dearpypixl.application.viewport import Viewport
 # Item classes are registered when they are created. Importing each module
 # ensures that they are registered. Otherwise, they may not exist in the
 # registry when they are required. 
-
-# BUG: importing the `colors` module is somehow a circular import, yet
-# all of the modules below have the identical structure and import fine.
 from dearpypixl import (
     # item modules
     basic,
