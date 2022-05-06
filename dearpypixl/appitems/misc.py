@@ -55,11 +55,7 @@ class ProgressBar(Widget):
             id (Union[int, str], optional): (deprecated) 
         Returns:
             Union[int, str]
-    """
-
-    label             : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
-    user_data         : Any                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
-    use_internal_label: bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    """      
     width             : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     height            : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     indent            : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
@@ -151,10 +147,6 @@ class Spacer(Widget):
         Returns:
             Union[int, str]
     """
-
-    label             : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    user_data         : Any                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    use_internal_label: bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     width             : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     height            : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     indent            : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
@@ -216,10 +208,6 @@ class Separator(Widget):
         Returns:
             Union[int, str]
     """
-
-    label             : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    user_data         : Any                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    use_internal_label: bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     indent            : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     show              : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     pos               : Union[List[int], Tuple[int, ...]] = ItemAttribute('configuration', 'get_item_state', 'set_item_config', None) 
@@ -283,11 +271,7 @@ class TimePicker(Widget):
             id (Union[int, str], optional): (deprecated) 
         Returns:
             Union[int, str]
-    """
-
-    label               : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
-    user_data           : Any                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
-    use_internal_label  : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    """      
     indent              : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     payload_type        : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     callback            : Callable                          = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
@@ -386,11 +370,7 @@ class DatePicker(Widget):
             id (Union[int, str], optional): (deprecated) 
         Returns:
             Union[int, str]
-    """
-
-    label               : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                    
-    user_data           : Any                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                    
-    use_internal_label  : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                    
+    """                  
     indent              : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                    
     payload_type        : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                    
     callback            : Callable                          = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                    
@@ -507,11 +487,7 @@ class Slider3D(Widget):
             id (Union[int, str], optional): (deprecated) 
         Returns:
             Union[int, str]
-    """
-
-    label               : str                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
-    user_data           : Any                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
-    use_internal_label  : bool                                  = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    """        
     width               : int                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     height              : int                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     indent              : int                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
@@ -642,11 +618,7 @@ class KnobFloat(Widget):
             id (Union[int, str], optional): (deprecated) 
         Returns:
             Union[int, str]
-    """
-
-    label               : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
-    user_data           : Any                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
-    use_internal_label  : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    """      
     width               : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     height              : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     indent              : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
@@ -770,10 +742,6 @@ class LoadingIndicator(Widget):
         Returns:
             Union[int, str]
     """
-
-    label               : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    user_data           : Any                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    use_internal_label  : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     width               : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     height              : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     indent              : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
@@ -878,10 +846,6 @@ class FileDialog(Widget):
         Returns:
             Union[int, str]
     """
-
-    label             : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    user_data         : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     width             : int      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     height            : int      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     callback          : Callable = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
@@ -953,11 +917,7 @@ class FileExtension(Widget):
         Returns:
             Union[int, str]
     """
-
     extension         : str                               = ItemAttribute("configuration", "get_item_cached", "set_item_cached_config", None)
-    label             : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    user_data         : Any                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    use_internal_label: bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     width             : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     height            : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     custom_text       : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)

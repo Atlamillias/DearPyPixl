@@ -51,10 +51,6 @@ class FilterSet(Widget):
         Returns:
             Union[int, str]
     """
-
-    label             : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    user_data         : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     width             : int      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     indent            : int      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
@@ -114,10 +110,6 @@ class Clipper(Widget):
         Returns:
             Union[int, str]
     """
-
-    label             : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    user_data         : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     width             : int      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     indent            : int      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
@@ -171,11 +163,6 @@ class Stage(Widget):
         Returns:
             Union[int, str]
     """
-
-    label             : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    user_data         : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-
     __is_container__ : bool     = True                                                                      
     __is_root_item__ : bool     = True                                                                      
     __is_value_able__: bool     = False                                                                     
@@ -230,10 +217,6 @@ class TreeNode(Widget):
         Returns:
             Union[int, str]
     """
-
-    label               : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    user_data           : Any                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    use_internal_label  : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     indent              : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     payload_type        : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     drag_callback       : Callable                          = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
@@ -359,10 +342,6 @@ class ChildWindow(Widget):
         Returns:
             Union[int, str]
     """
-
-    label               : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    user_data           : Any                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    use_internal_label  : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     width               : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     height              : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     indent              : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
@@ -479,10 +458,6 @@ class Group(Widget):
         Returns:
             Union[int, str]
     """
-
-    label                    : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    user_data                : Any                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    use_internal_label       : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     width                    : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     indent                   : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     payload_type             : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
@@ -602,10 +577,6 @@ class CollapsingHeader(Widget):
         Returns:
             Union[int, str]
     """
-
-    label               : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    user_data           : Any                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    use_internal_label  : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     indent              : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     payload_type        : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     drag_callback       : Callable                          = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
@@ -727,11 +698,7 @@ class Tab(Widget):
             id (Union[int, str], optional): (deprecated) 
         Returns:
             Union[int, str]
-    """
-
-    label               : str            = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                          
-    user_data           : Any            = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                          
-    use_internal_label  : bool           = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                          
+    """                        
     indent              : int            = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                          
     payload_type        : str            = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                          
     drop_callback       : Callable       = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                          
@@ -831,11 +798,7 @@ class TabBar(Widget):
             id (Union[int, str], optional): (deprecated) 
         Returns:
             Union[int, str]
-    """
-
-    label             : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                
-    user_data         : Any                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                
-    use_internal_label: bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                
+    """                                                                                                                                                              
     indent            : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                
     callback          : Callable                          = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                
     show              : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                
@@ -917,10 +880,6 @@ class Menu(Widget):
         Returns:
             Union[int, str]
     """
-
-    label             : str            = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    user_data         : Any            = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    use_internal_label: bool           = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     indent            : int            = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     payload_type      : str            = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     drop_callback     : Callable       = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
@@ -1001,10 +960,6 @@ class MenuBar(Widget):
         Returns:
             Union[int, str]
     """
-
-    label             : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    user_data         : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     indent            : int      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     delay_search      : bool     = ItemAttribute('information', 'get_item_cached', None, None)               
@@ -1057,10 +1012,6 @@ class Tooltip(Widget):
         Returns:
             Union[int, str]
     """
-
-    label               : str            = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    user_data           : Any            = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    use_internal_label  : bool           = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     show                : bool           = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
     is_resized          : bool           = ItemAttribute("state", "get_item_state", None, "resized")                 
@@ -1132,11 +1083,7 @@ class Window(Widget):
             id (Union[int, str], optional): (deprecated) 
         Returns:
             Union[int, str]
-    """
-
-    label                      : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
-    user_data                  : Any                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
-    use_internal_label         : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
+    """                             
     width                      : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
     height                     : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
     indent                     : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                              
@@ -1223,9 +1170,8 @@ class Window(Widget):
             show=show,
             pos=pos,
             delay_search=delay_search,
-            # BUG: Temp fix for https://github.com/hoffstadt/DearPyGui/issues/1591
-            min_size=[int(x) for x in min_size],
-            max_size=[int(x) for x in max_size],
+            min_size=min_size,
+            max_size=max_size,
             menubar=menubar,
             collapsed=collapsed,
             autosize=autosize,
@@ -1263,11 +1209,7 @@ class DragPayload(Widget):
             id (Union[int, str], optional): (deprecated) 
         Returns:
             Union[int, str]
-    """
-
-    label             : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
-    user_data         : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
-    use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
+    """                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
     show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
     drag_data         : Any      = ItemAttribute('configuration', 'get_item_cached', 'set_item_cached_config', None)                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
     drop_data         : Any      = ItemAttribute('configuration', 'get_item_cached', 'set_item_cached_config', None)                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
@@ -1323,10 +1265,6 @@ class ViewportMenuBar(Widget):
         Returns:
             Union[int, str]
     """
-
-    label             : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    user_data         : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     indent            : int      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     delay_search      : bool     = ItemAttribute('information', 'get_item_cached', None, None)               

@@ -90,11 +90,7 @@ class Plot(Widget):
             id (int | str, optional): (deprecated) 
         Returns:
             int | str      
-    """
-
-    label                   : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                                                                                                                                                                                                                                                                                     
-    user_data               : Any                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                                                                                                                                                                                                                                                                                     
-    use_internal_label      : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                                                                                                                                                                                                                                                                                     
+    """                                                                                                                                                                                                                                                                                                                                                                                                                                                   
     width                   : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                                                                                                                                                                                                                                                                                     
     height                  : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                                                                                                                                                                                                                                                                                     
     indent                  : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                                                                                                                                                                                                                                                                                     
@@ -263,11 +259,7 @@ class PlotLegend(Widget):
             id (int | str, optional): (deprecated) 
         Returns:
             int | str      
-    """
-
-    label             : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                      
-    user_data         : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                      
-    use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                      
+    """                                                                                                                                                                                    
     payload_type      : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                      
     drop_callback     : Callable = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                      
     show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                      
@@ -338,11 +330,7 @@ class PlotAxis(Widget):
         Returns:
             int | str      
     """
-
-    axis              : int      = ItemAttribute("configuration", "get_item_cached", "set_item_cached_config", None)                                       
-    label             : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                           
-    user_data         : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                           
-    use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                           
+    axis              : int      = ItemAttribute("configuration", "get_item_cached", "set_item_cached_config", None)                                           
     payload_type      : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                           
     drop_callback     : Callable = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                           
     show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                           
@@ -425,11 +413,7 @@ class DragPoint(Widget):
             id (int | str, optional): (deprecated) 
         Returns:
             int | str      
-    """
-
-    label             : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
-    user_data         : Any                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
-    use_internal_label: bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    """       
     source            : int | str                         = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     callback          : Callable                          = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     show              : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
@@ -502,11 +486,7 @@ class DragLine(Widget):
             id (int | str, optional): (deprecated) 
         Returns:
             int | str      
-    """
-
-    label             : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
-    user_data         : Any                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
-    use_internal_label: bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    """        
     source            : int | str                         = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     callback          : Callable                          = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     show              : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
@@ -580,11 +560,7 @@ class Annotation(Widget):
             id (int | str, optional): (deprecated) 
         Returns:
             int | str      
-    """
-
-    label             : str                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
-    user_data         : Any                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
-    use_internal_label: bool                                  = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    """         
     source            : int | str                             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     show              : bool                                  = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     default_value     : Any                                   = ItemAttribute('information', 'get_item_cached', None, None)                        
@@ -670,12 +646,8 @@ class SubPlots(Widget):
         Returns:
             int | str      
     """
-
     rows              : int                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)  
-    columns           : int                                   = ItemAttribute('configuration', 'get_item_config', 'set_item_config', 'cols')
-    label             : str                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)  
-    user_data         : Any                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)  
-    use_internal_label: bool                                  = ItemAttribute("configuration", "get_item_config", "set_item_config", None)  
+    columns           : int                                   = ItemAttribute('configuration', 'get_item_config', 'set_item_config', 'cols') 
     width             : int                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)  
     height            : int                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)  
     indent            : int                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)  
@@ -802,11 +774,7 @@ class SimplePlot(Widget):
             id (int | str, optional): (deprecated) 
         Returns:
             int | str      
-    """
-
-    label             : str                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
-    user_data         : Any                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
-    use_internal_label: bool                                  = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    """      
     width             : int                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     height            : int                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     indent            : int                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
@@ -906,12 +874,8 @@ class LineSeries(Widget):
         Returns:
             int | str      
     """
-
     x                 : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     y                 : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    label             : str                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    user_data         : Any                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    use_internal_label: bool                                  = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     source            : int | str                             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     show              : bool                                  = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
@@ -971,12 +935,8 @@ class BarSeries(Widget):
         Returns:
             int | str      
     """
-
     x                 : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     y                 : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    label             : str                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    user_data         : Any                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    use_internal_label: bool                                  = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     source            : int | str                             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     show              : bool                                  = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     weight            : float                                 = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
@@ -1040,12 +1000,8 @@ class ScatterSeries(Widget):
         Returns:
             int | str      
     """
-
     x                 : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     y                 : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    label             : str                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    user_data         : Any                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    use_internal_label: bool                                  = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     source            : int | str                             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     show              : bool                                  = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
@@ -1105,12 +1061,8 @@ class AreaSeries(Widget):
         Returns:
             int | str      
     """
-
     x                   : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     y                   : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    label               : str                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    user_data           : Any                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    use_internal_label  : bool                                  = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     source              : int | str                             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     show                : bool                                  = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     fill                : list[int] | tuple[int, ...]           = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
@@ -1175,12 +1127,8 @@ class StemSeries(Widget):
         Returns:
             int | str      
     """
-
     x                 : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     y                 : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    label             : str                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    user_data         : Any                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    use_internal_label: bool                                  = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     indent            : int                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     source            : int | str                             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     show              : bool                                  = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
@@ -1244,12 +1192,8 @@ class LabelSeries(Widget):
         Returns:
             int | str      
     """
-
     x                 : float           = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     y                 : float           = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    label             : str             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    user_data         : Any             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    use_internal_label: bool            = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     source            : int | str       = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     show              : bool            = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     x_offset          : int             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
@@ -1322,15 +1266,11 @@ class PieSeries(Widget):
         Returns:
             int | str      
     """
-
     x                 : float                                 = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     y                 : float                                 = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     radius            : float                                 = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     values            : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     labels            : Union[List[str], Tuple[str, ...]]     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    label             : str                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    user_data         : Any                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    use_internal_label: bool                                  = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     source            : int | str                             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     show              : bool                                  = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     format            : str                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
@@ -1404,12 +1344,8 @@ class ShadeSeries(Widget):
         Returns:
             int | str      
     """
-
     x                 : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     y1                : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    label             : str                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    user_data         : Any                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    use_internal_label: bool                                  = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     source            : int | str                             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     show              : bool                                  = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     y2                : Any                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
@@ -1474,14 +1410,10 @@ class ErrorSeries(Widget):
         Returns:
             int | str      
     """
-
     x                   : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     y                   : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     negative            : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     positive            : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    label               : str                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    user_data           : Any                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    use_internal_label  : bool                                  = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     source              : int | str                             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     show                : bool                                  = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     contribute_to_bounds: bool                                  = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
@@ -1556,13 +1488,9 @@ class HeatSeries(Widget):
         Returns:
             int | str      
     """
-
     x                   : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     rows                : int                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     cols                : int                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    label               : str                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    user_data           : Any                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    use_internal_label  : bool                                  = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     source              : int | str                             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     show                : bool                                  = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     scale_min           : float                                 = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
@@ -1644,13 +1572,9 @@ class ImageSeries(Widget):
         Returns:
             int | str      
     """
-
     texture_tag       : int | str                             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     bounds_min        : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     bounds_max        : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    label             : str                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    user_data         : Any                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    use_internal_label: bool                                  = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     source            : int | str                             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     show              : bool                                  = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     uv_min            : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
@@ -1719,12 +1643,8 @@ class StairSeries(Widget):
         Returns:
             int | str      
     """
-
     x                 : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     y                 : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    label             : str                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    user_data         : Any                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    use_internal_label: bool                                  = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     source            : int | str                             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     show              : bool                                  = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
@@ -1789,15 +1709,11 @@ class CandleSeries(Widget):
         Returns:
             int | str      
     """
-
     dates             : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     opens             : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     closes            : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     lows              : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     highs             : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    label             : str                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    user_data         : Any                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    use_internal_label: bool                                  = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     source            : int | str                             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     show              : bool                                  = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     bull_color        : list[int] | tuple[int, ...]           = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
@@ -1872,11 +1788,7 @@ class VLineSeries(Widget):
         Returns:
             int | str      
     """
-
     x                 : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    label             : str                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    user_data         : Any                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    use_internal_label: bool                                  = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     source            : int | str                             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     show              : bool                                  = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
@@ -1939,11 +1851,7 @@ class HistogramSeries(Widget):
         Returns:
             int | str      
     """
-
-    x                   : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                       
-    label               : str                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                       
-    user_data           : Any                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                       
-    use_internal_label  : bool                                  = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                       
+    x                   : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                   
     source              : int | str                             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                       
     show                : bool                                  = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                       
     bins                : int                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                       
@@ -2031,12 +1939,8 @@ class HistogramSeries2D(Widget):
         Returns:
             int | str      
     """
-
     x                 : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     y                 : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    label             : str                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    user_data         : Any                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    use_internal_label: bool                                  = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     source            : int | str                             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     show              : bool                                  = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     xbins             : int                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)

@@ -71,9 +71,6 @@ class InputFloat(Widget):
         readonly (bool, optional): Activates read only mode where no text can be input but text can still be highlighted.
         id (Union[int, str], optional): (deprecated) 
     """
-    label                    : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
-    user_data                : Any                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
-    use_internal_label       : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     width                    : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)      
     indent                   : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     source                   : ItemT                             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
@@ -124,7 +121,6 @@ class InputFloat(Widget):
     __commands__            : tuple                             = ()                                                                                 
     __constants__           : tuple                             = ('mvInputFloat',)                                                                       
     __command__             : Callable                          = dearpygui.add_input_float
-
 
     def __init__(
         self,
@@ -225,9 +221,6 @@ class InputFloatMulti(Widget):
         readonly (bool, optional): Activates read only mode where no text can be input but text can still be highlighted.
         id (Union[int, str], optional): (deprecated) 
     """
-    label                    : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
-    user_data                : Any                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
-    use_internal_label       : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     width                    : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)          
     indent                   : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     source                   : ItemT                             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
@@ -250,7 +243,6 @@ class InputFloatMulti(Widget):
     on_enter                 : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None) 
     readonly                 : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None) 
     value                    : list[float] | tuple[float, ...]   = ItemAttribute("configuration", "get_item_value", "set_item_value"  , None)
-    
     default_value            : list[float] | tuple[float, ...]   = ItemAttribute('information'  , 'get_item_cached', None             , None)
 
     is_middle_clicked        : bool                              = ItemAttribute("state", "get_item_state", None, "middle_clicked")                   
@@ -376,9 +368,6 @@ class InputInt(Widget):
         readonly (bool, optional): Activates read only mode where no text can be input but text can still be highlighted.
         id (Union[int, str], optional): (deprecated)
     """
-    label                    : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
-    user_data                : Any                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
-    use_internal_label       : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     width                    : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)      
     indent                   : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     source                   : ItemT                             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
@@ -401,7 +390,6 @@ class InputInt(Widget):
     on_enter                 : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None) 
     readonly                 : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None) 
     value                    : int                               = ItemAttribute("configuration", "get_item_value", "set_item_value"  , None)
-
     default_value            : int                               = ItemAttribute('information'  , 'get_item_cached', None             , None)
                        
     is_middle_clicked        : bool                              = ItemAttribute("state", "get_item_state", None, "middle_clicked")                   
@@ -526,9 +514,6 @@ class InputIntMulti(Widget):
         readonly (bool, optional): Activates read only mode where no text can be input but text can still be highlighted.
         id (Union[int, str], optional): (deprecated) 
     """
-    label                    : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
-    user_data                : Any                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
-    use_internal_label       : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     width                    : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)          
     indent                   : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     source                   : ItemT                             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
@@ -550,7 +535,6 @@ class InputIntMulti(Widget):
     on_enter                 : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None) 
     readonly                 : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None) 
     value                    : list[int] | tuple[int, ...]       = ItemAttribute("configuration", "get_item_value" , "set_item_value" , None)
-
     default_value            : list[int] | tuple[int, ...]       = ItemAttribute('information'  , 'get_item_cached', None             , None)
                      
     is_middle_clicked        : bool                              = ItemAttribute("state", "get_item_state", None, "middle_clicked")                   
@@ -670,11 +654,7 @@ class RadioButton(Widget):
         Returns:
             Union[int, str]
     """
-
-    items                    : Union[List[str], Tuple[str, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
-    label                    : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
-    user_data                : Any                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
-    use_internal_label       : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    items                    : Union[List[str], Tuple[str, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)        
     indent                   : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     source                   : Union[int, str]                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     payload_type             : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
@@ -797,11 +777,7 @@ class Listbox(Widget):
         Returns:
             Union[int, str]
     """
-
-    items                    : Union[List[str], Tuple[str, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
-    label                    : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
-    user_data                : Any                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
-    use_internal_label       : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    items                    : Union[List[str], Tuple[str, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                 
     width                    : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     indent                   : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     source                   : Union[int, str]                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
@@ -923,11 +899,7 @@ class Checkbox(Widget):
             id (Union[int, str], optional): (deprecated) 
         Returns:
             Union[int, str]
-    """
-
-    label                    : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
-    user_data                : Any                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
-    use_internal_label       : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    """         
     indent                   : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     source                   : Union[int, str]                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     payload_type             : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
@@ -1043,11 +1015,7 @@ class Button(Widget):
             id (Union[int, str], optional): (deprecated) 
         Returns:
             Union[int, str]
-    """
-
-    label               : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                   
-    user_data           : Any                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                   
-    use_internal_label  : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                   
+    """                                                                                                                                                                                
     width               : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                   
     height              : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                   
     indent              : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                   
@@ -1170,11 +1138,7 @@ class Selectable(Widget):
             id (Union[int, str], optional): (deprecated) 
         Returns:
             Union[int, str]
-    """
-
-    label                    : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
-    user_data                : Any                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
-    use_internal_label       : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    """       
     width                    : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     height                   : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     indent                   : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
@@ -1305,11 +1269,7 @@ class Combo(Widget):
         Returns:
             Union[int, str]
     """
-
-    items                    : Union[List[str], Tuple[str, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                 
-    label                    : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                 
-    user_data                : Any                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                 
-    use_internal_label       : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                 
+    items                    : Union[List[str], Tuple[str, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                
     width                    : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                 
     indent                   : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                 
     source                   : Union[int, str]                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                 
@@ -1453,11 +1413,7 @@ class InputText(Widget):
             id (Union[int, str], optional): (deprecated) 
         Returns:
             Union[int, str]
-    """
-
-    label                    : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
-    user_data                : Any                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
-    use_internal_label       : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    """       
     width                    : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     height                   : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     indent                   : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
@@ -1618,11 +1574,7 @@ class SliderFloat(Widget):
             id (Union[int, str], optional): (deprecated) 
         Returns:
             Union[int, str]
-    """
-
-    label                    : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
-    user_data                : Any                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
-    use_internal_label       : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    """        
     width                    : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     height                   : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     indent                   : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
@@ -1767,11 +1719,7 @@ class DragFloat(Widget):
             id (Union[int, str], optional): (deprecated) 
         Returns:
             Union[int, str]
-    """
-
-    label                    : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
-    user_data                : Any                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
-    use_internal_label       : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    """        
     width                    : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     indent                   : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     source                   : Union[int, str]                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
@@ -1909,11 +1857,7 @@ class Text(Widget):
         Returns:
             Union[int, str]
     """
-
-    default_value       : str                               = ItemAttribute('information', 'get_item_cached', None, None)                        
-    label               : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
-    user_data           : Any                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
-    use_internal_label  : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    default_value       : str                               = ItemAttribute('information', 'get_item_cached', None, None)                               
     indent              : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     source              : Union[int, str]                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     payload_type        : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
@@ -2027,10 +1971,6 @@ class TabButton(Widget):
         Returns:
             Union[int, str]
     """
-
-    label             : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    user_data         : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     indent            : int      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     payload_type      : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     callback          : Callable = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
@@ -2125,11 +2065,7 @@ class MenuItem(Widget):
             drag_callback (Callable, optional): (deprecated) 
         Returns:
             Union[int, str]
-    """
-
-    label             : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
-    user_data         : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
-    use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    """       
     indent            : int      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     payload_type      : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     callback          : Callable = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
@@ -2227,11 +2163,7 @@ class Image(Widget):
         Returns:
             Union[int, str]
     """
-
     texture_tag         : Union[int, str]                       = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    label               : str                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    user_data           : Any                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    use_internal_label  : bool                                  = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     width               : int                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     height              : int                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     indent              : int                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
@@ -2325,9 +2257,6 @@ class Image(Widget):
 
 class ImageButton(Widget):
     texture_tag         : ItemT                                 = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    label               : str                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    user_data           : Any                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    use_internal_label  : bool                                  = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     width               : int                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     height              : int                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     indent              : int                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)

@@ -37,12 +37,7 @@ class ValueRegistry(Item):
     		id (Union[int, str], optional): (deprecated) 
     	Returns:
     		Union[int, str]
-    """
-
-    label             : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                      
-    user_data         : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                      
-    use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                      
-
+    """                                                                                     
     __is_container__ : bool     = True                                                                                                                                                            
     __is_root_item__ : bool     = True                                                                                                                                                            
     __is_value_able__: bool     = False                                                                                                                                                           
@@ -80,10 +75,6 @@ class TextureRegistry(Item):
     	Returns:
     		Union[int, str]
     """
-
-    label             : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    user_data         : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
     __is_container__ : bool     = True                                                                      
@@ -124,11 +115,7 @@ class HandlerRegistry(Item):
     		id (Union[int, str], optional): (deprecated) 
     	Returns:
     		Union[int, str]
-    """
-
-    label             : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                        
-    user_data         : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                        
-    use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                        
+    """                                                                                                                                     
     show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                        
 
     __is_container__ : bool     = True                                                                                                                                                                                                              
@@ -169,11 +156,7 @@ class ItemHandlerRegistry(Item):
     		id (Union[int, str], optional): (deprecated) 
     	Returns:
     		Union[int, str]
-    """
-
-    label             : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                            
-    user_data         : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                            
-    use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                            
+    """                                                                                                                                         
     show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                            
 
     __is_container__ : bool     = True                                                                                                                                                                                                                  
@@ -215,10 +198,6 @@ class ColorMapRegistry(Item):
     	Returns:
     		Union[int, str]
     """
-
-    label             : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    user_data         : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
     __is_container__ : bool     = True                                                                      
@@ -259,11 +238,6 @@ class TemplateRegistry(Item):
     	Returns:
     		Union[int, str]
     """
-
-    label             : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    user_data         : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-
     __is_container__ : bool     = True                                                                      
     __is_root_item__ : bool     = True                                                                      
     __is_value_able__: bool     = False                                                                     
@@ -301,10 +275,6 @@ class FontRegistry(Item):
     	Returns:
     		Union[int, str]
     """
-
-    label             : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    user_data         : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
     __is_container__ : bool     = True                                                                      

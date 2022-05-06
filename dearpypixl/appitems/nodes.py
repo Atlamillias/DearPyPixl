@@ -47,11 +47,7 @@ class NodeEditor(Widget):
             id (Union[int, str], optional): (deprecated) 
         Returns:
             Union[int, str]
-    """
-
-    label             : str            = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                           
-    user_data         : Any            = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                           
-    use_internal_label: bool           = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                           
+    """                                                                                                                                                                        
     width             : int            = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                           
     height            : int            = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                           
     callback          : Callable       = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                           
@@ -141,11 +137,7 @@ class Node(Widget):
             id (Union[int, str], optional): (deprecated) 
         Returns:
             Union[int, str]
-    """
-
-    label             : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                           
-    user_data         : Any                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                           
-    use_internal_label: bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                           
+    """                       
     payload_type      : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                           
     drag_callback     : Callable                          = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                           
     drop_callback     : Callable                          = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                           
@@ -235,11 +227,7 @@ class NodeAttribute(Widget):
             id (Union[int, str], optional): (deprecated) 
         Returns:
             Union[int, str]
-    """
-
-    label             : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                        
-    user_data         : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                        
-    use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                        
+    """                                                                                                                                                                                    
     indent            : int      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                        
     show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                        
     filter_key        : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                        
@@ -311,12 +299,8 @@ class NodeLink(Widget):
         Returns:
             Union[int, str]
     """
-
     attr_1            : Union[int, str] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     attr_2            : Union[int, str] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    label             : str             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    user_data         : Any             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    use_internal_label: bool            = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     show              : bool            = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
     is_hovered        : bool            = ItemAttribute("state", "get_item_state", None, "hovered")                 

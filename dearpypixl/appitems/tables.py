@@ -73,11 +73,7 @@ class Table(Widget):
             id (Union[int, str], optional): (deprecated) 
         Returns:
             Union[int, str]
-    """
-
-    label                  : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                                                      
-    user_data              : Any                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                                                      
-    use_internal_label     : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                                                      
+    """                                                                                                                                                                                                                  
     width                  : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                                                      
     height                 : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                                                      
     indent                 : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                                                      
@@ -257,10 +253,6 @@ class TableColumn(Widget):
         Returns:
             Union[int, str]
     """
-
-    label                 : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    user_data             : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    use_internal_label    : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     width                 : int      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     show                  : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     enabled               : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
@@ -370,10 +362,6 @@ class TableRow(Widget):
         Returns:
             Union[int, str]
     """
-
-    label             : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    user_data         : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     height            : int      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     filter_key        : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
@@ -431,10 +419,6 @@ class TableCell(Widget):
         Returns:
             Union[int, str]
     """
-
-    label             : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    user_data         : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     height            : int      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     filter_key        : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)

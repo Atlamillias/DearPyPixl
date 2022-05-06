@@ -56,11 +56,7 @@ class ColorButton(Widget):
         Returns:
             Union[int, str]
     """
-
-    default_value       : Union[List[int], Tuple[int, ...]] = ItemAttribute('information', 'get_item_cached', None, None)                        
-    label               : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
-    user_data           : Any                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
-    use_internal_label  : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    default_value       : Union[List[int], Tuple[int, ...]] = ItemAttribute('information', 'get_item_cached', None, None)                                
     width               : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     height              : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     indent              : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
@@ -199,11 +195,7 @@ class ColorEdit(Widget):
         Returns:
             Union[int, str]
     """
-
-    default_value            : Union[List[int], Tuple[int, ...]] = ItemAttribute('information', 'get_item_cached', None, None)                                                                                                                                                                                                     
-    label                    : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                      
-    user_data                : Any                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                      
-    use_internal_label       : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                      
+    default_value            : Union[List[int], Tuple[int, ...]] = ItemAttribute('information', 'get_item_cached', None, None)                                                                                                                                                                                     
     width                    : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                      
     height                   : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                      
     indent                   : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                      
@@ -378,11 +370,7 @@ class ColorPicker(Widget):
         Returns:
             Union[int, str]
     """
-
-    default_value            : Union[List[int], Tuple[int, ...]] = ItemAttribute('information', 'get_item_cached', None, None)                        
-    label                    : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
-    user_data                : Any                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
-    use_internal_label       : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    default_value            : Union[List[int], Tuple[int, ...]] = ItemAttribute('information', 'get_item_cached', None, None)       
     width                    : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     height                   : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     indent                   : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
@@ -542,11 +530,7 @@ class ColorMapScale(Widget):
             drag_callback (Callable, optional): (deprecated) 
         Returns:
             Union[int, str]
-    """
-
-    label               : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
-    user_data           : Any                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
-    use_internal_label  : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    """     
     width               : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     height              : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     indent              : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
@@ -637,12 +621,8 @@ class ColorMap(Widget):
         Returns:
             Union[int, str]
     """
-
     colors            : List[Union[List[int], Tuple[int, ...]]] = ItemAttribute("configuration", "get_item_cached", None, None)                                                                                                                                                                                                                                                                                                                                                              
-    qualitative       : bool                                    = ItemAttribute("configuration", "get_item_cached", None, None)                                                                                                                                                                                                                                                                                                                                                                  
-    label             : str                                     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                                                                                                                                                                                              
-    user_data         : Any                                     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                                                                                                                                                                                              
-    use_internal_label: bool                                    = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                                                                                                                                                                                              
+    qualitative       : bool                                    = ItemAttribute("configuration", "get_item_cached", None, None)                                                                                                                                                                                                                                                                                                                                                          
     show              : bool                                    = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                                                                                                                                                                                              
 
     __is_container__ : bool                                    = False                                                                                                                                                                                                                                                                                                                                                                                                                                   
@@ -705,11 +685,7 @@ class ColorMapButton(Widget):
         Returns:
             Union[int, str]
     """
-
-    default_value       : Union[List[int], Tuple[int, ...]] = ItemAttribute('information', 'get_item_cached', None, None)                        
-    label               : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
-    user_data           : Any                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
-    use_internal_label  : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    default_value       : Union[List[int], Tuple[int, ...]] = ItemAttribute('information', 'get_item_cached', None, None)                             
     width               : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     height              : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     indent              : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
@@ -823,11 +799,7 @@ class ColorMapSlider(Widget):
             drag_callback (Callable, optional): (deprecated) 
         Returns:
             Union[int, str]
-    """
-
-    label                    : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
-    user_data                : Any                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
-    use_internal_label       : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    """        
     width                    : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     height                   : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     indent                   : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         

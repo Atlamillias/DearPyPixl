@@ -40,12 +40,8 @@ class Font(Item):
     	Returns:
     		Union[int, str]
     """
-
     file              : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)  
     size              : int      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)  
-    label             : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)  
-    user_data         : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)  
-    use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)  
 
     __is_container__ : bool     = True                                                                        
     __is_root_item__ : bool     = False                                                                       
@@ -91,11 +87,7 @@ class FontChars(Item):
     	Returns:
     		Union[int, str]
     """
-
     chars             : Union[List[int], Tuple[int, ...]] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    label             : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    user_data         : Any                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    use_internal_label: bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
     __is_container__ : bool                              = False                                                                     
     __is_root_item__ : bool                              = False                                                                     
@@ -143,9 +135,6 @@ class FontRange(Item):
 
     first_char        : int      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     last_char         : int      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    label             : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    user_data         : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
     __is_container__ : bool     = False                                                                     
     __is_root_item__ : bool     = False                                                                     
@@ -192,10 +181,7 @@ class FontRangeHint(Item):
     		Union[int, str]
     """
 
-    hint              : int      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                         
-    label             : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                         
-    user_data         : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                         
-    use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                         
+    hint             : int      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                                                                                                                                                                     
 
     __is_container__ : bool     = False                                                                                                                                                                                                                                                              
     __is_root_item__ : bool     = False                                                                                                                                                                                                                                                              
@@ -240,12 +226,8 @@ class CharRemap(Item):
     	Returns:
     		Union[int, str]
     """
-
     source            : int      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     target            : int      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    label             : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    user_data         : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
     __is_container__ : bool     = False                                                                     
     __is_root_item__ : bool     = False                                                                     

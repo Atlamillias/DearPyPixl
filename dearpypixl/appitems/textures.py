@@ -40,10 +40,7 @@ class StaticTexture(Widget):
 
     width             : int                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     height            : int                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
-    default_value     : Union[List[float], Tuple[float, ...]] = ItemAttribute('information', 'get_item_cached', None, None)                        
-    label             : str                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
-    user_data         : Any                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
-    use_internal_label: bool                                  = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    default_value     : Union[List[float], Tuple[float, ...]] = ItemAttribute('information', 'get_item_cached', None, None)      
     value             : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_value", "set_item_value", "default_value")
 
     __is_container__ : bool                                  = False                                                                              
@@ -94,13 +91,9 @@ class DynamicTexture(Widget):
         Returns:
             Union[int, str]
     """
-
     width             : int                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     height            : int                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
-    default_value     : Union[List[float], Tuple[float, ...]] = ItemAttribute('information', 'get_item_cached', None, None)                        
-    label             : str                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
-    user_data         : Any                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
-    use_internal_label: bool                                  = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    default_value     : Union[List[float], Tuple[float, ...]] = ItemAttribute('information', 'get_item_cached', None, None)        
     value             : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_value", "set_item_value", "default_value")
 
     __is_container__ : bool                                  = False                                                                              
@@ -152,13 +145,9 @@ class RawTexture(Widget):
         Returns:
             Union[int, str]
     """
-
     width             : int                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     height            : int                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
-    default_value     : Union[List[float], Tuple[float, ...]] = ItemAttribute('information', 'get_item_cached', None, None)                        
-    label             : str                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
-    user_data         : Any                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
-    use_internal_label: bool                                  = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    default_value     : Union[List[float], Tuple[float, ...]] = ItemAttribute('information', 'get_item_cached', None, None)                               
     format            : int                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     value             : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_value", "set_item_value", "default_value")
 

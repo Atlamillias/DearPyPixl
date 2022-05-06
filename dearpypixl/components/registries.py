@@ -50,11 +50,8 @@ def _manage_handler(handler: Item):
     return wrapped_method
 
 
-class AppEvents(Item):
-    label             : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", "label")                                                                                                                               
-    user_data         : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", "user_data")                                                                                                                           
-    use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", "use_internal_label")                                                                                                                  
-    show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", "show")                                                                                                                                
+class AppEvents(Item):                                                                                                               
+    show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config")                                                                                                                                
 
     __is_container__ : bool     = True                                                                                                                                                                                                              
     __is_root_item__ : bool     = True                                                                                                                                                                                                              
@@ -132,11 +129,8 @@ class AppEvents(Item):
         ...
 
 
-class ItemEvents(Item):
-    label             : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", "label")                                                                                                                                   
-    user_data         : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", "user_data")                                                                                                                               
-    use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", "use_internal_label")                                                                                                                      
-    show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", "show")                                                                                                                                    
+class ItemEvents(Item):                                                                                                                    
+    show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config")                                                                                                                                    
 
     __is_container__ : bool     = True                                                                                                                                                                                                                  
     __is_root_item__ : bool     = True                                                                                                                                                                                                                  

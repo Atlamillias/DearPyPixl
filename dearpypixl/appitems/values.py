@@ -44,10 +44,6 @@ class IntValue(Widget):
         Returns:
             Union[int, str]
     """
-
-    label             : str             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
-    user_data         : Any             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
-    use_internal_label: bool            = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     source            : Union[int, str] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     default_value     : int             = ItemAttribute('information', 'get_item_cached', None, None)                        
     value             : int             = ItemAttribute("configuration", "get_item_value", "set_item_value", "default_value")
@@ -96,11 +92,7 @@ class Int4Value(Widget):
             id (Union[int, str], optional): (deprecated) 
         Returns:
             Union[int, str]
-    """
-
-    label             : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
-    user_data         : Any                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
-    use_internal_label: bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    """         
     source            : Union[int, str]                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     default_value     : Union[List[int], Tuple[int, ...]] = ItemAttribute('information', 'get_item_cached', None, None)                        
     value             : Union[List[int], Tuple[int, ...]] = ItemAttribute("configuration", "get_item_value", "set_item_value", "default_value")
@@ -149,11 +141,7 @@ class BoolValue(Widget):
             id (Union[int, str], optional): (deprecated) 
         Returns:
             Union[int, str]
-    """
-
-    label             : str             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
-    user_data         : Any             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
-    use_internal_label: bool            = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    """        
     source            : Union[int, str] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     default_value     : bool            = ItemAttribute('information', 'get_item_cached', None, None)                        
     value             : bool            = ItemAttribute("configuration", "get_item_value", "set_item_value", "default_value")
@@ -202,11 +190,7 @@ class FloatValue(Widget):
             id (Union[int, str], optional): (deprecated) 
         Returns:
             Union[int, str]
-    """
-
-    label             : str             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
-    user_data         : Any             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
-    use_internal_label: bool            = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    """        
     source            : Union[int, str] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     default_value     : float           = ItemAttribute('information', 'get_item_cached', None, None)                        
     value             : float           = ItemAttribute("configuration", "get_item_value", "set_item_value", "default_value")
@@ -255,11 +239,7 @@ class Float4Value(Widget):
             id (Union[int, str], optional): (deprecated) 
         Returns:
             Union[int, str]
-    """
-
-    label             : str                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
-    user_data         : Any                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
-    use_internal_label: bool                                  = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    """       
     source            : Union[int, str]                       = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     default_value     : Union[List[float], Tuple[float, ...]] = ItemAttribute('information', 'get_item_cached', None, None)                        
     value             : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_value", "set_item_value", "default_value")
@@ -308,11 +288,7 @@ class StringValue(Widget):
             id (Union[int, str], optional): (deprecated) 
         Returns:
             Union[int, str]
-    """
-
-    label             : str             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
-    user_data         : Any             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
-    use_internal_label: bool            = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    """        
     source            : Union[int, str] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     default_value     : str             = ItemAttribute('information', 'get_item_cached', None, None)                        
     value             : str             = ItemAttribute("configuration", "get_item_value", "set_item_value", "default_value")
@@ -361,11 +337,7 @@ class DoubleValue(Widget):
             id (Union[int, str], optional): (deprecated) 
         Returns:
             Union[int, str]
-    """
-
-    label             : str             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
-    user_data         : Any             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
-    use_internal_label: bool            = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    """       
     source            : Union[int, str] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     default_value     : float           = ItemAttribute('information', 'get_item_cached', None, None)                        
     value             : float           = ItemAttribute("configuration", "get_item_value", "set_item_value", "default_value")
@@ -414,11 +386,7 @@ class Double4Value(Widget):
             id (Union[int, str], optional): (deprecated) 
         Returns:
             Union[int, str]
-    """
-
-    label             : str             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
-    user_data         : Any             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
-    use_internal_label: bool            = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    """        
     source            : Union[int, str] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     default_value     : Any             = ItemAttribute('information', 'get_item_cached', None, None)                        
     value             : Any             = ItemAttribute("configuration", "get_item_value", "set_item_value", "default_value")
@@ -467,11 +435,7 @@ class ColorValue(Widget):
             id (Union[int, str], optional): (deprecated) 
         Returns:
             Union[int, str]
-    """
-
-    label             : str                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
-    user_data         : Any                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
-    use_internal_label: bool                                  = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    """        
     source            : Union[int, str]                       = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     default_value     : Union[List[float], Tuple[float, ...]] = ItemAttribute('information', 'get_item_cached', None, None)                        
     value             : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_value", "set_item_value", "default_value")
@@ -520,11 +484,7 @@ class FloatVectValue(Widget):
             id (Union[int, str], optional): (deprecated) 
         Returns:
             Union[int, str]
-    """
-
-    label             : str                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
-    user_data         : Any                                   = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
-    use_internal_label: bool                                  = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    """       
     source            : Union[int, str]                       = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     default_value     : Union[List[float], Tuple[float, ...]] = ItemAttribute('information', 'get_item_cached', None, None)                        
     value             : Union[List[float], Tuple[float, ...]] = ItemAttribute("configuration", "get_item_value", "set_item_value", "default_value")
@@ -573,11 +533,7 @@ class SeriesValue(Widget):
             id (Union[int, str], optional): (deprecated) 
         Returns:
             Union[int, str]
-    """
-
-    label             : str             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
-    user_data         : Any             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
-    use_internal_label: bool            = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
+    """        
     source            : Union[int, str] = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     default_value     : Any             = ItemAttribute('information', 'get_item_cached', None, None)                        
     value             : Any             = ItemAttribute("configuration", "get_item_value", "set_item_value", "default_value")

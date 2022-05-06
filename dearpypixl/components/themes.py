@@ -66,10 +66,6 @@ class Theme(Item):
     destroys the previous one. However, an error will occur when trying to
     manually unbind an item from a Theme that isn't bound.
     """
-    label             : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", "label")             
-    user_data         : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", "user_data")         
-    use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", "use_internal_label")
-
     __is_container__ : bool     = True                                                                                            
     __is_root_item__ : bool     = True                                                                                            
     __is_value_able__: bool     = False                                                                                           
@@ -214,11 +210,8 @@ class Theme(Item):
             
 
 class ThemeComponent(Item):
-    item_type         : Union[int, ItemIndex]    =  ItemAttribute("configuration", "get_item_cached", None, "item_type")
-    label             : str                      =  ItemAttribute("configuration", "get_item_config", "set_item_config", "label")             
-    user_data         : Any                      =  ItemAttribute("configuration", "get_item_config", "set_item_config", "user_data")         
-    use_internal_label: bool                     =  ItemAttribute("configuration", "get_item_config", "set_item_config", "use_internal_label")
-    enabled_state     : bool                     =  ItemAttribute("configuration", "get_item_config", "set_item_config", "enabled_state")     
+    item_type         : Union[int, ItemIndex]    =  ItemAttribute("configuration", "get_item_cached", None)
+    enabled_state     : bool                     =  ItemAttribute("configuration", "get_item_config", "set_item_config")     
 
     __is_container__ : bool                     =  True                                                                                            
     __is_root_item__ : bool                     =  False                                                                                           
