@@ -17,7 +17,19 @@ __all__ = [
 ]
 
 
-with Theme("DEFAULT") as dearpygui_internal:
+class _ThemePreset(Theme):
+    _presets: list["_ThemePreset"] = []
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._presets.append(self)
+
+    def delete(self, **kwargs) -> NotImplementedError:
+        raise NotImplementedError
+
+
+with _ThemePreset("DEFAULT") as dearpygui_internal:
+    # Frequently-used values
     bg_color_normal     =  37,  37,  38, 255
     bg_color_light      =  82,  82,  85, 255
     bg_color_bright     =  90,  90,  95, 255
@@ -28,9 +40,9 @@ with Theme("DEFAULT") as dearpygui_internal:
     text_color_disabled = 151, 151, 151, 255
     border_color        =  78,  78,  78, 255
 
-
     t_color = dearpygui_internal.color
 
+    # Color: "Core"
     t_color.border                             = border_color
     t_color.border_shadow                      = border_color
     t_color.button                             = panel_color_idle
@@ -86,7 +98,8 @@ with Theme("DEFAULT") as dearpygui_internal:
     t_color.title_bg_active                    =  15,  86, 135, 255
     t_color.title_bg_collapsed                 = bg_color_normal
     t_color.window_bg                          = bg_color_normal
- 
+
+    # Color: "Node"
     t_color.node_bg                            =  62,  62,  62, 255
     t_color.node_bg_hovered                    =  75,  75,  75, 255
     t_color.node_bg_selected                   =  75,  75,  75, 255
@@ -116,7 +129,8 @@ with Theme("DEFAULT") as dearpygui_internal:
     t_color.node_minimap_link_selected         =  66, 150, 250, 255
     t_color.node_minimap_canvas                = 200, 200, 200,  25
     t_color.node_minimap_canvas_outline        = 200, 200, 200, 200
- 
+    
+    # Color: "Plot"
     t_color.plot_bg                            =   0,   0,   0, -255
     t_color.plot_border                        =   0,   0,   0, -255
     t_color.plot_crosshairs                    =   0,   0,   0, -255
@@ -145,6 +159,7 @@ with Theme("DEFAULT") as dearpygui_internal:
 
     t_style = dearpygui_internal.style
 
+    # Style: "Core"
     t_style.alpha                              = 1.0
     t_style.button_text_align                  = 0.5, 0.5
     t_style.cell_padding                       =   4,   2
@@ -170,6 +185,7 @@ with Theme("DEFAULT") as dearpygui_internal:
     t_style.window_rounding                    =   0
     t_style.window_title_align                 = 0.0, 0.5
 
+    # Style: "Node"
     t_style.node_border_thickness              =   1
     t_style.node_corner_rounding               =   4
     t_style.node_grid_spacing                  =  32
@@ -186,6 +202,7 @@ with Theme("DEFAULT") as dearpygui_internal:
     t_style.node_minimap_padding               =   8,   8
     # t_style.node_minimap_offset                =   4, 0  DPG 1.6.1 not working
 
+    # Style: "Plot"
     t_style.plot_annotation_padding            =   2,   2
     t_style.plot_border_size                   =   1
     t_style.plot_default_size                  = 400, 300
@@ -213,3 +230,6 @@ with Theme("DEFAULT") as dearpygui_internal:
     t_style.plot_minor_tick_size               = 1.0, 1.0
     t_style.plot_mouse_pos_padding             =  10,  10
     t_style.plot_padding                       =  10,  10
+
+
+_ThemePreset._presets = tuple(_ThemePreset._presets)

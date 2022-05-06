@@ -31,10 +31,13 @@ from dearpypixl.application import AppItem, AppAttribute
 from dearpypixl.constants import AppUUID, ViewportUUID, Key
 from dearpypixl.components import Item, item_attribute, Theme, ProtoItem
 from dearpypixl.components.configuration import CONFIGURATION, INFORMATION, STATE
-from dearpypixl.themes import dearpygui_internal
+from dearpypixl.themes import _ThemePreset, dearpygui_internal
+
 if sys.platform == "win32":
     from dearpypixl.platforms import windows
 
+
+_appitem_registry = Item._AppItemsRegistry
 
 
 def _get_app_config(obj, name):
@@ -85,7 +88,7 @@ class Application(AppItem):
                                                 lambda obj, name: get_global_font_scale(),
                                                 lambda obj, name, value: set_global_font_scale(value))
     theme         : Theme | None = AppAttribute(CONFIGURATION,
-                                                lambda obj, name: obj._AppItemsRegistry.get(Theme._default_theme_uuid, None),
+                                                lambda obj, name: _appitem_registry.get(Theme._default_theme_uuid, None),
                                                 _set_theme)
 
 
@@ -349,6 +352,12 @@ class Application(AppItem):
     def state(cls) -> dict[str, Any]:
         states = {attr: getattr(cls, attr) for attr in cls._item_states_attrs}
         return states | {"is_running": cls.is_running()}
+
+    @classmethod
+    def theme_presets(cls) -> tuple[Theme, ...]:
+        """Return the available pre-made themes.
+        """
+        return _ThemePreset._presets
 
     @staticmethod
     def runtime() -> float:
