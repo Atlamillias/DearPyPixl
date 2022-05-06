@@ -67,13 +67,8 @@ class KeyDownHandler(HandlerItem):
     	Returns:
     		Union[int, str]
     """
-
-    key               : int      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    label             : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    user_data         : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-
-    show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    key              : int      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    show             : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
     __is_container__ : bool     = False                                                                     
     __is_root_item__ : bool     = False                                                                     
@@ -123,13 +118,8 @@ class KeyPressHandler(HandlerItem):
     	Returns:
     		Union[int, str]
     """
-
-    key               : int      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    label             : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    user_data         : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-
-    show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    key              : int      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    show             : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
     __is_container__ : bool     = False                                                                     
     __is_root_item__ : bool     = False                                                                     
@@ -179,13 +169,8 @@ class KeyReleaseHandler(HandlerItem):
     	Returns:
     		Union[int, str]
     """
-
-    key               : int      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    label             : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    user_data         : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-
-    show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    key              : int      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    show             : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
     __is_container__ : bool     = False                                                                     
     __is_root_item__ : bool     = False                                                                     
@@ -234,12 +219,7 @@ class MouseMoveHandler(HandlerItem):
     	Returns:
     		Union[int, str]
     """
-
-    label             : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    user_data         : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-
-    show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    show             : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
     __is_container__ : bool     = False                                                                     
     __is_root_item__ : bool     = False                                                                     
@@ -286,11 +266,6 @@ class MouseWheelHandler(HandlerItem):
     	Returns:
     		Union[int, str]
     """
-
-    label             : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    user_data         : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-
     show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
     __is_container__ : bool     = False                                                                     
@@ -340,12 +315,8 @@ class MouseClickHandler(HandlerItem):
     		Union[int, str]
     """
 
-    button            : int      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    label             : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    user_data         : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-
-    show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    button           : int      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    show             : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
     __is_container__ : bool     = False                                                                     
     __is_root_item__ : bool     = False                                                                     
@@ -395,13 +366,8 @@ class MouseDoubleClickHandler(HandlerItem):
     	Returns:
     		Union[int, str]
     """
-
-    button            : int      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    label             : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    user_data         : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-
-    show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    button           : int      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    show             : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
     __is_container__ : bool     = False                                                                     
     __is_root_item__ : bool     = False                                                                     
@@ -451,13 +417,8 @@ class MouseDownHandler(HandlerItem):
     	Returns:
     		Union[int, str]
     """
-
-    button            : int      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    label             : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    user_data         : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-
-    show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    button           : int      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    show             : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
     __is_container__ : bool     = False                                                                     
     __is_root_item__ : bool     = False                                                                     
@@ -507,13 +468,8 @@ class MouseReleaseHandler(HandlerItem):
     	Returns:
     		Union[int, str]
     """
-
-    button            : int      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    label             : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    user_data         : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-
-    show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    button           : int      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    show             : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
     __is_container__ : bool     = False                                                                     
     __is_root_item__ : bool     = False                                                                     
@@ -564,14 +520,9 @@ class MouseDragHandler(HandlerItem):
     	Returns:
     		Union[int, str]
     """
-
-    button            : int      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    threshold         : float    = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    label             : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    user_data         : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-
-    show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    button           : int      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    threshold        : float    = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    show             : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
     __is_container__ : bool     = False                                                                     
     __is_root_item__ : bool     = False                                                                     
@@ -622,12 +573,7 @@ class HoverHandler(HandlerItem):
     	Returns:
     		Union[int, str]
     """
-
-    label             : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    user_data         : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-
-    show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    show             : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
     __is_container__ : bool     = False                                                                     
     __is_root_item__ : bool     = False                                                                     
@@ -674,12 +620,7 @@ class ResizeHandler(HandlerItem):
     	Returns:
     		Union[int, str]
     """
-
-    label             : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    user_data         : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-
-    show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    show             : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
     __is_container__ : bool     = False                                                                     
     __is_root_item__ : bool     = False                                                                     
@@ -726,12 +667,7 @@ class FocusHandler(HandlerItem):
     	Returns:
     		Union[int, str]
     """
-
-    label             : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    user_data         : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-
-    show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    show             : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
     __is_container__ : bool     = False                                                                     
     __is_root_item__ : bool     = False                                                                     
@@ -778,12 +714,7 @@ class ActiveHandler(HandlerItem):
     	Returns:
     		Union[int, str]
     """
-
-    label             : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    user_data         : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-
-    show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    show             : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
     __is_container__ : bool     = False                                                                     
     __is_root_item__ : bool     = False                                                                     
@@ -830,12 +761,7 @@ class VisibleHandler(HandlerItem):
     	Returns:
     		Union[int, str]
     """
-
-    label             : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    user_data         : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-
-    show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    show             : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
     __is_container__ : bool     = False                                                                     
     __is_root_item__ : bool     = False                                                                     
@@ -882,12 +808,7 @@ class ActivatedHandler(HandlerItem):
     	Returns:
     		Union[int, str]
     """
-
-    label             : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    user_data         : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-
-    show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    show             : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
     __is_container__ : bool     = False                                                                     
     __is_root_item__ : bool     = False                                                                     
@@ -934,12 +855,7 @@ class DeactivatedHandler(HandlerItem):
     	Returns:
     		Union[int, str]
     """
-
-    label             : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    user_data         : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-
-    show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    show             : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
     __is_container__ : bool     = False                                                                     
     __is_root_item__ : bool     = False                                                                     
@@ -986,12 +902,7 @@ class EditedHandler(HandlerItem):
     	Returns:
     		Union[int, str]
     """
-
-    label             : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    user_data         : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-
-    show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    show             : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
     __is_container__ : bool     = False                                                                     
     __is_root_item__ : bool     = False                                                                     
@@ -1038,12 +949,7 @@ class DeactivatedAfterEditHandler(HandlerItem):
     	Returns:
     		Union[int, str]
     """
-
-    label             : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    user_data         : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-
-    show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    show             : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
     __is_container__ : bool     = False                                                                     
     __is_root_item__ : bool     = False                                                                     
@@ -1090,12 +996,7 @@ class ToggledOpenHandler(HandlerItem):
     	Returns:
     		Union[int, str]
     """
-
-    label             : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    user_data         : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-
-    show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    show             : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
     __is_container__ : bool     = False                                                                     
     __is_root_item__ : bool     = False                                                                     
@@ -1143,13 +1044,8 @@ class ClickedHandler(HandlerItem):
     	Returns:
     		Union[int, str]
     """
-
-    button            : int      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    label             : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    user_data         : Any      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-    use_internal_label: bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
-
-    show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    button           : int      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
+    show             : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
 
     __is_container__ : bool     = False                                                                     
     __is_root_item__ : bool     = False                                                                     
