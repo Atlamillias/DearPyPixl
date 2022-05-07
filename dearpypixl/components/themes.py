@@ -170,7 +170,7 @@ class Theme(Item):
         if not item:
             bind_theme(self_uuid)
             bind_font(self.__font_uuid)
-            type(self)._default_theme_uuid = self_uuid
+            Theme._default_theme_uuid = self_uuid
    
     def unbind(self, *item: Item) -> None:
         """Unlink item(s) from the theme. If no item is passed and the theme
@@ -188,10 +188,10 @@ class Theme(Item):
             bind_item_font(i._tag, 0)  # 0 is system default theme
         
         # If default, unset
-        if not item and self._tag == type(self)._default_theme_uuid:
+        if not item and self._tag == Theme._default_theme_uuid:
             bind_theme(0)
             bind_font(0)
-            type(self)._default_theme_uuid = 0
+            Theme._default_theme_uuid = 0
 
     def __update_targets_font(self):
         # font.setter uses this to bind a new font (size) to all bound items.
@@ -203,7 +203,7 @@ class Theme(Item):
             bind_item_font(item_uuid, font_uuid)
 
         # If this theme is also the default theme:
-        if self._tag == type(self)._default_theme_uuid:
+        if self._tag == Theme._default_theme_uuid:
             bind_font(font_uuid)
 
     _default_theme_uuid = 0  # no way to fetch via DPG API
