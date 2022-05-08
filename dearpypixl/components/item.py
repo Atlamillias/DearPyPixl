@@ -583,6 +583,8 @@ class Item(ProtoItem, metaclass=ABCMeta):
             move_item(self._tag, parent=int(parent), before=int(before))
         except SystemError:
             self._err_if_existential_crisis()
+            self._err_if_root_item()
+
             # Troubleshooting problem for user (DPG errors are not always descriptive/convenient).
             if parent and not does_item_exist(parent) or before and not does_item_exist(before):
                 raise ValueError(f"`parent` or `before` does not exist; possibly deleted.")
@@ -605,6 +607,7 @@ class Item(ProtoItem, metaclass=ABCMeta):
             move_item_up(self._tag)
         except SystemError:
             self._err_if_existential_crisis()
+            self._err_if_root_item()
             raise
 
     def move_down(self, **kwargs) -> None:
@@ -616,6 +619,7 @@ class Item(ProtoItem, metaclass=ABCMeta):
             move_item_down(self._tag)
         except SystemError:
             self._err_if_existential_crisis()
+            self._err_if_root_item()
             raise
 
     def copy(self, recursive: bool = False, **config) -> Self:  # kinda mimics list method
@@ -663,16 +667,11 @@ class Item(ProtoItem, metaclass=ABCMeta):
         NOTE: The `del` statement does not properly delete items -- use this method
         instead of `del.
         """
-        appitems = self._AppItemsRegistry
         try:
             delete_item(self._tag, children_only=children_only, slot=slot)
         except SystemError:
             pass
-        # Comparing DearPyPixl registry uuids to DearPyGui's registry uuids.
-        # Any uuid/references in DearPyPixl's registry that are not in DearPyGui's
-        # registry are removed.
-        condemned_ref_uuids = {tag for tag in appitems} - set(get_all_items())
-        [appitems.pop(tag, None) for tag in condemned_ref_uuids]
+        self._refresh_registry()
 
         if not children_only:
             del self
@@ -787,7 +786,7 @@ class Item(ProtoItem, metaclass=ABCMeta):
         try:
             self._tag = type(self).__command__(tag=identifier, user_data=user_data, **kwargs)
         except SystemError:
-            raise SystemError(f"Could not create {type(self).__qualname__!r} item. Verify that the arguments are appropriate.")
+            raise SystemError(f"Error creating {type(self).__qualname__!r} item. Verify that the arguments are appropriate.")
         alias and add_alias(alias, identifier)
         self._AppItemsRegistry[self._tag] = self
 
@@ -925,11 +924,35 @@ class Item(ProtoItem, metaclass=ABCMeta):
     def _is_draw_item(cls) -> bool:
         return cls._item_index() in cls.__draw_item_types
 
+    @classmethod
+    def _refresh_registry(cls) -> None:
+        """Clear the DearPyPixl item registry of items whose tags do not exist
+        in the DearPyGui item registry.
+        """
+        # There should not be many situations where a strong reference exists
+        # in _AppItemsRegistry, but the item itself is non-existant in the
+        # DearPyGui registry. It can happen if DearPyPixl items aren't deleted
+        # correctly I guess.
+        # TODO: Set this to run every *n*th frame for the application.
+        appitem_reg = cls._AppItemsRegistry
+        pop_appitem = appitem_reg.pop
+        deleted_item_uuids = {tag for tag in appitem_reg} - set(get_all_items())
+        for item_uuid in deleted_item_uuids:
+            pop_appitem(item_uuid, None)
+
+
     def _err_if_existential_crisis(self) -> None | SystemError | TypeError:
-        if self.__is_root_item__:
-            raise TypeError(f"Item cannot be moved; {type(self).__qualname__!r} is a root item.")
-        elif not does_item_exist(self._tag):
+        """Raise SystemError if this item exists in DearPyPixl but not DearPyGui.
+        """
+        if not does_item_exist(self._tag):
             raise SystemError(f"This item does not or no longer exists; possibly deleted.")
+        return None
+
+    def _err_if_root_item(self) -> None | TypeError:
+        """Raise TypeError if this item is a root item and cannot be moved.
+        """
+        if self.__is_root_item__:
+            raise TypeError(f"Could not move item; {type(self).__qualname__!r} is a root item.")
         return None
 
 
