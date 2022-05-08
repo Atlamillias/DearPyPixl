@@ -51,7 +51,7 @@ def _manage_handler(handler: Item):
 
 
 class AppEvents(Item):                                                                                                               
-    show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config")                                                                                                                                
+    show             : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config")                                                                                                                                
 
     __is_container__ : bool     = True                                                                                                                                                                                                              
     __is_root_item__ : bool     = True                                                                                                                                                                                                              
@@ -77,13 +77,6 @@ class AppEvents(Item):
             show=show,
             **kwargs,
         )
-
-    def __enter__(self):
-        _dearpygui.push_container_stack(self._tag)
-        return self
-
-    def __exit__(self, exc_type, exc_instance, traceback):
-        _dearpygui.pop_container_stack()
 
     ################################
     ######## Callback Deco. ########
@@ -130,7 +123,7 @@ class AppEvents(Item):
 
 
 class ItemEvents(Item):                                                                                                                    
-    show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config")                                                                                                                                    
+    show             : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config")                                                                                                                                    
 
     __is_container__ : bool     = True                                                                                                                                                                                                                  
     __is_root_item__ : bool     = True                                                                                                                                                                                                                  
@@ -157,13 +150,6 @@ class ItemEvents(Item):
             **kwargs,
         )
         self.__target_uuids: set[int] = set()
-
-    def __enter__(self):
-        _dearpygui.push_container_stack(self._tag)
-        return self
-
-    def __exit__(self, exc_type, exc_instance, traceback):
-        _dearpygui.pop_container_stack()
 
     @property
     @item_attribute(category="information")

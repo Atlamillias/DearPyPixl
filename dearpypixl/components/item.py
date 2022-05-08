@@ -787,7 +787,7 @@ class Item(ProtoItem, metaclass=ABCMeta):
         try:
             self._tag = type(self).__command__(tag=identifier, user_data=user_data, **kwargs)
         except SystemError:
-            raise SystemError("Could not create the item. Verify that the arguments are appropriate.")
+            raise SystemError(f"Could not create {type(self).__qualname__!r} item. Verify that the arguments are appropriate.")
         alias and add_alias(alias, identifier)
         self._AppItemsRegistry[self._tag] = self
 
