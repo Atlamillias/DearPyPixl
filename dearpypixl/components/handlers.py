@@ -4,7 +4,13 @@ from types import MethodType
 from typing import Callable, Any, Union
 from dearpygui import dearpygui
 from dearpypixl.components.item import Item
-from dearpypixl.components.configuration import ItemAttribute, item_attribute, CONFIGURATION
+from dearpypixl.components.configuration import (
+    ItemAttribute,
+    item_attribute,
+    get_item_config,
+    set_item_callback,
+    CONFIGURATION
+)
 
 
 __all__ = [
@@ -33,7 +39,7 @@ __all__ = [
 
 
 class HandlerItem(Item):
-    """Generic class for handler items.
+    """Base class for handler items.
     """
     def __init__(self, callback: Callable | None, **kwargs):
         super().__init__(**kwargs)
@@ -42,41 +48,10 @@ class HandlerItem(Item):
     @property
     @item_attribute(category=CONFIGURATION)
     def callback(self) -> Callable | None:
-        return dearpygui.get_item_configuration(self._tag)["callback"]
+        return get_item_config(self, "callback")
     @callback.setter
     def callback(self, _callback: Callable | None) -> None:
-        # Wrapping is done for a couple of reasons. Firstly, to ensure that
-        # the Item instance of `sender` is returned instead of the identifier.
-        # And second; nuitka compilation doesn't like DPG callbacks unless
-        # they are wrapped (lambda, etc.)...for some reason.
-        @functools.wraps(_callback)
-        def call_object(_, app_data, user_data):
-            args = (self, app_data, user_data)[0:pos_arg_cnt]
-            _callback(*args)
-
-        # Emulating how DearPyGui doesn't require callbacks having 3 positional
-        # arguments. Only pass sender/app_data/user_data if there's "room" to 
-        # do so.
-        pos_arg_cnt = 0
-        for param in signature(_callback).parameters.values():
-            if param.kind == _VAR_POSITIONAL:
-                pos_arg_cnt = 3
-            elif param.kind != _KEYWORD_ONLY:
-                pos_arg_cnt += 1
-
-            if pos_arg_cnt >= 3:
-                pos_arg_cnt = 3
-                break
-
-        wrapper     = None
-        if callable(_callback):
-            wrapper = call_object
-        elif _callback is None:
-            wrapper = None
-        else:
-            raise ValueError(f"`callback` is not callable (got {type(_callback)!r}.")
-
-        dearpygui.configure_item(self._tag, callback=wrapper)
+        set_item_callback(self, "callback", _callback)
 
 
 

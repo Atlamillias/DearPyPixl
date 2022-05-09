@@ -82,31 +82,31 @@ class AppEvents(Item):
     ######## Callback Deco. ########
     ################################
     @_manage_handler(KeyDownHandler)
-    def while_key_down(self, callback: Callable = None, *, key: Union[Key, int] = Key.ANY, user_data: Any = None, **kwargs):
+    def while_key_down(self, callback: Callable = None, *, key: Key | int = Key.ANY, user_data: Any = None, **kwargs):
         ...
 
     @_manage_handler(KeyPressHandler)
-    def on_key_press(self, callback: Callable = None, *, key: Union[Key, int] = Key.ANY, user_data: Any = None, **kwargs):
+    def on_key_press(self, callback: Callable = None, *, key: Key | int = Key.ANY, user_data: Any = None, **kwargs):
         ...
 
     @_manage_handler(KeyReleaseHandler)
-    def on_key_up(self, callback: Callable = None, *, key: Union[Key, int] = Key.ANY, user_data: Any = None, **kwargs):
+    def on_key_up(self, callback: Callable = None, *, key: Key | int = Key.ANY, user_data: Any = None, **kwargs):
         ...
 
     @_manage_handler(MouseDownHandler)
-    def on_mouse_button_down(self, callback: Callable = None, *, button: Union[Mouse, int] = Mouse.ANY, user_data: Any = None, **kwargs):
+    def on_mouse_button_down(self, callback: Callable = None, *, button: Mouse | int = Mouse.ANY, user_data: Any = None, **kwargs):
         ...
 
     @_manage_handler(MouseClickHandler)
-    def on_mouse_button_click(self, callback: Callable = None, *, button: Union[Mouse, int] = Mouse.ANY, user_data: Any = None, **kwargs):
+    def on_mouse_button_click(self, callback: Callable = None, *, button: Mouse | int = Mouse.ANY, user_data: Any = None, **kwargs):
         ...
 
     @_manage_handler(MouseDoubleClickHandler)
-    def on_mouse_button_double_click(self, callback: Callable = None, *, button: Union[Mouse, int] = Mouse.ANY, user_data: Any = None, **kwargs):
+    def on_mouse_button_double_click(self, callback: Callable = None, *, button: Mouse | int = Mouse.ANY, user_data: Any = None, **kwargs):
         ...
 
     @_manage_handler(MouseReleaseHandler)
-    def on_mouse_button_up(self, callback: Callable = None, *, button: Union[Mouse, int] = Mouse.ANY, user_data: Any = None, **kwargs):
+    def on_mouse_button_up(self, callback: Callable = None, *, button: Mouse | int = Mouse.ANY, user_data: Any = None, **kwargs):
         ...
 
     @_manage_handler(MouseMoveHandler)
@@ -118,7 +118,7 @@ class AppEvents(Item):
         ...
 
     @_manage_handler(MouseDragHandler)
-    def on_mouse_drag(self, callback: Callable = None, *, button: Union[Mouse, int] = Mouse.ANY, threshold: float = 10.0, user_data: Any = None, **kwargs):
+    def on_mouse_drag(self, callback: Callable = None, *, button: Mouse | int = Mouse.ANY, threshold: float = 10.0, user_data: Any = None, **kwargs):
         ...
 
 

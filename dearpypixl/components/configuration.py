@@ -1,6 +1,7 @@
 """Contains objects used in defining, caching, or managing an item's internal configuration."""
 import functools
 from typing import Callable, Any, Union
+from inspect import signature, _VAR_POSITIONAL, _KEYWORD_ONLY
 from dearpygui._dearpygui import (
     # getters
     get_item_configuration,
@@ -18,6 +19,38 @@ INFORMATION   = "information"
 STATE         = "state"
 
 
+def prep_callback(obj, _callback: Callable | None):
+    @functools.wraps(_callback)
+    def callable_object(_, app_data, user_data):
+        args = (obj, app_data, user_data)[0:pos_arg_cnt]
+        _callback(*args)
+    # Wrapping is done for a couple of reasons. Firstly, to ensure that
+    # the Item instance of `sender` is returned instead of the identifier.
+    # And second; nuitka compilation doesn't like DPG callbacks unless
+    # they are wrapped (lambda, etc.)...for some reason.
+
+    if callable(_callback):
+        wrapper = callable_object
+        # Emulating how DearPyGui doesn't require callbacks having 3 positional
+        # arguments. Only pass sender/app_data/user_data if there's "room" to 
+        # do so.
+        pos_arg_cnt = 0
+        for param in signature(_callback).parameters.values():
+            if param.kind == _VAR_POSITIONAL:
+                pos_arg_cnt = 3
+            elif param.kind != _KEYWORD_ONLY:
+                pos_arg_cnt += 1
+
+            if pos_arg_cnt >= 3:
+                pos_arg_cnt = 3
+                break
+    elif _callback is None:
+        wrapper = None
+    else:
+        raise ValueError(f"`callback` is not callable (got {type(_callback)!r}.")
+
+    return wrapper
+
 
 #########################################
 #### `ItemAttribute` getters/setters ####
@@ -25,13 +58,14 @@ STATE         = "state"
 ItemAttributeCommands = {}
 
 def item_attr_command(func: Callable):
-    """Registers a function as an item attribute command. The name of a
+    """(Decorator) Registers a function as an item attribute command. The name of a
     registered command (string) can be passed as the getter/setter argument
     for an `ItemAttribute` instance."""
 
     ItemAttributeCommands[func.__qualname__] = func
     return func
 
+# NOTE: These should all share the same signature (mirrors get/setattr).
 
 # Setters
 @item_attr_command
@@ -62,19 +96,12 @@ def set_item_cached_colormap(__obj: object, __name: str, value: Any):
         raise TypeError(f"{__name!r} must be an instance of `Colormap` (got {type(value).__qualname__!r}).")
     bind_colormap(__obj._tag, colormap_uuid)
     # Can't reliably be fetched, so store the value on instance.
-    # NOTE: Temp fix. Don't want strong references to `Item` instances stored on
-    # other instances.
     setattr(__obj, f"_{__name}", value)
 
 
 @item_attr_command
 def set_item_callback(__obj: object, __name: str, value: Any):
-    @functools.wraps(value)
-    def on_call(sender, app_data, user_data):
-        return value(appitems.get(sender, sender), app_data, user_data)
-
-    appitems = __obj._AppItemsRegistry
-    configure_item(__obj._tag, callback=on_call if value else value)
+    configure_item(__obj._tag, **{__name: prep_callback(__obj, value)})
 
 
 # Getters
@@ -108,7 +135,7 @@ def get_item_cached(__o: object, __name: str):
 #### Configuration Management ####
 ##################################
 
-# NOTE: Do not register the following as item attributes: `before`, `parent`, `tag`.
+
 
 class ItemAttribute:
     """Descriptor object for accessing DearPyGui item attributes. Functionally similar
@@ -203,8 +230,8 @@ class ItemAttribute:
 
 
 def item_attribute(cls_attribute: Union[Callable, str] = None, *, category: str):
-    """Wrapper function for registering class-defined attributes that are to be managed as
-    item attributes (an alternative to using the `ItemAttribute` descriptor). Useful if
+    """(Decorator) Alternative to using the `ItemAttribute` descriptor. Registers class-
+    defined attributes that are to be managed as item attributes  Useful if
     the behavior of the `ItemAttribute` descriptor isn't suitable, and a more simple/complex
     implementation is required for proper attribute access. If this is used as a method
     decorator, this must be the inner decorator.
@@ -216,10 +243,10 @@ def item_attribute(cls_attribute: Union[Callable, str] = None, *, category: str)
         Must be "configuration", "information", or "state".
 
     Examples:
-    >>> class PseudoItem:
+    >>> class ProtoItem:
     ...     x = item_attribute("x", category="configuration")
     None
-    >>> class PseudoItem:
+    >>> class ProtoItem:
     ...     @property
     ...     @item_attribute(category="configuration")
     ...     def config_property(self):
@@ -248,4 +275,3 @@ def item_attribute(cls_attribute: Union[Callable, str] = None, *, category: str)
         return register(cls_attribute)
     return register
     
-

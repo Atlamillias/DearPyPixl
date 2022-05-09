@@ -24,6 +24,7 @@ from dearpygui._dearpygui import (
     get_item_state,
     get_all_items,
     get_value,
+    set_value,
     get_item_configuration,
     configure_item,
     move_item,
@@ -34,8 +35,9 @@ from dearpygui._dearpygui import (
 )
 from dearpypixl.constants import ItemIndex
 from dearpypixl.components.configuration import (
-    item_attribute,
     ItemAttribute,
+    item_attribute,
+    prep_callback,
     CONFIGURATION,
     INFORMATION,
     STATE
@@ -122,6 +124,7 @@ class ProtoItem(metaclass=ABCMeta):
     __is_container__  : bool  = False
     __able_parents__  : tuple = ()
     __able_children__ : tuple = ()
+    __is_value_able__ : bool  = False
 
     _item_init_params : dict[str, Parameter]  = {}
     _item_config_attrs: set[str]              = set()
@@ -158,6 +161,9 @@ class ProtoItem(metaclass=ABCMeta):
         # `ItemAttribute` and `item_attribute` only be used in the    #
         # body of a class derived from `ProtoItem` or `Item`.         #           
         ###############################################################
+        
+        # TODO: Possibly apply a `value` property on `Item`, and set the setter
+        # here if the item is value-able.
 
         #### [Section 1] #############################################################
         # Merging the parent class's __init__ parameters into its own. That way,
@@ -223,7 +229,7 @@ class ProtoItem(metaclass=ABCMeta):
         #### [Section 3] #############################################################
         # [4/28/2022] The `Container` class was removed in favor of this.
         # If the item is a container, it can be used as a context manager.
-        if hasattr(cls, "__is_container__") and cls.__is_container__:
+        if cls.__is_container__:
             if not hasattr(cls, "__enter__"):
                 cls.__enter__ = cls.__enter
             if not hasattr(cls, "__exit__"):
@@ -238,11 +244,11 @@ class ProtoItem(metaclass=ABCMeta):
         # be temporary.
         for attr in ("__able_parents__", "__able_children__"):
             group = getattr(cls, attr)
-            if callable(group):  # Inherited ABC methods for Application/Viewport
+            if callable(group):  # Inherited ABC methods from Application/Viewport metaclass
                 continue
             fixed_names = []
             for item_name in group:
-                fixed_name = item_name.replace("mvAppItem", "").replace("mv", "")
+                fixed_name = item_name.replace("mvWindowAppItem", "Window").replace("mv", "")
                 fixed_names.append(fixed_name)
             setattr(cls, attr, tuple(fixed_names))
 
@@ -254,6 +260,12 @@ class ProtoItem(metaclass=ABCMeta):
         if cls.__is_root_item__:
             cls._RootItemRegistry.append(cls.__qualname__)
 
+    @abstractmethod
+    def tag(self) -> int: ...
+
+    def __value_setter(self, value: Any) -> None:
+        set_value(self.tag, value)
+
     # See [Section 3] above.
     def __enter(self):
         push_container_stack(self.tag)
@@ -262,8 +274,7 @@ class ProtoItem(metaclass=ABCMeta):
     def __exit(self: ItemT, exc_type, exc_instance, traceback):
         pop_container_stack()
 
-    @abstractmethod
-    def tag(self) -> int: ...
+
 
 
 class Item(ProtoItem, metaclass=ABCMeta):
@@ -764,12 +775,15 @@ class Item(ProtoItem, metaclass=ABCMeta):
 
     ## Special Methods ##
     def __init__(self, **kwargs):
-        # Type casting certain arguments
+        # Prepping argument values before item creation
         cached_attrs = self._item_cached_attrs
         # `user_data` needs to be excluded from type casting as it is allowed
         # to be anything, including items and integer enums.
         user_data = kwargs.pop("user_data", None)
         for arg, val in kwargs.items():
+            if "callback" in arg and val:  # `[drag_/drop_]callback`
+                kwargs[arg] = prep_callback(self, val)
+                continue
             # Recasting int-like values.
             if isinstance(val, (Item, IntEnum)):
                 kwargs[arg] = int(val)
