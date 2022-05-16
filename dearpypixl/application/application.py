@@ -1,4 +1,6 @@
-from typing import Callable, Union, Any
+from typing import Callable, Union, Any, Sequence, SupportsIndex
+from typing_extensions import Self
+import functools
 import warnings
 import sys
 import os
@@ -20,15 +22,15 @@ from dearpygui._dearpygui import (
     is_key_released,
     get_global_font_scale,
     get_app_configuration,
-    # misc
-    split_frame,
-    set_frame_callback,
     # setters
     set_global_font_scale,
     configure_app,
+    # misc
+    split_frame,
 )
 from dearpypixl.application import AppItem, AppAttribute
-from dearpypixl.constants import AppUUID, ViewportUUID, Key
+from dearpypixl.application.frameevents import FrameEvents
+from dearpypixl.constants import AppUUID, Platform, Key
 from dearpypixl.components import Item, item_attribute, Theme, ProtoItem
 from dearpypixl.components.configuration import CONFIGURATION, INFORMATION, STATE
 from dearpypixl.themes import _ThemePreset, dearpygui_internal
@@ -38,6 +40,8 @@ if sys.platform == "win32":
 
 
 _appitem_registry = Item._AppItemsRegistry
+
+
 
 
 def _get_app_config(obj, name):
@@ -65,10 +69,7 @@ class Application(AppItem):
     # the same pool of information. Trying to redefine a configuration attribute on `Application` or its decendants is not
     # possible, and will instead set the attribute on a fallback instance (to invoke `__set__` if it is a property).
 
-    # Again, the metaclass prevents `CONFIGURATION`-related attributes from being redefined.
-    # Any value that would be set is instead set on a fallback instance.
-
-    # NOTE: DearPyPixl currently doesn't support the commented-out internal app configuration. 
+    #### DearPyPixl currently doesn't support the commented-out internal app configuration. 
     # load_init_file         : str  = AppAttribute(CONFIGURATION, _get_app_config, _set_app_config)  # internal app config
     # init_file              : str  = AppAttribute(CONFIGURATION, _get_app_config, _set_app_config)  # internal app config
     # auto_save_init_file    : bool = AppAttribute(CONFIGURATION, _get_app_config, _set_app_config)  # internal app config
@@ -99,31 +100,9 @@ class Application(AppItem):
     def tag(cls) -> int:
         return AppUUID
 
-    _calls_on_startup = []
-    _calls_on_exit    = []
-    _calls_on_render  = []
-
     @classmethod
     @property
     @item_attribute(category=INFORMATION)
-    def calls_on_startup(cls) -> list[Callable]:
-        return cls._calls_on_startup
-
-    @classmethod
-    @property
-    @item_attribute(category=INFORMATION)
-    def calls_on_exit(cls) -> list[Callable]:
-        return cls._calls_on_exit
-
-    @classmethod
-    @property
-    @item_attribute(category=INFORMATION)
-    def calls_on_render(cls) -> list[Callable]:
-        return cls._calls_on_render
-
-    @classmethod
-    @property
-    @item_attribute(category="information")
     def device_manager(cls) -> str:
         """Return the current controller of the display adapter used for the
         application.
@@ -144,7 +123,7 @@ class Application(AppItem):
 
     @classmethod
     @property
-    @item_attribute(category="information")
+    @item_attribute(category=INFORMATION)
     def process_id(cls) -> str:
         """Return the current process identifier.
         """
@@ -152,7 +131,7 @@ class Application(AppItem):
 
     @classmethod
     @property
-    @item_attribute(category="information")
+    @item_attribute(category=INFORMATION)
     def version(cls) -> str:
         """Return the version of Dearpygui that is being used.
         """
@@ -160,7 +139,7 @@ class Application(AppItem):
 
     @classmethod
     @property
-    @item_attribute(category="information")
+    @item_attribute(category=INFORMATION)
     def platform(cls) -> str:
         """Return the platform.
         """
@@ -168,7 +147,7 @@ class Application(AppItem):
 
     @classmethod
     @property
-    @item_attribute(category="information")
+    @item_attribute(category=INFORMATION)
     def device_name(cls) -> str:
         """Return the name of the display adapter in use.
         """
@@ -181,16 +160,17 @@ class Application(AppItem):
     def start(cls) -> None:
         """Start the application by executing the main render loop.
         """
-        # Show viewport if it is not shown already.
+        # Viewport.show()
         if not _dearpygui.is_viewport_ok():
             _dearpygui.show_viewport()
-        # Avoiding lookup overhead in the loop as it is the most "sensitive"
-        # spot in the entire framework.
-        is_running   = cls.is_running
-        render_frame = cls.render_frame  
 
-        # NOTE: This is the render loop.
+        is_running   = cls.is_running
+        render_frame = cls.render_frame
+        frame_events = cls.frame_events[0]
+
         while is_running():
+            for event in frame_events:
+                event()
             render_frame()
         cls.end()
 
@@ -212,96 +192,22 @@ class Application(AppItem):
 
     @classmethod
     def render_frame(cls) -> None:
-        """Renders a frame. Only for use in the main render loop (see the
-        `start` method).
+        """Renders a frame. Only for use in the main render loop (see the `start` method).
         """
-        for call_able, kwargs in cls._calls_on_render:
-            call_able(cls, None, **kwargs)
         render_dearpygui_frame()
 
     ################################
     ######## Event Handling ########
     ################################
-    @classmethod
-    def on_startup(cls, _callback: Callable = None, **kwargs) -> Callable:
-        """Adds *callback* to a list of callables that will run after the first
-        frame is rendered.
-
-        Args:
-            * kwargs (optional, keyword-only): Keyword arguments to pass to the callback.
-        """
-        def _on_startup(callback):
-            if not callable(callback):
-                raise TypeError(f"{callback!r} is not callable.")
-            cls._calls_on_startup.append((callback, kwargs))
-            return callback
-
-        if not _callback:
-            return _on_startup
-        return _on_startup(_callback)
+    _frame_events = FrameEvents()
 
     @classmethod
-    def on_exit(cls, _callback: Callable = None, **kwargs) -> Callable:
-        """Adds *callback* to a list of callables that will run on the last frame.
+    @property
+    def frame_events(cls) -> FrameEvents:
+        return cls._frame_events
 
-        Args:
-            * kwargs (optional, keyword-only): Keyword arguments to pass to the callback.
-        """
-        def _on_exit(callback):
-            if not callable(callback):
-                raise TypeError(f"{callback!r} is not callable.")
-            cls._calls_on_exit.append((callback, kwargs))
-            return callback
+    on_frame = classmethod(_frame_events.on_frame)
 
-        if not _callback:
-            return _on_exit
-        return _on_exit(_callback)
-
-    def _on_event_callback(sender, app_data, user_data):  # user_data = list of callables
-        # TODO: Pass `cls` instead of explicitly passing `Application`
-        for call_able, kwargs in user_data:
-            call_able(Application, app_data, **kwargs)
-
-    dearpygui.set_frame_callback(1, _on_event_callback, user_data=_calls_on_startup)
-    dearpygui.set_exit_callback(_on_event_callback, user_data=_calls_on_exit)
-
-
-    @classmethod
-    def on_render(cls, _callback: Callable = None, **kwargs) -> Callable:
-        """Adds *callback* to a list of callables that will run after a frame is rendered.
-
-        Args:
-            * kwargs (optional, keyword-only): Keyword arguments to pass to the callback.    
-        """
-        def _on_render(callback):
-            if not callable(callback):
-                raise TypeError(f"{callback!r} is not callable.")
-            # NOTE: `render_frame` method calls these before rendering a frame.
-            cls._calls_on_render.append((callback, kwargs))
-            return callback
-
-        if not _callback:
-            return _on_render
-        return _on_render(_callback)
-
-    @classmethod
-    def on_frame(cls, _frame: int, _callback: Callable = None, **kwargs) -> Callable:
-        """Schedule a callback to run on frame *frame*.
-        """
-        # Keeping track of all callables to run per frame would be slow -- this is
-        # already done by dearpygui.
-        def _on_frame(callback):
-            # callback is wrapped to pass unpacked user_data (kwargs)
-            set_frame_callback(_frame, 
-                               lambda sender, app_data, user_data: \
-                                   callback(sender, app_data, **user_data),
-                               user_data=kwargs)
-            return callback
-
-        if _callback:
-            return _on_frame(_callback)
-        return _on_frame
-        
 
     # Callback debugging
     @classmethod
@@ -358,6 +264,10 @@ class Application(AppItem):
         """Return the available pre-made themes.
         """
         return _ThemePreset._presets
+
+    @staticmethod
+    def output_frame_buffer(file: str = '', callback: Any = None, **kwargs):
+        return dearpygui.output_frame_buffer(file=file, callback=callback, **kwargs)
 
     @staticmethod
     def runtime() -> float:
@@ -445,6 +355,39 @@ class Application(AppItem):
                 cls.__is_dpi_aware = not cls.__is_dpi_aware
 
     _dpi_aware = classmethod(_dpi_aware)
+
+    if dearpygui.get_platform() == Platform.MacOS:
+        @staticmethod
+        def output_frame_buffer(callback: Callable = None, file: str = '', **kwargs):
+            raise NotImplementedError(f"MacOS")
+
+    # Gimmicky WIP crap
+    _fps60  = 0.0167
+    _fps90  = 0.0111
+    _fps120 = 0.0083
+    _fps240 = 0.0041
+
+    @classmethod
+    def _start(cls, ms_per_update) -> None:
+        """(Expiremental) Main render loop that updates in real-time.
+        """
+        if not _dearpygui.is_viewport_ok():
+            _dearpygui.show_viewport()
+
+        previous_time = get_total_time()
+        lag           = 0.0
+        events        = cls.frame_events()
+        while cls.is_running():
+            current_time  = get_total_time()
+            elapsed_time  = current_time - previous_time
+            previous_time = current_time
+            lag += elapsed_time
+            while lag >= ms_per_update:
+                next(events)
+                lag -= ms_per_update
+            print("break")
+            render_dearpygui_frame()
+        cls.end()
 
 
 Application.theme = dearpygui_internal
