@@ -19,31 +19,35 @@ INFORMATION   = "information"
 STATE         = "state"
 
 
+def _get_positional_args_count(obj: Callable):
+    # Emulating how DearPyGui doesn't require callbacks having 3 positional
+    # arguments. Only pass sender/app_data/user_data if there's "room" to 
+    # do so.
+    pos_arg_cnt = 0
+    for param in signature(obj).parameters.values():
+        if param.kind == _VAR_POSITIONAL:
+            pos_arg_cnt = 3
+        elif param.kind != _KEYWORD_ONLY:
+            pos_arg_cnt += 1
+
+        if pos_arg_cnt >= 3:
+            pos_arg_cnt = 3
+            break
+    return pos_arg_cnt
+
+
 def prep_callback(obj, _callback: Callable | None):
     @functools.wraps(_callback)
-    def callable_object(_, app_data, user_data):
+    def callable_object(_=None, app_data=None, user_data=None, **kwargs):
         args = (obj, app_data, user_data)[0:pos_arg_cnt]
-        _callback(*args)
+        _callback(*args, **kwargs)
     # Wrapping is done for a couple of reasons. Firstly, to ensure that
     # the Item instance of `sender` is returned instead of the identifier.
     # And second; nuitka compilation doesn't like DPG callbacks unless
     # they are wrapped (lambda, etc.)...for some reason.
-
     if callable(_callback):
         wrapper = callable_object
-        # Emulating how DearPyGui doesn't require callbacks having 3 positional
-        # arguments. Only pass sender/app_data/user_data if there's "room" to 
-        # do so.
-        pos_arg_cnt = 0
-        for param in signature(_callback).parameters.values():
-            if param.kind == _VAR_POSITIONAL:
-                pos_arg_cnt = 3
-            elif param.kind != _KEYWORD_ONLY:
-                pos_arg_cnt += 1
-
-            if pos_arg_cnt >= 3:
-                pos_arg_cnt = 3
-                break
+        pos_arg_cnt = _get_positional_args_count(_callback)
     elif _callback is None:
         wrapper = None
     else:
