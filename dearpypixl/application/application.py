@@ -33,7 +33,7 @@ from dearpypixl.application.frameevents import FrameEvents
 from dearpypixl.constants import AppUUID, Platform, Key
 from dearpypixl.components import Item, item_attribute, Theme, ProtoItem
 from dearpypixl.components.configuration import CONFIGURATION, INFORMATION, STATE
-from dearpypixl.themes import _ThemePreset, dearpygui_internal
+from dearpypixl.themes import _theme_presets, dearpygui_internal
 
 if sys.platform == "win32":
     from dearpypixl.platforms import windows
@@ -263,7 +263,7 @@ class Application(AppItem):
     def theme_presets(cls) -> tuple[Theme, ...]:
         """Return the available pre-made themes.
         """
-        return _ThemePreset._presets
+        return _theme_presets
 
     @staticmethod
     def output_frame_buffer(file: str = '', callback: Any = None, **kwargs):

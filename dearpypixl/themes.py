@@ -1,3 +1,5 @@
+from contextlib import contextmanager
+from typing import Generator
 from dearpypixl.components.themes import (
     Theme,
     ThemeComponent,
@@ -17,18 +19,36 @@ __all__ = [
 ]
 
 
-class _ThemePreset(Theme):
-    _presets: list["_ThemePreset"] = []
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self._presets.append(self)
-
-    def delete(self, **kwargs) -> NotImplementedError:
-        raise NotImplementedError
+_theme_presets: tuple[Theme, ...] = []
 
 
-with _ThemePreset("DEFAULT") as dearpygui_internal:
+@contextmanager
+def _theme_preset(*args, _theme: Theme = None, **kwargs) -> Generator[Theme, None, None]:
+    """Yields an instance of Theme and registers it as a preset. It cannot be
+    easily deleted.
+    """
+    try:
+        if not _theme:
+            theme = Theme(*args, **kwargs)
+        else:
+            theme = _theme
+        yield theme
+    finally:
+        theme.delete = lambda self, **kwargs: NotImplementedError
+        theme.label = f"{theme.label} [PRESET]"
+        _theme_presets.append(theme)
+
+
+################################
+#### Complete System Themes ####
+################################
+
+# These themes have been fully "fleshed-out". Ideal for the
+# Application-level.
+
+with _theme_preset(label="DearPyGui - Default") as dearpygui_internal:
+    """A theme preset mirroring DearPyGui's internal default theme.
+    """
     # Frequently-used values
     bg_color_normal     =  37,  37,  38, 255
     bg_color_light      =  82,  82,  85, 255
@@ -232,4 +252,65 @@ with _ThemePreset("DEFAULT") as dearpygui_internal:
     t_style.plot_padding                       =  10,  10
 
 
-_ThemePreset._presets = tuple(_ThemePreset._presets)
+#dearpypixl_default = dearpygui_internal.copy(label="DearPyPixl - Default")
+#with _theme_preset(_theme=dearpypixl_default) as dearpypixl_default:
+#    """DearPyPixl's default theme; based off DearPyGui's internal theme.
+#    """
+#    # Frequently-used values
+#    bg_color_normal     =  37,  37,  38, 255
+#    bg_color_light      =  82,  82,  85, 255
+#    bg_color_bright     =  90,  90,  95, 255
+#    panel_color_idle    =  51,  51,  55, 255
+#    panel_color_hovered =  29, 151, 236, 103
+#    panel_color_active  =   0, 119, 200, 153
+#    text_color_enabled  = 255, 255, 255, 255
+#    text_color_disabled = 151, 151, 151, 255
+#    border_color        =  78,  78,  78, 255
+#    
+#    t_color = dearpypixl_default
+#
+#    t_color.title_bg                           = bg_color_normal
+#    t_color.title_bg_active                    =  15,  86, 135, 255
+#    t_color.title_bg_collapsed                 = bg_color_normal
+
+
+
+################################
+#### Layout-Friendly Themes ####
+################################
+
+# Item-level themes allowing for maximum layout control.
+
+with _theme_preset(label="Core - No Padding/Spacing") as dearpypixl_core_no_pad:
+    """A theme preset where several Core-category style elements have values set to
+    0. Useful when creating accurate layouts as these style elements would otherwise
+    skew alignments.
+    """
+    t_core_style = dearpypixl_core_no_pad.style
+
+    t_core_style.indent_spacing      =   0
+    t_core_style.cell_padding        =   0,   0
+    t_core_style.frame_padding       =   0,   0
+    t_core_style.item_inner_spacing  =   0,   0
+    t_core_style.item_spacing        =   0,   0
+    t_core_style.window_padding      =   0,   0
+
+with _theme_preset(label="Plotting - No Padding/Spacing") as dearpypixl_plot_no_pad:
+    """A theme preset where several Plot-category style elements have values set to
+    0. Useful when creating accurate layouts as these style elements would otherwise
+    skew alignments.
+    """
+    t_plot_style = dearpypixl_plot_no_pad.style
+
+    t_plot_style.plot_annotation_padding   =   0,   0
+    t_plot_style.plot_fit_padding          =   0,   0
+    t_plot_style.plot_label_padding        =   0,   0
+    t_plot_style.plot_legend_inner_padding =   0,   0
+    t_plot_style.plot_legend_padding       =   0,   0
+    t_plot_style.plot_legend_spacing       =   0,   0
+    t_plot_style.plot_mouse_pos_padding    =   0,   0
+    t_plot_style.plot_padding              =   0,   0
+
+
+
+_theme_presets = tuple(_theme_presets)

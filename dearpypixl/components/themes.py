@@ -1,6 +1,7 @@
 from __future__ import annotations
 from collections.abc import Mapping
 from typing import Callable, Union, Sequence, Any, Optional, TypeAlias
+from typing_extensions import Self
 import decimal
 import functools
 from warnings import warn
@@ -24,6 +25,7 @@ from dearpygui.dearpygui import (
     pop_container_stack,
     push_container_stack,
 )
+from dearpygui._dearpygui import set_value, get_value
 from dearpypixl.components.configuration import item_attribute, ItemAttribute
 from dearpypixl.components.item import Item
 from dearpypixl.constants import (
@@ -80,6 +82,9 @@ class Theme(Item):
         label: str = None,
         font: Union[str, Font] = None,
         font_size: float = 12.0, 
+        user_data: Any = None,
+        use_internal_label: bool = True,
+        **kwargs
     ):
         self.__target_uuids: set[int] = set()
         self.__font: Font = font
@@ -129,7 +134,7 @@ class Theme(Item):
         if value < 0:
             raise ValueError(f"`font_size` cannot be less than zero (got {value!r}).")
         elif value > 350:
-            warn(f"Rendering some fonts at such sizes ({value!r}) can cause a segmentation fault.")
+            warn(f"Rendering some fonts at such sizes ({value!r}) can cause unexpected errors...")
         font = self.__font
         self.__font_size_value = value
         # This means that the font doesn't need to be applied to anything.
@@ -247,8 +252,8 @@ class ThemeComponent(Item):
         # because it may change via `bind`.
         cls = type(self)
         self.__element_aliases: dict[str, ThemeElement] = {**cls.__element_aliases}
-        self.__element_uuids: dict[ThemeElement, int] = {element: None for element in
-                                                         self.__element_aliases.values()}
+        self.__element_uuids: dict[ThemeElement, int]   = {element: None for element in
+                                                           self.__element_aliases.values()}
 
     def __init_subclass__(cls):
         # NOTE: Subclassing `ThemeComponent` allows elements to be pre-bound
@@ -265,13 +270,6 @@ class ThemeComponent(Item):
             # __getattr__ for instances.
             type.__delattr__(cls, attr)
 
-    def __enter__(self):
-        _dearpygui.push_container_stack(self._tag)
-        return self
-
-    def __exit__(self, exec_type, exec_value, traceback):
-        _dearpygui.pop_container_stack()
-
     def __setattr__(self, attr, value):
         if attr in self.__element_aliases:
             try:
@@ -283,7 +281,7 @@ class ThemeComponent(Item):
     def __getattr__(self, attr):
         if element := self.__element_aliases.get(attr, None):
             try:
-                return _dearpygui.get_value(self.__element_uuids[element])
+                return get_value(self.__element_uuids[element])
             except SystemError:
                 return None
         raise AttributeError(f"{type(self).__qualname__!r} has no attribute {attr!r}.")
@@ -349,9 +347,9 @@ class ThemeComponent(Item):
 
         # Update value of an existing item...
         if element_uuid := self.__element_uuids.get(target, None):
-            current_value = _dearpygui.get_value(element_uuid)
+            current_value = get_value(element_uuid)
             new_value = self.__build_new_value(value, current_value, value_ceil)
-            return _dearpygui.set_value(element_uuid, new_value)
+            return set_value(element_uuid, new_value)
 
         element_type = element_data.element_type
         default_values = self.__element_defaults[element_type]
@@ -386,6 +384,23 @@ class ThemeComponent(Item):
         """Returns the unique identifier in use for `target`.
         """
         return self.__element_uuids[target]
+
+    def copy(self, recursive: bool = False, **config) -> Self:
+        cls = type(self)
+        configuration = self.configuration() | config
+
+        if not cls.__is_root_item__ and "parent" not in config:
+            configuration["parent"] = self.parent
+
+        value = configuration.pop("value", None)
+        self_copy = cls(**configuration)
+        # Applying value (if the item isn't value-able then it simply won't "stick")
+        self_copy.__element_aliases = self.__element_aliases
+        self_copy.__element_uuids   = self.__element_uuids
+        for t_element, t_element_uuid in self.__element_uuids:
+            self_copy.add_element(t_element, get_value(t_element_uuid))
+
+        return self_copy
 
     def bind(self, attribute: str = None, element: ThemeElement = None, **kwargs: ThemeElement) -> None:
         """Sets new instance attributes and links them to theme elements. Multiple
