@@ -308,7 +308,7 @@ class TabBar(TabBar):
         """
         active_tab_id = _dearpygui.get_value(self.tag)
         if active_tab_id:
-            return self._AppItemsRegistry[active_tab_id, active_tab_id]
+            return self.__registry__[0][active_tab_id, active_tab_id]
         
         childs = self.children()
         if not childs:

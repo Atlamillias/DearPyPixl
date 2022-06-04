@@ -70,14 +70,14 @@ class Table(Table):
         """Deletes the row at the specified index.
         """
         row_uuid = get_item_info(self._tag)["children"][1][row_idx]
-        row_item = self._AppItemsRegistry[row_uuid]
+        row_item = self.__registry__[0][row_uuid]
         row_item.delete()
 
     def remove_column(self, column_idx: int) -> None:
         """Deletes the column at the specified index.
         """
         col_uuid = get_item_info(self._tag)["children"][0][column_idx]
-        col_item = self._AppItemsRegistry[col_uuid]
+        col_item = self.__registry__[0][col_uuid]
         col_item.delete()
 
     #########################
@@ -123,7 +123,7 @@ class Table(Table):
         the order of their current positions.
         """
         row_uuids = get_item_info(self._tag)["children"][1]
-        appitems = self._AppItemsRegistry
+        appitems = self.__registry__[0]
         return [appitems[row_uuid] for row_uuid in row_uuids]
 
     @property
@@ -132,7 +132,7 @@ class Table(Table):
         the order of their current positions.
         """
         col_uuids = get_item_info(self._tag)["children"][0]
-        appitems = self._AppItemsRegistry
+        appitems = self.__registry__[0]
         return [appitems[col_uuid] for col_uuid in col_uuids]
 
 
@@ -205,7 +205,7 @@ class TableColumn(TableColumn):
         # It varies on the size of the table. Just thought i'd mention...
 
         # Need to pull info from ALL of the rows...
-        appitems = self._AppItemsRegistry
+        appitems = self.__registry__[0]
         position = self.position  # index for the row child
         values = []
         # Using the DPP API pre-loop. In the loop though we're using the DPG API as
@@ -272,7 +272,7 @@ class TableCell(TableCell):
         col_position = row_childs.index(self._tag)
         table_uuid = get_item_info(row_uuid)["parent"]
         table_columns = get_item_info(table_uuid)["children"][0]
-        return self._AppItemsRegistry[table_columns[col_position]]
+        return self.__registry__[0][table_columns[col_position]]
 
     @property
     def position(self) -> tuple[int, int]:

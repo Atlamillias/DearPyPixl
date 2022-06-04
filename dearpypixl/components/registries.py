@@ -157,7 +157,7 @@ class ItemEvents(Item):
         """Return a list of items that are bound to this item.
         """
         target_uuids = self.__target_uuids
-        appitems = type(self)._AppItemsRegistry
+        appitems = type(self).__registry__[0]
         return [target_item for targets in target_uuids
                 for target in targets if
                 (target_item := appitems.get(target, None))]

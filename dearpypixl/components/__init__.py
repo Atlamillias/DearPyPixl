@@ -34,10 +34,10 @@ class Widget(Item, metaclass=ABCMeta):
     @property
     @item_attribute(category="configuration")
     def theme(self) -> Theme:
-        return self._AppItemsRegistry.get(get_item_info(self._tag)["theme"], None)
+        return self.__registry__[0].get(get_item_info(self._tag)["theme"], None)
     @theme.setter
     def theme(self, value: Theme) -> None:
-        if value is None and (item_theme := self._AppItemsRegistry.get(get_item_info(self._tag)["theme"], None)):
+        if value is None and (item_theme := self.__registry__[0].get(get_item_info(self._tag)["theme"], None)):
             item_theme.unbind(self)
             return None
         elif value is None:
@@ -48,12 +48,12 @@ class Widget(Item, metaclass=ABCMeta):
     @item_attribute(category="configuration")
     def events(self) -> ItemEvents:
         self.__events_uuid
-        return self._AppItemsRegistry.get(self.__events_uuid, None)
+        return self.__registry__[0].get(self.__events_uuid, None)
     @events.setter
     def events(self, value: ItemEvents) -> None:
         if value is None and self.__events_uuid:
             try:
-                item_events = self._AppItemsRegistry[self.__events_uuid]
+                item_events = self.__registry__[0][self.__events_uuid]
             except KeyError:
                 self.__events_uuid = None
                 return None

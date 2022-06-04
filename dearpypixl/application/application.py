@@ -39,7 +39,7 @@ if sys.platform == "win32":
     from dearpypixl.platforms import windows
 
 
-_appitem_registry = Item._AppItemsRegistry
+_appitem_registry = Item.__registry__[0]
 
 
 
@@ -53,7 +53,7 @@ def _set_app_config(obj, name, value):
         warnings.warn(f"`Application` configuration {name!r} cannot be changed once the viewport is showing.")
 
 def _set_theme(obj, name, value):  # too complex as a lambda.
-    default_theme = ProtoItem._AppItemsRegistry.get(Theme._default_theme_uuid, None)
+    default_theme = ProtoItem.__registry__[0].get(Theme._default_theme_uuid, None)
     if value is None and not default_theme:
         return None
     elif not value:
@@ -250,13 +250,13 @@ class Application(AppItem):
     @classmethod
     def configuration(cls) -> dict[str, Any]:
         config = get_app_configuration()  # The only change from `Item.configuration`
-        item_config_attrs = cls._item_config_attrs
+        item_config_attrs = cls.__internal__[0]
         return {attr:(config[attr] if attr in config else
                 getattr(cls, attr)) for attr in item_config_attrs}
 
     @classmethod
     def state(cls) -> dict[str, Any]:
-        states = {attr: getattr(cls, attr) for attr in cls._item_states_attrs}
+        states = {attr: getattr(cls, attr) for attr in cls.__internal__[2]}
         return states | {"is_running": cls.is_running()}
 
     @classmethod

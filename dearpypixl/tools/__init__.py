@@ -55,4 +55,4 @@ def get_reference(tag: str | int) -> Item | None:
         * tag (Union[str, int]): Unique identifier of an item.
 
     """
-    return Item._AppItemsRegistry.get(tag, None)
+    return Item.__registry__[0].get(tag, None)

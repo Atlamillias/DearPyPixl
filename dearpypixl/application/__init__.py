@@ -8,7 +8,7 @@ class AppItemMeta(type):
     def __setattr__(cls, name, value):
         # Workaround to emulate a set-able classmethod property without
         # overwriting the descriptor.
-        if name in cls._item_config_attrs:
+        if name in cls.__internal__[0]:
             return setattr(cls.__instance__, name, value)
         super().__setattr__(name, value)
     
@@ -39,11 +39,11 @@ class AppItem(ProtoItem, ABC, metaclass=type("AppItemType", (AppItemMeta, ABCMet
 
     @classmethod
     def information(cls) -> dict[str, Any]:
-        return {attr: getattr(cls, attr) for attr in cls._item_inform_attrs}
+        return {attr: getattr(cls, attr) for attr in cls.__internal__[1]}
 
     @classmethod
     def state(cls) -> dict[str, Any]:
-        return {attr: getattr(cls, attr) for attr in cls._item_states_attrs}
+        return {attr: getattr(cls, attr) for attr in cls.__internal__[2]}
 
 
 class AppAttribute(ItemAttribute):

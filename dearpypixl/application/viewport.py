@@ -40,7 +40,7 @@ def _set_viewport_fickle_config(obj, name, value):
         configure_viewport(obj.tag, **{name: value})
 
 def _get_primary_window(obj, name):
-        p_window = obj._AppItemsRegistry.get(Viewport._primary_window, None)
+        p_window = obj.__registry__[0].get(Viewport._primary_window, None)
         if p_window is None:
             Viewport._primary_window = None  # possibly deleted
         return p_window
@@ -124,7 +124,7 @@ class Viewport(AppItem):
     @property
     @item_attribute(category=INFORMATION)
     def active_window(cls):
-        return cls._AppItemsRegistry.get(get_active_window(), None)
+        return cls.__registry__[0].get(get_active_window(), None)
 
     @classmethod
     @property
@@ -213,7 +213,7 @@ class Viewport(AppItem):
     @classmethod
     def configuration(cls) -> dict[str, Any]:
         config = get_viewport_configuration()  # The only change from `Item.configuration`
-        item_config_attrs = cls._item_config_attrs
+        item_config_attrs = cls.__internal__[0]
         return {attr:(config[attr] if attr in config else
                 getattr(cls, attr)) for attr in item_config_attrs}
 
@@ -221,7 +221,7 @@ class Viewport(AppItem):
     def children(cls) -> tuple[ItemT, ...]:
         """Return a tuple of all items.
         """
-        return tuple(cls._AppItemsRegistry.values())
+        return tuple(cls.__registry__[0].values())
 
     _restore_width  = None
     _restore_height = None
