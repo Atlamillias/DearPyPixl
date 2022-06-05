@@ -917,7 +917,7 @@ class FileExtension(Widget):
         Returns:
             Union[int, str]
     """
-    extension         : str                               = ItemAttribute("configuration", "get_item_cached", "set_item_cached_config", None)
+    extension         : str                               = ItemAttribute("configuration", "get_item_cached", "set_item_config", None, cache_on_set=True)  
     width             : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     height            : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)
     custom_text       : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)

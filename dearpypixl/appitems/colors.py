@@ -530,7 +530,14 @@ class ColorMapScale(Widget):
             drag_callback (Callable, optional): (deprecated) 
         Returns:
             Union[int, str]
-    """     
+    """
+    def __set_item_colormap(__obj: object, __name: str, value: Any):
+        try:
+            colormap_uuid = int(value)
+        except TypeError:
+            raise TypeError(f"{__name!r} must be an instance of `Colormap` (got {type(value).__qualname__!r}).")
+        dearpygui.bind_colormap(__obj._tag, colormap_uuid)
+
     width               : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     height              : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     indent              : int                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
@@ -538,8 +545,8 @@ class ColorMapScale(Widget):
     payload_type        : str                               = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     drop_callback       : Callable                          = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     show                : bool                              = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
-    pos                 : Union[List[int], Tuple[int, ...]] = ItemAttribute('configuration', 'get_item_state', 'set_item_config', None)          
-    colormap            : Union[int, str]                   = ItemAttribute('configuration', 'get_item_cached', 'set_item_cached_colormap', None)
+    pos                 : Union[List[int], Tuple[int, ...]] = ItemAttribute('configuration', 'get_item_state' , 'set_item_config', None)          
+    colormap            : Union[int, str]                   = ItemAttribute('configuration', 'get_item_cached', __set_item_colormap, None, cache_on_set=True)
     min_scale           : float                             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
     max_scale           : float                             = ItemAttribute("configuration", "get_item_config", "set_item_config", None)         
 

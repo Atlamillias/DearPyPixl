@@ -330,7 +330,7 @@ class PlotAxis(Widget):
         Returns:
             int | str      
     """
-    axis              : int      = ItemAttribute("configuration", "get_item_cached", "set_item_cached_config", None)                                           
+    axis              : int      = ItemAttribute("configuration", "get_item_cached", "set_item_config", None, cache_on_set=True)                                           
     payload_type      : str      = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                           
     drop_callback     : Callable = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                           
     show              : bool     = ItemAttribute("configuration", "get_item_config", "set_item_config", None)                                           

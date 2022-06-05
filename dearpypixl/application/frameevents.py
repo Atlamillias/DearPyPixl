@@ -8,7 +8,7 @@ from dearpygui._dearpygui import (
     get_total_time,
 )
 
-from dearpypixl.components.configuration import prep_callback, _get_positional_args_count
+from dearpypixl.components.configuration import prep_callback, get_positional_args_count
 from dearpypixl.components.utilities import TypeGuard
 
 __all__ = [
@@ -79,7 +79,7 @@ class FrameEvent:
                 raise ValueError("`callback` is not callable.")
             self._unwrapped_cb = callback
             self._callback     = prep_callback(self._sender or self, self._unwrapped_cb)
-            self._pos_arg_cnt  = _get_positional_args_count(self._unwrapped_cb)
+            self._pos_arg_cnt  = get_positional_args_count(self._unwrapped_cb)
 
         # `prep_callback` has `sender` bound already
         self._arguments = (None, self._app_data, self._user_data)[:self._pos_arg_cnt]

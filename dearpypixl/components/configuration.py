@@ -1,6 +1,6 @@
 """Contains objects used in defining, caching, or managing an item's internal configuration."""
 import functools
-from typing import Callable, Any, Union
+from typing import Callable, Any, Union, Literal
 from inspect import signature, _VAR_POSITIONAL, _KEYWORD_ONLY
 from dearpygui._dearpygui import (
     # getters
@@ -19,7 +19,7 @@ INFORMATION   = "information"
 STATE         = "state"
 
 
-def _get_positional_args_count(obj: Callable):
+def get_positional_args_count(obj: Callable):
     # Emulating how DearPyGui doesn't require callbacks having 3 positional
     # arguments. Only pass sender/app_data/user_data if there's "room" to 
     # do so.
@@ -47,13 +47,17 @@ def prep_callback(obj, _callback: Callable | None):
     # they are wrapped (lambda, etc.)...for some reason.
     if callable(_callback):
         wrapper = callable_object
-        pos_arg_cnt = _get_positional_args_count(_callback)
+        pos_arg_cnt = get_positional_args_count(_callback)
     elif _callback is None:
         wrapper = None
     else:
         raise ValueError(f"`callback` is not callable (got {type(_callback)!r}.")
 
     return wrapper
+
+
+def set_cached_attribute(__obj, __name, value):
+    __obj.__cached__[__name] = value
 
 
 #########################################
@@ -70,43 +74,6 @@ def item_attr_command(func: Callable):
     return func
 
 # NOTE: These should all share the same signature (mirrors get/setattr).
-
-# Setters
-@item_attr_command
-def set_item_config(__obj: object, __name: str, value: Any):
-    configure_item(__obj._tag, **{__name: value})
-
-
-@item_attr_command
-def set_item_cached_config(__obj: object, __name: str, value: Any):
-    # Set DPG configuration and cache the change on instance.
-    # Required when the attribute can be set in DPG but not fetched.
-    configure_item(__obj._tag, **{__name: value})
-    # Set as private attribute
-    setattr(__obj, f"_{__name}", value)
-
-
-@item_attr_command
-def set_item_value(__obj: object, __name: str, value: Any):
-    # `value`, `default_value`
-    set_value(__obj._tag, value)
-
-
-@item_attr_command
-def set_item_cached_colormap(__obj: object, __name: str, value: Any):
-    try:
-        colormap_uuid = int(value)
-    except TypeError:
-        raise TypeError(f"{__name!r} must be an instance of `Colormap` (got {type(value).__qualname__!r}).")
-    bind_colormap(__obj._tag, colormap_uuid)
-    # Can't reliably be fetched, so store the value on instance.
-    setattr(__obj, f"_{__name}", value)
-
-
-@item_attr_command
-def set_item_callback(__obj: object, __name: str, value: Any):
-    configure_item(__obj._tag, **{__name: prep_callback(__obj, value)})
-
 
 # Getters
 @item_attr_command
@@ -125,14 +92,31 @@ def get_item_state(__o: object, __name: str):
 
 
 @item_attr_command
+def get_item_cached(__o: object, __name: str):
+    # Pull private attribute.
+    return __o.__cached__[__name]
+
+
+@item_attr_command
 def get_item_value(__o: object, __name: str = None):
     return get_value(__o._tag)
 
 
+# Setters
 @item_attr_command
-def get_item_cached(__o: object, __name: str):
-    # Pull private attribute.
-    return getattr(__o, f"_{__name}")
+def set_item_config(__obj: object, __name: str, value: Any):
+    configure_item(__obj._tag, **{__name: value})
+
+
+@item_attr_command
+def set_item_value(__obj: object, __name: str, value: Any):
+    # `value`, `default_value`
+    set_value(__obj._tag, value)
+
+
+@item_attr_command
+def set_item_callback(__obj: object, __name: str, value: Any):
+    configure_item(__obj._tag, **{__name: prep_callback(__obj, value)})
 
 
 ##################################
@@ -164,15 +148,15 @@ class ItemAttribute:
     }
 
     def __init__(
-        self,
-        category: str                        ,
-        getter  : Union[str, Callable, None] ,
-        setter  : Union[str, Callable, None] ,
-        target  : str                        = None,
-        doc     : str                        = None,
+        self                                                                 ,
+        category    : Literal["configuration", "information", "state"]       ,
+        getter      : str | Callable                                         ,
+        setter      : str | Callable | None                                  ,
+        target      : str                                             =  None,
+        doc         : str                                             =  None,
+        cache_on_set: bool                                            = False,
     ):
-        """
-        Args:
+        """Args:
             * category (str): Value should be `configuration`, `information` or `state`.
             * getter (str | Callable | None): Object that is called to retrieve the 
             attribute value. If the command is registered, the name of the command is also
@@ -182,16 +166,26 @@ class ItemAttribute:
             to a passed value. If the command is registered, the name of the command is also
             an accepted value. A call to the object must be able to be resolved using the same
             arguments required for `setattr`, and must accept those arguments.
+            * target (str): This is used to get the value instead of self._name. Defaults
+            to None.
+            * doc (str): Docstring for the attribute. Defaults to None.
+            * cache_on_set (bool): If True, <fset> will be altered to store a copy of the
+            value on the item instance. This is used if a configuration attribute can be
+            set, but not fetched from DearPyGui. Defaults to None.
         """
-        self.category = category
-        self.fget     = getter
-        self.fset     = setter
-        self.target   = target
-
         if doc is None and getter is not None:
             doc = getter.__doc__
+        if setter is None:
+            self.__set__ = self._readonly_setter
+
+        self.category     = category
+        self.fget         = getter   # temp value
+        self.fset         = setter   # temp value
+        self.target       = target
+        self.cache_on_set = cache_on_set
+
         self.__doc__ = doc
-        self._name = ''
+        self._name   = ''
 
     def __set_name__(self, __type: type, name: str):
         self._name  = name
@@ -200,17 +194,34 @@ class ItemAttribute:
         if self.category not in self.next_class_item_attrs:
             raise ValueError(f"`category` must be 'configuration', 'state', or 'information' (got {self.category!r}).")
 
-        for attr in ("fget", "fset"):
-            value = getattr(self, attr)
-            
-            if callable(value):
-                item_attr_command(value)  # Verifying signature
-                setattr(self, attr, value)
-            elif isinstance(value, str):
+        fget = self.fget
+        if isinstance(fget, str):
+            try:
+                fget = ItemAttributeCommands[fget]
+            except KeyError:
+                raise ValueError(f"No registered command found for {fget!r}.")
+        elif callable(fget):
+            item_attr_command(fget)
+        else:
+            raise ValueError(f"{fget!r} value is not a registered command, or has the incorrect signature.")
+        self.fget = fget
+
+        fset = self.fset
+        if fset is not None:
+            if isinstance(fset, str):
                 try:
-                    setattr(self, attr, ItemAttributeCommands[value])
+                    fset = ItemAttributeCommands[fset]
                 except KeyError:
-                    raise ValueError(f"No registered command found for {value!r}.")
+                    raise ValueError(f"No registered command found for {fset!r}.")
+            elif callable(fset):
+                item_attr_command(fset)
+            else:
+                raise ValueError(f"{fset!r} value is not a registered command, or has the incorrect signature.")
+            
+            if self.cache_on_set:
+                fset = self._cached_attribute(fset)
+            self.fset = fset
+
         ItemAttribute.next_class_item_attrs[self.category].add(name)
         # Mark attribute as cached if necessary
         if "cache" in self.fget.__qualname__:
@@ -222,15 +233,20 @@ class ItemAttribute:
         return self.fget(instance, self.target)
 
     def __set__(self, instance: object, value):
-        # NOTE: `try`/`except` blocks are used instead of conditional `if` checks. This may
-        #       add overhead to startup and imports, but normal attribute access at runtime
-        #       is faster.  
-        try:
-            self.fset(instance, self.target, value)
-        except TypeError as e:
-            if self.fset is None:
-                raise AttributeError(f"The {self._name!r} attribute is read-only and cannot be set.")
-            raise e
+        self.fset(instance, self.target, value)
+
+    def _readonly_setter(self, instance: object, value):
+        # Replaces self.__set__ for read-only attributes.
+        raise AttributeError(f"Cannot set read-only attribute {self._name!r}.")
+    
+    @staticmethod
+    def _cached_attribute(func: Callable):
+        # This alters the behavior of self.fset to cache a copy of the new
+        # value on the instance (see `cache_on_set` parameter).
+        def attribute_setter(__obj: object, __name: str, value: Any):
+            func(__obj, __name, value)
+            set_cached_attribute(__obj, __name, value)
+        return attribute_setter
 
 
 def item_attribute(cls_attribute: Union[Callable, str] = None, *, category: str):

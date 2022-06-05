@@ -1,7 +1,7 @@
 """Lowest-level types for DearPyPixl."""
 from __future__ import annotations
 from abc import ABCMeta, abstractmethod
-from typing import Callable, Any, TypeVar, Union, MutableMapping, Iterator, NamedTuple
+from typing import Callable, Any, TypeVar, Union, MutableMapping, Iterator, NamedTuple, Iterable
 from typing_extensions import Self, TypeAlias
 from enum import IntEnum
 from inspect import Parameter
@@ -91,9 +91,11 @@ class ProtoItem(metaclass=ABCMeta):
 
     __slots__ = ()
 
-    __registry__      : _RegistryType = _RegistryType()
-    __internal__      : _InternalType = _InternalType() 
+    __registry__      : _RegistryType  = _RegistryType()
+    __internal__      : _InternalType  = _InternalType() 
 
+    __cached__        : dict[str, Any] = {}
+    
     __is_root_item__  : bool     = False
     __is_container__  : bool     = False
     __able_parents__  : tuple    = ()
@@ -209,8 +211,8 @@ class ProtoItem(metaclass=ABCMeta):
             tuple(inform_members),  # <  are dependant on these collections. An
             tuple(states_members),  # <  attribute included in any of these can be
             tuple(cached_members),  # <  considered "registered".
-            init_params,            # <
-            template,               # <     
+            init_params,           
+            template,                  
         )
 
         # Only registering Item classes that can be instantiated.
@@ -226,6 +228,15 @@ class ProtoItem(metaclass=ABCMeta):
         # descriptor are annoying to find as-is. It doesn't need help.
         for collection in ItemAttribute.next_class_item_attrs.values():
             collection.clear()
+
+    def __dir__(self) -> Iterable[str]:
+        # Exclude name-mangled attributes from instance dir.
+        # I'm not trying to completely obsufucate the internal
+        # attributes, so I'm leaving the class dir alone.
+        prefixes = {f"_{cls.__qualname__}__" for cls in type(self).mro()}
+        return [attr for attr in super().__dir__()
+                if not any(attr.startswith(prefix)
+                for prefix in prefixes)]
 
     def __enter(self):
         push_container_stack(self.tag)
@@ -725,21 +736,11 @@ class Item(ProtoItem, metaclass=ABCMeta):
 
     ## Special Methods ##
     def __init__(self, **kwargs):
-        # Prepping argument values before item creation
-        cached_attrs = self.__internal__[3]
+        # Prepping argument values before item creation.
         # `user_data` needs to be excluded from type casting as it is allowed
         # to be anything, including items and integer enums.
         user_data = kwargs.pop("user_data", None)
-        for arg, val in kwargs.items():
-            if "callback" in arg and val:  # `[drag_/drop_]callback`
-                kwargs[arg] = prep_callback(self, val)
-                continue
-            # Recasting int-like values.
-            if isinstance(val, (Item, IntEnum)):
-                kwargs[arg] = int(val)
-            # Storing attributes that cannot be fetched from DPG on instance.
-            if arg in cached_attrs:
-                setattr(self, f"_{arg}", val)
+        kwargs    = self._prep_args(**kwargs)
 
         # Creation and registration
         identifier = kwargs.pop("tag", None) or generate_uuid()
@@ -850,6 +851,22 @@ class Item(ProtoItem, metaclass=ABCMeta):
         row_id           = get_item_info(self._tag)["children"][1][row_idx]
         row_child_id     = get_item_info(row_id)["children"][1][col_idx]
         return self.__registry__[0][row_child_id]
+
+
+    def _prep_args(self, **kwargs) -> dict:
+        cached_members  = self.__internal__[3]
+        self.__cached__ = cached_values = dict.fromkeys(cached_members, None)
+        for arg, val in kwargs.items():
+            if "callback" in arg and val:  # `[drag_/drop_]callback`
+                kwargs[arg] = prep_callback(self, val)
+                continue
+            # Recasting int-like values.
+            if isinstance(val, (Item, IntEnum)):
+                kwargs[arg] = int(val)
+            # Storing attributes that cannot be fetched from DPG on instance.
+            if arg in cached_members:
+                cached_values[arg] = val
+        return kwargs
 
 
     ## private/internal methods ##
