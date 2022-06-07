@@ -35,7 +35,8 @@ from dearpypixl.constants import ItemIndex
 # TODO: Finish __itemtype_id__ implementation and cleanup ItemIndex remnants.
 # TODO: Deal w/strong references in __registry__.
 # TODO: Move error helper functions out of Item namespace and into their own
-# module. Implement better exception when thrown at item creation.
+# module. Implement better exception when thrown at item creation. Add
+# "DearPyGuiError"; thrown when the problem cannot be properly identified.
 
 __all__ = [
     # TypeVars
@@ -1357,7 +1358,7 @@ class TemplateType(MutableMapping, metaclass=ABCMeta):
 
     __slots__    = ("_tag")  # subclasses should also include __slots__
 
-    # Pull various read-only members from the owner item type. The
+    # Hook various read-only members from the owner item type. The
     # signature of the method that returns a template instance is
     # set to the ItemType and not the template, so I can get away
     # with being lazy here without fear of mucking up introspection.
