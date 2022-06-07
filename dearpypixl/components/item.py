@@ -32,6 +32,10 @@ from dearpygui._dearpygui import (
 )
 from dearpypixl.constants import ItemIndex
 
+# TODO: Finish __itemtype_id__ implementation and cleanup ItemIndex remnants.
+# TODO: Deal w/strong references in __registry__.
+# TODO: Move error helper functions out of Item namespace and into their own
+# module. Implement better exception when thrown at item creation.
 
 __all__ = [
     # TypeVars
