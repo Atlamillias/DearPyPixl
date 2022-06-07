@@ -5,7 +5,7 @@ from dearpygui import _dearpygui
 
 import dearpypixl.appitems.containers
 from dearpypixl.appitems.containers import *
-from dearpypixl.components import Widget, ItemEvents, item_attribute, ItemAttribute, WidgetItemT
+from dearpypixl.components import Widget, ItemEvents, ItemAttribute, WidgetItemT
 from dearpypixl.components.handlers import (
     ClickedHandler,
     HoverHandler,
@@ -26,9 +26,9 @@ class Tooltip(Window):
     """A tooltip window that is displayed only when its target item is
     hovered.
     """
-    x_offset = item_attribute("x_offset", category="configuration")
-    y_offset = item_attribute("y_offset", category="configuration")
-    delay    = item_attribute("delay"   , category="configuration")
+    x_offset = ItemAttribute.register_member("x_offset", category="configuration")
+    y_offset = ItemAttribute.register_member("y_offset", category="configuration")
+    delay    = ItemAttribute.register_member("delay"   , category="configuration")
 
     # BUG: Focus is dropped on the currently (previously?) focused item
     # when this item is displayed. Also, this item does not display above
@@ -76,7 +76,7 @@ class Tooltip(Window):
         self.target   = target
 
     @property
-    @item_attribute(category="configuration")
+    @ItemAttribute.register_member(category="configuration")
     def target(self) -> Union[WidgetItemT, None]:
         """The item that, when hovered, will cause this item to display.
         """
@@ -164,7 +164,7 @@ class Popup(Window):
         self.target = target
 
     @property
-    @item_attribute(category="configuration")
+    @ItemAttribute.register_member(category="configuration")
     def button(self) -> int:
         """The mouse button that must be clicked to display this item.
         """
@@ -176,7 +176,7 @@ class Popup(Window):
             self.__target_click_handler.button = value
             
     @property
-    @item_attribute(category="configuration")
+    @ItemAttribute.register_member(category="configuration")
     def target(self) -> Union[WidgetItemT, None]:
         """The item that, when clicked, will cause this item to display.
         """
@@ -216,7 +216,7 @@ class Popup(Window):
 ##########################
 class Window(Window):
     @property
-    @item_attribute(category="information")
+    @ItemAttribute.register_member(category="information")
     def y_scroll_pos(self) -> float:
         """Vertical scroll position of the container. If set to -1.0,
         its position will be set to the end.
@@ -228,7 +228,7 @@ class Window(Window):
 
 
     @property
-    @item_attribute(category="information")
+    @ItemAttribute.register_member(category="information")
     def y_scroll_max(self) -> float:
         """Maximum vertical scroll position.
         """
@@ -236,7 +236,7 @@ class Window(Window):
 
 
     @property
-    @item_attribute(category="information")
+    @ItemAttribute.register_member(category="information")
     def x_scroll_pos(self) -> float:
         """Horizontal scroll position of the container. If set to -1.0,
         its position will be set to the end.
@@ -248,7 +248,7 @@ class Window(Window):
 
 
     @property
-    @item_attribute(category="information")
+    @ItemAttribute.register_member(category="information")
     def x_scroll_max(self) -> float:
         """Maximum horizontal scroll position.
         """
@@ -258,7 +258,7 @@ class Window(Window):
 class ChildWindow(ChildWindow):
     # Scroll position
     @property
-    @item_attribute(category="information")
+    @ItemAttribute.register_member(category="information")
     def y_scroll_pos(self) -> float:
         """Vertical scroll position of the container. If set to -1.0,
         its position will be set to the end.
@@ -270,7 +270,7 @@ class ChildWindow(ChildWindow):
 
 
     @property
-    @item_attribute(category="information")
+    @ItemAttribute.register_member(category="information")
     def y_scroll_max(self) -> float:
         """Maximum vertical scroll position.
         """
@@ -278,7 +278,7 @@ class ChildWindow(ChildWindow):
 
 
     @property
-    @item_attribute(category="information")
+    @ItemAttribute.register_member(category="information")
     def x_scroll_pos(self) -> float:
         """Horizontal scroll position of the container. If set to -1.0,
         its position will be set to the end.
@@ -290,7 +290,7 @@ class ChildWindow(ChildWindow):
 
 
     @property
-    @item_attribute(category="information")
+    @ItemAttribute.register_member(category="information")
     def x_scroll_max(self) -> float:
         """Maximum horizontal scroll position.
         """
@@ -302,7 +302,7 @@ class TabBar(TabBar):
     # Allows the active tab to be selected programatically through the
     # tab bar and tabs themselves.
     @property
-    @item_attribute(category="information")
+    @ItemAttribute.register_member(category="information")
     def active_tab(self) -> Tab:
         """The currently selected tab.
         """
@@ -324,7 +324,7 @@ class Tab(Tab):
     # Allows the active tab to be selected programatically through the
     # tab bar and tabs themselves.
     @property
-    @item_attribute(category="state")
+    @ItemAttribute.register_member(category="state")
     def is_active_tab(self) -> bool:
         """If this item is currently the active/selected tab within its parent
         this returns True. Otherwise, this returns False.

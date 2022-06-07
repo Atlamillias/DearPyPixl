@@ -31,8 +31,7 @@ from dearpygui._dearpygui import (
 from dearpypixl.application import AppItem, AppAttribute
 from dearpypixl.application.frameevents import FrameEvents
 from dearpypixl.constants import AppUUID, Platform, Key
-from dearpypixl.components import Item, item_attribute, Theme, ProtoItem
-from dearpypixl.components.configuration import CONFIGURATION, INFORMATION, STATE
+from dearpypixl.components import CONFIG, INFORM, STATES, Item, ItemAttribute, Theme, ItemType
 from dearpypixl.themes import _theme_presets, dearpygui_internal
 
 if sys.platform == "win32":
@@ -53,7 +52,7 @@ def _set_app_config(obj, name, value):
         warnings.warn(f"`Application` configuration {name!r} cannot be changed once the viewport is showing.")
 
 def _set_theme(obj, name, value):  # too complex as a lambda.
-    default_theme = ProtoItem.__registry__[0].get(Theme._default_theme_uuid, None)
+    default_theme = ItemType.__registry__[0].get(Theme._default_theme_uuid, None)
     if value is None and not default_theme:
         return None
     elif not value:
@@ -78,17 +77,17 @@ class Application(AppItem):
     # skip_required_args     : bool = AppAttribute(CONFIGURATION, _get_app_config, _set_app_config)  # internal app config
     # skip_positional_args   : bool = AppAttribute(CONFIGURATION, _get_app_config, _set_app_config)  # internal app config
     # skip_keyword_args      : bool = AppAttribute(CONFIGURATION, _get_app_config, _set_app_config)  # internal app config
-    auto_device               : bool = AppAttribute(CONFIGURATION, _get_app_config, _set_app_config)  # internal app config
-    docking                   : bool = AppAttribute(CONFIGURATION, _get_app_config, _set_app_config)  # internal app config
-    docking_space             : bool = AppAttribute(CONFIGURATION, _get_app_config, _set_app_config)  # internal app config
-    device                    : int  = AppAttribute(CONFIGURATION, _get_app_config, _set_app_config)  # internal app config
-    wait_for_input            : bool = AppAttribute(CONFIGURATION, _get_app_config, _set_app_config)  # internal app config
-    manual_callback_management: bool = AppAttribute(CONFIGURATION, _get_app_config, _set_app_config)  # internal app config
+    auto_device               : bool = AppAttribute(CONFIG, _get_app_config, _set_app_config)  # internal app config
+    docking                   : bool = AppAttribute(CONFIG, _get_app_config, _set_app_config)  # internal app config
+    docking_space             : bool = AppAttribute(CONFIG, _get_app_config, _set_app_config)  # internal app config
+    device                    : int  = AppAttribute(CONFIG, _get_app_config, _set_app_config)  # internal app config
+    wait_for_input            : bool = AppAttribute(CONFIG, _get_app_config, _set_app_config)  # internal app config
+    manual_callback_management: bool = AppAttribute(CONFIG, _get_app_config, _set_app_config)  # internal app config
 
-    font_scale    : float        = AppAttribute(CONFIGURATION,
+    font_scale    : float        = AppAttribute(CONFIG,
                                                 lambda obj, name: get_global_font_scale(),
                                                 lambda obj, name, value: set_global_font_scale(value))
-    theme         : Theme | None = AppAttribute(CONFIGURATION,
+    theme         : Theme | None = AppAttribute(CONFIG,
                                                 lambda obj, name: _appitem_registry.get(Theme._default_theme_uuid, None),
                                                 _set_theme)
 
@@ -96,13 +95,13 @@ class Application(AppItem):
     ## Information properties ##
     @classmethod
     @property
-    @item_attribute(category=INFORMATION)
+    @ItemAttribute.register_member(category=INFORM)
     def tag(cls) -> int:
         return AppUUID
 
     @classmethod
     @property
-    @item_attribute(category=INFORMATION)
+    @ItemAttribute.register_member(category=INFORM)
     def device_manager(cls) -> str:
         """Return the current controller of the display adapter used for the
         application.
@@ -123,7 +122,7 @@ class Application(AppItem):
 
     @classmethod
     @property
-    @item_attribute(category=INFORMATION)
+    @ItemAttribute.register_member(category=INFORM)
     def process_id(cls) -> str:
         """Return the current process identifier.
         """
@@ -131,7 +130,7 @@ class Application(AppItem):
 
     @classmethod
     @property
-    @item_attribute(category=INFORMATION)
+    @ItemAttribute.register_member(category=INFORM)
     def version(cls) -> str:
         """Return the version of Dearpygui that is being used.
         """
@@ -139,7 +138,7 @@ class Application(AppItem):
 
     @classmethod
     @property
-    @item_attribute(category=INFORMATION)
+    @ItemAttribute.register_member(category=INFORM)
     def platform(cls) -> str:
         """Return the platform.
         """
@@ -147,7 +146,7 @@ class Application(AppItem):
 
     @classmethod
     @property
-    @item_attribute(category=INFORMATION)
+    @ItemAttribute.register_member(category=INFORM)
     def device_name(cls) -> str:
         """Return the name of the display adapter in use.
         """

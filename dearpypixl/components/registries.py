@@ -5,8 +5,7 @@ from typing import Any, Callable, Union
 from dearpygui import dearpygui, _dearpygui
 
 from dearpypixl.constants import Key, Mouse
-from dearpypixl.components.configuration import ItemAttribute, item_attribute
-from dearpypixl.components.item import Item, ItemT
+from dearpypixl.components.item import Item, ItemT, ItemAttribute
 from dearpypixl.components.handlers import *
 from dearpypixl.components.items.registries import (
     ValueRegistry,
@@ -152,7 +151,7 @@ class ItemEvents(Item):
         self.__target_uuids: set[int] = set()
 
     @property
-    @item_attribute(category="information")
+    @ItemAttribute.register_member(category="information")
     def targets(self) -> list[ItemT]:
         """Return a list of items that are bound to this item.
         """

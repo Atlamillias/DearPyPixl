@@ -1,6 +1,6 @@
 from typing import Callable, Any
 from abc import abstractmethod, ABCMeta, ABC
-from dearpypixl.components import ItemAttribute, Item, ProtoItem
+from dearpypixl.components import ItemAttribute, Item, ItemType
 
 
 
@@ -19,7 +19,7 @@ class AppItemMeta(type):
         return cls.tag
 
 
-class AppItem(ProtoItem, ABC, metaclass=type("AppItemType", (AppItemMeta, ABCMeta), {})):
+class AppItem(ItemType, ABC, metaclass=type("AppItemType", (AppItemMeta, ABCMeta), {})):
     @abstractmethod
     def tag()           -> int | str     : ...
     @abstractmethod

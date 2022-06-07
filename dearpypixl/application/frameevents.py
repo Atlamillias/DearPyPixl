@@ -8,7 +8,7 @@ from dearpygui._dearpygui import (
     get_total_time,
 )
 
-from dearpypixl.components.configuration import prep_callback, get_positional_args_count
+from dearpypixl.components import prep_callback, get_positional_args_count
 from dearpypixl.components.utilities import TypeGuard
 
 __all__ = [

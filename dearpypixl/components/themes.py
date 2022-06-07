@@ -26,8 +26,7 @@ from dearpygui.dearpygui import (
     push_container_stack,
 )
 from dearpygui._dearpygui import set_value, get_value
-from dearpypixl.components.configuration import item_attribute, ItemAttribute
-from dearpypixl.components.item import Item
+from dearpypixl.components.item import Item, ItemAttribute
 from dearpypixl.constants import (
     ThemeCategoryCore,
     ThemeCategoryPlot,
@@ -104,7 +103,7 @@ class Theme(Item):
         pop_container_stack()
 
     @property
-    @item_attribute(category="configuration")
+    @ItemAttribute.register_member(category="configuration")
     def font(self) -> Union[Font, None]:
         """Font item used by this theme. If set as a `str` (filepath),
         will try to load the font.
@@ -126,7 +125,7 @@ class Theme(Item):
         self.font_size = self.__font_size_value
 
     @property
-    @item_attribute(category="configuration")
+    @ItemAttribute.register_member(category="configuration")
     def font_size(self) -> float:
         return self.__font_size_value
     @font_size.setter
@@ -146,7 +145,7 @@ class Theme(Item):
         self.__update_targets_font()
 
     @property
-    @item_attribute(category="information")
+    @ItemAttribute.register_member(category="information")
     def targets(self) -> list[Item]:
         """Return a list of items that are bound to this item.
         """

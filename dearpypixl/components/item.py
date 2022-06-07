@@ -1,14 +1,11 @@
-"""Lowest-level types for DearPyPixl."""
-from __future__ import annotations
-from abc import ABCMeta, abstractmethod
-from typing import Callable, Any, TypeVar, Union, MutableMapping, Iterator, NamedTuple, Iterable
-from typing_extensions import Self, TypeAlias
-from enum import IntEnum
-from inspect import Parameter
+"""Basic type implementations for DearPyPixl."""
 import functools
-import inspect
 import itertools
-
+from abc import ABCMeta, abstractmethod
+from enum import IntEnum
+from inspect import signature, isabstract, Parameter, _VAR_POSITIONAL, _KEYWORD_ONLY
+from typing import Callable, Any, TypeVar, MutableMapping, Iterator, NamedTuple, Iterable, Literal
+from typing_extensions import Self
 from dearpygui import dearpygui
 from dearpygui._dearpygui import (
     push_container_stack,
@@ -20,8 +17,8 @@ from dearpygui._dearpygui import (
     get_all_items,
     get_item_alias,
     unstage,
-    get_item_info,
-    get_item_state,
+    get_item_info as _get_item_info,
+    get_item_state as _get_item_state,
     get_all_items,
     get_value,
     set_value,
@@ -34,37 +31,407 @@ from dearpygui._dearpygui import (
     delete_item,
 )
 from dearpypixl.constants import ItemIndex
-from dearpypixl.components.configuration import (
-    ItemAttribute,
-    item_attribute,
-    prep_callback,
-    CONFIGURATION,
-    INFORMATION,
-    STATE
-)
+
 
 __all__ = [
     # TypeVars
     "ItemT",
-    "ItemLikeT",
     "TemplateT",
-    # Useful objects
-    "ProtoItem",
+
+    # Classes
     "Item",
-    ]
+    "ItemType",
+    "RegistryType",
+    "InternalType",
+    "ItemIdType",
+
+    # Helper functions
+    "prep_callback",
+    "prep_init_args",
+    "get_positional_args_count",
+    "set_cached_attribute",
+    "register_item",
+    "refresh_registry",
+]
 
 
-ItemT     = TypeVar("ItemT"    , bound="ProtoItem")
-TemplateT = TypeVar("TemplateT", bound="Template" )
+ItemT     = TypeVar("ItemT"    , bound="ItemType")
+TemplateT = TypeVar("TemplateT", bound="TemplateType")
+
+
+##########################################
+######### Misc. Helper Functions #########
+##########################################
+def get_positional_args_count(obj: Callable) -> int:
+    """Return the number of positional arguments for a given object.
+    """
+    # Emulating how DearPyGui doesn't require callbacks having 3 positional
+    # arguments. Only pass sender/app_data/user_data if there's "room" to 
+    # do so.
+    pos_arg_cnt = 0
+    for param in signature(obj).parameters.values():
+        if param.kind == _VAR_POSITIONAL:
+            pos_arg_cnt = 3
+        elif param.kind != _KEYWORD_ONLY:
+            pos_arg_cnt += 1
+
+        if pos_arg_cnt >= 3:
+            pos_arg_cnt = 3
+            break
+    return pos_arg_cnt
+
+
+def prep_callback(obj, _callback: Callable | None):
+    """DearPyGui callback wrapper.
+    """
+    @functools.wraps(_callback)
+    def callable_object(_=None, app_data=None, user_data=None, **kwargs):
+        args = (obj, app_data, user_data)[0:pos_arg_cnt]
+        _callback(*args, **kwargs)
+    # Wrapping is done for a couple of reasons. Firstly, to ensure that
+    # the Item instance of `sender` is returned instead of the identifier.
+    # And second; nuitka compilation doesn't like DPG callbacks unless
+    # they are wrapped (lambda, etc.)...for some reason.
+    if callable(_callback):
+        wrapper = callable_object
+        pos_arg_cnt = get_positional_args_count(_callback)
+    elif _callback is None:
+        wrapper = None
+    else:
+        raise ValueError(f"`callback` is not callable (got {type(_callback)!r}.")
+    return wrapper
+
+
+def prep_init_args(obj: ItemT, **kwargs) -> dict:
+    """Readies initializer arguments;
+        - Wraps callback-related arguments so they conform to the rest
+        of the library
+        - Recast int-like values so they are accepted by DearPyGui's
+        Python parser.
+        - Cache the initial value of managed attributes inaccessable
+        through DearPyGui.
+
+    Args:
+        * obj (ItemT): The ItemType instance to initialize.
+        * kwargs (keyword-only): Arguments used to create an item.
+    """
+    cached_members = obj.__cached__
+    # `user_data` should be excluded from type casting as it is allowed
+    # to be anything.
+    user_data = kwargs.pop("user_data", None)
+    for arg, val in kwargs.items():
+        # This wraps all callback-related arguments so that the `sender`
+        # is the instance object instead of just the item identifier.
+        if "callback" in arg and val:  # callback, drag_callback, drop_callback
+            kwargs[arg] = prep_callback(obj, val)
+            continue
+        # Recasting int-like values. This includes other Item instances that
+        # would be used as parents, or integer enums members.
+        if isinstance(val, (Item, IntEnum)):
+            kwargs[arg] = int(val)
+        # Storing attributes that cannot be fetched from DPG on instance.
+        # Otherwise, they not be accessible later.
+        if arg in cached_members:
+            cached_members[arg] = val
+    # There's no harm in including user_data if it's None since every item
+    # should accept it as an argument.
+    kwargs["user_data"] = user_data
+    return kwargs
+
+
+def set_cached_attribute(__obj, __name, value) -> None:
+    """Convenience function for setting the cached value of an attribute.
+    """
+    __obj.__cached__[__name] = value
+
+
+def register_item(item: ItemT):
+    """Add an ItemType instance to the global registry.
+    """
+    ItemType.__registry__[0][item.tag] = item
+
+
+def refresh_registry():
+    """Clear the DearPyPixl item registry of items whose tags do not exist
+    in the DearPyGui item registry.
+    """
+    # There should not be many situations where a strong reference exists
+    # in __registry__[0], but the item itself is non-existant in the
+    # DearPyGui registry. It can happen if DearPyPixl items aren't deleted
+    # correctly I guess.
+    registry = ItemType.__registry__[0]
+    pop_func = registry.pop
+    deleted_item_uuids = {tag for tag in registry} - set(get_all_items())
+    for item_uuid in deleted_item_uuids:
+        pop_func(item_uuid, None)
 
 
 
-class _RegistryType(NamedTuple):
+
+##########################################
+######### Item Member Management #########
+##########################################
+CONFIG = "configuration"
+INFORM = "information"
+STATES = "state"
+
+
+class ItemAttribute:
+    """Descriptor object for managing DearPyGui item attributes. Functionally similar
+    to the `property` built-in, but cannot be used as a decorator (for a usable deco-
+    rator, see the `register_member` class method).
+    """
+    _manager_commands     = {}
+    next_class_item_attrs = {
+        CONFIG  : set(),
+        INFORM  : set(),
+        STATES  : set(),
+        "cached": set(),
+    }
+
+    def __init__(
+        self                                                                  ,
+        category    : Literal["configuration", "information", "state"]        ,
+        getter      : str | Callable                                          ,
+        setter      : str | Callable | None                                   ,
+        target      : str                                              =  None,
+        doc         : str                                              =  None,
+        cache_on_set: bool                                             = False,
+    ):
+        """Args:
+            * category (str): Value should be `configuration`, `information` or `state`.
+            * getter (str | Callable | None): Object to call that will return the
+            attribute value. If the command is registered, the name of the command is also
+            an accepted value. A call to the object must be able be resolved using the same
+            arguments required for `getattr`.
+            * setter (str | Callable | None): Object to call that will set the value of an
+            attribute. If the command is registered, the name of the command is also
+            an accepted value. A call to the object must be able to be resolved using the same
+            arguments required for `setattr`.
+            * target (str): This is used to get the value instead of self._name. Defaults
+            to None.
+            * doc (str): Docstring for the attribute. Defaults to None.
+            * cache_on_set (bool): If True, <fset> will be altered to store a copy of the
+            value on the item instance. This is used if a configuration attribute can be
+            set but not accessed from DearPyGui. Defaults to None.
+
+            NOTE: The `target` parameter mainly exists due to minor typos in DearPyGui's
+            item configuration. 
+        """
+        if doc is None and getter is not None:
+            doc = getter.__doc__
+        if setter is None:
+            self.__set__ = self._readonly_setter
+
+        self.category     = category
+        self.fget         = getter  
+        self.fset         = setter
+        self.target       = target
+        self.cache_on_set = cache_on_set
+
+        self.__doc__ = doc
+        self._name   = ''
+
+    def __set_name__(self, __type: type, name: str):
+        self._name  = name
+        self.target = name if not self.target else self.target
+        
+        if self.category not in self.next_class_item_attrs:
+            raise ValueError(f"`category` must be 'configuration', 'state', or 'information' (got {self.category!r}).")
+
+        # There's a little bit of repeated code here, but it's not enough to
+        # motivate met to condense it.
+        fget = self.fget
+        if isinstance(fget, str):
+            try:
+                fget = self._manager_commands[fget]
+            except KeyError:
+                raise ValueError(f"No registered command found for {fget!r}.")
+        elif callable(fget):
+            self.register_manager(fget)
+        else:
+            raise ValueError(f"{fget!r} value is not a registered command, or has the incorrect signature.")
+        self.fget = fget
+
+        fset = self.fset
+        if fset is not None:
+            if isinstance(fset, str):
+                try:
+                    fset = self._manager_commands[fset]
+                except KeyError:
+                    raise ValueError(f"No registered command found for {fset!r}.")
+            elif callable(fset):
+                self.register_manager(fset)
+            else:
+                raise ValueError(f"{fset!r} value is not a registered command, or has the incorrect signature.")
+            
+            if self.cache_on_set:
+                fset = self._cached_attribute(fset)
+            self.fset = fset
+
+        self.next_class_item_attrs[self.category].add(name)
+        # Mark attribute as cached if necessary.
+        # TODO: Implement a less piss-poor way to do this.
+        if "cache" in self.fget.__qualname__:
+            self.next_class_item_attrs["cached"].add(name)
+
+    def __get__(self, instance: object, _type: type):
+        if instance is None:
+            return self
+        return self.fget(instance, self.target)
+
+    def __set__(self, instance: object, value):
+        self.fset(instance, self.target, value)
+
+    def _readonly_setter(self, instance: object, value):
+        # Replaces self.__set__ for read-only attributes.
+        raise AttributeError(f"Cannot set read-only attribute {self._name!r}.")
+    
+    @staticmethod
+    def _cached_attribute(func: Callable):
+        # This alters the behavior of self.fset to cache a copy of the new
+        # value on the instance (see `cache_on_set` parameter).
+        def attribute_setter(__obj: object, __name: str, value: Any):
+            func(__obj, __name, value)
+            set_cached_attribute(__obj, __name, value)
+        return attribute_setter
+
+
+    #### Decorators ####
+    @classmethod
+    def register_manager(cls, func: Callable):
+        """(Decorator) Registers a function as an item attribute command. The name of a
+        registered command (string) can be passed as the getter/setter argument
+        for an `ItemAttribute` instance."""
+
+        cls._manager_commands[func.__qualname__] = func
+        return func
+
+    @classmethod
+    def register_member(cls, cls_attribute: Callable | str = None, *, category: Literal["configuration", "information", "state"]):
+        """(Decorator) Alternative to using the `ItemAttribute` descriptor. Registers class-
+        defined attributes that are to be managed as item attributes without using the
+        descriptor.
+
+        Args:
+            * cls_attribute (Callable | str): The attribute to register. If it is a method,
+            `cls_attribute.__name__` is registered.
+            * category (Literal, keyword-only): Category to register the attribute under.
+            Must be "configuration", "information", or "state".
+
+        Examples:
+        >>> class ProtoItem:
+        ...     x = item_attribute("x", category="configuration")
+        None
+        >>> class ProtoItem:
+        ...     @property
+        ...     @item_attribute(category="configuration")
+        ...     def config_property(self):
+        ...         ...
+        None
+        """
+
+        @functools.wraps(cls_attribute)
+        def register(obj):
+            # Register the attribute by category.
+            if isinstance(obj, str):
+                name = obj
+            elif callable(obj):
+                # `obj` should be a method
+                name = obj.__name__
+            else:
+                raise ValueError(f"`obj` must be a string or callable method (got {type(obj)!r}).")
+                
+            try:
+                cls.next_class_item_attrs[category].add(name)
+            except KeyError:
+                raise ValueError(f"`category` must be 'configuration', 'state', or 'information' (got {category!r}).")
+            return obj
+        
+        if cls_attribute:
+            return register(cls_attribute)
+        return register
+
+
+# Member Getters
+@ItemAttribute.register_manager
+def get_item_config(__o: object, __name: str):
+    return get_item_configuration(__o._tag)[__name]
+
+
+@ItemAttribute.register_manager
+def get_item_info(__o: object, __name: str):
+    return _get_item_info(__o._tag)[__name]
+
+
+@ItemAttribute.register_manager
+def get_item_state(__o: object, __name: str):
+    return _get_item_state(__o._tag)[__name]
+
+
+@ItemAttribute.register_manager
+def get_item_cached(__o: object, __name: str):
+    # Pull private attribute.
+    return __o.__cached__[__name]
+
+
+@ItemAttribute.register_manager
+def get_item_value(__o: object, __name: str = None):
+    return get_value(__o._tag)
+
+
+# Member Setters
+@ItemAttribute.register_manager
+def set_item_config(__obj: object, __name: str, value: Any):
+    configure_item(__obj._tag, **{__name: value})
+
+
+@ItemAttribute.register_manager
+def set_item_value(__obj: object, __name: str, value: Any):
+    # `value`, `default_value`
+    set_value(__obj._tag, value)
+
+
+@ItemAttribute.register_manager
+def set_item_callback(__obj: object, __name: str, value: Any):
+    configure_item(__obj._tag, **{__name: prep_callback(__obj, value)})
+
+
+
+
+######################################
+##### Lower-Level Structures/API #####
+######################################
+class RegistryType(NamedTuple):
+    """Contains references to Item objects.
+
+    Args:
+        * items (dict[int, ItemT]): Contains references to Item instances
+        as `{instance.tag: instance}`.
+        * types (dict[str, type[ItemT]]): Contains references to created
+        Item types as `{type(ItemT).__qualname__: type(ItemT)}`.
+    """
+    # TODO: Use weakrefs.
     items: dict[int, ItemT]       = {}
     types: dict[str, type[ItemT]] = {}
 
 
-class _InternalType(NamedTuple):
+class InternalType(NamedTuple):
+    """Contains data collections used internally by DearPyPixl.
+
+    Args:
+        * config_members (tuple[str, ...]): Managed configuration attributes.
+        * inform_members (tuple[str, ...]): Managed information attributes.
+        * states_members (tuple[str, ...]): Managed states attributes.
+        * cached_members (tuple[str, ...]): Managed configuration attributes
+        that are stored in `__cached__`. These attributes cannot be fetched
+        from DearPyGui.
+        * init_params (dict[str, Parameter]): Parameters passed to the
+        constructor to create instances of this Item type (collected
+        from all classes in its inheritance tree).
+        * template_item (TemplateT): The bound Template object created
+        specifically for this Item type.
+    """
     config_members: tuple[str, ...]      = ()
     inform_members: tuple[str, ...]      = ()
     states_members: tuple[str, ...]      = ()
@@ -72,18 +439,92 @@ class _InternalType(NamedTuple):
     init_params   : dict[str, Parameter] = {}
     template_item : TemplateT            = None
 
-        
-class ProtoItem(metaclass=ABCMeta):
-    """The "bookkeeper" for Item subclasses. Registers new item types
-    and ensures expected functionality of inherited properties.
+
+class ItemIdType(NamedTuple):
+    """Contains information regarding an item type's identity. Converting to an
+    integer or string will return the appropriate value.
+
+    Args:
+        * integer (int): The enum value used internally by DearPyGui representing
+        the item's type.
+        * string (str): The name of the item type used internally by DearPyGui.
+       It should be the result of
+       `dearpygui.get_item_info(self.tag)["type"].split('::')[-1]`.
     """
-    # NOTE: Every Item-related class object in DearPyPixl should be inheriting from
-    # this in some fashion. This includes the `Item` base type and any mixins for
-    # Item subclasses. Niche applications aside, derive from `Item` and not this --
-    # it has all of the fancy stuff. Literally nothing here is designed to be
-    # publicly accessed.
-    #
-    # Also, this section is pretty comment-heavy because I have the short-term
+    integer: int
+    string : str
+
+    def __int__(self) -> int:
+        return self[0]
+
+    def __str__(self) -> str:
+        return f"mvAppItemType::{self[1]}"
+
+        
+class ItemType(metaclass=ABCMeta):
+    """Lowest-level parent class for Item subclasses. Provides default values of
+    internally used attributes, and ensures expected functionality of inherited
+    managed item members. All Item-related types, including mixin types,
+    should be directly or indirectly derived from this object.
+
+    Attributes:
+        * __registry__ (RegistryType): Stores references to Item objects. This
+        is never dynamically assigned, and should NOT be redefined on subclasses.
+
+        * __internal__ (InternalType): Stores collections of data used internally
+        by DearPyPixl. The structures containing information regarding managed
+        attributes are collected from the managed item attributes registered for
+        the ItemType. -- merged into a copy of the identical structure from the
+        derived type. Similarly, the initialization parameters structure includes
+        the parameters of the entire inheritance tree, including those for the
+        new type. This attribute is assigned to new derived ItemType classes when 
+        they are created. Assigning directly on subclasses does nothing.
+
+        * __cached__ (dict[str, Any]): Stores managed item attributes that cannot
+        be accessed through the DearPyGui API. Some (configuration attributes) can
+        still be properly set. Others are immutable once set via the constructor
+        and are read-only. This attribute is automatically assigned per ItemType
+        instance, so redefining it on the class does nothing. 
+        
+
+        The following attributes should be redefined per derived ItemType as
+        necessary;
+
+        * __itemtype_id__ (ItemTypeIdType | None): A sequence containing informa-
+        tion used internally by DearPyGui regarding an item type's identity. It
+        may be set to None to indicate that the item type is "complex". A complex
+        item type does not (or cannot) associate with an existing type. Examples
+        include ItemTypes that are only item-like (it exposes only a part of the
+        Item API), or compound types that are created with or manage more than
+        one type of item.
+
+        * __is_root_item__ (bool): If True, instances of this ItemType cannot be
+        parented by any type of item. `__is_container__` should also be True.
+
+        * __is_container__ (bool): If True, instances of this ItemType can parent
+        other items.
+
+        * __able_parents__ (tuple[str, ...]): A sequence of ItemType names that
+        items of this type can parent. If empty, then instances of this ItemType
+        are known to parent most items.
+
+        * __able_children__ (tuple[str, ...]): A sequence of ItemType names that
+        can parent instances this type. If empty, then most container ItemType
+        instances can parent instances of this ItemType.
+
+        * __is_value_able__ (bool): If True, then instances of this ItemType can
+        hold a value when once is set. The type of the value can vary between
+        item types.
+
+        * __command__ (Callable): An object with a defined `__call__` method
+        that, when invoked, (in)directly calls the appropriate DearPyGui command
+        that creates an item of this type and returns its unique identifier.
+
+        NOTE: Redefining the `__able_parents__` or `__able_children__` attributes
+        does not extend the sequence of parents/children inherited from the parent
+        type. As expected, it literally redefines the attribute.
+    """
+    # This section is pretty comment-heavy because I have the short-term
     # memory of a tunafish.
 
     @abstractmethod
@@ -91,45 +532,35 @@ class ProtoItem(metaclass=ABCMeta):
 
     __slots__ = ()
 
-    __registry__      : _RegistryType  = _RegistryType()
-    __internal__      : _InternalType  = _InternalType() 
-
+    # "Convention" discourages the use of custom dunder members. These
+    # attributes fall somewhere in the middle of public and private. To
+    # avoid namespace collisions without obfuscating them, all internally
+    # -used members are dunder attributes.
+    __registry__      : RegistryType   = RegistryType()
+    __internal__      : InternalType   = InternalType()
     __cached__        : dict[str, Any] = {}
     
-    __is_root_item__  : bool     = False
-    __is_container__  : bool     = False
-    __able_parents__  : tuple    = ()
-    __able_children__ : tuple    = ()
-    __is_value_able__ : bool     = False
-    __command__       : Callable = None
-    __constants__     : tuple    = ()
+    __itemtype_id__   : ItemIdType | None = None
+    __is_root_item__  : bool                  = False
+    __is_container__  : bool                  = False
+    __able_parents__  : tuple                 = ()
+    __able_children__ : tuple                 = ()
+    __is_value_able__ : bool                  = False
+    __command__       : Callable              = None
+    # The `__constants__` attribute is also defined on many items. This is
+    # not (and likely won't be) used by the Item API. It contains the names
+    # of constants in DearPyGui that are associated with that item type
+    # (i.e. it's for "me").
 
     def __init_subclass__(cls):
         super().__init_subclass__()
-        ###############################################################
-        # [Section 1] Controlling Inherited (Managed) Item Attributes #
-        # [Section 2] Item Class Template                             #
-        # [Section 3] Container Context Control                       #
-        # [Section 4] Item Registration                               #
-        #                                                             #
-        # The process in which new Item subtypes are created is not   #
-        # overly complex, but not completely straight-forward either. #
-        # It involves registering both the new type as well as regi-  #
-        # stering any "managed item attributes" it may use. Inheriti- #
-        # ng from `ProtoItem` or `Item` will handle the item type     #
-        # registration. The bulk of the attribute registration is     #
-        # handled by the `ItemAttribute` descriptor class and the     #
-        # `item_attribute` decorator function defined in              #
-        # "configuration.py".                                         #
-        #                                                             #
-        # As attributes are used with either object, they are cached  #
-        # under a specific category (configuration, state, or inform- #
-        # tion). They are then registered to the NEXT subclass that   #
-        # is initialzed (defined below). The initialization clears    #
-        # the cache for the FOLLOWING class. It's VERY important that #
-        # `ItemAttribute` and `item_attribute` only be used in the    #
-        # body of a class derived from `ProtoItem` or `Item`.         #           
-        ###############################################################
+        ##############################################################################
+        # [Section 1] Controlling (Inherited) Item Members                           #
+        # [Section 2] Item Class Template                                            #
+        # [Section 3] Container Context Control                                      #
+        # [Section 4] Item Registration                                              #
+        #                                                                            #        
+        ##############################################################################
         
         # TODO: Possibly apply a `value` property on `Item`, and set the setter
         # here if the item is value-able.
@@ -139,14 +570,15 @@ class ProtoItem(metaclass=ABCMeta):
         # the "complete signature" of the item class can be easily retrieved
         # even after subclassing. Less mro traversal.
         parent_cls      = cls.mro()[1]
-        parent_internal = getattr(parent_cls, "__internal__", ProtoItem.__internal__)
+        parent_internal = getattr(parent_cls, "__internal__", ItemType.__internal__)
 
-        # Managed item members are stored via `ItemAttribute` and `item_attribute`.
-        config_members  = [*ItemAttribute.next_class_item_attrs[CONFIGURATION]]
-        inform_members  = [*ItemAttribute.next_class_item_attrs[INFORMATION]]
-        states_members  = [*ItemAttribute.next_class_item_attrs[STATE]]
+        # Managed item members are stored via `ItemAttribute`.
+        config_members  = [*ItemAttribute.next_class_item_attrs[CONFIG]]
+        inform_members  = [*ItemAttribute.next_class_item_attrs[INFORM]]
+        states_members  = [*ItemAttribute.next_class_item_attrs[STATES]]
         cached_members  = [*ItemAttribute.next_class_item_attrs["cached"]]
-        init_params     = parent_internal[4] | dict(inspect.signature(cls).parameters)
+        init_params     = parent_internal[4] | dict(signature(cls).parameters)
+        init_params.pop("kwargs", None)  # Don't need this.
 
         item_mbr_seqs   = (config_members, inform_members, states_members, cached_members)
         parent_mbr_seqs = parent_internal[0:4]
@@ -157,7 +589,6 @@ class ProtoItem(metaclass=ABCMeta):
                            *inform_members,
                            *states_members,
                            *cached_members}
-
         # Ensuring that the new item class doesn't inherit a managed attribute if
         # it has it's own implementation, allowing for expected inheritance. For
         # example; `label` is a managed attribute defined on the `Item` class (below).
@@ -170,24 +601,15 @@ class ProtoItem(metaclass=ABCMeta):
                 item_sequence.append(member)
 
         #### [Section 2] #############################################################
-        # Create a new bound template for this item.
-        # [6/03/2022] Special attributes and class
-
-        # There's no need to create a template for a class that is never instantiated.
-        # Also when registering the "Item" class an error would be raised as `Template`
-        # is defined after it.
-        if not inspect.isabstract(cls):
+        # There's no need to create a template for a class that is never instantiated,
+        # so we avoid ABC's (also when registering the "Item" class an error would be
+        # thrown as the template base class is is defined after it).
+        if not isabstract(cls):
             template = type(
-                f"{cls.__qualname__}{Template.__qualname__}",
-                (Template,),
-                {"__slots__"        : tuple(("tag", *cls.__internal__[4].keys())),
-                 "__is_container__" : cls.__command__      ,
-                 "__is_root_item__" : cls.__is_root_item__ ,
-                 "__is_value_able_" : cls.__is_value_able__,
-                 "__able_parents__" : cls.__able_parents__ ,
-                 "__able_children__": cls.__able_children__,
-                 "__command__"      : cls.__command__      ,
-                }
+                f"{cls.__qualname__}Template",
+                (TemplateType,),
+                {"__slots__"        : tuple(cls.__internal__[4].keys()),
+                 "_factory"         : cls                              }
             )
         else:
             template = None
@@ -195,7 +617,8 @@ class ProtoItem(metaclass=ABCMeta):
 
         #### [Section 3] #############################################################
         # [4/28/2022] The `Container` class was removed in favor of this.
-        # If the item is a container, it can be used as a context manager.
+        # If the item is a container, set the appropriate methods so it can be used as
+        # a context manager. However, don't overwrite an existing implementation.
         if cls.__is_container__:
             if not hasattr(cls, "__enter__"):
                 cls.__enter__ = cls.__enter
@@ -204,9 +627,8 @@ class ProtoItem(metaclass=ABCMeta):
 
 
         #### [Section 4] ############################################################
-        # Finalize and register new item class...
-
-        cls.__internal__ = _InternalType(
+        # Finalize and register new item type...
+        cls.__internal__ = InternalType(
             tuple(config_members),  # <  Several methods defined on the `Item` class
             tuple(inform_members),  # <  are dependant on these collections. An
             tuple(states_members),  # <  attribute included in any of these can be
@@ -214,13 +636,11 @@ class ProtoItem(metaclass=ABCMeta):
             init_params,           
             template,                  
         )
-
         # Only registering Item classes that can be instantiated.
         # For the sake of readability, `isabstract` is unnecessarily called
         # again just so I can keep these sections seperate.
-        if not inspect.isabstract(cls):
+        if not isabstract(cls):
             cls.__registry__[1][cls.__qualname__] = cls
-
         # Clear the item member registry cache for the next derived class.
         # NOTE: Shit gets weird if this cache is populated outside of an
         # appropriate class body.
@@ -231,7 +651,7 @@ class ProtoItem(metaclass=ABCMeta):
 
     def __dir__(self) -> Iterable[str]:
         # Exclude name-mangled attributes from instance dir.
-        # I'm not trying to completely obsufucate the internal
+        # I'm not trying to completely obfuscate the internal
         # attributes, so I'm leaving the class dir alone.
         prefixes = {f"_{cls.__qualname__}__" for cls in type(self).mro()}
         return [attr for attr in super().__dir__()
@@ -246,8 +666,13 @@ class ProtoItem(metaclass=ABCMeta):
         pop_container_stack()
 
 
-class Item(ProtoItem, metaclass=ABCMeta):
-    """Base class for wrapping DearPyGui items.
+
+
+#####################################
+######## High-Level Item API ########
+#####################################
+class Item(ItemType, metaclass=ABCMeta):
+    """Base class for object-oriented DearPyGui items.
 
     Properties
     -----------------------
@@ -267,12 +692,12 @@ class Item(ProtoItem, metaclass=ABCMeta):
     -------
         * raw_init (classmethod)
         * as_template (classmethod)
+        * get_able_parents (classmethod)
+        * get_able_children (classmethod)
         * configure
         * configuration
         * information
         * state
-        * get_able_parents (classmethod)
-        * get_able_children (classmethod)
         * get_item_slot_info
         * get_child_slot_info
         * get_item_tree
@@ -288,9 +713,10 @@ class Item(ProtoItem, metaclass=ABCMeta):
         * reset_pos
 
     """
+    # Internal members and abstract methods are toward the bottom.
 
     @classmethod
-    def raw_init(cls, **config) -> Union[int, str]:
+    def raw_init(cls, **config) -> int | str:
         """Skip normal initialization -- Directly call the DearPyGui command used
         to create the item and return its unique identifier. Useful when creating
         several items (hundreds/thousands) or when object orientation for an item
@@ -306,32 +732,28 @@ class Item(ProtoItem, metaclass=ABCMeta):
 
     @classmethod
     def as_template(cls, **config) -> type[Self]:
-        """Return a Template object; a mapping-like factory object that can create
-        instances of items from a freely-customizable default configuration. <config>
-        will be merged into a copy of the default parameters used to initialize an
-        instance of the class.
+        """Return a an instance of the ItemType's template class; a mapping-like
+        factory object that can create instances of items from a freely-customizable
+        default configuration.
 
         Args:
-            * config (keyword-only, optional): Overriding configuration to be used
-            as initial default configuration for future items.
+            * config (keyword-only, optional): Used as default arguments when creating
+            future items.
         """
         configuration = {}
-        empty         = inspect.Parameter.empty
+        empty         = Parameter.empty
         for param in cls.__internal__[4].values():
             default = None if param.default is empty else param.default
             configuration[param.name] = default
 
         configuration.pop("kwargs", None)
         configuration |= config
-
         return cls.__internal__[5](**configuration)
 
 
-    #### Properties ####
-
-    # Configuration
+    #### Configuration Properties ####
     @property
-    @item_attribute(category=CONFIGURATION)
+    @ItemAttribute.register_member(category=CONFIG)
     def label(self) -> str:
         return get_item_configuration(self._tag)["label"]
     @label.setter
@@ -339,7 +761,7 @@ class Item(ProtoItem, metaclass=ABCMeta):
         configure_item(self._tag, label=value)
 
     @property
-    @item_attribute(category=CONFIGURATION)
+    @ItemAttribute.register_member(category=CONFIG)
     def use_internal_label(self) -> str:
         return get_item_configuration(self._tag)["use_internal_label"]
     @use_internal_label.setter
@@ -347,7 +769,7 @@ class Item(ProtoItem, metaclass=ABCMeta):
         configure_item(self._tag, use_internal_label=value)
 
     @property
-    @item_attribute(category=CONFIGURATION)
+    @ItemAttribute.register_member(category=CONFIG)
     def user_data(self) -> str:
         return get_item_configuration(self._tag)["user_data"]
     @user_data.setter
@@ -355,31 +777,31 @@ class Item(ProtoItem, metaclass=ABCMeta):
         configure_item(self._tag, user_data=value)
 
 
-    # Information
+    #### Information Properties ####
     @property
-    @item_attribute(category=INFORMATION)
+    @ItemAttribute.register_member(category=INFORM)
     def tag(self) -> int:
         """Return this item's unique integer identifier.
         """
         return self._tag
 
     @property
-    @item_attribute(category=INFORMATION)
+    @ItemAttribute.register_member(category=INFORM)
     def alias(self) -> str | None:
         """Return this item's unique string identifier.
         """
         return get_item_alias(self._tag) or None
 
     @property
-    @item_attribute(category=INFORMATION)
+    @ItemAttribute.register_member(category=INFORM)
     def parent(self) -> 'Item':
         """Return the direct progenitor of this item.
         """
-        return self.__registry__[0].get(get_item_info(self._tag)["parent"], None)
+        return self.__registry__[0].get(_get_item_info(self._tag)["parent"], None)
 
     @classmethod
     @property
-    @item_attribute(category=INFORMATION)
+    @ItemAttribute.register_member(category=INFORM)
     def is_container(cls) -> bool:
         """Return True if items of this type are capable of parenting other items.
         """
@@ -387,7 +809,7 @@ class Item(ProtoItem, metaclass=ABCMeta):
 
     @classmethod
     @property
-    @item_attribute(category=INFORMATION)
+    @ItemAttribute.register_member(category=INFORM)
     def is_root_item(cls) -> bool:
         """Return True if this item does not require a parent item to exist
         (and cannot be parented by other items).
@@ -396,23 +818,23 @@ class Item(ProtoItem, metaclass=ABCMeta):
     
     @classmethod
     @property
-    @item_attribute(category=INFORMATION)
+    @ItemAttribute.register_member(category=INFORM)
     def is_value_able(cls) -> bool:
         """Return True if items of this type can hold a value.
         """
         return cls.__is_value_able__
 
 
-    # State
+    #### States Properties ####
     @property
-    @item_attribute(category=STATE)
+    @ItemAttribute.register_member(category=STATES)
     def is_ok(self) -> bool:
         """Return True if the item is render-able.
         """
-        return get_item_state(self._tag)["ok"]
+        return _get_item_state(self._tag)["ok"]
 
     @property
-    @item_attribute(category=STATE)
+    @ItemAttribute.register_member(category=STATES)
     def is_enabled(self) -> bool:
         """Return True if the item is not disabled.
         """
@@ -420,13 +842,32 @@ class Item(ProtoItem, metaclass=ABCMeta):
 
 
     #### Methods ####
+    @classmethod
+    def get_able_parents(cls) -> tuple[ItemT, ...]:
+        """Return the names of all item types that can parent this item IF the item requires
+        specific parent items. If the returned tuple is empty, then the item can be parented by
+        most non-root container items.
+        """
+        item_types = cls.__registry__[1]
+        return tuple((parent for item_name in cls.__able_parents__
+                      if (parent:=item_types.get(item_name))))
+
+    @classmethod
+    def get_able_children(cls) -> tuple[ItemT, ...]:
+        """Return the names of all item types that this item can parent. If the returned tuple
+        is empty, then this type of item can parent most non-root items.
+        """
+        item_types = cls.__registry__[1]
+        return tuple((child for item_name in cls.__able_children__
+                      if (child:=item_types.get(item_name))))
+
     def configuration(self) -> dict[str, Any]:
         """Return the configurable options used to manage this item, along
         with their current values.
 
-        NOTE: This is not an exact equivelent of DearPyGui's `configure_item`
-        command. Unlike `configure_item`, if the option is not included as a
-        parameter in signature of `type(self)`, it is not considered "configuration"
+        This is not an exact equivelent of DearPyGui's `configure_item`
+        function. If the option is not included as a parameter in signature
+        of `type(self).__init__`, it is not considered to be "configuration"
         and will not be included in the return (see the `information` method). 
         """
         # This is MUCH faster than calling `getattr` on every configuration.
@@ -450,29 +891,10 @@ class Item(ProtoItem, metaclass=ABCMeta):
         """
         # Similar to the speed-up implementation for the `configuration` method
         # but a little more hacky (and for less 'profit').
-        states = {f"is_{state}":v for state, v in get_item_state(self._tag).items()}
+        states = {f"is_{state}":v for state, v in _get_item_state(self._tag).items()}
         item_states_attrs = self.__internal__[2]
         return {attr:(states[attr] if attr in states else
                 getattr(self, attr)) for attr in item_states_attrs}
-
-    @classmethod
-    def get_able_parents(cls) -> tuple[ItemT, ...]:
-        """Return the names of all item types that can parent this item IF the item requires
-        specific parent items. If the returned tuple is empty, then the item can be parented by
-        most non-root container items.
-        """
-        item_types = cls.__registry__[1]
-        return tuple((parent for item_name in cls.__able_parents__
-                      if (parent:=item_types.get(item_name))))
-
-    @classmethod
-    def get_able_children(cls) -> tuple[ItemT, ...]:
-        """Return the names of all item types that this item can parent. If the returned tuple
-        is empty, then this type of item can parent most non-root items.
-        """
-        item_types = cls.__registry__[1]
-        return tuple((child for item_name in cls.__able_children__
-                      if (child:=item_types.get(item_name))))
 
     def get_item_slot_info(self, *, start: int = 0, stop: int = None) -> tuple[int, int] | None:
         """Search the child slots of this item's parent; return the slot number the item is in, and
@@ -549,7 +971,7 @@ class Item(ProtoItem, metaclass=ABCMeta):
             return [appitems[child_id] for child_id in itertools.chain.from_iterable(child_slots)]
         return [appitems[child_id] for child_id in child_slots[slot]]
 
-    def move(self, parent: Union[ItemT, int] = 0, before: Union[ItemT, int] = 0, **kwargs) -> None:
+    def move(self, parent: ItemT | int = 0, before: ItemT | int = 0, **kwargs) -> None:
         """If the item is a child, it will be appended to <parent>'s list
         of children, or inserted before/above <before>. An error will be raised if
         this item does not require a parenting item to exist.
@@ -569,7 +991,7 @@ class Item(ProtoItem, metaclass=ABCMeta):
             if parent and not does_item_exist(parent) or before and not does_item_exist(before):
                 raise ValueError(f"`parent` or `before` does not exist; possibly deleted.")
             if parent and before:
-                if get_item_info(before)["parent"] != parent:
+                if _get_item_info(before)["parent"] != parent:
                     raise ValueError(f"`before` is not a child of `parent`.")
                 ValueError(f"Could not move item; is `parent` not appropriate for this item?")
             elif parent:
@@ -602,36 +1024,60 @@ class Item(ProtoItem, metaclass=ABCMeta):
             self._err_if_root_item()
             raise
 
-    def copy(self, recursive: bool = False, **config) -> Self:  # kinda mimics list method
-        """Create and return a copy of this item. Children of the copied item
-        will not be duplicated unless `recursive` is True.
+    def copy(self, _recursive: bool = True, **config) -> Self:
+        """Return a newly-created item of this item's type using it's current
+        configuration as arguments.
 
         Args:
-            * recursive (bool, optional): If True, all item children will also be
-            duplicated. Default is False.
-            * config (keyword-only, optional): Configuration that will override
-            the copied configuration for the new item copy.
+            * _recursive (bool, optional): If True, all item children will also be
+            duplicated. Default is True.
+            * config (keyword-only, optional): The arguments to include when creating
+            creating the direct copy item (not children, if <_recursive> is True).
+            They will be merged into a copy of this item's current configuration before
+            sending it to the constructor.
         """
+        # NOTE: Understand that copied items will also honor bound item states that
+        # are available as constructor parameters (such as `theme` and `events` for
+        # `Widget` derivatives). Since they are independent of the item's tree they
+        # will not be copied. However, they are registered as configuration attrib-
+        # utes, so references to these items will be passed to the item's construc-
+        # tor (inherited from the original item's configuration) where they will be
+        # bound.
+
         cls = type(self)
         configuration = self.configuration() | config
 
-        if configuration.get("pos", None) == [0, 0]:
-            configuration["pos"] = []
-
-        if not cls.__is_root_item__ and "parent" not in config:
+        # Add an explicit parent if the copy item supports it (as it is not included
+        # in self.configuration()).
+        if not cls.is_root_item and "parent" not in config:
             configuration["parent"] = self.parent
 
-        # `value` isn't typically a valid argument. Usually it's `default_value`,
-        # but it's not consistent. To be safe, the value is set after item
-        # creation.
-        value = configuration.pop("value", None)
-        self_copy = cls(**configuration)
-        # Applying value (if the item isn't value-able then it simply won't "stick")
-        dearpygui.set_value(self_copy._tag, value)
+        # If the item supports `pos`, accessing the value from DearPyGui will return
+        # [0, 0] regardless if the argument was left as the default empty sequence on
+        # creation. The problem is that [0, 0] is an actual value, so the copy item's
+        # position will be set as such if passed as-is to the constructor. Because it
+        # is uncommon that this value is purposeful and "real", a value of [0, 0] is
+        # replaced with the accepted version of "None".
+        if "pos" in config:  # was explicitly included, so honor it regardless.
+            ...
+        elif configuration.get("pos", None) == [0, 0]:
+            configuration["pos"] = []
 
-        if recursive:
+        self_copy = cls(**configuration)
+
+        # Make sure to set the copy item's value to match the real item's value.
+        # `default_value` is not always included as an argument when an item is
+        # value-able, and it isn't known if other arguments would set the internal
+        # value. So the value is copied over only if the copy item's value is None
+        # after it has been created.
+        if cls.is_value_able and getattr(self_copy, "value", None) is None:
+            dearpygui.set_value(self_copy._tag, self.value)
+
+        # Recursively copy the children, ensuring that the copied item parents
+        # them.
+        if _recursive:
             for child in self.children():
-                child.copy(recursive=recursive, parent=self_copy)
+                child.copy(recursive=_recursive, parent=self_copy)
 
         return self_copy
 
@@ -651,25 +1097,25 @@ class Item(ProtoItem, metaclass=ABCMeta):
             delete_item(self._tag, children_only=children_only, slot=slot)
         except SystemError:
             pass
-        self._refresh_registry()
+        refresh_registry()
 
         if not children_only:
             del self
 
     def focus(self, **kwargs) -> None:
-        """Brings an item into focus. Does nothing to items that cannot be
+        """Brings an item into focus. Does nothing if the item cannot be
         displayed.
         """
         focus_item(self._tag)
 
     def toggle(self, **kwargs) -> None:
         """If the item supports `show`, hide/show the item. Does nothing if
-        `show` is an invalid configuration option.
+        `show` is not a invalid configuration option.
         """
         # Because configuration attributes are exposed as properties and several
         # DPG items don't support `show`, I'm not inclined to define a `show` function.
-        # But I know wrapping `window.show = True/False` in a lambda for a callback is
-        # kinda dumb so I wanted to make something user-and-callback-friendly.
+        # Wrapping `window.show = True/False` in a lambda for a callback is
+        # kinda dumb though so I wanted to make something user and callback friendly.
         if "show" in self.__internal__[0]:
             show_state = get_item_configuration(self._tag)["show"]
             configure_item(self._tag, show=not show_state)
@@ -684,7 +1130,7 @@ class Item(ProtoItem, metaclass=ABCMeta):
 
     def reset_pos(self, **kwargs) -> None:
         """If the item supports positioning (`pos`), return the item to its
-        original position. Does nothing if `pos` is an invalid configuration
+        original position. Does nothing if `pos` is not a valid configuration
         option.
         """
         try:
@@ -696,9 +1142,7 @@ class Item(ProtoItem, metaclass=ABCMeta):
     ###### END API #######
     ######################
 
-    __slots__ = (
-        "_tag",
-    )
+    __slots__ = ("_tag")
 
     ## Abstract Methods ##
     @abstractmethod
@@ -736,24 +1180,23 @@ class Item(ProtoItem, metaclass=ABCMeta):
 
     ## Special Methods ##
     def __init__(self, **kwargs):
-        # Prepping argument values before item creation.
-        # `user_data` needs to be excluded from type casting as it is allowed
-        # to be anything, including items and integer enums.
-        user_data = kwargs.pop("user_data", None)
-        kwargs    = self._prep_args(**kwargs)
+        self.__cached__ = dict.fromkeys(self.__internal__[3], None)
 
-        # Creation and registration
+        kwargs = prep_init_args(self, **kwargs)
+
+        # If `tag` is a string or None, generate an new integer id.
         identifier = kwargs.pop("tag", None) or generate_uuid()
         alias      = None
         if isinstance(identifier, str):
             alias      = identifier
             identifier = generate_uuid()
         try:
-            self._tag = type(self).__command__(tag=identifier, user_data=user_data, **kwargs)
+            self._tag = type(self).__command__(tag=identifier, **kwargs)
         except SystemError:
             raise SystemError(f"Error creating {type(self).__qualname__!r} item. Verify that the arguments are appropriate.")
+        # If `tag` was a string, it is an alias and should be set as such.
         alias and add_alias(alias, identifier)
-        self.__registry__[0][self._tag] = self
+        register_item(self)
 
     def __repr__(self):
         item_id = self._tag
@@ -770,7 +1213,7 @@ class Item(ProtoItem, metaclass=ABCMeta):
         return hash((type(self), self._tag, self.alias))
 
     def __eq__(self, other):
-        if not isinstance(other, ProtoItem):
+        if not isinstance(other, ItemType):
             return False
         return hash(self) == hash(other)
 
@@ -848,26 +1291,9 @@ class Item(ProtoItem, metaclass=ABCMeta):
             raise NotImplemented("This slice or index operation is not supported.")
 
         row_idx, col_idx = value
-        row_id           = get_item_info(self._tag)["children"][1][row_idx]
-        row_child_id     = get_item_info(row_id)["children"][1][col_idx]
+        row_id           = _get_item_info(self._tag)["children"][1][row_idx]
+        row_child_id     = _get_item_info(row_id)["children"][1][col_idx]
         return self.__registry__[0][row_child_id]
-
-
-    def _prep_args(self, **kwargs) -> dict:
-        cached_members  = self.__internal__[3]
-        self.__cached__ = cached_values = dict.fromkeys(cached_members, None)
-        for arg, val in kwargs.items():
-            if "callback" in arg and val:  # `[drag_/drop_]callback`
-                kwargs[arg] = prep_callback(self, val)
-                continue
-            # Recasting int-like values.
-            if isinstance(val, (Item, IntEnum)):
-                kwargs[arg] = int(val)
-            # Storing attributes that cannot be fetched from DPG on instance.
-            if arg in cached_members:
-                cached_values[arg] = val
-        return kwargs
-
 
     ## private/internal methods ##
     def _children(self) -> Iterator[list[int]]:
@@ -876,11 +1302,11 @@ class Item(ProtoItem, metaclass=ABCMeta):
         # Unlike the public `children` method, this one is an iterator
         # yielding "raw" children. This is preferrable functionality
         # for some things.
-        yield from get_item_info(self._tag)["children"].values()
+        yield from _get_item_info(self._tag)["children"].values()
 
     def _item_tree(self) -> list['Item', list['Item', list]]:
         tree        = [self, []]
-        child_slots = [*get_item_info(self._tag)["children"].values()]
+        child_slots = [*_get_item_info(self._tag)["children"].values()]
         # slots 1 (most items) and 2 (draw items)
         appitems = self.__registry__[0]
         children = child_slots[2 if self._is_draw_item() else 1]
@@ -905,23 +1331,6 @@ class Item(ProtoItem, metaclass=ABCMeta):
     def _is_draw_item(cls) -> bool:
         return cls._item_index() in cls.__draw_item_types
 
-    @classmethod
-    def _refresh_registry(cls) -> None:
-        """Clear the DearPyPixl item registry of items whose tags do not exist
-        in the DearPyGui item registry.
-        """
-        # There should not be many situations where a strong reference exists
-        # in __registry__[0], but the item itself is non-existant in the
-        # DearPyGui registry. It can happen if DearPyPixl items aren't deleted
-        # correctly I guess.
-        # TODO: Set this to run every *n*th frame for the application.
-        appitem_reg = cls.__registry__[0]
-        pop_appitem = appitem_reg.pop
-        deleted_item_uuids = {tag for tag in appitem_reg} - set(get_all_items())
-        for item_uuid in deleted_item_uuids:
-            pop_appitem(item_uuid, None)
-
-
     def _err_if_existential_crisis(self) -> None | SystemError | TypeError:
         """Raise SystemError if this item exists in DearPyPixl but not DearPyGui.
         """
@@ -937,41 +1346,35 @@ class Item(ProtoItem, metaclass=ABCMeta):
         return None
 
 
-    #### Work-In-Progress ####
-    def _export_configuration(self, **kwargs) -> dict[str, Any]:
-        item_type       = type(self)
-        dft_init_params = {p.name: p.default for p in item_type.__internal__[4].values()}
-        export_config   = {
-            "item"  : item_type.__qualname__,
-            "tag"   : self._tag,
-            "parent": self.parent
-        }
-        return export_config | dft_init_params | self.configuration()
+class TemplateType(MutableMapping, metaclass=ABCMeta):
+    @classmethod
+    @abstractmethod
+    def _factory(cls) -> ItemT: ...
 
+    __slots__    = ("_tag")  # subclasses should also include __slots__
 
-class Template(MutableMapping, metaclass=ABCMeta):
-    __slots__ = (
-        "__is_container__" ,
-        "__is_root_item__" ,
-        "__is_value_able_" ,
-        "__able_parents__" ,
-        "__able_children__",
-        "__command__"      ,
-        "tag"              ,
-        "is_container"     ,
-        "is_root_item"     ,
-        "is_value_able"    ,
-        "_parameters"      ,
-    )
-
-    _factory: ItemT
-    tag     : int | str
+    # Pull various read-only members from the owner item type. The
+    # signature of the method that returns a template instance is
+    # set to the ItemType and not the template, so I can get away
+    # with being lazy here without fear of mucking up introspection.
+    for __attr in ("__registry__"     ,
+                   "__internal__"     ,
+                   "__itemtype_id__"  ,
+                   "__is_root_item__" ,
+                   "__is_container__" ,
+                   "__able_parents__" ,
+                   "__able_children__",
+                   "__is_value_able__",
+                   "__command__"      ,
+                   "is_container"     ,
+                   "is_root_item"     ,
+                   "is_value_able"    ,
+                   "get_able_parents" ,
+                   "get_able_children"):
+        exec(f"{__attr} = property(lambda self: getattr(self._factory, '{__attr}'))")
 
     def __init__(self, **config):
-        self.is_container
-        self.is_root_item
-        self.is_value_able
-        self._parameters = self._factory.__internal__[4]
+        self._tag        = None
         self.configure(**config)
 
     def __repr__(self) -> str:
@@ -987,6 +1390,9 @@ class Template(MutableMapping, metaclass=ABCMeta):
     def __setitem__(self, attr: str, value: Any) -> None:
         return setattr(self, attr, value)
 
+    def __delitem__(self):
+        return NotImplemented
+
     def __getattr__(self, attr: str) -> Any:
         # The signature for templates is intended to mimic the actual
         # item. Several features are unavailable because the item
@@ -1001,12 +1407,22 @@ class Template(MutableMapping, metaclass=ABCMeta):
     def __len__(self) -> int:
         return len(self._parameters)
 
-    def _not_implemented(self, attr: str, *args, **kwargs) -> NotImplementedError:
-        # In a function to play nice-nice w/__slots__.
-        return NotImplementedError(f"{attr!r} member is not available as a template.")
-
     def configure(self, **config) -> None:
         return Item.configure(self, **config)
 
     def configuration(self) -> dict[str, Any]:
         return {attr:getattr(self, attr) for attr in self._parameters}
+
+    @property
+    def tag(self) -> int | str | None:
+        return self._tag
+    @tag.setter
+    def tag(self, value: int | str | None) -> None:
+        self._tag = value
+
+    @property
+    def _parameters(self) -> dict[str, Parameter]:
+        return self.__internal__[4]
+
+    def _not_implemented(self, attr: str, *args, **kwargs) -> NotImplementedError:
+        return NotImplementedError(f"{attr!r} member is not available as a template.")

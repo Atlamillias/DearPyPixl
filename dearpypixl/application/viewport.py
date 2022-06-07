@@ -17,9 +17,8 @@ from dearpygui._dearpygui import (
 
 from dearpypixl.application import AppItem, AppAttribute
 from dearpypixl.constants import ViewportUUID
-from dearpypixl.components import ItemT, item_attribute
+from dearpypixl.components import CONFIG, INFORM, STATES, ItemT, ItemAttribute
 from dearpypixl.containers import Window
-from dearpypixl.components.configuration import CONFIGURATION, INFORMATION, STATE
 
 if sys.platform == "win32":
     from dearpypixl.platforms import windows
@@ -65,28 +64,28 @@ class Viewport(AppItem):
 
     # Again, the metaclass prevents `CONFIGURATION`-related attributes from being redefined.
     # Any value that would be set is instead set on a fallback instance.
-    title        : str  = AppAttribute(CONFIGURATION, _get_viewport_config, _set_viewport_config)
-    width        : int  = AppAttribute(CONFIGURATION, _get_viewport_config, _set_viewport_config)
-    height       : int  = AppAttribute(CONFIGURATION, _get_viewport_config, _set_viewport_config)
-    min_width    : int  = AppAttribute(CONFIGURATION, _get_viewport_config, _set_viewport_config)
-    min_height   : int  = AppAttribute(CONFIGURATION, _get_viewport_config, _set_viewport_config)
-    max_width    : int  = AppAttribute(CONFIGURATION, _get_viewport_config, _set_viewport_config)
-    max_height   : int  = AppAttribute(CONFIGURATION, _get_viewport_config, _set_viewport_config)
-    x_pos        : int  = AppAttribute(CONFIGURATION, _get_viewport_config, _set_viewport_config)
-    y_pos        : int  = AppAttribute(CONFIGURATION, _get_viewport_config, _set_viewport_config)
-    resizable    : bool = AppAttribute(CONFIGURATION, _get_viewport_config, _set_viewport_config)
-    vsync        : bool = AppAttribute(CONFIGURATION, _get_viewport_config, _set_viewport_config)
-    always_on_top: bool = AppAttribute(CONFIGURATION, _get_viewport_config, _set_viewport_config)
-    decorated    : bool = AppAttribute(CONFIGURATION, _get_viewport_config, _set_viewport_config)
-    clear_color  : bool = AppAttribute(CONFIGURATION, _get_viewport_config, _set_viewport_config)
+    title        : str  = AppAttribute(CONFIG, _get_viewport_config, _set_viewport_config)
+    width        : int  = AppAttribute(CONFIG, _get_viewport_config, _set_viewport_config)
+    height       : int  = AppAttribute(CONFIG, _get_viewport_config, _set_viewport_config)
+    min_width    : int  = AppAttribute(CONFIG, _get_viewport_config, _set_viewport_config)
+    min_height   : int  = AppAttribute(CONFIG, _get_viewport_config, _set_viewport_config)
+    max_width    : int  = AppAttribute(CONFIG, _get_viewport_config, _set_viewport_config)
+    max_height   : int  = AppAttribute(CONFIG, _get_viewport_config, _set_viewport_config)
+    x_pos        : int  = AppAttribute(CONFIG, _get_viewport_config, _set_viewport_config)
+    y_pos        : int  = AppAttribute(CONFIG, _get_viewport_config, _set_viewport_config)
+    resizable    : bool = AppAttribute(CONFIG, _get_viewport_config, _set_viewport_config)
+    vsync        : bool = AppAttribute(CONFIG, _get_viewport_config, _set_viewport_config)
+    always_on_top: bool = AppAttribute(CONFIG, _get_viewport_config, _set_viewport_config)
+    decorated    : bool = AppAttribute(CONFIG, _get_viewport_config, _set_viewport_config)
+    clear_color  : bool = AppAttribute(CONFIG, _get_viewport_config, _set_viewport_config)
 
-    small_icon       : str           = AppAttribute(CONFIGURATION,
+    small_icon       : str           = AppAttribute(CONFIG,
                                                     lambda obj, name: get_viewport_configuration(ViewportUUID)["small_icon"],
                                                     _set_viewport_fickle_config)
-    large_icon       : str           = AppAttribute(CONFIGURATION,
+    large_icon       : str           = AppAttribute(CONFIG,
                                                     lambda obj, name: get_viewport_configuration(ViewportUUID)["large_icon"],
                                                     _set_viewport_fickle_config)
-    primary_window   : Window | None = AppAttribute(CONFIGURATION,
+    primary_window   : Window | None = AppAttribute(CONFIG,
                                                     _get_primary_window,
                                                     _set_primary_window)
     _primary_window  : int | None    = None
@@ -95,19 +94,19 @@ class Viewport(AppItem):
     ## Information properties ##
     @classmethod
     @property
-    @item_attribute(category=INFORMATION)
+    @ItemAttribute.register_member(category=INFORM)
     def tag(cls) -> str:
         return ViewportUUID
 
     @classmethod
     @property
-    @item_attribute(category=INFORMATION)
+    @ItemAttribute.register_member(category=INFORM)
     def client_width(cls) -> int:
         return _get_viewport_config(cls, "client_width")
 
     @classmethod
     @property
-    @item_attribute(category=INFORMATION)
+    @ItemAttribute.register_member(category=INFORM)
     def client_height(cls) -> int:
         return _get_viewport_config(cls, "client_height")
 
@@ -116,50 +115,50 @@ class Viewport(AppItem):
 
     @classmethod
     @property
-    @item_attribute(category=INFORMATION)
+    @ItemAttribute.register_member(category=INFORM)
     def calls_on_resize(cls) -> list[tuple[Callable, dict[str, Any]]]:
         return cls._calls_on_resize
 
     @classmethod
     @property
-    @item_attribute(category=INFORMATION)
+    @ItemAttribute.register_member(category=INFORM)
     def active_window(cls):
         return cls.__registry__[0].get(get_active_window(), None)
 
     @classmethod
     @property
-    @item_attribute(category=INFORMATION)
+    @ItemAttribute.register_member(category=INFORM)
     def mouse_drag_delta(cls):
         return get_mouse_drag_delta()
 
     @classmethod
     @property
-    @item_attribute(category=INFORMATION)
+    @ItemAttribute.register_member(category=INFORM)
     def local_mouse_pos(cls) -> list[float]:
         return get_mouse_pos()
 
     @classmethod
     @property
-    @item_attribute(category=INFORMATION)
+    @ItemAttribute.register_member(category=INFORM)
     def global_mouse_pos(cls) -> list[float]:
         return get_mouse_pos(local=False)
 
     @classmethod
     @property
-    @item_attribute(category=INFORMATION)
+    @ItemAttribute.register_member(category=INFORM)
     def drawing_mouse_pos(cls) -> list[float]:
         return get_drawing_mouse_pos()
 
     @classmethod
     @property
-    @item_attribute(category=INFORMATION)
+    @ItemAttribute.register_member(category=INFORM)
     def plot_mouse_pos(cls) -> list[float]:
         return get_plot_mouse_pos()
 
     ## State properties ##
     @classmethod
     @property
-    @item_attribute(category=STATE)
+    @ItemAttribute.register_member(category=STATES)
     def is_showing(cls) -> bool:
         return _dearpygui.is_viewport_ok()
 
@@ -170,19 +169,19 @@ class Viewport(AppItem):
 
     @classmethod
     @property
-    @item_attribute(category=STATE)
+    @ItemAttribute.register_member(category=STATES)
     def is_maximized(cls) -> bool:
         return cls._is_maximized
 
     @classmethod
     @property
-    @item_attribute(category=STATE)
+    @ItemAttribute.register_member(category=STATES)
     def is_minimized(cls) -> bool:
         return cls._is_minimized
 
     @classmethod
     @property
-    @item_attribute(category=STATE)
+    @ItemAttribute.register_member(category=STATES)
     def is_fullscreen(cls) -> bool:
         return cls._is_fullscreen
 

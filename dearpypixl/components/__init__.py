@@ -1,17 +1,22 @@
 from abc import ABCMeta, abstractmethod
 from typing import Callable, TypeVar, Union, Any
-from dearpygui._dearpygui import (
-    reset_pos,
-    push_container_stack,
-    pop_container_stack,
-    get_item_info,
-)
-
-from dearpypixl.components.configuration import ItemAttribute, item_attribute
+from dearpygui._dearpygui import get_item_info
 from dearpypixl.components.item import (
     ItemT,
-    ProtoItem,
-    Item,    
+    TemplateT,
+
+    prep_callback,
+    prep_init_args,
+    get_positional_args_count,
+    set_cached_attribute,
+
+    ItemAttribute,
+    CONFIG,
+    INFORM,
+    STATES,
+    ItemType,
+    TemplateType,
+    Item,
 )
 from dearpypixl.components.registries import *
 from dearpypixl.components.themes import Theme
@@ -19,20 +24,41 @@ from dearpypixl.components.themes import Theme
 
 __all__ = [
     # Limiting what objects are exported to appitem modules that import using `*`.
-    "ItemAttribute",
-    "item_attribute",
-
     "ItemT",
+    "WidgetItemT",
+    "TemplateT",
+
+    "ItemAttribute",
+    "CONFIG",
+    "INFORM",
+    "STATES",
+
+    "Item",
     "Widget",
 ]
 
 
-WidgetItemT     = TypeVar("WidgetItemT"      , bound='Widget'   )
+WidgetItemT  = TypeVar("WidgetItemT", bound='Widget')
 
 
 class Widget(Item, metaclass=ABCMeta):
+    @abstractmethod
+    def __command__()       -> Callable[..., Any]: ...
+    @abstractmethod
+    def __is_container__()  -> bool              : ...
+    @abstractmethod
+    def __is_root_item__()  -> bool              : ...
+    @abstractmethod
+    def __is_value_able__() -> bool              : ...
+    @abstractmethod
+    def __able_parents__()  -> tuple[str, ...]   : ...
+    @abstractmethod
+    def __able_children__() -> tuple[str, ...]   : ...
+
+    __slots__ = ("__events_uuid",)
+
     @property
-    @item_attribute(category="configuration")
+    @ItemAttribute.register_member(category=CONFIG)
     def theme(self) -> Theme:
         return self.__registry__[0].get(get_item_info(self._tag)["theme"], None)
     @theme.setter
@@ -45,7 +71,7 @@ class Widget(Item, metaclass=ABCMeta):
         value.bind(self)
 
     @property
-    @item_attribute(category="configuration")
+    @ItemAttribute.register_member(category=CONFIG)
     def events(self) -> ItemEvents:
         self.__events_uuid
         return self.__registry__[0].get(self.__events_uuid, None)
@@ -62,31 +88,6 @@ class Widget(Item, metaclass=ABCMeta):
             return None
         self.__events_uuid = value._tag
         value.bind(self)
-
-
-    __slots__ = ("__events_uuid",)
-
-    __is_container__ : bool
-    __is_root_item__ : bool
-    __is_value_able__: bool
-    __able_parents__ : tuple[str, ...]
-    __able_children__: tuple[str, ...]
-    __commands__     : tuple[str, ...]
-    __constants__    : tuple[str, ...]
-
-    ## Abstract Methods ##
-    @abstractmethod
-    def __command__()       -> Callable[..., Any]: ...
-    @abstractmethod
-    def __is_container__()  -> bool              : ...
-    @abstractmethod
-    def __is_root_item__()  -> bool              : ...
-    @abstractmethod
-    def __is_value_able__() -> bool              : ...
-    @abstractmethod
-    def __able_parents__()  -> tuple[str, ...]   : ...
-    @abstractmethod
-    def __able_children__() -> tuple[str, ...]   : ...
 
     def __init__(self, theme: Union[Theme, bool, None] = None, events: Union[ItemEvents, bool, None] = None, **kwargs):
         super().__init__(**kwargs)

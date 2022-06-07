@@ -1,15 +1,11 @@
-import functools
-from inspect import signature, _KEYWORD_ONLY, _VAR_POSITIONAL
-from types import MethodType
 from typing import Callable, Any, Union
 from dearpygui import dearpygui
-from dearpypixl.components.item import Item
-from dearpypixl.components.configuration import (
+from dearpypixl.components.item import (
+    Item,
     ItemAttribute,
-    item_attribute,
     get_item_config,
     set_item_callback,
-    CONFIGURATION
+    CONFIG
 )
 
 
@@ -46,7 +42,7 @@ class HandlerItem(Item):
         self.callback = callback
 
     @property
-    @item_attribute(category=CONFIGURATION)
+    @ItemAttribute.register_member(category=CONFIG)
     def callback(self) -> Callable | None:
         return get_item_config(self, "callback")
     @callback.setter
