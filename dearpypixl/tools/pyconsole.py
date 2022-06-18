@@ -8,7 +8,7 @@ from dearpygui import dearpygui, _dearpygui
 from dearpypixl import Application
 from dearpypixl.containers import Window, ChildWindow, Group
 from dearpypixl.basic import Text, InputText
-from dearpypixl.components import Item
+from dearpypixl.itemtypes import Item
 
 
 __all__ = [

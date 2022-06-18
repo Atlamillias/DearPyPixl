@@ -6,7 +6,7 @@ from dearpypixl.containers import Window, ChildWindow, Group, TreeNode
 from dearpypixl.basic import Text
 from dearpypixl.misc import Separator
 from dearpypixl.constants import Key, Mouse
-from dearpypixl.components import Item, AppEvents
+from dearpypixl.itemtypes import Item, AppEvents
 
 
 
@@ -29,6 +29,7 @@ class AppInfo(ChildWindow):
     _key_poll = (
         ""
     )
+    __itemtype_id__ = None
 
     def __init__(self):
         super().__init__(

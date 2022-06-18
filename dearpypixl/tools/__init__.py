@@ -13,7 +13,7 @@ from dearpypixl.tools.dpgtools import (
     show_metrics,
     show_style_editor,
 )
-from dearpypixl.components import Item, ItemT
+from dearpypixl.itemtypes import Item, ItemT
 from dearpypixl.tools.pyconsole import PyConsole
 from dearpypixl.tools.appinfo import AppInfo
 
@@ -52,7 +52,7 @@ def get_reference(tag: str | int) -> Item | None:
     identifier. Returns None if it doesn't exist or is not found.
 
     Args:
-        * tag (Union[str, int]): Unique identifier of an item.
+        * tag (str | int): Unique identifier of an item.
 
     """
     return Item.__registry__[0].get(tag, None)

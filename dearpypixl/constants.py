@@ -1,6 +1,6 @@
 from __future__ import annotations
 from enum import Enum, IntEnum
-from typing import Union, NamedTuple
+from typing import NamedTuple
 from dearpygui import dearpygui, _dearpygui
 
 
@@ -347,7 +347,7 @@ class ThemeElementTData(NamedTuple):
         * category (int): DearPyGui `mvThemeCat` constant value.
         * element_type (int): Integer index of the target's type (color = 0, style = 1).
         * target (int): DearPyGui's `ThemeCol`/`StyleVar` constant value for the item.
-        * components (int): The number of values the target uses. Ranges from 1 to 4. 
+        * components (int): The number of values the target uses. Ranges from 1 to 4.
         * value_type (int): The object that all `values` must be instances of.
         * value_min (int): The floor of every value supported by `target`.
         * value_max (int): The ceiling of every value supported by `target`. A value of
@@ -358,8 +358,8 @@ class ThemeElementTData(NamedTuple):
     target      : int
     components  : int
     value_type  : type
-    value_min   : Union[int, float]
-    value_max   : Union[int, float]
+    value_min   : int | float
+    value_max   : int | float
 
 class _ThemeCategoryT: ...  # type checking
 
