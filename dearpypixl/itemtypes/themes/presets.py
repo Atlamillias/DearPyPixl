@@ -1,6 +1,6 @@
 from contextlib import contextmanager
 from typing import Generator
-from dearpypixl.themes import Theme
+from .theme import Theme
 
 
 _theme_presets: tuple[Theme, ...] = []
