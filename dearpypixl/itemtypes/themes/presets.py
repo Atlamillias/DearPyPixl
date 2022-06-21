@@ -1,6 +1,6 @@
 from contextlib import contextmanager
 from typing import Generator
-from .theme import Theme
+from . import Theme
 
 
 _theme_presets: tuple[Theme, ...] = []
