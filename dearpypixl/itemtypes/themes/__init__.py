@@ -26,7 +26,7 @@ from dearpygui.dearpygui import (
 )
 from dearpygui import dearpygui
 from dearpygui._dearpygui import set_value, get_value
-from ..item import Item, ItemProperty, ItemIdType, CONFIG, INFORM
+from ..item import Item, AppItem, ItemProperty, ItemIdType, CONFIG, INFORM
 from dearpypixl.constants import (
     ThemeCategoryCore,
     ThemeCategoryPlot,
@@ -34,7 +34,7 @@ from dearpypixl.constants import (
     ItemIndex,
     FontRangeHint,
     _ThemeCategoryT,
-    ThemeElementTData,
+    ThemeElementType,
 )
 
 
@@ -171,7 +171,7 @@ class Theme(Item):
         if not item:
             bind_theme(self_uuid)
             bind_font(self.__font_uuid)
-            Theme._default_theme_uuid = self_uuid
+            AppItem.__cached__["theme_uuid"] = self_uuid
 
     def unbind(self, *item: Item) -> None:
         """Unlink item(s) from the theme. If no item is passed and the theme
@@ -189,10 +189,10 @@ class Theme(Item):
             bind_item_font(i._tag, 0)  # 0 is system default theme
 
         # If default, unset
-        if not item and self._tag == Theme._default_theme_uuid:
+        if not item and self._tag == AppItem.__cached__["theme_uuid"]:
             bind_theme(0)
             bind_font(0)
-            Theme._default_theme_uuid = 0
+            AppItem.__cached__["theme_uuid"] = 0
 
     def __update_targets_font(self):
         # font.setter uses this to bind a new font (size) to all bound items.
@@ -203,11 +203,9 @@ class Theme(Item):
         for item_uuid in target_uuids:
             bind_item_font(item_uuid, font_uuid)
 
-        # If this theme is also the default theme:
-        if self._tag == Theme._default_theme_uuid:
+        # If this theme is also the default theme, bind the font.
+        if self._tag == AppItem.__cached__["theme_uuid"]:
             bind_font(font_uuid)
-
-    _default_theme_uuid = 0  # no way to fetch via DPG API
 
 
 class ThemeComponent(Item):
@@ -325,7 +323,7 @@ class ThemeComponent(Item):
             * target (ThemeElement | str): The element to affect.
             * value (int | float): Positional parameters for the `target` element value.
         """
-        element_data: ThemeElementTData = target.value
+        element_data: ThemeElementType = target.value
         value = list(value)
 
         number_of_vals = element_data.components

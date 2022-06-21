@@ -1,6 +1,8 @@
+import importlib
+import sys
 from pathlib import Path as _Path
 from dearpygui import dearpygui as _dearpygui
-
+sys.modules
 
 ## Namespace prep ##
 _item_subpkgs = (
@@ -43,6 +45,5 @@ from dearpypixl import (
     textures,
     values,
 )
-# appitems
-from .appitems.application import Application
-from .appitems.viewport import Viewport
+from .application import Application
+from .viewport import Viewport

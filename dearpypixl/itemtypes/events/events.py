@@ -7,10 +7,21 @@ from dearpygui._dearpygui import (
     set_frame_callback,
     set_exit_callback,
 )
-from .handlers import *
-from dearpypixl.constants import Key, Mouse
-from dearpypixl.itemtypes.item import ItemT, Item, ItemProperty, ItemIdType, CONFIG, INFORM, STATES, prep_callback, get_positional_args_count
 from dearpypixl.utilities import TypeGuard
+from .handlers import *
+from .keycodes import Key, Mouse
+from ..item import (
+    ItemT,
+    Item,
+    ItemProperty,
+    ItemIdType,
+    CONFIG,
+    INFORM,
+    STATES,
+    prep_callback,
+    get_positional_args_count
+)
+
 
 def _manage_handler(handler: HandlerItem):
     def wrapped_method(_method):
@@ -295,7 +306,6 @@ class FrameEvents(dict):
         super().__init__()
         # self[ 0]  # stores callbacks that run mid-render loop ("all frames")
         # self[-1]  # stores callbacks that run on application exit ("last frame")
-        self._updates      = self[0]
 
     def _set_frame_callback(self, frame: int) -> None:
         """Sets the main callback for a specific frame. It will call any event

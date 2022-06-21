@@ -1,13 +1,10 @@
 from __future__ import annotations
 from enum import Enum, IntEnum
 from typing import NamedTuple
-from dearpygui import dearpygui, _dearpygui
+from dearpygui import _dearpygui as dpg
+from dearpygui._dearpygui import mvThemeCat_Core, mvThemeCat_Nodes, mvThemeCat_Plots
 
-
-InvalidUUID  = 0
-AppUUID      = 1
-ViewportUUID = "DPG NOT USED YET"
-
+# TODO: Finish cleanup (i.e. yeet this module)
 
 class ItemIndex(IntEnum):
     ALL = 0
@@ -174,173 +171,9 @@ class ItemIndex(IntEnum):
 
 
 #############################
-######### Key Codes #########
-#############################
-class Key(IntEnum):
-    ANY = -1
-    Break = 3
-    Backspace = 8
-    Tab = 9
-    Clear = 12
-    Return = 13
-    Enter = 13
-    Shift = 16
-    Ctrl = 17
-    Alt = 18
-    Pause = 19
-    CapsLock = 20
-    Esc = 27
-    Spacebar = 32
-    PgUp = 33
-    PgDn = 34
-    End = 35
-    Home = 36
-    ArrowLeft = 37
-    ArrowRight = 38
-    ArrowUp = 39
-    ArrowDn = 40
-    Select = 41
-    Print = 42
-    Exec = 43
-    PrtScr = 44
-    Ins = 45
-    Del = 46
-    Help = 47
-    Digit0 = 48
-    Digit1 = 49
-    Digit2 = 50
-    Digit3 = 51
-    Digit4 = 52
-    Digit5 = 53
-    Digit6 = 54
-    Digit7 = 55
-    Digit8 = 56
-    Digit9 = 57
-    A = 65
-    B = 66
-    C = 67
-    D = 68
-    E = 69
-    F = 70
-    G = 71
-    H = 72
-    I = 73
-    J = 74
-    K = 75
-    L = 76
-    M = 77
-    N = 78
-    O = 79
-    P = 80
-    Q = 81
-    R = 82
-    S = 83
-    T = 84
-    U = 85
-    V = 86
-    W = 87
-    X = 88
-    Y = 89
-    Z = 90
-    L_Meta = 91
-    R_Meta = 92
-    L_Win = 91
-    R_Win = 92
-    Apps = 93
-    Sleep = 95
-    Numpad0 = 96
-    Numpad1 = 97
-    Numpad2 = 98
-    Numpad3 = 99
-    Numpad4 = 100
-    Numpad5 = 101
-    Numpad6 = 102
-    Numpad7 = 103
-    Numpad8 = 104
-    Numpad9 = 105
-    NumpadMultiply = 106
-    NumpadAdd = 107
-    NumpadSeparator = 108
-    NumpadSubtract = 109
-    NumpadDecimal = 110
-    NumpadDivide = 111
-    F1 = 112
-    F2 = 113
-    F3 = 114
-    F4 = 115
-    F5 = 116
-    F6 = 117
-    F7 = 118
-    F8 = 119
-    F9 = 120
-    F10 = 121
-    F11 = 122
-    F12 = 123
-    F13 = 124
-    F14 = 125
-    F15 = 126
-    F16 = 127
-    F17 = 128
-    F18 = 129
-    F19 = 130
-    F20 = 131
-    F21 = 132
-    F22 = 133
-    F23 = 134
-    F24 = 135
-    NumLock = 144
-    ScrollLock = 145
-    L_Shift = 160
-    R_Shift = 161
-    L_Ctrl = 162
-    R_Ctrl = 163
-    L_Menu = 164
-    R_Menu = 165
-    BrowserBack = 166
-    BrowserForward = 167
-    BrowserRefresh = 168
-    BrowserStop = 169
-    BrowserSearch = 170
-    BrowserFavorites = 171
-    BrowserHome = 172
-    VolMute = 173
-    VolDown = 174
-    VolUp = 175
-    MediaTrackNext = 176
-    MediaTrackPrev = 177
-    MediaStop = 178
-    MediaPlayPause = 179
-    LaunchMail = 180
-    MediaSelect = 181
-    LaunchApp1 = 182
-    LaunchApp2 = 183  # calc on Win32
-    Semicolon = 186
-    Plus = 187
-    Comma = 188
-    Minus = 189
-    Period = 190
-    ForwardSlash = 191
-    Tilde = 192
-    BracketOpen = 219
-    Backslash = 220
-    BracketClose = 221
-    Quote = 222
-    IntlBackslash = 226  # \
-    UNIDENTIFIED = 255
-
-class Mouse(IntEnum):
-    ANY = -1
-    Left = 0
-    Right = 1
-    Middle = 2
-    Button1 = 3
-    Button2 = 4
-
-
-#############################
 ########## Theming ##########
 #############################
-class ThemeElementTData(NamedTuple):
+class ThemeElementType(NamedTuple):
     """Contains information on DearPyGui theming elements.
 
     Args:
@@ -363,202 +196,196 @@ class ThemeElementTData(NamedTuple):
 
 class _ThemeCategoryT: ...  # type checking
 
+THEME_COLOR = 0
+THEME_STYLE = 1
+
+
 class ThemeCategoryCore(_ThemeCategoryT, Enum):
-    # Color
-    Text                      = ThemeElementTData(  0 ,   0 ,   0 ,   4 ,  int ,    0  ,   255  )
-    TextDisabled              = ThemeElementTData(  0 ,   0 ,   1 ,   4 ,  int ,    0  ,   255  )
-    WindowBg                  = ThemeElementTData(  0 ,   0 ,   2 ,   4 ,  int ,    0  ,   255  )
-    ChildBg                   = ThemeElementTData(  0 ,   0 ,   3 ,   4 ,  int ,    0  ,   255  )
-    PopupBg                   = ThemeElementTData(  0 ,   0 ,   4 ,   4 ,  int ,    0  ,   255  )
-    Border                    = ThemeElementTData(  0 ,   0 ,   5 ,   4 ,  int ,    0  ,   255  )
-    BorderShadow              = ThemeElementTData(  0 ,   0 ,   6 ,   4 ,  int ,    0  ,   255  )
-    FrameBg                   = ThemeElementTData(  0 ,   0 ,   7 ,   4 ,  int ,    0  ,   255  )
-    FrameBgHovered            = ThemeElementTData(  0 ,   0 ,   8 ,   4 ,  int ,    0  ,   255  )
-    FrameBgActive             = ThemeElementTData(  0 ,   0 ,   9 ,   4 ,  int ,    0  ,   255  )
-    TitleBg                   = ThemeElementTData(  0 ,   0 ,  10 ,   4 ,  int ,    0  ,   255  )
-    TitleBgActive             = ThemeElementTData(  0 ,   0 ,  11 ,   4 ,  int ,    0  ,   255  )
-    TitleBgCollapsed          = ThemeElementTData(  0 ,   0 ,  12 ,   4 ,  int ,    0  ,   255  )
-    MenuBarBg                 = ThemeElementTData(  0 ,   0 ,  13 ,   4 ,  int ,    0  ,   255  )
-    ScrollbarBg               = ThemeElementTData(  0 ,   0 ,  14 ,   4 ,  int ,    0  ,   255  )
-    ScrollbarGrab             = ThemeElementTData(  0 ,   0 ,  15 ,   4 ,  int ,    0  ,   255  )
-    ScrollbarGrabHovered      = ThemeElementTData(  0 ,   0 ,  16 ,   4 ,  int ,    0  ,   255  )
-    ScrollbarGrabActive       = ThemeElementTData(  0 ,   0 ,  17 ,   4 ,  int ,    0  ,   255  )
-    CheckMark                 = ThemeElementTData(  0 ,   0 ,  18 ,   4 ,  int ,    0  ,   255  )
-    SliderGrab                = ThemeElementTData(  0 ,   0 ,  19 ,   4 ,  int ,    0  ,   255  )
-    SliderGrabActive          = ThemeElementTData(  0 ,   0 ,  20 ,   4 ,  int ,    0  ,   255  )
-    Button                    = ThemeElementTData(  0 ,   0 ,  21 ,   4 ,  int ,    0  ,   255  )
-    ButtonHovered             = ThemeElementTData(  0 ,   0 ,  22 ,   4 ,  int ,    0  ,   255  )
-    ButtonActive              = ThemeElementTData(  0 ,   0 ,  23 ,   4 ,  int ,    0  ,   255  )
-    Header                    = ThemeElementTData(  0 ,   0 ,  24 ,   4 ,  int ,    0  ,   255  )
-    HeaderHovered             = ThemeElementTData(  0 ,   0 ,  25 ,   4 ,  int ,    0  ,   255  )
-    HeaderActive              = ThemeElementTData(  0 ,   0 ,  26 ,   4 ,  int ,    0  ,   255  )
-    Separator                 = ThemeElementTData(  0 ,   0 ,  27 ,   4 ,  int ,    0  ,   255  )
-    SeparatorHovered          = ThemeElementTData(  0 ,   0 ,  28 ,   4 ,  int ,    0  ,   255  )
-    SeparatorActive           = ThemeElementTData(  0 ,   0 ,  29 ,   4 ,  int ,    0  ,   255  )
-    ResizeGrip                = ThemeElementTData(  0 ,   0 ,  30 ,   4 ,  int ,    0  ,   255  )
-    ResizeGripHovered         = ThemeElementTData(  0 ,   0 ,  31 ,   4 ,  int ,    0  ,   255  )
-    ResizeGripActive          = ThemeElementTData(  0 ,   0 ,  32 ,   4 ,  int ,    0  ,   255  )
-    Tab                       = ThemeElementTData(  0 ,   0 ,  33 ,   4 ,  int ,    0  ,   255  )
-    TabHovered                = ThemeElementTData(  0 ,   0 ,  34 ,   4 ,  int ,    0  ,   255  )
-    TabActive                 = ThemeElementTData(  0 ,   0 ,  35 ,   4 ,  int ,    0  ,   255  )
-    TabUnfocused              = ThemeElementTData(  0 ,   0 ,  36 ,   4 ,  int ,    0  ,   255  )
-    TabUnfocusedActive        = ThemeElementTData(  0 ,   0 ,  37 ,   4 ,  int ,    0  ,   255  )
-    DockingPreview            = ThemeElementTData(  0 ,   0 ,  38 ,   4 ,  int ,    0  ,   255  )
-    DockingEmptyBg            = ThemeElementTData(  0 ,   0 ,  39 ,   4 ,  int ,    0  ,   255  )
-    PlotLines                 = ThemeElementTData(  0 ,   0 ,  40 ,   4 ,  int ,    0  ,   255  )
-    PlotLinesHovered          = ThemeElementTData(  0 ,   0 ,  41 ,   4 ,  int ,    0  ,   255  )
-    PlotHistogram             = ThemeElementTData(  0 ,   0 ,  42 ,   4 ,  int ,    0  ,   255  )
-    PlotHistogramHovered      = ThemeElementTData(  0 ,   0 ,  43 ,   4 ,  int ,    0  ,   255  )
-    TableHeaderBg             = ThemeElementTData(  0 ,   0 ,  44 ,   4 ,  int ,    0  ,   255  )
-    TableBorderStrong         = ThemeElementTData(  0 ,   0 ,  45 ,   4 ,  int ,    0  ,   255  )
-    TableBorderLight          = ThemeElementTData(  0 ,   0 ,  46 ,   4 ,  int ,    0  ,   255  )
-    TableRowBg                = ThemeElementTData(  0 ,   0 ,  47 ,   4 ,  int ,    0  ,   255  )
-    TableRowBgAlt             = ThemeElementTData(  0 ,   0 ,  48 ,   4 ,  int ,    0  ,   255  )
-    TextSelectedBg            = ThemeElementTData(  0 ,   0 ,  49 ,   4 ,  int ,    0  ,   255  )
-    DragDropTarget            = ThemeElementTData(  0 ,   0 ,  50 ,   4 ,  int ,    0  ,   255  )
-    NavHighlight              = ThemeElementTData(  0 ,   0 ,  51 ,   4 ,  int ,    0  ,   255  )
-    NavWindowingHighlight     = ThemeElementTData(  0 ,   0 ,  52 ,   4 ,  int ,    0  ,   255  )
-    NavWindowingDimBg         = ThemeElementTData(  0 ,   0 ,  53 ,   4 ,  int ,    0  ,   255  )
-    ModalWindowDimBg          = ThemeElementTData(  0 ,   0 ,  54 ,   4 ,  int ,    0  ,   255  )
-    # Style
-    Alpha                     = ThemeElementTData(  0 ,   1 ,   0 ,   1 , float,   0.0 ,   1.0  )
-    WindowPadding             = ThemeElementTData(  0 ,   1 ,   1 ,   2 ,  int ,    0  ,   20   )
-    WindowRounding            = ThemeElementTData(  0 ,   1 ,   2 ,   1 ,  int ,    0  ,   12   )
-    WindowBorderSize          = ThemeElementTData(  0 ,   1 ,   3 ,   1 ,  int ,    0  ,   None )
-    WindowMinSize             = ThemeElementTData(  0 ,   1 ,   4 ,   2 ,  int ,    0  ,   20   )
-    WindowTitleAlign          = ThemeElementTData(  0 ,   1 ,   5 ,   2 , float,   0.0 ,   1.0  )
-    ChildRounding             = ThemeElementTData(  0 ,   1 ,   6 ,   1 ,  int ,    0  ,   12   )
-    ChildBorderSize           = ThemeElementTData(  0 ,   1 ,   7 ,   1 ,  int ,    0  ,   None )
-    PopupRounding             = ThemeElementTData(  0 ,   1 ,   8 ,   1 ,  int ,    0  ,   12   )
-    PopupBorderSize           = ThemeElementTData(  0 ,   1 ,   9 ,   1 ,  int ,    0  ,   None )
-    FramePadding              = ThemeElementTData(  0 ,   1 ,  10 ,   2 ,  int ,    0  ,   20   )
-    FrameRounding             = ThemeElementTData(  0 ,   1 ,  11 ,   1 ,  int ,    0  ,   12   )
-    FrameBorderSize           = ThemeElementTData(  0 ,   1 ,  12 ,   1 ,  int ,    0  ,   None )
-    ItemSpacing               = ThemeElementTData(  0 ,   1 ,  13 ,   2 ,  int ,    0  ,   20   )
-    ItemInnerSpacing          = ThemeElementTData(  0 ,   1 ,  14 ,   2 ,  int ,    0  ,   20   )
-    IndentSpacing             = ThemeElementTData(  0 ,   1 ,  15 ,   1 ,  int ,    0  ,   30   )
-    CellPadding               = ThemeElementTData(  0 ,   1 ,  16 ,   2 ,  int ,    0  ,   20   )
-    ScrollbarSize             = ThemeElementTData(  0 ,   1 ,  17 ,   1 ,  int ,    0  ,   20   )
-    ScrollbarRounding         = ThemeElementTData(  0 ,   1 ,  18 ,   1 ,  int ,    0  ,   12   )
-    GrabMinSize               = ThemeElementTData(  0 ,   1 ,  19 ,   1 ,  int ,    0  ,   20   )
-    GrabRounding              = ThemeElementTData(  0 ,   1 ,  20 ,   1 ,  int ,    0  ,   12   )
-    TabRounding               = ThemeElementTData(  0 ,   1 ,  21 ,   1 ,  int ,    0  ,   12   )
-    ButtonTextAlign           = ThemeElementTData(  0 ,   1 ,  22 ,   2 , float,   0.0 ,   1.0  )
-    SelectableTextAlign       = ThemeElementTData(  0 ,   1 ,  23 ,   2 , float,   0.0 ,   1.0  )
+    Text                  = ThemeElementType(mvThemeCat_Core, THEME_COLOR, dpg.mvThemeCol_Text                 , 4 , int  , 0   , 255 )
+    TextDisabled          = ThemeElementType(mvThemeCat_Core, THEME_COLOR, dpg.mvThemeCol_TextDisabled         , 4 , int  , 0   , 255 )
+    WindowBg              = ThemeElementType(mvThemeCat_Core, THEME_COLOR, dpg.mvThemeCol_WindowBg             , 4 , int  , 0   , 255 )
+    ChildBg               = ThemeElementType(mvThemeCat_Core, THEME_COLOR, dpg.mvThemeCol_ChildBg              , 4 , int  , 0   , 255 )
+    PopupBg               = ThemeElementType(mvThemeCat_Core, THEME_COLOR, dpg.mvThemeCol_PopupBg              , 4 , int  , 0   , 255 )
+    Border                = ThemeElementType(mvThemeCat_Core, THEME_COLOR, dpg.mvThemeCol_Border               , 4 , int  , 0   , 255 )
+    BorderShadow          = ThemeElementType(mvThemeCat_Core, THEME_COLOR, dpg.mvThemeCol_BorderShadow         , 4 , int  , 0   , 255 )
+    FrameBg               = ThemeElementType(mvThemeCat_Core, THEME_COLOR, dpg.mvThemeCol_FrameBg              , 4 , int  , 0   , 255 )
+    FrameBgHovered        = ThemeElementType(mvThemeCat_Core, THEME_COLOR, dpg.mvThemeCol_FrameBgHovered       , 4 , int  , 0   , 255 )
+    FrameBgActive         = ThemeElementType(mvThemeCat_Core, THEME_COLOR, dpg.mvThemeCol_FrameBgActive        , 4 , int  , 0   , 255 )
+    TitleBg               = ThemeElementType(mvThemeCat_Core, THEME_COLOR, dpg.mvThemeCol_TitleBg              , 4 , int  , 0   , 255 )
+    TitleBgActive         = ThemeElementType(mvThemeCat_Core, THEME_COLOR, dpg.mvThemeCol_TitleBgActive        , 4 , int  , 0   , 255 )
+    TitleBgCollapsed      = ThemeElementType(mvThemeCat_Core, THEME_COLOR, dpg.mvThemeCol_TitleBgCollapsed     , 4 , int  , 0   , 255 )
+    MenuBarBg             = ThemeElementType(mvThemeCat_Core, THEME_COLOR, dpg.mvThemeCol_MenuBarBg            , 4 , int  , 0   , 255 )
+    ScrollbarBg           = ThemeElementType(mvThemeCat_Core, THEME_COLOR, dpg.mvThemeCol_ScrollbarBg          , 4 , int  , 0   , 255 )
+    ScrollbarGrab         = ThemeElementType(mvThemeCat_Core, THEME_COLOR, dpg.mvThemeCol_ScrollbarGrab        , 4 , int  , 0   , 255 )
+    ScrollbarGrabHovered  = ThemeElementType(mvThemeCat_Core, THEME_COLOR, dpg.mvThemeCol_ScrollbarGrabHovered , 4 , int  , 0   , 255 )
+    ScrollbarGrabActive   = ThemeElementType(mvThemeCat_Core, THEME_COLOR, dpg.mvThemeCol_ScrollbarGrabActive  , 4 , int  , 0   , 255 )
+    CheckMark             = ThemeElementType(mvThemeCat_Core, THEME_COLOR, dpg.mvThemeCol_CheckMark            , 4 , int  , 0   , 255 )
+    SliderGrab            = ThemeElementType(mvThemeCat_Core, THEME_COLOR, dpg.mvThemeCol_SliderGrab           , 4 , int  , 0   , 255 )
+    SliderGrabActive      = ThemeElementType(mvThemeCat_Core, THEME_COLOR, dpg.mvThemeCol_SliderGrabActive     , 4 , int  , 0   , 255 )
+    Button                = ThemeElementType(mvThemeCat_Core, THEME_COLOR, dpg.mvThemeCol_Button               , 4 , int  , 0   , 255 )
+    ButtonHovered         = ThemeElementType(mvThemeCat_Core, THEME_COLOR, dpg.mvThemeCol_ButtonHovered        , 4 , int  , 0   , 255 )
+    ButtonActive          = ThemeElementType(mvThemeCat_Core, THEME_COLOR, dpg.mvThemeCol_ButtonActive         , 4 , int  , 0   , 255 )
+    Header                = ThemeElementType(mvThemeCat_Core, THEME_COLOR, dpg.mvThemeCol_Header               , 4 , int  , 0   , 255 )
+    HeaderHovered         = ThemeElementType(mvThemeCat_Core, THEME_COLOR, dpg.mvThemeCol_HeaderHovered        , 4 , int  , 0   , 255 )
+    HeaderActive          = ThemeElementType(mvThemeCat_Core, THEME_COLOR, dpg.mvThemeCol_HeaderActive         , 4 , int  , 0   , 255 )
+    Separator             = ThemeElementType(mvThemeCat_Core, THEME_COLOR, dpg.mvThemeCol_Separator            , 4 , int  , 0   , 255 )
+    SeparatorHovered      = ThemeElementType(mvThemeCat_Core, THEME_COLOR, dpg.mvThemeCol_SeparatorHovered     , 4 , int  , 0   , 255 )
+    SeparatorActive       = ThemeElementType(mvThemeCat_Core, THEME_COLOR, dpg.mvThemeCol_SeparatorActive      , 4 , int  , 0   , 255 )
+    ResizeGrip            = ThemeElementType(mvThemeCat_Core, THEME_COLOR, dpg.mvThemeCol_ResizeGrip           , 4 , int  , 0   , 255 )
+    ResizeGripHovered     = ThemeElementType(mvThemeCat_Core, THEME_COLOR, dpg.mvThemeCol_ResizeGripHovered    , 4 , int  , 0   , 255 )
+    ResizeGripActive      = ThemeElementType(mvThemeCat_Core, THEME_COLOR, dpg.mvThemeCol_ResizeGripActive     , 4 , int  , 0   , 255 )
+    Tab                   = ThemeElementType(mvThemeCat_Core, THEME_COLOR, dpg.mvThemeCol_Tab                  , 4 , int  , 0   , 255 )
+    TabHovered            = ThemeElementType(mvThemeCat_Core, THEME_COLOR, dpg.mvThemeCol_TabHovered           , 4 , int  , 0   , 255 )
+    TabActive             = ThemeElementType(mvThemeCat_Core, THEME_COLOR, dpg.mvThemeCol_TabActive            , 4 , int  , 0   , 255 )
+    TabUnfocused          = ThemeElementType(mvThemeCat_Core, THEME_COLOR, dpg.mvThemeCol_TabUnfocused         , 4 , int  , 0   , 255 )
+    TabUnfocusedActive    = ThemeElementType(mvThemeCat_Core, THEME_COLOR, dpg.mvThemeCol_TabUnfocusedActive   , 4 , int  , 0   , 255 )
+    DockingPreview        = ThemeElementType(mvThemeCat_Core, THEME_COLOR, dpg.mvThemeCol_DockingPreview       , 4 , int  , 0   , 255 )
+    DockingEmptyBg        = ThemeElementType(mvThemeCat_Core, THEME_COLOR, dpg.mvThemeCol_DockingEmptyBg       , 4 , int  , 0   , 255 )
+    PlotLines             = ThemeElementType(mvThemeCat_Core, THEME_COLOR, dpg.mvThemeCol_PlotLines            , 4 , int  , 0   , 255 )
+    PlotLinesHovered      = ThemeElementType(mvThemeCat_Core, THEME_COLOR, dpg.mvThemeCol_PlotLinesHovered     , 4 , int  , 0   , 255 )
+    PlotHistogram         = ThemeElementType(mvThemeCat_Core, THEME_COLOR, dpg.mvThemeCol_PlotHistogram        , 4 , int  , 0   , 255 )
+    PlotHistogramHovered  = ThemeElementType(mvThemeCat_Core, THEME_COLOR, dpg.mvThemeCol_PlotHistogramHovered , 4 , int  , 0   , 255 )
+    TableHeaderBg         = ThemeElementType(mvThemeCat_Core, THEME_COLOR, dpg.mvThemeCol_TableHeaderBg        , 4 , int  , 0   , 255 )
+    TableBorderStrong     = ThemeElementType(mvThemeCat_Core, THEME_COLOR, dpg.mvThemeCol_TableBorderStrong    , 4 , int  , 0   , 255 )
+    TableBorderLight      = ThemeElementType(mvThemeCat_Core, THEME_COLOR, dpg.mvThemeCol_TableBorderLight     , 4 , int  , 0   , 255 )
+    TableRowBg            = ThemeElementType(mvThemeCat_Core, THEME_COLOR, dpg.mvThemeCol_TableRowBg           , 4 , int  , 0   , 255 )
+    TableRowBgAlt         = ThemeElementType(mvThemeCat_Core, THEME_COLOR, dpg.mvThemeCol_TableRowBgAlt        , 4 , int  , 0   , 255 )
+    TextSelectedBg        = ThemeElementType(mvThemeCat_Core, THEME_COLOR, dpg.mvThemeCol_TextSelectedBg       , 4 , int  , 0   , 255 )
+    DragDropTarget        = ThemeElementType(mvThemeCat_Core, THEME_COLOR, dpg.mvThemeCol_DragDropTarget       , 4 , int  , 0   , 255 )
+    NavHighlight          = ThemeElementType(mvThemeCat_Core, THEME_COLOR, dpg.mvThemeCol_NavHighlight         , 4 , int  , 0   , 255 )
+    NavWindowingHighlight = ThemeElementType(mvThemeCat_Core, THEME_COLOR, dpg.mvThemeCol_NavWindowingHighlight, 4 , int  , 0   , 255 )
+    NavWindowingDimBg     = ThemeElementType(mvThemeCat_Core, THEME_COLOR, dpg.mvThemeCol_NavWindowingDimBg    , 4 , int  , 0   , 255 )
+    ModalWindowDimBg      = ThemeElementType(mvThemeCat_Core, THEME_COLOR, dpg.mvThemeCol_ModalWindowDimBg     , 4 , int  , 0   , 255 )
+    Alpha                 = ThemeElementType(mvThemeCat_Core, THEME_STYLE, dpg.mvStyleVar_Alpha                , 1 , float, 0.0 , 1.0 )
+    WindowPadding         = ThemeElementType(mvThemeCat_Core, THEME_STYLE, dpg.mvStyleVar_WindowPadding        , 2 , int  , 0   , 20  )
+    WindowRounding        = ThemeElementType(mvThemeCat_Core, THEME_STYLE, dpg.mvStyleVar_WindowRounding       , 1 , int  , 0   , 12  )
+    WindowBorderSize      = ThemeElementType(mvThemeCat_Core, THEME_STYLE, dpg.mvStyleVar_WindowBorderSize     , 1 , int  , 0   , None)
+    WindowMinSize         = ThemeElementType(mvThemeCat_Core, THEME_STYLE, dpg.mvStyleVar_WindowMinSize        , 2 , int  , 0   , 20  )
+    WindowTitleAlign      = ThemeElementType(mvThemeCat_Core, THEME_STYLE, dpg.mvStyleVar_WindowTitleAlign     , 2 , float, 0.0 , 1.0 )
+    ChildRounding         = ThemeElementType(mvThemeCat_Core, THEME_STYLE, dpg.mvStyleVar_ChildRounding        , 1 , int  , 0   , 12  )
+    ChildBorderSize       = ThemeElementType(mvThemeCat_Core, THEME_STYLE, dpg.mvStyleVar_ChildBorderSize      , 1 , int  , 0   , None)
+    PopupRounding         = ThemeElementType(mvThemeCat_Core, THEME_STYLE, dpg.mvStyleVar_PopupRounding        , 1 , int  , 0   , 12  )
+    PopupBorderSize       = ThemeElementType(mvThemeCat_Core, THEME_STYLE, dpg.mvStyleVar_PopupBorderSize      , 1 , int  , 0   , None)
+    FramePadding          = ThemeElementType(mvThemeCat_Core, THEME_STYLE, dpg.mvStyleVar_FramePadding         , 2 , int  , 0   , 20  )
+    FrameRounding         = ThemeElementType(mvThemeCat_Core, THEME_STYLE, dpg.mvStyleVar_FrameRounding        , 1 , int  , 0   , 12  )
+    FrameBorderSize       = ThemeElementType(mvThemeCat_Core, THEME_STYLE, dpg.mvStyleVar_FrameBorderSize      , 1 , int  , 0   , None)
+    ItemSpacing           = ThemeElementType(mvThemeCat_Core, THEME_STYLE, dpg.mvStyleVar_ItemSpacing          , 2 , int  , 0   , 20  )
+    ItemInnerSpacing      = ThemeElementType(mvThemeCat_Core, THEME_STYLE, dpg.mvStyleVar_ItemInnerSpacing     , 2 , int  , 0   , 20  )
+    IndentSpacing         = ThemeElementType(mvThemeCat_Core, THEME_STYLE, dpg.mvStyleVar_IndentSpacing        , 1 , int  , 0   , 30  )
+    CellPadding           = ThemeElementType(mvThemeCat_Core, THEME_STYLE, dpg.mvStyleVar_CellPadding          , 2 , int  , 0   , 20  )
+    ScrollbarSize         = ThemeElementType(mvThemeCat_Core, THEME_STYLE, dpg.mvStyleVar_ScrollbarSize        , 1 , int  , 0   , 20  )
+    ScrollbarRounding     = ThemeElementType(mvThemeCat_Core, THEME_STYLE, dpg.mvStyleVar_ScrollbarRounding    , 1 , int  , 0   , 12  )
+    GrabMinSize           = ThemeElementType(mvThemeCat_Core, THEME_STYLE, dpg.mvStyleVar_GrabMinSize          , 1 , int  , 0   , 20  )
+    GrabRounding          = ThemeElementType(mvThemeCat_Core, THEME_STYLE, dpg.mvStyleVar_GrabRounding         , 1 , int  , 0   , 12  )
+    TabRounding           = ThemeElementType(mvThemeCat_Core, THEME_STYLE, dpg.mvStyleVar_TabRounding          , 1 , int  , 0   , 12  )
+    ButtonTextAlign       = ThemeElementType(mvThemeCat_Core, THEME_STYLE, dpg.mvStyleVar_ButtonTextAlign      , 2 , float, 0.0 , 1.0 )
+    SelectableTextAlign   = ThemeElementType(mvThemeCat_Core, THEME_STYLE, dpg.mvStyleVar_SelectableTextAlign  , 2 , float, 0.0 , 1.0 )
 
 
 class ThemeCategoryPlot(_ThemeCategoryT, Enum):
-    # Color
-    Line                      = ThemeElementTData(  1 ,   0 ,   0 ,   4 ,  int ,    0  ,   255  )
-    Fill                      = ThemeElementTData(  1 ,   0 ,   1 ,   4 ,  int ,    0  ,   255  )
-    MarkerOutline             = ThemeElementTData(  1 ,   0 ,   2 ,   4 ,  int ,    0  ,   255  )
-    MarkerFill                = ThemeElementTData(  1 ,   0 ,   3 ,   4 ,  int ,    0  ,   255  )
-    ErrorBar                  = ThemeElementTData(  1 ,   0 ,   4 ,   4 ,  int ,    0  ,   255  )
-    FrameBg                   = ThemeElementTData(  1 ,   0 ,   5 ,   4 ,  int ,    0  ,   255  )
-    PlotBg                    = ThemeElementTData(  1 ,   0 ,   6 ,   4 ,  int ,    0  ,   255  )
-    PlotBorder                = ThemeElementTData(  1 ,   0 ,   7 ,   4 ,  int ,    0  ,   255  )
-    LegendBg                  = ThemeElementTData(  1 ,   0 ,   8 ,   4 ,  int ,    0  ,   255  )
-    LegendBorder              = ThemeElementTData(  1 ,   0 ,   9 ,   4 ,  int ,    0  ,   255  )
-    LegendText                = ThemeElementTData(  1 ,   0 ,  10 ,   4 ,  int ,    0  ,   255  )
-    TitleText                 = ThemeElementTData(  1 ,   0 ,  11 ,   4 ,  int ,    0  ,   255  )
-    InlayText                 = ThemeElementTData(  1 ,   0 ,  12 ,   4 ,  int ,    0  ,   255  )
-    XAxis                     = ThemeElementTData(  1 ,   0 ,  13 ,   4 ,  int ,    0  ,   255  )
-    XAxisGrid                 = ThemeElementTData(  1 ,   0 ,  14 ,   4 ,  int ,    0  ,   255  )
-    YAxis                     = ThemeElementTData(  1 ,   0 ,  15 ,   4 ,  int ,    0  ,   255  )
-    YAxisGrid                 = ThemeElementTData(  1 ,   0 ,  16 ,   4 ,  int ,    0  ,   255  )
-    YAxis2                    = ThemeElementTData(  1 ,   0 ,  17 ,   4 ,  int ,    0  ,   255  )
-    YAxisGrid2                = ThemeElementTData(  1 ,   0 ,  18 ,   4 ,  int ,    0  ,   255  )
-    YAxis3                    = ThemeElementTData(  1 ,   0 ,  19 ,   4 ,  int ,    0  ,   255  )
-    YAxisGrid3                = ThemeElementTData(  1 ,   0 ,  20 ,   4 ,  int ,    0  ,   255  )
-    Selection                 = ThemeElementTData(  1 ,   0 ,  21 ,   4 ,  int ,    0  ,   255  )
-    Query                     = ThemeElementTData(  1 ,   0 ,  22 ,   4 ,  int ,    0  ,   255  )
-    Crosshairs                = ThemeElementTData(  1 ,   0 ,  23 ,   4 ,  int ,    0  ,   255  )
-    # Style
-    LineWeight                = ThemeElementTData(  1 ,   1 ,   0 ,   1 , float,   0.0 ,   5.0  )
-    Marker                    = ThemeElementTData(  1 ,   1 ,   1 ,   1 , float,   0.0 ,  None  )
-    MarkerSize                = ThemeElementTData(  1 ,   1 ,   2 ,   1 , float,   0.0 ,  10.0  )
-    MarkerWeight              = ThemeElementTData(  1 ,   1 ,   3 ,   1 , float,   0.0 ,   5.0  )
-    FillAlpha                 = ThemeElementTData(  1 ,   1 ,   4 ,   1 , float,   0.0 ,   1.0  )
-    ErrorBarSize              = ThemeElementTData(  1 ,   1 ,   5 ,   1 , float,   0.0 ,  10.0  )
-    ErrorBarWeight            = ThemeElementTData(  1 ,   1 ,   6 ,   1 , float,   0.0 ,   5.0  )
-    DigitalBitHeight          = ThemeElementTData(  1 ,   1 ,   7 ,   1 , float,   0.0 ,  20.0  )
-    DigitalBitGap             = ThemeElementTData(  1 ,   1 ,   8 ,   1 , float,   0.0 ,  20.0  )
-    PlotBorderSize            = ThemeElementTData(  1 ,   1 ,   9 ,   1 , float,   0.0 ,   2.0  )
-    MinorAlpha                = ThemeElementTData(  1 ,   1 ,  10 ,   1 , float,   0.0 ,   1.0  )
-    MajorTickLen              = ThemeElementTData(  1 ,   1 ,  11 ,   2 , float,   0.0 ,  20.0  )
-    MinorTickLen              = ThemeElementTData(  1 ,   1 ,  12 ,   2 , float,   0.0 ,  20.0  )
-    MajorTickSize             = ThemeElementTData(  1 ,   1 ,  13 ,   2 , float,   0.0 ,   2.0  )
-    MinorTickSize             = ThemeElementTData(  1 ,   1 ,  14 ,   2 , float,   0.0 ,   2.0  )
-    MajorGridSize             = ThemeElementTData(  1 ,   1 ,  15 ,   2 , float,   0.0 ,   2.0  )
-    MinorGridSize             = ThemeElementTData(  1 ,   1 ,  16 ,   2 , float,   0.0 ,   2.0  )
-    PlotPadding               = ThemeElementTData(  1 ,   1 ,  17 ,   2 , float,   0.0 ,  20.0  )
-    LabelPadding              = ThemeElementTData(  1 ,   1 ,  18 ,   2 , float,   0.0 ,  20.0  )
-    LegendPadding             = ThemeElementTData(  1 ,   1 ,  19 ,   2 , float,   0.0 ,  20.0  )
-    LegendInnerPadding        = ThemeElementTData(  1 ,   1 ,  20 ,   2 , float,   0.0 ,  10.0  )
-    LegendSpacing             = ThemeElementTData(  1 ,   1 ,  21 ,   2 , float,   0.0 ,   5.0  )
-    MousePosPadding           = ThemeElementTData(  1 ,   1 ,  22 ,   2 , float,   0.0 ,  20.0  )
-    AnnotationPadding         = ThemeElementTData(  1 ,   1 ,  23 ,   2 , float,   0.0 ,   5.0  )
-    FitPadding                = ThemeElementTData(  1 ,   1 ,  24 ,   2 , float,   0.0 ,   0.2  )
-    PlotDefaultSize           = ThemeElementTData(  1 ,   1 ,  25 ,   2 ,  int ,   0.0 ,  1000  )
-    PlotMinSize               = ThemeElementTData(  1 ,   1 ,  26 ,   2 ,  int ,   0.0 ,   300  )
+    Line               = ThemeElementType(mvThemeCat_Plots, THEME_COLOR, dpg.mvPlotCol_Line, 4 , int , 0 , 255 )
+    Fill               = ThemeElementType(mvThemeCat_Plots, THEME_COLOR, dpg.mvPlotCol_Fill, 4 , int , 0 , 255 )
+    MarkerOutline      = ThemeElementType(mvThemeCat_Plots, THEME_COLOR, dpg.mvPlotCol_MarkerOutline, 4 , int , 0 , 255 )
+    MarkerFill         = ThemeElementType(mvThemeCat_Plots, THEME_COLOR, dpg.mvPlotCol_MarkerFill, 4 , int , 0 , 255 )
+    ErrorBar           = ThemeElementType(mvThemeCat_Plots, THEME_COLOR, dpg.mvPlotCol_ErrorBar, 4 , int , 0 , 255 )
+    FrameBg            = ThemeElementType(mvThemeCat_Plots, THEME_COLOR, dpg.mvPlotCol_FrameBg, 4 , int , 0 , 255 )
+    PlotBg             = ThemeElementType(mvThemeCat_Plots, THEME_COLOR, dpg.mvPlotCol_PlotBg, 4 , int , 0 , 255 )
+    PlotBorder         = ThemeElementType(mvThemeCat_Plots, THEME_COLOR, dpg.mvPlotCol_PlotBorder, 4 , int , 0 , 255 )
+    LegendBg           = ThemeElementType(mvThemeCat_Plots, THEME_COLOR, dpg.mvPlotCol_LegendBg, 4 , int , 0 , 255 )
+    LegendBorder       = ThemeElementType(mvThemeCat_Plots, THEME_COLOR, dpg.mvPlotCol_LegendBorder, 4 , int , 0 , 255 )
+    LegendText         = ThemeElementType(mvThemeCat_Plots, THEME_COLOR, dpg.mvPlotCol_LegendText, 4 , int , 0 , 255 )
+    TitleText          = ThemeElementType(mvThemeCat_Plots, THEME_COLOR, dpg.mvPlotCol_TitleText, 4 , int , 0 , 255 )
+    InlayText          = ThemeElementType(mvThemeCat_Plots, THEME_COLOR, dpg.mvPlotCol_InlayText, 4 , int , 0 , 255 )
+    XAxis              = ThemeElementType(mvThemeCat_Plots, THEME_COLOR, dpg.mvPlotCol_XAxis, 4 , int , 0 , 255 )
+    XAxisGrid          = ThemeElementType(mvThemeCat_Plots, THEME_COLOR, dpg.mvPlotCol_XAxisGrid, 4 , int , 0 , 255 )
+    YAxis              = ThemeElementType(mvThemeCat_Plots, THEME_COLOR, dpg.mvPlotCol_YAxis, 4 , int , 0 , 255 )
+    YAxisGrid          = ThemeElementType(mvThemeCat_Plots, THEME_COLOR, dpg.mvPlotCol_YAxisGrid, 4 , int , 0 , 255 )
+    YAxis2             = ThemeElementType(mvThemeCat_Plots, THEME_COLOR, dpg.mvPlotCol_YAxis2, 4 , int , 0 , 255 )
+    YAxisGrid2         = ThemeElementType(mvThemeCat_Plots, THEME_COLOR, dpg.mvPlotCol_YAxisGrid2, 4 , int , 0 , 255 )
+    YAxis3             = ThemeElementType(mvThemeCat_Plots, THEME_COLOR, dpg.mvPlotCol_YAxis3, 4 , int , 0 , 255 )
+    YAxisGrid3         = ThemeElementType(mvThemeCat_Plots, THEME_COLOR, dpg.mvPlotCol_YAxisGrid3, 4 , int , 0 , 255 )
+    Selection          = ThemeElementType(mvThemeCat_Plots, THEME_COLOR, dpg.mvPlotCol_Selection, 4 , int , 0 , 255 )
+    Query              = ThemeElementType(mvThemeCat_Plots, THEME_COLOR, dpg.mvPlotCol_Query, 4 , int , 0 , 255 )
+    Crosshairs         = ThemeElementType(mvThemeCat_Plots, THEME_COLOR, dpg.mvPlotCol_Crosshairs, 4 , int , 0 , 255 )
+    LineWeight         = ThemeElementType(mvThemeCat_Plots, THEME_STYLE, dpg.mvPlotStyleVar_LineWeight,  1 , float, 0.0 , 5.0 )
+    Marker             = ThemeElementType(mvThemeCat_Plots, THEME_STYLE, dpg.mvPlotStyleVar_Marker, 1 , float, 0.0 , None )
+    MarkerSize         = ThemeElementType(mvThemeCat_Plots, THEME_STYLE, dpg.mvPlotStyleVar_MarkerSize, 1 , float, 0.0 , 10.0 )
+    MarkerWeight       = ThemeElementType(mvThemeCat_Plots, THEME_STYLE, dpg.mvPlotStyleVar_MarkerWeight, 1 , float, 0.0 , 5.0 )
+    FillAlpha          = ThemeElementType(mvThemeCat_Plots, THEME_STYLE, dpg.mvPlotStyleVar_FillAlpha, 1 , float, 0.0 , 1.0 )
+    ErrorBarSize       = ThemeElementType(mvThemeCat_Plots, THEME_STYLE, dpg.mvPlotStyleVar_ErrorBarSize, 1 , float, 0.0 , 10.0 )
+    ErrorBarWeight     = ThemeElementType(mvThemeCat_Plots, THEME_STYLE, dpg.mvPlotStyleVar_ErrorBarWeight, 1 , float, 0.0 , 5.0 )
+    DigitalBitHeight   = ThemeElementType(mvThemeCat_Plots, THEME_STYLE, dpg.mvPlotStyleVar_DigitalBitHeight , 1 , float, 0.0 , 20.0 )
+    DigitalBitGap      = ThemeElementType(mvThemeCat_Plots, THEME_STYLE, dpg.mvPlotStyleVar_DigitalBitGap, 1 , float, 0.0 , 20.0 )
+    PlotBorderSize     = ThemeElementType(mvThemeCat_Plots, THEME_STYLE, dpg.mvPlotStyleVar_PlotBorderSize, 1 , float, 0.0 , 2.0 )
+    MinorAlpha         = ThemeElementType(mvThemeCat_Plots, THEME_STYLE, dpg.mvPlotStyleVar_MinorAlpha, 1 , float, 0.0 , 1.0 )
+    MajorTickLen       = ThemeElementType(mvThemeCat_Plots, THEME_STYLE, dpg.mvPlotStyleVar_MajorTickLen, 2 , float, 0.0 , 20.0 )
+    MinorTickLen       = ThemeElementType(mvThemeCat_Plots, THEME_STYLE, dpg.mvPlotStyleVar_MinorTickLen, 2 , float, 0.0 , 20.0 )
+    MajorTickSize      = ThemeElementType(mvThemeCat_Plots, THEME_STYLE, dpg.mvPlotStyleVar_MajorTickSize, 2 , float, 0.0 , 2.0 )
+    MinorTickSize      = ThemeElementType(mvThemeCat_Plots, THEME_STYLE, dpg.mvPlotStyleVar_MinorTickSize, 2 , float, 0.0 , 2.0 )
+    MajorGridSize      = ThemeElementType(mvThemeCat_Plots, THEME_STYLE, dpg.mvPlotStyleVar_MajorGridSize, 2 , float, 0.0 , 2.0 )
+    MinorGridSize      = ThemeElementType(mvThemeCat_Plots, THEME_STYLE, dpg.mvPlotStyleVar_MinorGridSize, 2 , float, 0.0 , 2.0 )
+    PlotPadding        = ThemeElementType(mvThemeCat_Plots, THEME_STYLE, dpg.mvPlotStyleVar_PlotPadding, 2 , float, 0.0 , 20.0 )
+    LabelPadding       = ThemeElementType(mvThemeCat_Plots, THEME_STYLE, dpg.mvPlotStyleVar_LabelPadding, 2 , float, 0.0 , 20.0 )
+    LegendPadding      = ThemeElementType(mvThemeCat_Plots, THEME_STYLE, dpg.mvPlotStyleVar_LegendPadding, 2 , float, 0.0 , 20.0 )
+    LegendInnerPadding = ThemeElementType(mvThemeCat_Plots, THEME_STYLE, dpg.mvPlotStyleVar_LegendInnerPadding, 2 , float, 0.0 , 10.0 )
+    LegendSpacing      = ThemeElementType(mvThemeCat_Plots, THEME_STYLE, dpg.mvPlotStyleVar_LegendSpacing, 2 , float, 0.0 , 5.0 )
+    MousePosPadding    = ThemeElementType(mvThemeCat_Plots, THEME_STYLE, dpg.mvPlotStyleVar_MousePosPadding, 2 , float, 0.0 , 20.0 )
+    AnnotationPadding  = ThemeElementType(mvThemeCat_Plots, THEME_STYLE, dpg.mvPlotStyleVar_AnnotationPadding, 2 , float, 0.0 , 5.0 )
+    FitPadding         = ThemeElementType(mvThemeCat_Plots, THEME_STYLE, dpg.mvPlotStyleVar_FitPadding, 2 , float, 0.0 , 0.2 )
+    PlotDefaultSize    = ThemeElementType(mvThemeCat_Plots, THEME_STYLE, dpg.mvPlotStyleVar_PlotDefaultSize, 2 , int , 0.0 , 1000 )
+    PlotMinSize        = ThemeElementType(mvThemeCat_Plots, THEME_STYLE, dpg.mvPlotStyleVar_PlotMinSize, 2 , int , 0.0 , 300 )
 
 
-class ThemeCategoryNode(_ThemeCategoryT, Enum):
-    # Color
-    NodeBackground                = ThemeElementTData(  2 ,   0 ,   0 ,   4 ,  int ,    0  ,   255  )
-    NodeBackgroundHovered         = ThemeElementTData(  2 ,   0 ,   1 ,   4 ,  int ,    0  ,   255  )
-    NodeBackgroundSelected        = ThemeElementTData(  2 ,   0 ,   2 ,   4 ,  int ,    0  ,   255  )
-    NodeOutline                   = ThemeElementTData(  2 ,   0 ,   3 ,   4 ,  int ,    0  ,   255  )
-    TitleBar                      = ThemeElementTData(  2 ,   0 ,   4 ,   4 ,  int ,    0  ,   255  )
-    TitleBarHovered               = ThemeElementTData(  2 ,   0 ,   5 ,   4 ,  int ,    0  ,   255  )
-    TitleBarSelected              = ThemeElementTData(  2 ,   0 ,   6 ,   4 ,  int ,    0  ,   255  )
-    Link                          = ThemeElementTData(  2 ,   0 ,   7 ,   4 ,  int ,    0  ,   255  )
-    LinkHovered                   = ThemeElementTData(  2 ,   0 ,   8 ,   4 ,  int ,    0  ,   255  )
-    LinkSelected                  = ThemeElementTData(  2 ,   0 ,   9 ,   4 ,  int ,    0  ,   255  )
-    Pin                           = ThemeElementTData(  2 ,   0 ,  10 ,   4 ,  int ,    0  ,   255  )
-    PinHovered                    = ThemeElementTData(  2 ,   0 ,  11 ,   4 ,  int ,    0  ,   255  )
-    BoxSelector                   = ThemeElementTData(  2 ,   0 ,  12 ,   4 ,  int ,    0  ,   255  )
-    BoxSelectorOutline            = ThemeElementTData(  2 ,   0 ,  13 ,   4 ,  int ,    0  ,   255  )
-    GridBackground                = ThemeElementTData(  2 ,   0 ,  14 ,   4 ,  int ,    0  ,   255  )
-    GridLine                      = ThemeElementTData(  2 ,   0 ,  15 ,   4 ,  int ,    0  ,   255  )
-    GridLinePrimary               = ThemeElementTData(  2 ,   0 ,  16 ,   4 ,  int ,    0  ,   255  )
-    MiniMapBackground             = ThemeElementTData(  2 ,   0 ,  17 ,   4 ,  int ,    0  ,   255  )
-    MiniMapBackgroundHovered      = ThemeElementTData(  2 ,   0 ,  18 ,   4 ,  int ,    0  ,   255  )
-    MiniMapOutline                = ThemeElementTData(  2 ,   0 ,  19 ,   4 ,  int ,    0  ,   255  )
-    MiniMapOutlineHovered         = ThemeElementTData(  2 ,   0 ,  20 ,   4 ,  int ,    0  ,   255  )
-    MiniMapNodeBackground         = ThemeElementTData(  2 ,   0 ,  21 ,   4 ,  int ,    0  ,   255  )
-    MiniMapNodeBackgroundHovered  = ThemeElementTData(  2 ,   0 ,  22 ,   4 ,  int ,    0  ,   255  )
-    MiniMapNodeBackgroundSelected = ThemeElementTData(  2 ,   0 ,  23 ,   4 ,  int ,    0  ,   255  )
-    MiniMapNodeOutline            = ThemeElementTData(  2 ,   0 ,  24 ,   4 ,  int ,    0  ,   255  )
-    MiniMapLink                   = ThemeElementTData(  2 ,   0 ,  25 ,   4 ,  int ,    0  ,   255  )
-    MiniMapLinkSelected           = ThemeElementTData(  2 ,   0 ,  26 ,   4 ,  int ,    0  ,   255  )
-    MiniMapCanvas                 = ThemeElementTData(  2 ,   0 ,  27 ,   4 ,  int ,    0  ,   255  )
-    MiniMapCanvasOutline          = ThemeElementTData(  2 ,   0 ,  28 ,   4 ,  int ,    0  ,   255  )
-    # Style
-    GridSpacing               = ThemeElementTData(  2 ,   1 ,   0 ,   1 , float,   0.0 ,  None  )
-    NodeCornerRounding        = ThemeElementTData(  2 ,   1 ,   1 ,   1 , float,   0.0 ,  None  )
-    NodePadding               = ThemeElementTData(  2 ,   1 ,   2 ,   1 , float,   0.0 ,  None  )
-    NodeBorderThickness       = ThemeElementTData(  2 ,   1 ,   3 ,   1 , float,   0.0 ,  None  )
-    LinkThickness             = ThemeElementTData(  2 ,   1 ,   4 ,   1 , float,   0.0 ,  None  )
-    LinkLineSegmentsPerLength = ThemeElementTData(  2 ,   1 ,   5 ,   1 , float,   0.0 ,  None  )
-    LinkHoverDistance         = ThemeElementTData(  2 ,   1 ,   6 ,   1 , float,   0.0 ,  None  )
-    PinCircleRadius           = ThemeElementTData(  2 ,   1 ,   7 ,   1 , float,   0.0 ,  None  )
-    PinQuadSideLength         = ThemeElementTData(  2 ,   1 ,   8 ,   1 , float,   0.0 ,  None  )
-    PinTriangleSideLength     = ThemeElementTData(  2 ,   1 ,   9 ,   1 , float,   0.0 ,  None  )
-    PinLineThickness          = ThemeElementTData(  2 ,   1 ,  10 ,   1 , float,   0.0 ,  None  )
-    PinHoverRadius            = ThemeElementTData(  2 ,   1 ,  11 ,   1 , float,   0.0 ,  None  )
-    PinOffset                 = ThemeElementTData(  2 ,   1 ,  12 ,   1 , float,   0.0 ,  None  )
-    MiniMapPadding            = ThemeElementTData(  2 ,   1 ,  13 ,   2 , float,   0.0 ,  None  )
-    MiniMapOffset             = ThemeElementTData(  2 ,   1 ,  14 ,   2 , float,   0.0 ,  None  )
+class ThemeCategoryNode(_ThemeCategoryT,  Enum):
+    # BUG: I don't think it is intended to have both "mvNode" and "mvNodes" prefixes...
+    NodeBackground                = ThemeElementType(mvThemeCat_Nodes, THEME_COLOR, dpg.mvNodeCol_NodeBackground                , 4 , int , 0 , 255 )
+    NodeBackgroundHovered         = ThemeElementType(mvThemeCat_Nodes, THEME_COLOR, dpg.mvNodeCol_NodeBackgroundHovered         , 4 , int , 0 , 255 )
+    NodeBackgroundSelected        = ThemeElementType(mvThemeCat_Nodes, THEME_COLOR, dpg.mvNodeCol_NodeBackgroundSelected        , 4 , int , 0 , 255 )
+    NodeOutline                   = ThemeElementType(mvThemeCat_Nodes, THEME_COLOR, dpg.mvNodeCol_NodeOutline                   , 4 , int , 0 , 255 )
+    TitleBar                      = ThemeElementType(mvThemeCat_Nodes, THEME_COLOR, dpg.mvNodeCol_TitleBar                      , 4 , int , 0 , 255 )
+    TitleBarHovered               = ThemeElementType(mvThemeCat_Nodes, THEME_COLOR, dpg.mvNodeCol_TitleBarHovered               , 4 , int , 0 , 255 )
+    TitleBarSelected              = ThemeElementType(mvThemeCat_Nodes, THEME_COLOR, dpg.mvNodeCol_TitleBarSelected              , 4 , int , 0 , 255 )
+    Link                          = ThemeElementType(mvThemeCat_Nodes, THEME_COLOR, dpg.mvNodeCol_Link                          , 4 , int , 0 , 255 )
+    LinkHovered                   = ThemeElementType(mvThemeCat_Nodes, THEME_COLOR, dpg.mvNodeCol_LinkHovered                   , 4 , int , 0 , 255 )
+    LinkSelected                  = ThemeElementType(mvThemeCat_Nodes, THEME_COLOR, dpg.mvNodeCol_LinkSelected                  , 4 , int , 0 , 255 )
+    Pin                           = ThemeElementType(mvThemeCat_Nodes, THEME_COLOR, dpg.mvNodeCol_Pin                           , 4 , int , 0 , 255 )
+    PinHovered                    = ThemeElementType(mvThemeCat_Nodes, THEME_COLOR, dpg.mvNodeCol_PinHovered                    , 4 , int , 0 , 255 )
+    BoxSelector                   = ThemeElementType(mvThemeCat_Nodes, THEME_COLOR, dpg.mvNodeCol_BoxSelector                   , 4 , int , 0 , 255 )
+    BoxSelectorOutline            = ThemeElementType(mvThemeCat_Nodes, THEME_COLOR, dpg.mvNodeCol_BoxSelectorOutline            , 4 , int , 0 , 255 )
+    GridBackground                = ThemeElementType(mvThemeCat_Nodes, THEME_COLOR, dpg.mvNodeCol_GridBackground                , 4 , int , 0 , 255 )
+    GridLine                      = ThemeElementType(mvThemeCat_Nodes, THEME_COLOR, dpg.mvNodeCol_GridLine                      , 4 , int , 0 , 255 )
+    GridLinePrimary               = ThemeElementType(mvThemeCat_Nodes, THEME_COLOR, dpg.mvNodesCol_GridLinePrimary              , 4 , int , 0 , 255 )
+    MiniMapBackground             = ThemeElementType(mvThemeCat_Nodes, THEME_COLOR, dpg.mvNodesCol_MiniMapBackground            , 4 , int , 0 , 255 )
+    MiniMapBackgroundHovered      = ThemeElementType(mvThemeCat_Nodes, THEME_COLOR, dpg.mvNodesCol_MiniMapBackgroundHovered     , 4 , int , 0 , 255 )
+    MiniMapOutline                = ThemeElementType(mvThemeCat_Nodes, THEME_COLOR, dpg.mvNodesCol_MiniMapOutline               , 4 , int , 0 , 255 )
+    MiniMapOutlineHovered         = ThemeElementType(mvThemeCat_Nodes, THEME_COLOR, dpg.mvNodesCol_MiniMapOutlineHovered        , 4 , int , 0 , 255 )
+    MiniMapNodeBackground         = ThemeElementType(mvThemeCat_Nodes, THEME_COLOR, dpg.mvNodesCol_MiniMapNodeBackground        , 4 , int , 0 , 255 )
+    MiniMapNodeBackgroundHovered  = ThemeElementType(mvThemeCat_Nodes, THEME_COLOR, dpg.mvNodesCol_MiniMapNodeBackgroundHovered , 4 , int , 0 , 255 )
+    MiniMapNodeBackgroundSelected = ThemeElementType(mvThemeCat_Nodes, THEME_COLOR, dpg.mvNodesCol_MiniMapNodeBackgroundSelected, 4 , int , 0 , 255 )
+    MiniMapNodeOutline            = ThemeElementType(mvThemeCat_Nodes, THEME_COLOR, dpg.mvNodesCol_MiniMapNodeOutline           , 4 , int , 0 , 255 )
+    MiniMapLink                   = ThemeElementType(mvThemeCat_Nodes, THEME_COLOR, dpg.mvNodesCol_MiniMapLink                  , 4 , int , 0 , 255 )
+    MiniMapLinkSelected           = ThemeElementType(mvThemeCat_Nodes, THEME_COLOR, dpg.mvNodesCol_MiniMapLinkSelected          , 4 , int , 0 , 255 )
+    MiniMapCanvas                 = ThemeElementType(mvThemeCat_Nodes, THEME_COLOR, dpg.mvNodesCol_MiniMapCanvas                , 4 , int , 0 , 255 )
+    MiniMapCanvasOutline          = ThemeElementType(mvThemeCat_Nodes, THEME_COLOR, dpg.mvNodesCol_MiniMapCanvasOutline         , 4 , int , 0 , 255 )
+    GridSpacing                   = ThemeElementType(mvThemeCat_Nodes, THEME_STYLE, dpg.mvNodeStyleVar_GridSpacing              , 1 , float, 0.0 , None )
+    NodeCornerRounding            = ThemeElementType(mvThemeCat_Nodes, THEME_STYLE, dpg.mvNodeStyleVar_NodeCornerRounding       , 1 , float, 0.0 , None )
+    NodePadding                   = ThemeElementType(mvThemeCat_Nodes, THEME_STYLE, dpg.mvNodeStyleVar_NodePadding              , 1 , float, 0.0 , None )
+    NodeBorderThickness           = ThemeElementType(mvThemeCat_Nodes, THEME_STYLE, dpg.mvNodeStyleVar_NodeBorderThickness      , 1 , float, 0.0 , None )
+    LinkThickness                 = ThemeElementType(mvThemeCat_Nodes, THEME_STYLE, dpg.mvNodeStyleVar_LinkThickness            , 1 , float, 0.0 , None )
+    LinkLineSegmentsPerLength     = ThemeElementType(mvThemeCat_Nodes, THEME_STYLE, dpg.mvNodeStyleVar_LinkLineSegmentsPerLength, 1 , float, 0.0 , None )
+    LinkHoverDistance             = ThemeElementType(mvThemeCat_Nodes, THEME_STYLE, dpg.mvNodeStyleVar_LinkHoverDistance        , 1 , float, 0.0 , None )
+    PinCircleRadius               = ThemeElementType(mvThemeCat_Nodes, THEME_STYLE, dpg.mvNodeStyleVar_PinCircleRadius          , 1 , float, 0.0 , None )
+    PinQuadSideLength             = ThemeElementType(mvThemeCat_Nodes, THEME_STYLE, dpg.mvNodeStyleVar_PinQuadSideLength        , 1 , float, 0.0 , None )
+    PinTriangleSideLength         = ThemeElementType(mvThemeCat_Nodes, THEME_STYLE, dpg.mvNodeStyleVar_PinTriangleSideLength    , 1 , float, 0.0 , None )
+    PinLineThickness              = ThemeElementType(mvThemeCat_Nodes, THEME_STYLE, dpg.mvNodeStyleVar_PinLineThickness         , 1 , float, 0.0 , None )
+    PinHoverRadius                = ThemeElementType(mvThemeCat_Nodes, THEME_STYLE, dpg.mvNodeStyleVar_PinHoverRadius           , 1 , float, 0.0 , None )
+    PinOffset                     = ThemeElementType(mvThemeCat_Nodes, THEME_STYLE, dpg.mvNodeStyleVar_PinOffset                , 1 , float, 0.0 , None )
+    MiniMapPadding                = ThemeElementType(mvThemeCat_Nodes, THEME_STYLE, dpg.mvNodesStyleVar_MiniMapPadding          , 2 , float, 0.0 , None )
+    MiniMapOffset                 = ThemeElementType(mvThemeCat_Nodes, THEME_STYLE, dpg.mvNodesStyleVar_MiniMapOffset           , 2 , float, 0.0 , None )
 
 #############################
 ########### Misc. ###########
 #############################
-class Platform(IntEnum):
-    Windows = 0
-    Linux   = 1
-    MacOS   = 2
-
 
 class Dir(IntEnum):
     NONE = -1
@@ -740,26 +567,16 @@ class FontRangeHint(IntEnum):
 
 
 class DefaultRegistries(Enum):
-    Font = (_dearpygui.add_font_registry, ReservedUUID.UUID_1.value)
-    Event = (_dearpygui.add_handler_registry, ReservedUUID.UUID_2.value)
-    Texture = (_dearpygui.add_texture_registry, ReservedUUID.UUID_3.value)
-    Value = (_dearpygui.add_value_registry, ReservedUUID.UUID_4.value)
-    ColorMap = (_dearpygui.add_colormap_registry, ReservedUUID.UUID_5.value)
-    Template = (_dearpygui.add_template_registry, ReservedUUID.UUID_6.value)
+    Font = (dpg.add_font_registry, ReservedUUID.UUID_1.value)
+    Event = (dpg.add_handler_registry, ReservedUUID.UUID_2.value)
+    Texture = (dpg.add_texture_registry, ReservedUUID.UUID_3.value)
+    Value = (dpg.add_value_registry, ReservedUUID.UUID_4.value)
+    ColorMap = (dpg.add_colormap_registry, ReservedUUID.UUID_5.value)
+    Template = (dpg.add_template_registry, ReservedUUID.UUID_6.value)
 
     @classmethod
     def setup_registries(cls):
         for value in cls.__members__.values():
             func, tag = value.value
             func(label=None, user_data=None, use_internal_label=True, tag=tag)
-
-
-class DPIAwareness(IntEnum):
-    Unaware = 0
-    SystemAware = 1
-    PerMonitorAware = 2
-
-
-
-
 

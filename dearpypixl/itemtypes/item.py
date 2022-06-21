@@ -7,7 +7,7 @@ from abc import ABCMeta, abstractmethod
 from enum import Enum, IntEnum
 from collections import namedtuple
 from inspect import signature, isabstract, Parameter, _VAR_POSITIONAL, _KEYWORD_ONLY
-from typing import Any, Callable, TypeVar, MutableMapping, NamedTuple, Iterable, Literal
+from typing import Any, Callable, TypeVar, MutableMapping, NamedTuple, Iterable, Literal, ClassVar, Final
 from typing_extensions import Self, TypeAlias
 from dearpygui import dearpygui
 from dearpygui._dearpygui import (
@@ -45,7 +45,7 @@ from dearpypixl.errors import (
 __all__ = [
     # TypeVars
     "ItemT",
-    "TemplateT",
+    "AppItemT",
 
     # Classes
     "RegistryType",
@@ -54,7 +54,7 @@ __all__ = [
 
     "ItemType",
     "Item",
-    "AppItemType",
+    "AppItem",
 
     # Misc/Helper functions
     "prep_callback",
@@ -65,7 +65,7 @@ __all__ = [
 
 
 ItemT     = TypeVar("ItemT"    , bound="Item")
-TemplateT = TypeVar("TemplateT", bound="TemplateType")
+AppItemT  = TypeVar("AppItemT" , bound="AppItem")
 
 ####################################################################################
 ################################# Helper Functions #################################
@@ -285,7 +285,7 @@ class InternalType(NamedTuple):
         * init_params (dict[str, Parameter]): Parameters passed to the
         constructor to create instances of this Item type (collected
         from all classes in its inheritance tree).
-        * template_item (TemplateT): The bound Template object created
+        * template_item (Template): The bound Template object created
         specifically for this Item type.
     """
     config_members: tuple[str, ...]      = ()
@@ -293,7 +293,7 @@ class InternalType(NamedTuple):
     states_members: tuple[str, ...]      = ()
     cached_members: tuple[str, ...]      = ()
     init_params   : dict[str, Parameter] = {}
-    template_item : TemplateT            = None
+    template_item : 'TemplateItem'       = None
 
 
 class ItemIdType(tuple):  # improvised NamedTuple (can't redefine __new__ otherwise)
@@ -767,17 +767,17 @@ class ItemType(metaclass=_ItemTypeMeta):
 
     __slots__ = ()
 
-    __registry__      : RegistryType   = RegistryType()
-    __internal__      : InternalType   = InternalType()
-    __cached__        : dict[str, Any] = None
+    __registry__      : Final[RegistryType]      = RegistryType()
+    __internal__      : ClassVar[InternalType]   = InternalType()
+    __cached__        : ClassVar[dict[str, Any]] = None
 
-    __itemtype_id__   : ItemIdType = None
-    __is_root_item__  : bool       = False
-    __is_container__  : bool       = False
-    __able_parents__  : tuple      = ()
-    __able_children__ : tuple      = ()
-    __is_value_able__ : bool       = False
-    __command__       : Callable   = None
+    __itemtype_id__   : ClassVar[ItemIdType] = None
+    __is_root_item__  : ClassVar[bool]       = False
+    __is_container__  : ClassVar[bool]       = False
+    __able_parents__  : ClassVar[tuple]      = ()
+    __able_children__ : ClassVar[tuple]      = ()
+    __is_value_able__ : ClassVar[bool]       = False
+    __command__       : ClassVar[Callable]   = None
     # __constants__   : Not (and likely won't be) used by the Item API. Contains
     # Contains the names of constants in DearPyGui that are associated with that
     # item type.
@@ -833,7 +833,7 @@ class ItemType(metaclass=_ItemTypeMeta):
         if not isabstract(cls):
             template = type(
                 f"{cls.__qualname__}Template",
-                (TemplateType,),
+                (TemplateItem,),
                 {"__slots__": tuple(init_params.keys()),
                  "_factory" : cls                              }
             )
@@ -907,7 +907,6 @@ class Item(ItemType, metaclass=ABCMeta):
 
     **Public Methods**
     -----------------------
-        * raw_init (classmethod)
         * as_template (classmethod)
         * able_parents (classmethod)
         * able_children (classmethod)
@@ -929,21 +928,6 @@ class Item(ItemType, metaclass=ABCMeta):
         * reset_pos
 
     """
-    # Internal members and abstract methods are toward the bottom.
-
-    @classmethod
-    def raw_init(cls, **config) -> int | str:
-        """Skip normal initialization -- Directly call the DearPyGui command used
-        to create the item and return its unique identifier. Useful when creating
-        several items (hundreds/thousands) or when object orientation for an item
-        is unnecessary. This greatly increases performance in item creation.
-        However, no instances are created, and support to manage the item is only
-        available using the DearPyGui API.
-        """
-        for kw, val in config.items():
-            if isinstance(val, (Item, IntEnum)):
-                config[kw] = int(val)
-        return cls.__command__(**config)
 
     @classmethod
     def as_template(cls, **config) -> type[Self]:
@@ -1493,6 +1477,16 @@ class Item(ItemType, metaclass=ABCMeta):
                 raise ValueError(f"Expected 2 `int` values (got {len(key)}).")
 
     ## private/internal methods ##
+    @classmethod
+    def _command(cls, **config) -> int | str:
+        """Directly call the DearPyGui command used to create the item and return
+        its unique identifier.
+        """
+        for kw, val in config.items():
+            if isinstance(val, (Item, IntEnum)):
+                config[kw] = int(val)
+        return cls.__command__(**config)
+
     def _children(self) -> list[int]:
         return [*_get_item_info(self._tag)["children"].values()]
 
@@ -1510,7 +1504,68 @@ class Item(ItemType, metaclass=ABCMeta):
         return tree
 
 
-class TemplateType(MutableMapping, metaclass=ABCMeta):
+class AppItem(ItemType):
+    """Provides a minimal Item API for application-level objects.
+    """
+    # NOTE: General configuration and information getters should be available on
+    # the class, but configuration setters on instances. This is because a descriptor
+    # would be overwritten if re-assigned on a class. A metaclass would work -- However,
+    # instances would not have access to descriptors set on the metaclass. This would be
+    # annoying to work around as a developer, and confusing to work with as a user.
+    @classmethod
+    @abstractmethod
+    def tag(cls) -> int | str     : ...
+
+    @classmethod
+    @abstractmethod
+    def configuration(cls) -> dict[str, Any]: ...
+
+    @classmethod
+    @abstractmethod
+    def information(cls) -> dict[str, Any]: ...
+
+    @classmethod
+    @abstractmethod
+    def state(cls) -> dict[str, Any]: ...
+
+    __slots__  =  ()
+    __cached__ =  {   # set per-instance for normal items via `prep_init_args`
+        "app_uuid"     : 1,
+        "viewport_uuid": "DPG NOT USED YET",
+        "theme_uuid"   : 0,
+        "font_uuid"    : 0,
+    }
+    __is_root_item__ = True
+
+    @classmethod
+    @property
+    @ItemProperty.register(category=INFORM)
+    def is_container(cls) -> bool:
+        """Return True if items of this type are capable of parenting other items.
+        """
+        return cls.__is_container__
+
+    @classmethod
+    @property
+    @ItemProperty.register(category=INFORM)
+    def is_root_item(cls) -> bool:
+        """Return True if items of this type cannot be parented by other items.
+        """
+        return cls.__is_root_item__
+
+    @classmethod
+    @property
+    @ItemProperty.register(category=INFORM)
+    def is_value_able(cls) -> bool:
+        """Return True if items of this type can hold a value.
+        """
+        return cls.__is_value_able__
+
+    def configure(self, **config):
+        return Item.configure(self, **config)
+
+
+class TemplateItem(MutableMapping, metaclass=ABCMeta):
     @classmethod
     @abstractmethod
     def _factory(cls) -> ItemT: ...
@@ -1591,52 +1646,3 @@ class TemplateType(MutableMapping, metaclass=ABCMeta):
     @property
     def _parameters(self) -> dict[str, Parameter]:
         return self.__internal__[4]
-
-
-class AppItemType(ItemType):
-    """Provides a minimal Item API to singleton-like item objects.
-    """
-    @abstractmethod
-    def tag()                -> int | str     : ...
-    @abstractmethod
-    def configuration(cls)   -> dict[str, Any]: ...
-
-    def __init_subclass__(cls):
-        # ItemType's __init_subclass__ method will swap out __itemtype_id__
-        # to insert "mvAppItemType::" in its string name. Since this is
-        # likely a more custom object, the original info should be honored.
-        # Set a reference to the type info, set dummy info on the class
-        # (this also keeps ItemType from registering it), and swap it back.
-        type_info = cls.__itemtype_id__
-        cls.__itemtype_id__ = None
-        super().__init_subclass__()
-        cls.__itemtype_id__ = type_info
-
-    # Typically this is defined per-instance when calling `prep_init_args`.
-    # By setting this on the class, any cached managed attributes will be
-    # accessible to all instances (`prep_init_args` won't be called here).
-    # To ensure that this structure is populated, the caching features
-    # of ItemProperty should be used as well as the `set_cached_attribute`
-    # function.
-    __cached__ = {}
-
-    is_container  = Item.is_container
-    is_root_item  = Item.is_root_item
-    is_value_able = Item.is_value_able
-
-    get_able_parents  = Item.able_parents
-    get_able_children = Item.able_children
-
-    @classmethod
-    def configure(cls, **config) -> None:
-        return Item.configure(cls, **config)
-
-    @classmethod
-    def information(cls) -> dict[str, Any]:
-        return Item.information(cls)
-
-    @classmethod
-    def state(cls) -> dict[str, Any]:
-        # Item.state is optimized for a performance boost -- it prevents
-        # me from using it here.
-        return {attr: getattr(cls, attr) for attr in cls.__internal__[2]}

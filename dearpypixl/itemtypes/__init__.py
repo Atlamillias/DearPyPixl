@@ -1,9 +1,11 @@
 from abc import abstractmethod
 from typing import Callable, TypeVar, Any
 from dearpygui._dearpygui import get_item_info
-from dearpypixl.itemtypes.item import (
+from .themes import Theme
+from .events import ItemEvents
+from .item import (
     ItemT,
-    TemplateT,
+    AppItemT,
 
     prep_callback,
     prep_init_args,
@@ -15,22 +17,19 @@ from dearpypixl.itemtypes.item import (
     INFORM,
     STATES,
 
-    RegistryType,
-    InternalType,
     ItemIdType,
+
     ItemType,
-    TemplateType,
     Item,
+    AppItem,
 )
-from .themes import Theme
-from .events import ItemEvents
 
 
 __all__ = [
     # TypeVars
     "ItemT",
-    "WidgetItemT",
-    "TemplateT",
+    "AppItemT",
+    "WidgetT",
 
     # Misc/Helper Functions
     "prep_callback",
@@ -45,18 +44,16 @@ __all__ = [
     "STATES",
 
     # Classes
-    "RegistryType",
-    "InternalType",
     "ItemIdType",
     "ItemType",
-    "TemplateType",
 
     "Item",
+    "AppItem",
     "Widget",
 ]
 
 
-WidgetItemT  = TypeVar("WidgetItemT", bound='Widget')
+WidgetT  = TypeVar("WidgetT", bound='Widget')
 
 
 class Widget(Item):

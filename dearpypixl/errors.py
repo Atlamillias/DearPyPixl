@@ -5,10 +5,9 @@ from typing import TYPE_CHECKING, Union, Collection, Any, get_origin, get_args
 from dearpygui import dearpygui as dpg
 
 ItemT       = None
-TemplateT   = None
-WidgetItemT = None
+WidgetT = None
 if TYPE_CHECKING:
-    from dearpypixl.itemtypes import ItemT, TemplateT, WidgetItemT
+    from dearpypixl.itemtypes import ItemT, WidgetT
 
 
 class _DearPyPixlErrorType(type):
@@ -181,5 +180,5 @@ def err_if_root_item(item: ItemT) -> None | TypeError:
     return None
 
 
-def err_template_implementation(attr: str) -> NotImplementedError:
-    return NotImplementedError(f"{attr!r} member is not available as a template.")
+def err_viewport_showing(attr: str) -> RuntimeError:
+    return RuntimeError(f"{attr!r} cannot be updated after showing the viewport")
