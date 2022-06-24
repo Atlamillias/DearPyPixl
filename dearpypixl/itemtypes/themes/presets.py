@@ -236,28 +236,6 @@ with _theme_preset(label="DearPyGui - Default") as dearpygui_internal:
     t_style.plot_padding                       =  10,  10
 
 
-#dearpypixl_default = dearpygui_internal.copy(label="DearPyPixl - Default")
-#with _theme_preset(_theme=dearpypixl_default) as dearpypixl_default:
-#    """DearPyPixl's default theme; based off DearPyGui's internal theme.
-#    """
-#    # Frequently-used values
-#    bg_color_normal     =  37,  37,  38, 255
-#    bg_color_light      =  82,  82,  85, 255
-#    bg_color_bright     =  90,  90,  95, 255
-#    panel_color_idle    =  51,  51,  55, 255
-#    panel_color_hovered =  29, 151, 236, 103
-#    panel_color_active  =   0, 119, 200, 153
-#    text_color_enabled  = 255, 255, 255, 255
-#    text_color_disabled = 151, 151, 151, 255
-#    border_color        =  78,  78,  78, 255
-#
-#    t_color = dearpypixl_default
-#
-#    t_color.title_bg                           = bg_color_normal
-#    t_color.title_bg_active                    =  15,  86, 135, 255
-#    t_color.title_bg_collapsed                 = bg_color_normal
-
-
 
 ################################
 #### Layout-Friendly Themes ####
