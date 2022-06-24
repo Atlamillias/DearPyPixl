@@ -686,6 +686,12 @@ class _ItemTypeMeta(ABCMeta):
                 if not any(attr.startswith(prefix)
                 for prefix in prefixes)]
 
+    def __int__(cls) -> int:
+        try:
+            return int(cls.__itemtype_id__[0])
+        except TypeError:
+            raise TypeError(f"ItemType has no itemtype id.") from None
+
     @staticmethod
     def __prepare_reg(itemtype_name: str):
         # This prevents attempts at creating new ItemType subclasses if one
@@ -1373,7 +1379,7 @@ class Item(ItemType, metaclass=ABCMeta):
     @abstractmethod
     def __command__()       -> Callable[..., Any]: ...
 
-    __slots__ = ("_tag",)
+    __slots__ = ("_tag", "__cached__")
 
     def __init__(self, **kwargs):
         self.__cached__ = dict.fromkeys(self.__internal__[3], None)
@@ -1391,6 +1397,7 @@ class Item(ItemType, metaclass=ABCMeta):
             raise err_item_not_created(self, {"tag": identifier, **kwargs})
         # If `tag` was a string, it is an alias and should be set as such.
         alias and add_alias(alias, identifier)
+
         self.__registry__.register_item(self)
 
     def __repr__(self):
@@ -1477,16 +1484,6 @@ class Item(ItemType, metaclass=ABCMeta):
                 raise ValueError(f"Expected 2 `int` values (got {len(key)}).")
 
     ## private/internal methods ##
-    @classmethod
-    def _command(cls, **config) -> int | str:
-        """Directly call the DearPyGui command used to create the item and return
-        its unique identifier.
-        """
-        for kw, val in config.items():
-            if isinstance(val, (Item, IntEnum)):
-                config[kw] = int(val)
-        return cls.__command__(**config)
-
     def _children(self) -> list[int]:
         return [*_get_item_info(self._tag)["children"].values()]
 
@@ -1502,6 +1499,16 @@ class Item(ItemType, metaclass=ABCMeta):
                 child_tree = column._item_tree()
                 tree[2].append(child_tree)
         return tree
+
+    @classmethod
+    def _command(cls, **config) -> int | str:
+        """Directly call the DearPyGui command used to create the item and return
+        its unique identifier.
+        """
+        for kw, val in config.items():
+            if isinstance(val, (Item, IntEnum)):
+                config[kw] = int(val)
+        return cls.__command__(**config)
 
 
 class AppItem(ItemType):
