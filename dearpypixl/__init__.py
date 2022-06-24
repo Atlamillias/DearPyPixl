@@ -33,6 +33,7 @@ from . import (
     containers,
     colors,
     drawing,
+    inputs,
     misc,
     nodes,
     plotting,
