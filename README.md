@@ -1,5 +1,7 @@
 DearPyPixl is a graphical user interface library offering object-oriented bindings and extensions of [DearPyGui](https://github.com/hoffstadt/DearPyGui).
 
+NOTE: Some information may be outdated due to the recent update.
+
 ## Installation
 The newest version of this library is currently not available on PyPi. To install:
 * Clone the repo.
@@ -58,7 +60,7 @@ The most notable difference between these is that it is not necessary for the us
 ## The `Item` Object
 All objects representing an item(s) in DearPyGui are descendants of the [`Item`](https://github.com/Atlamillias/dearpypixl/blob/384f064e1ce328e860717db85c2984325718d76d/dearpypixl/components/item.py#L175) abstract class. It has several methods for setting and fetching various data regarding `Item` instances or the item type. Most item data is sorted into three categories:
 
-* **configuration**: Editable attributes that are used internally to manage the item. 
+* **configuration**: Editable attributes that are used internally to manage the item.
 * **information**: Data that is unique to the item and is either read-only (like the `tag` attribute), or not as freely editable as "configuration" (such as `parent`). This data rarely changes.
 * **state**: Read-only data regarding an item's condition. Can update frequently.
 
