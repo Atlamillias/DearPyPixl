@@ -1,3 +1,4 @@
+from __future__ import annotations
 from typing import Callable, Any, TYPE_CHECKING
 from dearpygui import _dearpygui, dearpygui
 from dearpygui._dearpygui import (
@@ -11,22 +12,18 @@ from dearpygui._dearpygui import (
     # setters
     configure_viewport
 )
-from dearpypixl.itemtypes.events import FrameEvents
-from dearpypixl.itemtypes import (
-    ItemProperty,
-    CONFIG,
-    INFORM,
-    STATES,
-    ItemIdType,
-    Item,
+from .events import FrameEvents, Callback
+from .itemtypes import (
+    ItemData,
     AppItem,
-    Theme,
 )
-from dearpypixl.errors import err_viewport_showing
+from ._internal import registry
+from ._internal.errors import err_viewport_showing
+from ._internal.constants import VP_UUID
+from ._internal.utilities import classproperty
 
-if not TYPE_CHECKING:
-    Window = None
-else:
+
+if TYPE_CHECKING:
     from dearpypixl.containers import Window
 
 
@@ -35,14 +32,13 @@ __all__ = ["Viewport"]
 
 
 
+_RESIZE_EVENTS = FrameEvents()
+
+
 def _run_resize_events():
     for event in _RESIZE_EVENTS[0]:
         event()
 
-
-_RESIZE_EVENTS = FrameEvents()
-
-dict.__setitem__(_RESIZE_EVENTS, 0, [])  # bypass `set_frame_callback` hook
 dearpygui.set_viewport_resize_callback(_run_resize_events)
 
 
@@ -61,30 +57,32 @@ def _set_viewport_fickle_config(obj, name, value):
 
 
 class Viewport(AppItem):
-    title        : str  = ItemProperty(CONFIG, _get_viewport_config, _set_viewport_config)
-    width        : int  = ItemProperty(CONFIG, _get_viewport_config, _set_viewport_config)
-    height       : int  = ItemProperty(CONFIG, _get_viewport_config, _set_viewport_config)
-    min_width    : int  = ItemProperty(CONFIG, _get_viewport_config, _set_viewport_config)
-    min_height   : int  = ItemProperty(CONFIG, _get_viewport_config, _set_viewport_config)
-    max_width    : int  = ItemProperty(CONFIG, _get_viewport_config, _set_viewport_config)
-    max_height   : int  = ItemProperty(CONFIG, _get_viewport_config, _set_viewport_config)
-    x_pos        : int  = ItemProperty(CONFIG, _get_viewport_config, _set_viewport_config)
-    y_pos        : int  = ItemProperty(CONFIG, _get_viewport_config, _set_viewport_config)
-    resizable    : bool = ItemProperty(CONFIG, _get_viewport_config, _set_viewport_config)
-    vsync        : bool = ItemProperty(CONFIG, _get_viewport_config, _set_viewport_config)
-    always_on_top: bool = ItemProperty(CONFIG, _get_viewport_config, _set_viewport_config)
-    decorated    : bool = ItemProperty(CONFIG, _get_viewport_config, _set_viewport_config)
-    clear_color  : bool = ItemProperty(CONFIG, _get_viewport_config, _set_viewport_config)
-    small_icon   : str  = ItemProperty(CONFIG, _get_viewport_config, _set_viewport_fickle_config)
-    large_icon   : str  = ItemProperty(CONFIG, _get_viewport_config, _set_viewport_fickle_config)
+    __dearpypixl__ = ItemData(identity=(VP_UUID, "Viewport"))
+
+    title        : str  = __dearpypixl__.set_configuration(_get_viewport_config, _set_viewport_config)
+    width        : int  = __dearpypixl__.set_configuration(_get_viewport_config, _set_viewport_config)
+    height       : int  = __dearpypixl__.set_configuration(_get_viewport_config, _set_viewport_config)
+    min_width    : int  = __dearpypixl__.set_configuration(_get_viewport_config, _set_viewport_config)
+    min_height   : int  = __dearpypixl__.set_configuration(_get_viewport_config, _set_viewport_config)
+    max_width    : int  = __dearpypixl__.set_configuration(_get_viewport_config, _set_viewport_config)
+    max_height   : int  = __dearpypixl__.set_configuration(_get_viewport_config, _set_viewport_config)
+    x_pos        : int  = __dearpypixl__.set_configuration(_get_viewport_config, _set_viewport_config)
+    y_pos        : int  = __dearpypixl__.set_configuration(_get_viewport_config, _set_viewport_config)
+    resizable    : bool = __dearpypixl__.set_configuration(_get_viewport_config, _set_viewport_config)
+    vsync        : bool = __dearpypixl__.set_configuration(_get_viewport_config, _set_viewport_config)
+    always_on_top: bool = __dearpypixl__.set_configuration(_get_viewport_config, _set_viewport_config)
+    decorated    : bool = __dearpypixl__.set_configuration(_get_viewport_config, _set_viewport_config)
+    clear_color  : bool = __dearpypixl__.set_configuration(_get_viewport_config, _set_viewport_config)
+    small_icon   : str  = __dearpypixl__.set_configuration(_get_viewport_config, _set_viewport_fickle_config)
+    large_icon   : str  = __dearpypixl__.set_configuration(_get_viewport_config, _set_viewport_fickle_config)
 
 
     __primary_window_uuid = None
 
     @property
-    @ItemProperty.register(category=CONFIG)
+    @__dearpypixl__.as_configuration
     def primary_window(self) -> Window:
-        p_window = self.__registry__.get_item(self.__primary_window_uuid, None)
+        p_window = registry.get_item(self.__primary_window_uuid, None)
         if not p_window:
             self.__primary_window_uuid = None  # possibly deleted
         return p_window
@@ -104,57 +102,43 @@ class Viewport(AppItem):
 
 
     ## Information properties ##
-    @classmethod
-    @property
-    @ItemProperty.register(category=INFORM)
-    def tag(cls) -> str:
-        return cls.__cached__["viewport_uuid"]
-
-    @classmethod
-    @property
-    @ItemProperty.register(category=INFORM)
+    @classproperty
+    @__dearpypixl__.as_information
     def client_width(cls) -> int:
         return _get_viewport_config(cls, "client_width")
 
-    @classmethod
-    @property
-    @ItemProperty.register(category=INFORM)
+    @classproperty
+    @__dearpypixl__.as_information
     def client_height(cls) -> int:
         return _get_viewport_config(cls, "client_height")
 
-    @classmethod
-    @property
-    @ItemProperty.register(category=INFORM)
+    @classproperty
+    @__dearpypixl__.as_information
     def active_window(cls):
-        return cls.__registry__[0].get(get_active_window(), None)
+        return registry.get_item(get_active_window(), None)
 
-    @classmethod
-    @property
-    @ItemProperty.register(category=INFORM)
+    @classproperty
+    @__dearpypixl__.as_information
     def mouse_drag_delta(cls):
         return get_mouse_drag_delta()
 
-    @classmethod
-    @property
-    @ItemProperty.register(category=INFORM)
+    @classproperty
+    @__dearpypixl__.as_information
     def local_mouse_pos(cls) -> list[float]:
         return get_mouse_pos()
 
-    @classmethod
-    @property
-    @ItemProperty.register(category=INFORM)
+    @classproperty
+    @__dearpypixl__.as_information
     def global_mouse_pos(cls) -> list[float]:
         return get_mouse_pos(local=False)
 
-    @classmethod
-    @property
-    @ItemProperty.register(category=INFORM)
+    @classproperty
+    @__dearpypixl__.as_information
     def drawing_mouse_pos(cls) -> list[float]:
         return get_drawing_mouse_pos()
 
-    @classmethod
-    @property
-    @ItemProperty.register(category=INFORM)
+    @classproperty
+    @__dearpypixl__.as_information
     def plot_mouse_pos(cls) -> list[float]:
         return get_plot_mouse_pos()
 
@@ -164,27 +148,23 @@ class Viewport(AppItem):
     __is_minimized  = False
     __is_fullscreen = False
 
-    @classmethod
-    @property
-    @ItemProperty.register(category=STATES)
+    @classproperty
+    @__dearpypixl__.as_state
     def is_showing(cls) -> bool:
         return _dearpygui.is_viewport_ok()
 
-    @classmethod
-    @property
-    @ItemProperty.register(category=STATES)
+    @classproperty
+    @__dearpypixl__.as_state
     def is_maximized(cls) -> bool:
         return cls.__is_maximized
 
-    @classmethod
-    @property
-    @ItemProperty.register(category=STATES)
+    @classproperty
+    @__dearpypixl__.as_state
     def is_minimized(cls) -> bool:
         return cls.__is_minimized
 
-    @classmethod
-    @property
-    @ItemProperty.register(category=STATES)
+    @classproperty
+    @__dearpypixl__.as_state
     def is_fullscreen(cls) -> bool:
         return cls.__is_fullscreen
 
@@ -192,10 +172,11 @@ class Viewport(AppItem):
     ################################
     ######## Event Handling ########
     ################################
-    @classmethod
-    @property
-    def resize_events(cls) -> list:
-        return _RESIZE_EVENTS[0]
+    _resize_events = ...  # set at runtime
+
+    @classproperty
+    def resize_events(cls) -> list[Callback]:
+        return cls._resize_events[0]
 
     @classmethod
     def on_resize(cls, callback: Callable = None, /, *, user_data: Any = None, **kwargs):
@@ -203,11 +184,12 @@ class Viewport(AppItem):
 
         Args:
             * callback (Callable): Callable object to run.
-            * user_data (Any, optional): This will be sent as the third positional
+            * user_data (Any, optional): Passed as the third positional argument to related callbacks.
+            Defaults to None.
             argument to <callback>. Defaults to None.
         """
         def register():
-            return _RESIZE_EVENTS.on_frame(callback, user_data=user_data, **kwargs)
+            return cls._resize_events.on_frame(callback, user_data=user_data, **kwargs)
 
         if callback is None:
             return register
@@ -217,29 +199,6 @@ class Viewport(AppItem):
     ################################
     ######## Other Methods #########
     ################################
-    @classmethod
-    def configure(cls, **config) -> None:
-        # Set on internal instance.
-        return Item.configure(_Viewport)
-
-    @classmethod
-    def configuration(cls) -> dict[str, Any]:
-        # Set on internal instance.
-        cfg_attrs  = cls.__internal__[0]
-        dpg_config = get_viewport_configuration(cls.tag)
-        config     = {attr:(dpg_config[attr] if attr in dpg_config else getattr(_Viewport, attr))
-                      for attr in cfg_attrs}
-        return config
-
-    @classmethod
-    def information(cls) -> dict[str, Any]:
-        # These should all be classmethod properties, so this is straightforward.
-        return Item.information(cls)
-
-    @classmethod
-    def state(cls) -> dict[str, Any]:
-        return {attr:(getattr(cls, attr)) for attr in cls.__internal__[2]}
-
     __restore_width  = None
     __restore_height = None
     __restore_pos    = None
@@ -328,6 +287,4 @@ class Viewport(AppItem):
         return get_drawing_mouse_pos()
 
 
-# Some Viewport classmethods use this as it's easier to get descriptor
-# values from an instance.
-_Viewport = Viewport()
+Viewport.configure(title="Application")

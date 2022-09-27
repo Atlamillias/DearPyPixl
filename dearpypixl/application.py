@@ -1,8 +1,10 @@
-import ctypes
-from typing import Callable, Any, Literal
+from __future__ import annotations
+from typing import Callable, Any, TYPE_CHECKING
 from typing_extensions import Self
 from enum import IntEnum, Enum
+import logging
 import os
+import ctypes
 from dearpygui import _dearpygui, dearpygui
 from dearpygui._dearpygui import (
     # mainloop
@@ -20,23 +22,30 @@ from dearpygui._dearpygui import (
     # setters
     set_global_font_scale,
     configure_app,
+    # container stack
+    pop_container_stack,
+    top_container_stack,
+    empty_container_stack,
     # misc
     split_frame,
+    get_text_size,
 )
-from dearpypixl.itemtypes.themes.presets import dearpygui_internal
-from dearpypixl.itemtypes.events import FrameEvents, Key
-from dearpypixl.itemtypes import (
-    ItemProperty,
-    CONFIG,
-    INFORM,
-    STATES,
-    ItemIdType,
-    Item,
+from ._internal import registry
+from ._internal.errors import err_viewport_showing
+from ._internal.constants import APP_UUID, NULL_THEME_UUID, NULL_FONT_UUID
+from ._internal.utilities import classproperty
+from ._internal.item import (
+    ItemData,
+    ItemType,
     AppItem,
-    Theme,
 )
-from dearpypixl.errors import err_viewport_showing
 
+if TYPE_CHECKING:
+    from .theme import Theme
+    from .events import FrameEvents, Key
+    from .font import Font, FontFamily
+
+logging.info("")
 
 __all__ = [
     "Platform",
@@ -45,9 +54,6 @@ __all__ = [
     "Application",
 ]
 
-
-_DEFAULT_THEME = dearpygui_internal
-_FRAME_EVENTS  = FrameEvents()
 
 
 class Platform(IntEnum):
@@ -72,6 +78,12 @@ class DeviceManager(str, Enum):
     Internal = "internal"
 
 
+class AppStateKey(str, Enum):
+    THEME_UUID    = "theme_uuid"
+    FONT_UUID     = "font_uuid"
+    DEFAULT_THEME = "default_theme"
+    DEFAULT_FONT  = "default_font"
+    FRAME_EVENTS  = "frame_events"
 
 
 def _get_app_config(obj, name):
@@ -85,14 +97,30 @@ def _set_app_config(obj, name, value):
 
 
 class Application(AppItem):
-    auto_device   : bool = ItemProperty(CONFIG, _get_app_config, _set_app_config)
-    docking       : bool = ItemProperty(CONFIG, _get_app_config, _set_app_config)
-    docking_space : bool = ItemProperty(CONFIG, _get_app_config, _set_app_config)
-    device        : int  = ItemProperty(CONFIG, _get_app_config, _set_app_config)
-    wait_for_input: bool = ItemProperty(CONFIG, _get_app_config, _set_app_config)
+    __slots__ = ()
+    __dearpypixl__ = ItemData(identity=(APP_UUID, "Application"))
+    __itemdict__   = {
+        AppStateKey.THEME_UUID   : NULL_THEME_UUID,
+        AppStateKey.FONT_UUID    : NULL_THEME_UUID ,
+        AppStateKey.DEFAULT_THEME: ...,
+        AppStateKey.DEFAULT_FONT : ...,
+        AppStateKey.FRAME_EVENTS : ...,
+    }
+    __NULL = object()
+
+    registry = registry
+
+    auto_device        : bool = __dearpypixl__.set_configuration(_get_app_config, _set_app_config)
+    docking            : bool = __dearpypixl__.set_configuration(_get_app_config, _set_app_config)
+    docking_space      : bool = __dearpypixl__.set_configuration(_get_app_config, _set_app_config)
+    device             : int  = __dearpypixl__.set_configuration(_get_app_config, _set_app_config)
+    wait_for_input     : bool = __dearpypixl__.set_configuration(_get_app_config, _set_app_config)
+    load_init_file     : str  = __dearpypixl__.set_configuration(_get_app_config, _set_app_config)
+    init_file          : str  = __dearpypixl__.set_configuration(_get_app_config, _set_app_config)
+    auto_save_init_file: bool = __dearpypixl__.set_configuration(_get_app_config, _set_app_config)
 
     @property
-    @ItemProperty.register(category=CONFIG)
+    @__dearpypixl__.as_configuration
     def font_scale(self) -> float:
         return get_global_font_scale()
     @font_scale.setter
@@ -100,29 +128,39 @@ class Application(AppItem):
         set_global_font_scale()
 
     @property
-    @ItemProperty.register(category=CONFIG)
+    @__dearpypixl__.as_configuration
     def theme(self) -> Theme:
-        theme_uuid = self.__cached__["theme_uuid"]
+        theme_uuid = self.__itemdict__[AppStateKey.THEME_UUID]
         if not theme_uuid:
-            return _DEFAULT_THEME
-        return self.__registry__.get_item(theme_uuid)
+            default_theme = self.__itemdict__[AppStateKey.DEFAULT_THEME]
+            self.theme = default_theme
+            return default_theme
+        return registry.get_item(theme_uuid)
     @theme.setter
     def theme(self, value: Theme) -> None:
         if not value:
-            value = _DEFAULT_THEME
+            value = self.__itemdict__[AppStateKey.DEFAULT_THEME]
+        value.bind()
+
+    @property
+    @__dearpypixl__.as_configuration
+    def font(self) -> Font:
+        font_uuid = self.__itemdict__[AppStateKey.FONT_UUID]
+        if not font_uuid:
+            default_theme = self.__itemdict__[AppStateKey.DEFAULT_FONT]
+            self.theme = default_theme
+            return default_theme
+        return registry.get_item(font_uuid)
+    @font.setter
+    def font(self, value: Font | None) -> None:
+        if not value:
+            value = self.__itemdict__[AppStateKey.DEFAULT_FONT]
         value.bind()
 
 
     #### Information Properties ####
-    @classmethod
-    @property
-    @ItemProperty.register(category=INFORM)
-    def tag(cls) -> int:
-        return cls.__cached__["app_uuid"]
-
-    @classmethod
-    @property
-    @ItemProperty.register(category=INFORM)
+    @classproperty
+    @__dearpypixl__.as_information
     def device_manager(cls) -> DeviceManager:
         """Return the current controller of the display adapter used for the
         application.
@@ -141,33 +179,29 @@ class Application(AppItem):
             return DeviceManager.System
         return DeviceManager.Internal
 
-    @classmethod
-    @property
-    @ItemProperty.register(category=INFORM)
+    @classproperty
+    @__dearpypixl__.as_information
     def process_id(cls) -> str:
         """Return the current process identifier.
         """
         return os.getpid()
 
-    @classmethod
-    @property
-    @ItemProperty.register(category=INFORM)
+    @classproperty
+    @__dearpypixl__.as_information
     def version(cls) -> str:
         """Return the version of Dearpygui that is being used.
         """
         return _dearpygui.get_app_configuration()["version"]
 
-    @classmethod
-    @property
-    @ItemProperty.register(category=INFORM)
+    @classproperty
+    @__dearpypixl__.as_information
     def platform(cls) -> Platform:
         """Return the platform.
         """
         return Platform.get()
 
-    @classmethod
-    @property
-    @ItemProperty.register(category=INFORM)
+    @classproperty
+    @__dearpypixl__.as_information
     def device_name(cls) -> str:
         """Return the name of the display adapter in use.
         """
@@ -184,8 +218,12 @@ class Application(AppItem):
         render_dearpygui_frame()
 
     @classmethod
-    def start(cls) -> None:
+    def start(cls, cleanup_on_exit: bool = True) -> None:
         """Start the application by executing the main render loop.
+
+        Args:
+            * cleanup_on_exit (bool): If True, the `end` method will be invoked
+            once the application is terminated. Defaults to True.
         """
         if not _dearpygui.is_viewport_ok():  # Viewport.show()
             _dearpygui.show_viewport()
@@ -198,21 +236,20 @@ class Application(AppItem):
             for event in frame_events:
                 event()
             render_frame()
-        cls.end()
+        if cleanup_on_exit:
+            cls.end()
 
     @classmethod
-    def stop(cls, *args, **kwargs) -> None:
-        """Break the main render loop and stop the application
-        if it is running. This is the equivelent to pressing the
-        "close"/"exit" button on the application title bar.
+    def stop(cls) -> None:
+        """Break the main render loop and stop the application if it is running.
+        This is equivelent to closing the application using the title bar button.
         """
         if cls.is_running():
             stop_dearpygui()
 
     @staticmethod
-    def end(*args, **kwargs) -> None:
-        """Post-process clean-up. Must be called following the render
-        loop to ensure proper 'cleanup' of system resources.
+    def end() -> None:
+        """Post-process clean-up. Releases resources used by DearPyGui.
         """
         _dearpygui.destroy_context()
 
@@ -220,16 +257,13 @@ class Application(AppItem):
     ################################
     ######## Event Handling ########
     ################################
-    ALL_FRAMES = FrameEvents.ALL_FRAMES
-    LAST_FRAME = FrameEvents.LAST_FRAME
 
-    @classmethod
-    @property
+    @classproperty
     def frame_events(cls) -> FrameEvents:
-        return _FRAME_EVENTS
+        return cls.__itemdict__[AppStateKey.FRAME_EVENTS]
 
     @classmethod
-    def on_frame(cls, callback: Callable = None, /, *, frame: int = ALL_FRAMES, user_data: Any = None, **kwargs):
+    def on_frame(cls, callback: Callable = None, /, *, frame: int = 0, user_data: Any = None, **kwargs):
         """(Decorator) Schedules a callback to run on a specific frame.
 
         Args:
@@ -237,38 +271,43 @@ class Application(AppItem):
             * frame (int, optional): The callback will run before this frame
             is rendered. If this value is 0, it will run every frame. If -1,
             it will run on the last frame (application exit). Defaults to 0.
-            * user_data (Any, optional): This will be sent as the third positional
+            * user_data (Any, optional): Passed as the third positional argument to related callbacks.
+            Defaults to None.
             argument to <callback>. Defaults to None.
         """
-        return cls.frame_events.on_frame
+        return cls.frame_events.on_frame(
+            callback,
+            frame=frame,
+            user_data=user_data,
+            **kwargs
+        )
+
+    ################################
+    ####### Container Stack ########
+    ################################
+
+    @classmethod
+    def pop_container_stack(cls):
+        top_item = cls.top_container_stack()
+        if top_item:
+            pop_container_stack()
+        return top_item
+
+    @classmethod
+    def top_container_stack(cls) -> ItemType | None:
+        return cls.registry.get_item(top_container_stack(), None)
+
+    @classmethod
+    def empty_container_stack(cls):
+        return empty_container_stack()
 
 
     ################################
     ######## Other Methods #########
     ################################
     @classmethod
-    def configure(cls, **config) -> None:
-        # Set on internal instance.
-        return Item.configure(_Application)
-
-    @classmethod
-    def configuration(cls) -> dict[str, Any]:
-        # Set on internal instance.
-        cfg_attrs  = cls.__internal__[0]
-        dpg_config = get_app_configuration()
-        config     = {attr:(dpg_config[attr] if attr in dpg_config else getattr(_Application, attr))
-                      for attr in cfg_attrs}
-        return config
-
-    @classmethod
-    def information(cls) -> dict[str, Any]:
-        # These should all be classmethod properties, so this is straightforward.
-        return Item.information(cls)
-
-    @classmethod
     def state(cls) -> dict[str, Any]:
-        return {"is_running": cls.is_running()}
-
+        return super().state() | {"is_running": cls.is_running()}
 
     @staticmethod
     def runtime() -> float:
@@ -337,8 +376,7 @@ class Application(AppItem):
     ## Platform-specific ##
     if Platform.get() == Platform.MacOS:
         @staticmethod
-        def output_frame_buffer(file: str = '', callback: Any = None, **kwargs):
-            raise NotImplementedError
+        def output_frame_buffer(file: str = '', callback: Any = None, **kwargs): ...
 
     else:
         @staticmethod
@@ -350,8 +388,7 @@ class Application(AppItem):
 
     if Platform.get() != Platform.Windows:
         @classmethod
-        def _toggle_dpi_awareness(cls):
-            raise NotImplementedError
+        def _toggle_dpi_awareness(cls): ...
 
     else:
         @classmethod
@@ -367,21 +404,11 @@ class Application(AppItem):
         ctypes.windll.shcore.SetProcessDpiAwareness(2)
 
 
-    ###############################
-    ########### END API ###########
-    ###############################
-    __slots__ = ()
-    __itemtype_id__ = ItemIdType(AppItem.__cached__["app_uuid"], "Application")
-
-
     ################################
     ####### Work-In-Progress #######
     ################################
 
     # manual_callback_management: bool
-    # load_init_file            : str
-    # init_file                 : str
-    # auto_save_init_file       : bool
     # allow_alias_overwrites    : bool
     # manual_alias_management   : bool
     # skip_required_args        : bool
@@ -416,8 +443,3 @@ class Application(AppItem):
     #     """
     #     callback_queue = cls.get_callback_queue()
     #     return cls.run_callbacks(callback_queue)
-
-# Some Application classmethods use this as it's easier to get descriptor
-# values from an instance.
-_Application = Application()
-_Application.theme = _DEFAULT_THEME
