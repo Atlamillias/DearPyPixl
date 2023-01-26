@@ -1,5 +1,4 @@
 **/__pycache__
-_*.py
 _dev/
 dpg.ini
 pyrightconfig.json
@@ -9,6 +8,7 @@ dist/
 build/
 target/
 misc/**
+_debug.py
 Cargo.lock
 
 # Byte-compiled / optimized / DLL files
