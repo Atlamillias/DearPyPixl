@@ -448,6 +448,7 @@ class pxInteractivePython(code.InteractiveConsole, AutoParentItem, pxConsoleWind
         super().set_font(font)
         self._input_wndw.set_font(font)
         self._reset_input_height()
+        self.cb_on_resize()
 
     def cb_on_value(self, buffer_item: pxStringBuffer, val_item: ItemId, value: str) -> str:
         txt_item = px_utils.get_config(val_item)["user_data"]
@@ -478,9 +479,7 @@ class pxInteractivePython(code.InteractiveConsole, AutoParentItem, pxConsoleWind
         )
         # If the input window is scrollable, it's not large enough for the
         # current font. Adjust the size until it is no longer scrollable.
-        # BUG: using `Grid().configure_row/col` too frequently in a threaded
-        # app causes it to break completely. Instead, adjust it over the next
-        # couple of frames.
+        # BUG: replacing the conditional with `while` breaks the grid.
         if self._input_wndw.y_scroll_max:
             self.__input_adj_ht += 5
             self._parent_grid.rows[-1].size = self.__input_adj_ht
