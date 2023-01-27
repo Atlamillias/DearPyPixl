@@ -451,7 +451,7 @@ class Runtime:
         Args:
             * key (int): Key event code to query.
         """
-        return _dpg.is_key_down(int(key))  # `int` cast to support `IntEnum`
+        return _dpg.is_key_down(key)
 
     @staticmethod
     def is_key_released(key: int) -> bool:
@@ -460,7 +460,7 @@ class Runtime:
         Args:
             * key (int): Key event code to query.
         """
-        return _dpg.is_key_down(int(key))  # `int` cast to support `IntEnum`
+        return _dpg.is_key_down(key)
 
     @staticmethod
     def is_key_down(key: int) -> bool:
@@ -469,7 +469,7 @@ class Runtime:
         Args:
             * key (int): Key event code to query.
         """
-        return _dpg.is_key_down(int(key))  # `int` cast to support `IntEnum`
+        return _dpg.is_key_down(key)
 
     @staticmethod
     def get_mouse_global_pos():
