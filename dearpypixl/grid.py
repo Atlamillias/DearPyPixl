@@ -1,3 +1,4 @@
+import types
 from typing import Self, TypeVar, NamedTuple, Protocol, Callable, Literal, Generic, overload, Iterator, Any, Collection
 from dearpygui import dearpygui, _dearpygui
 from dearpygui._dearpygui import (
@@ -358,6 +359,7 @@ class Grid:
         "_parent",
         "_sizer",
         "_members",
+        "members",
     )
 
     def __init_subclass__(cls) -> None:
@@ -375,9 +377,10 @@ class Grid:
         parent : ItemId                                              =      0,
         sizer  : SizerT                                              = size_from_rect,
     ):
-        self._rows    = GridAxis(rows)
-        self._cols    = GridAxis(cols)
-        self._members = {}
+        self._rows = GridAxis(rows)
+        self._cols = GridAxis(cols)
+        self._members: dict[ItemId, GridMember] = {}
+        self.members = types.MappingProxyType(self._members)
         self.configure(spacing=spacing, padding=padding, parent=parent, sizer=sizer)
 
     def __call__(self, *args) -> None:
