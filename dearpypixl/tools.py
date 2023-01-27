@@ -488,42 +488,123 @@ class pxInteractivePython(code.InteractiveConsole, AutoParentItem, pxConsoleWind
 
 
 
-class ItemView(NamedTuple):
-    button: ui.mvButton
-    window: ui.mvChildWindow
 
 
-class _TabBar(ui.mvChildWindow):
+
+class ViewTabBar(ui.mvChildWindow):
+    factory_type = ui.mvButton
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._grid = grid.Grid(parent=self)
+
+    def new_tab(self, label: str, callback: DPGCallback, **kwargs) -> ui.mvButton:
+        tab = self.factory_type(parent=self, **kwargs)
+        return tab
+
+    def del_tab(self, item: ItemId) -> None:
+        self._grid.pop(item)
+        dearpygui.delete_item(item)
+
+    def cb_on_resize(self, sender: ItemId | None = None, app_data: Any = None, user_data: Any = None) -> None:
+        self._grid()
+
+
+class ViewContent(ui.mvChildWindow):
+    factory_type = ui.mvChildWindow
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._grid = grid.Grid(parent=self)
+
+    def new_window(self, **kwargs) -> ui.mvChildWindow:
+        window = self.factory_type(**kwargs)
+        return window
+
+    def del_window(self, item: ItemId) -> None:
+        self._grid.pop(item)
+        dearpygui.delete_item(item)
+
+    def cb_on_resize(self, sender: ItemId | None = None, app_data: Any = None, user_data: Any = None) -> None:
+        self._grid()
+
+
+
+
+class ItemsView(ui.mvChildWindow):
     focused_theme = ...
     standby_theme = ...
 
+    views: dict[str, tuple[ui.mvButton, ui.mvChildWindow]]
+
+    button_factory  = ui.mvButton
+    window_factory = ui.mvChildWindow
+
     def __init__(self, *args, border: bool = False, **kwargs):
         super().__init__(*args, border=border, **kwargs)
-        self.views: list[ItemView] = []
-        self._grid = grid.Grid()
+        self.views   = {}
+        self.tabbar  = ViewTabBar(border=True)
+        self.content = ViewContent(border=True)
+        self._active_view = None
+        self._view_store  = ui.mvStage()
+        self._grid        = grid.Grid(parent=self)
+
+    def _new_button(self, label: str, user_data: ItemId, **kwargs):
+        return self.button_factory(label=label, user_data=user_data, callback=self.cb_on_tab, **kwargs)
+
+    def _new_window(self, label: str, **kwargs):
+        return self.window_factory(label=label, **kwargs)
 
     def new_view(self, label: str):
-        ...
+        if label in self.views:
+            raise ValueError(f"{label!r} already exists")
+        window = self._new_window(label=label)
+        button = self._new_button(label=label, user_data=window)
+        self.views[label] = button, window
 
-    def del_view(self, *, index: int = None, label: str = None):
-        ...
+    def del_view(self, *, label: str = None):
+        view = self.views.get(label, None)
+        if not view:
+            return
+        button, window = view
+        self._grid.pop(button)
+        
+        button.delete()
+        self._grid.cols -= 1
+        self._grid.pop(window)
+        window.delete()
+        if self._active_view == label:
+            self._active_view = None
 
-    def get_view(self, *, index: int = None, label: str = None):
-        ...
 
-    def set_view(self, *, index: int = None, label: str = None):
-        ...
+    def get_view(self, *, label: str = None) -> tuple[ui.mvButton, ui.mvChildWindow] | None:
+        return self.views.get(label, None)
 
-    def cb_resize(self, sender: ItemId | None = None, app_data: Any = None, user_data: Any = None) -> None:
-        ...
+    def set_view(self, *, label: str = None):
+        try:
+            view = self.views[label]
+        except KeyError:
+            raise ValueError(f"no view named {label!r}") from None
+        button, window = view
+        self.cb_on_tab(button, None, window)
 
+    def cb_on_tab(self, sender: ItemId | None = None, app_data: Any = None, user_data: ui.mvChildWindow | None = None) -> None:
+        # TODO: Change themes, states, etc.
+        window = user_data
+        if window.show:
+            self._active_view = None
+            self._grid.pop(window)
+            window.move(self._view_store)
+            window.show = False
+        else:
+            self._grid.push(1, 0, -1, -1)
+            self._active_view = window.label
+            window.move(self)
+            window.show = True
 
+    def cb_on_resize(self, sender: ItemId | None = None, app_data: Any = None, user_data: Any = None) -> None:
+        self._grid()
 
-
-class pxItemRegView(ui.mvChildWindow):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.tabbar
 
 
 class pxItemRegView(AutoParentItem, ui.mvChildWindow, auto_parent=dearpygui.add_window):

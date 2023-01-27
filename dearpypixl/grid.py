@@ -194,8 +194,8 @@ class GridConfigure(Generic[_GT, _ST], property):  # inherit property's "special
 
 class GridMember(NamedTuple):
     item   : ItemId
-    pos1   : tuple[int, int]
-    pos2   : tuple[int, int]
+    cell1  : tuple[int, int]
+    cell2  : tuple[int, int]
     max_wt : int
     max_ht : int
     calc_fn: _AnchorCalcT
