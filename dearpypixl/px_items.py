@@ -857,9 +857,11 @@ class ContainerItem(AppItemType):
     def push_stack(self) -> None:
         _dearpygui.push_container_stack(self)
 
-    def pop_stack(self) -> None:
+    def pop_stack(self) -> bool:
         if _dearpygui.top_container_stack() == self:
             _dearpygui.pop_container_stack()
+            return True
+        return False
 
 
 class WindowItem(ContainerItem):  # AFAIK "mvWindowAppItem" and "mvChildWindow" only
