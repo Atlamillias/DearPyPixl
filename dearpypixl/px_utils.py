@@ -1,5 +1,6 @@
 import functools
 import contextlib
+import itertools
 import inspect
 from dearpygui import dearpygui as dpg, _dearpygui as _dpg
 from .px_typing import cast, T, P, Any, ItemId, DPGCommand, PXLErrorFn, Iterable, Callable, Sequence, Generator
@@ -70,6 +71,13 @@ def set_values(items: Iterable[ItemId], values: Sequence[Any]) -> None:  # compl
 ########################################
 ########## DPG ITEM UTILITIES ##########
 ########################################
+
+# BUG: `dearpygui.generate_uuid` has considerable performance issues. It takes
+# about x80 longer to create items when using it. Even though the below
+# replacement has no safety checks, users shouldn't be generating their own
+# uuids.
+generate_uuid = itertools.count(start=100).__next__
+
 
 def item_from_callable(_callable: DPGCommand, *args, **kwargs) -> ItemId:
     """Return the result of invoking a callable that returns or yields an item
