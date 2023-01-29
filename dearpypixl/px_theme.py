@@ -39,8 +39,8 @@ class pxThemeColor(ValueArrayItem, AppItemType):
 
     value: Array[int, int, int, int]
 
-    category: int  # consider as abstract class-level property (set or incl. ThemeCat mixin)
-    target  : int  # consider as abstract class-level property
+    category: int = 0
+    target  : int = 0
 
     @overload
     def __init__(self, value: Array[int, int, int, int | None], /, **kwargs) -> None: ...
@@ -59,8 +59,8 @@ class pxThemeStyle(ValueArrayItem, AppItemType):
 
     value: Array[int, int]
 
-    category: int  # consider as abstract class-level property (set or incl. ThemeCat mixin)
-    target  : int  # consider as abstract class-level property
+    category: int = 0
+    target  : int = 0
 
     def __init__(self, x: float = 1, y: float = -1, **kwargs) -> None:
         super().__init__(x=x, y=y, category=self.category, target=self.target, **kwargs)
