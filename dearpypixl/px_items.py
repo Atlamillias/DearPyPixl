@@ -80,7 +80,7 @@ class DPGProperty:
 class Config(Generic[_GT, _ST], DPGProperty):
     __slots__ = ()
 
-    def __get__(self, inst: 'AppItemType', cls) -> _GT | Self:
+    def __get__(self, inst: 'AppItemType', cls) -> _GT:
         try:
             return inst.configuration()[self._key]
         except (TypeError, SystemError):
@@ -95,7 +95,7 @@ class Config(Generic[_GT, _ST], DPGProperty):
 class Info(Generic[_GT], DPGProperty):
     __slots__ = ()
 
-    def __get__(self, inst: 'AppItemType', cls) -> _GT | Self:
+    def __get__(self, inst: 'AppItemType', cls) -> _GT:
         try:
             return inst.information()[self._key]
         except (TypeError, SystemError):
@@ -107,7 +107,7 @@ class Info(Generic[_GT], DPGProperty):
 class State(Generic[_GT], DPGProperty):
     __slots__ = ()
 
-    def __get__(self, inst: 'AppItemType', cls) -> _GT | Self:
+    def __get__(self, inst: 'AppItemType', cls) -> _GT:
         try:
             key = self._key
             return inst.state().get(key, None) or DPG_STATES_DICT[key]
@@ -703,11 +703,11 @@ class AppItemType(AppItemBase, Generic[P]):
 
 class PositionedItem(AppItemType):
     """A rendered DearPyGui item that can have a set position."""
-    is_resized          : bool            = State(key="resized")
-    rect_min            : Array[int, int] = State()
-    rect_max            : Array[int, int] = State()
-    rect_size           : Array[int, int] = State()
-    content_region_avail: Array[int, int] = State()
+    is_resized          : State[bool           ] = State(key="resized")
+    rect_min            : State[Array[int, int]] = State()
+    rect_max            : State[Array[int, int]] = State()
+    rect_size           : State[Array[int, int]] = State()
+    content_region_avail: State[Array[int, int]] = State()
 
     @property
     def pos(self) -> Array[int, int]:
@@ -724,8 +724,8 @@ class SizedItem(PositionedItem):
     # always configured through the `width` and `height` keywords. This
     # covers the common case.
 
-    width : int = Config()
-    height: int = Config()
+    width : Config[int, int] = Config()
+    height: Config[int, int] = Config()
 
     @property
     def rect(self) -> tuple[int, int, int, int]:
