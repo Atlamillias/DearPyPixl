@@ -159,10 +159,18 @@ def get_root_items() -> list[ItemId]:
     return [item for item in _dpg.get_all_items() if get_info(item)["parent"]]
 
 
+def get_root_parent(item: ItemId) -> ItemId:
+    current_item = item
+    while (parent:=get_info(current_item)["parent"]):
+        current_item = parent
+    return current_item
+
+
+
+
 ########################################
 ######## DPG ITEM ERROR HELPERS ########
 ########################################
-
 
 def _get_cmd_err_signature(command: DPGCommand):
     variadics = (inspect.Parameter.VAR_KEYWORD, inspect.Parameter.VAR_POSITIONAL)
