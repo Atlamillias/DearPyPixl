@@ -423,14 +423,29 @@ class Grid:
         """Pack and center an item into a grid cell or cell range."""
         self.push(item, *coords, anchor=_anchor)
 
-    ANCHORS = tuple(a.lower() for a in _ANCHOR_MAP)
+    @property
+    def rows(self) -> GridAxis:
+        return self._rows
+    @rows.setter
+    def rows(self, value: int | GridAxis) -> None:
+        if self._rows != value:  # self.rows += 1 -> self.rows.__set__(self, (self._rows + 1))
+            self.configure(rows=value)
 
-    rows   : GridConfigure[GridAxis, int]                                                   = GridConfigure()
-    cols   : GridConfigure[GridAxis, int]                                                   = GridConfigure()
+    @property
+    def cols(self) -> GridAxis:
+        return self._cols
+    @cols.setter
+    def cols(self, value: int | GridAxis) -> None:
+        if self._cols != value:  # self.cols += 1 -> self.cols.__set__(self, (self._cols + 1))
+            self.configure(cols=value)
+
     padding: GridConfigure[GridOffset, tuple[int | tuple[int, int], int | tuple[int, int]]] = GridConfigure()
     spacing: GridConfigure[GridOffset, tuple[int | tuple[int, int], int | tuple[int, int]]] = GridConfigure()
-    parent : GridConfigure[ItemId, ItemId]                                                  = GridConfigure()
-    sizer  : GridConfigure[SizerT, SizerT]                                                  = GridConfigure()
+
+    parent : GridConfigure[ItemId, ItemId] = GridConfigure()
+    sizer  : GridConfigure[SizerT, SizerT] = GridConfigure()
+
+    ANCHORS = tuple(a.lower() for a in _ANCHOR_MAP)
 
     def configure(
         self,
