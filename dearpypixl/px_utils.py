@@ -154,10 +154,9 @@ def item_generator(item_factory: Callable[P, T], *args: P.args, **kwargs: P.kwar
         yield item_factory(*args, **kwargs)
 
 
-def get_root_items(self) -> list[ItemId]:
+def get_root_items() -> list[ItemId]:
     """Return the identifiers of all existing top-level items."""
     return [item for item in _dpg.get_all_items() if get_info(item)["parent"]]
-
 
 
 ########################################
