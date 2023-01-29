@@ -355,13 +355,13 @@ class AppItemBase(int, Generic[P], metaclass=AppItemMeta):
     # XXX The below methods create and return a new type, or an
     # instance of a new type.
     @classmethod
-    def pyxlate_type(cls) -> type["PyxlateItem[P]" | Self]:
+    def pixlate_type(cls) -> type["PixlatedItem[P]" | Self]:
         """Create and return a subclass of this class that extends higher-level
         information-related methods and properties to return `AppItemType` instances
         where an item identifier would be returned.
         """
         return type(
-            f"Pyxlated{cls.__qualname__.replace('mv', '')}", (PyxlateItem, cls), {}
+            f"Pyxlated{cls.__qualname__.replace('mv', '')}", (PixlatedItem, cls), {}
         )
 
     @classmethod
@@ -1120,7 +1120,7 @@ class _PatchedItem(AppItemType):  # "do not import" indicator for genfile.py scr
 
 
 
-class PyxlateItem(_PatchedItem, Generic[P]):
+class PixlatedItem(_PatchedItem, Generic[P]):
     """AppItemType mixin that extends higher-level information-related methods and
     properties to return `AppItemType` instances where an item identifier would be
     returned.
