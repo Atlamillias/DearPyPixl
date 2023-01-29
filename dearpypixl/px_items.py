@@ -12,7 +12,7 @@ from .px_typing import (
     Callable,
     Generic,
     Literal,
-    ParamSpec,
+    TypeVar,
     Sequence,
     Self,
     # px_typing
@@ -35,6 +35,7 @@ from .px_utils import (
     get_value,
     set_config,
     set_value,
+    generate_uuid,
 )
 
 
@@ -64,6 +65,9 @@ dearpygui.create_context()
 ########## MEMBER DESCRIPTORS ##########
 ########################################
 
+_GT = TypeVar("_GT")
+_ST = TypeVar("_ST")
+
 class DPGProperty:
     __slots__ = ("_key")
 
@@ -74,10 +78,10 @@ class DPGProperty:
         self._key = self._key or name
 
 
-class Config(DPGProperty):
+class Config(Generic[_GT, _ST], DPGProperty):
     __slots__ = ()
 
-    def __get__(self, inst: 'AppItemType', cls) -> DPGItemConfig | Self:
+    def __get__(self, inst: 'AppItemType', cls) -> _GT | Self:
         try:
             return inst.configuration()[self._key]
         except (TypeError, SystemError):
@@ -85,14 +89,14 @@ class Config(DPGProperty):
                 return self
             raise
 
-    def __set__(self, inst: 'AppItemType', value):
+    def __set__(self, inst: 'AppItemType', value: _ST) -> None:
         eval(f"inst.configure({self._key}=value)")  # no dict/unpacking
 
 
-class Info(DPGProperty):
+class Info(Generic[_GT], DPGProperty):
     __slots__ = ()
 
-    def __get__(self, inst: 'AppItemType', cls) -> DPGItemInfo | Self:
+    def __get__(self, inst: 'AppItemType', cls) -> _GT | Self:
         try:
             return inst.information()[self._key]
         except (TypeError, SystemError):
@@ -101,10 +105,10 @@ class Info(DPGProperty):
             raise
 
 
-class State(DPGProperty):
+class State(Generic[_GT], DPGProperty):
     __slots__ = ()
 
-    def __get__(self, inst: 'AppItemType', cls):
+    def __get__(self, inst: 'AppItemType', cls) -> _GT | Self:
         try:
             key = self._key
             return inst.state().get(key, None) or DPG_STATES_DICT[key]
@@ -121,21 +125,22 @@ class State(DPGProperty):
 def _null_command(*args, tag: ItemId | None = None, **kwargs) -> ItemId:
     return tag
 
-def _metadata_conflict_check(*bases: Sequence[type['AppItemType']]) -> bool:
-    """Return True if an item type's bases have conflicting metadata and should not
-    be used to create a new item type.
+def _metadata_conflict_check(command, identity, *bases: Sequence[type['AppItemType']]) -> bool:
+    """Return True if using *bases* to create a new itemtype would cause
+    a functional conflict.
     """
     try:
         bases = [b for b in bases if issubclass(b, AppItemType)]
     except NameError:  # AppItemBase
         return False
-
-    # all bases must share the same command and identity (excluding defaults)
-    commands   = {b.command for b in bases }
+    # The command/identity must be identical (or the default) between all bases
+    # and the new type's namespace.
+    commands = {b.command for b in bases}
+    commands.add(command)
     commands.discard(_APPITEMT_COMMAND)
     identities = {b.identity for b in bases}
+    identities.add(identity)
     identities.discard(_APPITEMT_IDENTITY)
-
     return any(len(s) > 1 for s in (commands, identities))
 
 
@@ -160,30 +165,48 @@ class AppItemMeta(type):
         command   = namespace.get("command", command)
         identity  = namespace.get("identity", identity)
         type_kwds = command, identity
+        # This framework heavily abuses multiple inheritance. It's possible that the new
+        # type may inherit key attributes from different, yet incomplete itemtype bases.
+        # Since these attributes may conflict, setup for a new "complete" itemtype is only
+        # executed if all key attrs/args are included together when defining the new class,
+        # and NOT just "exist" together through inheritance.
         if all(type_kwds):
+            # Ensure that the special keywords/attributes are appropriate.
             if not callable(command):
                 raise TypeError("`callable` is not callable.")
             try:
-                int_id, str_id = identity
+                _, _ = identity
             except TypeError:
                 raise TypeError("`identity` must a 2-tuple containing an interger and string.") from None
             namespace["identity"] = identity
-            namespace["command"]  = staticmethod(command)
-
+            namespace["command"]  = staticmethod(command) if not isinstance(
+                                    command, staticmethod) else command
             cls = super().__new__(mcls, name, bases, namespace, **kwargs)
-            # Edit class signature to include command parameters
-            command_sig = inspect.signature(command)
+
+            # Edit class signature to include command parameters.
+            cmd_sig    = inspect.signature(command)
             cls_params  = (
                 inspect.Parameter(name="cls", kind=inspect.Parameter.POSITIONAL_OR_KEYWORD),
-                *command_sig.parameters.values()
+                *cmd_sig.parameters.values()
             )
-            cls.__signature__ = command_sig.replace(parameters=cls_params, return_annotation=Self)
-        elif _metadata_conflict_check(*bases):
-            raise TypeError(f"Could not resolve bases for {name!r}.")
-            # Since no new metadata is assigned, confirm that mixin itemtypes
-            # are compatible.
+            cls.__signature__ = cmd_sig.replace(parameters=cls_params, return_annotation=Self)
+
+            # For appropriate annotations, set a `Config` descriptor on the class
+            # for each. This is skipped if the annotation exists as an attribute
+            # (almost always inherited).
+            for annotation in cls.__annotations__:
+                # Never overwrite an existing member.
+                if (annotation in cls.__signature__.parameters
+                and not hasattr(cls, annotation)):
+                    cfg_property = Config()
+                    setattr(cls, annotation, cfg_property)
+                    cfg_property.__set_name__(cls, annotation)
+        # Otherwise, ensure that the new class won't have an identity crisis.
+        elif _metadata_conflict_check(command or _APPITEMT_COMMAND, identity or _APPITEMT_IDENTITY, *bases):
+            raise TypeError(f"could not resolve bases for {name!r}.")
         else:
             cls = super().__new__(mcls, name, bases, namespace, **kwargs)
+
         return cls
 
     def __repr__(cls) -> str:
@@ -201,26 +224,19 @@ class AppItemMeta(type):
 ########## APPITEMTYPE & MIXINS ###########
 ###########################################
 
-# Split into two base classes for organizational purposes. AppItemBase contains
-# only class-bound members and dunder methods. AppItemType is the actual base
-# class containing the bulk API. The only direct subclass of AppItemBase
-# should be AppItemType -- no exceptions.
-
-# BUG: `dearpygui.generate_uuid` has considerable performance issues. It takes
-# about x80 longer to create items when using it. Even though the below
-# replacement has no safety checks, users shouldn't be generating their own
-# uuids.
-_generate_uuid = itertools.count(start=100).__next__
-
-
 class AppItemBase(int, Generic[P], metaclass=AppItemMeta):
+# The "base" is split into two base classes for organizational purposes. AppItemBase
+# contains only class-bound members and dunder methods. AppItemType is the actual base
+# class containing the bulk API. The only direct subclass of AppItemBase should be
+# AppItemType -- no exceptions.
+
     @overload
     def __new__(cls, *args: P.args, **kwargs: P.kwargs) -> Self: ...
     def __new__(cls, *args: P.args, tag: ItemId = 0, **kwargs: P.kwargs) -> Self:
         # XXX Assign item uuid for a future item (`__init__`) or already existing item.
         # optimized for missing tags
         if not tag:
-            return super().__new__(cls, _generate_uuid())
+            return super().__new__(cls, generate_uuid())
 
         if isinstance(tag, int):
             int_id = tag
@@ -230,7 +246,7 @@ class AppItemBase(int, Generic[P], metaclass=AppItemMeta):
         if _dearpygui.does_alias_exist(tag):
             int_id = _dearpygui.get_alias_id(tag)
         else:
-            int_id = _generate_uuid()
+            int_id = generate_uuid()
             _dearpygui.set_item_alias(int_id, tag)
         return super().__new__(cls, int_id)
 
@@ -251,7 +267,7 @@ class AppItemBase(int, Generic[P], metaclass=AppItemMeta):
             f"{optn}={val!r}"
             for optn, val in self.configuration().items()
         )
-        return f"{type(self).__qualname__}(tag={self.real!r}, {repr_str})"
+        return f"{type(self).__qualname__}(tag={self.real!r}, parent={self.parent}, {repr_str})"
 
     def __getitem__(self, indexes: tuple[Literal[0, 1, 2, 3], int]):
         """Return a child of this item in a specific slot at index, via
@@ -376,26 +392,25 @@ class AppItemType(AppItemBase, Generic[P]):
 
     __signature__: inspect.Signature
 
-    label             : str     # |
-    show              : bool    # |- invokes `__getattr__`
-    user_data         : Any     # |
-    use_internal_label: bool    # |
+    label             : Config[str | None , str ] = Config()
+    user_data         : Config[Any, Any ]         = Config()
+    use_internal_label: Config[bool, bool]        = Config()
 
-    parent: ItemId | None = Info()
+    parent: Info[ItemId] = Info()
 
-    is_ok                    : bool        = State(key="ok")
-    is_hovered               : bool | None = State(key="hovered")                  # |
-    is_active                : bool | None = State(key="active")                   # |
-    is_focused               : bool | None = State(key="focused")                  # |
-    is_clicked               : bool | None = State(key="clicked")                  # |
-    is_left_clicked          : bool | None = State(key="left_clicked")             # |
-    is_right_clicked         : bool | None = State(key="right_clicked")            # |- `-> None` == unsupported state for the item
-    is_middle_clicked        : bool | None = State(key="middle_clicked")           # |
-    is_visible               : bool | None = State(key="visible")                  # |
-    is_edited                : bool | None = State(key="edited")                   # |
-    is_activated             : bool | None = State(key="activated")                # |
-    is_deactivated           : bool | None = State(key="deactivated")              # |
-    is_deactivated_after_edit: bool | None = State(key="deactivated_after_edit")   # |
+    is_ok                    : State[bool       ] = State(key="ok")
+    is_hovered               : State[bool | None] = State(key="hovered")                  # |
+    is_active                : State[bool | None] = State(key="active")                   # |
+    is_focused               : State[bool | None] = State(key="focused")                  # |
+    is_clicked               : State[bool | None] = State(key="clicked")                  # |
+    is_left_clicked          : State[bool | None] = State(key="left_clicked")             # |
+    is_right_clicked         : State[bool | None] = State(key="right_clicked")            # |- `-> None` == unsupported state for the item
+    is_middle_clicked        : State[bool | None] = State(key="middle_clicked")           # |
+    is_visible               : State[bool | None] = State(key="visible")                  # |
+    is_edited                : State[bool | None] = State(key="edited")                   # |
+    is_activated             : State[bool | None] = State(key="activated")                # |
+    is_deactivated           : State[bool | None] = State(key="deactivated")              # |
+    is_deactivated_after_edit: State[bool | None] = State(key="deactivated_after_edit")   # |
 
     @property
     def tag(self) -> int:
