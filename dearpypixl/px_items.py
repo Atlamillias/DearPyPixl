@@ -1120,31 +1120,52 @@ class _PatchedItem(AppItemType):  # "do not import" indicator for genfile.py scr
 
 
 
+_appitem_mod: Any
+
+def _set_appitem_mod():
+    global _appitem_mod
+    try:
+        from . import appitems
+    except ImportError:
+        appitems = object()
+    _appitem_mod = appitems
+
+def _pixlate_item(item: ItemId) -> AppItemType:
+    type_str_id = get_info(item)["type"].split("::")[1]
+    try:
+        itype = getattr(_appitem_mod, type_str_id)
+    except AttributeError:
+        itype = AppItemType
+    except NameError:
+        _set_appitem_mod()
+        return _pixlate_item(item)
+    return itype(tag=item)
+
 class PixlatedItem(_PatchedItem, Generic[P]):
     """AppItemType mixin that extends higher-level information-related methods and
     properties to return `AppItemType` instances where an item identifier would be
     returned.
     """
     @property
-    def parent(self) -> ContainerItem | None:
+    def parent(self) -> ContainerItem | SizedItem | None:
         p_item = self.information()["parent"]
-        return ContainerItem(tag=p_item) if p_item else None
+        return _pixlate_item(p_item) if p_item else None
 
     def get_font(self) -> ContainerItem | None:
         font = super().get_font()
-        return ContainerItem(tag=font) if font else None
+        return _pixlate_item(font) if font else None
 
     def get_handlers(self) -> RegistryItem | None:
         hreg = super().get_handlers()
-        return RegistryItem(tag=hreg) if hreg else None
+        return _pixlate_item(hreg) if hreg else None
 
     def get_theme(self) -> RegistryItem | None:
         theme = super().get_theme()
-        return RegistryItem(tag=theme) if theme else None
+        return _pixlate_item(theme) if theme else None
 
     def get_root_parent(self) -> RootItem:
         root = super().get_root_parent()
-        return RootItem(tag=root)
+        return _pixlate_item(root) if root else None
 
 
 
