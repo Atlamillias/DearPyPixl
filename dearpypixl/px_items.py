@@ -1,5 +1,4 @@
 import inspect
-import itertools
 import functools
 from dearpygui import (
     dearpygui,
@@ -690,6 +689,14 @@ class AppItemType(AppItemBase, Generic[P]):
         """
         _dearpygui.bind_item_font(self, font)
 
+    @property
+    def root_parent(self) -> ItemId:
+        return self.get_root_parent()
+
+    def get_root_parent(self) -> ItemId:
+        """Return the top-most item in this item's parential tree."""
+        return px_utils.get_root_parent(self)
+
 
 
 
@@ -1135,6 +1142,9 @@ class PyxlateItem(_PatchedItem, Generic[P]):
         theme = super().get_theme()
         return RegistryItem(tag=theme) if theme else None
 
+    def get_root_parent(self) -> RootItem:
+        root = super().get_root_parent()
+        return RootItem(tag=root)
 
 
 
