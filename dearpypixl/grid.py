@@ -474,10 +474,10 @@ class Grid:
             self._sizer = sizer
 
     @overload
-    def push(self, row: int, col: int, /, *, max_width: int = ..., max_height: int = ..., anchor: str = ...) -> None: ...
+    def push(self, row: int, col: int, /, *, max_width: int = ..., max_height: int = ..., anchor: str = ..., normalize_indexes: bool = ...) -> None: ...
     @overload
-    def push(self, r1: int, c1: int, r2: int, c2: int, /, *, max_width: int = ..., max_height: int = ..., anchor: str = ...) -> None: ...
-    def push(self, item: ItemId, r1: int, c1: int, r2: int = None, c2: int = None, *, max_width : int = 0, max_height: int = 0, anchor: str = "c") -> None:
+    def push(self, r1: int, c1: int, r2: int, c2: int, /, *, max_width: int = ..., max_height: int = ..., anchor: str = ..., normalize_indexes: bool = ...) -> None: ...
+    def push(self, item: ItemId, r1: int, c1: int, r2: int = None, c2: int = None, *, max_width : int = 0, max_height: int = 0, anchor: str = "c", normalize_indexes: bool = False) -> None:
         # ensure item is currently valid
         if not (
         (isinstance(item, int) and dearpygui.does_item_exist(item)) or
@@ -494,6 +494,8 @@ class Grid:
         # pushing to single cell
         if r2 is None or c2 is None:
             r2, c2 = r1, c1
+        if normalize_indexes:
+            r1, c1, r2, c2 = _normalize_cellspan(r1, c1, r2, c2, len(self._rows), len(self._cols))
         # get anchor calculator
         try:
             anchor_fn = _ANCHOR_MAP[anchor.lower()]
