@@ -239,14 +239,15 @@ class AppItemBase(int, Generic[P], metaclass=AppItemMeta):
 
         if isinstance(tag, int):
             int_id = tag
-        if not isinstance(tag, str):
-            raise TypeError(f"expected int, str identifier (got {int_id})")
-        # a string alias is being used; fetch the existing id or create a new one
-        if _dearpygui.does_alias_exist(tag):
-            int_id = _dearpygui.get_alias_id(tag)
+        elif isinstance(tag, str):
+            # a string alias is being used; fetch the existing id or create a new one
+            if _dearpygui.does_alias_exist(tag):
+                int_id = _dearpygui.get_alias_id(tag)
+            else:
+                int_id = generate_uuid()
+                _dearpygui.set_item_alias(int_id, tag)
         else:
-            int_id = generate_uuid()
-            _dearpygui.set_item_alias(int_id, tag)
+            raise TypeError(f"expected int, str identifier (got {int_id})")
         return super().__new__(cls, int_id)
 
     @overload
