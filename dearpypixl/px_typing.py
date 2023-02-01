@@ -23,31 +23,10 @@ class Array(Generic[*S]):
 
 
 
-
 ###########################################
-############## MISC FUCTIONS ##############
+############## MISC FN/TYPEs ##############
 ###########################################
 
-@overload
-def frozenmap(**kwargs: dict[KT, VT]) -> dict[KT, VT]: ...
-@overload
-def frozenmap(iterable: Sequence[Array[KT, VT]] | Mapping[KT, VT], /) -> dict[KT, VT]: ...
-def frozenmap(iterable: Sequence[Array[KT, VT]] | Mapping[KT, VT] | None = None, **kwargs) -> dict[KT, VT]:
-    kwds = iterable or kwargs
-    return types.MappingProxyType(dict(kwds))
-
-
-def typeddict_init(typed_dict: type[T], value: Any = None) -> T:
-    """Return a dictionary initialized with all required and optional keys of a
-    TypedDict."""
-    return dict.fromkeys(typed_dict.__annotations__, value)
-
-
-
-
-###########################################
-############ MISC TYPE OBJECTS ############
-###########################################
 
 class _FrozenNamespace(type):
     # I think the point is clear enough, so I'm not gonna go
@@ -73,19 +52,34 @@ class FrozenNamespace(metaclass=_FrozenNamespace):
     uppercase."""
 
 
+class _TypingOverload:
+    __slots__ = ()
 
-class Point(NamedTuple):
-    """Contains a Cartesian coordinate data point."""
-    x: float
-    y: float
+    def __init__(self, mthd): ...
+
+    def __set_name__(self, tp: type, name: str):
+        if getattr(tp, name, None) == self:
+            delattr(tp, name)
+
+    def __get__(self, inst, tp):
+        return self
+
+def typing_overload(mthd: T) -> T:
+    return _TypingOverload(mthd)
+
+@overload
+def frozenmap(**kwargs: dict[KT, VT]) -> dict[KT, VT]: ...
+@overload
+def frozenmap(iterable: Sequence[Array[KT, VT]] | Mapping[KT, VT], /) -> dict[KT, VT]: ...
+def frozenmap(iterable: Sequence[Array[KT, VT]] | Mapping[KT, VT] | None = None, **kwargs) -> dict[KT, VT]:
+    kwds = iterable or kwargs
+    return types.MappingProxyType(dict(kwds))
 
 
-class Rect(NamedTuple):
-    """Contains bounding box data."""
-    x     : float
-    y     : float
-    width : float
-    height: float
+def typeddict_init(typed_dict: type[T], value: Any = None) -> T:
+    """Return a dictionary initialized with all required and optional keys of a
+    TypedDict."""
+    return dict.fromkeys(typed_dict.__annotations__, value)
 
 
 
