@@ -341,7 +341,21 @@ class pxConsoleWindow(ui.mvChildWindow):
 
 
 
-_add_sized_window = functools.partial(dearpygui.add_window, width=400, height=300)
+
+def _add_root_parent_resize_handler(self, root_parent: ItemId = 0):
+    if not root_parent:
+        root_parent = self.root_parent
+    p_info = px_utils.get_info(root_parent)
+    if not p_info.get("resized_handler_applicable", False):
+        return
+    hreg = p_info.get("handlers", None)
+    if not hreg:
+        hreg = ui.mvItemHandlerRegistry()
+    ui.mvResizeHandler(callback=self.cb_on_resize, parent=hreg)
+    dearpygui.bind_item_handler_registry(root_parent, hreg)
+
+
+_add_sized_window = functools.partial(dearpygui.add_window, width=400, height=300, no_scrollbar=True)
 
 
 class pxInteractivePython(code.InteractiveConsole, AutoParentItem, pxConsoleWindow, auto_parent=_add_sized_window):
@@ -370,8 +384,12 @@ class pxInteractivePython(code.InteractiveConsole, AutoParentItem, pxConsoleWind
             label=label or "pxInteractivePython",
             **kwargs,
         )
+        self.__input_adj_ht = 20  # BUG (see `cb_on_resize`)
+        self.__addtl_input  = 0
+
         self._input_wndw : ui.mvChildWindow
         self._parent_grid: grid.Grid
+
         self.prompt      : ui.mvText
         self.input       : ui.mvInputText
 
@@ -398,7 +416,7 @@ class pxInteractivePython(code.InteractiveConsole, AutoParentItem, pxConsoleWind
         else:
             self._parent_grid.push(self, 0, 0, anchor="c")
         self._parent_grid.push(self._input_wndw, -1, 0, anchor="c")
-        self._upd_input_height()
+        self._parent_grid.rows[-1].size = 20
 
     def _init_themes(self):
         with theme.pxTheme() as t:
@@ -420,17 +438,8 @@ class pxInteractivePython(code.InteractiveConsole, AutoParentItem, pxConsoleWind
             self._stderr_theme.color.Text(self.stderr_txt_color)
             self._stderr_theme.color.FrameBg(0, 0, 0, 0)
 
-    def _init_handlers(self, parent: ItemId = 0):
-        if not parent:
-            parent = self.parent
-        p_info = px_utils.get_info(parent)
-        if not p_info.get("resized_handler_applicable", False):
-            return
-        hreg = p_info.get("handlers", None)
-        if not hreg:
-            hreg = ui.mvItemHandlerRegistry()
-        ui.mvResizeHandler(callback=self.cb_on_resize, parent=hreg)
-        dearpygui.bind_item_handler_registry(self.parent, hreg)
+    def _init_handlers(self, root_parent: ItemId = 0):
+        _add_root_parent_resize_handler(self, root_parent)
 
     def _upd_input_height(self):
         # BUG (see `cb_on_resize`)
@@ -480,16 +489,12 @@ class pxInteractivePython(code.InteractiveConsole, AutoParentItem, pxConsoleWind
         dearpygui.bind_item_theme(txt_item, txt_theme)
         return value
 
-    __addtl_input: int
-
     def cb_on_enter(self, sender: ItemId, app_data: str = "", user_data: Any = None):
         with self:
             self.__addtl_input = self.push(app_data)
         self.prompt.value = self.PROMPT_2 if self.__addtl_input else self.PROMPT_1
         self.input.value  = ""
         self.input.focus()
-
-    __input_adj_ht: int  # BUG (see `cb_on_resize`)
 
     def cb_on_resize(self, sender: ItemId | None = None, app_data: Any = None, user_data: Any = None) -> None:
         super().cb_on_resize(sender, app_data, user_data)
@@ -513,138 +518,3 @@ class pxInteractivePython(code.InteractiveConsole, AutoParentItem, pxConsoleWind
 
 
 
-_BT = TypeVar("_BT", bound=ui.mvButton)
-_WT = TypeVar("_WT", bound=ui.mvChildWindow)
-
-
-class ItemsView(ui.mvChildWindow, Generic[_BT, _WT]):
-    active_theme  : ui.mvTheme | None = None
-    hidden_theme  : ui.mvTheme | None = None
-    button_factory: _BT = ui.mvButton
-    window_factory: _WT = ui.mvChildWindow
-
-    def __init__(self, border: bool = False, **kwargs):
-        super().__init__(border=border, **kwargs)
-        self._active_view = None
-        self._view_store  = ui.mvStage()
-        self._grid        = grid.Grid(2, 1, parent=self)
-
-        self._views: dict[str, tuple[_BT, _WT]] = {}
-        self.views = types.MappingProxyType(self._views)
-
-        self._init_handlers()
-
-    @property
-    def button_layout(self):
-        return self._grid.rows[0]
-
-    def _init_handlers(self, parent: ItemId = 0):
-        if not parent:
-            parent = self.parent
-        p_info = px_utils.get_info(parent)
-        if not p_info.get("resized_handler_applicable", False):
-            return
-        hreg = p_info.get("handlers", None)
-        if not hreg:
-            hreg = ui.mvItemHandlerRegistry()
-        ui.mvResizeHandler(callback=self.cb_on_resize, parent=hreg)
-        dearpygui.bind_item_handler_registry(self.parent, hreg)
-
-    def _new_button(self, label: str, user_data: ItemId, **kwargs) -> _BT:
-        return self.button_factory(label=label, user_data=user_data, callback=self.cb_on_tab, **kwargs)
-
-    def _new_window(self, label: str, **kwargs) -> _WT:
-        return self.window_factory(label=label, **kwargs)
-
-    def new_view(self, label: str) -> tuple[_BT, _WT]:
-        if label in self._views:
-            raise ValueError(f"{label!r} already exists")
-        window = self._new_window(label=label, show=False, parent=self._view_store)
-        button = self._new_button(label=label, show=False, parent=self, user_data=window)
-        cols_cnt = len(self._grid.cols)
-        if cols_cnt == 1:
-            # The grid must have at least 1 column. Push the button
-            # to the existing column.
-            col_idx = 0
-        else:
-            # Add a column and push the button onto it. Can't use -1
-            # here because the grid preserves the original indexes.
-            col_idx = cols_cnt
-            self._grid.cols += 1
-        self._grid[0, col_idx] = button
-        self._views[label] = button, window
-        button.show = True
-
-    def del_view(self, label: str = None) -> None:
-        view = self._views.get(label, None)
-        if not view:
-            return
-        button, window = view
-        # del tab button
-        self._grid.pop(button)
-        grid_info = self._grid.members.get(button.real, None)
-        if grid_info and len(self._grid.cols) > 1:  # del grid col
-            self._grid.cols.delete(grid_info.cell1[1])
-        button.delete()
-        # del window
-        self._grid.pop(window)
-        window.delete()
-        if self._active_view == label:
-            self._active_view = None
-
-    def get_view(self, label: str = None) -> tuple[_BT, _WT] | None:
-        return self.views.get(label, None)
-
-    def set_view(self, label: str = None) -> None:
-        try:
-            view = self._views[label]
-        except KeyError:
-            raise ValueError(f"no view named {label!r}") from None
-        button, window = view
-        self.cb_on_tab(button, None, window)
-
-    def unset_view(self) -> None:
-        if not self._active_view:
-            return
-        self.set_view(self._active_view)
-
-    def cb_on_tab(self, sender: ItemId | None = None, app_data: Any = None, user_data: _WT | None = None) -> None:
-        # TODO: Change themes, states, etc.
-        window = user_data
-        if window.show:
-            self._active_view = None
-            self._grid.pop(window)
-            window.move(self._view_store)
-            if self.hidden_theme:
-                ...
-            window.show = False
-        else:
-            self._grid.push(window, 1, 0, -1, -1)
-            self._active_view = window.label
-            window.move(self)
-            if self.active_theme:
-                ...
-            window.show = True
-
-    def cb_on_resize(self, sender: ItemId | None = None, app_data: Any = None, user_data: Any = None) -> None:
-        self._grid()
-
-
-
-class pxItemRegistry(AutoParentItem, ui.mvTable, auto_parent=_add_sized_window):
-    view_factory = ItemsView
-
-    def __init__(self, borders_innerV: bool = True, resizable: bool = True, **kwargs):
-        super().__init__(borders_innerV=borders_innerV, resizable=resizable, header_row=False, **kwargs)
-        ui.mvTableColumn(parent=self)
-        ui.mvTableColumn(parent=self)
-        with ui.mvTableRow(parent=self):
-            self.itemreg = self.view_factory(parent=ui.mvChildWindow(border=True))
-            self.details = self.view_factory(parent=ui.mvChildWindow(border=True))
-
-    def _init_itemreg(self):
-        ...
-
-
-    def _init_details(self):
-        ...
