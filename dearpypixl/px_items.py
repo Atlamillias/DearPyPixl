@@ -1,4 +1,5 @@
 import inspect
+import types
 import functools
 from dearpygui import (
     dearpygui,
@@ -53,7 +54,8 @@ __all__ = [
     "RegistryItem",
 
     # functions
-    "type_from_callable",
+    "register_itemtype",
+    "itp_from_callable",
 ]
 
 
@@ -81,12 +83,9 @@ class Config(Generic[_GT, _ST], DPGProperty):
     __slots__ = ()
 
     def __get__(self, inst: 'AppItemType', cls) -> _GT:
-        try:
+        if inst:
             return inst.configuration()[self._key]
-        except (TypeError, SystemError):
-            if inst is None:
-                return self
-            raise
+        return self
 
     def __set__(self, inst: 'AppItemType', value: _ST) -> None:
         eval(f"inst.configure({self._key}=value)")  # no dict/unpacking
@@ -96,33 +95,106 @@ class Info(Generic[_GT], DPGProperty):
     __slots__ = ()
 
     def __get__(self, inst: 'AppItemType', cls) -> _GT:
-        try:
+        if inst:
             return inst.information()[self._key]
-        except (TypeError, SystemError):
-            if inst is None:
-                return self
-            raise
+        return self
 
 
 class State(Generic[_GT], DPGProperty):
     __slots__ = ()
 
     def __get__(self, inst: 'AppItemType', cls) -> _GT:
-        try:
+        if inst:
             key = self._key
             return inst.state().get(key, None) or DPG_STATES_DICT[key]
-        except (TypeError, SystemError):
-            if inst is None:
-                return self
-            raise
+        return self
 
 
 ###########################################
 ######### APPITEM METACLASS STUFF #########
 ###########################################
 
-def _null_command(*args, tag: ItemId | None = None, **kwargs) -> ItemId:
-    return tag
+_SELF_PARAM: inspect.Parameter = px_utils.create_parameter("self")
+_KWDS_PARAM: inspect.Parameter = px_utils.create_parameter("kwargs", kind=inspect.Parameter.VAR_KEYWORD)
+
+def _upd_pxmthd_metadata(mthd: T, parameters: dict[str, inspect.Parameter]) -> T:
+    base_method   = getattr(AppItemType, mthd.__name__)
+    base_mthd_sig = inspect.signature(base_method)
+    _params = {_SELF_PARAM.name: _SELF_PARAM} | parameters
+
+    mthd.__signature__ = base_mthd_sig.replace(parameters=_params.values())
+    mthd.__doc__       = base_method.__doc__
+    return mthd
+
+
+def _new_px_configuration(parameters: dict[str, inspect.Parameter]):
+    def configuration(self) -> DPGItemConfig:
+        return {k:v for k,v in get_config(self).items() if k in config_kwds}
+
+    config_kwds   = frozenset(parameters)
+    configuration = _upd_pxmthd_metadata(configuration, {})
+    del parameters
+    return configuration
+
+
+def _new_px_configure(parameters: dict[str, inspect.Parameter]):
+
+    def configure(self, **kwargs) -> None:
+        try:
+            set_config(self, **kwargs)
+        except SystemError:
+            if _dearpygui.does_item_exist(self):
+                raise TypeError(
+                    f"`{type(self).__qualname__}(tag={self.real!r}).configure(...)` received an unexpected keyword argument."
+                ) from None
+            for kwd in kwargs:
+                if kwd in config_kwds:
+                    raise TypeError(f"cannot set read-only attribute {kwd!r}.")
+            raise
+
+    parameters  = px_utils.writable_cfg_from_params(parameters | {_KWDS_PARAM.name: _KWDS_PARAM})
+    config_kwds = frozenset(parameters)
+    configure   = _upd_pxmthd_metadata(configure, parameters)
+    del parameters
+    return configure
+
+
+
+
+_ITEMTYPE_REGISTRY: dict[str, type['AppItemType']] = {}  # NOT used by low-level classes
+
+
+def register_itemtype(itp: T) -> T:
+    """Register an itemtype with the global registry. Can be used as a decorator.
+
+    The registry contains `AppItemType.__qualname__: AppItemType` pairs, and is
+    primarily used to instantiate the correct itemtype interface when wrapping an
+    existing DearPyGui item. Base itemtypes are automatically registered when they
+    are created, but not user subclasses.
+
+    A user may use this to register a subclass with altered or extended functionality
+    to that of an already-registered "built-in" itemtype. That aside, there is nothing
+    for a user to immediately gain by registering classes. However, users are free
+    to redefine and/or extend objects that use the registry to create desired features.
+    For example, the `AppItemType.wrap_item` class method pulls the internal type
+    "mvAppItemType::mvButton" from a DearPyGui button item, and returns a `mvButton`
+    itemtype interface for it. It is possible to extend the `AppItemType.wrap_item`
+    method to include user types whos names are pulled from an item's `label`, `alias`
+    and/or `user_data`.
+    """
+    # XXX The reason why the example in the doc above isn't built into the framework
+    # is because I feel it falls out of the scope of this framework. User types are
+    # expected to have *actual* __init__ methods -- more than just an "interface".
+    # I also do not think that sort of functionality is desirable enough to write an
+    # add-on for it.
+    _ITEMTYPE_REGISTRY[itp.__qualname__] = itp
+    return itp
+
+
+ITEMTYPE_REGISTRY = types.MappingProxyType(_ITEMTYPE_REGISTRY)
+
+
+
 
 def _metadata_conflict_check(command, identity, *bases: Sequence[type['AppItemType']]) -> bool:
     """Return True if using *bases* to create a new itemtype would cause
@@ -136,16 +208,25 @@ def _metadata_conflict_check(command, identity, *bases: Sequence[type['AppItemTy
     # and the new type's namespace.
     commands = {b.command for b in bases}
     commands.add(command)
-    commands.discard(_APPITEMT_COMMAND)
+    commands.discard(_DEFAULT_COMMAND)
     identities = {b.identity for b in bases}
     identities.add(identity)
-    identities.discard(_APPITEMT_IDENTITY)
+    identities.discard(_DEFAULT_IDENTITY)
     return any(len(s) > 1 for s in (commands, identities))
 
 
-_APPITEMT_COMMAND  = _null_command
-_APPITEMT_IDENTITY = _dearpygui.mvAll, "mvAppItem",
+def _null_command(*args, tag: ItemId | None = None, **kwargs) -> ItemId:
+    return tag
 
+
+_DEFAULT_COMMAND : DPGCommand      = _null_command
+_DEFAULT_IDENTITY: tuple[int, str] = _dearpygui.mvAll, "pxAppItemType",
+
+
+
+###########################################
+########## APPITEMTYPE & MIXINS ###########
+###########################################
 
 class AppItemMeta(type):
     identity: DPGTypeId
@@ -156,56 +237,70 @@ class AppItemMeta(type):
         name     : str,
         bases    : tuple[type[object], ...],
         namespace: dict[str],
-         *,
-        command : DPGCommand = None,
-        identity: DPGTypeId  = None,
+        *,
+        command  : DPGCommand = None,
+        identity : DPGTypeId  = None,
         **kwargs
     ):
         command   = namespace.get("command", command)
         identity  = namespace.get("identity", identity)
-        type_kwds = command, identity
-        # This framework heavily abuses multiple inheritance. It's possible that the new
-        # type may inherit key attributes from different, yet incomplete itemtype bases.
-        # Since these attributes may conflict, setup for a new "complete" itemtype is only
-        # executed if all key attrs/args are included together when defining the new class,
-        # and NOT just "exist" together through inheritance.
-        if all(type_kwds):
-            # Ensure that the special keywords/attributes are appropriate.
-            if not callable(command):
+
+        # Ensure that a itp from bases won't have an identity crisis.
+        if _metadata_conflict_check(command or _DEFAULT_COMMAND, identity or _DEFAULT_IDENTITY, *bases):
+            raise TypeError(f"could not resolve bases for {name!r}.")
+
+        # integrity check special kwds
+        if command and command is not _DEFAULT_COMMAND:
+            if px_utils.is_ctxmgr_fn(command):
+                command = command.__wrapped__
+            if not px_utils.is_item_cmd(command):
                 raise TypeError("`callable` is not callable.")
+        if identity and identity is not _DEFAULT_IDENTITY:
             try:
-                _, _ = identity
+                int_id, str_id = identity
+                if not (isinstance(int_id, int) and isinstance(str_id, str)):
+                    raise TypeError
             except TypeError:
                 raise TypeError("`identity` must a 2-tuple containing an interger and string.") from None
-            namespace["identity"] = identity
-            namespace["command"]  = staticmethod(command) if not isinstance(
-                                    command, staticmethod) else command
-            cls = super().__new__(mcls, name, bases, namespace, **kwargs)
 
-            # Edit class signature to include command parameters.
-            cmd_sig    = inspect.signature(command)
-            cls_params  = (
-                inspect.Parameter(name="cls", kind=inspect.Parameter.POSITIONAL_OR_KEYWORD),
-                *cmd_sig.parameters.values()
+        cls = super().__new__(mcls, name, bases, namespace, **kwargs)
+
+        # new itemtype base
+        if all((command, identity)):
+            cls.identity = identity
+            cls.command  = staticmethod(command) if not isinstance(
+                           command, staticmethod) else command
+
+            # early return for `AppItemType` & other prototypes
+            if command is  _DEFAULT_COMMAND or identity is _DEFAULT_COMMAND:
+                return cls
+
+            cmd_signature = inspect.signature(command)
+            px_parameters = px_utils.upd_param_annotations(cmd_signature.parameters)
+
+            # can't set `__init__.__signature__` since `__init__` is inherited
+            cls.__signature__ = cmd_signature.replace(
+                parameters=px_parameters.values(),
+                return_annotation=Self,
             )
-            cls.__signature__ = cmd_sig.replace(parameters=cls_params, return_annotation=Self)
+            if getattr(cls, "configuration", None) is AppItemType.configuration:
+                cls.configuration = _new_px_configuration(px_parameters)
+            if getattr(cls, "configure", None) is AppItemType.configure:
+                cls.configure = _new_px_configure(px_parameters)
 
-            # For appropriate annotations, set a `Config` descriptor on the class
-            # for each. This is skipped if the annotation exists as an attribute
-            # (almost always inherited).
-            for annotation in cls.__annotations__:
-                # Never overwrite an existing member.
-                if (annotation in cls.__signature__.parameters
-                and not hasattr(cls, annotation)):
-                    cfg_property = Config()
-                    setattr(cls, annotation, cfg_property)
-                    cfg_property.__set_name__(cls, annotation)
-        # Otherwise, ensure that the new class won't have an identity crisis.
-        elif _metadata_conflict_check(command or _APPITEMT_COMMAND, identity or _APPITEMT_IDENTITY, *bases):
-            raise TypeError(f"could not resolve bases for {name!r}.")
-        else:
-            cls = super().__new__(mcls, name, bases, namespace, **kwargs)
+            # these parameters *should* be writable configuration
+            config_kwds = px_utils.writable_cfg_from_params(px_parameters)
+            for kwd in config_kwds:
+                # This is meant to add functionality to would-be base itemtypes, so do
+                # not overwrite existing members of high-level classes.
+                if hasattr(cls, kwd):
+                    continue
+                config_prop = Config()
+                setattr(cls, kwd, config_prop)
+                config_prop.__set_name__(cls, kwd)
 
+            if not cls.__qualname__.startswith("_"):
+                register_itemtype(cls)
         return cls
 
     def __repr__(cls) -> str:
@@ -218,16 +313,11 @@ class AppItemMeta(type):
         return cls.identity[0]
 
 
-
-###########################################
-########## APPITEMTYPE & MIXINS ###########
-###########################################
-
-class AppItemBase(int, Generic[P], metaclass=AppItemMeta):
+class _AppItemBase(int, Generic[P], metaclass=AppItemMeta):
 # The "base" is split into two base classes for organizational purposes. AppItemBase
 # contains only class-bound members and dunder methods. AppItemType is the actual base
 # class containing the bulk API. The only direct subclass of AppItemBase should be
-# AppItemType -- no exceptions.
+# AppItemType.
 
     @overload
     def __new__(cls, *args: P.args, **kwargs: P.kwargs) -> Self: ...
@@ -269,7 +359,7 @@ class AppItemBase(int, Generic[P], metaclass=AppItemMeta):
         )
         return f"{type(self).__qualname__}(tag={self.real!r}, parent={self.parent}, {repr_str})"
 
-    def __getitem__(self, indexes: tuple[Literal[0, 1, 2, 3], int]):
+    def __getitem__(self, indexes: tuple[Literal[0, 1, 2, 3], int]) -> ItemId:
         """Return a child of this item in a specific slot at index, via
         `self[slot, index]`.
         """
@@ -296,8 +386,8 @@ class AppItemBase(int, Generic[P], metaclass=AppItemMeta):
         """
         raise TypeError
 
-    command : DPGCommand = _APPITEMT_COMMAND
-    identity: DPGTypeId  = _APPITEMT_IDENTITY
+    command : DPGCommand = _DEFAULT_COMMAND
+    identity: DPGTypeId  = _DEFAULT_IDENTITY
 
     @px_utils.classproperty
     def is_container(cls) -> bool:
@@ -341,8 +431,11 @@ class AppItemBase(int, Generic[P], metaclass=AppItemMeta):
 
     @px_utils.classproperty
     def target_slot(cls) -> int:  # XXX `target` would conflict with some items
-        """Return the index of the slot that items of this type are stored in when parented."""
-        # <https://dearpygui.readthedocs.io/en/latest/documentation/container-slots.html#slots>
+        """Return the index of the slot that items of this type are stored in when parented.
+
+        For more information regarding the slot system;
+        <https://dearpygui.readthedocs.io/en/latest/documentation/container-slots.html#slots>
+        """
         str_id = cls.identity[1].split("mvAppItemType::")
         if str_id in ("mvFileExtension", "mvFontRangeHint", "mvNodeLink",
         "mvAnnotation", "mvDragLine", "mvDragPoint", "mvLegend", "mvTableColumn"):
@@ -353,48 +446,52 @@ class AppItemBase(int, Generic[P], metaclass=AppItemMeta):
             return 3
         return 1  # dearpygui.get_item_info(...) includes this even for root items
 
-    # XXX The below methods create and return a new type, or an
-    # instance of a new type.
     @classmethod
-    def pixlate_type(cls) -> type["PixlatedItem[P]" | Self]:
-        """Create and return a subclass of this class that extends higher-level
-        information-related methods and properties to return `AppItemType` instances
-        where an item identifier would be returned.
+    def wrap_item(cls, item: ItemId, *, null_init: bool = True) -> 'AppItemType':
+        """Return an AppItemType interface for an existing item based on its' internal
+        type.
+
+        Args:
+            * item: The unique identifier of the item to interface with.
+
+            The following arguments are optional and keyword-only:
+
+            * null_init: If True, the interface's `__init__` method will not be called
+            during its creation. Default is True.
+
+        If *null_init* is True, the returned interface will be created by calling the
+        appropriate interface's `__new__` method and NOT through the traditional
+        `type(class).__call__` invocation. See the `null_init` class method for more
+        information.
         """
-        return type(
-            f"Pyxlated{cls.__qualname__.replace('mv', '')}", (PixlatedItem, cls), {}
-        )
+        # XXX good monkeypatch point (see `alias` property, `register_itemtype` fn)
+        itp = _ITEMTYPE_REGISTRY.get(get_info(item)["type"].split("::")[1], AppItemType)
+        call_obj = itp.wrap_item if null_init else itp
+        return call_obj(tag=item)
 
     @classmethod
-    def template_type(cls, *args: P.args, **kwargs: P.kwargs) -> type['TemplateItem[P]' | Self]:
-        """Return an instance of a newly-created template item subclass of this
-        class, where its attributes are used as keyword arguments when called.
-        Calling the instance will return an item instance of its superclass --
-        the same class the `.template` method was originally called on to create
-        the template class.
+    def null_init(cls, *args: P.args, **kwargs: P.kwargs) -> Self:
+        """Return a new instance of this class. The instance is not initialized.
 
-        Calling the `.template` method of a template item will return a new
-        instance of the template item's class *without* creating a new template
-        item class.
+        The new instance returned by this method is created by directly calling the
+        class' `__new__` method (using *args* and *kwargs*) without ever calling
+        `__init__`, and NOT through the traditional `type(class).__call__` invocation.
 
-        Read the `TemplateItem` docstring for more information.
+        It is not necessary to hook through this method to create an interface for an
+        existing item, since the default `__init__` implementation will handle the
+        resulting exception. This IS the more performant option though -- especially
+        when creating interfaces for several existing items.
         """
-        return type(
-            f"{cls.__qualname__.replace('mv', '')}Template",
-            (TemplateItem, cls),
-            {},
-        )(*args, **kwargs)
+        return cls.__new__(cls, *args, **kwargs)
 
 
 
-class AppItemType(AppItemBase, Generic[P]):
+class AppItemType(_AppItemBase, Generic[P]):
     """Provides an object-oriented interface for DearPyGui items."""
 
-    __signature__: inspect.Signature
-
-    label             : Config[str | None , str ] = Config()
-    user_data         : Config[Any, Any ]         = Config()
-    use_internal_label: Config[bool, bool]        = Config()
+    label             : Config[str | None , str] = Config()
+    user_data         : Config[Any, Any]         = Config()
+    use_internal_label: Config[bool, bool]       = Config()
 
     parent: Info[ItemId] = Info()
 
@@ -420,6 +517,9 @@ class AppItemType(AppItemBase, Generic[P]):
     @property
     def alias(self) -> str | None:
         """Return the item's unique string identifier."""
+        # XXX Good monkeypatch point if not using aliases.
+        # ex: f'{type(self).__qualname__}:{self.tag}' on init/new to store class "memory"
+        # onto the item for more accurate interface wrapping w/`wrap_item`.
         return dearpygui.get_item_alias(self)
 
     def delete(self, children_only: bool = False, slot: Literal[-1, 0, 1, 2, 3] = -1) -> None:
@@ -437,15 +537,12 @@ class AppItemType(AppItemBase, Generic[P]):
         _dearpygui.delete_item(self, children_only=children_only, slot=slot)
 
     @overload
-    def configure(self, *, label: str = ..., show: bool = ..., user_data: Any = ..., use_internal_label: bool = ..., **config) -> None: ...
+    def configure(self, *, label: str = ..., user_data: Any = ..., use_internal_label: bool = ..., **kwargs) -> None: ...
     def configure(self, **kwargs) -> None:
         """Update the item's writable settings.
 
         Args:
             * label: Display name for the item.
-
-            * show: If False, hide the item from the user interface. Can be used
-            to deactivate or disable some items likr registries, handlers, etc.
 
             * user_data: Any object. Uses are user-implemented.
 
@@ -461,16 +558,19 @@ class AppItemType(AppItemBase, Generic[P]):
         constructor/initializer, it can likely be updated using the `set_value` method.
 
         `TypeError` is raised if this item exists and its configuration could
-        not be updated. `SystemError` is raised in all other cases where this
-        call to DearPyGui fails.
+        not be updated or if the configuration option is not writable. `SystemError` is
+        raised in all other cases where this call to DearPyGui fails.
         """
         try:
             set_config(self, **kwargs)
         except SystemError:
             if _dearpygui.does_item_exist(self):
                 raise TypeError(
-                    f"Error configuring {type(self).__qualname__!r} instance. Verify that the arguments are appropriate."
+                    f"`{type(self).__qualname__}(tag={self.real!r}).configure(...)` received an unexpected keyword argument."
                 ) from None
+            for kwd in kwargs:
+                if kwd in self.command.__annotations__:
+                    raise TypeError(f"cannot set read-only attribute {kwd!r}.")
             raise
 
     def configuration(self) -> DPGItemConfig:
@@ -478,11 +578,9 @@ class AppItemType(AppItemBase, Generic[P]):
 
         `SystemError` is raised in all cases where this call to DearPyGui fails.
         """
-        # `get_item_configuration` can include keys that aren't always used by
-        # the item, so `eval("repr(self)")` would throw an error.
-        # Filtering these out doesn't completely fix it for all items, though.
-        params = self.__signature__.parameters
-        return {k:v for k, v in get_config(self).items() if k in params}
+        # NOTE: This is only for instances where `type(self) == AppItemType`. Derived
+        # itemtypes have a different `configuration` method (assigned via metaclass).
+        return get_config(self)
 
     def information(self) -> DPGItemInfo:
         """Return details about the item.
@@ -928,6 +1026,175 @@ class RegistryItem(RootItem):
 
 
 
+
+
+
+
+# XXX These are unique mixins that can make the resulting class or instances
+# a bit weird and/or do unusual things. Not used in `itp_from_callable`
+
+class PatchedItem(AppItemType):  # "do not import" indicator for genfile.py script
+    ...
+
+
+
+
+_PX_MTHD_MKR = "_px_mthd_wrapper"
+
+def _px_mthd_wrapper(mthd: Callable[P, ItemId]) -> Callable[P, AppItemType | ItemId]:
+    @functools.wraps(mthd)
+    def bound_method(self, *args: P.args, **kwargs: P.kwargs) -> AppItemType | ItemId:
+        item = mthd(self, *args, **kwargs)
+        try:
+            item = self.wrap_item(item)
+        except SystemError:
+            raise
+        except:
+            pass
+        return item
+    setattr(bound_method, _PX_MTHD_MKR, True)
+    return bound_method
+
+class PixlatedItem(PatchedItem, Generic[P]):
+    """AppItemType mixin that extends higher-level information-related methods and
+    properties to return `AppItemType` instances where an item identifier would be
+    returned.
+    """
+    def __init_subclass__(cls) -> None:
+        super().__init_subclass__()
+        # wrap individual children
+        if cls.__getitem__ == AppItemType.__getitem__:
+            cls.__getitem__ = _px_mthd_wrapper(cls.__getitem__)
+        # wrap items individually returned from Config descriptor
+        for attr, annotations in cls.__annotations__.items():
+            if annotations != ItemId:
+                continue
+            desc = getattr(cls, attr, None)
+            if isinstance(desc, Config) and not hasattr(desc.__get__, _PX_MTHD_MKR):
+                desc.__get__ = _px_mthd_wrapper(desc.__get__)
+
+    @property
+    def parent(self) -> ContainerItem | SizedItem | None:
+        p_item = self.information()["parent"]
+        return self.wrap_item(p_item) if p_item else None
+
+    def get_font(self) -> ContainerItem | None:
+        font = super().get_font()
+        return self.wrap_item(font) if font else None
+
+    def get_handlers(self) -> RegistryItem | None:
+        hreg = super().get_handlers()
+        return self.wrap_item(hreg) if hreg else None
+
+    def get_theme(self) -> RegistryItem | None:
+        theme = super().get_theme()
+        return self.wrap_item(theme) if theme else None
+
+    def get_root_parent(self) -> RootItem:
+        root = super().get_root_parent()
+        return self.wrap_item(root) if root else None
+
+
+
+def _init_wrapper(mthd: Callable[P, T], *_args: P.args, **_kwargs: P.kwargs) -> Callable[[], T]:
+    @functools.wraps(mthd)
+    def init(*args: P.args, **kwargs: P.kwargs) -> T:
+        mthd(*(args or _args), **(_kwargs | kwargs))
+        mthd.__self__.__init__ = mthd
+    return init
+
+class _NullInitItemMeta(AppItemMeta):
+    def __call__(cls, *args, **kwargs):
+        return cls.__new__(cls, *args, **kwargs)
+
+class NullInitItem(PatchedItem, Generic[P], metaclass=_NullInitItemMeta):
+    """`AppItemType` mixin that disables auto initialization for new instances. The
+    `.__init__` method must be called manually or through other means as defined by
+    the user.
+
+    When calling the `.__init__` method, it will automatically receive any arguments
+    it would have received under normal circumstances. If keyword arguments are sent
+    to the `.__init__` method, they will be merged into the keyword arguments used
+    when the instance was created. If positional arguments are included, only those
+    positional arguments will be used and NOT the positional arguments originally
+    passed on instantiation (to `.__new__`).
+
+    NOTE: Attempting to call instance methods before calling the `.__init__` method
+    may result in an error because the DearPyGui item may not exist yet. Class-bound
+    descriptors will function as normal.
+    """
+    def __new__(cls, *args: P.args, **kwargs: P.kwargs) -> Self:
+        self = super().__new__(*args, **kwargs)
+        self.__init__ = _init_wrapper(self.__init__, *args, **kwargs)
+        return self
+
+
+
+
+def _get_non_template_type(obj: type) -> type:
+    for t in obj.mro():
+        if not issubclass(t, PatchedItem):
+            return t
+
+class _TemplateItemMeta(Generic[P], AppItemMeta):
+    def __new__(mcls, name: str, bases: tuple, namespace: dict[str], *args: P.args, **kwargs: P.kwargs):
+        kwargs["__slots__"] = ()
+        cls = super().__new__(mcls, name, bases, namespace,)
+        cls.__init__    = None
+        cls.__setattr__ = None
+        cls.__type      = _get_non_template_type(cls)
+        cls.__args      = args
+        cls.__kwargs    = kwargs
+        return cls
+
+    def __call__(cls, *args: P.args, **kwargs: P.kwargs) -> Self:
+        return cls._type(*(args or cls._args), **(cls._kwargs | kwargs))
+
+    def template_type(cls, *args: P.args, **kwargs: P.kwargs):
+        return cls.__type.template_type(*args, **kwargs)
+
+class TemplateItem(PatchedItem, Generic[P], metaclass=_TemplateItemMeta):
+    """An `AppItemType` mixin that turns the class into a superclass
+    factory with pre-bound arguments of the user's choosing.
+    """
+    def __new__(cls, *args: P.args, **kwargs: P.kwargs) -> type[Self]:
+        return cls
+
+
+
+
+class _AutoParentItemMeta(AppItemMeta):
+    def __new__(mcls, name, bases, namespace, auto_parent: DPGCommand = None, **kwargs):
+        cls = super().__new__(mcls, name, bases, namespace, **kwargs)
+        if auto_parent:=namespace.get("auto_parent", auto_parent):
+            if cls.is_root_item:
+                raise TypeError("cannot mix `AutoParentItem` with a root item type.")
+            cls.auto_parent = staticmethod(auto_parent)
+        return cls
+
+class AutoParentItem(PatchedItem, Generic[P], metaclass=_AutoParentItemMeta):
+    """An AppItemType mixin that creates a parent item for itself if one
+    is not available and the container stack is empty.
+
+    This does not check for a *compatible* parent. It will only trigger as
+    a last resort -- the container stack must be empty and `parent` cannot
+    be included as an argument.
+    """
+
+    auto_parent: DPGCommand = staticmethod(lambda self: 0)
+
+    def __init__(self, *args: P.args, **kwargs: P.kwargs) -> None:
+        if not kwargs.get("parent", None) and not _dearpygui.top_container_stack():
+            kwargs["parent"] = self.auto_parent()
+        super().__init__(*args, **kwargs)
+
+
+
+
+###########################################
+########### ITEMTYPE GENERATION ###########
+###########################################
+
 _ITEM_TO_CONST = {
     # inferred_item_name   : dpg_constant_name         -> logical_output           (the_problem)
     "2d_histogram_series"  : "mv2dHistogramSeries",  # -> "mv3DHistogramSeries"    ("d" needs to be lowercase)
@@ -942,7 +1209,7 @@ _ITEM_TO_CONST = {
     "draw_bezier_quadratic": "mvDrawBezierQuad"      # -> "mvDrawBezierQuadratic"  (drop "ratic")
 }
 
-def type_from_callable(command: DPGCommand[P, ItemId]) -> type[AppItemType[P]]:
+def itp_from_callable(command: DPGCommand[P, ItemId]) -> type[AppItemType[P]]:
     """Create and return a new AppItemType from a DearPyGui item-creating
     function.
 
@@ -950,7 +1217,6 @@ def type_from_callable(command: DPGCommand[P, ItemId]) -> type[AppItemType[P]]:
         * command: A function object that return or yield an item identifier.
         All functions that create items in the `dearpygui.dearpygui` namespace
         are supported (except `popup`).
-
 
     Details from both the function and `dearpygui.dearpygui` module are used
     to help create the class. For example, its name will mirror the item's
@@ -1036,6 +1302,10 @@ def type_from_callable(command: DPGCommand[P, ItemId]) -> type[AppItemType[P]]:
         else:
             is_container = True
 
+    # ******************* #
+    # * BUILD ITP CNAME * #
+    # ******************* #
+
     item_name = cmd_name.removeprefix("add_")
     # DPG constants are cases as "mvColorMap" -- correct casing issue
     if item_name.startswith("colormap"):
@@ -1069,6 +1339,10 @@ def type_from_callable(command: DPGCommand[P, ItemId]) -> type[AppItemType[P]]:
     cmd_params = cmd_sig.parameters
     item_bases = [AppItemType,]
 
+    # ******************* #
+    # * BUILD ITP BASES * #
+    # ******************* #
+
     # can the item support a callback?
     if "callback" in cmd_params:
         # is the non-container item a handler?
@@ -1101,165 +1375,13 @@ def type_from_callable(command: DPGCommand[P, ItemId]) -> type[AppItemType[P]]:
             item_bases.append(WindowItem)
         else:
             item_bases.append(ContainerItem)
-    cls: Any = type(basename, tuple(item_bases[::-1]), {}, command=command, identity=identity)  # type: ignore
-    cls.__doc__ = command.__doc__
+
+    cls: Any = type(  # type: ignore
+        basename,
+        tuple(item_bases[::-1]),
+        # TODO: doc formatting
+        {"__doc__": command.__doc__},
+        command=command,
+        identity=identity,
+    )
     return cls
-
-
-
-
-###########################################
-########### SPECIAL MIXIN TYPES ###########
-###########################################
-
-# XXX These are unique mixins that can make the resulting class a bit weird,
-# instances or do unusual things.
-
-class _PatchedItem(AppItemType):  # "do not import" indicator for genfile.py script
-    ...
-
-
-
-
-_appitem_mod: Any
-
-def _set_appitem_mod():
-    global _appitem_mod
-    try:
-        from . import appitems
-    except ImportError:
-        appitems = object()
-    _appitem_mod = appitems
-
-def _pixlate_item(item: ItemId) -> AppItemType:
-    type_str_id = get_info(item)["type"].split("::")[1]
-    try:
-        itype = getattr(_appitem_mod, type_str_id)
-    except AttributeError:
-        itype = AppItemType
-    except NameError:
-        _set_appitem_mod()
-        return _pixlate_item(item)
-    return itype(tag=item)
-
-class PixlatedItem(_PatchedItem, Generic[P]):
-    """AppItemType mixin that extends higher-level information-related methods and
-    properties to return `AppItemType` instances where an item identifier would be
-    returned.
-    """
-    @property
-    def parent(self) -> ContainerItem | SizedItem | None:
-        p_item = self.information()["parent"]
-        return _pixlate_item(p_item) if p_item else None
-
-    def get_font(self) -> ContainerItem | None:
-        font = super().get_font()
-        return _pixlate_item(font) if font else None
-
-    def get_handlers(self) -> RegistryItem | None:
-        hreg = super().get_handlers()
-        return _pixlate_item(hreg) if hreg else None
-
-    def get_theme(self) -> RegistryItem | None:
-        theme = super().get_theme()
-        return _pixlate_item(theme) if theme else None
-
-    def get_root_parent(self) -> RootItem:
-        root = super().get_root_parent()
-        return _pixlate_item(root) if root else None
-
-
-
-def _init_wrapper(mthd: Callable[P, T], *_args: P.args, **_kwargs: P.kwargs) -> Callable[[], T]:
-    @functools.wraps(mthd)
-    def init(*args: P.args, **kwargs: P.kwargs) -> T:
-        mthd(*(args or _args), **(_kwargs | kwargs))
-        mthd.__self__.__init__ = mthd
-    return init
-
-class _NullInitItemMeta(AppItemMeta):
-    def __call__(cls, *args, **kwargs):
-        return cls.__new__(cls, *args, **kwargs)
-
-class NullInitItem(_PatchedItem, Generic[P], metaclass=_NullInitItemMeta):
-    """`AppItemType` mixin that disables auto initialization for new instances. The
-    `.__init__` method must be called manually or through other means as defined by
-    the user.
-
-    When calling the `.__init__` method, it will automatically receive any arguments
-    it would have received under normal circumstances. If keyword arguments are sent
-    to the `.__init__` method, they will be merged into the keyword arguments used
-    when the instance was created. If positional arguments are included, only those
-    positional arguments will be used and NOT the positional arguments originally
-    passed on instantiation (to `.__new__`).
-
-    NOTE: Attempting to call instance methods before calling the `.__init__` method
-    may result in an error because the DearPyGui item may not exist yet. Class-bound
-    descriptors will function as normal.
-    """
-    def __new__(cls, *args: P.args, **kwargs: P.kwargs) -> Self:
-        self = super().__new__(*args, **kwargs)
-        self.__init__ = _init_wrapper(self.__init__, *args, **kwargs)
-        return self
-
-
-
-
-def _get_non_template_type(obj: type) -> type:
-    for t in obj.mro():
-        if not issubclass(t, _PatchedItem):
-            return t
-
-class _TemplateItemMeta(Generic[P], AppItemMeta):
-    def __new__(mcls, name: str, bases: tuple, namespace: dict[str], *args: P.args, **kwargs: P.kwargs):
-        kwargs["__slots__"] = ()
-        cls = super().__new__(mcls, name, bases, namespace,)
-        cls.__init__    = None
-        cls.__setattr__ = None
-        cls.__type      = _get_non_template_type(cls)
-        cls.__args      = args
-        cls.__kwargs    = kwargs
-        return cls
-
-    def __call__(cls, *args: P.args, **kwargs: P.kwargs) -> Self:
-        return cls._type(*(args or cls._args), **(cls._kwargs | kwargs))
-
-    def template_type(cls, *args: P.args, **kwargs: P.kwargs):
-        return cls.__type.template_type(*args, **kwargs)
-
-class TemplateItem(_PatchedItem, Generic[P], metaclass=_TemplateItemMeta):
-    """An `AppItemType` mixin that turns the class into a superclass
-    factory with pre-bound arguments of the user's choosing.
-    """
-    def __new__(cls, *args: P.args, **kwargs: P.kwargs) -> type[Self]:
-        return cls
-
-
-
-
-class _AutoParentItemMeta(AppItemMeta):
-    def __new__(mcls, name, bases, namespace, auto_parent: DPGCommand = None, **kwargs):
-        cls = super().__new__(mcls, name, bases, namespace, **kwargs)
-        if auto_parent:=namespace.get("auto_parent", auto_parent):
-            if cls.is_root_item:
-                raise TypeError("cannot mix `AutoParentItem` with a root item type.")
-            cls.auto_parent = staticmethod(auto_parent)
-        return cls
-
-class AutoParentItem(_PatchedItem, Generic[P], metaclass=_AutoParentItemMeta):
-    """An AppItemType mixin that creates a parent item for itself if one
-    is not available and the container stack is empty.
-
-    This does not check for a *compatible* parent. It will only trigger as
-    a last resort -- the container stack must be empty and `parent` cannot
-    be included as an argument.
-    """
-
-    auto_parent: DPGCommand = staticmethod(lambda self: 0)
-
-    def __init__(self, *args: P.args, **kwargs: P.kwargs) -> None:
-        if not kwargs.get("parent", None) and not _dearpygui.top_container_stack():
-            kwargs["parent"] = self.auto_parent()
-        super().__init__(*args, **kwargs)
-
-
