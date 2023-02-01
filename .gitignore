@@ -10,6 +10,7 @@ target/
 misc/**
 _debug.py
 Cargo.lock
+dearpygui/**
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
