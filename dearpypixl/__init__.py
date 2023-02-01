@@ -3,7 +3,7 @@
 # public imports, in order of lib dependency; none/little (top) to alot/all (bottom)
 try:
     from dearpypixl.appitems import *
-except:
+except ImportError:
     pass
 
 
