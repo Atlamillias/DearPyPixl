@@ -12,7 +12,7 @@ __all__ = [
     "pxThemeStyle",
 
     # functions
-    "type_from_theme_const",
+    "itp_from_tconst",
 ]
 
 
@@ -68,17 +68,17 @@ class pxThemeStyle(ValueArrayItem, AppItemType):
 
 
 _CONSTPFX_TO_BASES = {
-    "mvThemeCol"     : (pxThemeColor, ThemeCatCore,),
-    "mvPlotCol"      : (pxThemeColor, ThemeCatPlot,),
-    "mvNodeCol"      : (pxThemeColor, ThemeCatNode,),
-    "mvNodesCol"     : (pxThemeColor, ThemeCatNode,),
-    "mvStyleVar"     : (pxThemeStyle, ThemeCatCore,),
-    "mvPlotStyleVar" : (pxThemeStyle, ThemeCatPlot,),
-    "mvNodeStyleVar" : (pxThemeStyle, ThemeCatNode,),
-    "mvNodesStyleVar": (pxThemeStyle, ThemeCatNode,),
+    "mvThemeCol_"     : (pxThemeColor, ThemeCatCore,),
+    "mvPlotCol_"      : (pxThemeColor, ThemeCatPlot,),
+    "mvNodeCol_"      : (pxThemeColor, ThemeCatNode,),
+    "mvNodesCol_"     : (pxThemeColor, ThemeCatNode,),
+    "mvStyleVar_"     : (pxThemeStyle, ThemeCatCore,),
+    "mvPlotStyleVar_" : (pxThemeStyle, ThemeCatPlot,),
+    "mvNodeStyleVar_" : (pxThemeStyle, ThemeCatNode,),
+    "mvNodesStyleVar_": (pxThemeStyle, ThemeCatNode,),
 }
 
-def type_from_theme_const(const_name: str) -> type[pxThemeColor | pxThemeStyle]:
+def itp_from_tconst(const_name: str) -> type[pxThemeColor | pxThemeStyle]:
     try:
         const_pfx, theme_const = const_name.split("_", maxsplit=1)
         const_val = getattr(dpg, const_name)
@@ -90,5 +90,5 @@ def type_from_theme_const(const_name: str) -> type[pxThemeColor | pxThemeStyle]:
         "constant": const_name,  # makes source file generation easier, unused otherwise
         "target"  : const_val,
     }
-    cls: Any = type(clsname, _CONSTPFX_TO_BASES[const_pfx], clsdict)  # type: ignore
+    cls: Any = type(clsname, _CONSTPFX_TO_BASES[f"{const_pfx}_"], clsdict)  # type: ignore
     return cls
