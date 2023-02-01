@@ -14,5 +14,5 @@ __all__ = [
 ]
 
 
-mvAll    = AppItemType    
+mvAll    = AppItemType
 mvWindow = mvWindowAppItem
