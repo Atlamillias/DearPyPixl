@@ -1,9 +1,25 @@
 import functools
 import contextlib
 import itertools
+import types
 import inspect
+from inspect import Parameter, _ParameterKind
 from dearpygui import dearpygui as dpg, _dearpygui as _dpg
-from .px_typing import cast, T, P, Any, ItemId, DPGCommand, PXLErrorFn, Iterable, Callable, Sequence, Generator
+from .px_typing import (
+    T, P,
+    Any,
+    ItemId,
+    Array,
+    DPGCallback,
+    DPGCommand,
+    PXLErrorFn,
+    List,
+    Tuple,
+    Iterable,
+    Callable,
+    Sequence,
+    Generator,
+)
 
 
 
@@ -85,16 +101,40 @@ def item_from_callable(_callable: DPGCommand, *args, **kwargs) -> ItemId:
     callable.
 
     This will process any callable from DearPyGui that creates an item.
+
+
+    >>> from dearpygui import dearpygui
+
     """
     item_uuid = _callable(*args, **kwargs)
     if isinstance(item_uuid, contextlib.ContextDecorator):
         item_uuid = item_uuid.__enter__()
+        item_uuid.__exit__()
     return item_uuid
 
 
 def is_item_cmd(_object: Any, /) -> bool:
     """Return True if an object is a callable defined in DearPyGui that creates
-    and yields/returns an item identifier."""
+    and yields/returns an item identifier.
+
+    Args:
+        * _object: The object to inspect.
+
+
+    >>> from dearpygui import dearpygui
+    ...
+    >>> is_item_cmd(dearpygui.window)
+    True
+    >>> is_item_cmd(dearpygui.add_window)
+    True
+    >>> is_item_cmd(dearpygui.configure_item)
+    False
+    >>> is_item_cmd(dearpygui.mutex)
+    False
+    >>> def non_dpg_fn(*args, tag: int | str = 0) -> int | str: ...
+    >>> is_item_cmd(non_dpg_fn)
+    False
+    """
     # TODO: Look for false positives.
     try:
         signature = inspect.signature(_object)
@@ -111,17 +151,40 @@ def is_item_cmd(_object: Any, /) -> bool:
         return False
 
     # minor optimization for future calls to `signature`
-    _object.__signature__ = signature
+    if not hasattr(_object, "__signature__"):
+        _object.__signature__ = signature
     return True
 
 
-def is_ctxmgr_fn(_object: Any, /) -> bool:  # not DPG specific, but used specifically for DPG
-    """Return True if an object is wrapped by `contextlib.contextmanager`."""
-    if (not getattr(_object, "__wrapped__", None) and
-    _object.__globals__["__name__"] != "contextlib" and
-    _object.__module__ != "contextlib"):
-        return False
-    return bool(getattr(_object, "__wrapped__", None))
+def is_ctxmgr_fn(_object: Any, /) -> bool:
+    """Return True if a function is wrapped by `contextlib.contextmanager`.
+
+    Args:
+        * _object: The object to inspect.
+
+
+    >>> from dearpygui import dearpygui
+    ...
+    >>> is_ctxmgr_fn(dearpygui.window)
+    True
+    >>> is_ctxmgr_fn(dearpygui.add_window)
+    False
+    >>> is_ctxmgr_fn(dearpygui.child_window)
+    True
+    >>> is_ctxmgr_fn(dearpygui.add_child_window)
+    False
+    >>> is_ctxmgr_fn(dearpygui.mutex)
+    True
+    """
+    # XXX checking `co_name`, `co_names`, and `co_filename` on `__code__` is more
+    # accurate, but I can't confirm the reliability of code objects.
+    is_ctx_manager = all((
+        callable(_object),
+        _object.__globals__["__name__"] == "contextlib",
+        _object.__module__ != "contextlib",
+        isinstance(getattr(_object, "__wrapped__", None), types.FunctionType),
+    ))
+    return is_ctx_manager or False
 
 
 def is_ok_dpg_callback(_object: Any, /) -> bool:
@@ -165,6 +228,59 @@ def get_root_parent(item: ItemId) -> ItemId:
         current_item = parent
     return current_item
 
+
+
+########################################
+######### PX INTERNAL HELPERS ##########
+########################################
+
+def create_parameter(
+    name: str,
+    *,
+    kind      : _ParameterKind = Parameter.POSITIONAL_OR_KEYWORD,
+    annotation: Any            = Parameter.empty,
+    default   : Any            = Parameter.empty
+) -> Parameter:
+    return Parameter(name, kind, default=default, annotation=annotation)
+
+
+def upd_param_annotations(parameters: dict[str, inspect.Parameter]) -> dict[str, inspect.Parameter]:
+    """Updates source DPGCommand parameters with more accurate and/or PX annotations."""
+    upd_params = {}
+    for param in parameters.values():
+        if param.kind == Parameter.VAR_KEYWORD:
+            continue
+
+        p_name = param.name
+        p_anno = param.annotation
+
+        # formatting (specific-case)
+        if p_name == "pos":
+            p_anno = Array[int, int]
+        elif "callback" in param.name:
+            p_anno = DPGCallback
+        elif p_anno == ItemId:
+            p_anno = "ItemId"
+        elif "color" in p_name or (param.default and isinstance(param.default, tuple)
+        and len(param.default) == 4 and p_anno == (List[int] | Tuple[int, ...])):
+            p_anno = Array[int, int, int, int | None]
+        else:  # general-case
+            for tp in str, float, int:
+                if p_anno != (List[tp] | Tuple[tp, ...]):
+                    continue
+                p_anno = Sequence[tp]
+                break
+        upd_params[p_name] = Parameter(p_name, param.kind, default=..., annotation=p_anno)
+    return upd_params
+
+
+def writable_cfg_from_params(parameters: dict[str, inspect.Parameter]):
+    excl_names = "tag", "id", "parent", "default_value"
+    excl_n_pts = "default",
+    return {p_name: param for p_name, param in parameters.items()
+            if param.kind == Parameter.KEYWORD_ONLY
+            and p_name not in excl_names
+            and not any(pt in p_name for pt in excl_n_pts)}
 
 
 
@@ -304,8 +420,6 @@ def err_create_item(item: ItemId, command: DPGCommand, *args, **kwargs) -> Excep
     return SystemError("could not create item -- verify that the arguments are appropriate.")
 
 
-
-
 ########################################
 ######### MISCELLANEOUS UTILS ##########
 ########################################
@@ -343,3 +457,6 @@ def forward_method(target: str, name: str = None, *, call: bool = False):
     if not isinstance(target, str):
         raise TypeError(f"`attr` expected as a string, got {type(target).__qualname__!r}.")
     return process_method
+
+
+
