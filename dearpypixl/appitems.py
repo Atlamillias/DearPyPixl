@@ -8,6 +8,7 @@ from . import _appitems
 
 
 __all__ = [
+    "AppItemType",
     "mvAll",
     "mvWindow",
     *_appitems.__all__,
