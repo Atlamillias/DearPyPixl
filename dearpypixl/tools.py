@@ -9,7 +9,7 @@ from dearpygui import dearpygui
 
 from . import appitems as ui, grid, px_utils, theme, px_items
 from .px_items import ValueArrayItem, AutoParentItem
-from .px_typing import ItemId, Any, Sequence, DPGCommand, T, P, Callable, Self, Iterator, Iterable, cast, NamedTuple, Protocol, TypeVar, Concatenate, DPGCallback, overload
+from .px_typing import ItemId, Any, Sequence, DPGCommand, T, P, Callable, Self, Iterator, Generic, Iterable, cast, NamedTuple, Protocol, TypeVar, Concatenate, DPGCallback, overload
 
 
 
@@ -111,7 +111,7 @@ class pxStringBuffer(ValueArrayItem[str], ui.mvValueRegistry):
             * pre_delitem_callback: Callable that accepts this item and the dated child value
             item as positional arguments. Default is None.
         """
-        super().__init__(**kwargs)
+        super().__init__(label="pxStringBuffer", **kwargs)
         self._max_size = max_size
 
         def _vitem_new(self, *_args: P.args, **_kwargs: P.kwargs) -> T:
@@ -262,6 +262,9 @@ class pxConsoleWindow(ui.mvChildWindow):
     `.ctx_redirect_stdout` and `.ctx_redirect_stderr` class/instance attributes
     to True or False.
 
+    NOTE: Unlike other container item types, using this item as a content manager
+    will *not* push it onto DearPyGui's container stack.
+
     If the `.auto_scroll` attribute is True, the scroll position of the console
     will adjust to view the new content when writing to the window.
     """
@@ -271,8 +274,8 @@ class pxConsoleWindow(ui.mvChildWindow):
 
     auto_scroll: bool = True
 
-    def __init__(self, max_size: int = 100, *, pxbuffer_type: type[pxStringBuffer] = pxStringBuffer, text_factory: DPGCommand[..., ItemId] = dearpygui.add_text, **kwargs):
-        super().__init__(**kwargs)
+    def __init__(self, max_size: int = 100, *, pxbuffer_type: type[pxStringBuffer] = pxStringBuffer, text_factory: DPGCommand[..., ItemId] = dearpygui.add_text, label: str = "", **kwargs):
+        super().__init__(label=label or "pxConsoleWindow", **kwargs)
         self.text_factory = text_factory
         self.pxbuffer     = pxbuffer_type(max_size=max_size, post_newitem_callback=self.cb_on_new_entry, pre_delitem_callback=self.cb_on_del_entry, pre_value_callback=self.cb_on_value)
 
@@ -285,29 +288,28 @@ class pxConsoleWindow(ui.mvChildWindow):
     __stderr_redirect = __ctx_no_redirect
 
     def __enter__(self) -> Self:
-        # when chaining/nesting `with` statements, redirect only once
-        if self.__ctx_counter:
+        # redirect only once when chaining or nesting contexts
+        if self.__ctx_counter > 1:
             self.__ctx_counter += 1
             return self
-        self.__ctx_counter += 1
+        self.__ctx_counter = 1
         if self.ctx_redirect_stdout:
             self.__stdout_redirect = self.__ctx_stdout
             self.__stdout_redirect.__enter__()
         if self.ctx_redirect_stderr:
             self.__stderr_redirect = self.__ctx_stderr
             self.__stderr_redirect.__enter__()
-        return super().__enter__()
+        return self
 
     def __exit__(self, *args, **kwargs):
         if self.__ctx_counter > 1:
             self.__ctx_counter -= 1
             return
-        super().__exit__(*args, **kwargs)
         self.__stdout_redirect.__exit__(*args)
         self.__stdout_redirect = self.__ctx_no_redirect
         self.__stderr_redirect.__exit__(*args)
         self.__stderr_redirect = self.__ctx_no_redirect
-        self.__ctx_counter -= 1
+        self.__ctx_counter = 0
 
     def write(self, s: str) -> None:
         self.pxbuffer.write(s)
@@ -340,7 +342,23 @@ class pxConsoleWindow(ui.mvChildWindow):
 
 
 
-class pxInteractivePython(code.InteractiveConsole, AutoParentItem, pxConsoleWindow, auto_parent=dearpygui.add_window):
+def _add_root_parent_resize_handler(self, root_parent: ItemId = 0):
+    if not root_parent:
+        root_parent = self.root_parent
+    p_info = px_utils.get_info(root_parent)
+    if not p_info.get("resized_handler_applicable", False):
+        return
+    hreg = p_info.get("handlers", None)
+    if not hreg:
+        hreg = ui.mvItemHandlerRegistry()
+    ui.mvResizeHandler(callback=self.cb_on_resize, parent=hreg)
+    dearpygui.bind_item_handler_registry(root_parent, hreg)
+
+
+_add_sized_window = functools.partial(dearpygui.add_window, width=400, height=300, no_scrollbar=True)
+
+
+class pxInteractivePython(code.InteractiveConsole, AutoParentItem, pxConsoleWindow, auto_parent=_add_sized_window):
     PROMPT_1 = ">>>"
     PROMPT_2 = "..."
 
@@ -355,7 +373,7 @@ class pxInteractivePython(code.InteractiveConsole, AutoParentItem, pxConsoleWind
 
     ctx_redirect_stderr = True
 
-    def __init__(self, locals: dict[str] = None, max_size: int = 100, banner: str = None, **kwargs):
+    def __init__(self, locals: dict[str] = None, max_size: int = 100, banner: str = None, label: str = "", **kwargs):
         # The classes in `code` do not invoke `super().__init__`, so this needs to be weird.
         super().__init__(locals)
         AutoParentItem.__init__(
@@ -363,12 +381,22 @@ class pxInteractivePython(code.InteractiveConsole, AutoParentItem, pxConsoleWind
             max_size,
             no_scrollbar=True,
             text_factory=dearpygui.add_text,
+            label=label or "pxInteractivePython",
             **kwargs,
         )
+        self.__input_adj_ht = 20  # BUG (see `cb_on_resize`)
+        self.__addtl_input  = 0
+
+        self._input_wndw : ui.mvChildWindow
+        self._parent_grid: grid.Grid
+
+        self.prompt      : ui.mvText
+        self.input       : ui.mvInputText
+
         self._init_input()
+        self._init_handlers()
         self._init_grid()
         self._init_themes()
-        self._init_handlers()
 
         self.write(banner or self.banner)
 
@@ -388,7 +416,7 @@ class pxInteractivePython(code.InteractiveConsole, AutoParentItem, pxConsoleWind
         else:
             self._parent_grid.push(self, 0, 0, anchor="c")
         self._parent_grid.push(self._input_wndw, -1, 0, anchor="c")
-        self._reset_input_height()
+        self._parent_grid.rows[-1].size = 20
 
     def _init_themes(self):
         with theme.pxTheme() as t:
@@ -410,23 +438,25 @@ class pxInteractivePython(code.InteractiveConsole, AutoParentItem, pxConsoleWind
             self._stderr_theme.color.Text(self.stderr_txt_color)
             self._stderr_theme.color.FrameBg(0, 0, 0, 0)
 
-    def _init_handlers(self):
-        p_info = px_utils.get_info(self.parent)
-        if p_info["type"] != "mvAppItemType::mvWindowAppItem":
-            return
-        hreg = p_info["handlers"]
-        if not hreg:
-            hreg = ui.mvItemHandlerRegistry()
-        ui.mvResizeHandler(callback=self.cb_on_resize, parent=hreg)
-        dearpygui.bind_item_handler_registry(self.parent, hreg)
+    def _init_handlers(self, root_parent: ItemId = 0):
+        _add_root_parent_resize_handler(self, root_parent)
 
-    def _reset_input_height(self):  # XXX see `.cb_resize` comment
+    def _upd_input_height(self):
+        # BUG (see `cb_on_resize`)
+        # Set the ht adjustment meter low to provoke `cb_on_resize` into
+        # gradually upping the grid row height.
         self.__input_adj_ht = 10
         self._parent_grid.rows[-1].size = 10
+        # Hacky workaround to skip the "gradually" part above. Works fine unless
+        # the set font is very large, in which case it will continue to scale up
+        # on resize until the input is large enough.
+        for _ in range(20):
+            self.cb_on_resize()
 
     def interact(self, *args, **kwargs): ...  # calling it would hang the thread
 
     def move(self, parent: ItemId = 0, **kwargs):
+        # TODO:
         if not parent:
             return
         super().move(parent=parent)
@@ -447,7 +477,7 @@ class pxInteractivePython(code.InteractiveConsole, AutoParentItem, pxConsoleWind
         # share font w/input window
         super().set_font(font)
         self._input_wndw.set_font(font)
-        self._reset_input_height()
+        self._upd_input_height()
 
     def cb_on_value(self, buffer_item: pxStringBuffer, val_item: ItemId, value: str) -> str:
         txt_item = px_utils.get_config(val_item)["user_data"]
@@ -459,8 +489,6 @@ class pxInteractivePython(code.InteractiveConsole, AutoParentItem, pxConsoleWind
         dearpygui.bind_item_theme(txt_item, txt_theme)
         return value
 
-    __addtl_input: int
-
     def cb_on_enter(self, sender: ItemId, app_data: str = "", user_data: Any = None):
         with self:
             self.__addtl_input = self.push(app_data)
@@ -468,84 +496,25 @@ class pxInteractivePython(code.InteractiveConsole, AutoParentItem, pxConsoleWind
         self.input.value  = ""
         self.input.focus()
 
-    __input_adj_ht: int
-
     def cb_on_resize(self, sender: ItemId | None = None, app_data: Any = None, user_data: Any = None) -> None:
         super().cb_on_resize(sender, app_data, user_data)
         # input window
         self.input.configure(
             width=self.content_region_avail[0] - (dearpygui.get_text_size(self.prompt.value)or (0,))[0]
         )
-        # If the input window is scrollable, it's not large enough for the
-        # current font. Adjust the size until it is no longer scrollable.
-        # BUG: using `Grid().configure_row/col` too frequently in a threaded
-        # app causes it to break completely. Instead, adjust it over the next
-        # couple of frames.
+        # BUG: Replacing the conditional with `while` breaks the grid. Temp
+        # workaround is to size the input gradually as the item is resized
+        # instead of sizing it all at once.
         if self._input_wndw.y_scroll_max:
+            # If the input window is scrollable, it's not large enough for the
+            # current font. Adjust the size until it is no longer scrollable.
             self.__input_adj_ht += 5
             self._parent_grid.rows[-1].size = self.__input_adj_ht
-        # other
         self._parent_grid()
 
 
 
-class ItemView(NamedTuple):
-    button: ui.mvButton
-    window: ui.mvChildWindow
-
-
-class _TabBar(ui.mvChildWindow):
-    focused_theme = ...
-    standby_theme = ...
-
-    def __init__(self, *args, border: bool = False, **kwargs):
-        super().__init__(*args, border=border, **kwargs)
-        self.views: list[ItemView] = []
-        self._grid = grid.Grid()
-
-    def new_view(self, label: str):
-        ...
-
-    def del_view(self, *, index: int = None, label: str = None):
-        ...
-
-    def get_view(self, *, index: int = None, label: str = None):
-        ...
-
-    def set_view(self, *, index: int = None, label: str = None):
-        ...
-
-    def cb_resize(self, sender: ItemId | None = None, app_data: Any = None, user_data: Any = None) -> None:
-        ...
 
 
 
 
-class pxItemRegView(ui.mvChildWindow):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.tabbar
-
-
-class pxItemRegView(AutoParentItem, ui.mvChildWindow, auto_parent=dearpygui.add_window):
-    def __init__(self, *args, border: bool = False, **kwargs):
-        super().__init__(*args, border=border, **kwargs)
-        self.itemreg_view = ...
-        self.details_view = ...
-
-        self._init_main_views()
-
-    def _init_main_views(self):
-        _table = ui.mvTable(borders_innerV=True, resizable=True, parent=self, header_row=False)
-        ui.mvTableColumn(parent=_table)
-        ui.mvTableColumn(parent=_table)
-        _row = ui.mvTableRow(parent=_table)
-        self.itemreg_view = ui.mvChildWindow(parent=_row)
-        self.details_view = ui.mvChildWindow(parent=_row, border=False)
-
-    def _init_itemreg_view(self):
-        with self.itemreg_view: ...
-
-
-    def _init_details_views(self):
-        ...

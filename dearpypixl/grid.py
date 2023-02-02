@@ -1,3 +1,4 @@
+import types
 from typing import Self, TypeVar, NamedTuple, Protocol, Callable, Literal, Generic, overload, Iterator, Any, Collection
 from dearpygui import dearpygui, _dearpygui
 from dearpygui._dearpygui import (
@@ -194,8 +195,8 @@ class GridConfigure(Generic[_GT, _ST], property):  # inherit property's "special
 
 class GridMember(NamedTuple):
     item   : ItemId
-    pos1   : tuple[int, int]
-    pos2   : tuple[int, int]
+    cell1  : tuple[int, int]
+    cell2  : tuple[int, int]
     max_wt : int
     max_ht : int
     calc_fn: _AnchorCalcT
@@ -358,6 +359,7 @@ class Grid:
         "_parent",
         "_sizer",
         "_members",
+        "members",
     )
 
     def __init_subclass__(cls) -> None:
@@ -375,9 +377,10 @@ class Grid:
         parent : ItemId                                              =      0,
         sizer  : SizerT                                              = size_from_rect,
     ):
-        self._rows    = GridAxis(rows)
-        self._cols    = GridAxis(cols)
-        self._members = {}
+        self._rows = GridAxis(rows)
+        self._cols = GridAxis(cols)
+        self._members: dict[ItemId, GridMember] = {}
+        self.members = types.MappingProxyType(self._members)
         self.configure(spacing=spacing, padding=padding, parent=parent, sizer=sizer)
 
     def __call__(self, *args) -> None:
@@ -420,14 +423,29 @@ class Grid:
         """Pack and center an item into a grid cell or cell range."""
         self.push(item, *coords, anchor=_anchor)
 
-    ANCHORS = tuple(a.lower() for a in _ANCHOR_MAP)
+    @property
+    def rows(self) -> GridAxis:
+        return self._rows
+    @rows.setter
+    def rows(self, value: int | GridAxis) -> None:
+        if self._rows != value:  # self.rows += 1 -> self.rows.__set__(self, (self._rows + 1))
+            self.configure(rows=value)
 
-    rows   : GridConfigure[GridAxis, int]                                                   = GridConfigure()
-    cols   : GridConfigure[GridAxis, int]                                                   = GridConfigure()
+    @property
+    def cols(self) -> GridAxis:
+        return self._cols
+    @cols.setter
+    def cols(self, value: int | GridAxis) -> None:
+        if self._cols != value:  # self.cols += 1 -> self.cols.__set__(self, (self._cols + 1))
+            self.configure(cols=value)
+
     padding: GridConfigure[GridOffset, tuple[int | tuple[int, int], int | tuple[int, int]]] = GridConfigure()
     spacing: GridConfigure[GridOffset, tuple[int | tuple[int, int], int | tuple[int, int]]] = GridConfigure()
-    parent : GridConfigure[ItemId, ItemId]                                                  = GridConfigure()
-    sizer  : GridConfigure[SizerT, SizerT]                                                  = GridConfigure()
+
+    parent : GridConfigure[ItemId, ItemId] = GridConfigure()
+    sizer  : GridConfigure[SizerT, SizerT] = GridConfigure()
+
+    ANCHORS = tuple(a.lower() for a in _ANCHOR_MAP)
 
     def configure(
         self,
@@ -456,10 +474,10 @@ class Grid:
             self._sizer = sizer
 
     @overload
-    def push(self, row: int, col: int, /, *, max_width: int = ..., max_height: int = ..., anchor: str = ...) -> None: ...
+    def push(self, row: int, col: int, /, *, max_width: int = ..., max_height: int = ..., anchor: str = ..., normalize_indexes: bool = ...) -> None: ...
     @overload
-    def push(self, r1: int, c1: int, r2: int, c2: int, /, *, max_width: int = ..., max_height: int = ..., anchor: str = ...) -> None: ...
-    def push(self, item: ItemId, r1: int, c1: int, r2: int = None, c2: int = None, *, max_width : int = 0, max_height: int = 0, anchor: str = "c") -> None:
+    def push(self, r1: int, c1: int, r2: int, c2: int, /, *, max_width: int = ..., max_height: int = ..., anchor: str = ..., normalize_indexes: bool = ...) -> None: ...
+    def push(self, item: ItemId, r1: int, c1: int, r2: int = None, c2: int = None, *, max_width : int = 0, max_height: int = 0, anchor: str = "c", normalize_indexes: bool = False) -> None:
         # ensure item is currently valid
         if not (
         (isinstance(item, int) and dearpygui.does_item_exist(item)) or
@@ -476,6 +494,8 @@ class Grid:
         # pushing to single cell
         if r2 is None or c2 is None:
             r2, c2 = r1, c1
+        if normalize_indexes:
+            r1, c1, r2, c2 = _normalize_cellspan(r1, c1, r2, c2, len(self._rows), len(self._cols))
         # get anchor calculator
         try:
             anchor_fn = _ANCHOR_MAP[anchor.lower()]

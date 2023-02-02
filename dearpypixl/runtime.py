@@ -285,15 +285,14 @@ class FrameEvents:
 
         """
         def _on_frame(_callback):
-            if not isinstance(_callback, CallbackEvent):
-                self[frame] = CallbackEvent(_callback, **kwargs)
-            else:
-                self[frame] = _callback
+            self[frame] = (
+                _callback
+                if isinstance(_callback, CallbackEvent)
+                else CallbackEvent(_callback, **kwargs)
+            )
             return _callback
 
-        if callback is None:
-            return _on_frame
-        return _on_frame(callback)
+        return _on_frame if callback is None else _on_frame(callback)
 
 
 class RuntimeEvents:
@@ -452,7 +451,7 @@ class Runtime:
         Args:
             * key (int): Key event code to query.
         """
-        return _dpg.is_key_down(int(key))  # `int` cast to support `IntEnum`
+        return _dpg.is_key_down(key)
 
     @staticmethod
     def is_key_released(key: int) -> bool:
@@ -461,7 +460,7 @@ class Runtime:
         Args:
             * key (int): Key event code to query.
         """
-        return _dpg.is_key_down(int(key))  # `int` cast to support `IntEnum`
+        return _dpg.is_key_down(key)
 
     @staticmethod
     def is_key_down(key: int) -> bool:
@@ -470,7 +469,7 @@ class Runtime:
         Args:
             * key (int): Key event code to query.
         """
-        return _dpg.is_key_down(int(key))  # `int` cast to support `IntEnum`
+        return _dpg.is_key_down(key)
 
     @staticmethod
     def get_mouse_global_pos():
