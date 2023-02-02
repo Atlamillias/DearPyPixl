@@ -466,7 +466,7 @@ class _AppItemBase(int, Generic[P], metaclass=AppItemMeta):
         """
         # XXX good monkeypatch point (see `alias` property, `register_itemtype` fn)
         itp = _ITEMTYPE_REGISTRY.get(get_info(item)["type"].split("::")[1], AppItemType)
-        call_obj = itp.wrap_item if null_init else itp
+        call_obj = itp.null_init if null_init else itp
         return call_obj(tag=item)
 
     @classmethod
@@ -1058,20 +1058,12 @@ class PatchedItem(AppItemType):  # "do not import" indicator for genfile.py scri
 
 
 
-_PX_MTHD_MKR = "_px_mthd_wrapper"
 
-def _px_mthd_wrapper(mthd: Callable[P, ItemId]) -> Callable[P, AppItemType | ItemId]:
+def _px_dndr_wrapper(mthd: Callable[P, ItemId]) -> Callable[P, AppItemType | ItemId]:
     @functools.wraps(mthd)
     def bound_method(self, *args: P.args, **kwargs: P.kwargs) -> AppItemType | ItemId:
         item = mthd(self, *args, **kwargs)
-        try:
-            item = self.wrap_item(item)
-        except SystemError:
-            raise
-        except:
-            pass
-        return item
-    setattr(bound_method, _PX_MTHD_MKR, True)
+        return self.wrap_item(item)
     return bound_method
 
 
@@ -1099,6 +1091,18 @@ def _callback_setter(self: CallableItem, value: DPGCallback[P] | None) -> None:
     return callback
 
 
+class pxConfig(Config):
+    __slots__ = ()
+
+    PX_FLAG = True
+
+    def __get__(self, inst, cls):
+        result = super().__get__(inst, cls)
+        if result is None:
+            return self
+        return inst.wrap_item(result)
+
+
 class PixlatedItem(PatchedItem, Generic[P]):
     """AppItemType mixin that extends higher-level information-related methods and
     properties to return `AppItemType` instances where an item identifier would be
@@ -1108,18 +1112,20 @@ class PixlatedItem(PatchedItem, Generic[P]):
         super().__init_subclass__()
         # wrap individually accessed children
         if cls.__getitem__ is AppItemType.__getitem__:
-            setattr(cls, "__getitem__", _px_mthd_wrapper(cls.__getitem__))
+            setattr(cls, "__getitem__", _px_dndr_wrapper(cls.__getitem__))
         # wrap callback `sender` args for CallableItem
         if getattr(cls, "callback", None) is CallableItem.callback:
             cb_property = property(_callback_getter, _callback_setter)
             setattr(cls, "callback", cb_property)
         # wrap items individually returned from Config descriptor
-        for attr, annotations in cls.__annotations__.items():
-            if annotations != ItemId:
+        for param in inspect.signature(cls.configure).parameters.values():
+            if param.annotation != ItemId:
                 continue
-            desc = getattr(cls, attr, None)
-            if isinstance(desc, Config) and not hasattr(desc.__get__, _PX_MTHD_MKR):
-                desc.__get__ = _px_mthd_wrapper(desc.__get__)
+            cfg_property = getattr(cls, param.name, None)
+            if isinstance(cfg_property, Config) and not hasattr(cfg_property, "PX_FLAG"):
+                pxcfg_property = pxConfig(cfg_property._key)
+                setattr(cls, param.name, pxcfg_property)
+                pxcfg_property.__set_name__(cls, cfg_property._key)
 
     @property
     def parent(self) -> ContainerItem | SizedItem | None:
@@ -1141,6 +1147,8 @@ class PixlatedItem(PatchedItem, Generic[P]):
     def get_root_parent(self) -> RootItem:
         root = super().get_root_parent()
         return self.wrap_item(root) if root else None
+
+
 
 
 
