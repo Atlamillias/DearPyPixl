@@ -511,12 +511,12 @@ class AppItemType(_AppItemBase, Generic[P]):
 
     @property
     def tag(self) -> int:
-        """Return the item's unique integer identifier."""
+        """[get] Return the item's unique integer identifier."""
         return self.real
 
     @property
     def alias(self) -> str | None:
-        """Return the item's unique string identifier."""
+        """[get] Return the item's unique string identifier."""
         # XXX Good monkeypatch point if not using aliases.
         # ex: f'{type(self).__qualname__}:{self.tag}' on init/new to store class "memory"
         # onto the item for more accurate interface wrapping w/`wrap_item`.
@@ -535,6 +535,17 @@ class AppItemType(_AppItemBase, Generic[P]):
         `SystemError` is raised in all cases where this call to DearPyGui fails.
         """
         _dearpygui.delete_item(self, children_only=children_only, slot=slot)
+
+    def destroy(self) -> None:
+        """Destroy this item and the item's children.
+
+        Functionally equivelent to calling `.delete` method where `children_only=False`, but
+        all any exception resulting from the process is silently handled.
+        """
+        try:
+            self.delete(children_only=False)
+        except:
+            pass
 
     @overload
     def configure(self, *, label: str = ..., user_data: Any = ..., use_internal_label: bool = ..., **kwargs) -> None: ...
@@ -951,7 +962,15 @@ class CallableItem(AppItemType):
     by calling the item. The item can also be passed as a callback-related
     argument for other items."""
 
-    callback: DPGCallback[P] = Config()
+    @property
+    def callback(self) -> DPGCallback[P] | None:
+        """[get] Return the item's assigned callback."""
+        return self.configuration()["callback"]
+    @callback.setter
+    def callback(self, value: DPGCallback[P] | None) -> DPGCallback[P] | None:
+        """[set] Set the item's callback. Can be used as a decorator."""
+        self.configure(callback=value)
+        return value
 
     def __call__(self, *args: P.args, **kwargs: P.kwargs) -> None:
         self.callback(*args, *kwargs)
@@ -1055,6 +1074,31 @@ def _px_mthd_wrapper(mthd: Callable[P, ItemId]) -> Callable[P, AppItemType | Ite
     setattr(bound_method, _PX_MTHD_MKR, True)
     return bound_method
 
+
+def _callback_getter(self: CallableItem) -> DPGCallback[P]:
+    return self.configuration()["callback"]
+
+
+def _callback_setter(self: CallableItem, value: DPGCallback[P] | None) -> None:
+    if value is None:
+        self.configure(callback=None)
+        return
+
+    arg_count = value.__code__.co_argcount
+    if getattr(value, "__self__"):
+        arg_count -= 1
+    if not arg_count:
+        self.configure(callback=value)
+        return value
+
+    @functools.wraps(value)
+    def callback(sender: ItemId = None, app_data: Any = None, user_data: Any = None) -> None:
+        if sender:
+            sender = self.wrap_item(sender, null_init=True)
+        value(*(sender, app_data, user_data)[:arg_count])
+    return callback
+
+
 class PixlatedItem(PatchedItem, Generic[P]):
     """AppItemType mixin that extends higher-level information-related methods and
     properties to return `AppItemType` instances where an item identifier would be
@@ -1062,9 +1106,13 @@ class PixlatedItem(PatchedItem, Generic[P]):
     """
     def __init_subclass__(cls) -> None:
         super().__init_subclass__()
-        # wrap individual children
-        if cls.__getitem__ == AppItemType.__getitem__:
-            cls.__getitem__ = _px_mthd_wrapper(cls.__getitem__)
+        # wrap individually accessed children
+        if cls.__getitem__ is AppItemType.__getitem__:
+            setattr(cls, "__getitem__", _px_mthd_wrapper(cls.__getitem__))
+        # wrap callback `sender` args for CallableItem
+        if getattr(cls, "callback", None) is CallableItem.callback:
+            cb_property = property(_callback_getter, _callback_setter)
+            setattr(cls, "callback", cb_property)
         # wrap items individually returned from Config descriptor
         for attr, annotations in cls.__annotations__.items():
             if annotations != ItemId:
@@ -1103,9 +1151,11 @@ def _init_wrapper(mthd: Callable[P, T], *_args: P.args, **_kwargs: P.kwargs) -> 
         mthd.__self__.__init__ = mthd
     return init
 
+
 class _NullInitItemMeta(AppItemMeta):
     def __call__(cls, *args, **kwargs):
         return cls.__new__(cls, *args, **kwargs)
+
 
 class NullInitItem(PatchedItem, Generic[P], metaclass=_NullInitItemMeta):
     """`AppItemType` mixin that disables auto initialization for new instances. The
@@ -1136,6 +1186,7 @@ def _get_non_template_type(obj: type) -> type:
         if not issubclass(t, PatchedItem):
             return t
 
+
 class _TemplateItemMeta(Generic[P], AppItemMeta):
     def __new__(mcls, name: str, bases: tuple, namespace: dict[str], *args: P.args, **kwargs: P.kwargs):
         kwargs["__slots__"] = ()
@@ -1152,6 +1203,7 @@ class _TemplateItemMeta(Generic[P], AppItemMeta):
 
     def template_type(cls, *args: P.args, **kwargs: P.kwargs):
         return cls.__type.template_type(*args, **kwargs)
+
 
 class TemplateItem(PatchedItem, Generic[P], metaclass=_TemplateItemMeta):
     """An `AppItemType` mixin that turns the class into a superclass
@@ -1172,6 +1224,7 @@ class _AutoParentItemMeta(AppItemMeta):
             cls.auto_parent = staticmethod(auto_parent)
         return cls
 
+
 class AutoParentItem(PatchedItem, Generic[P], metaclass=_AutoParentItemMeta):
     """An AppItemType mixin that creates a parent item for itself if one
     is not available and the container stack is empty.
@@ -1185,7 +1238,7 @@ class AutoParentItem(PatchedItem, Generic[P], metaclass=_AutoParentItemMeta):
 
     def __init__(self, *args: P.args, **kwargs: P.kwargs) -> None:
         if not kwargs.get("parent", None) and not _dearpygui.top_container_stack():
-            kwargs["parent"] = self.auto_parent()
+            kwargs["parent"] = self.auto_parent(label=kwargs.get("label", ""))
         super().__init__(*args, **kwargs)
 
 
