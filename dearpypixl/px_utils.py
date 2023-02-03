@@ -397,7 +397,7 @@ def err_parent_invalid(item: ItemId, command: DPGCommand, *args, **kwargs):
     elif not parent_item and not cstack_item:
         return TypeError("missing argument (container stack is empty).")
     # CASE 4: a parent is available, but maybe incompatible
-    return _err_incompatible_parent()
+    return _err_incompatible_parent(item, command, *args, **kwargs)
 
 
 @_error_prefix()
