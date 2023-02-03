@@ -21,7 +21,7 @@ dpg.create_context()
 
 
 class Application:
-    """Object-oriented (and extended) API for DearPyGui's application state.
+    """Object-oriented and extended API for DearPyGui's application state.
 
     All instances share the same state.
     """
@@ -32,6 +32,12 @@ class Application:
     def __init__(self, *, docking: bool = ..., docking_space: bool = ..., load_init_file: str = ..., init_file: str = ..., auto_save_init_file: bool = ..., device: int = ..., auto_device: bool = ..., allow_alias_overwrites: bool = ..., manual_alias_management: bool = ..., skip_required_args: bool = ..., skip_positional_args: bool = ..., skip_keyword_args: bool = ..., wait_for_input: bool = ..., manual_callback_management: bool = ..., **kwargs) -> None: ...
     def __init__(self, **kwargs: DPGApplicationConfig):
         self.configure(**kwargs)
+
+    def __getattr__(self, name: str) -> Any:
+        try:
+            return self.configuration()[name]
+        except KeyError:
+            raise AttributeError(f"{type(self).__qualname__!r} object has no attribute {name!r}.")
 
     @property
     def process_id(self) -> int:
@@ -379,10 +385,10 @@ class Runtime:
         application: Application = None,
         viewport: Viewport = None,
         events: RuntimeEvents = None,
-        **kwargs,
+        **kwargs: DPGApplicationConfig,
     ):
-        super().__init__(**kwargs)
-        self.application = application or Application()
+        super().__init__()
+        self.application = application or Application(**kwargs)
         self.viewport = viewport or Viewport()
         self.events = events or RuntimeEvents()
 
