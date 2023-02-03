@@ -429,6 +429,22 @@ class Runtime:
         dpg.destroy_context()
 
     @staticmethod
+    def save_init_file(file: str) -> None:
+        """Dump an ini file containing the following information:
+            - window positions
+            - window sizes
+            - window collapse state
+            - window docking
+            - table column widths
+            - table column ordering
+            - table column visible state
+            - table column sorting state
+
+        Window and table items with `no_saved_settings` set to `True` are excluded.
+        """
+        _dpg.save_init_file()
+
+    @staticmethod
     def elapsed_time() -> float:
         """Return the time that has elapsed since the main render loop
         was started.
