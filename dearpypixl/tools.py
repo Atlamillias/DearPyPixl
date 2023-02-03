@@ -289,9 +289,16 @@ class pxConsoleWindow(ui.mvChildWindow):
 
     def __enter__(self) -> Self:
         # redirect only once when chaining or nesting contexts
+        self.redirect()
+        return self
+
+    def __exit__(self,  _exc_type: Any = None, _exc_inst: Any = None, _traceback: Any = None, /):
+        self.restore()
+
+    def redirect(self):
         if self.__ctx_counter > 1:
             self.__ctx_counter += 1
-            return self
+            return
         self.__ctx_counter = 1
         if self.ctx_redirect_stdout:
             self.__stdout_redirect = self.__ctx_stdout
@@ -299,15 +306,14 @@ class pxConsoleWindow(ui.mvChildWindow):
         if self.ctx_redirect_stderr:
             self.__stderr_redirect = self.__ctx_stderr
             self.__stderr_redirect.__enter__()
-        return self
 
-    def __exit__(self, *args, **kwargs):
+    def restore(self, _exc_type: Any = None, _exc_inst: Any = None, _traceback: Any = None, /):
         if self.__ctx_counter > 1:
             self.__ctx_counter -= 1
             return
-        self.__stdout_redirect.__exit__(*args)
+        self.__stdout_redirect.__exit__(_exc_type, _exc_inst, _traceback)
         self.__stdout_redirect = self.__ctx_no_redirect
-        self.__stderr_redirect.__exit__(*args)
+        self.__stderr_redirect.__exit__(_exc_type, _exc_inst, _traceback)
         self.__stderr_redirect = self.__ctx_no_redirect
         self.__ctx_counter = 0
 
