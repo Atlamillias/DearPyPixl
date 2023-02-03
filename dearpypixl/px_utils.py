@@ -358,7 +358,7 @@ def _err_incompatible_parent(item: ItemId, command: DPGCommand, *args, parent: I
     # It's not possible to perfectly determine parent/child compatibility w/o
     # hardcoding it, but a few confident guesses can be made using the parent's
     # type and name of the command used.
-    err = f"incompatible parent type for {child_name!r} items (try {{}})."
+    err = f"incompatible parent type for {command.__name__.removeprefix('add_')!r} item (try {{}})."
     if child_name.startswith("draw") and all(s not in parent_name for s in ("drawlist", "stage")):
         return ValueError(err.format("`mvStage`, `mvDrawlist`"))
     elif "handler" in child_name and "handlerregistry" not in parent_name:
