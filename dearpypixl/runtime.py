@@ -442,7 +442,7 @@ class Runtime:
 
         Window and table items with `no_saved_settings` set to `True` are excluded.
         """
-        _dpg.save_init_file()
+        _dpg.save_init_file(file)
 
     @staticmethod
     def elapsed_time() -> float:
