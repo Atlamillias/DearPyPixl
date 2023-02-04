@@ -88,11 +88,13 @@ def set_values(items: Iterable[ItemId], values: Sequence[Any]) -> None:  # compl
 ########## DPG ITEM UTILITIES ##########
 ########################################
 
-# BUG: `dearpygui.generate_uuid` has considerable performance issues. It takes
-# about x80 longer to create items when using it. Even though the below
-# replacement has no safety checks, users shouldn't be generating their own
-# uuids.
-generate_uuid = itertools.count(start=100).__next__
+# BUG: `dearpygui.generate_uuid` has considerable performance issues. The more uuids
+# that exist, the longer it takes it takes `dearpygui.generate_uuid` to run.
+
+# This workaround is problematic since collisions are possible when using the
+# DPG API to create items (thus letting DPG generate it's own uuids). To help
+# mitigate this, `start` is set a *little* high.
+generate_uuid = itertools.count(start=1_000_000).__next__
 
 
 def item_from_callable(_callable: DPGCommand, *args, **kwargs) -> ItemId:
