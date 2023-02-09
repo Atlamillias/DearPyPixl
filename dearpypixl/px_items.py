@@ -841,14 +841,26 @@ class SizedItem(PositionedItem):
     width : Config[int, int] = Config()
     height: Config[int, int] = Config()
 
+    # Some items like `mvWindowAppItem` only have `rect_size`. The min/max
+    # for these can be easily calculated.
+
     @property
-    def rect(self) -> tuple[int, int, int, int]:
-        cfg = get_config(self)
-        return *self.pos, cfg["width"], cfg["height"]
-    @rect.setter
-    def rect(self, value: Array[int, int, int, int]) -> None:
-        x, y, wt, ht = value
-        set_config(self, pos=(x, y), width=wt, height=ht)
+    def rect_min(self) -> Array[int, int]:
+        state = self.state()
+        try:
+            return state["rect_min"]
+        except KeyError:
+            return state["pos"]
+
+    @property
+    def rect_max(self) -> Array[int, int]:
+        state = self.state()
+        try:
+            return state["rect_max"]
+        except KeyError:
+            config = self.configuration()
+            x, y = state["pos"]
+            return x + config["width"], y + config["height"]
 
 
 
