@@ -378,13 +378,16 @@ class _AppItemBase(int, Generic[P], metaclass=AppItemMeta):
                 f"{type(self).__qualname__!r} object has no attribute {name!r}."
             ) from None
 
-    def __enter__(self) -> Self:  # dynamic class typing help
+    def __enter__(self) -> Self:  # defined to improve dynamic class typing
         """If this item is a container, temporarily place it atop the
         container stack.
 
         `TypeError` is raised if the item is not a container item.
         """
         raise TypeError
+
+    def __exit__(self, exc_val: Any = None, exc_tp: Any = None, traceback: Any = None) -> Any:
+        ...
 
     command : DPGCommand = _DEFAULT_COMMAND
     identity: DPGTypeId  = _DEFAULT_IDENTITY
@@ -1025,6 +1028,12 @@ class WindowItem(ContainerItem):  # AFAIK "mvWindowAppItem" and "mvChildWindow" 
         lambda self, value: _dearpygui.set_y_scroll(self, value),
         doc="Get/set the vertical scroll position of the item."
     )
+
+    @property
+    def is_active_window(self) -> bool:
+        """[get] Return True if this window or any of its' children are focused."""
+        return self.tag == _dearpygui.get_active_window()
+
 
 
 class RootItem(ContainerItem):
