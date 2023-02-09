@@ -353,11 +353,13 @@ class _AppItemBase(int, Generic[P], metaclass=AppItemMeta):
             # interface w/existing item
 
     def __repr__(self):
-        repr_str = ", ".join(
-            f"{optn}={val!r}"
-            for optn, val in self.configuration().items()
+        return (
+            f"{type(self).__qualname__}("
+            f"tag={self.real!r}, "
+            f"label={get_config(self)['label']!r}, "
+            f"parent={get_info(self)['parent']!r}"
+            f")"
         )
-        return f"{type(self).__qualname__}(tag={self.real!r}, parent={self.parent}, {repr_str})"
 
     def __getitem__(self, indexes: tuple[Literal[0, 1, 2, 3], int]) -> ItemId:
         """Return a child of this item in a specific slot at index, via
