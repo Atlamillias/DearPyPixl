@@ -7,7 +7,7 @@ import contextlib
 import types
 from dearpygui import dearpygui
 
-from . import appitems as ui, grid, px_utils, theme, px_items
+from . import appitems as ui, grid, px_utils, px_items, theming
 from .px_items import ValueArrayItem, AutoParentItem
 from .px_typing import ItemId, Any, Sequence, DPGCommand, T, P, Callable, Self, Iterator, Generic, Iterable, cast, NamedTuple, Protocol, TypeVar, Concatenate, DPGCallback, overload
 
@@ -425,22 +425,22 @@ class pxInteractivePython(code.InteractiveConsole, AutoParentItem, pxConsoleWind
         self._parent_grid.rows[-1].size = 20
 
     def _init_themes(self):
-        with theme.pxTheme() as t:
+        with theming.pxTheme() as t:
             t.style.WindowPadding(8, 0)
             t.color.FrameBg(0, 0, 0, 0)
             t.color.ChildBg(25, 25, 25)
         self.set_theme(t)
 
-        with theme.pxTheme() as t:
+        with theming.pxTheme() as t:
             t.style.WindowPadding(8, 0)
             t.color.FrameBg(0, 0, 0, 0)
         self._input_wndw.set_theme(t)
 
-        with theme.pxTheme() as self._stdout_theme:
+        with theming.pxTheme() as self._stdout_theme:
             self._stdout_theme.color.Text(self.stdout_txt_color)
             self._stdout_theme.color.FrameBg(0, 0, 0, 0)
 
-        with theme.pxTheme() as self._stderr_theme:
+        with theming.pxTheme() as self._stderr_theme:
             self._stderr_theme.color.Text(self.stderr_txt_color)
             self._stderr_theme.color.FrameBg(0, 0, 0, 0)
 
