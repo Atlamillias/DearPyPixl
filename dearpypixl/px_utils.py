@@ -12,6 +12,9 @@ from .px_typing import (
     Array,
     DPGCallback,
     DPGCommand,
+    DPG_CONFIG_DICT,
+    DPG_INFO_DICT,
+    DPG_STATES_DICT,
     PXLErrorFn,
     List,
     Tuple,
@@ -52,19 +55,28 @@ class classproperty(property):  # pyright special-cases property (== attribute, 
 
 
 ########################################
-######### DPG SETTERS/SETTERS ##########
+######### DPG GETTERS/SETTERS ##########
 ########################################
 
+# CONFGURATION
+def get_config(item: ItemId) -> DPG_CONFIG_DICT: ...
 get_config = _dpg.get_item_configuration
-get_info   = _dpg.get_item_info
-get_value  = _dpg.get_value
-get_values = _dpg.get_values
-get_state  = _dpg.get_item_state
+
+def set_config(item: ItemId, **kwargs: DPG_CONFIG_DICT) -> None: ...
 set_config = _dpg.configure_item
-set_value  = _dpg.set_value
 
 
-def set_values(items: Iterable[ItemId], values: Sequence[Any]) -> None:  # compliments `get_values`
+# VALUE
+def get_value(item: ItemId) -> Any: ...
+get_value = _dpg.get_value
+
+def get_values(items: Sequence[ItemId]) -> list[Any]: ...
+get_values = _dpg.get_values
+
+def set_value(item: ItemId, value: Any) -> None: ...
+set_value = _dpg.set_value
+
+def set_values(items: Iterable[ItemId], values: Sequence[Any]) -> None:
     """Set values on several items. Stops once the shortest iterable is exhausted.
 
     Args:
@@ -74,13 +86,19 @@ def set_values(items: Iterable[ItemId], values: Sequence[Any]) -> None:  # compl
     The value of each item in *items* will be set to the value in *values* at
     the same index.
     """
-    # XXX Caller beware -- note the argument typing. Both will technically work as
-    # generators, but I recommend *not* using a generator for `values`. The order
-    # of `zip` arguments below is intentional -- it will not advance `items` if
-    # `values` is exhausted. A `values` generator WILL advance (one iteration) if
-    # `items` is exhausted.
     for value, item in zip(values, items):
         set_value(item, value)
+
+
+# INFO
+def get_info(item: ItemId) -> DPG_INFO_DICT: ...
+get_info = _dpg.get_item_info
+
+
+# STATE
+def get_state(item: ItemId) -> DPG_STATES_DICT: ...
+get_state = _dpg.get_item_state
+
 
 
 
