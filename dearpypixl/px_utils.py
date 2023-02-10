@@ -112,6 +112,9 @@ get_state = _dpg.get_item_state
 # This workaround is problematic since collisions are possible when using the
 # DPG API to create items (thus letting DPG generate it's own uuids). To help
 # mitigate this, `start` is set a *little* high.
+def generate_uuid() -> int:
+    """Return an available integer item identifier."""
+    
 generate_uuid = itertools.count(start=1_000_000).__next__
 
 
