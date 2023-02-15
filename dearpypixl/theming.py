@@ -21,6 +21,8 @@ __all__ = [
     "color",
     "style",
     "pxTheme",
+    "pxFont",
+    "FontRangeHint",
 ]
 
 
