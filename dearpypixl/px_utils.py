@@ -114,7 +114,7 @@ get_state = _dpg.get_item_state
 # mitigate this, `start` is set a *little* high.
 def generate_uuid() -> int:
     """Return an available integer item identifier."""
-    
+
 generate_uuid = itertools.count(start=1_000_000).__next__
 
 
@@ -226,6 +226,16 @@ def does_itemid_exist(item_id: ItemId) -> bool:
     else:
         return False
     return fn(item_id)
+
+
+@contextlib.contextmanager
+def push_container(container_item: ItemId):
+    try:
+        _dpg.push_container_stack(container_item)
+        yield container_item
+    finally:
+        if _dpg.top_container_stack() == container_item:
+            _dpg.pop_container_stack()
 
 
 def item_generator(item_factory: Callable[P, T], *args: P.args, **kwargs: P.kwargs) -> Generator[T, None, None]:
