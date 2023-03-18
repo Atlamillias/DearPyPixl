@@ -13,15 +13,19 @@ VT = TypeVar("VT")      # type (val)
 P  = ParamSpec("P")     # param
 S  = TypeVarTuple("S")  # shape
 
-NULL = object()
-
 ItemId = int | str
 
 
 class Array(Generic[*S]):
     """A sequence of fixed-length."""
 
+class _Null(type):
+    def __bool__(cls):
+        return False
 
+class Null(metaclass=_Null): ...
+
+NULL = Null
 
 ###########################################
 ############## MISC FN/TYPEs ##############
