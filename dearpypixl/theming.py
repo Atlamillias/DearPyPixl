@@ -245,7 +245,10 @@ class pxTheme(appitems.mvTheme):
 
 
 class FontRangeHint(enum.Enum):
-    # XXX Some of these might be outside of the font renderer's range.
+    # XXX I suspect that the internal structure accepting characters expects
+    # unsigned shorts. Characters exceeding a value of 65535 (some below)
+    # are seemingly ignored.
+
     DEFAULT = tuple(range(0x0000, 0x00ff))  # basic Latin + Latin, 0x1 Supplement
     LATIN = tuple(itertools.chain(
         range(0x0100 , 0x017F  + 1),     # Latin Extended A
@@ -371,6 +374,7 @@ class FontRangeHint(enum.Enum):
         range(0x02C6, 0x0323 + 1),
         (0x00DD, 0x00FD, 0x00D0),
     ))
+    ALL = tuple(range(256, 0xffff + 1))
 
     @classmethod
     def _missing_(cls, value: Any) -> 'FontRangeHint | None':
@@ -481,6 +485,7 @@ class pxFont(appitems.mvFontRegistry):
     CYRILLIC                  = FontRangeHint.CYRILLIC
     THAI                      = FontRangeHint.THAI
     VIETNAMESE                = FontRangeHint.VIETNAMESE
+    ALL                       = FontRangeHint.ALL
 
     __glbl_bindings = _pxFontBindings()
 
