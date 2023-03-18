@@ -109,6 +109,8 @@ get_state = _dpg.get_item_state
 # BUG: `dearpygui.generate_uuid` has considerable performance issues. The more uuids
 # that exist, the longer it takes it takes `dearpygui.generate_uuid` to run.
 
+# XXX Advice -- do NOT reload this module. Ever.
+
 # This workaround is problematic since collisions are possible when using the
 # DPG API to create items (thus letting DPG generate it's own uuids). To help
 # mitigate this, `start` is set a *little* high.
