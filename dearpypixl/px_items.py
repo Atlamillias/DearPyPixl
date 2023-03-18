@@ -18,6 +18,7 @@ from .px_typing import (
     # px_typing
     T, P,
     ItemId,
+    NULL,
     Array,
     DPGTypeId,
     DPGCommand,
@@ -105,8 +106,8 @@ class State(Generic[_GT], DPGProperty):
 
     def __get__(self, inst: 'AppItemType', cls) -> _GT:
         if inst:
-            key = self._key
-            return inst.state().get(key, None) or DPG_STATES_DICT[key]
+            state = inst.state().get(self._key, NULL)
+            return state if state is not NULL else None
         return self
 
 
@@ -160,9 +161,10 @@ def _new_px_configure(parameters: dict[str, inspect.Parameter]):
 
 
 
+_NULL_REGISTER_FLAG: str                            = "__null_registration__"
+_ITEMTYPE_REGISTRY : dict[str, type['AppItemType']] = {}  # {__qualname__: itemtype}
 
-_ITEMTYPE_REGISTRY: dict[str, type['AppItemType']] = {}  # NOT used by low-level classes
-
+ITEMTYPE_REGISTRY = types.MappingProxyType(_ITEMTYPE_REGISTRY)
 
 def register_itemtype(itp: T) -> T:
     """Register an itemtype with the global registry. Can be used as a decorator.
@@ -187,11 +189,16 @@ def register_itemtype(itp: T) -> T:
     # expected to have *actual* __init__ methods -- more than just an "interface".
     # I also do not think that sort of functionality is desirable enough to write an
     # add-on for it.
-    _ITEMTYPE_REGISTRY[itp.__qualname__] = itp
+    if hasattr(itp, _NULL_REGISTER_FLAG):
+        delattr(itp, _NULL_REGISTER_FLAG)
+    else:
+        _ITEMTYPE_REGISTRY[itp.__qualname__] = itp
     return itp
 
 
-ITEMTYPE_REGISTRY = types.MappingProxyType(_ITEMTYPE_REGISTRY)
+def null_registration(itp: T) -> T:
+    setattr(itp, _NULL_REGISTER_FLAG, True)
+    return itp
 
 
 
@@ -220,7 +227,7 @@ def _null_command(*args, tag: ItemId | None = None, **kwargs) -> ItemId:
 
 
 _DEFAULT_COMMAND : DPGCommand      = _null_command
-_DEFAULT_IDENTITY: tuple[int, str] = _dearpygui.mvAll, "pxAppItemType",
+_DEFAULT_IDENTITY: tuple[int, str] = _dearpygui.mvAll, "mvAppItemType::mvAppItemType",
 
 
 
@@ -978,6 +985,8 @@ class CallableItem(AppItemType):
     """A DearPyGui item that supports an optional callback, which can be invoked
     by calling the item. The item can also be passed as a callback-related
     argument for other items."""
+
+    show: Config[bool, bool] = Config()
 
     @property
     def callback(self) -> DPGCallback[P] | None:
