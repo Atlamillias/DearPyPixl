@@ -256,11 +256,10 @@ def new_tasker(mode: 'TaskerMode'):
 
 
 class TaskerMode(enum.IntEnum):
-    DEFAULT  = 0
-    ITER     = DEFAULT
-    CYCLE    = 1
-    POP      = 2
-    POPLEFT  = 3
+    ITER    = 0
+    CYCLE   = 1
+    POP     = 2
+    POPLEFT = 3
 
 
 class Tasker(DPGCallback):
@@ -275,21 +274,23 @@ class Tasker(DPGCallback):
     @property
     def tasker_mode(self) -> TaskerMode | int:
         """[get] Return the mode used by the `.tasker` method."""
-        return getattr(self.tasker, "_tasker_mode_", TaskerMode.DEFAULT)
+        return getattr(self.tasker, "_tasker_mode_", self.DEFAULT)
     @tasker_mode.setter
     def tasker_mode(self, value: TaskerMode | int | None) -> None:
         """[set] Change the behavior of the `.tasker` method."""
         if not value:
-            value = TaskerMode.DEFAULT
+            value = self.DEFAULT
         self.tasker = getattr(self, _MODE_TO_TASKER[value])
 
-    DEFAULT = TaskerMode.DEFAULT
+    ITER    = TaskerMode.ITER
     CYCLE   = TaskerMode.CYCLE
     POP     = TaskerMode.POP
     POPLEFT = TaskerMode.POPLEFT
 
-    @new_tasker(DEFAULT)
-    def _tasker_default(self: 'CallStack', sender: ItemId = None, app_data : Any = None, user_data: Any = None) -> Generator[float, None, None]:
+    DEFAULT = ITER
+
+    @new_tasker(ITER)
+    def _tasker_iter(self: 'CallStack', sender: ItemId = None, app_data : Any = None, user_data: Any = None) -> Generator[float, None, None]:
         sender, app_data, user_data = self._get_task_arguments(sender, app_data, user_data)
         timer = self.timer
         for callback in self:
@@ -300,7 +301,7 @@ class Tasker(DPGCallback):
     @new_tasker(CYCLE)
     def _tasker_cycle(self: 'CallStack', sender: ItemId = None, app_data : Any = None, user_data: Any = None) -> Generator[float, None, None]:
         while True:
-            yield from self._tasker_default(sender, app_data, user_data)
+            yield from self._tasker_iter(sender, app_data, user_data)
 
     @new_tasker(POP)
     def _tasker_pop(self: 'CallStack', sender: ItemId = None, app_data : Any = None, user_data: Any = None) -> Generator[float, None, None]:
@@ -542,7 +543,7 @@ class CallStack(_CallStack[DPGCallback], Tasker):
         app_data       : Any                  = NULL,
         user_data      : Any                  = NULL,
         timer          : Callable[[], float]  = perf_counter,
-        tasker_mode    : TaskerMode | int     = TaskerMode.DEFAULT,
+        tasker_mode    : TaskerMode | int     = TaskerMode.ITER,
         force_wrapping : bool = False,
         wrapped_returns: bool = False,
         **kwargs,
@@ -550,7 +551,7 @@ class CallStack(_CallStack[DPGCallback], Tasker):
         super().__init__()
         self._cb_pos_args = (NULL, NULL, NULL)
         self._queue  = collections.deque(maxlen=maxlen)
-        self.tasker  = self._tasker_default
+        self.tasker  = self._tasker_iter
         self.count   = self._queue.count
         self.index   = self._queue.index
         self.pop     = self._queue.pop
@@ -689,14 +690,7 @@ class CallStack(_CallStack[DPGCallback], Tasker):
 
 _PREPPED_FRAMES: set[int] = set()
 
-def _prep_frame(frame: int, callback: DPGCallback) -> None:
-    if frame not in _PREPPED_FRAMES and _dearpygui.is_dearpygui_running():
-        _PREPPED_FRAMES.add(frame)
-        _dearpygui.set_frame_callback(frame, callback, user_data=None)
-
-def _null_prep_frame(frame: int, callback: DPGCallback) -> None: ...
-
-def _null_prepare_frames(): ...
+def _null_prep_frame(*args, **kwargs) -> None: ...
 
 
 class Frame(enum.IntEnum):
@@ -798,7 +792,7 @@ class FrameEvents(Mapping[KT, VT]):
         else:
             self._mapping = {}
             self._prep_frame    = _null_prep_frame
-            self.prepare_frames = _null_prepare_frames
+            self.prepare_frames = _null_prep_frame
         self._mapping[self.ALL ] = self._mapping.get(self.ALL , None) or self.stack_factory()
         self._mapping[self.NEXT] = self._mapping.get(self.NEXT, None) or self.stack_factory(tasker_mode=TaskerMode.POPLEFT)
         self.get    = self._mapping.get
@@ -812,6 +806,12 @@ class FrameEvents(Mapping[KT, VT]):
             f"{', '.join(f'{k}={str(v)!r}' for k, v in self.configuration().items())}"
             f")"
         )
+
+    def __len__(self):
+        return len(self._mapping)
+
+    def __iter__(self):
+        return iter(self._mapping)
 
     def __getitem__(self, key: int) -> CallStack:
         try:
