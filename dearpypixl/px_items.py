@@ -26,7 +26,7 @@ from .px_typing import (
     DPGItemConfig,
     DPGItemInfo,
     DPGItemState,
-    DPG_STATES_DICT
+    ITEM_STATES_TEMPLATE
 )
 from . import px_utils
 from .px_utils import (

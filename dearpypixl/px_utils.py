@@ -1,10 +1,10 @@
 import functools
 import contextlib
-import itertools
 import types
 import inspect
 from inspect import Parameter, _ParameterKind
 from dearpygui import dearpygui as dpg, _dearpygui as _dpg
+from dearpygui.dearpygui import generate_uuid
 from .px_typing import (
     T, P,
     Any,
@@ -12,10 +12,10 @@ from .px_typing import (
     Array,
     DPGCallback,
     DPGCommand,
-    DPG_CONFIG_DICT,
-    DPG_INFO_DICT,
-    DPG_STATES_DICT,
-    PXLErrorFn,
+    ITEM_CONFIG_TEMPLATE,
+    ITEM_INFO_TEMPLATE,
+    ITEM_STATES_TEMPLATE,
+    DPXErrorFn,
     List,
     Tuple,
     Iterable,
@@ -59,10 +59,10 @@ class classproperty(property):  # pyright special-cases property (== attribute, 
 ########################################
 
 # CONFGURATION
-def get_config(item: ItemId) -> DPG_CONFIG_DICT: ...
+def get_config(item: ItemId) -> ITEM_CONFIG_TEMPLATE: ...
 get_config = _dpg.get_item_configuration
 
-def set_config(item: ItemId, **kwargs: DPG_CONFIG_DICT) -> None: ...
+def set_config(item: ItemId, **kwargs: ITEM_CONFIG_TEMPLATE) -> None: ...
 set_config = _dpg.configure_item
 
 
@@ -91,12 +91,12 @@ def set_values(items: Iterable[ItemId], values: Sequence[Any]) -> None:
 
 
 # INFO
-def get_info(item: ItemId) -> DPG_INFO_DICT: ...
+def get_info(item: ItemId) -> ITEM_INFO_TEMPLATE: ...
 get_info = _dpg.get_item_info
 
 
 # STATE
-def get_state(item: ItemId) -> DPG_STATES_DICT: ...
+def get_state(item: ItemId) -> ITEM_STATES_TEMPLATE: ...
 get_state = _dpg.get_item_state
 
 
@@ -105,20 +105,6 @@ get_state = _dpg.get_item_state
 ########################################
 ########## DPG ITEM UTILITIES ##########
 ########################################
-
-# BUG: `dearpygui.generate_uuid` has considerable performance issues. The more uuids
-# that exist, the longer it takes it takes `dearpygui.generate_uuid` to run.
-
-# XXX Advice -- do NOT reload this module. Ever.
-
-# This workaround is problematic since collisions are possible when using the
-# DPG API to create items (thus letting DPG generate it's own uuids). To help
-# mitigate this, `start` is set a *little* high.
-def generate_uuid() -> int:
-    """Return an available integer item identifier."""
-
-generate_uuid = itertools.count(start=1_000_000).__next__
-
 
 def item_from_callable(_callable: DPGCommand, *args, **kwargs) -> ItemId:
     """Return the result of invoking a callable that returns or yields an item
@@ -332,7 +318,7 @@ def _get_cmd_err_signature(command: DPGCommand):
 
 
 def _error_prefix(msg: str = ""):
-    def process_err_fn(fn: PXLErrorFn[P]) -> PXLErrorFn[P]:
+    def process_err_fn(fn: DPXErrorFn[P]) -> DPXErrorFn[P]:
         @functools.wraps(fn)
         def err_fn_wrapper(*args: P.args, **kwargs: P.kwargs) -> Exception | None:
             err = fn(*args, **kwargs)
