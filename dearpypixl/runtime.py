@@ -175,9 +175,9 @@ class Viewport(AppItemLike):
         'icon'-related options are ignored."""
         _dpg.configure_viewport(self.__UUID, **kwargs)
         if callback is not Null:
-            _dpg.set_viewport_resize_callback(callback, _appstate._VIEWPORT_USER_DATA)
+            _dpg.set_viewport_resize_callback(callback, user_data=_appstate._VIEWPORT_USER_DATA)
         if user_data is not Null:
-            _dpg.set_viewport_resize_callback(_appstate._VIEWPORT_RESIZE_CALLBACK, user_data)
+            _dpg.set_viewport_resize_callback(_appstate._VIEWPORT_RESIZE_CALLBACK, user_data=user_data)
         if primary_window is not Null:
             glbl_pri_wndw = _appstate._VIEWPORT_PRIMARY_WINDOW
             # set a new primary window and use it
@@ -193,12 +193,11 @@ class Viewport(AppItemLike):
     def configuration(self) -> DPGViewportConfig:
         """Return the viewport's configuration."""
         config = _dpg.get_viewport_configuration(self.__UUID)
-        primary_window = _appstate._VIEWPORT_PRIMARY_WINDOW
-        # update a dirty primary window state
-        if primary_window and not px_utils.does_itemid_exist(primary_window):
-            primary_window = None
-            self.configure(primary_window=primary_window)
-        config.update(primary_window=primary_window, callback=_appstate._VIEWPORT_RESIZE_CALLBACK)
+        config.update(
+            primary_window=_appstate._VIEWPORT_PRIMARY_WINDOW,
+            callback=_appstate._VIEWPORT_RESIZE_CALLBACK,
+            user_data=_appstate._VIEWPORT_USER_DATA,
+        )
         return config
 
     is_visible   : State[bool] = State()
