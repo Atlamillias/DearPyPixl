@@ -1,5 +1,5 @@
 from typing import *
-import types
+from types import MappingProxyType
 import enum
 
 
@@ -75,12 +75,12 @@ def typing_overload(mthd: T) -> T:
     return _TypingOverload(mthd)
 
 @overload
-def frozenmap(**kwargs: dict[KT, VT]) -> dict[KT, VT]: ...
+def frozenmap(**kwargs: dict[KT, VT]) -> MappingProxyType[KT, VT]: ...
 @overload
-def frozenmap(iterable: Sequence[Array[KT, VT]] | Mapping[KT, VT], /) -> dict[KT, VT]: ...
-def frozenmap(iterable: Sequence[Array[KT, VT]] | Mapping[KT, VT] | None = None, **kwargs) -> dict[KT, VT]:
+def frozenmap(iterable: Sequence[Array[KT, VT]] | Mapping[KT, VT], /) -> MappingProxyType[KT, VT]: ...
+def frozenmap(iterable: Sequence[Array[KT, VT]] | Mapping[KT, VT] | None = None, **kwargs) -> MappingProxyType[KT, VT]:
     kwds = iterable or kwargs
-    return types.MappingProxyType(dict(kwds))
+    return MappingProxyType(dict(kwds))
 
 
 def typeddict_init(typed_dict: type[T], value: Any = None) -> T:
@@ -90,10 +90,20 @@ def typeddict_init(typed_dict: type[T], value: Any = None) -> T:
     return dict.fromkeys(keys, value)
 
 
-def overwrite_with(returned_obj: T) -> Callable[[Callable], T]:
+def overwrite_with(returned_obj: T, replace_docstring: bool = False) -> Callable[[Callable], T]:
+    """Equivelent of assigning an object an alias using function-defining
+    syntax. Use as a decorator.
+    """
     # Forces pyright to identify object aliases as the actual objects
     # instead of variables/attributes.
-    def wrap_placeholder(*args) -> T:
+    def wrap_placeholder(fn: Callable, *args) -> T:
+        if replace_docstring:
+            try:
+                doc = fn.__doc__
+            except AttributeError:
+                doc = returned_obj.__doc__
+            if doc:
+                returned_obj.__doc__ = doc
         return returned_obj
     return wrap_placeholder
 
@@ -201,10 +211,10 @@ APPLICATION_CONFIG_TEMPLATE = frozenmap(typeddict_init(DPGApplicationConfig))
 
 class DPGApplicationState(TypedDict):
     # additional, via DPX
-    prepped: NotRequired[bool]
+    set_up: NotRequired[bool]
 
 class ApplicationState(enum.StrEnum):
-    PREPPED = "prepped"
+    SET_UP = "set_up"
 
 APPLICATION_STATE_TEMPLATE = frozenmap(typeddict_init(DPGApplicationState))
 
@@ -232,6 +242,8 @@ class DPGViewportConfig(TypedDict):
     # additional via DPX
     primary_window    : NotRequired[ItemId | None]
     use_primary_window: NotRequired[bool]
+    callback          : NotRequired[DPGCallback | None]
+    user_data         : NotRequired[Any]
 
 class ViewportConfig(enum.StrEnum):
     TITLE              = "title"
@@ -252,6 +264,8 @@ class ViewportConfig(enum.StrEnum):
     CLEAR_COLOR        = "clear_color"
     PRIMARY_WINDOW     = "primary_window"
     USE_PRIMARY_WINDOW = "use_primary_window"
+    CALLBACK           = "callback"
+    USER_DATA          = "user_data"
 
 VIEWPORT_CONFIG_TEMPLATE = frozenmap(typeddict_init(DPGViewportConfig))
 
