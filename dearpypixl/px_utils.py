@@ -52,6 +52,11 @@ class classproperty(property):  # pyright special-cases property (== attribute, 
         return self.__wrapped__(cls)
 
 
+class staticproperty(classproperty):
+    __slots__ = ()
+
+    def __get__(self, instance, cls):
+        return self.__wrapped__()
 
 
 ########################################
