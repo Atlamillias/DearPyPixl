@@ -1,25 +1,28 @@
-"""On-import DearPyGui monkeypatcher module.
+"""DearPyGui monkeypatcher module.
 
-Replaces various functions in the `dearpygui.dearpygui` namespace. The
-reasons for the replacement vary between functions, but most are to
-accomodate for missing critical features, bug fixes, or to include exceptions
-when the result of calling the function would be irregular, misleading, or
-undesireable. From a user's perspective, patched functions do not operate
-differently from the original implementations, nor do they manipulate
-return values.
+Replaces various functions in `dearpygui` library. Reasons for the replacement
+vary between functions, but most are to accomodate for missing critical features,
+bug fixes, or to include exceptions when the result of calling the function would
+be irregular, misleading, or undesireable.
+
+From a user's perspective, patched functions do not operate differently from the
+original implementations, nor do they manipulate arguments or return values.
 """
 import sys
 import itertools
 import inspect
 from dearpygui import dearpygui, _dearpygui
-from .px_typing import Callable, Sequence, Any, TypeVar
+from .px_typing import DPGCallback, Callable, Sequence, Any, TypeVar
 from . import px_appstate as _appstate
+
+
 
 
 _T = TypeVar("_T")
 
 
 PATCHED_COMMAND = "_dpx_patch_"
+
 
 def patch_command(fn: _T) -> _T:
     dpg_fn  = getattr(dearpygui, fn.__name__)
@@ -29,6 +32,7 @@ def patch_command(fn: _T) -> _T:
     fn.__signature__ = inspect.signature(dpg_fn)
     setattr(fn, PATCHED_COMMAND, True)
     return fn
+
 
 def apply_patch():
     self_mod = sys.modules[__name__]
@@ -41,6 +45,10 @@ def apply_patch():
 
 
 
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+############################# Monkeypatched DPG Functions #############################
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
 # BUG (`generate_uuid`): Default implementation is very slow when creating items
 # en masse. The below is a more performant alternative. Both users and dearpypixl
@@ -81,10 +89,10 @@ def run_callbacks(jobs: Sequence[tuple[Callable | None, Any, Any, Any]]) -> None
 
 @patch_command  # no getter for DPG setup state
 def setup_dearpygui(**kwargs):
-    if _appstate._APPLICATION_PREPPED:
+    if _appstate._APPLICATION_SET_UP:
         raise SystemError("DearPyGui already set up.")
     setup_dearpygui.__wrapped__()
-    _appstate._APPLICATION_PREPPED = True
+    _appstate._APPLICATION_SET_UP = True
 
 
 @patch_command
@@ -140,6 +148,14 @@ def minimize_viewport(**kwargs):
 def show_viewport(**kwargs) -> None:
     if not _dearpygui.is_viewport_ok():
         show_viewport.__wrapped__(**kwargs)
+
+
+@patch_command
+def set_viewport_resize_callback(callback: DPGCallback | None, *, user_data: Any = None, **kwargs):
+    set_viewport_resize_callback.__wrapped__(callback, user_data=user_data, **kwargs)
+    _appstate._VIEWPORT_RESIZE_CALLBACK = callback
+    _appstate._VIEWPORT_USER_DATA       = user_data
+
 
 
 # XXX: This will probably be removed as there are not many performance-critical
