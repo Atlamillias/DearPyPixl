@@ -157,6 +157,19 @@ def set_viewport_resize_callback(callback: DPGCallback | None, *, user_data: Any
     _appstate._VIEWPORT_USER_DATA       = user_data
 
 
+@patch_command
+def delete_item(item : int | str, *, children_only: bool = False, slot: int = -1, **kwargs) -> None:
+    delete_item.__wrapped__(item, children_only=children_only, slot=slot, **kwargs)
+    # update the global state if needed
+    if item == _appstate._APPLICATION_FONT:
+        _dearpygui.bind_font(0)
+    elif item == _appstate._APPLICATION_THEME:
+        _dearpygui.bind_theme(0)
+    elif item == _appstate._VIEWPORT_PRIMARY_WINDOW:
+        _appstate._VIEWPORT_PRIMARY_WINDOW = None
+
+
+
 
 # XXX: This will probably be removed as there are not many performance-critical
 # things that warrant optimizations.
