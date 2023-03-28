@@ -87,6 +87,7 @@ class Application:
     def state(self) -> DPGApplicationState:
         return {"prepped": _appstate._APPLICATION_SET_UP}
 
+
     # ~~ Properties, Methods ~~
 
     @property
@@ -137,6 +138,8 @@ class Application:
         Window and table items with `no_saved_settings` set to `True` are excluded.
         """
         _dpg.save_init_file(file)
+
+
 
 
 class Viewport:
@@ -201,6 +204,7 @@ class Viewport:
             "visible": _dpg.is_viewport_ok(),
             "fullscreen": _appstate._VIEWPORT_FULLSCREEN,
         }
+
 
     # ~~ Properties, Methods ~~
 
@@ -303,10 +307,8 @@ class Viewport:
 
 
 
-
-
 class Frame(enum.IntEnum):
-    """Special frame values the next, last, and all frames."""
+    """Special frame values for the next, last, and all frames."""
     ALL  = -1
     NEXT = -2
     LAST = -3
@@ -451,11 +453,14 @@ class Runtime:
     @classmethod
     def start(cls, *, prerender_frames: int = 0):
         cls.setup()
+
         if Application().configuration()["manual_callback_management"]:
             schedule_tasks = cls._schedule_tasks_manual
         else:
             schedule_tasks = cls._schedule_tasks
         Viewport().show()
+        for _ in range(prerender_frames):
+            cls.render_frame()
 
         infinity = float('inf')
         tasker   = Runtime.frame_tasks.tasker()
