@@ -231,9 +231,9 @@ _DEFAULT_IDENTITY: tuple[int, str] = _dearpygui.mvAll, "mvAppItemType::mvAppItem
 
 
 
-###########################################
-########## APPITEMTYPE & MIXINS ###########
-###########################################
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+################################## Item API Base(s) ##################################
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
 class AppItemMeta(type):
     identity: DPGTypeId
@@ -822,6 +822,50 @@ class AppItemType(_AppItemBase, Generic[P]):
 
 
 
+class AppItemLike:
+    """Minimal item API for non-item interfaces.
+    """
+    __slots__ = ()
+    
+    command : DPGCommand = _null_command
+    identity: DPGTypeId  = 0, ""
+
+    def __repr__(self):
+        config = ', '.join(f"{k}={v!r}" for k, v in self.configuration().items())
+        return f"{type(self).__qualname__}({config})"
+
+    def __getattr__(self, name: str):
+        try:
+            self.configuration()[name]
+        except KeyError:
+             raise AttributeError(
+                f"{type(self).__qualname__!r} object has no attribute {name!r}."
+            ) from None
+
+    # Config, information, or state-related property getters should pull from
+    # the relating method's returned dictionary to make extending easier. Config
+    # setters should pass through to the `.configure` method. If the result needs
+    # to be transformed,`.configure` should be doing it and not the setter.
+
+    def configure(self, **kwargs) -> None:
+        ...
+
+    def configuration(self) -> dict[str, Any]:
+        return {}
+
+    def information(self) -> dict[str, Any]:
+        return {}
+
+    def state(self) -> dict[str, bool | None]:
+        return {}
+
+
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+############################ Primitive Item Types (Mixins) ############################
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+
 class PositionedItem(AppItemType):
     """A rendered DearPyGui item that can have a set position."""
     is_resized          : State[bool           ] = State(key="resized")
@@ -1077,16 +1121,15 @@ class RegistryItem(RootItem):
 
 
 
-
-
-
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+############################## Non-Primitive Item Mixins ##############################
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
 # XXX These are unique mixins that can make the resulting class or instances
 # a bit weird and/or do unusual things. Not used in `itp_from_callable`
 
 class PatchedItem(AppItemType):  # "do not import" indicator for genfile.py script
     ...
-
 
 
 
