@@ -46,6 +46,7 @@ class Application:
     @overload
     def __init__(self, *, docking: bool = ..., docking_space: bool = ..., load_init_file: str = ..., init_file: str = ..., auto_save_init_file: bool = ..., device: int = ..., auto_device: bool = ..., allow_alias_overwrites: bool = ..., skip_required_args: bool = ..., skip_positional_args: bool = ..., skip_keyword_args: bool = ..., wait_for_input: bool = ..., manual_callback_management: bool = ..., **kwargs) -> None: ...
     def __init__(self, **kwargs: DPGApplicationConfig):
+        super().__init__()
         self.setup()
         if kwargs:
             self.configure(**kwargs)
@@ -156,7 +157,7 @@ class Viewport:
     @overload
     def __init__(self, *, title: str = ..., small_icon: str = ..., large_icon: str = ..., width: int = ..., height: int = ..., x_pos: int = ..., y_pos: int = ..., min_width: int = ..., max_width: int = ..., min_height: int = ..., max_height: int = ..., resizable: bool = ..., vsync: bool = ..., always_on_top: bool = ..., decorated: bool = ..., clear_color: tuple[int, ...] = ..., primary_window: ItemId | None = ..., callback: DPGCallback | None = ..., user_data: Any = ..., **kwargs) -> None: ...
     def __init__(self, **kwargs: DPGViewportConfig):
-        super().__init__(**kwargs)
+        super().__init__()
         self.create(title="Application")
         if kwargs:
             self.configure(**kwargs)
