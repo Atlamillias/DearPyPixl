@@ -417,9 +417,10 @@ class Runtime:
         current_frame  = _dpg.get_frame_count() + 1
         # Add tasks from this frame only. If the runtime is behind, tasks from
         # previous frames should still be in-queue.
-        if previous_frame + 1 == current_frame:  # this frame only
+        if previous_frame + 1 == current_frame:
             pending_tasks._queue.extend(all_frame_tasks.pop(current_frame, ()))
             pending_tasks._queue.extend(all_frame_tasks[Frame.ALL])  # routine tasks
+
         # The runtime's state is dirty because a frame(s) was rendered outside of
         # the `.start` method. Queue all pending tasks from prior frames.
         elif previous_frame < current_frame:
@@ -427,6 +428,7 @@ class Runtime:
                 pending_tasks._queue.extend(all_frame_tasks.pop(f, ()))
             # XXX maybe nest this into the above loop for accuracy/"fairness"
             pending_tasks._queue.extend(all_frame_tasks[Frame.ALL])  # routine tasks
+
         # The "current frame" has not been rendered and the task queue has yet to be
         # processed (maybe a duplicate call) -- do nothing.
         else:
@@ -463,7 +465,7 @@ class Runtime:
             cls.render_frame()
 
         infinity = float('inf')
-        tasker   = Runtime.frame_tasks.tasker()
+        tasker   = Runtime.frame_tasks[Frame.NEXT].tasker()
         while cls.is_running:
             frlimit = Runtime._frame_rate_limit
             time_avail = 1000 / frlimit if frlimit and Runtime._frame_rate_lock else infinity
