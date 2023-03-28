@@ -2,7 +2,7 @@
 
 This is an internal module, and its contents may change without warning.
 """
-from px_typing import DPGCallback, Any
+from .px_typing import DPGCallback, Any
 
 # The settings below are, for whatever reason, not exposed via DPG. Several
 # DPG functions have been monkeypatched (see`px_patcher.py`) to update the
