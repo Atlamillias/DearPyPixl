@@ -331,22 +331,20 @@ class Tasker(DPGCallback):
 
     def _get_task_arguments(self: 'CallStack', sender: Any = None, app_data: Any = None, user_data: Any = None) -> Iterator[Any]:
         """Return an iterator containing callback positional arguments (in order) for *sender*,
-        *app_data* and *user_data*. Callstack attributes `.sender`, `.app_data` and
-        `.user_data` are prioritized and will replace *sender*, *app_data* and/or *user_data*
-        in the returned tuple if they have been set.
+        *app_data* and *user_data*.
+
+        Callstack attributes `.sender`, `.app_data` and `.user_data` are prioritized and will
+        replace *sender*, *app_data* and/or *user_data* in the returned tuple if they have been
+        set.
         """
         return (v2 if v2 != NULL else v1 for v1, v2 in zip((sender, app_data, user_data), self._cb_pos_args))
 
     # XXX [`*args`]: `__code__` (below) references the unbound `__call__` function. DPG will
     # count `self` in `__code__.co_argcount` and will pass an additional `None` argument.
     def __call__(self, sender: ItemId = None, app_data: Any = None, user_data: Any = None, *args) -> None:
-        for _ in self.tasker(sender, app_data, user_data): ...  # consume generator
+        for _ in self.tasker(sender, app_data, user_data): ...
 
     __code__ = __call__.__code__  # helps DPG call this object
-
-    # Workaround for the wonky `dearpygui.run_callbacks` function. Otherwise it'll fail
-    # calling instances because `__call__` accepts too many arguments.
-    __signature__ = inspect.signature(_null_callback)
 
 
 # 'CallStack().force_wrapping'
@@ -666,10 +664,16 @@ class CallStack(_CallStack[DPGCallback], Tasker):
         self._queue.insert(index, self._fn_process_callable(_object))
 
     def extend(self, other: Sequence[DPGCallback]) -> None:
-        self._queue.extend((self._fn_process_callable(cb) for cb in other))
+        if isinstance(other, CallStack):
+            self._queue.extend(other._queue)
+        else:
+            self._queue.extend((self._fn_process_callable(cb) for cb in other))
 
     def extendleft(self, other: Sequence[DPGCallback]) -> None:
-        self._queue.extendleft((self._fn_process_callable(cb) for cb in other))
+        if isinstance(other, CallStack):
+            self._queue.extendleft(other._queue)
+        else:
+            self._queue.extendleft((self._fn_process_callable(cb) for cb in other))
 
     def append(self, _object: DPGCallback[P]) -> DPGCallback[P] | Callback[P]:
         wrapped = self._fn_process_callable(_object)
@@ -680,215 +684,7 @@ class CallStack(_CallStack[DPGCallback], Tasker):
         wrapped = self._fn_process_callable(_object)
         self._queue.appendleft(wrapped)
         return self._fn_return_callable(_object, wrapped)
-
-
-
-
-##########################################
-##### FrameEvents CallStack Manager ######
-##########################################
-
-_PREPPED_FRAMES: set[int] = set()
-
-def _null_prep_frame(*args, **kwargs) -> None: ...
-
-
-class Frame(enum.IntEnum):
-    """Special frame values for `FrameEvents` objects."""
-    ALL  =  0
-    NEXT = -1
-    LAST = -2
-
-
-class FrameEvents(Mapping[KT, VT]):
-    """A mapping-like object for scheduling callbacks on rendered frames. Each pair in the
-    mapping represents a frame and a `CallStack` object containing callbacks to run on that
-    frame. See `CallStack` for information regarding their operation.
-
-    NOTE: `FrameEvents` objects use DearPyGui functions `set_frame_callback` and
-    `set_exit_callback` and may overwrite values formerly set by the user. Do not instantiate
-    `FrameEvents` objects when using those functions.
-
-    Example usage;
-        >>> frame_events = FrameEvents()
-        ...
-        >>> # You can key the mapping to inspect callbacks are scheduled to run when rendering
-        >>> # a specific frame.
-        >>> frame_events[10]  # empty `CallStack`
-        ...
-        ...
-        >>> # You can schedule callbacks using the `.on_frame` method. You can schedule
-        >>> # any number of callbacks for each frame.
-        >>> @frame_events.on_frame(frame=80)
-        >>> def foo(sender, app_data, user_data):
-        ...     print(sender, app_data, user_data)
-        ...
-        ...
-        >>> # Another callback on frame 80, but `sender` will always be `frame_events`.
-        >>> @frame_events.on_frame(frame=80, sender=frame_events)
-        >>> def bar(sender, app_data, user_data):
-        ...     print(sender, app_data, user_data)
-        ...
-        ...
-        >>> # Call the `.prepare_frames` method before rendering!
-        >>> frame_events.prepare_frames()
-
-    By default, instances operate on a global state. Pass `global_state=False` on instantiation
-    to have the object operate on their own isolated state instead. Doing so will disable callback
-    scheduling for the instance. Instances not operating globally have very little to offer,
-    but the option is available for those who wish to use the objects for other purposes.
-
-
-    There are a few unique "frames" in the mapping. To access them, you can key the object
-    using a member (or value) of the `Frame` enumeration.
-        >>> frame_events = FrameEvents()
-        ...
-        >>> on_all_frames = frame_events[Frame.ALL]   # also available on `frame_events.all`
-        >>> on_next_frame = frame_events[Frame.NEXT]  # also available on `frame_events.next`
-        >>> on_last_frame = frame_events[Frame.LAST]  # also available on `frame_events.last`
-
-    Unlike **actual** frames, call stacks for `Frame.ALL` and `Frame.NEXT` are never scheduled.
-    It is up to the user to decide when and where to process them. Ideally, they are ran directly
-    in the render loop before or after rendering a frame.
-        >>> while dearpygui.is_dearpygui_running():
-        ...    # `frame_events.next.tasker_mode` is set to `TaskerMode.POPLEFT`, so each callback
-        ...    in this stack is removed from queue once ran.
-        ...    frame_events.next()
-        ...
-        ...    # This stack has default behavior, so all callbacks within will run every cycle.
-        ...    frame_events.all()
-        ...
-        ...    dearpygui.render_dearpygui_frame()
-
-    `Frame.LAST`s stack is scheduled to run via `dearpygui.set_exit_callback`, so it will run
-    after the last frame has rendered. It is also the only call stack that is always "global"
-    -- ALL `FrameEvents` objects access and modify the same stack, even if `global_state=False`
-    is used when creating the object.
-    """
-
-    ALL  = Frame.ALL
-    NEXT = Frame.NEXT
-    LAST = Frame.LAST
-
-    default_frame = ALL
-    stack_factory = CallStack
-
-    _global_state: dict[int, CallStack]
-
-    def __init__(self, global_state: bool = True, *, default_frame: Frame | int | None = None, stack_factory: type[CallStack] | None = None, **kwargs) -> None:
-        super().__init__()
-        self.configure(default_frame=default_frame, stack_factory=stack_factory, **kwargs)
-        # prep a global state if necessary
-        try:
-            FrameEvents._global_state
-        except AttributeError:
-            # Frame.LAST is always global
-            last_frame_callback = self.stack_factory(tasker_mode=TaskerMode.POPLEFT)
-            FrameEvents._global_state = {self.LAST: last_frame_callback}
-            _dearpygui.set_exit_callback(last_frame_callback)
-
-        if global_state:
-            self._mapping = FrameEvents._global_state
-        else:
-            self._mapping = {}
-            self._prep_frame    = _null_prep_frame
-            self.prepare_frames = _null_prep_frame
-        self._mapping[self.ALL ] = self._mapping.get(self.ALL , None) or self.stack_factory()
-        self._mapping[self.NEXT] = self._mapping.get(self.NEXT, None) or self.stack_factory(tasker_mode=TaskerMode.POPLEFT)
-        self.get    = self._mapping.get
-        self.items  = self._mapping.items
-        self.keys   = self._mapping.keys
-        self.values = self._mapping.values
-
-    def __repr__(self):
-        return (
-            f"{type(self).__qualname__}("
-            f"{', '.join(f'{k}={str(v)!r}' for k, v in self.configuration().items())}"
-            f")"
-        )
-
-    def __len__(self):
-        return len(self._mapping)
-
-    def __iter__(self):
-        return iter(self._mapping)
-
-    def __getitem__(self, key: int) -> CallStack:
-        try:
-            stack = self._mapping[key]
-        except KeyError:
-            stack = self._mapping = self.stack_factory()
-            self._prep_frame(key, stack)
-        return stack
-
-    def _prep_frame(self, frame: int, callback: DPGCallback) -> None: ...
-
-    @property
-    def all(self) -> CallStack:
-        return self._mapping[self.ALL]
-
-    @property
-    def next(self) -> CallStack:
-        return self._mapping[self.NEXT]
-
-    @property
-    def last(self) -> CallStack:
-        return FrameEvents._mapping[self.LAST]
-
-    @overload
-    def configure(self, *, default_frame: int = ..., stack_factory: type[CallStack] = ..., **kwargs): ...
-    def configure(self, *, default_frame: int | None = None, stack_factory: type[CallStack] | None = None, **kwargs):
-        if default_frame is not None:
-            self.default_frame = default_frame
-        if stack_factory is not None:
-            self.stack_factory = stack_factory
-
-    def configuration(self) -> dict[str]:
-        return dict(default_frame=self.default_frame, stack_factory=self.stack_factory)
-
-    def prepare_frames(self) -> None:
-        """Register non-empty frame call stacks with DearPyGui. Destroys all empty call
-        stacks without references.
-
-        This method must be called if the instance affects the global state (before
-        rendering the user interface). Does not need to be called otherwise.
-        """
-        empty_frames = set()
-        for frame, stack in self._mapping.items():
-            if frame < 1:  # skip special "frames"
-                continue
-            if stack:
-                _PREPPED_FRAMES.add(frame)
-                _dearpygui.set_frame_callback(frame, stack, user_data=None)
-            else:
-                empty_frames.add(frame)
-        for frame in empty_frames:
-            stack = self._mapping[frame]
-            # Trash empty stacks not referenced by the user.
-            if len(gc.get_referrers(stack)) + 1 > 3:
-                continue
-            del self._mapping[frame]
-
-    def on_frame(self, callback: Callable = None, /, *, frame: int = None, **kwargs):
-        """(Decorator) Schedules a callback to run on a specific frame.
-
-        Args:
-            * callback (Callable): Callable object to run. If *callback* is not an instance of
-            `Event`, the callback and all additional keyword arguments other than *frame* are
-            passed to Event's constructor.
-
-            * frame (int, optional): The callback will run before this frame is rendered. If this
-            value is 0, it will run every frame. If -1, it will run on the last frame (application
-            exit). Defaults to 0.
-        """
-        def _on_frame(_callback):
-            task = _callback
-            if kwargs:
-                task = Callback(_callback, **kwargs)
-            self[frame or self.default_frame].append(task)
-            return _callback
-        return _on_frame if callback is None else _on_frame(callback)
-
+    
 
 
 
