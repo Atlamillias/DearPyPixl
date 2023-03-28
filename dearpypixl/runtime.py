@@ -179,7 +179,16 @@ class Viewport(AppItemLike):
         if user_data is not Null:
             _dpg.set_viewport_resize_callback(_appstate._VIEWPORT_RESIZE_CALLBACK, user_data)
         if primary_window is not Null:
-            _dpg.set_primary_window(primary_window, True if primary_window else False)
+            glbl_pri_wndw = _appstate._VIEWPORT_PRIMARY_WINDOW
+            # set a new primary window and use it
+            if primary_window:
+                _dpg.set_primary_window(primary_window, True)
+            # attempting to clear the primary window -- pass the previous one but disable it
+            elif glbl_pri_wndw:
+                _dpg.set_primary_window(glbl_pri_wndw, False)
+                _appstate._VIEWPORT_PRIMARY_WINDOW = None
+            # both are None -- do nothing
+            ...
 
     def configuration(self) -> DPGViewportConfig:
         """Return the viewport's configuration."""
@@ -189,7 +198,7 @@ class Viewport(AppItemLike):
         if primary_window and not px_utils.does_itemid_exist(primary_window):
             primary_window = None
             self.configure(primary_window=primary_window)
-        config.update(primary_window=primary_window, )
+        config.update(primary_window=primary_window, callback=_appstate._VIEWPORT_RESIZE_CALLBACK)
         return config
 
     is_visible   : State[bool] = State()
