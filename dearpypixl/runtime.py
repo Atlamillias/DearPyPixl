@@ -7,7 +7,7 @@ import enum
 import time
 from dearpygui import dearpygui as dpg, _dearpygui as _dpg
 from . import px_utils, px_appstate as _appstate
-from .px_items import Config, State
+from .px_items import Config, State, AppItemLike
 from .px_utils import staticproperty, classproperty
 from .events import Callback, CallStack, TaskerMode
 from .px_typing import (
@@ -34,7 +34,7 @@ __all__ = [
 
 
 
-class Application:
+class Application(AppItemLike):
     """Object-oriented interface for DearPyGui's application state.
 
     All instances operate on the global state. DearPyGui setup is performed when
@@ -143,7 +143,7 @@ class Application:
 
 
 
-class Viewport:
+class Viewport(AppItemLike):
     """Object-oriented interface for DearPyGui's viewport.
 
     All instances operate on the global state. The actual viewport is created
@@ -189,7 +189,7 @@ class Viewport:
         if primary_window and not px_utils.does_itemid_exist(primary_window):
             primary_window = None
             self.configure(primary_window=primary_window)
-        config.update(primary_window=primary_window)
+        config.update(primary_window=primary_window, )
         return config
 
     is_visible   : State[bool] = State()
@@ -315,7 +315,7 @@ class Frame(enum.IntEnum):
     LAST = -3
 
 
-class Runtime:
+class Runtime(AppItemLike):
     """Interface for the main event loop and runtime-level queries.
 
     All instances operate on the global state. Automatically prepares the runtime
