@@ -4,11 +4,10 @@ application-level states.
 import os
 import collections
 import enum
-import dataclasses
 import time
 from dearpygui import dearpygui as dpg, _dearpygui as _dpg
 from . import px_utils, px_appstate as _appstate
-from .px_items import Config, State, AppItemLike
+from .px_items import Config, AppItemLike
 from .px_utils import staticproperty, classproperty
 from .events import Callback, CallStack, TaskerMode
 from .px_typing import (
@@ -28,7 +27,6 @@ from .px_typing import (
 __all__ = [
     "Application",
     "Viewport",
-    "_Frame",
     "Runtime"
 ]
 
@@ -253,7 +251,8 @@ class Viewport(AppItemLike):
                 if not Application.is_set_up:
                     Application.setup()
                     dpg.create_viewport(**kwargs)
-                raise
+                else:
+                    raise
 
     def show(self) -> None:
         """Show the viewport if it's not already visible. The viewport cannot be hidden
