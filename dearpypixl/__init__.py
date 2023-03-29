@@ -2,7 +2,7 @@
 
 from . import px_patcher as _px_patcher
 
-_px_patcher.apply_patch()
+_px_patcher._patch_dearpygui()
 
 
 try:

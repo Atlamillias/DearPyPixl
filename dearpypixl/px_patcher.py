@@ -34,7 +34,7 @@ def patch_command(fn: _T) -> _T:
     return fn
 
 
-def apply_patch():
+def _patch_dearpygui():
     self_mod = sys.modules[__name__]
     for member in dir(self_mod):
         obj = getattr(self_mod, member)
