@@ -206,7 +206,22 @@ class ApplicationConfig(enum.StrEnum):
     THEME                      = "theme"
     FONT                       = "font"
 
-APPLICATION_CONFIG_TEMPLATE = frozenmap(typeddict_init(DPGApplicationConfig))
+APPLICATION_CONFIG_TEMPLATE = frozenmap({
+    ApplicationConfig.AUTO_DEVICE               : False,
+    ApplicationConfig.DOCKING                   : False,
+    ApplicationConfig.DOCKING_SPACE             : False,
+    ApplicationConfig.LOAD_INIT_FILE            : False,
+    ApplicationConfig.INIT_FILE                 : '',
+    ApplicationConfig.DEVICE                    : -1,
+    ApplicationConfig.ALLOW_ALIAS_OVERWRITES    : False,
+    ApplicationConfig.MANUAL_ALIAS_MANAGEMENT   : False,
+    ApplicationConfig.SKIP_KEYWORD_ARGS         : False,
+    ApplicationConfig.SKIP_POSITIONAL_ARGS      : False,
+    ApplicationConfig.SKIP_REQUIRED_ARGS        : False,
+    ApplicationConfig.AUTO_SAVE_INIT_FILE       : False,
+    ApplicationConfig.WAIT_FOR_INPUT            : False,
+    ApplicationConfig.MANUAL_CALLBACK_MANAGEMENT: False,
+})
 
 
 class DPGApplicationState(TypedDict):
@@ -238,7 +253,7 @@ class DPGViewportConfig(TypedDict):
     vsync             : bool
     always_on_top     : bool
     decorated         : bool
-    clear_color       : tuple[float, ...]
+    clear_color       : Sequence[float]
     disable_close     : bool
     # additional via DPX
     primary_window    : NotRequired[ItemId | None]
@@ -269,7 +284,25 @@ class ViewportConfig(enum.StrEnum):
     CALLBACK           = "callback"
     USER_DATA          = "user_data"
 
-VIEWPORT_CONFIG_TEMPLATE = frozenmap(typeddict_init(DPGViewportConfig))
+VIEWPORT_CONFIG_TEMPLATE = frozenmap({
+    ViewportConfig.CLEAR_COLOR  : (0.0, 0.0, 0.0, 1.0),
+    ViewportConfig.SMALL_ICON   : '',
+    ViewportConfig.LARGE_ICON   : '',
+    ViewportConfig.X_POS        : 100,
+    ViewportConfig.Y_POS        : 100,
+    ViewportConfig.WIDTH        : 1280,
+    ViewportConfig.HEIGHT       : 800,
+    ViewportConfig.RESIZABLE    : True,
+    ViewportConfig.VSYNC        : True,
+    ViewportConfig.MIN_WIDTH    : 250,
+    ViewportConfig.MAX_WIDTH    : 10000,
+    ViewportConfig.MIN_HEIGHT   : 250,
+    ViewportConfig.MAX_HEIGHT   : 10000,
+    ViewportConfig.ALWAYS_ON_TOP: False,
+    ViewportConfig.DECORATED    : True,
+    ViewportConfig.TITLE        : 'Application',
+    ViewportConfig.DISABLE_CLOSE: False,
+})
 
 
 class DPGViewportState(TypedDict):
