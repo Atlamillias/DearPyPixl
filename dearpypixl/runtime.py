@@ -83,10 +83,10 @@ class Application(AppItemLike):
 
     @classproperty  # inquire w/o prepping app
     def is_set_up(cls) -> bool:
-        return Application.state(None)["prepped"]
+        return Application.state(None)["set_up"]
 
     def state(self) -> DPGApplicationState:
-        return {"prepped": _appstate._APPLICATION_SET_UP}
+        return {"set_up": _appstate._APPLICATION_SET_UP}
 
 
     # ~~ Properties, Methods ~~
