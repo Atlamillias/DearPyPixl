@@ -84,7 +84,7 @@ class Config(Generic[_GT, _ST], DPGProperty):
     __slots__ = ()
 
     def __get__(self, inst: 'AppItemType', cls) -> _GT:
-        if inst:
+        if inst is not None:
             return inst.configuration()[self._key]
         return self
 
@@ -96,7 +96,7 @@ class Info(Generic[_GT], DPGProperty):
     __slots__ = ()
 
     def __get__(self, inst: 'AppItemType', cls) -> _GT:
-        if inst:
+        if inst is not None:
             return inst.information()[self._key]
         return self
 
@@ -105,7 +105,7 @@ class State(Generic[_GT], DPGProperty):
     __slots__ = ()
 
     def __get__(self, inst: 'AppItemType', cls) -> _GT:
-        if inst:
+        if inst is not None:
             state = inst.state().get(self._key, NULL)
             return state if state is not NULL else None
         return self
