@@ -155,7 +155,7 @@ class Viewport(AppItemLike):
     __UUID = "DPG NOT USED YET"
 
     @overload
-    def __init__(self, *, title: str = ..., small_icon: str = ..., large_icon: str = ..., width: int = ..., height: int = ..., x_pos: int = ..., y_pos: int = ..., min_width: int = ..., max_width: int = ..., min_height: int = ..., max_height: int = ..., resizable: bool = ..., vsync: bool = ..., always_on_top: bool = ..., decorated: bool = ..., clear_color: tuple[int, ...] = ..., primary_window: ItemId | None = ..., callback: DPGCallback | None = ..., user_data: Any = ..., **kwargs) -> None: ...
+    def __init__(self, *, title: str = ..., small_icon: str = ..., large_icon: str = ..., width: int = ..., height: int = ..., x_pos: int = ..., y_pos: int = ..., min_width: int = ..., max_width: int = ..., min_height: int = ..., max_height: int = ..., resizable: bool = ..., vsync: bool = ..., always_on_top: bool = ..., decorated: bool = ..., clear_color: tuple[int, ...] = ..., disable_close: bool = ..., primary_window: ItemId | None = ..., callback: DPGCallback | None = ..., user_data: Any = ..., **kwargs) -> None: ...
     def __init__(self, **kwargs: DPGViewportConfig):
         super().__init__()
         self.create(title="Application")
@@ -169,10 +169,11 @@ class Viewport(AppItemLike):
     primary_window: Config[ItemId | None, ItemId | None]           = Config()
 
     @overload
-    def configure(self, *, title: str = ..., small_icon: str = ..., large_icon: str = ..., width: int = ..., height: int = ..., x_pos: int = ..., y_pos: int = ..., min_width: int = ..., max_width: int = ..., min_height: int = ..., max_height: int = ..., resizable: bool = ..., vsync: bool = ..., always_on_top: bool = ..., decorated: bool = ..., clear_color: tuple[int, ...] = ..., primary_window: ItemId | None = ..., callback: DPGCallback | None = ..., user_data: Any = ..., **kwargs) -> None: ...
+    def configure(self, *, title: str = ..., small_icon: str = ..., large_icon: str = ..., width: int = ..., height: int = ..., x_pos: int = ..., y_pos: int = ..., min_width: int = ..., max_width: int = ..., min_height: int = ..., max_height: int = ..., resizable: bool = ..., vsync: bool = ..., always_on_top: bool = ..., decorated: bool = ..., clear_color: tuple[int, ...] = ..., disable_close: bool = ..., primary_window: ItemId | None = ..., callback: DPGCallback | None = ..., user_data: Any = ..., **kwargs) -> None: ...
     def configure(self, callback: DPGCallback | None | Null = Null, user_data: Any = Null, primary_window: ItemId | None | Null = Null, **kwargs: DPGViewportConfig) -> None:
-        """Update the viewport's configuration. If the viewport is showing,
-        'icon'-related options are ignored."""
+        """Update the viewport's configuration. If the viewport is showing, 'icon'-related
+        options are ignored.
+        """
         _dpg.configure_viewport(self.__UUID, **kwargs)
         if callback is not Null:
             _dpg.set_viewport_resize_callback(callback, user_data=_appstate._VIEWPORT_USER_DATA)

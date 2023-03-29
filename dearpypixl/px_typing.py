@@ -239,6 +239,7 @@ class DPGViewportConfig(TypedDict):
     always_on_top     : bool
     decorated         : bool
     clear_color       : tuple[float, ...]
+    disable_close     : bool
     # additional via DPX
     primary_window    : NotRequired[ItemId | None]
     use_primary_window: NotRequired[bool]
@@ -262,6 +263,7 @@ class ViewportConfig(enum.StrEnum):
     ALWAYS_ON_TOP      = "always_on_top"
     DECORATED          = "decorated"
     CLEAR_COLOR        = "clear_color"
+    DISABLE_CLOSE      = "disable_close"
     PRIMARY_WINDOW     = "primary_window"
     USE_PRIMARY_WINDOW = "use_primary_window"
     CALLBACK           = "callback"
