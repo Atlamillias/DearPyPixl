@@ -826,7 +826,7 @@ class AppItemLike:
     """Minimal item API for non-item interfaces.
     """
     __slots__ = ()
-    
+
     command : DPGCommand = _null_command
     identity: DPGTypeId  = 0, ""
 
@@ -836,7 +836,7 @@ class AppItemLike:
 
     def __getattr__(self, name: str):
         try:
-            self.configuration()[name]
+            return self.configuration()[name]
         except KeyError:
              raise AttributeError(
                 f"{type(self).__qualname__!r} object has no attribute {name!r}."
