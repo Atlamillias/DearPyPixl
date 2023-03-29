@@ -324,6 +324,11 @@ class Frame(enum.IntEnum):
     LAST = -3
 
 
+class _RTConfig(Config):  # class-bound getter, instance-bound setter
+    def __get__(self, inst, cls):
+        return cls.configuration()[self._key]
+
+
 class Runtime(AppItemLike):
     """Interface for the main event loop and runtime-level queries.
 
@@ -334,6 +339,8 @@ class Runtime(AppItemLike):
     # XXX: `Runtime` is more of a module w/descriptors than a class. There
     # are no instance methods and very few class methods. Updates are
     # performed on `Runtime` explicitly, not `cls` or `self`.
+
+    __slots__ = ()
 
     def __init__(self, *, stack_factory: type[CallStack] = CallStack, **kwargs):
         super().__init__()
@@ -372,8 +379,8 @@ class Runtime(AppItemLike):
 
     # ~~ Item API ~~
 
-    frame_rate_limit: int | None = classproperty(lambda cls: cls.configuration()["set_up"])
-    lock_frame_rate : bool       = classproperty(lambda cls: cls.configuration()["limiting_frames"])
+    frame_rate_limit: Config[int | None, int | None] = _RTConfig()
+    lock_frame_rate : Config[bool, bool]             = _RTConfig()
 
     _frame_rate_limit: int  = 0
     _frame_rate_lock : bool = False
@@ -474,8 +481,9 @@ class Runtime(AppItemLike):
         for _ in range(prerender_frames):
             cls.render_frame()
 
-        infinity = float('inf')
-        tasker   = Runtime.frame_tasks[Frame.NEXT].tasker()
+        infinity   = float('inf')
+        task_queue = Runtime.frame_tasks[Frame.NEXT]
+        tasker     = task_queue.tasker()
         while cls.is_running:
             frlimit = Runtime._frame_rate_limit
             time_avail = 1000 / frlimit if frlimit and Runtime._frame_rate_lock else infinity
@@ -485,7 +493,7 @@ class Runtime(AppItemLike):
                 while time_used < time_avail:
                     time_used += next(tasker)
             except StopIteration:
-                pass
+                tasker = task_queue.tasker()
 
             if time_avail != infinity:
                 # runtime is ahead -- take a nap
