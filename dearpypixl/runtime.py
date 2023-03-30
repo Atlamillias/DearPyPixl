@@ -56,6 +56,23 @@ class Application(AppItemLike):
         except KeyError:
             raise AttributeError(f"{type(self).__qualname__!r} object has no attribute {name!r}.")
 
+    @staticmethod
+    def create_context() -> None:
+        _dpg.create_context()  # XXX: DPG doesn't care when calling multiple times.
+
+    @staticmethod
+    def destroy_context() -> None:
+        _dpg.destroy_context()
+
+    @classmethod
+    def setup(cls) -> None:
+        """Create the required graphical context for the application and, if necessary,
+        initializes DearPyGui via `setup_dearpygui`.
+        """
+        if not cls.is_set_up:
+            cls.create_context()
+            _dpg.setup_dearpygui()
+
     # ~~ Item API ~~
 
     theme: Config[ItemId | None, ItemId | None] = Config()
@@ -82,46 +99,24 @@ class Application(AppItemLike):
 
     @classproperty  # inquire w/o prepping app
     def is_set_up(cls) -> bool:
-        return Application.state(None)["set_up"]
+        return cls.state()["set_up"]
 
-    def state(self) -> DPGApplicationState:
+    @staticmethod
+    def state() -> DPGApplicationState:
         return {"set_up": _appstate._APPLICATION_SET_UP}
-
 
     # ~~ Properties, Methods ~~
 
-    @property
-    def process_id(self) -> int:
+    @staticproperty
+    def process_id() -> int:
         """Return the id of the running process."""
         return os.getpid()
 
     @property
     def platform(self) -> int:
-        """Return the DearPyGui constant value representing the running
-        operating system."""
+        """Return the DearPyGui constant value representing the running operating
+        system."""
         return _dpg.get_platform()
-
-    @property
-    def version(self) -> str:
-        """Return the running DearPyGui version as 'major.minor.patch'."""
-        return self.configuration()["version"]
-
-    @classmethod
-    def create_context(cls) -> None:
-        _dpg.create_context()  # XXX: DPG doesn't care when calling multiple times.
-
-    @classmethod
-    def destroy_context(cls) -> None:
-        _dpg.destroy_context()
-
-    @classmethod
-    def setup(cls) -> None:
-        """Create the required graphical context for the application and, if necessary,
-        initializes DearPyGui via `setup_dearpygui`.
-        """
-        if not cls.is_set_up:
-            cls.create_context()
-            _dpg.setup_dearpygui()
 
     @staticmethod
     def save_ini_file(file: str) -> None:
@@ -349,7 +344,7 @@ class _RuntimeState:
         self.previous_frame   = 0
 
     def _schedule_tasks(self) -> float:
-        """Queue callbacks to invoke this (upcoming) frame. Additionally, return the time
+        """Queue callbacks for the upcoming frame. Additionally, return the time
         (in milliseconds) this execution took.
         """
         all_frame_tasks = self.frame_tasks
@@ -379,6 +374,8 @@ class _RuntimeState:
         return pending_tasks.timer() - start_time
 
     def _schedule_tasks_manual(self) -> float:
+        time_elapsed = self._schedule_tasks()  # user tasks normally run first regardless
+
         timer = self.frame_tasks[_Frame.NEXT].timer
         start_time = timer()
         if _dpg.get_app_configuration()["manual_callback_management"]:
@@ -387,7 +384,7 @@ class _RuntimeState:
                 for cb, s, a, u in _dpg.get_callback_queue()
                 if cb is not None
             )
-        return timer() - start_time + self._schedule_tasks()
+        return timer() - start_time + time_elapsed
 
 
 class Runtime(AppItemLike):
@@ -404,6 +401,8 @@ class Runtime(AppItemLike):
 
     __slots__ = ()
 
+    @overload
+    def __init__(self, *, stack_factory: type[CallStack] = CallStack, frame_rate_limit: int | None = ..., frame_rate_lock: bool = ..., **kwargs) -> None: ...
     def __init__(self, *, stack_factory: type[CallStack] = CallStack, **kwargs):
         super().__init__()
         self.setup(stack_factory=stack_factory)
@@ -419,20 +418,18 @@ class Runtime(AppItemLike):
             * stack_factory: `CallStack` class to use for frame callback setup. Defaults
             to `CallStack`.
 
+
         This method will also do the following (in order, as needed);
             * create the required graphical context for the application
             * initialize DearPyGui
-            * create the viewport
-            * create call stacks for on-frame/runtime updates
 
-        NOTE: Most application settings will no longer be writable after calling this method.
+        Other methods may call this one to ensure the runtime enviroment is set up.
         """
         global _RT_STATE
-
         if _RT_STATE is None:
             Application.setup()
             _RT_STATE = _RuntimeState(stack_factory)
-            _RT_STATE.frame_tasks[_Frame.ALL]  = stack_factory(tasker_mode=TaskerMode.CYCLE)
+            _RT_STATE.frame_tasks[_Frame.ALL ] = stack_factory(tasker_mode=TaskerMode.CYCLE)
             _RT_STATE.frame_tasks[_Frame.NEXT] = stack_factory(tasker_mode=TaskerMode.POPLEFT)
             _RT_STATE.frame_tasks[_Frame.LAST] = stack_factory(tasker_mode=TaskerMode.POPLEFT)
 
@@ -484,15 +481,63 @@ class Runtime(AppItemLike):
 
     @classmethod
     def start(cls, *, prerender_frames: int = 0):
-        cls.setup()
+        """Start the runtime loop. This blocks the calling thread until the viewport is
+        closed or the `.stop` method is called.
 
+        Args:
+            * prerender_frames: The number of frames to render before starting the loop.
+            Defaults to 0.
+
+
+        This method will also do the following (in order, as needed);
+            * create the required graphical context for the application
+            * initialize DearPyGui
+            * create and/or show the viewport
+
+
+        At the start of each iteration, the runtime's settings are used to set the state for
+        that iteration. Tasks scheduled to run on the upcoming frame are moved to the end of the
+        runtime's priority task queue (`Runtime.frame_tasks[Runtime.NEXT]`). Tasks in the
+        priority queue are then executed oldest-to-newest before finally rendering the frame
+        via the `.render_frame` classmethod.
+
+        By default, the renderer will run all tasks in the priority queue until the queue has
+        been cleared. If the frame rate is managed via `frame_rate_limit` and `frame_rate_lock`
+        settings, the renderer will attempt to maintain the target frame rate by monitoring each
+        task's execution time. If the renderer has enough time to clear the priority queue, the
+        thread will be put to sleep until it's time to render the frame. However, if the queue is
+        long and/or tasks are taking a long time to complete then the renderer will cease their
+        execution and will render the "current" frame as soon as possible -- Tasks not executed
+        remain in the priority queue where they will (hopefully) be executed next frame.
+
+        When tasks are added to the priority queue each frame, tasks scheduled for execution on
+        specific frames are queued first, followed by tasks scheduled to run every/any frame (i.e.
+        `Runtime.frame_tasks[Runtime.ALL]`).
+
+        When the renderer sets the local state each iteration, the `frame_rate_limit` setting
+        is ignored unless the `frame_rate_lock` setting is `True`. Similarly, `frame_rate_lock`
+        is ignored if `frame_rate_limit` is not meaningful.
+
+        Tasks in `Runtime.frame_tasks[Runtime.LAST]` are executed when the runtime loop is
+        terminated via `.stop` method or by closing the viewport.
+
+        Passing a *prerender_frames* argument will render that many frames before and outside
+        the runtime loop. Any task scheduled for a frame rendered this way will not run until
+        all pre-rendered frames have been rendered. This can be useful when you want to ensure
+        DearPyGui has enough time to update its internal state (this usually occurs within the
+        first few frames).
+        """
+        cls.setup()
         rt_state = _RT_STATE
 
+        # set the scheduler for the runtime ("manual_callback_management" will not change anymore)
         if Application().configuration()["manual_callback_management"]:
-            schedule_tasks = rt_state._schedule_tasks_manual
+            task_scheduler = rt_state._schedule_tasks_manual
         else:
-            schedule_tasks = rt_state._schedule_tasks
+            task_scheduler = rt_state._schedule_tasks
+        # create and/or show the viewport
         Viewport().show()
+
         for _ in range(prerender_frames):
             cls.render_frame()
 
@@ -502,7 +547,7 @@ class Runtime(AppItemLike):
         while cls.is_running:
             frlimit = rt_state.frame_rate_limit
             time_avail = 1000 / frlimit if frlimit and rt_state.frame_rate_lock else infinity
-            time_used  = schedule_tasks()
+            time_used  = task_scheduler()
 
             try:
                 while time_used < time_avail:
@@ -514,8 +559,6 @@ class Runtime(AppItemLike):
                 # runtime is ahead -- take a nap
                 time.sleep(max(time_avail - time_used, 0) / 1000)
 
-            # XXX: Rendering the frame could take awhile depending on DPG's load. Maybe
-            # render first, then update? Seems weird imo.
             cls.render_frame()
         rt_state.frame_tasks[cls.LAST]()
 
@@ -523,7 +566,7 @@ class Runtime(AppItemLike):
     def stop(cls):
         if cls.is_running:
             _dpg.stop_dearpygui()
-            _RT_STATE.frame_tasks[_Frame.LAST]()
+            _RT_STATE.frame_tasks[cls.LAST]()
 
 
     # ~~ On-Frame Callback API ~~
