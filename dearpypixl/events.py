@@ -290,42 +290,33 @@ class Tasker(DPGCallback):
     DEFAULT = ITER
 
     @new_tasker(ITER)
-    def _tasker_iter(self: 'CallStack', sender: ItemId = None, app_data : Any = None, user_data: Any = None) -> Generator[float, None, None]:
+    def _tasker_iter(self: 'CallStack', sender: ItemId = None, app_data : Any = None, user_data: Any = None) -> Generator[Any, None, None]:
         sender, app_data, user_data = self._get_task_arguments(sender, app_data, user_data)
-        timer = self.timer
         for callback in self:
-            start = timer()
-            callback(sender, app_data, user_data)
-            yield timer() - start
+            yield callback(sender, app_data, user_data)
 
     @new_tasker(CYCLE)
-    def _tasker_cycle(self: 'CallStack', sender: ItemId = None, app_data : Any = None, user_data: Any = None) -> Generator[float, None, None]:
+    def _tasker_cycle(self: 'CallStack', sender: ItemId = None, app_data : Any = None, user_data: Any = None) -> Generator[Any, None, None]:
         while True:
             yield from self._tasker_iter(sender, app_data, user_data)
 
     @new_tasker(POP)
-    def _tasker_pop(self: 'CallStack', sender: ItemId = None, app_data : Any = None, user_data: Any = None) -> Generator[float, None, None]:
+    def _tasker_pop(self: 'CallStack', sender: ItemId = None, app_data : Any = None, user_data: Any = None) -> Generator[Any, None, None]:
         sender, app_data, user_data = self._get_task_arguments(sender, app_data, user_data)
-        timer = self.timer
         next_callback = self.pop
         while True:
-            start = timer()
             try:
-                next_callback()(sender, app_data, user_data)
-                yield timer() - start
+                yield next_callback()(sender, app_data, user_data)
             except IndexError:
                 break
 
     @new_tasker(POPLEFT)
-    def _tasker_popleft(self: 'CallStack', sender: ItemId = None, app_data : Any = None, user_data: Any = None) -> Generator[float, None, None]:
+    def _tasker_popleft(self: 'CallStack', sender: ItemId = None, app_data : Any = None, user_data: Any = None) -> Generator[Any, None, None]:
         sender, app_data, user_data = self._get_task_arguments(sender, app_data, user_data)
-        timer = self.timer
         next_callback = self.popleft
         while True:
-            start = timer()
             try:
-                next_callback()(sender, app_data, user_data)
-                yield timer() - start
+                yield next_callback()(sender, app_data, user_data)
             except IndexError:
                 break
 
@@ -382,8 +373,7 @@ class _CallStack(Generic[T]):  # slotted method signatures & generic typing
     def _fn_process_callable(callback: DPGCallback[P]) -> DPGCallback[P] | Callback[P]: ...
 
     def tasker(self, sender: ItemId = None, app_data : Any = None, user_data: Any = None) -> Generator[float, None, None]:
-        """Returns a generator that, when advanced, times and executes a queued callback. Yields
-        the time spent running the callback.
+        """Returns a generator that, when advanced, times and executes a queued callback.
 
         Args:
             * sender: Sent as the first positional argument for callbacks. This value is ignored
@@ -398,21 +388,16 @@ class _CallStack(Generic[T]):  # slotted method signatures & generic typing
 
         The behavior of this method depends on the stack's mode setting:
 
-            `TaskerMode.DEFAULT`: The generator iterates through the queue and calls each callback
+            `TaskerMode.ITER`: The generator iterates through the queue and calls each callback
             iterated. Reaching the end of the queue exhausts the generator.
 
-            `TaskerMode.CYCLE`: Same behavior as `TaskerMode.DEFAULT` looped indefinitely.
+            `TaskerMode.CYCLE`: Same behavior as `TaskerMode.ITER` looped indefinitely.
 
             `TaskerMode.POP`: Advancing the generator pops the right-most (newest) callback from
             the queue and runs it. The generator is exhausted once the queue is cleared.
 
             `TaskerMode.POPLEFT`: Similar behavior to `TaskerMode.POP`, but pops the left-most
             (oldest) callback from the queue instead.
-
-        The function set on `self.timer` is used to measure a callback's execution speed. The unit
-        of the yielded value is a reflection of the timer function used (`time.perf_counter` by
-        default). Does not account for or correct floating point errors, so the measurement may not
-        be exact.
         """
 
 
@@ -462,57 +447,8 @@ class CallStack(_CallStack[DPGCallback], Tasker):
     (a member of the `TaskerMode` enumeration). For convenience, `TaskerMode` members are also
     available as constants on the `CallStack` class. See `Callstack.tasker` for more information
     regarding these behaviors.
-
-    The function set on `self.timer` is used to measure the execution speed of callbacks processed
-    by `.tasker`. The unit of the yielded value is a reflection of the timer function used (
-    `time.perf_counter` by default). Note that nothing is done to correct any floating point errors,
-    so the measurement may not be exact.
-
-    Below is an example of maintaining at least ~60 frames-per-second regardless of tasks occurring
-    in the render loop using various tasker modes;
-        >>> import dearpygui.dearpygui as dpg
-        >>> from dearpypixl.events import CallStack
-        >>>
-        >>>
-        >>> dpg.create_context()
-        >>> dpg.create_viewport()
-        >>> dpg.setup_dearpygui()
-        >>> dpg.show_viewport()
-        >>>
-        >>> dpg.show_metrics()
-        >>>
-        >>>
-        >>> next_frame_tasks = CallStack(tasker_mode=CallStack.POPLEFT)
-        >>> every_frame_tasks = CallStack(tasker_mode=CallStack.CYCLE)
-        >>>
-        >>>
-        >>> # <USER CODE THAT FILLS STACKS GOES HERE>
-        >>>
-        >>>
-        >>> target_time = 0.016  # 60 FPS
-        >>>
-        >>> onetime_tasks = next_frame_tasks.tasker()
-        >>> cycled_tasks = every_frame_tasks.tasker()
-        >>>
-        >>> while dpg.is_dearpygui_running():
-        ...     time_elapsed = 0.0
-        ...
-        ...     # run any immediate one-time updates
-        ...     if next_frame_tasks:
-        ...         try:
-        ...             while time_elapsed < 0.016:
-        ...                 time_elapsed += next(onetime_tasks)()
-        ...         except StopIteration:
-        ...                 onetime_tasks = next_frame_tasks.tasker()
-        ...
-        ...     # use time remaining to run other updates, picking up where we left off last frame
-        ...     while time_elapsed < 0.016:
-        ...         time_elapsed += next(cycled_tasks)()
-        ...
-        ...     dpg.render_dearpygui_frame()
     """
     __slots__ = (
-        "timer",
         "tasker",                  # 'tasker_mode'
         "_fn_return_callable",     # 'wrapped_returns'
         "_fn_process_callable",    # 'force_wrapping'
@@ -540,7 +476,6 @@ class CallStack(_CallStack[DPGCallback], Tasker):
         sender         : ItemId | None | NULL = NULL,
         app_data       : Any                  = NULL,
         user_data      : Any                  = NULL,
-        timer          : Callable[[], float]  = perf_counter,
         tasker_mode    : TaskerMode | int     = TaskerMode.ITER,
         force_wrapping : bool = False,
         wrapped_returns: bool = False,
@@ -562,7 +497,6 @@ class CallStack(_CallStack[DPGCallback], Tasker):
             sender=sender,
             app_data=app_data,
             user_data=user_data,
-            timer=timer,
             tasker_mode=tasker_mode,
             force_wrapping=force_wrapping,
             wrapped_returns=wrapped_returns,
@@ -627,8 +561,8 @@ class CallStack(_CallStack[DPGCallback], Tasker):
     wrapped_returns: Config[bool, bool]                                 = Config()
 
     @overload
-    def configure(self, *, sender: ItemId | None | NULL = ..., app_data: Any = ..., user_data: Any = ..., tasker_mode: TaskerMode | int = ..., timer: Callable[[], float] = ..., wrapped_returns: bool = ..., force_wrapping: bool = ..., **kwargs) -> None: ...
-    def configure(self, tasker_mode: Any = None, timer: Any = None, wrapped_returns: bool | None = None, force_wrapping: bool | None = None, **kwargs) -> None:
+    def configure(self, *, sender: ItemId | None | NULL = ..., app_data: Any = ..., user_data: Any = ..., tasker_mode: TaskerMode | int = ..., wrapped_returns: bool = ..., force_wrapping: bool = ..., **kwargs) -> None: ...
+    def configure(self, tasker_mode: Any = None, wrapped_returns: bool | None = None, force_wrapping: bool | None = None, **kwargs) -> None:
         cb_args = [*self._cb_pos_args]
         if _SENDER in kwargs:
             cb_args[0] = kwargs[_SENDER]
@@ -640,8 +574,6 @@ class CallStack(_CallStack[DPGCallback], Tasker):
 
         if tasker_mode is not None:
             self.tasker_mode = tasker_mode  # `Tasker.tasker_mode`
-        if timer is not None:
-            self.timer = timer
         if force_wrapping is not None:
             self._fn_process_callable = _CallStack_force_wrapping_T if force_wrapping else _CallStack_force_wrapping_F
         if wrapped_returns is not None:
@@ -651,7 +583,6 @@ class CallStack(_CallStack[DPGCallback], Tasker):
         config = dict(zip((_SENDER, _APP_DATA, _USER_DATA), self._cb_pos_args))
         config.update(
             tasker_mode=self.tasker_mode,
-            timer=self.timer,
             force_wrapping=True if self._fn_process_callable == _CallStack_force_wrapping_T else False,
             wrapped_returns=True if self._fn_return_callable == _CallStack_wrapped_returns_T else False,
         )
@@ -684,7 +615,7 @@ class CallStack(_CallStack[DPGCallback], Tasker):
         wrapped = self._fn_process_callable(_object)
         self._queue.appendleft(wrapped)
         return self._fn_return_callable(_object, wrapped)
-    
+
 
 
 
