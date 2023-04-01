@@ -491,11 +491,6 @@ class Runtime(AppItemLike):
     def render_frame(): ...  # pyright inferrence
     render_frame = staticmethod(_dpg.render_dearpygui_frame)   # can be overloaded (non-instance-bound)
 
-    @overload
-    @staticmethod
-    def sleep(secs: float): ... # pyright inferrence
-    sleep = staticmethod(time.sleep)   # can be overloaded (non-instance-bound)
-
     @classmethod
     def start(cls, *, prerender_frames: int = 0):
         """Start the runtime loop. This blocks the calling thread until the viewport is
@@ -542,16 +537,16 @@ class Runtime(AppItemLike):
         for _ in range(prerender_frames):
             cls.render_frame()
 
-        task_queue = rt_state.tasks[cls.PRIORITY]
-
+        task_queue    = rt_state.tasks[cls.PRIORITY]
         tick_interval = rt_state.tick_interval
-        last_frame_ts = _perf_counter_ms()
+        ts_last_upd   = _perf_counter_ms()
+        ts_last_fr    = ts_last_upd
         time_buffer   = 0.0
         updates       = task_queue.tasker()
         while cls.is_running:
-            this_frame_ts = _perf_counter_ms()
-            time_buffer  += round(this_frame_ts - last_frame_ts, 12)
-            last_frame_ts = this_frame_ts
+            this_upd_ts  = _perf_counter_ms()
+            time_buffer += round(this_upd_ts - ts_last_upd, 12)
+            ts_last_upd  = this_upd_ts
             fill_prio_queue()
             try:
                 while time_buffer >= tick_interval:
@@ -560,12 +555,11 @@ class Runtime(AppItemLike):
             except StopIteration:
                 updates = task_queue.tasker()
 
-            # if clamping the frame rate, sleep until it's time to render
-            # TODO: remove `sleep` to decouple updates from framerate
-            cls.sleep(
-                max(0.0, (rt_state.render_interval - (_perf_counter_ms() - this_frame_ts))) / 1000.0
-            )
-            cls.render_frame()
+            fr_interval = rt_state.render_interval
+            ts_this_fr  = _perf_counter_ms()
+            if ts_this_fr - ts_last_fr >= fr_interval:
+                ts_last_fr = ts_this_fr
+                cls.render_frame()
         rt_state.tasks[cls.AT_EXIT]()
 
     @classmethod
