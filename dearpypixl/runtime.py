@@ -6,7 +6,7 @@ import collections
 import enum
 import time
 from dearpygui import dearpygui as dpg, _dearpygui as _dpg
-from . import px_utils, px_appstate as _appstate
+from . import px_appstate as _appstate
 from .px_items import Config, AppItemLike
 from .px_utils import staticproperty, classproperty
 from .events import Callback, CallStack, TaskerMode
@@ -320,7 +320,7 @@ class Viewport(AppItemLike):
 
 
 
-class _Frame(enum.IntEnum):
+class _TaskSchedule(enum.IntEnum):
     """Special frame values for the next, last, and all frames."""
     ALL  = -1
     NEXT = -2
@@ -331,60 +331,69 @@ _RT_STATE: '_RuntimeState | None' = None
 
 class _RuntimeState:
     __slots__ = (
-        "previous_frame",
-        "frame_tasks",
-        "frame_rate_limit",
-        "frame_rate_lock",
+        "tasks",
+        "_frame_rate_limit",
+        "_frame_rate_lock",
+        "_render_interval",
+        "tick_interval",
     )
 
-    def __init__(self, stack_factory: type[CallStack] = CallStack):
-        self.frame_tasks      = collections.defaultdict(stack_factory)
+    def __init__(self):
+        self._frame_rate_limit: int
+        self._frame_rate_lock : bool
+        self._render_interval : float
+
+        self._render_interval  = 0.0  # |
+        self.tick_interval     = 1.0  # |- milliseconds
+        self.tasks             = {}
+
         self.frame_rate_limit = None
         self.frame_rate_lock  = False
-        self.previous_frame   = 0
 
-    def _schedule_tasks(self) -> float:
-        """Queue callbacks for the upcoming frame. Additionally, return the time
-        (in milliseconds) this execution took.
-        """
-        all_frame_tasks = self.frame_tasks
-        pending_tasks   = all_frame_tasks[_Frame.NEXT]
+    @property
+    def frame_rate_limit(self) -> int | None:
+        return self._frame_rate_limit or None
+    @frame_rate_limit.setter
+    def frame_rate_limit(self, value: int | None):
+        self._frame_rate_limit = value = int(value) if value is not None else 0
+        self._upd_render_interval()
 
-        start_time = pending_tasks.timer()
+    @property
+    def frame_rate_lock(self) -> bool:
+        return self._frame_rate_lock
+    @frame_rate_lock.setter
+    def frame_rate_lock(self, value: bool) -> None:
+        self._frame_rate_lock = bool(value)
+        self._upd_render_interval()
 
-        previous_frame = self.previous_frame
-        current_frame  = _dpg.get_frame_count() + 1
-        # Add tasks from this frame only. If the runtime is behind, tasks from
-        # previous frames should still be in-queue.
-        if previous_frame + 1 == current_frame:
-            pending_tasks._queue.extend(all_frame_tasks.pop(current_frame, ()))
-            pending_tasks._queue.extend(all_frame_tasks[_Frame.ALL])  # routine tasks
-        # The runtime's state is dirty because a frame(s) was rendered outside of
-        # the `.start` method. Queue all pending tasks from prior frames.
-        elif previous_frame < current_frame:
-            for f in range(previous_frame + 1, current_frame):
-                pending_tasks._queue.extend(all_frame_tasks.pop(f, ()))
-            # XXX maybe nest this into the above loop for accuracy/"fairness"
-            pending_tasks._queue.extend(all_frame_tasks[_Frame.ALL])  # routine tasks
-        # The "current frame" has not been rendered and the task queue has yet to be
-        # processed (maybe a duplicate call) -- do nothing.
-        ...
+    @property
+    def render_interval(self) -> float:
+        return self._render_interval
 
-        self.previous_frame = current_frame
-        return pending_tasks.timer() - start_time
+    def _upd_render_interval(self):
+        if self.frame_rate_limit and self.frame_rate_lock:
+            self._render_interval = round(1000.0 / self.frame_rate_limit, 6)
+        else:
+            self._render_interval = 0.0
 
-    def _schedule_tasks_manual(self) -> float:
-        time_elapsed = self._schedule_tasks()  # user tasks normally run first regardless
+    def _fill_priority_queue(self) -> float:
+        priority_queue = self.tasks[_TaskSchedule.NEXT]
+        standby_queue  = self.tasks[_TaskSchedule.ALL]
+        if not priority_queue:
+            priority_queue._queue.extend(standby_queue)
 
-        timer = self.frame_tasks[_Frame.NEXT].timer
-        start_time = timer()
+    def _fill_priority_queue2(self) -> float:
+        self._fill_priority_queue()  # user tasks normally run first regardless
         if _dpg.get_app_configuration()["manual_callback_management"]:
-            self.frame_tasks[_Frame.NEXT]._queue.extend(
+            self.tasks[_TaskSchedule.NEXT]._queue.extend(
                 Callback(cb, sender=s, app_data=a, user_data=u)
                 for cb, s, a, u in _dpg.get_callback_queue()
                 if cb is not None
             )
-        return timer() - start_time + time_elapsed
+
+
+def _perf_counter_ms() -> float:
+    return 1000.0 * time.perf_counter()
 
 
 class Runtime(AppItemLike):
@@ -428,48 +437,51 @@ class Runtime(AppItemLike):
         global _RT_STATE
         if _RT_STATE is None:
             Application.setup()
-            _RT_STATE = _RuntimeState(stack_factory)
-            _RT_STATE.frame_tasks[_Frame.ALL ] = stack_factory(tasker_mode=TaskerMode.CYCLE)
-            _RT_STATE.frame_tasks[_Frame.NEXT] = stack_factory(tasker_mode=TaskerMode.POPLEFT)
-            _RT_STATE.frame_tasks[_Frame.LAST] = stack_factory(tasker_mode=TaskerMode.POPLEFT)
+            _RT_STATE = _RuntimeState()
+            _RT_STATE.tasks[_TaskSchedule.ALL ] = stack_factory()
+            _RT_STATE.tasks[_TaskSchedule.NEXT] = stack_factory(tasker_mode=TaskerMode.POPLEFT)
+            _RT_STATE.tasks[_TaskSchedule.LAST] = stack_factory(tasker_mode=TaskerMode.POPLEFT)
 
     # ~~ Item API ~~
 
     frame_rate_limit: Config[int | None, int | None] = Config()
     frame_rate_lock : Config[bool, bool]             = Config()
+    tick_interval   : Config[float, float]           = Config()
 
     @overload
-    def configure(self, *, frame_rate_limit: int | None = ..., frame_rate_lock: bool = ..., **kwargs) -> None: ...
-    def configure(self, *, frame_rate_limit: Any = Null, frame_rate_lock: Any = Null, **kwargs) -> None:
-        if frame_rate_limit is not Null:
-            _RT_STATE.frame_rate_limit = frame_rate_limit or None
-        if frame_rate_lock is not Null:
-            _RT_STATE.frame_rate_lock = bool(frame_rate_lock)
+    def configure(self, *, frame_rate_limit: int | None = ..., frame_rate_lock: bool = ..., tick_interval: float = ..., **kwargs) -> None: ...
+    def configure(self, **kwargs) -> None:
+        for k, v in kwargs.items():
+            try:
+                setattr(_RT_STATE, k, v)
+            except AttributeError:
+                raise TypeError(f"invalid configuration option {k!r}.")
 
     def configuration(self) -> dict[str]:
         return dict(
             frame_rate_limit=_RT_STATE.frame_rate_limit,
             frame_rate_lock=_RT_STATE.frame_rate_lock,
+            tick_interval=_RT_STATE.tick_interval,
         )
 
-    @staticproperty
+    @staticproperty  # for better performance, don't use `.state` hook (used in rt loop)
     def is_running() -> bool:
         return _dpg.is_dearpygui_running()
+
+    @staticproperty  # for better performance, don't use `.state` hook (used in rt loop)
+    def is_frame_rate_clamped():
+        return bool(_RT_STATE and _RT_STATE.frame_rate_limit)
 
     @classproperty
     def is_set_up(cls) -> bool:
         return cls.state()["set_up"]
-
-    @classproperty
-    def is_limiting_frames(cls):
-        return cls.state()["limiting_frames"]
 
     @staticmethod
     def state() -> dict[str, bool]:
         return dict(
             set_up=_RT_STATE is not None,
             running=_dpg.is_dearpygui_running,
-            limiting_frames=bool(_RT_STATE and _RT_STATE.frame_rate_limit),
+            frame_rate_clamped=bool(_RT_STATE and _RT_STATE.frame_rate_limit),
         )
 
     # ~~ Main Event Loop API ~~
@@ -477,7 +489,12 @@ class Runtime(AppItemLike):
     @overload
     @staticmethod
     def render_frame(): ...  # pyright inferrence
-    render_frame = staticmethod(_dpg.render_dearpygui_frame)
+    render_frame = staticmethod(_dpg.render_dearpygui_frame)   # can be overloaded (non-instance-bound)
+
+    @overload
+    @staticmethod
+    def sleep(secs: float): ... # pyright inferrence
+    sleep = staticmethod(time.sleep)   # can be overloaded (non-instance-bound)
 
     @classmethod
     def start(cls, *, prerender_frames: int = 0):
@@ -495,31 +512,15 @@ class Runtime(AppItemLike):
             * create and/or show the viewport
 
 
-        At the start of each iteration, the runtime's settings are used to set the state for
-        that iteration. Tasks scheduled to run on the upcoming frame are moved to the end of the
-        runtime's priority task queue (`Runtime.frame_tasks[Runtime.NEXT]`). Tasks in the
-        priority queue are then executed oldest-to-newest before finally rendering the frame
-        via the `.render_frame` classmethod.
+        At the start of each iteration, a snapshot of the runtime's settings are stored locally.
+        Updates to the runtime settings will not take effect until the next iteration.
 
-        By default, the renderer will run all tasks in the priority queue until the queue has
-        been cleared. If the frame rate is managed via `frame_rate_limit` and `frame_rate_lock`
-        settings, the renderer will attempt to maintain the target frame rate by monitoring each
-        task's execution time. If the renderer has enough time to clear the priority queue, the
-        thread will be put to sleep until it's time to render the frame. However, if the queue is
-        long and/or tasks are taking a long time to complete then the renderer will cease their
-        execution and will render the "current" frame as soon as possible -- Tasks not executed
-        remain in the priority queue where they will (hopefully) be executed next frame.
+        Scheduled tasks are processed oldest-to-newest using a fixed time step (`.tick_interval`
+        setting). Tasks remain in queue until they are processed.
 
-        When tasks are added to the priority queue each frame, tasks scheduled for execution on
-        specific frames are queued first, followed by tasks scheduled to run every/any frame (i.e.
-        `Runtime.frame_tasks[Runtime.ALL]`).
-
-        When the renderer sets the local state each iteration, the `frame_rate_limit` setting
+        When the runtime settings are "snapped" each iteration, the `frame_rate_limit` setting
         is ignored unless the `frame_rate_lock` setting is `True`. Similarly, `frame_rate_lock`
         is ignored if `frame_rate_limit` is not meaningful.
-
-        Tasks in `Runtime.frame_tasks[Runtime.LAST]` are executed when the runtime loop is
-        terminated via `.stop` method or by closing the viewport.
 
         Passing a *prerender_frames* argument will render that many frames before and outside
         the runtime loop. Any task scheduled for a frame rendered this way will not run until
@@ -532,89 +533,109 @@ class Runtime(AppItemLike):
 
         # set the scheduler for the runtime ("manual_callback_management" will not change anymore)
         if Application().configuration()["manual_callback_management"]:
-            task_scheduler = rt_state._schedule_tasks_manual
+            fill_prio_queue = rt_state._fill_priority_queue2
         else:
-            task_scheduler = rt_state._schedule_tasks
+            fill_prio_queue = rt_state._fill_priority_queue
         # create and/or show the viewport
         Viewport().show()
 
         for _ in range(prerender_frames):
             cls.render_frame()
 
-        infinity   = float('inf')
-        task_queue = rt_state.frame_tasks[cls.NEXT]
-        tasker     = task_queue.tasker()
+        task_queue = rt_state.tasks[cls.PRIORITY]
+
+        tick_interval = rt_state.tick_interval
+        last_frame_ts = _perf_counter_ms()
+        time_buffer   = 0.0
+        updates       = task_queue.tasker()
         while cls.is_running:
-            frlimit = rt_state.frame_rate_limit
-            time_avail = 1000 / frlimit if frlimit and rt_state.frame_rate_lock else infinity
-            time_used  = task_scheduler()
-
+            this_frame_ts = _perf_counter_ms()
+            time_buffer  += round(this_frame_ts - last_frame_ts, 12)
+            last_frame_ts = this_frame_ts
+            fill_prio_queue()
             try:
-                while time_used < time_avail:
-                    time_used += next(tasker)
+                while time_buffer >= tick_interval:
+                    next(updates)
+                    time_buffer -= tick_interval
             except StopIteration:
-                tasker = task_queue.tasker()
+                updates = task_queue.tasker()
 
-            if time_avail != infinity:
-                # runtime is ahead -- take a nap
-                time.sleep(max(time_avail - time_used, 0) / 1000)
-
+            # if clamping the frame rate, sleep until it's time to render
+            # TODO: remove `sleep` to decouple updates from framerate
+            cls.sleep(
+                max(0.0, (rt_state.render_interval - (_perf_counter_ms() - this_frame_ts))) / 1000.0
+            )
             cls.render_frame()
-        rt_state.frame_tasks[cls.LAST]()
+        rt_state.tasks[cls.AT_EXIT]()
 
     @classmethod
     def stop(cls):
         if cls.is_running:
             _dpg.stop_dearpygui()
-            _RT_STATE.frame_tasks[cls.LAST]()
+            _RT_STATE.tasks[cls.AT_EXIT]()
 
 
-    # ~~ On-Frame Callback API ~~
+    # ~~ Updates/Ticks/Callback API ~~
 
-    ALL  = _Frame.ALL
-    NEXT = _Frame.NEXT
-    LAST = _Frame.LAST
+    PRIORITY = _TaskSchedule.NEXT
+    STANDBY  = _TaskSchedule.ALL
+    AT_EXIT  = _TaskSchedule.LAST
 
     @classproperty
-    def frame_tasks(cls) -> dict[int, CallStack] | None:
+    def tasks(cls) -> dict[int, CallStack] | None:
         try:
-            return _RT_STATE.frame_tasks
+            return _RT_STATE.tasks
         except AttributeError:
             cls.setup()
-            return _RT_STATE.frame_tasks
+            return _RT_STATE.tasks
 
     @classmethod
-    def on_frame(cls, callback: Callable = None, /, *, frame: int = _Frame.ALL, **kwargs):
-        """Schedules a callback to run on a specific frame. Can be used
-        as a decorator.
+    def schedule(cls, callback: Callable = None, /, *, when: int = PRIORITY, **kwargs):
+        """Schedules a runtime task. Optionally usable as a decorator.
 
         Args:
             * callback: Callable object to schedule.
 
-            * frame: *callback* will run immediately before rendering this frame.
-            Defaults to `Frame.ALL`.
+            * when: Dictates when and/or how frequently *callback* will run. Defaults to
+            `Runtime.PRIORITY`.
+
+
+        When and how frequently a callback is executed depends on the value passed
+        to *when*. `Runtime.STANDBY` will store the callback into a secondary queue. At the
+        start of each cycle of the runtime loop, all tasks in this queue are moved (copied)
+        to the priority queue IF the priority queue is empty. `Runtime.PRIORITY` will schedule
+        it at the end of the primary queue and will run one time only. If `Runtime.AT_EXIT`,
+        the callback will run when exiting the runtime loop after the last frame has rendered
+        (they will NOT run if the runtime loop is never started, unless the `.stop` method is
+        called).
         """
         def _on_frame(_callback):
             task = _callback
             if kwargs:
                 task = Callback(_callback, **kwargs)
             try:
-                tasks = _RT_STATE.frame_tasks
+                tasks = _RT_STATE.tasks
             except AttributeError:
                 cls.setup()
-                tasks = _RT_STATE.frame_tasks
-            tasks[frame].append(task)
+                tasks = _RT_STATE.tasks
+            try:
+                stack = tasks[when]
+            except KeyError:
+                raise ValueError(
+                    "`frame` expected one of the following `Runtime` members; `STANDBY`, `PRIORITY`, `AT_EXIT`."
+                ) from None
+            stack.append(task)
             return _callback
         return _on_frame if callback is None else _on_frame(callback)
 
     @classmethod
     def get_task_queue(cls):
         try:
-            _RT_STATE._schedule_tasks_manual()
+            _RT_STATE._fill_priority_queue2()
         except AttributeError:
             cls.setup()
-            _RT_STATE._schedule_tasks_manual()
-        return _RT_STATE.frame_tasks[cls.NEXT]
+            _RT_STATE._fill_priority_queue2()
+        return _RT_STATE.tasks[cls.PRIORITY]
 
     # ~~ DPG Function Hooks (staticmethods) ~~
 
