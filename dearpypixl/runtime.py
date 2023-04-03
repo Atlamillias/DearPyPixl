@@ -2,7 +2,6 @@
 application-level states.
 """
 import os
-import collections
 import enum
 import time
 from dearpygui import dearpygui as dpg, _dearpygui as _dpg
@@ -34,10 +33,28 @@ __all__ = [
 
 
 class Application(AppItemLike):
-    """Object-oriented interface for DearPyGui's application state.
+    """Item-like interface for DearPyGui's application state. Instances operate on the
+    global state.
 
-    All instances operate on the global state. DearPyGui setup is performed when
-    the first instance is created.
+
+    When the first `Application` instance is created, various setup commands such as
+    `create_context` and `setup_dearpygui` are called if not already done so.
+
+    Any keyword argument supported by DearPyGui's `configure_app` function can also be
+    passed to `Application`s constructor and `.configure` method. Included arguments will
+    be used to update the application-level configuration. In addition, the following
+    unqiue keyword arguments are also supported;
+        * **theme**: A reference to the `mvTheme` item used as the application-level
+        theme.
+
+        * **font**: A reference to the `mvFont` item used as the application-level
+        font.
+
+    NOTE: The DearPyGui API does not include a way of accessing any of the above once
+    they have been set. Because of this, several DearPyGui functions have been patched
+    to update various states unique to this library -- Returned values of these settings
+    are always up-to-date even if you, for example, update the application-level font
+    using the "raw" `bind_theme` function.
     """
 
     __slots__ = ()
@@ -58,10 +75,21 @@ class Application(AppItemLike):
 
     @staticmethod
     def create_context() -> None:
-        _dpg.create_context()  # XXX: DPG doesn't care when calling multiple times.
+        """Creates the graphical context for the application. Does nothing if
+        the graphical context has already been created.
+
+        Many calls to DearPyGui (and consequently DearPyPixl) will fail if
+        the `create_context` hook has not been called prior.
+        """
+        _dpg.create_context()  # DPG doesn't care when calling multiple times
 
     @staticmethod
     def destroy_context() -> None:
+        """Destroys the graphical context created via `create_context` hook.
+
+        Several calls to DearPyGui (and consequently DearPyPixl) will fail once
+        the `destroy_context` hook has been called.
+        """
         _dpg.destroy_context()
 
     @classmethod
@@ -99,24 +127,35 @@ class Application(AppItemLike):
 
     @classproperty  # inquire w/o prepping app
     def is_set_up(cls) -> bool:
+        """[get] Return True if the `setup_dearpygui` function has been called."""
         return cls.state()["set_up"]
 
     @staticmethod
     def state() -> DPGApplicationState:
+        """Return various application-level states."""
         return {"set_up": _appstate._APPLICATION_SET_UP}
 
     # ~~ Properties, Methods ~~
 
     @staticproperty
     def process_id() -> int:
-        """Return the id of the running process."""
+        """[get] Return the id of the running process."""
         return os.getpid()
 
-    @property
-    def platform(self) -> int:
-        """Return the DearPyGui constant value representing the running operating
-        system."""
+    # ~~ DPG Function Hooks ~~
+
+    @classproperty
+    def platform(cls):
+        """[get] Return the DearPyGui constant value representing the running
+        operating system."""
         return _dpg.get_platform()
+
+    @staticmethod
+    def get_platform() -> int:
+        """Return the DearPyGui constant value representing the running
+        operating system."""
+        return _dpg.get_platform()
+
 
     @staticmethod
     def save_ini_file(file: str) -> None:
@@ -138,10 +177,41 @@ class Application(AppItemLike):
 
 
 class Viewport(AppItemLike):
-    """Object-oriented interface for DearPyGui's viewport.
+    """Item-like interface for DearPyGui's viewport. Instances operate on
+    the global state.
 
-    All instances operate on the global state. The actual viewport is created
-    when the first instance is created.
+
+    When the first `Viewport` instance is created, various setup commands such as
+    `create_context` and `setup_dearpygui` are called if not already done so.
+    Additionally, the *actual* viewport is created if it does not exist.
+
+    Any keyword argument supported by DearPyGui's `create_viewport` function can also
+    be passed to `Viewport`s constructor and `.configure` method. Included arguments
+    will be used to update the viewport's global configuration. In addition, the
+    following unqiue keyword arguments are also supported;
+        * **callback**: The callable invoked when the viewport is resized.
+
+        * **user_data**: The object to pass to *callback* when conditionally called.
+
+        * **primary_window**: A reference to a `mvWindowAppItem` item to use as
+        the "primary" window, filling the viewport's space.
+
+    NOTE: The relationship between *callback* and *user_data* is functionally identical
+    to that of items. Additionally, both are updated independently of one another even
+    though both are internally updated using the same function (i.e.
+    `set_viewport_resize_callback`).
+
+    NOTE: The DearPyGui API does not include a way of accessing any of the above once
+    they have been set. Because of this, several DearPyGui functions have been patched
+    to update various states unique to this library -- Returned values of these settings
+    are always up-to-date even if you, for example, update the primary window using the
+    "raw" `set_primary_window` function.
+
+
+    `Viewport` also exposes several unique states as read-only properties. They are
+    class-bound so they can be accessed without needing to actually create the viewport
+    (which would otherwise be problematic, especially for a `Viewport().is_created`
+    inquiry).
     """
 
     __slots__ = ()
@@ -165,8 +235,9 @@ class Viewport(AppItemLike):
     @overload
     def configure(self, *, title: str = ..., small_icon: str = ..., large_icon: str = ..., width: int = ..., height: int = ..., x_pos: int = ..., y_pos: int = ..., min_width: int = ..., max_width: int = ..., min_height: int = ..., max_height: int = ..., resizable: bool = ..., vsync: bool = ..., always_on_top: bool = ..., decorated: bool = ..., clear_color: tuple[int, ...] = ..., disable_close: bool = ..., primary_window: ItemId | None = ..., callback: DPGCallback | None = ..., user_data: Any = ..., **kwargs) -> None: ...
     def configure(self, callback: DPGCallback | None | Null = Null, user_data: Any = Null, primary_window: ItemId | None | Null = Null, **kwargs: DPGViewportConfig) -> None:
-        """Update the viewport's configuration. If the viewport is showing, 'icon'-related
-        options are ignored.
+        """Update the viewport's global configuration.
+
+        NOTE: DearPyGui ignores 'icon'-related options once the viewport is visible.
         """
         _dpg.configure_viewport(self.__UUID, **kwargs)
         if callback is not Null:
@@ -186,7 +257,7 @@ class Viewport(AppItemLike):
             ...
 
     def configuration(self) -> DPGViewportConfig:
-        """Return the viewport's configuration."""
+        """Return the viewport's global configuration."""
         config = _dpg.get_viewport_configuration(self.__UUID)
         config.update(
             primary_window=_appstate._VIEWPORT_PRIMARY_WINDOW,
@@ -197,18 +268,23 @@ class Viewport(AppItemLike):
 
     @classproperty  # inquire w/o forcefully creating vp
     def is_created(cls) -> bool:
+        """[get] Return True if the viewport exists."""
         return cls.state()["created"]
 
     @classproperty
     def is_visible(cls) -> bool:
+        """[get] Return True if the showing the viewport."""
         return cls.state()["visible"]
 
     @classproperty
     def is_fullscreen(cls) -> bool:
+        """[get] Return True if the viewport is displayed in borderless windowed
+        fullscreen"""
         return cls.state()["fullscreen"]
 
     @staticmethod
     def state() -> DPGViewportState:
+        """Return the global viewport state."""
         return {
             "created": _appstate._VIEWPORT_CREATED,
             "visible": _dpg.is_viewport_ok(),
@@ -219,10 +295,12 @@ class Viewport(AppItemLike):
 
     @property
     def pos(self) -> tuple[int, int]:
+        """[get] Return the *x_pos* and *y_pos* configurations of the viewport."""
         config = self.configuration()
         return config["x_pos"], config["y_pos"]
     @pos.setter
     def pos(self, value: tuple[int, int]) -> None:
+        """[set] Update the *x_pos* and *y_pos* configurations of the viewport."""
         x, y = value
         self.configure(x_pos=x, y_pos=y)
 
@@ -293,7 +371,7 @@ class Viewport(AppItemLike):
 
     @staticmethod
     def get_local_mouse_pos():
-        """Return the position of the mouse cursor relative focused item.
+        """Return the position of the mouse cursor relative to the focused item.
 
         If no item(s) is focused when called, return the cursor's last position
         relative to the item that was most recently focused (when it was focused).
@@ -302,20 +380,42 @@ class Viewport(AppItemLike):
 
     @staticmethod
     def get_mouse_plot_pos():
+        """Return the position of the mouse cursor relative to the focused plot
+        item."""
         return _dpg.get_plot_mouse_pos()
 
     @staticmethod
     def get_mouse_drawing_pos():
+        """Return the position of the mouse cursor relative to the focused
+        drawlist item."""
         return _dpg.get_drawing_mouse_pos()
 
     @staticmethod
-    def output_frame_buffer(file: str = "", *, callback: Any = None, **kwargs):
-        if dpg.get_platform == dpg.mvPlatform_Apple:
-            return NotImplemented  # unsupported on MacOS
-        return _dpg.output_frame_buffer(file, callback=callback)
+    def output_frame_buffer(file: str = "", *, callback: Any = None, **kwargs) -> None:
+        """Captures a screenshot of the viewport (excludes the title bar).
+
+        Args:
+            * file: A filepath for the resulting .png file. Defaults to "".
+
+            * callback: A DearPyGui-callable object accepting zero to three
+            positional arguments that will handle the raw image buffer. Defaults
+            to None.
+
+        NOTE: Not supported on MacOS.
 
 
+        The result of this function varies depending on the arguments passed;
+            * If *file* is not an empty string, the screenshot is saved as
+            "{file}.png".
 
+            * If *callback* is not None, it is called and passed a `mvBuffer` object
+            as the second positional argument if able (i.e. `app_data`).
+        """
+
+        if _dpg.get_platform == dpg.mvPlatform_Apple:
+            return NotImplemented
+        # XXX: have not tested what happens w/both arguments
+        _dpg.output_frame_buffer(file, callback=callback)
 
 
 
@@ -397,21 +497,63 @@ def _perf_counter_ms() -> float:
 
 
 class Runtime(AppItemLike):
-    """Interface for the main event loop and runtime-level queries.
+    """Item-like interface for the main event loop and runtime-level queries. All
+    instances operate on the global state.
 
-    All instances operate on the global state. Automatically prepares the runtime
-    environment when the first instance is created.
+
+    Creating the first instance of `Runtime` will invoke setup commands such as
+    `create_context` and `setup_dearpygui` if a user has not done so already.
+    Additonally, the `.start` method will create and/or show the viewport. Note
+    that it does not *configure* the application or viewport in any way.
+        >>> # import code goes here
+        >>>
+        >>> rt = Runtime()
+        >>>
+        >>> # UI code goes here
+        >>>
+        >>> rt.start()
+
+
+    `Runtime` supports task ("callback") scheduling. Tasks are cached in one of three
+    queues;
+        * "active"/"priority": The runtime's real-time queue. It is processed every
+        iteration of the runtime loop before (possibly) rendering a frame. It is not
+        guaranteed that the queue will process all tasks within every cycle.
+
+        * "standby"/"secondary": Contains routine tasks that are repeatedly pushed
+        onto priority queue. This will occur at the beginning of every runtime loop
+        iteration **if the priority queue is empty**. This queue is never directly
+        processed.
+
+        * "at exit"/"last frame": Contains any tasks scheduled to run when the UI
+        is closed or when the `.stop` method is called, will not be processed until
+        either occurs.
+
+    Queue contents are processed from oldest to newest. Any "processed" task is removed
+    from the queue. Tasks can be pushed onto any queue and at any time, via the `.schedule`
+    method. The queues themselves are exposed through the `.tasks` read-only property.
+
+
+    There are several unique `Runtime` settings which affect various behavior of the
+    `.start` method;
+        * **frame_rate_limit**: The maximum number of frames to render every second.
+
+        * **frame_rate_lock**: `True` clamps the frame rate to *frame_rate_limit*.
+        Otherwise, the limit is not enforced.
+
+        * **tick_interval**: The fixed time step (in milliseconds) in which
+        tasks/updates occur.
+
+    Passing any of the above as keyword arguments to the constructor or to the
+    `.configure` method will update the respective option globally. These settings
+    can updated while the runtime is running, but the changes won't take affect until
+    the next iteration of the loop.
     """
-
-    # XXX: `Runtime` is more of a module w/descriptors than a class. There
-    # are no instance methods and very few class methods -- updates are
-    # performed explicitly on the `Runtime` object, not `cls` or `self`.
-    # This makes it difficult to change existing behavior
 
     __slots__ = ()
 
     @overload
-    def __init__(self, *, stack_factory: type[CallStack] = CallStack, frame_rate_limit: int | None = ..., frame_rate_lock: bool = ..., **kwargs) -> None: ...
+    def __init__(self, *, frame_rate_limit: int | None = ..., frame_rate_lock: bool = ..., tick_interval: float = ..., **kwargs) -> None: ...
     def __init__(self, *, stack_factory: type[CallStack] = CallStack, **kwargs):
         super().__init__()
         self.setup(stack_factory=stack_factory)
@@ -451,6 +593,9 @@ class Runtime(AppItemLike):
     @overload
     def configure(self, *, frame_rate_limit: int | None = ..., frame_rate_lock: bool = ..., tick_interval: float = ..., **kwargs) -> None: ...
     def configure(self, **kwargs) -> None:
+        """Updates global runtime settings. They will take effect at the start of the
+        next runtime loop cycle.
+        """
         for k, v in kwargs.items():
             try:
                 setattr(_RT_STATE, k, v)
@@ -458,6 +603,7 @@ class Runtime(AppItemLike):
                 raise TypeError(f"invalid configuration option {k!r}.")
 
     def configuration(self) -> dict[str]:
+        """Return the global runtime configuration."""
         return dict(
             frame_rate_limit=_RT_STATE.frame_rate_limit,
             frame_rate_lock=_RT_STATE.frame_rate_lock,
@@ -466,18 +612,23 @@ class Runtime(AppItemLike):
 
     @staticproperty  # for better performance, don't use `.state` hook (used in rt loop)
     def is_running() -> bool:
+        """Return True if DearPyGui is running."""
         return _dpg.is_dearpygui_running()
 
     @staticproperty  # for better performance, don't use `.state` hook (used in rt loop)
     def is_frame_rate_clamped():
-        return bool(_RT_STATE and _RT_STATE.frame_rate_limit)
+        """[get] Return True if the frame rate is or will be clamped using the
+        current runtime settings."""
+        return bool(_RT_STATE and _RT_STATE.render_interval)
 
     @classproperty
     def is_set_up(cls) -> bool:
+        """[get] Return True if the runtime environment has been prepared."""
         return cls.state()["set_up"]
 
     @staticmethod
     def state() -> dict[str, bool]:
+        """Return the global runtime state."""
         return dict(
             set_up=_RT_STATE is not None,
             running=_dpg.is_dearpygui_running,
@@ -507,21 +658,25 @@ class Runtime(AppItemLike):
             * create and/or show the viewport
 
 
-        At the start of each iteration, a snapshot of the runtime's settings are stored locally.
-        Updates to the runtime settings will not take effect until the next iteration.
-
-        Scheduled tasks are processed oldest-to-newest using a fixed time step (`.tick_interval`
-        setting). Tasks remain in queue until they are processed.
-
-        When the runtime settings are "snapped" each iteration, the `frame_rate_limit` setting
-        is ignored unless the `frame_rate_lock` setting is `True`. Similarly, `frame_rate_lock`
-        is ignored if `frame_rate_limit` is not meaningful.
-
         Passing a *prerender_frames* argument will render that many frames before and outside
         the runtime loop. Any task scheduled for a frame rendered this way will not run until
         all pre-rendered frames have been rendered. This can be useful when you want to ensure
         DearPyGui has enough time to update its internal state (this usually occurs within the
         first few frames).
+
+        A snapshot is taken of the runtime's settings at the start of each iteration of the loop.
+        Updates to the runtime settings will not take effect until the next iteration. When the
+        runtime settings are "snapped", the `frame_rate_limit` setting is ignored unless the
+        `frame_rate_lock` setting is `True`. Similarly, `frame_rate_lock` is ignored if
+        `frame_rate_limit` is not meaningful.
+
+        Tasks are executed from a priority queue from oldest to newest using a fixed time step
+        (`tick_interval` setting), and remain queued until they are processed. When the queue
+        is empty, it is "reloaded" with tasks from the secondary/standby queue.
+
+        When clamping the frame rate, code execution does not wait until it's time to render
+        (i.e. thread does not sleep). Instead, it checks to see if enough time has passed
+        and, if not, continues execution without rendering.
         """
         cls.setup()
         rt_state = _RT_STATE
@@ -571,12 +726,18 @@ class Runtime(AppItemLike):
 
     # ~~ Updates/Ticks/Callback API ~~
 
-    PRIORITY = _TaskSchedule.NEXT
-    STANDBY  = _TaskSchedule.ALL
-    AT_EXIT  = _TaskSchedule.LAST
+    ACTIVE    = _TaskSchedule.NEXT
+    PRIORITY  = _TaskSchedule.NEXT
+    SECONDARY = _TaskSchedule.ALL
+    STANDBY   = _TaskSchedule.ALL
+    AT_EXIT   = _TaskSchedule.LAST
 
     @classproperty
     def tasks(cls) -> dict[int, CallStack] | None:
+        """[get] Return the mapping containing the runtime's task queues.
+
+        Valid keys are `Runtime` members "PRIORITY", "SECONDARY", "AT_EXIT".
+        """
         try:
             return _RT_STATE.tasks
         except AttributeError:
@@ -595,13 +756,15 @@ class Runtime(AppItemLike):
 
 
         When and how frequently a callback is executed depends on the value passed
-        to *when*. `Runtime.STANDBY` will store the callback into a secondary queue. At the
+        to *when*. `Runtime.SECONDARY` will store the callback into a secondary queue. At the
         start of each cycle of the runtime loop, all tasks in this queue are moved (copied)
         to the priority queue IF the priority queue is empty. `Runtime.PRIORITY` will schedule
         it at the end of the primary queue and will run one time only. If `Runtime.AT_EXIT`,
         the callback will run when exiting the runtime loop after the last frame has rendered
         (they will NOT run if the runtime loop is never started, unless the `.stop` method is
         called).
+
+        Alternatively, tasks can be pushed into queues directly (see the `.tasks` property).
         """
         def _on_frame(_callback):
             task = _callback
@@ -623,7 +786,16 @@ class Runtime(AppItemLike):
         return _on_frame if callback is None else _on_frame(callback)
 
     @classmethod
-    def get_task_queue(cls):
+    def get_task_queue(cls) -> CallStack:
+        """Populate and return the runtime's priority task queue.
+
+        If the priority queue is empty, then a copy of the secondary queue is pushed
+        onto the priority queue.
+
+        If the application-level setting "manual_callback_management=True", this method
+        will push DearPyGui's callback queue (via `get_callback_queue`) onto the priority
+        queue.
+        """
         try:
             _RT_STATE._fill_priority_queue2()
         except AttributeError:
