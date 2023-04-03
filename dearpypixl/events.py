@@ -103,7 +103,7 @@ def _callback_defaults_src(_callable: Callable) -> tuple[str, str, str]:
         if p.kind in (Parameter.KEYWORD_ONLY, Parameter.VAR_POSITIONAL):
             break
 
-        if p.kind != Parameter.empty:
+        if p.default != Parameter.empty:
             parg_defaults.append(str(p).split("=")[-1].strip())
         else:
             parg_defaults.append('None')
