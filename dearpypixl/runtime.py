@@ -3,6 +3,7 @@ application-level states.
 """
 import os
 import enum
+import array
 import time
 from dearpygui import dearpygui as dpg, _dearpygui as _dpg
 from . import px_appstate as _appstate
@@ -13,6 +14,7 @@ from .px_typing import (
     Any,
     ItemId,
     Callable,
+    Sequence,
     Null,
     overload,
     DPGCallback,
@@ -411,9 +413,6 @@ class Viewport(AppItemLike):
             * If *callback* is not None, it is called and passed a `mvBuffer` object
             as the second positional argument if able (i.e. `app_data`).
         """
-
-        if _dpg.get_platform == dpg.mvPlatform_Apple:
-            return NotImplemented
         # XXX: have not tested what happens w/both arguments
         _dpg.output_frame_buffer(file, callback=callback)
 
@@ -487,7 +486,7 @@ class _RuntimeState:
         if _dpg.get_app_configuration()["manual_callback_management"]:
             self.tasks[_TaskSchedule.NEXT]._queue.extend(
                 Callback(cb, sender=s, app_data=a, user_data=u)
-                for cb, s, a, u in _dpg.get_callback_queue()
+                for cb, s, a, u in (_dpg.get_callback_queue() or ())
                 if cb is not None
             )
 
