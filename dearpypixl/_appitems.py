@@ -56,6 +56,7 @@ __all__ = [
     'mvDeactivatedAfterEditHandler',
     'mvDeactivatedHandler',
     'mvDouble4Value',
+    'mvDoubleClickedHandler',
     'mvDoubleValue',
     'mvDragDouble',
     'mvDragDoubleMulti',
@@ -591,7 +592,7 @@ class mvButton(SizedItem, CallableItem, AppItemType):
         * arrow (bool, optional): Displays an arrow in place of the text string. This
         requires the direction keyword.
 
-        * direction (int, optional): Sets the cardinal direction for the arrow buy using
+        * direction (int, optional): Sets the cardinal direction for the arrow by using
         constants mvDir_Left, mvDir_Up, mvDir_Down, mvDir_Right, mvDir_None. Arrow keyword
         must be set to True.
 
@@ -2140,6 +2141,46 @@ class mvDouble4Value(ValueAbleItem, AppItemType):
     def __init__(self, *, label: str = ..., user_data: Any = ..., use_internal_label: bool = ..., tag: ItemId = ..., source: ItemId = ..., default_value: Any = ..., parent: ItemId = ..., **kwargs) -> None: ...
     @typing_overload
     def configure(self, *, label: str = ..., user_data: Any = ..., use_internal_label: bool = ..., source: ItemId = ..., **kwargs) -> None: ...
+
+
+class mvDoubleClickedHandler(HandlerItem, AppItemType):
+    """Adds a double click handler.
+
+    Args:
+        * button (int, optional): Submits callback for all mouse buttons
+
+        * label (str, optional): Overrides 'name' as label.
+
+        * user_data (Any, optional): User data for callbacks
+
+        * use_internal_label (bool, optional): Use generated internal label instead of
+        user specified (appends ### uuid).
+
+        * tag (int | str, optional): Unique id used to programmatically refer to the item.
+        If label is unused this will be the label.
+
+        * parent (int | str, optional): Parent to add this item to. (runtime adding)
+
+        * callback (Callable, optional): Registers a callback.
+
+        * show (bool, optional): Attempt to render widget.
+
+    Returns:
+        *Self*
+    """
+    command  = dearpygui.add_item_double_clicked_handler
+    identity = dearpygui.mvDoubleClickedHandler, 'mvAppItemType::mvDoubleClickedHandler'
+    
+    label             : str
+    user_data         : Any
+    use_internal_label: bool
+    callback          : DPGCallback
+    show              : bool
+    
+    @typing_overload
+    def __init__(self, button: int = ..., *, label: str = ..., user_data: Any = ..., use_internal_label: bool = ..., tag: ItemId = ..., parent: ItemId = ..., callback: DPGCallback = ..., show: bool = ..., **kwargs) -> None: ...
+    @typing_overload
+    def configure(self, *, label: str = ..., user_data: Any = ..., use_internal_label: bool = ..., callback: DPGCallback = ..., show: bool = ..., **kwargs) -> None: ...
 
 
 class mvDoubleValue(ValueAbleItem, AppItemType):
