@@ -157,7 +157,10 @@ def is_item_cmd(_object: Any, /) -> bool:
     except:
         return False  # not callable or is built-in
     # defined in DPG
-    if dpg.__name__ not in _object.__module__:
+    try:
+        if dpg.__name__ not in _object.__module__:
+            return False
+    except AttributeError:
         return False
     # accepts an ItemId keyword argument
     if all(kwd not in signature.parameters for kwd in ("tag", "id")):
