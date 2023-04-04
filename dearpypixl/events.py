@@ -260,6 +260,7 @@ class TaskerMode(enum.IntEnum):
     CYCLE   = 1
     POP     = 2
     POPLEFT = 3
+    RUNTIME = 4
 
 
 class Tasker(DPGCallback):
@@ -282,10 +283,11 @@ class Tasker(DPGCallback):
             value = self.DEFAULT
         self.tasker = getattr(self, _MODE_TO_TASKER[value])
 
-    ITER    = TaskerMode.ITER
-    CYCLE   = TaskerMode.CYCLE
-    POP     = TaskerMode.POP
-    POPLEFT = TaskerMode.POPLEFT
+    # TODO: flag system for mixed behaviors
+    ITER     = TaskerMode.ITER
+    CYCLE    = TaskerMode.CYCLE
+    POP      = TaskerMode.POP
+    POPLEFT  = TaskerMode.POPLEFT
 
     DEFAULT = ITER
 
@@ -320,6 +322,17 @@ class Tasker(DPGCallback):
             except IndexError:
                 break
 
+    @new_tasker(TaskerMode.RUNTIME)
+    def _tasker_runtime(self: 'CallStack', *args) -> Generator[Any, None, None]:
+        # Is `POPLEFT` but does not pass or build arguments. Better for manual
+        # callback management w/`functools.partial`.
+        next_callback = self.popleft
+        while True:
+            try:
+                yield next_callback()()
+            except IndexError:
+                break
+
     def _get_task_arguments(self: 'CallStack', sender: Any = None, app_data: Any = None, user_data: Any = None) -> Iterator[Any]:
         """Return an iterator containing callback positional arguments (in order) for *sender*,
         *app_data* and *user_data*.
@@ -339,15 +352,15 @@ class Tasker(DPGCallback):
 
 
 # 'CallStack().force_wrapping'
-def _CallStack_force_wrapping_F(callback: T) -> T:
+def _CallStack_force_wrapping_F(callback: T, **kwargs) -> T:
     if not callable(callback):
         raise TypeError(f"{callback!r} is not callable.")
     if _callback_parg_count(callback) < 3 or not inspect.isfunction(callback):
-        return Callback(callback)
+        return Callback(callback, **kwargs)
     return callback
 
-def _CallStack_force_wrapping_T(callback: DPGCallback[P]) -> Callback[P]:
-    return Callback(callback)
+def _CallStack_force_wrapping_T(callback: DPGCallback[P], **kwargs) -> Callback[P]:
+    return Callback(callback, **kwargs)
 
 # 'Callstack().wrapped_returns'
 def _CallStack_wrapped_returns_F(original: T, callback_inst: Any) -> T:
@@ -533,7 +546,7 @@ class CallStack(_CallStack[DPGCallback], Tasker):
         return self._queue.__getitem__(index)
 
     def __setitem__(self, index: int, value: DPGCallback) -> None:
-        self._queue.__setitem__(index, _CallStack_force_wrapping_F(value))
+        self._queue.__setitem__(index, self._fn_process_callable(value))
 
     def __delitem__(self, index: int) -> None:
         self._queue.__delitem__(index)
