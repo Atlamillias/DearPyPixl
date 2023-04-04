@@ -340,22 +340,28 @@ class Tasker(DPGCallback):
     __code__ = __call__.__code__  # helps DPG call this object
 
 
+
+
 # 'CallStack().force_wrapping'
-def _CallStack_force_wrapping_F(callback: T, **kwargs) -> T:
+def _CallStack_force_wrapping_False(callback: T, **kwargs) -> T:
     if not callable(callback):
         raise TypeError(f"{callback!r} is not callable.")
     if _callback_parg_count(callback) < 3 or not hasattr(callback, "__code__"):
         return Callback(callback, **kwargs)
     return callback
 
-def _CallStack_force_wrapping_T(callback: DPGCallback[P], **kwargs) -> Callback[P]:
+def _CallStack_force_wrapping_True(callback: DPGCallback[P], **kwargs) -> Callback[P]:
     return Callback(callback, **kwargs)
 
+def _CallStack_force_wrapping_None(callback: DPGCallback[P], **kwargs) -> DPGCallback[P]:
+    return callback
+
+
 # 'Callstack().wrapped_returns'
-def _CallStack_wrapped_returns_F(original: T, callback_inst: Any) -> T:
+def _CallStack_wrapped_returns_False(original: T, callback_inst: Any) -> T:
     return original
 
-def _CallStack_wrapped_returns_T(original: DPGCallback[P], callback_inst: Callback[P] | DPGCallback[P]) -> DPGCallback[P] | Callback[P]:
+def _CallStack_wrapped_returns_True(original: DPGCallback[P], callback_inst: Callback[P] | DPGCallback[P]) -> DPGCallback[P] | Callback[P]:
     return callback_inst
 
 
@@ -479,8 +485,8 @@ class CallStack(_CallStack[DPGCallback], Tasker, px_items.AppItemLike):
         app_data       : Any                  = NULL,
         user_data      : Any                  = NULL,
         tasker_mode    : TaskerMode | int     = TaskerMode.ITER,
-        force_wrapping : bool = False,
-        wrapped_returns: bool = False,
+        force_wrapping : bool | None          = False,
+        wrapped_returns: bool                 = False,
         **kwargs,
     ) -> None:
         super().__init__()
@@ -564,7 +570,7 @@ class CallStack(_CallStack[DPGCallback], Tasker, px_items.AppItemLike):
 
     @overload
     def configure(self, *, sender: ItemId | None | NULL = ..., app_data: Any = ..., user_data: Any = ..., tasker_mode: TaskerMode | int = ..., wrapped_returns: bool = ..., force_wrapping: bool = ..., **kwargs) -> None: ...
-    def configure(self, tasker_mode: Any = None, wrapped_returns: bool | None = None, force_wrapping: bool | None = None, **kwargs) -> None:
+    def configure(self, tasker_mode: Any = NULL, wrapped_returns: bool | None = NULL, force_wrapping: Any = NULL, **kwargs) -> None:
         cb_args = [*self._cb_pos_args]
         if _SENDER in kwargs:
             cb_args[0] = kwargs[_SENDER]
@@ -574,19 +580,31 @@ class CallStack(_CallStack[DPGCallback], Tasker, px_items.AppItemLike):
             cb_args[2] = kwargs[_USER_DATA]
         self._cb_pos_args = tuple(cb_args)
 
-        if tasker_mode is not None:
+        if tasker_mode is not NULL:
             self.tasker_mode = tasker_mode  # `Tasker.tasker_mode`
-        if force_wrapping is not None:
-            self._fn_process_callable = _CallStack_force_wrapping_T if force_wrapping else _CallStack_force_wrapping_F
-        if wrapped_returns is not None:
-            self._fn_return_callable = _CallStack_wrapped_returns_T if wrapped_returns else _CallStack_wrapped_returns_F
+        if force_wrapping is not NULL:
+            if force_wrapping is None:
+                self._fn_process_callable = _CallStack_force_wrapping_None
+            elif not force_wrapping:
+                self._fn_process_callable = _CallStack_force_wrapping_False
+            else:
+                self._fn_process_callable = _CallStack_force_wrapping_True
+        if wrapped_returns is not NULL:
+            self._fn_return_callable = _CallStack_wrapped_returns_True if wrapped_returns else _CallStack_wrapped_returns_False
 
     def configuration(self) -> dict[str]:
+        _force_wrapping_fn = self._fn_process_callable
+        if _force_wrapping_fn is _CallStack_force_wrapping_None:
+            force_wrapping = None
+        elif _force_wrapping_fn is _CallStack_force_wrapping_True:
+            force_wrapping = True
+        else:
+            force_wrapping = False
         config = dict(zip((_SENDER, _APP_DATA, _USER_DATA), self._cb_pos_args))
         config.update(
             tasker_mode=self.tasker_mode,
-            force_wrapping=True if self._fn_process_callable == _CallStack_force_wrapping_T else False,
-            wrapped_returns=True if self._fn_return_callable == _CallStack_wrapped_returns_T else False,
+            force_wrapping=force_wrapping,
+            wrapped_returns=True if self._fn_return_callable == _CallStack_wrapped_returns_True else False,
         )
         return config
 
