@@ -1,3 +1,38 @@
-[build-system]
-requires = ["dearpygui"]
+[project]
+name = "dearpypixl"
+version = "0.4.0"
+description = "A lightweight framework and toolkit for DearPyGui."
+authors = [{name="Anthony Doupe", email="atlamillias@outlook.com"}]
+keywords = []
+urls = {Homepage="https://github.com/Atlamillias/DearPyPixl"}
+readme = "README.md"
+classifiers = [
+    "Development Status :: 4 - Beta",
 
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.11",
+
+    "Operating System :: Microsoft :: Windows :: Windows 8.1",
+    "Operating System :: Microsoft :: Windows :: Windows 10",
+    "Operating System :: Microsoft :: Windows :: Windows 11",
+    "Operating System :: MacOS",
+    "Operating System :: POSIX",
+    "Operating System :: Unix",
+
+    "Software Development :: Libraries :: Python Modules",
+    "Software Development :: User Interfaces",
+
+    "License :: OSI Approved :: MIT License",
+]
+requires-python = ">=3.11"
+dependencies = ["dearpygui ~= 1.9.0"]
+
+
+[build-system]
+requires = ["setuptools >= 61.0", "dearpygui ~= 1.9.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+
+[tool.setuptools]
+packages = ["dearpypixl"]
