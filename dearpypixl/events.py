@@ -344,7 +344,7 @@ class Tasker(DPGCallback):
 def _CallStack_force_wrapping_F(callback: T, **kwargs) -> T:
     if not callable(callback):
         raise TypeError(f"{callback!r} is not callable.")
-    if _callback_parg_count(callback) < 3 or not inspect.isfunction(callback):
+    if _callback_parg_count(callback) < 3 or not hasattr(callback, "__code__"):
         return Callback(callback, **kwargs)
     return callback
 
