@@ -444,11 +444,11 @@ class Viewport(AppItemLike):
 
 
 
-class _TaskSchedule(enum.IntEnum):
+class _RuntimeQueue(enum.IntEnum):
     """Special frame values for the next, last, and all frames."""
-    ALL  = -1
-    NEXT = -2
-    LAST = -3
+    ONETIME = enum.auto()
+    ROUTINE = enum.auto()
+    AT_EXIT = enum.auto()
 
 
 _RT_STATE: '_RuntimeState | None' = None
@@ -501,10 +501,10 @@ class _RuntimeState:
             self._render_interval = 0.0
 
     def _fill_priority_queue(self) -> float:
-        priority_queue: CallStack = self.tasks[_TaskSchedule.NEXT]
-        standby_queue : CallStack = self.tasks[_TaskSchedule.ALL]
-        if not priority_queue:
-            priority_queue._queue.extend(standby_queue)
+        active_queue : CallStack = self.tasks[_RuntimeQueue.ONETIME]
+        standby_queue: CallStack = self.tasks[_RuntimeQueue.ROUTINE]
+        if not active_queue:
+            active_queue._queue.extend(standby_queue)
 
     def _fill_priority_queue2(self) -> float:
         # DPG runs its own updates in the first half of `render_dearpygui_frame`
@@ -512,7 +512,7 @@ class _RuntimeState:
         # manual_callback_management to avoid different behaviors between modes.
         self._fill_priority_queue()
         if _dpg.get_app_configuration()["manual_callback_management"]:
-            queue: CallStack = self.tasks[_TaskSchedule.NEXT]
+            queue: CallStack = self.tasks[_RuntimeQueue.ONETIME]
             queue._queue.extend(  # avoid `CallStack` wrap behavior
                 # The front-loaded cost of `Callback` is a bit much here considering
                 # the instance is thrown out afterward. `functools.partial` works fine
@@ -549,18 +549,16 @@ class Runtime(AppItemLike):
 
     `Runtime` supports task ("callback") scheduling. Tasks are cached in one of three
     queues;
-        * "active"/"priority": The runtime's real-time queue. It is processed every
-        iteration of the runtime loop before (possibly) rendering a frame. It is not
-        guaranteed that the queue will process all tasks within every cycle.
+        * "onetime": The runtime's running queue. It is processed every iteration
+        of the runtime loop before (possibly) rendering a frame. It is not guaranteed
+        that the queue will process all tasks within every cycle or frame.
 
-        * "standby"/"secondary": Contains routine tasks that are repeatedly pushed
-        onto priority queue. This will occur at the beginning of every runtime loop
-        iteration **if the priority queue is empty**. This queue is never directly
-        processed.
+        * "routine": Contains common tasks that are repeatedly pushed onto priority
+        queue. This will occur at the beginning of every runtime loop iteration
+        **if the priority queue is empty**. This queue is never directly processed.
 
-        * "at exit"/"last frame": Contains any tasks scheduled to run when the UI
-        is closed or when the `.stop` method is called, will not be processed until
-        either occurs.
+        * "at exit": Contains any tasks scheduled to run when the UI is closed or when
+        the `.stop` method is called, will not be processed until either occurs.
 
     Queue contents are processed from oldest to newest. Any "processed" task is removed
     from the queue. Tasks can be pushed onto any queue and at any time, via the `.schedule`
@@ -613,9 +611,9 @@ class Runtime(AppItemLike):
         if _RT_STATE is None:
             Application.setup()
             _RT_STATE = _RuntimeState()
-            _RT_STATE.tasks[_TaskSchedule.ALL ] = stack_factory(force_wrapping=None)
-            _RT_STATE.tasks[_TaskSchedule.NEXT] = stack_factory(tasker_mode=TaskerMode.RUNTIME, force_wrapping=None)
-            _RT_STATE.tasks[_TaskSchedule.LAST] = stack_factory(tasker_mode=TaskerMode.RUNTIME, force_wrapping=None)
+            _RT_STATE.tasks[_RuntimeQueue.ONETIME] = stack_factory(tasker_mode=TaskerMode.RUNTIME, force_wrapping=None)
+            _RT_STATE.tasks[_RuntimeQueue.ROUTINE] = stack_factory(force_wrapping=None)
+            _RT_STATE.tasks[_RuntimeQueue.AT_EXIT] = stack_factory(tasker_mode=TaskerMode.RUNTIME, force_wrapping=None)
 
     # ~~ Item API ~~
 
@@ -725,50 +723,48 @@ class Runtime(AppItemLike):
         for _ in range(prerender_frames):
             cls.render_frame()
 
-        task_queue    = rt_state.tasks[cls.PRIORITY]
-        tick_interval = rt_state.tick_interval
+        running_queue = rt_state.tasks[cls.ONETIME]
         ts_last_upd   = _perf_counter_ms()
         ts_last_fr    = ts_last_upd
         time_buffer   = 0.0
-        updates       = task_queue.tasker()
+        updates       = running_queue.tasker()
         while cls.is_running:
-            this_upd_ts  = _perf_counter_ms()
-            time_buffer += round(this_upd_ts - ts_last_upd, 12)
-            ts_last_upd  = this_upd_ts
+            this_upd_ts   = _perf_counter_ms()
+            tick_interval = rt_state.tick_interval
+            time_buffer  += round(this_upd_ts - ts_last_upd, 12)
+            ts_last_upd   = this_upd_ts
             fill_prio_queue()
             try:
                 while time_buffer >= tick_interval:
                     next(updates)
                     time_buffer -= tick_interval
             except StopIteration:
-                updates = task_queue.tasker()
+                updates = running_queue.tasker()
 
             fr_interval = rt_state.render_interval
             ts_this_fr  = _perf_counter_ms()
             if ts_this_fr - ts_last_fr >= fr_interval:
                 ts_last_fr = ts_this_fr
                 cls.render_frame()
-        rt_state.tasks[cls.AT_EXIT]()
+        cls.tasks[cls.AT_EXIT]()
 
     @classmethod
     def stop(cls):
         if cls.is_running:
             _dpg.stop_dearpygui()
-            _RT_STATE.tasks[cls.AT_EXIT]()
-
+            cls.tasks[cls.AT_EXIT]()
 
     # ~~ Updates/Ticks/Callback API ~~
 
-    PRIORITY  = _TaskSchedule.NEXT
-    SECONDARY = _TaskSchedule.ALL
-    STANDBY   = _TaskSchedule.ALL
-    AT_EXIT   = _TaskSchedule.LAST
+    ONETIME = _RuntimeQueue.ONETIME
+    ROUTINE = _RuntimeQueue.ROUTINE
+    AT_EXIT = _RuntimeQueue.AT_EXIT
 
     @classproperty
     def tasks(cls) -> dict[int, CallStack] | None:
         """[get] Return the mapping containing the runtime's task queues.
 
-        Valid keys are `Runtime` members "PRIORITY", "SECONDARY", "AT_EXIT".
+        Valid keys are `Runtime` members 'ONETIME', 'ROUTINE', and 'AT_EXIT'.
         """
         try:
             return _RT_STATE.tasks
@@ -777,14 +773,14 @@ class Runtime(AppItemLike):
             return _RT_STATE.tasks
 
     @classmethod
-    def schedule(cls, callback: T = None, /, *, queue: int = PRIORITY, **kwargs) -> T:
+    def schedule(cls, callback: T = None, /, *, queue: int = ONETIME, **kwargs) -> T:
         """Schedules a runtime task with *callback*. Optionally usable as a decorator.
 
         Args:
             * callback: Callable object to queue.
 
             * when: Dictates when and/or how frequently *callback* will run. Defaults to
-            `Runtime.PRIORITY`.
+            `Runtime.ONETIME`.
 
 
         This method always returns *callback*, allowing it to be used as a decorator.
@@ -796,12 +792,12 @@ class Runtime(AppItemLike):
 
         When and how frequently a callback is executed depends on the value passed
         to *queue*;
-        - `Runtime.PRIORITY` will schedule the callback at the end of the primary queue and
+        - `Runtime.ONETIME` will schedule the callback at the end of the running queue and
         will run one time only. They will run in the same thread that calls the `.start`
         method.
-        - `Runtime.SECONDARY` will store the callback into a secondary queue. At the
+        - `Runtime.ROUTINE` will store the callback into a standby queue. At the
         start of each cycle of the runtime loop, all tasks in this queue are moved (copied)
-        to the priority queue IF the priority queue is empty.
+        to the priority queue IF the running queue is empty.
         - `Runtime.AT_EXIT`, the callback will run when exiting the runtime loop after the
         last frame has rendered. They will NOT run if the runtime loop is never started,
         unless the `.stop` method is called.
@@ -812,15 +808,10 @@ class Runtime(AppItemLike):
         def _on_frame(_callback):
             task = _callback if not kwargs else functools.partial(_callback, **kwargs)
             try:
-                queues = _RT_STATE.tasks
-            except AttributeError:
-                cls.setup()
-                queues = _RT_STATE.tasks
-            try:
-                callstack = queues[queue]
+                callstack = cls.tasks[queue]
             except KeyError:
                 raise ValueError(
-                    "`frame` must be one of the following `Runtime` members; `PRIORITY`, `SECONDARY`, `AT_EXIT`."
+                    f"`frame` must be one of the following `Runtime` members; {', '.join(repr(s) for s in _RuntimeQueue._member_names_)}."
                 ) from None
             callstack.append(task)
             return _callback
@@ -842,7 +833,7 @@ class Runtime(AppItemLike):
         except AttributeError:
             cls.setup()
             _RT_STATE._fill_priority_queue2()
-        return _RT_STATE.tasks[cls.PRIORITY]
+        return _RT_STATE.tasks[cls.ROUTINE]
 
     # ~~ DPG Function Hooks (staticmethods) ~~
 
