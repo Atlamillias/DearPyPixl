@@ -831,7 +831,7 @@ class AppItemLike:
     identity: DPGTypeId  = 0, ""
 
     def __repr__(self):
-        config = ', '.join(f"{k}={v!r}" for k, v in self.configuration().items())
+        config = ', '.join(f"{k}={str(v)!r}" for k, v in self.configuration().items())
         return f"{type(self).__qualname__}({config})"
 
     def __getattr__(self, name: str):
