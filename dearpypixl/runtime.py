@@ -11,6 +11,7 @@ from .px_items import Config, AppItemLike
 from .px_utils import staticproperty, classproperty
 from .events import Callback, CallStack, TaskerMode
 from .px_typing import (
+    T,
     Any,
     ItemId,
     Callable,
@@ -500,23 +501,25 @@ class _RuntimeState:
             self._render_interval = 0.0
 
     def _fill_priority_queue(self) -> float:
-        priority_queue = self.tasks[_TaskSchedule.NEXT]
-        standby_queue  = self.tasks[_TaskSchedule.ALL]
+        priority_queue: CallStack = self.tasks[_TaskSchedule.NEXT]
+        standby_queue : CallStack = self.tasks[_TaskSchedule.ALL]
         if not priority_queue:
             priority_queue._queue.extend(standby_queue)
 
     def _fill_priority_queue2(self) -> float:
+        # DPG runs its own updates in the first half of `render_dearpygui_frame`
+        # (called after runtime ticks). This order is maintained here when using
+        # manual_callback_management to avoid different behaviors between modes.
         self._fill_priority_queue()
-        # In a normal system user input is usually processed first before
-        # updating the runtime state. DPG processes inputs when
-        # `render_dearpygui_frame` is called before rendering which is
-        # AFTER our updates. Maintain this order here to avoid different
-        # behavior.
         if _dpg.get_app_configuration()["manual_callback_management"]:
-            self.tasks[_TaskSchedule.NEXT]._queue.extend(
-                Callback(cb, sender=s, app_data=a, user_data=u)
-                for cb, s, a, u in _dpg.get_callback_queue() or ()
-                if cb is not None
+            queue: CallStack = self.tasks[_TaskSchedule.NEXT]
+            queue._queue.extend(  # avoid `CallStack` wrap behavior
+                # The front-loaded cost of `Callback` is a bit much here considering
+                # the instance is thrown out afterward. `functools.partial` works fine
+                # since compat. w/non-functions is only needed when DPG is the caller.
+                functools.partial(callback, *args)
+                for callback, *args in (_dpg.get_callback_queue() or ())
+                if callback is not None
             )
 
 
@@ -610,9 +613,9 @@ class Runtime(AppItemLike):
         if _RT_STATE is None:
             Application.setup()
             _RT_STATE = _RuntimeState()
-            _RT_STATE.tasks[_TaskSchedule.ALL ] = stack_factory()
-            _RT_STATE.tasks[_TaskSchedule.NEXT] = stack_factory(tasker_mode=TaskerMode.RUNTIME)
-            _RT_STATE.tasks[_TaskSchedule.LAST] = stack_factory(tasker_mode=TaskerMode.POPLEFT)
+            _RT_STATE.tasks[_TaskSchedule.ALL ] = stack_factory(force_wrapping=None)
+            _RT_STATE.tasks[_TaskSchedule.NEXT] = stack_factory(tasker_mode=TaskerMode.RUNTIME, force_wrapping=None)
+            _RT_STATE.tasks[_TaskSchedule.LAST] = stack_factory(tasker_mode=TaskerMode.RUNTIME, force_wrapping=None)
 
     # ~~ Item API ~~
 
@@ -756,7 +759,6 @@ class Runtime(AppItemLike):
 
     # ~~ Updates/Ticks/Callback API ~~
 
-    ACTIVE    = _TaskSchedule.NEXT
     PRIORITY  = _TaskSchedule.NEXT
     SECONDARY = _TaskSchedule.ALL
     STANDBY   = _TaskSchedule.ALL
@@ -775,43 +777,52 @@ class Runtime(AppItemLike):
             return _RT_STATE.tasks
 
     @classmethod
-    def schedule(cls, callback: Callable = None, /, *, when: int = PRIORITY, **kwargs):
-        """Schedules a runtime task. Optionally usable as a decorator.
+    def schedule(cls, callback: T = None, /, *, queue: int = PRIORITY, **kwargs) -> T:
+        """Schedules a runtime task with *callback*. Optionally usable as a decorator.
 
         Args:
-            * callback: Callable object to schedule.
+            * callback: Callable object to queue.
 
             * when: Dictates when and/or how frequently *callback* will run. Defaults to
             `Runtime.PRIORITY`.
 
 
-        When and how frequently a callback is executed depends on the value passed
-        to *when*. `Runtime.SECONDARY` will store the callback into a secondary queue. At the
-        start of each cycle of the runtime loop, all tasks in this queue are moved (copied)
-        to the priority queue IF the priority queue is empty. `Runtime.PRIORITY` will schedule
-        it at the end of the primary queue and will run one time only. If `Runtime.AT_EXIT`,
-        the callback will run when exiting the runtime loop after the last frame has rendered
-        (they will NOT run if the runtime loop is never started, unless the `.stop` method is
-        called).
+        This method always returns *callback*, allowing it to be used as a decorator.
 
-        Alternatively, tasks can be pushed into queues directly (see the `.tasks` property).
+        The object used as the callback can be any callable, and does not need to adhere
+        to DearPyGui's callback convention. No arguments will be passed to the callable
+        when called. If additional keyword arguments are included via *kwargs*, the result of
+        `functools.partial(callback, **kwargs)` is queued instead of the original object.
+
+        When and how frequently a callback is executed depends on the value passed
+        to *queue*;
+        - `Runtime.PRIORITY` will schedule the callback at the end of the primary queue and
+        will run one time only. They will run in the same thread that calls the `.start`
+        method.
+        - `Runtime.SECONDARY` will store the callback into a secondary queue. At the
+        start of each cycle of the runtime loop, all tasks in this queue are moved (copied)
+        to the priority queue IF the priority queue is empty.
+        - `Runtime.AT_EXIT`, the callback will run when exiting the runtime loop after the
+        last frame has rendered. They will NOT run if the runtime loop is never started,
+        unless the `.stop` method is called.
+
+        All queues are `CallStack` objects, exposed via the `.tasks` property. Tasks can be
+        pushed directly onto these queues without calling this method through their API.
         """
         def _on_frame(_callback):
-            task = _callback
-            if kwargs:
-                task = Callback(_callback, **kwargs)
+            task = _callback if not kwargs else functools.partial(_callback, **kwargs)
             try:
-                tasks = _RT_STATE.tasks
+                queues = _RT_STATE.tasks
             except AttributeError:
                 cls.setup()
-                tasks = _RT_STATE.tasks
+                queues = _RT_STATE.tasks
             try:
-                stack = tasks[when]
+                callstack = queues[queue]
             except KeyError:
                 raise ValueError(
-                    "`frame` expected one of the following `Runtime` members; `STANDBY`, `PRIORITY`, `AT_EXIT`."
+                    "`frame` must be one of the following `Runtime` members; `PRIORITY`, `SECONDARY`, `AT_EXIT`."
                 ) from None
-            stack.append(task)
+            callstack.append(task)
             return _callback
         return _on_frame if callback is None else _on_frame(callback)
 
