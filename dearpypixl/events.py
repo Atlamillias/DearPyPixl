@@ -1,14 +1,13 @@
 import enum
 import collections
-import gc
 import functools
 import inspect
 from inspect import Parameter
 from time import perf_counter, perf_counter_ns
-from dearpygui import dearpygui, _dearpygui
+from dearpygui import dearpygui
 from .px_typing import (
-    NULL, T, P, KT, VT,
-    ItemId, DPGCallback, DPGCommand,
+    NULL, T, P,
+    ItemId, DPGCallback,
     FrozenNamespace,
     typing_overload,
     # typing
@@ -18,17 +17,14 @@ from .px_typing import (
     Sequence,
     TypedDict,
     Generic,
-    ParamSpec,
     Self,
     Iterator,
     Iterable,
     Callable,
     Generator,
-    Mapping,
-    Protocol,
-    Concatenate,
+
 )
-from .px_items import AppItemType, RegistryItem, HandlerItem, Config
+from .px_items import Config
 from . import px_items
 
 
@@ -151,7 +147,7 @@ class CallbackConfig(TypedDict):
     user_data: Any
 
 
-class Callback(DPGCallback[P]):
+class Callback(DPGCallback[P], px_items.AppItemLike):
     __slots__ = (
         "__wrapped__",
         "__signature__",
@@ -184,17 +180,10 @@ class Callback(DPGCallback[P]):
         self.__wrapped__  = callback
         self.configure(callback=callback, sender=sender, app_data=app_data, user_data=user_data)
 
-    def __repr__(self):
-        return (
-            f"{type(self).__qualname__}("
-            f"{', '.join(f'{k}: {str(v)!r}' for k, v in self.configuration().items())}"
-            f")"
-        )
-
     def __getattr__(self, name: str):
         try:
-            return self.configuration()[name]
-        except KeyError:
+            return super().__getattr__(name)
+        except AttributeError:
             pass
         try:
             return getattr(self.__wrapped__, name)
@@ -414,7 +403,7 @@ class _CallStack(Generic[T]):  # slotted method signatures & generic typing
         """
 
 
-class CallStack(_CallStack[DPGCallback], Tasker):
+class CallStack(_CallStack[DPGCallback], Tasker, px_items.AppItemLike):
     """Multipurpose event queue for DearPyGui. Behaves near-identical to `collections.deque`.
     All queue-related methods are either hooked or directly forwarded an underlying `deque`
     -- pops and appends from either end are thread-safe. Like `Callback` objects, stacks support
@@ -522,7 +511,7 @@ class CallStack(_CallStack[DPGCallback], Tasker):
 
     def __repr__(self):
         return (
-            f"{type(self).__qualname__}(maxlen={self.maxlen}"
+            f"{type(self).__qualname__}(maxlen={self.maxlen}, "
             f"{', '.join(f'{k}={str(v)!r}' for k, v in self.configuration().items())}"
             f")"
         )
