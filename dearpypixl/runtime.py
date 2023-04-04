@@ -520,6 +520,8 @@ class _RuntimeState:
             )
 
 
+
+
 def _perf_counter_ms() -> float:
     return 1000.0 * time.perf_counter()
 
@@ -609,7 +611,7 @@ class Runtime(AppItemLike):
             Application.setup()
             _RT_STATE = _RuntimeState()
             _RT_STATE.tasks[_TaskSchedule.ALL ] = stack_factory()
-            _RT_STATE.tasks[_TaskSchedule.NEXT] = stack_factory(tasker_mode=TaskerMode.POPLEFT)
+            _RT_STATE.tasks[_TaskSchedule.NEXT] = stack_factory(tasker_mode=TaskerMode.RUNTIME)
             _RT_STATE.tasks[_TaskSchedule.LAST] = stack_factory(tasker_mode=TaskerMode.POPLEFT)
 
     # ~~ Item API ~~
