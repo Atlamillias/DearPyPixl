@@ -3,7 +3,7 @@ application-level states.
 """
 import os
 import enum
-import array
+import functools
 import time
 from dearpygui import dearpygui as dpg, _dearpygui as _dpg
 from . import px_appstate as _appstate
@@ -14,7 +14,6 @@ from .px_typing import (
     Any,
     ItemId,
     Callable,
-    Sequence,
     Null,
     overload,
     DPGCallback,
@@ -397,7 +396,8 @@ class Viewport(AppItemLike):
         """Captures a screenshot of the viewport (excludes the title bar).
 
         Args:
-            * file: A filepath for the resulting .png file. Defaults to "".
+            * file: A filepath for the resulting .png file. Name must include
+            ".png". Defaults to "".
 
             * callback: A DearPyGui-callable object accepting zero to three
             positional arguments that will handle the raw image buffer. Defaults
@@ -408,13 +408,37 @@ class Viewport(AppItemLike):
 
         The result of this function varies depending on the arguments passed;
             * If *file* is not an empty string, the screenshot is saved as
-            "{file}.png".
+            *file* in .png format.
 
-            * If *callback* is not None, it is called and passed a `mvBuffer` object
+            * If *file* is an empty string and *callback* is not None, DearPyGui
+            queues *callback* to run next frame, passing it a `mvBuffer` object
             as the second positional argument if able (i.e. `app_data`).
+
+        NOTE: `mvBuffer` objects are exposed in DearPyGui's namespace but are undocumented.
+        They use Python's buffer protoco, but are NOT Python arrays, and do not behave
+        as such. Casting them to another built-in sequence type will also fail -- To cast
+        to a Python list, use the built-in `memoryview` function to create a view of the
+        buffer, then call the view's `.tolist` method. Read the official docs at
+        <https://docs.python.org/3/library/stdtypes.html#typememoryview> for more information
+        on `memoryview` objects.
         """
         # XXX: have not tested what happens w/both arguments
         _dpg.output_frame_buffer(file, callback=callback)
+
+    @staticmethod
+    def save_frame_buffer(file: str, **kwargs) -> None:
+        """Captures a screenshot of the viewport (excluding the title bar) and
+        saves it as a .png file.
+
+        Args:
+            * file: A filepath for the resulting .png file. Will append ".png" if
+            it does not end with it.
+
+        NOTE: Not supported on MacOS.
+        """
+        if not file.endswith(".png"):
+            file = f"{file}.png"
+        _dpg.output_frame_buffer(file, callback=None)
 
 
 
@@ -482,11 +506,16 @@ class _RuntimeState:
             priority_queue._queue.extend(standby_queue)
 
     def _fill_priority_queue2(self) -> float:
-        self._fill_priority_queue()  # user tasks normally run first regardless
+        self._fill_priority_queue()
+        # In a normal system user input is usually processed first before
+        # updating the runtime state. DPG processes inputs when
+        # `render_dearpygui_frame` is called before rendering which is
+        # AFTER our updates. Maintain this order here to avoid different
+        # behavior.
         if _dpg.get_app_configuration()["manual_callback_management"]:
             self.tasks[_TaskSchedule.NEXT]._queue.extend(
                 Callback(cb, sender=s, app_data=a, user_data=u)
-                for cb, s, a, u in (_dpg.get_callback_queue() or ())
+                for cb, s, a, u in _dpg.get_callback_queue() or ()
                 if cb is not None
             )
 
