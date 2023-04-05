@@ -551,8 +551,8 @@ class AppItemType(_AppItemBase, Generic[P]):
     def destroy(self) -> None:
         """Destroy this item and the item's children.
 
-        Functionally equivelent to calling `.delete` method where `children_only=False`, but
-        all any exception resulting from the process is silently handled.
+        Functionally equivelent to calling `.delete(children_only=False)` while
+        ignoring all errors.
         """
         try:
             self.delete(children_only=False)
