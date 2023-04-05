@@ -1,10 +1,10 @@
 import functools
 import contextlib
-import itertools
 import types
 import inspect
 from inspect import Parameter, _ParameterKind
 from dearpygui import dearpygui as dpg, _dearpygui as _dpg
+from dearpygui.dearpygui import generate_uuid
 from .px_typing import (
     T, P,
     Any,
@@ -12,7 +12,10 @@ from .px_typing import (
     Array,
     DPGCallback,
     DPGCommand,
-    PXLErrorFn,
+    ITEM_CONFIG_TEMPLATE,
+    ITEM_INFO_TEMPLATE,
+    ITEM_STATES_TEMPLATE,
+    DPXErrorFn,
     List,
     Tuple,
     Iterable,
@@ -49,22 +52,36 @@ class classproperty(property):  # pyright special-cases property (== attribute, 
         return self.__wrapped__(cls)
 
 
+class staticproperty(classproperty):
+    __slots__ = ()
+
+    def __get__(self, instance, cls):
+        return self.__wrapped__()
 
 
 ########################################
-######### DPG SETTERS/SETTERS ##########
+######### DPG GETTERS/SETTERS ##########
 ########################################
 
+# CONFGURATION
+def get_config(item: ItemId) -> ITEM_CONFIG_TEMPLATE: ...
 get_config = _dpg.get_item_configuration
-get_info   = _dpg.get_item_info
-get_value  = _dpg.get_value
-get_values = _dpg.get_values
-get_state  = _dpg.get_item_state
+
+def set_config(item: ItemId, **kwargs: ITEM_CONFIG_TEMPLATE) -> None: ...
 set_config = _dpg.configure_item
-set_value  = _dpg.set_value
 
 
-def set_values(items: Iterable[ItemId], values: Sequence[Any]) -> None:  # compliments `get_values`
+# VALUE
+def get_value(item: ItemId) -> Any: ...
+get_value = _dpg.get_value
+
+def get_values(items: Sequence[ItemId]) -> list[Any]: ...
+get_values = _dpg.get_values
+
+def set_value(item: ItemId, value: Any) -> None: ...
+set_value = _dpg.set_value
+
+def set_values(items: Iterable[ItemId], values: Sequence[Any]) -> None:
     """Set values on several items. Stops once the shortest iterable is exhausted.
 
     Args:
@@ -74,26 +91,25 @@ def set_values(items: Iterable[ItemId], values: Sequence[Any]) -> None:  # compl
     The value of each item in *items* will be set to the value in *values* at
     the same index.
     """
-    # XXX Caller beware -- note the argument typing. Both will technically work as
-    # generators, but I recommend *not* using a generator for `values`. The order
-    # of `zip` arguments below is intentional -- it will not advance `items` if
-    # `values` is exhausted. A `values` generator WILL advance (one iteration) if
-    # `items` is exhausted.
     for value, item in zip(values, items):
         set_value(item, value)
+
+
+# INFO
+def get_info(item: ItemId) -> ITEM_INFO_TEMPLATE: ...
+get_info = _dpg.get_item_info
+
+
+# STATE
+def get_state(item: ItemId) -> ITEM_STATES_TEMPLATE: ...
+get_state = _dpg.get_item_state
+
 
 
 
 ########################################
 ########## DPG ITEM UTILITIES ##########
 ########################################
-
-# BUG: `dearpygui.generate_uuid` has considerable performance issues. It takes
-# about x80 longer to create items when using it. Even though the below
-# replacement has no safety checks, users shouldn't be generating their own
-# uuids.
-generate_uuid = itertools.count(start=100).__next__
-
 
 def item_from_callable(_callable: DPGCommand, *args, **kwargs) -> ItemId:
     """Return the result of invoking a callable that returns or yields an item
@@ -141,7 +157,10 @@ def is_item_cmd(_object: Any, /) -> bool:
     except:
         return False  # not callable or is built-in
     # defined in DPG
-    if dpg.__name__ not in _object.__module__:
+    try:
+        if dpg.__name__ not in _object.__module__:
+            return False
+    except AttributeError:
         return False
     # accepts an ItemId keyword argument
     if all(kwd not in signature.parameters for kwd in ("tag", "id")):
@@ -203,6 +222,16 @@ def does_itemid_exist(item_id: ItemId) -> bool:
     else:
         return False
     return fn(item_id)
+
+
+@contextlib.contextmanager
+def push_container(container_item: ItemId):
+    try:
+        _dpg.push_container_stack(container_item)
+        yield container_item
+    finally:
+        if _dpg.top_container_stack() == container_item:
+            _dpg.pop_container_stack()
 
 
 def item_generator(item_factory: Callable[P, T], *args: P.args, **kwargs: P.kwargs) -> Generator[T, None, None]:
@@ -297,7 +326,7 @@ def _get_cmd_err_signature(command: DPGCommand):
 
 
 def _error_prefix(msg: str = ""):
-    def process_err_fn(fn: PXLErrorFn[P]) -> PXLErrorFn[P]:
+    def process_err_fn(fn: DPXErrorFn[P]) -> DPXErrorFn[P]:
         @functools.wraps(fn)
         def err_fn_wrapper(*args: P.args, **kwargs: P.kwargs) -> Exception | None:
             err = fn(*args, **kwargs)
@@ -358,7 +387,7 @@ def _err_incompatible_parent(item: ItemId, command: DPGCommand, *args, parent: I
     # It's not possible to perfectly determine parent/child compatibility w/o
     # hardcoding it, but a few confident guesses can be made using the parent's
     # type and name of the command used.
-    err = f"incompatible parent type for {child_name!r} items (try {{}})."
+    err = f"incompatible parent type for {command.__name__.removeprefix('add_')!r} item (try {{}})."
     if child_name.startswith("draw") and all(s not in parent_name for s in ("drawlist", "stage")):
         return ValueError(err.format("`mvStage`, `mvDrawlist`"))
     elif "handler" in child_name and "handlerregistry" not in parent_name:
@@ -397,7 +426,7 @@ def err_parent_invalid(item: ItemId, command: DPGCommand, *args, **kwargs):
     elif not parent_item and not cstack_item:
         return TypeError("missing argument (container stack is empty).")
     # CASE 4: a parent is available, but maybe incompatible
-    return _err_incompatible_parent()
+    return _err_incompatible_parent(item, command, *args, **kwargs)
 
 
 @_error_prefix()

@@ -7,7 +7,7 @@ import contextlib
 import types
 from dearpygui import dearpygui
 
-from . import appitems as ui, grid, px_utils, theme, px_items
+from . import appitems as ui, grid, px_utils, px_items, theming
 from .px_items import ValueArrayItem, AutoParentItem
 from .px_typing import ItemId, Any, Sequence, DPGCommand, T, P, Callable, Self, Iterator, Generic, Iterable, cast, NamedTuple, Protocol, TypeVar, Concatenate, DPGCallback, overload
 
@@ -289,9 +289,16 @@ class pxConsoleWindow(ui.mvChildWindow):
 
     def __enter__(self) -> Self:
         # redirect only once when chaining or nesting contexts
+        self.redirect()
+        return self
+
+    def __exit__(self,  _exc_type: Any = None, _exc_inst: Any = None, _traceback: Any = None, /):
+        self.restore()
+
+    def redirect(self):
         if self.__ctx_counter > 1:
             self.__ctx_counter += 1
-            return self
+            return
         self.__ctx_counter = 1
         if self.ctx_redirect_stdout:
             self.__stdout_redirect = self.__ctx_stdout
@@ -299,15 +306,14 @@ class pxConsoleWindow(ui.mvChildWindow):
         if self.ctx_redirect_stderr:
             self.__stderr_redirect = self.__ctx_stderr
             self.__stderr_redirect.__enter__()
-        return self
 
-    def __exit__(self, *args, **kwargs):
+    def restore(self, _exc_type: Any = None, _exc_inst: Any = None, _traceback: Any = None, /):
         if self.__ctx_counter > 1:
             self.__ctx_counter -= 1
             return
-        self.__stdout_redirect.__exit__(*args)
+        self.__stdout_redirect.__exit__(_exc_type, _exc_inst, _traceback)
         self.__stdout_redirect = self.__ctx_no_redirect
-        self.__stderr_redirect.__exit__(*args)
+        self.__stderr_redirect.__exit__(_exc_type, _exc_inst, _traceback)
         self.__stderr_redirect = self.__ctx_no_redirect
         self.__ctx_counter = 0
 
@@ -419,22 +425,22 @@ class pxInteractivePython(code.InteractiveConsole, AutoParentItem, pxConsoleWind
         self._parent_grid.rows[-1].size = 20
 
     def _init_themes(self):
-        with theme.pxTheme() as t:
+        with theming.pxTheme() as t:
             t.style.WindowPadding(8, 0)
             t.color.FrameBg(0, 0, 0, 0)
             t.color.ChildBg(25, 25, 25)
         self.set_theme(t)
 
-        with theme.pxTheme() as t:
+        with theming.pxTheme() as t:
             t.style.WindowPadding(8, 0)
             t.color.FrameBg(0, 0, 0, 0)
         self._input_wndw.set_theme(t)
 
-        with theme.pxTheme() as self._stdout_theme:
+        with theming.pxTheme() as self._stdout_theme:
             self._stdout_theme.color.Text(self.stdout_txt_color)
             self._stdout_theme.color.FrameBg(0, 0, 0, 0)
 
-        with theme.pxTheme() as self._stderr_theme:
+        with theming.pxTheme() as self._stderr_theme:
             self._stderr_theme.color.Text(self.stderr_txt_color)
             self._stderr_theme.color.FrameBg(0, 0, 0, 0)
 

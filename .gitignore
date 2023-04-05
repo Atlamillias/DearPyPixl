@@ -11,7 +11,7 @@ misc/**
 _debug.py
 Cargo.lock
 dearpygui/**
-dearpypixl/_wip.py
+_wip.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

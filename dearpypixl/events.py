@@ -1,30 +1,65 @@
-# TODO: rewrite
-
-from __future__ import annotations
-from collections import deque
-from inspect import Parameter, signature
-from typing import (
+import enum
+import collections
+import functools
+import inspect
+from inspect import Parameter
+from time import perf_counter, perf_counter_ns
+from dearpygui import dearpygui
+from .px_typing import (
+    NULL, T, P,
+    ItemId, DPGCallback,
+    FrozenNamespace,
+    typing_overload,
+    # typing
+    overload,
+    cast,
     Any,
-    MutableSequence,
-    Literal,
     Sequence,
+    TypedDict,
+    Generic,
+    Self,
+    Iterator,
+    Iterable,
+    Callable,
+    Generator,
+
 )
-from dearpygui import _dearpygui
-from .px_utils import forward_method
-from .px_typing import DPGCallback, NULL, T, FrozenNamespace
+from .px_items import Config
+from . import px_items
 
 
-_VARIADIC_POS    = Parameter.VAR_POSITIONAL
-_POSITIONAL_KIND = (Parameter.POSITIONAL_OR_KEYWORD, Parameter.POSITIONAL_ONLY)
+__all__ = [
+    # typing
+    "ItemId",
+    "DPGCallback",
+
+    # misc
+    "perf_counter",
+    "perf_counter_ns",
+
+    # constants, enums
+    "Mouse",
+    "KeyCode",
+    "TaskerMode",
+    "Frame",
+
+    # "poster" objects
+    "Callback",
+    "CallStack",
+    "FrameEvents",
+]
 
 
-def _is_event_callback(_object: Any) -> bool:
-    return isinstance(_object, CallbackEvent)
+
+_CALLBACK  = "callback"
+_SENDER    = "sender"
+_APP_DATA  = "app_data"
+_USER_DATA = "user_data"
 
 
-def _get_parg_count(_callable) -> int:
+def _callback_parg_count(_callable: Callable) -> int:
     try:
-        params = signature(_callable).parameters.values()
+        sig = inspect.signature(_callable)
     except TypeError:
         raise TypeError(f"{_callable!r} is not callable.") from None
     except ValueError:
@@ -32,6 +67,11 @@ def _get_parg_count(_callable) -> int:
         if getattr(_callable, "__module__", None) == "builtins":
             raise ValueError(f"Unable to manage builtin object {_callable.__name__!r} (no signature).") from None
         raise
+
+    params = sig.parameters.values()
+
+    _VARIADIC_POS    = Parameter.VAR_POSITIONAL
+    _POSITIONAL_KIND = (Parameter.POSITIONAL_OR_KEYWORD, Parameter.POSITIONAL_ONLY)
     # It is not ideal to go through `__code__.co_argcount` as it won't include
     # variadic positional arguments.
     pos_arg_cnt = 0
@@ -48,348 +88,840 @@ def _get_parg_count(_callable) -> int:
             break
     return pos_arg_cnt
 
-def _event_property_getter(target: str):
-    def getter(self: CallbackEvent):
-        return getattr(self, target)
-    return getter
 
-def _event_property_setter(target):
-    def setter(self: CallbackEvent, value):
-        self.__setattr__(target, value)
-        self._set_call_fn()
-    return setter
+def _callback_defaults_src(_callable: Callable) -> tuple[str, str, str]:
+    # The workflow calls this following `_callback_parg_count`, so the same
+    # checks are not needed here.
+    params = inspect.signature(_callable).parameters.values()
+    # Get defaults from at least 3 parameters.
+    parg_defaults = []
+    for p in params:
+        if p.kind in (Parameter.KEYWORD_ONLY, Parameter.VAR_POSITIONAL):
+            break
+
+        if p.default != Parameter.empty:
+            parg_defaults.append(str(p).split("=")[-1].strip())
+        else:
+            parg_defaults.append('None')
+
+        if len(parg_defaults) >= 3:
+            break
+
+    parg_defaults.extend(['None'] * 3)  # always return three values
+    return tuple(parg_defaults[:3])
 
 
+def _callback_wrapper(callback: T, *args) -> T:
+    # new fn definition string
+    cb_parg_defaults = _callback_defaults_src(callback)
+    call_fn_params   = (
+        f"{_SENDER}: ItemId | None = {cb_parg_defaults[0]}",
+        f"{_APP_DATA}: Any = {cb_parg_defaults[1]}",
+        f"{_USER_DATA}: Any = {cb_parg_defaults[2]}",
+    )
+    # new fn body string
+    local_vars = (_SENDER, _APP_DATA, _USER_DATA)                          # bound to DPG args (local to callback)
+    bound_vars = (f"_{_SENDER}", f"_{_APP_DATA}", f"_{_USER_DATA}")        # bound to CallbackEvent args (nonlocal to callback)
+    cb_args    = [bound_vars[i] if args[i] is not NULL else local_vars[i]
+                  for i in range(len(args))]
+
+    # closure returning the new function
+    wrapper_fn_src = (
+        f"def wrapper({_CALLBACK}, {bound_vars[0]} = None, {bound_vars[1]} = None, {bound_vars[2]} = None):\n"
+        f"    def __call__({', '.join(call_fn_params)}) -> None: {_CALLBACK}({', '.join(cb_args)})\n"
+        f"    return __call__"
+    )
+    namespace = {}
+    exec(wrapper_fn_src, None, namespace)
+    return namespace["wrapper"](callback, *args)
 
 
-class CallbackEvent(DPGCallback):
-    """A wrapper object for callables intended for use as DearPyGui callbacks. Supports
-    positional argument overrides and additional keyword-only arguments. Can be used as
-    a decorator.
-    """
+def _null_callback(*args) -> None:
+    """Fallback callable to use when `callback` is None or NULL."""
+
+
+class CallbackConfig(TypedDict):
+    callback : DPGCallback[P]
+    sender   : ItemId | None | NULL
+    app_data : Any
+    user_data: Any
+
+
+class Callback(DPGCallback[P], px_items.AppItemLike):
     __slots__ = (
-        "_callback",
-        "_sender",
-        "_app_data",
-        "_user_data",
-        "_kwargs",
+        "__wrapped__",
+        "__signature__",
+        # For performance reasons, `__call__` is dynamically created to cater to the wrapped
+        # callable, and is set at the instance-level. This typically does nothing -- dunder
+        # method lookups are done at class-level through its type slots. Using descriptors is
+        # the only way around this.
         "__call__",
+        # Callable non-functions don't normally work as DPG callbacks because of the
+        # missing `__code__` attribute. It works with both `__code__` and `__call__`.
+        "__code__",
+        # Overrides for DPG's sent `sender`, `app_data`, and `user_data` positional arguments.
+        "_cb_pos_args",
     )
 
+    NULL = NULL
 
     def __init__(
         self,
-        callback : DPGCallback,
-        /, *,
-        sender   : int   = NULL,
-        app_data : Any  = NULL,
-        user_data: Any | None = NULL,
-        **kwargs,
+        callback : DPGCallback[P] | None | NULL = None,
+        /,
+        sender   : ItemId | None | NULL = NULL,
+        app_data : Any                  = NULL,
+        user_data: Any                  = NULL,
     ) -> None:
-        """Args:
-            * callback (Callable[[Any, ...], None]): A callable that accepts zero to three positional
-            arguments, any number of keyword-only arguments.
+        # unwrap other instances of `Callback`
+        if isinstance(callback, Callback):
+            callback, sender, app_data, user_data = callback.configuration().values()
+        self._cb_pos_args = (sender, app_data, user_data)
+        self.__wrapped__  = callback
+        self.configure(callback=callback, sender=sender, app_data=app_data, user_data=user_data)
 
-            The following are optional keyword-only arguments. When this object's `__call__` method is
-            invoked, these override the corresponding local argument sent.
+    def __getattr__(self, name: str):
+        try:
+            return super().__getattr__(name)
+        except AttributeError:
+            pass
+        try:
+            return getattr(self.__wrapped__, name)
+        except AttributeError:
+            pass
+        raise AttributeError(name) from None
 
-            * sender (int | None): If included, this will be used as the `sender` (first positional)
-            argument instead of the argument sent by DearPyGui.
+    __call__: DPGCallback[P]
 
-            * app_data (Any | None): If included, this will be used as the `app_data` (second positional)
-            argument instead of the argument sent by DearPyGui.
+    callback : Config[DPGCallback[P] | None, DPGCallback[P] | None | NULL] = Config()
+    sender   : Config[ItemId | None | NULL, ItemId | None | NULL]          = Config()
+    app_data : Config[Any | NULL, Any | NULL]                              = Config()
+    user_data: Config[Any | NULL, Any | NULL]                              = Config()
 
-            * user_data (Any | None):  If included, this will be used as the `sender` (third positional)
-            argument instead of the argument sent by DearPyGui.
+    @overload
+    def configure(self, *, callback: DPGCallback[P] = ..., sender: ItemId = ..., app_data: Any = ..., user_data: Any = ..., **kwargs) -> None: ...
+    def configure(self, **kwargs: CallbackConfig) -> None:
+        cb = self.__wrapped__
+        if _CALLBACK in kwargs:
+            cb = kwargs[_CALLBACK]
+        cb_args = [*self._cb_pos_args]
+        if _SENDER in kwargs:
+            cb_args[0] = kwargs[_SENDER]
+        if _APP_DATA in kwargs:
+            cb_args[1] = kwargs[_APP_DATA]
+        if _USER_DATA in kwargs:
+            cb_args[2] = kwargs[_USER_DATA]
 
-            Any additional keyword arguments will be sent to <callback> when called. If you include these,
-            ensure that the callback can accept them.
-        """
-        self._callback  = callback
-        self._sender    = sender
-        self._app_data  = app_data
-        self._user_data = user_data
-        self._kwargs    = kwargs
-        self.__call__   = None  # rebuilt on property set
+        # rebuild `__call__` after any updates to the instance
+        if kwargs:
+            self._cb_pos_args = tuple(cb_args)
+            if cb not in (None, NULL):
+                self.__wrapped__ = cb
+                self.__call__    = _callback_wrapper(cb, *self._cb_pos_args[:_callback_parg_count(cb)])
+                self.__code__    = cb.__code__
+            else:
+                self.__wrapped__ = _null_callback
+                self.__call__    = _null_callback
+                self.__code__    = _null_callback.__code__
 
-        self.callback   = self._callback
+    def configuration(self) -> CallbackConfig:
+        return dict(zip((_CALLBACK, _SENDER, _APP_DATA, _USER_DATA), (self.__wrapped__, *self._cb_pos_args)))
 
-    def __repr__(self):
-        return f"{type(self).__qualname__}(callback={self._callback!r}, sender={self._sender!r})"
 
-    def _create_call_fn(self, func_str: str, n_args: int = 0):
-        # NOTE: This is a pretty error-prone method -- always review after any class
-        # code changes.
-        n_args = n_args if n_args is not None else _get_parg_count(self._callback)
 
-        local_vars = ("_sender", "_app_data", "_user_data")[0:n_args]
-        bound_vals = (self._sender, self._app_data, self._user_data)
-        arg_vars   = (var if self_val is not NULL else var.lstrip("_")
-                        for var, self_val in zip(local_vars, bound_vals))
-        kwargs_var = "_kwargs" if self._kwargs else "kwargs"
 
-        # The "argument string" passed to the callback is pre-built to reduce the on-call overhead
-        # introduced by the wrapper.
-        call_fn_txt = func_str.format(args=''.join(f'{a},' for a in arg_vars), kwargs=kwargs_var)
-        localizer   = (
-            "def __call_fn__(self, _callback, _sender, _app_data, _user_data, /, **_kwargs):\n"
-            "    {fn}"
-            "    return __call__"
-        ).format(fn=call_fn_txt)
+##########################################
+########### CALLSTACK OBJECTS ############
+##########################################
 
-        ns = {}
-        exec(localizer, None, ns)
-        return ns["__call_fn__"](self, self._callback, *bound_vals, **self._kwargs)
+_MODE_TO_TASKER: dict[int, str] = {}
 
-    def _set_call_fn(self, n_args: int = 0):
-        """Creates and binds a new `__call__` method that invokes `self.callback`.
-        """
-        # NOTE: This is a pretty error-prone method -- always review after any class
-        # code changes.
-        call_fn_txt = (
-            "def __call__(sender: int | None | str = None, app_data: Any | None = None, user_data: Any | None = None, /, **kwargs):"
-            " _callback({args}**{kwargs})\n"
-        )
-        self.__call__ = self._create_call_fn(call_fn_txt, n_args)
-        self.__code__ = self.__call__.__code__ # incognito DPG callback
+def new_tasker(mode: 'TaskerMode'):
+    def register_tasker(mthd: T) -> T:
+        _MODE_TO_TASKER[mode] = mthd.__name__
+        setattr(mthd, "_tasker_mode_", mode)
+        return mthd
+    return register_tasker
+
+
+class TaskerMode(enum.IntEnum):
+    ITER    = 0
+    CYCLE   = 1
+    POP     = 2
+    POPLEFT = 3
+    RUNTIME = 4
+
+
+class Tasker(DPGCallback):
+    # Contains the bulk that processes scheduled events for `CallStack`. The `_cb_pos_args`
+    # attribute still needs to be defined in `CallStack`.
+
+    __slots__ = ()
+
+    timer : Callable[[], float]
+    tasker: Callable[[Self, ItemId | None, Any, Any], Generator[float, None, None]]
 
     @property
-    def callback(self):
-        return self._callback
-    @callback.setter
-    def callback(self, value: T) -> T:  # decorator usage
-        pos_arg_cnt = _get_parg_count(value)
-        self._callback = value
-        self._set_call_fn(n_args=pos_arg_cnt)
-        return value
+    def tasker_mode(self) -> TaskerMode | int:
+        """[get] Return the mode used by the `.tasker` method."""
+        return getattr(self.tasker, "_tasker_mode_", self.DEFAULT)
+    @tasker_mode.setter
+    def tasker_mode(self, value: TaskerMode | int | None) -> None:
+        """[set] Change the behavior of the `.tasker` method."""
+        if not value:
+            value = self.DEFAULT
+        self.tasker = getattr(self, _MODE_TO_TASKER[value])
 
-    sender   : int | None     = property(_event_property_getter("_sender")   , _event_property_setter("_sender"))
-    app_data : Any | None     = property(_event_property_getter("_app_data") , _event_property_setter("_app_data"))
-    user_data: Any | None     = property(_event_property_getter("_user_data"), _event_property_setter("_user_data"))
-    kwargs   : dict[str, Any] = property(_event_property_getter("_kwargs")   , _event_property_setter("_kwargs"))
+    # TODO: flag system for mixed behaviors
+    ITER     = TaskerMode.ITER
+    CYCLE    = TaskerMode.CYCLE
+    POP      = TaskerMode.POP
+    POPLEFT  = TaskerMode.POPLEFT
+
+    DEFAULT = ITER
+
+    @new_tasker(ITER)
+    def _tasker_iter(self: 'CallStack', sender: ItemId = None, app_data : Any = None, user_data: Any = None) -> Generator[Any, None, None]:
+        sender, app_data, user_data = self._get_task_arguments(sender, app_data, user_data)
+        for callback in self:
+            yield callback(sender, app_data, user_data)
+
+    @new_tasker(CYCLE)
+    def _tasker_cycle(self: 'CallStack', sender: ItemId = None, app_data : Any = None, user_data: Any = None) -> Generator[Any, None, None]:
+        while True:
+            yield from self._tasker_iter(sender, app_data, user_data)
+
+    @new_tasker(POP)
+    def _tasker_pop(self: 'CallStack', sender: ItemId = None, app_data : Any = None, user_data: Any = None) -> Generator[Any, None, None]:
+        sender, app_data, user_data = self._get_task_arguments(sender, app_data, user_data)
+        next_callback = self.pop
+        while True:
+            try:
+                yield next_callback()(sender, app_data, user_data)
+            except IndexError:
+                break
+
+    @new_tasker(POPLEFT)
+    def _tasker_popleft(self: 'CallStack', sender: ItemId = None, app_data : Any = None, user_data: Any = None) -> Generator[Any, None, None]:
+        sender, app_data, user_data = self._get_task_arguments(sender, app_data, user_data)
+        next_callback = self.popleft
+        while True:
+            try:
+                yield next_callback()(sender, app_data, user_data)
+            except IndexError:
+                break
+
+    @new_tasker(TaskerMode.RUNTIME)
+    def _tasker_runtime(self: 'CallStack', *args) -> Generator[Any, None, None]:
+        # Is `POPLEFT` but does not pass or build arguments. Better for manual
+        # callback management w/`functools.partial`.
+        next_callback = self.popleft
+        while True:
+            try:
+                yield next_callback()()
+            except IndexError:
+                break
+
+    def _get_task_arguments(self: 'CallStack', sender: Any = None, app_data: Any = None, user_data: Any = None) -> Iterator[Any]:
+        """Return an iterator containing callback positional arguments (in order) for *sender*,
+        *app_data* and *user_data*.
+
+        Callstack attributes `.sender`, `.app_data` and `.user_data` are prioritized and will
+        replace *sender*, *app_data* and/or *user_data* in the returned tuple if they have been
+        set.
+        """
+        return (v2 if v2 != NULL else v1 for v1, v2 in zip((sender, app_data, user_data), self._cb_pos_args))
+
+    # XXX [`*args`]: `__code__` (below) references the unbound `__call__` function. DPG will
+    # count `self` in `__code__.co_argcount` and will pass an additional `None` argument.
+    def __call__(self, sender: ItemId = None, app_data: Any = None, user_data: Any = None, *args) -> None:
+        for _ in self.tasker(sender, app_data, user_data): ...
+
+    __code__ = __call__.__code__  # helps DPG call this object
 
 
-class EventStack(CallbackEvent, MutableSequence[CallbackEvent]):
-    """A double-ended queue containing Event instances. When called, all events in the
-    stack are called as a result.
 
-    The stack should only contain instances of `Event`. When a non-Event would be added,
-    it is wrapped in an Event instance object which is then added to the stack. If the
-    object is already an Event instance, it will be added as-is.
 
-    Fun fact: EventStack is a subclass of Event.
+# 'CallStack().force_wrapping'
+def _CallStack_force_wrapping_False(callback: T, **kwargs) -> T:
+    if not callable(callback):
+        raise TypeError(f"{callback!r} is not callable.")
+    if _callback_parg_count(callback) < 3 or not hasattr(callback, "__code__"):
+        return Callback(callback, **kwargs)
+    return callback
+
+def _CallStack_force_wrapping_True(callback: DPGCallback[P], **kwargs) -> Callback[P]:
+    return Callback(callback, **kwargs)
+
+def _CallStack_force_wrapping_None(callback: DPGCallback[P], **kwargs) -> DPGCallback[P]:
+    return callback
+
+
+# 'Callstack().wrapped_returns'
+def _CallStack_wrapped_returns_False(original: T, callback_inst: Any) -> T:
+    return original
+
+def _CallStack_wrapped_returns_True(original: DPGCallback[P], callback_inst: Callback[P] | DPGCallback[P]) -> DPGCallback[P] | Callback[P]:
+    return callback_inst
+
+
+class _CallStack(Generic[T]):  # slotted method signatures & generic typing
+    __slots__ = ()
+
+    def count(self, _object: Any) -> int: ...
+    def index(self, value: Callback, start: int = 0, stop: int = None): ...
+    def pop(self) -> Callback: ...
+    def popleft(self) -> Callback: ...
+    def remove(self) -> None: ...
+    def rotate(self) -> None: ...
+    def reverse(self) -> None: ...
+    def clear(self) -> None: ...
+
+    def _fn_return_callable(original: DPGCallback[P], callback_inst: Callback[P] | DPGCallback[P]) -> DPGCallback[P] | Callback[P]: ...
+    def _fn_process_callable(callback: DPGCallback[P]) -> DPGCallback[P] | Callback[P]: ...
+
+    def tasker(self, sender: ItemId = None, app_data : Any = None, user_data: Any = None) -> Generator[float, None, None]:
+        """Returns a generator that, when advanced, times and executes a queued callback.
+
+        Args:
+            * sender: Sent as the first positional argument for callbacks. This value is ignored
+            if `self.sender` is set. Defaults to None.
+
+            * app_data: Sent as the second positional argument for callbacks. This value is ignored
+            if `self.app_data` is set. Defaults to None.
+
+            * user_data: Sent as the final positional argument for callbacks. This value is ignored
+            if `self.user_data` is set. Defaults to None.
+
+
+        The behavior of this method depends on the stack's mode setting:
+
+            `TaskerMode.ITER`: The generator iterates through the queue and calls each callback
+            iterated. Reaching the end of the queue exhausts the generator.
+
+            `TaskerMode.CYCLE`: Same behavior as `TaskerMode.ITER` looped indefinitely.
+
+            `TaskerMode.POP`: Advancing the generator pops the right-most (newest) callback from
+            the queue and runs it. The generator is exhausted once the queue is cleared.
+
+            `TaskerMode.POPLEFT`: Similar behavior to `TaskerMode.POP`, but pops the left-most
+            (oldest) callback from the queue instead.
+        """
+
+
+class CallStack(_CallStack[DPGCallback], Tasker, px_items.AppItemLike):
+    """Multipurpose event queue for DearPyGui. Behaves near-identical to `collections.deque`.
+    All queue-related methods are either hooked or directly forwarded an underlying `deque`
+    -- pops and appends from either end are thread-safe. Like `Callback` objects, stacks support
+    positional argument overrides for `sender`, `app_data`, and `user_data`.
+
+    `Callstack` instances are DearPyGui-callable. This allows users to run or schedule several
+    callbacks from a single item interaction. The
+        >>> events = CallStack()
+        ...
+        >>> # The `.append` and `.appendleft` methods are tweaked for decorator usage.
+        >>> @events.append
+        ... def callback1(sender):
+        ...     print(sender)
+        ...
+        ...
+        >>> @events.append
+        ... def callback2(sender, app_data):
+        ...     print(app_data)
+        ...
+        ...
+        >>> with dpg.window():
+        ...     dpg.add_button(callback=events, user_data="a very interesting string")
+        ...
+        ...
+        >>> @events.appendleft
+        ... def callback3(sender, app_data, user_data):
+        ...     print(user_data)
+        ...
+        >>> # Run and click the button!
+
+    The stack requires that DearPyGui can sucessfully call any callable it contains. They also
+    must accept all three of DearPyGui's sent positional arguments; `sender`, `app_data`, and
+    `user_data`. Functions that cannot accept these arguments, in addition to all non-function
+    callables, will be wrapped in a `Callback` object before adding it to the queue. Setting the
+    '.force_wrapping' attribute to True will wrap all added callables regardless.
+
+    NOTE: By default, the `.append` and `.appendleft` methods return the original callable.
+    This behavior can be changed to return the `Callback` object instead (if created) by setting
+    the `.wrapped_returns` attribute to True.
+
+    Users have some control over how callbacks are executed. Calls to the stack invoke the
+    `.tasker` method; behavior of this method varies depending on the stack's `tasker_mode` attribute
+    (a member of the `TaskerMode` enumeration). For convenience, `TaskerMode` members are also
+    available as constants on the `CallStack` class. See `Callstack.tasker` for more information
+    regarding these behaviors.
     """
-    __slots__ = ("_eventstack", "_exec_order", "_exec_once")
+    __slots__ = (
+        "tasker",                  # 'tasker_mode'
+        "_fn_return_callable",     # 'wrapped_returns'
+        "_fn_process_callable",    # 'force_wrapping'
+        # internal attributes
+        "_queue",
+        "_cb_pos_args",
+        # deque methods
+        "count",
+        "index",
+        "pop",
+        "popleft",
+        "remove",
+        "rotate",
+        "reverse",
+        "clear",
+    )
 
-    FIRST = "first"
-    LAST  = "last"
+    NULL = NULL
 
     def __init__(
         self,
         iterable: Sequence[DPGCallback] = (),
-        maxlen  : int = 24,
+        maxlen  : int | None            = None,
         *,
-        sender    : int | None               = NULL,
-        app_data  : Any | None               = NULL,
-        user_data : Any | None               = NULL,
-        exec_order: Literal["first", "last"] = FIRST,
-        exec_once : bool                     = False,
+        sender         : ItemId | None | NULL = NULL,
+        app_data       : Any                  = NULL,
+        user_data      : Any                  = NULL,
+        tasker_mode    : TaskerMode | int     = TaskerMode.ITER,
+        force_wrapping : bool | None          = False,
+        wrapped_returns: bool                 = False,
         **kwargs,
     ) -> None:
-        """Args:
-            * iterable (Sequence[Callback]): A sequence containing suitable DearPyGui callback arguments.
-
-            * maxlen (int): Maximum size of the stack. When adding a value to the stack would cause it
-            to be filled over capacity, the left-most value in the stack is removed first before adding
-            the value.
-
-            The following are optional keyword-only arguments.
-
-            * sender (Sender): If included, this will be used as the `sender` (first positional)
-            argument for each event called, instead of the argument sent by DearPyGui. If `Event().sender`
-            is set on the event, it will be used over this one.
-
-            * app_data (AppData): If included, this will be used as the `app_data` (second positional)
-            argument for each event called, instead of the argument sent by DearPyGui. If `Event().app_data`
-            is set on the event, it will be used over this one.
-
-            * user_data (UserData): If included, this will be used as the `sender` (third positional)
-            argument for each event called, instead of the argument sent by DearPyGui. If `Event().user_data`
-            is set on the event, it will be used over this one.
-
-            * exec_order (Literal[str]): Indicates which end of the stack will be used as the "starting
-            point" when called. If set to "first", events in the stack will be called from left to right.
-            Vice-versa if set to "last". Defaults to "first".
-
-            * exec_once (bool): If True, the event will be removed from the stack when called as a
-            result of calling the stack itself. Defaults to False.
-
-            Any additional keyword arguments will be sent to each event called. If you include these,
-            ensure that **all callbacks in the stack** can accept them. If `Event().kwargs` is set on the
-            event, those keyword arguments will be used instead of these.
-        """
-        self._exec_order = exec_order
-        self._exec_once  = exec_once
-        self._eventstack  = deque(
-            (CallbackEvent(cb) if not _is_event_callback(cb) else cb for cb in iterable),
-            maxlen=maxlen
+        super().__init__()
+        self._cb_pos_args = (NULL, NULL, NULL)
+        self._queue  = collections.deque(maxlen=maxlen)
+        self.tasker  = self._tasker_iter
+        self.count   = self._queue.count
+        self.index   = self._queue.index
+        self.pop     = self._queue.pop
+        self.popleft = self._queue.popleft
+        self.remove  = self._queue.remove
+        self.rotate  = self._queue.rotate
+        self.reverse = self._queue.reverse
+        self.clear   = self._queue.clear
+        self.configure(
+            sender=sender,
+            app_data=app_data,
+            user_data=user_data,
+            tasker_mode=tasker_mode,
+            force_wrapping=force_wrapping,
+            wrapped_returns=wrapped_returns,
+            **kwargs,
         )
-        self._callback   = NULL
-        self._sender     = sender
-        self._app_data   = app_data
-        self._user_data  = user_data
-        self._kwargs     = kwargs
-        self._set_call_fn()
+        self.extend(iterable)
 
-    def _set_call_fn(self, n_args: int = 3):
-        """Creates and binds a new `__call__` method that executes the call stack.
-        """
-        # XXX This is a pretty error-prone method -- always review after any class
-        # code changes.
-        call_fn_txt = "def __call__(sender: int | None | str = None, app_data: Any | None = None, user_data: Any | None = None, /, **kwargs):\n{}"
-
-        if self._exec_once:
-            pop_fn_txt   = ("        callstack=self._eventstack\n"
-                            "        pop_fn=callstack.{}\n")
-            loop_stmt_txt = "        while callstack: pop_fn().__call__({args}**{kwargs})\n"
-            if self._exec_order == self.FIRST:
-                loop_stmt_txt = pop_fn_txt.format("popleft") + loop_stmt_txt
-            else:
-                loop_stmt_txt = pop_fn_txt.format("pop") + loop_stmt_txt
-        else:
-            loop_stmt_txt = ("        callstack=self._eventstack\n"
-                             "        for event in {}:")
-            if self._exec_order == self.FIRST:
-                loop_stmt_txt = loop_stmt_txt.format("callstack")
-            else:
-                loop_stmt_txt = loop_stmt_txt.format("reversed(callstack)")
-            loop_stmt_txt += " event.__call__({args}**{kwargs})\n"
-
-        call_fn_txt = call_fn_txt.format(loop_stmt_txt)
-        self.__call__ = self._create_call_fn(call_fn_txt, 3)
-        self.__code__ = self.__call__.__code__  # used by DPG
+    def __str__(self):
+        return f'{type(self).__qualname__}({str(self._queue).split("(", maxsplit=1)[-1]}'
 
     def __repr__(self):
-        return f"{type(self).__qualname__}(callbacks={self.__len__()!r}, maxlen={self.maxlen!r}, sender={self._sender!r})"
+        return (
+            f"{type(self).__qualname__}(maxlen={self.maxlen}, "
+            f"{', '.join(f'{k}={str(v)!r}' for k, v in self.configuration().items())}"
+            f")"
+        )
 
     def __iter__(self):
-        yield from self._eventstack
+        return iter(self._queue)
 
     def __bool__(self) -> bool:
-        return bool(self._eventstack)
+        return bool(self._queue)
 
-    def __copy__(self: T) -> T:
-        self_copy = type(self)(
-            (),
-            self.maxlen,
-            sender=self._sender,
-            app_data=self._app_data,
-            user_data=self._user_data,
-            exec_order=self._exec_order,
-            exec_once=self._exec_once,
-            **self._kwargs,
-        )
-        self_copy._eventstack.extend(self._eventstack)
-        return self_copy
+    def __copy__(self) -> Self:
+        copy = type(self)((), self.maxlen, **self.configuration())
+        copy._queue = self._queue.copy()  # avoids re-processing values
+        return copy
 
-    def __iadd__(self: T, other) -> T:
-        other = (CallbackEvent(cb) if not _is_event_callback(cb) else cb for cb in other)
-        self._eventstack.__iadd__(other)
+    def __add__(self, other: Iterable[DPGCallback]):
+        self._queue.extend(other)
         return self
 
+    def __getitem__(self, index: int) -> Callback:
+        return self._queue.__getitem__(index)
+
     def __setitem__(self, index: int, value: DPGCallback) -> None:
-        if not _is_event_callback(value):
-            value = CallbackEvent(value)
-        self._eventstack.__setitem__(index, value)
+        self._queue.__setitem__(index, self._fn_process_callable(value))
 
-    @forward_method("_eventstack")
-    def __getitem__(self, index: int) -> CallbackEvent: ...
-    @forward_method("_eventstack")
-    def __delitem__(self, index: int) -> None: ...
-    @forward_method("_eventstack")
-    def __len__(self) -> int: ...
-    @forward_method("_eventstack")
-    def __contains__(self, *args, **kwargs) -> bool: ...
-    @forward_method("_eventstack")
-    def __lt__(self, *args, **kwargs) -> bool: ...
-    @forward_method("_eventstack")
-    def __le__(self, *args, **kwargs) -> bool: ...
-    @forward_method("_eventstack")
-    def __gt__(self, *args, **kwargs) -> bool: ...
-    @forward_method("_eventstack")
-    def __ge__(self, *args, **kwargs) -> bool: ...
-    @forward_method("_eventstack")
-    def count(self, _object: Any) -> int: ...
-    @forward_method("_eventstack")
-    def index(self, value: CallbackEvent, start: int = 0, stop: int = None): ...
-    @forward_method("_eventstack")
-    def pop(self) -> CallbackEvent: ...
-    @forward_method("_eventstack")
-    def popleft(self) -> CallbackEvent: ...
-    @forward_method("_eventstack")
-    def remove(self) -> None: ...
-    @forward_method("_eventstack")
-    def rotate(self) -> None: ...
-    @forward_method("_eventstack")
-    def reverse(self) -> None: ...
-    @forward_method("_eventstack")
-    def clear(self) -> None: ...
+    def __delitem__(self, index: int) -> None:
+        self._queue.__delitem__(index)
 
-    def insert(self, index: int, _object: DPGCallback) -> None:
-        if not _is_event_callback(_object):
-            _object = CallbackEvent(_object)
-        self._eventstack.insert(index, _object)
+    def __getattr__(self, name: str):
+        try:
+            return self.configuration()[name]
+        except KeyError:
+            raise AttributeError(name)
 
-    def extend(self, other: Sequence[DPGCallback]) -> None:
-        other = (CallbackEvent(cb) if not _is_event_callback(cb) else cb for cb in other)
-        self._eventstack.extend(other)
+    def __len__(self) -> int:
+        return len(self._queue)
 
-    def extendleft(self, other: Sequence[DPGCallback]) -> None:
-        other = (CallbackEvent(cb) if not _is_event_callback(cb) else cb for cb in other)
-        self._eventstack.extendleft(other)
+    def __contains__(self, x: Any) -> bool:
+        return x in self._queue
 
-    def append(self, _object: DPGCallback) -> None:
-        if not _is_event_callback(_object):
-            _object = CallbackEvent(_object)
-        self._eventstack.append(_object)
+    @property
+    def maxlen(self):
+        return self._queue.maxlen
 
-    def appendleft(self, _object: DPGCallback) -> None:
-        if not _is_event_callback(_object):
-            _object = CallbackEvent(_object)
-        self._eventstack.appendleft(_object)
+    sender         : Config[ItemId | None | NULL, ItemId | None | NULL] = Config()
+    app_data       : Config[Any | NULL, Any | NULL]                     = Config()
+    user_data      : Config[Any | NULL, Any | NULL]                     = Config()
+    force_wrapping : Config[bool, bool]                                 = Config()
+    wrapped_returns: Config[bool, bool]                                 = Config()
 
-    def copy(self: T) -> T:
+    @overload
+    def configure(self, *, sender: ItemId | None | NULL = ..., app_data: Any = ..., user_data: Any = ..., tasker_mode: TaskerMode | int = ..., wrapped_returns: bool = ..., force_wrapping: bool = ..., **kwargs) -> None: ...
+    def configure(self, tasker_mode: Any = NULL, wrapped_returns: bool | None = NULL, force_wrapping: Any = NULL, **kwargs) -> None:
+        cb_args = [*self._cb_pos_args]
+        if _SENDER in kwargs:
+            cb_args[0] = kwargs[_SENDER]
+        if _APP_DATA in kwargs:
+            cb_args[1] = kwargs[_APP_DATA]
+        if _USER_DATA in kwargs:
+            cb_args[2] = kwargs[_USER_DATA]
+        self._cb_pos_args = tuple(cb_args)
+
+        if tasker_mode is not NULL:
+            self.tasker_mode = tasker_mode  # `Tasker.tasker_mode`
+        if force_wrapping is not NULL:
+            if force_wrapping is None:
+                self._fn_process_callable = _CallStack_force_wrapping_None
+            elif not force_wrapping:
+                self._fn_process_callable = _CallStack_force_wrapping_False
+            else:
+                self._fn_process_callable = _CallStack_force_wrapping_True
+        if wrapped_returns is not NULL:
+            self._fn_return_callable = _CallStack_wrapped_returns_True if wrapped_returns else _CallStack_wrapped_returns_False
+
+    def configuration(self) -> dict[str]:
+        _force_wrapping_fn = self._fn_process_callable
+        if _force_wrapping_fn is _CallStack_force_wrapping_None:
+            force_wrapping = None
+        elif _force_wrapping_fn is _CallStack_force_wrapping_True:
+            force_wrapping = True
+        else:
+            force_wrapping = False
+        config = dict(zip((_SENDER, _APP_DATA, _USER_DATA), self._cb_pos_args))
+        config.update(
+            tasker_mode=self.tasker_mode,
+            force_wrapping=force_wrapping,
+            wrapped_returns=True if self._fn_return_callable == _CallStack_wrapped_returns_True else False,
+        )
+        return config
+
+    def copy(self) -> Self:
         return self.__copy__()
 
-    def push(self, _object: T) -> T:
-        """Decorator equivelent of `self.append()`."""
-        self.append(_object)
-        return _object
+    def insert(self, index: int, _object: DPGCallback) -> None:
+        self._queue.insert(index, self._fn_process_callable(_object))
 
-    def pushleft(self, _object: T) -> T:
-        """Decorator equivelent of `self.appendleft()`."""
-        self.appendleft(_object)
-        return _object
+    def extend(self, other: Sequence[DPGCallback]) -> None:
+        if isinstance(other, CallStack):
+            self._queue.extend(other._queue)
+        else:
+            self._queue.extend((self._fn_process_callable(cb) for cb in other))
 
-    @property
-    def maxlen(self) -> int:
-        return self._eventstack.maxlen
+    def extendleft(self, other: Sequence[DPGCallback]) -> None:
+        if isinstance(other, CallStack):
+            self._queue.extendleft(other._queue)
+        else:
+            self._queue.extendleft((self._fn_process_callable(cb) for cb in other))
 
-    @property
-    def callback(self):
-        return self.__call__
+    def append(self, _object: DPGCallback[P]) -> DPGCallback[P] | Callback[P]:
+        wrapped = self._fn_process_callable(_object)
+        self._queue.append(wrapped)
+        return self._fn_return_callable(_object, wrapped)
 
-    exec_order: Literal["first", "last"] = property(
-        _event_property_getter("_exec_order"),
-        _event_property_setter("_exec_order"),
-    )
-    exec_once: bool = property(
-        _event_property_getter("_exec_once"),
-        _event_property_setter("_exec_once"),
-    )
+    def appendleft(self, _object: DPGCallback[P]) -> DPGCallback[P] | Callback[P]:
+        wrapped = self._fn_process_callable(_object)
+        self._queue.appendleft(wrapped)
+        return self._fn_return_callable(_object, wrapped)
 
 
 
+
+###########################################
+##### Handlers, Registries Extensions #####
+###########################################
+
+# handler method signatures
+def _handler_fn(self, callback: DPGCallback | None = None, *, label: str = None, user_data: Any = None, use_internal_label: bool = True, tag: ItemId = 0, parent: ItemId = 0, show: bool = True, **kwargs) -> DPGCallback | None: ...
+
+def _mouse_handler_fn(self, callback: DPGCallback | None = None, *, button: int = -1, label: str = None, user_data: Any = None, use_internal_label: bool = True, tag: ItemId = 0, parent: ItemId = 0, show: bool = True, **kwargs) -> DPGCallback | None: ...
+
+def _key_hander_fn(self, callback: DPGCallback | None = None, *, key: int = -1, label: str = None, user_data: Any = None, use_internal_label: bool = True, tag: ItemId = 0, parent: ItemId = 0, show: bool = True, **kwargs) -> DPGCallback | None: ...
+
+
+def handler_hook(handler_fn: Any, protocol: Callable[P, T] = _handler_fn) -> Callable[...,  Callable[P, T]]:
+
+    def wrap_method(mthd: Any) -> Callable[P, T]:
+        @functools.wraps(mthd)
+        def mthd_add_handler(self: 'mvHandlerRegistry | mvItemHandlerRegistry', callback = None, *args, parent: ItemId = 0, **kwargs):
+            def add_handler(callback):
+                handler_fn(callback=callback, parent=parent or self, **kwargs)
+                return callback
+
+            if callback is None:
+                return add_handler
+            return add_handler(callback)
+
+        return mthd_add_handler
+
+    return wrap_method
+
+
+
+
+# This module should be available to use w/o the generated appitems module. Create
+# the necessary base(s) if they're missing.
+if "mvHandlerRegistry" not in px_items.ITEMTYPE_REGISTRY:
+
+    @px_items.null_registration
+    class mvHandlerRegistry(px_items.RegistryItem, px_items.AppItemType):
+        command  = dearpygui.add_handler_registry
+        identity = dearpygui.mvHandlerRegistry, 'mvAppItemType::mvHandlerRegistry'
+
+        label             : str
+        user_data         : Any
+        use_internal_label: bool
+        show              : bool
+
+else:
+    from .appitems import mvHandlerRegistry
+
+
+class pxHandlerRegistry(mvHandlerRegistry):
+    """`mvHandlerRegistry` extension exposing global input handler methods. These methods
+    can optionally be used as function decorators.
+
+    The signature of each method slightly differs from the DearPyGui command hook it uses.
+    For all methods, the *callback* parameter is the only positional argument (optional).
+    All other arguments are optional and keyword-only, including *key* and *button* arguments
+    (formerly positional OR keyword) for those that use them. Each method returns the
+    *callback* argument.
+
+    Handler methods can be used as decorators both with and without parenthesis (you do not
+    need to call them). Using parenthesis will allow for passing arguments; in this case, you
+    should not include a *callback* argument.
+    """
+
+    @typing_overload
+    def __init__(self, *, label: str = ..., user_data: Any = ..., use_internal_label: bool = ..., tag: ItemId = ..., show: bool = ..., **kwargs) -> None: ...
+    @typing_overload
+    def configure(self, *, label: str = ..., user_data: Any = ..., use_internal_label: bool = ..., show: bool = ..., **kwargs) -> None: ...
+
+    @handler_hook(dearpygui.add_mouse_click_handler, _mouse_handler_fn)
+    def on_mouse_click(self, *args, **kwargs):
+        """Schedule a callback to run when both a mouse button down and up event
+        occur on the same object.
+
+        Uses `add_mouse_click_handler`.
+        """
+
+    @handler_hook(dearpygui.add_mouse_down_handler, _mouse_handler_fn)
+    def on_mouse_click_down(self, *args, **kwargs):
+        """Schedule a callback to run when a mouse button is clicked/pressed.
+
+        Uses 'add_mouse_down_handler'.
+        """
+
+    @handler_hook(dearpygui.add_mouse_release_handler, _mouse_handler_fn)
+    def on_mouse_click_up(self, *args, **kwargs):
+        """Schedule a callback to run when a mouse button is released.
+
+        Uses 'add_mouse_release_handler'.
+        """
+
+    @handler_hook(dearpygui.add_mouse_double_click_handler, _mouse_handler_fn)
+    def on_mouse_double_click(self, *args, **kwargs):
+        """Schedule a callback to run when a mouse click event occurs twice consecutively
+        on the same object.
+
+        Uses 'add_mouse_double_click_handler'.
+        """
+
+    @handler_hook(dearpygui.add_mouse_wheel_handler, _mouse_handler_fn)
+    def on_mouse_wheel(self, *args, **kwargs):
+        """Schedule a callback to run on mouse wheel input (excluding middle click).
+
+        Uses 'add_mouse_wheel_handler'.
+        """
+
+    @handler_hook(dearpygui.add_mouse_move_handler, _mouse_handler_fn)
+    def on_mouse_move(self, *args, **kwargs):
+        """Schedule a callback to run when a mouse is moved.
+
+        Uses 'add_mouse_move_handler'.
+        """
+
+    @handler_hook(dearpygui.add_mouse_drag_handler, _mouse_handler_fn)
+    def on_mouse_drag(self, *args, **kwargs):
+        """Schedule a callback to run when a mouse move event occurs during a mouse click
+        down event.
+
+        Uses 'add_mouse_drag_handler'.
+        """
+
+    @handler_hook(dearpygui.add_key_down_handler, _key_hander_fn)
+    def on_key_down(self, *args, **kwargs):
+        """Schedule a callback to run on key down input. On many OS, this will fire
+        continuously while the key is down.
+
+        Uses 'add_key_down_handler'.
+
+        NOTE: 'Key down' and 'key press' events are similar but not identical -- A 'key down'
+        event occurs before a 'key press' event.
+        """
+
+    @handler_hook(dearpygui.add_key_press_handler, _key_hander_fn)
+    def on_key_press(self, *args, **kwargs):
+        """Schedule a callback to run when a key is pressed. On many OS, this will fire
+        continuously while the key is pressed.
+
+        Uses 'add_key_press_handler'.
+
+        NOTE: 'Key down' and 'key press' events are similar but not identical -- A 'key press'
+        event occurs after a 'key down' event.
+        """
+
+    @handler_hook(dearpygui.add_key_release_handler, _key_hander_fn)
+    def on_key_up(self, *args, **kwargs):
+        """Schedule a callback to run when a key is released.
+
+        Uses `add_key_release_handler`.
+        """
+
+
+
+
+# This module should be available to use w/o the generated appitems module. Create
+# the necessary base(s) if they're missing.
+if "mvItemHandlerRegistry" not in px_items.ITEMTYPE_REGISTRY:
+
+    @px_items.null_registration
+    class mvItemHandlerRegistry(px_items.RegistryItem, px_items.AppItemType):
+        command  = dearpygui.add_item_handler_registry
+        identity = dearpygui.mvItemHandlerRegistry, 'mvAppItemType::mvItemHandlerRegistry'
+
+        label             : str
+        user_data         : Any
+        use_internal_label: bool
+        show              : bool
+
+else:
+    from .appitems import mvItemHandlerRegistry
+
+
+class pxItemHandlerRegistry(mvItemHandlerRegistry):
+    """`mvItemHandlerRegistry` extension exposing item handler methods. These methods can
+    optionally be used as function decorators.
+
+    The signature of each method slightly differs from the DearPyGui command hook it uses.
+    For all methods, the *callback* parameter is the only positional argument (optional).
+    All other arguments are optional and keyword-only, including *key* and *button* arguments
+    (formerly positional OR keyword) for those that use them. Each method returns the
+    *callback* argument.
+
+    Handler methods can be used as decorators both with and without parenthesis (you do not
+    need to call them). Using parenthesis will allow for passing arguments; in this case, you
+    should not include a *callback* argument.
+    """
+
+    @typing_overload
+    def __init__(self, *, label: str = ..., user_data: Any = ..., use_internal_label: bool = ..., tag: ItemId = ..., show: bool = ..., **kwargs) -> None: ...
+    @typing_overload
+    def configure(self, *, label: str = ..., user_data: Any = ..., use_internal_label: bool = ..., show: bool = ..., **kwargs) -> None: ...
+
+    @handler_hook(dearpygui.add_item_resize_handler)
+    def on_resize(self, *args, **kwargs):
+        """Schedule a callback to run when an item bound to this registry is resized.
+
+        Uses `add_item_resize_handler`.
+        """
+
+    @handler_hook(dearpygui.add_item_clicked_handler, _mouse_handler_fn)
+    def on_click(self, *args, **kwargs):
+        """Schedule a callback to run when both a mouse button down and button up events
+        occur consecutively on a single item bound to this registry.
+
+        Uses `add_item_clicked_handler`.
+        """
+
+    @handler_hook(dearpygui.add_item_toggled_open_handler)
+    def on_toggle_open(self, *args, **kwargs):
+        """Schedule a callback to run when an item bound to this registry is toggled open.
+
+        Uses `add_item_toggled_open_handler`.
+        """
+
+    @handler_hook(dearpygui.add_item_edited_handler)
+    def on_edit(self, *args, **kwargs):
+        """Schedule a callback to run when an item bound to this registry is edited.
+
+        Uses `add_item_edited_handler`.
+        """
+
+    @handler_hook(dearpygui.add_item_deactivated_after_edit_handler)
+    def on_deactivation_after_edit(self, *args, **kwargs):
+        """Schedule a callback to run when an item bound to this registry is deactivated and
+        recently edited.
+
+        Uses `add_item_deactivated_after_edit_handler`.
+        """
+
+    @handler_hook(dearpygui.add_item_activated_handler)
+    def on_activation(self, *args, **kwargs):
+        """Schedules a callback to run when an item bound to this registry is interacted with.
+
+        Uses `add_item_activated_handler`.
+        """
+
+    @handler_hook(dearpygui.add_item_deactivated_handler)
+    def on_deactivation(self, *args, **kwargs):
+        """Schedule a callback to run when an item bound to this registry is deactivated.
+
+        Uses `add_item_deactivated_handler`.
+        """
+
+    @handler_hook(dearpygui.add_item_active_handler)
+    def while_enabled(self, *args, **kwargs):
+        """Schedules a callback to run when an item bound to this registry is not disabled.
+
+        Uses `add_item_active_handler`.
+        """
+
+    @handler_hook(dearpygui.add_item_visible_handler)
+    def while_visible(self, *args, **kwargs):
+        """Schedules a callback to run when an item bound to this registry is visible.
+
+        Uses `add_item_visible_handler`.
+        """
+
+    @handler_hook(dearpygui.add_item_focus_handler)
+    def while_focused(self, *args, **kwargs):
+        """Schedules a callback to run when an item bound to this registry is focused.
+
+        Uses `add_item_focus_handler`.
+        """
+
+    @handler_hook(dearpygui.add_item_hover_handler)
+    def while_hovered(self, *args, **kwargs):
+        """Schedules a callback to run when an item bound to this registry is hovered.
+
+        Uses `add_item_hover_handler`.
+        """
+
+
+##########################################
+######### CONSTANTS, ENUMS, ETC. #########
+##########################################
+
+class Mouse(FrozenNamespace):
+    ANY    = -1
+    LEFT   =  0
+    RIGHT  =  1
+    MIDDLE =  2
+    X1     =  3
+    X2     =  4
 
 
 class KeyCode(FrozenNamespace):
@@ -551,10 +1083,4 @@ class KeyCode(FrozenNamespace):
     UNIDENTIFIED     = 255
 
 
-class Mouse(FrozenNamespace):
-    ANY    = -1
-    LEFT   = 0
-    RIGHT  = 1
-    MIDDLE = 2
-    X1     = _dearpygui.mvMouseButton_X1
-    X2     = _dearpygui.mvMouseButton_X2
+

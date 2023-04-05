@@ -1,27 +1,17 @@
 """A lightweight framework and toolkit for DearPyGui."""
 
-# public imports, in order of lib dependency; none/little (top) to alot/all (bottom)
+from . import px_patcher as _px_patcher
+
+_px_patcher._patch_dearpygui()
+
+
+
 try:
     from dearpypixl.appitems import *
 except ImportError:
-    pass
-
-
-
-def _optimize(mod = None) -> None:
-    """Replaces a few Python objects used in performance-critical areas with
-    an equivelent written in rust."""
-    import sys
-    from . import grid
-
-    # TODO: crossplatform optimization
-    if not mod and sys.platform() != "win32":
-        return
-    try:
-        from . import _dearpypixl
-    except:
-        return
-
-    grid._draw_cells = _dearpypixl.grid.draw_cells
-
-
+    import warnings
+    warnings.warn(
+        'Could not build basic item types because the definition files are (possibly) '
+        'out-of-date. You can update these files to match the installed version of '
+        'DearPyGui by running "python -m dearpypixl" in your shell or terminal.'
+    )

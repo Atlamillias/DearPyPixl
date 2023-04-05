@@ -18,6 +18,7 @@ from .px_typing import (
     # px_typing
     T, P,
     ItemId,
+    NULL,
     Array,
     DPGTypeId,
     DPGCommand,
@@ -25,7 +26,7 @@ from .px_typing import (
     DPGItemConfig,
     DPGItemInfo,
     DPGItemState,
-    DPG_STATES_DICT
+    ITEM_STATES_TEMPLATE
 )
 from . import px_utils
 from .px_utils import (
@@ -83,7 +84,7 @@ class Config(Generic[_GT, _ST], DPGProperty):
     __slots__ = ()
 
     def __get__(self, inst: 'AppItemType', cls) -> _GT:
-        if inst:
+        if inst is not None:
             return inst.configuration()[self._key]
         return self
 
@@ -95,7 +96,7 @@ class Info(Generic[_GT], DPGProperty):
     __slots__ = ()
 
     def __get__(self, inst: 'AppItemType', cls) -> _GT:
-        if inst:
+        if inst is not None:
             return inst.information()[self._key]
         return self
 
@@ -104,9 +105,9 @@ class State(Generic[_GT], DPGProperty):
     __slots__ = ()
 
     def __get__(self, inst: 'AppItemType', cls) -> _GT:
-        if inst:
-            key = self._key
-            return inst.state().get(key, None) or DPG_STATES_DICT[key]
+        if inst is not None:
+            state = inst.state().get(self._key, NULL)
+            return state if state is not NULL else None
         return self
 
 
@@ -160,9 +161,10 @@ def _new_px_configure(parameters: dict[str, inspect.Parameter]):
 
 
 
+_NULL_REGISTER_FLAG: str                            = "__null_registration__"
+_ITEMTYPE_REGISTRY : dict[str, type['AppItemType']] = {}  # {__qualname__: itemtype}
 
-_ITEMTYPE_REGISTRY: dict[str, type['AppItemType']] = {}  # NOT used by low-level classes
-
+ITEMTYPE_REGISTRY = types.MappingProxyType(_ITEMTYPE_REGISTRY)
 
 def register_itemtype(itp: T) -> T:
     """Register an itemtype with the global registry. Can be used as a decorator.
@@ -187,11 +189,16 @@ def register_itemtype(itp: T) -> T:
     # expected to have *actual* __init__ methods -- more than just an "interface".
     # I also do not think that sort of functionality is desirable enough to write an
     # add-on for it.
-    _ITEMTYPE_REGISTRY[itp.__qualname__] = itp
+    if hasattr(itp, _NULL_REGISTER_FLAG):
+        delattr(itp, _NULL_REGISTER_FLAG)
+    else:
+        _ITEMTYPE_REGISTRY[itp.__qualname__] = itp
     return itp
 
 
-ITEMTYPE_REGISTRY = types.MappingProxyType(_ITEMTYPE_REGISTRY)
+def null_registration(itp: T) -> T:
+    setattr(itp, _NULL_REGISTER_FLAG, True)
+    return itp
 
 
 
@@ -220,13 +227,13 @@ def _null_command(*args, tag: ItemId | None = None, **kwargs) -> ItemId:
 
 
 _DEFAULT_COMMAND : DPGCommand      = _null_command
-_DEFAULT_IDENTITY: tuple[int, str] = _dearpygui.mvAll, "pxAppItemType",
+_DEFAULT_IDENTITY: tuple[int, str] = _dearpygui.mvAll, "mvAppItemType::mvAppItemType",
 
 
 
-###########################################
-########## APPITEMTYPE & MIXINS ###########
-###########################################
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+################################## Item API Base(s) ##################################
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
 class AppItemMeta(type):
     identity: DPGTypeId
@@ -353,11 +360,13 @@ class _AppItemBase(int, Generic[P], metaclass=AppItemMeta):
             # interface w/existing item
 
     def __repr__(self):
-        repr_str = ", ".join(
-            f"{optn}={val!r}"
-            for optn, val in self.configuration().items()
+        return (
+            f"{type(self).__qualname__}("
+            f"tag={self.real!r}, "
+            f"label={get_config(self)['label']!r}, "
+            f"parent={get_info(self)['parent']!r}"
+            f")"
         )
-        return f"{type(self).__qualname__}(tag={self.real!r}, parent={self.parent}, {repr_str})"
 
     def __getitem__(self, indexes: tuple[Literal[0, 1, 2, 3], int]) -> ItemId:
         """Return a child of this item in a specific slot at index, via
@@ -378,13 +387,16 @@ class _AppItemBase(int, Generic[P], metaclass=AppItemMeta):
                 f"{type(self).__qualname__!r} object has no attribute {name!r}."
             ) from None
 
-    def __enter__(self) -> Self:  # dynamic class typing help
+    def __enter__(self) -> Self:  # defined to improve dynamic class typing
         """If this item is a container, temporarily place it atop the
         container stack.
 
         `TypeError` is raised if the item is not a container item.
         """
         raise TypeError
+
+    def __exit__(self, exc_val: Any = None, exc_tp: Any = None, traceback: Any = None) -> Any:
+        ...
 
     command : DPGCommand = _DEFAULT_COMMAND
     identity: DPGTypeId  = _DEFAULT_IDENTITY
@@ -466,7 +478,7 @@ class _AppItemBase(int, Generic[P], metaclass=AppItemMeta):
         """
         # XXX good monkeypatch point (see `alias` property, `register_itemtype` fn)
         itp = _ITEMTYPE_REGISTRY.get(get_info(item)["type"].split("::")[1], AppItemType)
-        call_obj = itp.wrap_item if null_init else itp
+        call_obj = itp.null_init if null_init else itp
         return call_obj(tag=item)
 
     @classmethod
@@ -511,12 +523,12 @@ class AppItemType(_AppItemBase, Generic[P]):
 
     @property
     def tag(self) -> int:
-        """Return the item's unique integer identifier."""
+        """[get] Return the item's unique integer identifier."""
         return self.real
 
     @property
     def alias(self) -> str | None:
-        """Return the item's unique string identifier."""
+        """[get] Return the item's unique string identifier."""
         # XXX Good monkeypatch point if not using aliases.
         # ex: f'{type(self).__qualname__}:{self.tag}' on init/new to store class "memory"
         # onto the item for more accurate interface wrapping w/`wrap_item`.
@@ -535,6 +547,17 @@ class AppItemType(_AppItemBase, Generic[P]):
         `SystemError` is raised in all cases where this call to DearPyGui fails.
         """
         _dearpygui.delete_item(self, children_only=children_only, slot=slot)
+
+    def destroy(self) -> None:
+        """Destroy this item and the item's children.
+
+        Functionally equivelent to calling `.delete` method where `children_only=False`, but
+        all any exception resulting from the process is silently handled.
+        """
+        try:
+            self.delete(children_only=False)
+        except:
+            pass
 
     @overload
     def configure(self, *, label: str = ..., user_data: Any = ..., use_internal_label: bool = ..., **kwargs) -> None: ...
@@ -799,6 +822,50 @@ class AppItemType(_AppItemBase, Generic[P]):
 
 
 
+class AppItemLike:
+    """Minimal item API for non-item interfaces.
+    """
+    __slots__ = ()
+
+    command : DPGCommand = _null_command
+    identity: DPGTypeId  = 0, ""
+
+    def __repr__(self):
+        config = ', '.join(f"{k}={str(v)!r}" for k, v in self.configuration().items())
+        return f"{type(self).__qualname__}({config})"
+
+    def __getattr__(self, name: str):
+        try:
+            return self.configuration()[name]
+        except KeyError:
+             raise AttributeError(
+                f"{type(self).__qualname__!r} object has no attribute {name!r}."
+            ) from None
+
+    # Config, information, or state-related property getters should pull from
+    # the relating method's returned dictionary to make extending easier. Config
+    # setters should pass through to the `.configure` method. If the result needs
+    # to be transformed,`.configure` should be doing it and not the setter.
+
+    def configure(self, **kwargs) -> None:
+        ...
+
+    def configuration(self) -> dict[str, Any]:
+        return {}
+
+    def information(self) -> dict[str, Any]:
+        return {}
+
+    def state(self) -> dict[str, bool | None]:
+        return {}
+
+
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+############################ Primitive Item Types (Mixins) ############################
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+
 class PositionedItem(AppItemType):
     """A rendered DearPyGui item that can have a set position."""
     is_resized          : State[bool           ] = State(key="resized")
@@ -825,14 +892,26 @@ class SizedItem(PositionedItem):
     width : Config[int, int] = Config()
     height: Config[int, int] = Config()
 
+    # Some items like `mvWindowAppItem` only have `rect_size`. The min/max
+    # for these can be easily calculated.
+
     @property
-    def rect(self) -> tuple[int, int, int, int]:
-        cfg = get_config(self)
-        return *self.pos, cfg["width"], cfg["height"]
-    @rect.setter
-    def rect(self, value: Array[int, int, int, int]) -> None:
-        x, y, wt, ht = value
-        set_config(self, pos=(x, y), width=wt, height=ht)
+    def rect_min(self) -> Array[int, int]:
+        state = self.state()
+        try:
+            return state["rect_min"]
+        except KeyError:
+            return state["pos"]
+
+    @property
+    def rect_max(self) -> Array[int, int]:
+        state = self.state()
+        try:
+            return state["rect_max"]
+        except KeyError:
+            config = self.configuration()
+            x, y = state["pos"]
+            return x + config["width"], y + config["height"]
 
 
 
@@ -951,7 +1030,17 @@ class CallableItem(AppItemType):
     by calling the item. The item can also be passed as a callback-related
     argument for other items."""
 
-    callback: DPGCallback[P] = Config()
+    show: Config[bool, bool] = Config()
+
+    @property
+    def callback(self) -> DPGCallback[P] | None:
+        """[get] Return the item's assigned callback."""
+        return self.configuration()["callback"]
+    @callback.setter
+    def callback(self, value: DPGCallback[P] | None) -> DPGCallback[P] | None:
+        """[set] Set the item's callback. Can be used as a decorator."""
+        self.configure(callback=value)
+        return value
 
     def __call__(self, *args: P.args, **kwargs: P.kwargs) -> None:
         self.callback(*args, *kwargs)
@@ -1007,6 +1096,12 @@ class WindowItem(ContainerItem):  # AFAIK "mvWindowAppItem" and "mvChildWindow" 
         doc="Get/set the vertical scroll position of the item."
     )
 
+    @property
+    def is_active_window(self) -> bool:
+        """[get] Return True if this window or any of its' children are focused."""
+        return self.tag == _dearpygui.get_active_window()
+
+
 
 class RootItem(ContainerItem):
     """A top-level DearPyGui container item. It cannot be parented."""
@@ -1026,9 +1121,9 @@ class RegistryItem(RootItem):
 
 
 
-
-
-
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+############################## Non-Primitive Item Mixins ##############################
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
 # XXX These are unique mixins that can make the resulting class or instances
 # a bit weird and/or do unusual things. Not used in `itp_from_callable`
@@ -1039,21 +1134,49 @@ class PatchedItem(AppItemType):  # "do not import" indicator for genfile.py scri
 
 
 
-_PX_MTHD_MKR = "_px_mthd_wrapper"
-
-def _px_mthd_wrapper(mthd: Callable[P, ItemId]) -> Callable[P, AppItemType | ItemId]:
+def _px_dndr_wrapper(mthd: Callable[P, ItemId]) -> Callable[P, AppItemType | ItemId]:
     @functools.wraps(mthd)
     def bound_method(self, *args: P.args, **kwargs: P.kwargs) -> AppItemType | ItemId:
         item = mthd(self, *args, **kwargs)
-        try:
-            item = self.wrap_item(item)
-        except SystemError:
-            raise
-        except:
-            pass
-        return item
-    setattr(bound_method, _PX_MTHD_MKR, True)
+        return self.wrap_item(item)
     return bound_method
+
+
+def _callback_getter(self: CallableItem) -> DPGCallback[P]:
+    return self.configuration()["callback"]
+
+
+def _callback_setter(self: CallableItem, value: DPGCallback[P] | None) -> None:
+    if value is None:
+        self.configure(callback=None)
+        return
+
+    arg_count = value.__code__.co_argcount
+    if getattr(value, "__self__"):
+        arg_count -= 1
+    if not arg_count:
+        self.configure(callback=value)
+        return value
+
+    @functools.wraps(value)
+    def callback(sender: ItemId = None, app_data: Any = None, user_data: Any = None) -> None:
+        if sender:
+            sender = self.wrap_item(sender, null_init=True)
+        value(*(sender, app_data, user_data)[:arg_count])
+    return callback
+
+
+class pxConfig(Config):
+    __slots__ = ()
+
+    PX_FLAG = True
+
+    def __get__(self, inst, cls):
+        result = super().__get__(inst, cls)
+        if result is None:
+            return self
+        return inst.wrap_item(result)
+
 
 class PixlatedItem(PatchedItem, Generic[P]):
     """AppItemType mixin that extends higher-level information-related methods and
@@ -1062,16 +1185,22 @@ class PixlatedItem(PatchedItem, Generic[P]):
     """
     def __init_subclass__(cls) -> None:
         super().__init_subclass__()
-        # wrap individual children
-        if cls.__getitem__ == AppItemType.__getitem__:
-            cls.__getitem__ = _px_mthd_wrapper(cls.__getitem__)
+        # wrap individually accessed children
+        if cls.__getitem__ is AppItemType.__getitem__:
+            setattr(cls, "__getitem__", _px_dndr_wrapper(cls.__getitem__))
+        # wrap callback `sender` args for CallableItem
+        if getattr(cls, "callback", None) is CallableItem.callback:
+            cb_property = property(_callback_getter, _callback_setter)
+            setattr(cls, "callback", cb_property)
         # wrap items individually returned from Config descriptor
-        for attr, annotations in cls.__annotations__.items():
-            if annotations != ItemId:
+        for param in inspect.signature(cls.configure).parameters.values():
+            if param.annotation != ItemId:
                 continue
-            desc = getattr(cls, attr, None)
-            if isinstance(desc, Config) and not hasattr(desc.__get__, _PX_MTHD_MKR):
-                desc.__get__ = _px_mthd_wrapper(desc.__get__)
+            cfg_property = getattr(cls, param.name, None)
+            if isinstance(cfg_property, Config) and not hasattr(cfg_property, "PX_FLAG"):
+                pxcfg_property = pxConfig(cfg_property._key)
+                setattr(cls, param.name, pxcfg_property)
+                pxcfg_property.__set_name__(cls, cfg_property._key)
 
     @property
     def parent(self) -> ContainerItem | SizedItem | None:
@@ -1096,6 +1225,8 @@ class PixlatedItem(PatchedItem, Generic[P]):
 
 
 
+
+
 def _init_wrapper(mthd: Callable[P, T], *_args: P.args, **_kwargs: P.kwargs) -> Callable[[], T]:
     @functools.wraps(mthd)
     def init(*args: P.args, **kwargs: P.kwargs) -> T:
@@ -1103,9 +1234,11 @@ def _init_wrapper(mthd: Callable[P, T], *_args: P.args, **_kwargs: P.kwargs) -> 
         mthd.__self__.__init__ = mthd
     return init
 
+
 class _NullInitItemMeta(AppItemMeta):
     def __call__(cls, *args, **kwargs):
         return cls.__new__(cls, *args, **kwargs)
+
 
 class NullInitItem(PatchedItem, Generic[P], metaclass=_NullInitItemMeta):
     """`AppItemType` mixin that disables auto initialization for new instances. The
@@ -1136,6 +1269,7 @@ def _get_non_template_type(obj: type) -> type:
         if not issubclass(t, PatchedItem):
             return t
 
+
 class _TemplateItemMeta(Generic[P], AppItemMeta):
     def __new__(mcls, name: str, bases: tuple, namespace: dict[str], *args: P.args, **kwargs: P.kwargs):
         kwargs["__slots__"] = ()
@@ -1152,6 +1286,7 @@ class _TemplateItemMeta(Generic[P], AppItemMeta):
 
     def template_type(cls, *args: P.args, **kwargs: P.kwargs):
         return cls.__type.template_type(*args, **kwargs)
+
 
 class TemplateItem(PatchedItem, Generic[P], metaclass=_TemplateItemMeta):
     """An `AppItemType` mixin that turns the class into a superclass
@@ -1172,6 +1307,7 @@ class _AutoParentItemMeta(AppItemMeta):
             cls.auto_parent = staticmethod(auto_parent)
         return cls
 
+
 class AutoParentItem(PatchedItem, Generic[P], metaclass=_AutoParentItemMeta):
     """An AppItemType mixin that creates a parent item for itself if one
     is not available and the container stack is empty.
@@ -1185,7 +1321,7 @@ class AutoParentItem(PatchedItem, Generic[P], metaclass=_AutoParentItemMeta):
 
     def __init__(self, *args: P.args, **kwargs: P.kwargs) -> None:
         if not kwargs.get("parent", None) and not _dearpygui.top_container_stack():
-            kwargs["parent"] = self.auto_parent()
+            kwargs["parent"] = self.auto_parent(label=kwargs.get("label", ""))
         super().__init__(*args, **kwargs)
 
 

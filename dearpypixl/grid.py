@@ -182,12 +182,9 @@ class GridConfigure(Generic[_GT, _ST], property):  # inherit property's "special
         self._set_eval = compile(f"instance.configure({name}=value)", __name__, mode="exec")
 
     def __get__(self, instance, cls) -> _GT:
-        try:
-            return eval(self._get_eval)
-        except (TypeError, AttributeError):
-            if not instance:
-                return self
-            raise
+        if not instance:
+            return self
+        return eval(self._get_eval)
 
     def __set__(self, instance, value: _ST) -> None:
         exec(self._set_eval)
