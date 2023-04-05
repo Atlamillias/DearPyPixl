@@ -1,14 +1,15 @@
-from typing import Any, Sequence, Self
 import sys
+# only run when dearpypixl is ran as a module
+if __name__ != '__main__':
+    sys.exit()
+
+from typing import Any, Sequence, Self
 import textwrap
 import ast
 import types
 import pathlib
 import inspect
 import warnings
-
-sys.path.insert(0, str(pathlib.Path(__file__).parent.parent))
-
 import dearpygui as dearpygui_pkg
 import dearpygui.dearpygui as dearpygui
 import dearpypixl
@@ -16,6 +17,7 @@ from dearpypixl import px_typing, px_items, px_utils, px_theme
 
 
 
+PKG_DIR = pathlib.Path(__file__).parent
 
 ########################################
 ######## SOURCE CODE FORMATTING ########
@@ -147,7 +149,10 @@ class GeneratePy:
                 if not ignore_errors:
                     raise
                 if verbose:
-                    warnings.warn(f"Failed to parse Python source {fpath.name!r}: {err.args[0]}")
+                    warnings.warn(f"Generated file is not a valid Python source file {fpath.name!r}: {err.args[0]}")
+            else:
+                if verbose:
+                    print(f"Generated {fpath.name!r} is valid.")
             with open(fpath, "w") as file:
                 try:
                     file.write(src)
@@ -155,7 +160,9 @@ class GeneratePy:
                     if not ignore_errors:
                         raise
                     if verbose:
-                        warnings.warn(f"Failed to write Python file {fpath.name!r}: {err.args[0]}")
+                        warnings.warn(f"Could not update source file {fpath.name!r}: {err.args[0]}")
+                else:
+                    print(f"{fpath.name!r} successfully updated.")
 
     filepath: str  # pseudo-abstract; every usable class should define this again
     # should populate these attributes on instantiation if not set on the class
@@ -257,7 +264,7 @@ def _mfc_mthd_sig_src(parameters) -> str:
 
 
 class AppItemsModule(GeneratePy):
-    filepath  = f"{dearpypixl.__name__}/_appitems.py"
+    filepath  = PKG_DIR / "_appitems.py"
     docstring = "Base interface implementations for DearPyGui items."
     imports   = (
         mfc_rel_import_str(dearpygui_pkg, dearpygui_pkg),
@@ -312,7 +319,7 @@ class AppItemsModule(GeneratePy):
 
 
 class TColorModule(GeneratePy):
-    filepath  = f"{dearpypixl.__name__}/_tcoloritems.py"
+    filepath  = PKG_DIR / "_tcoloritems.py"
     docstring = "Interfaces for specific DearPyGui theme color items."
     imports   = (
         mfc_rel_import_str(dearpygui_pkg, dearpygui_pkg),
@@ -349,7 +356,7 @@ class TColorModule(GeneratePy):
 
 
 class TStyleModule(TColorModule):
-    filepath  = f"{dearpypixl.__name__}/_tstyleitems.py"
+    filepath  = PKG_DIR / "_tstyleitems.py"
     docstring = "Interfaces for specific DearPyGui theme style items."
 
     tconst_pfxs = tuple(pfx for pfx in px_theme._CONSTPFX_TO_BASES if "StyleVar_" in pfx)
@@ -357,5 +364,5 @@ class TStyleModule(TColorModule):
 
 
 
-if __name__ == "__main__":
-    GeneratePy.dump()
+
+GeneratePy.dump(ignore_errors=False)
