@@ -771,7 +771,6 @@ class AppItemType(_AppItemBase, Generic[P]):
 
         `SystemError` is raised in all cases where this call to DearPyGui fails.
         """
-        # XXX currently works for an unofficial DPG build -- pending PR to main
         return self.information().get("handlers", None)
 
     def set_handlers(self, handler_registry: ItemId = 0) -> None:
