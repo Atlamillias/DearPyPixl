@@ -1,5 +1,5 @@
 # Dear PyPixl
-Dear PyPixl is a light-weight, object-oriented framework and toolkit for [Dear PyGui](https://github.com/hoffstadt/DearPyGui) with minimal dependencies and zero use restrictions (MIT license).
+Dear PyPixl is an object-oriented, lightweight, modular framework and toolkit for [Dear PyGui](https://github.com/hoffstadt/DearPyGui) with minimal dependencies and zero use restrictions (MIT license).
 
 ## Features
 
@@ -16,7 +16,7 @@ Dear PyPixl is a light-weight, object-oriented framework and toolkit for [Dear P
  - Python 3.11 x64 (or newer)
  - Dear PyGui 1.9 (installed automatically)
 
-*Dear PyPixl is available on all platforms already supported by Dear PyGui. Support for 32-bit systems and Raspberry Pi OS is *loosely* supported, but requires building Dear PyGui from the source. Please visit their [wiki](https://github.com/hoffstadt/DearPyGui/wiki) for more information.
+*Dear PyPixl is available on all platforms already supported by Dear PyGui. Availability for 32-bit systems and Raspberry Pi OS is *loosely* supported, but requires building Dear PyGui from the source. Please visit their [wiki](https://github.com/hoffstadt/DearPyGui/wiki) for more information.
 
 ## Installation
 
