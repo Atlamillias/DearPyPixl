@@ -78,7 +78,7 @@ theme_component_id = dpg.add_theme_component(int(mvWindow), parent=dpg.add_theme
 Item types also have access to properties that return `True` if the item type falls under certain item "categories". For example, `mvWindow.is_root_item` will return `True`, while `mvWindow.is_node_item` will return `False`. These are class-bound, so they can be used on the class and its instances.
 
 ## Item Interfaces
-By default, calling an item type class will also create an item in Dear PyGui of the same type. It's no different from calling the related Dear PyGui function; the rules, arguments, syntax, etc. is identical. If your setup uses a Python language server, it should provide the correct argument signature (which will mirror the related function's argument signature);
+By default, calling an item type class will also create an item in Dear PyGui of the same type. It's no different from calling the related Dear PyGui function; the rules, arguments, syntax, etc. are identical. If your setup uses a Python language server, it should provide the correct argument signature (which will mirror the related function's argument signature);
 ```python
 from dearpypixl import *
 
@@ -239,7 +239,7 @@ Note that to further mitigate the risk of collisions, Dear PyPixl patches the `g
 
 ---
 
-**Q**: **I need to conform to an older version of Dear PyGui. Can I still use this?
+**Q**: **I need to conform to an older version of Dear PyGui. Can I still use this?**
 
 **A**: **On paper? No**. The honest answer? ***Maybe***. Dear PyPixl will absolutely *not* work with Dear PyGui beta versions (pre-1.0). Not a chance. However, key areas in the framework were developed using Dear PyGui v1.8.0. A lot may work, even when using slightly older versions -- you are welcome to try.
 
