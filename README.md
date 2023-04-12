@@ -205,16 +205,19 @@ As a closing note, keep in mind that **the relationship between an interface and
 ## FAQ
 
 **Q**: **What overhead can I expect using Dear PyPixl's item type classes over Dear PyPixl's functions?**
+
 **A**: **Less than 8%** when creating both items and instances. On my machine, creating one million `mvWindowAppItem` instances took 15.72 seconds (worst-case), while ~1.2 seconds was spent executing Dear PyPixl code (profiled using the `cProfile` module).
 
 ---
 
 **Q**: **Can I use both Dear PyPixl and Dear PyGui code in my project?**
+
 **A**: **Yes**, and you are **encouraged to do so**. Dear PyPixl does not aim to be a stand-alone framework, but exists to make using Dear PyGui more familiar to those not used to its functional API, in addition to other conveniences (hopefully). **Some hooks have yet to be implemented**, such as the **supporting functions for tables, plots, etc, as methods**, so there may be times when you *need* to access Dear PyGui.
 
 ---
 
 **Q**: **What is the `px_patcher` module and what is it doing?**
+
 **A**: The `px_patcher` module **contains "functional equivalents" of functions found in Dear PyGui**'s `dearpygui` and/or `_dearpygui` modules. When Dear PyPixl is imported, **these functions replace the originals in those modules**. If using both Dear PyPixl and Dear PyGui, it is highly **recommended to import Dear PyPixl *before* importing and/or using Dear PyGui.**
 
 There are several reasons for a function to have been *patched*;
@@ -228,6 +231,7 @@ The replacement function's `__signature__` should be identical to the signature 
 ---
 
 **Q**: **Why do items created using Dear PyPixl classes have large integer ids?**
+
 **A**:  This is to **mitigate item id collisions between Dear PyGui-generated and Dear PyPixl-generated identifiers**. Due to a performance-related [issue](https://github.com/hoffstadt/DearPyGui/issues/2028), Dear PyPixl does not use Dear PyGui's `generate_uuid` function. Instead, it uses a `itertools.count` object with a high starting value, hence the large id values.
 
 Note that to further mitigate the risk of collisions, Dear PyPixl patches the `generate_uuid` functions in both the `dearpygui.dearpygui` and `dearpygui._dearpygui` modules *on import* so that they also use the aforementioned workaround .
@@ -235,6 +239,7 @@ Note that to further mitigate the risk of collisions, Dear PyPixl patches the `g
 ---
 
 **Q**: **I need to conform to an older version of Dear PyGui. Can I still use this?
+
 **A**: **On paper? No**. The honest answer? ***Maybe***. Dear PyPixl will absolutely *not* work with Dear PyGui beta versions (pre-1.0). Not a chance. However, key areas in the framework were developed using Dear PyGui v1.8.0. A lot may work, even when using slightly older versions -- you are welcome to try.
 
 With using older versions of Dear PyGui, you may get a warning when trying to import Dear PyPixl indicating that various file definitions do not match the installed Dear PyGui version. You may be able to update them to match your installed version via `python3 -m dearpypixl` (this requires that the parent process has write-access to Dear PyPixl's install directory). Note that this feature may be removed from Dear PyPixl without warning.
@@ -242,6 +247,7 @@ With using older versions of Dear PyGui, you may get a warning when trying to im
 ---
 
 **Q**: **Why do I get errors/weird behavior when using aliases (string IDs)?**
+
 **A**:  The short version; **Dear PyPixl cannot guarantee the support of aliases when interfacing with items via instances**. This is due to an implementation detail of Dear PyPixl's `AppItemType` class, from which all core framework objects are derived.
 
 The core framework was designed not to be not stand-alone and/or proprietary, but to allow users to pick-and-choose what they want to use from both Dear PyPixl and Dear PyGui without conflicts. To accomplish this, `AppItemType` inherits from the built-in `int` type -- the default item identifier type returned when creating items in Dear PyGui -- to allow it's instances to be used as direct item references when using Dear PyGui's API. As a consequence, this means that all of it's instances *must* be created using an integral value. When the `tag` keyword argument is passed to an item type's constructor (`__new__` in this case), that value is used as the "integral value" to create the instance.
@@ -254,5 +260,6 @@ That "weird behavior"? Previous experiments show that **Dear PyGui may choose to
 ---
 
 **Q**: **Why does my program crash/error when creating creating [*i*] items?**
+
 **A**:  There is a known Dear PyPixl-related [issue]() where **it is possible to produce item id collisions under specific circumstances**. Other than that, the issue is **likely related to Dear PyGui when your program crashes without error** and *not* Dear PyPixl.
 
