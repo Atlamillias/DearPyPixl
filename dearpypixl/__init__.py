@@ -1,4 +1,4 @@
-"""A lightweight framework and toolkit for DearPyGui."""
+"""An object-oriented, lightweight, modular framework and toolkit for DearPyGui."""
 
 from . import px_patcher as _px_patcher
 
