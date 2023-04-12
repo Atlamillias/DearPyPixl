@@ -368,16 +368,21 @@ class _AppItemBase(int, Generic[P], metaclass=AppItemMeta):
             f")"
         )
 
-    def __getitem__(self, indexes: tuple[Literal[0, 1, 2, 3], int]) -> ItemId:
-        """Return a child of this item in a specific slot at index, via
-        `self[slot, index]`.
+    def __getitem__(self, index: Literal[0, 1, 2, 3] | slice) -> list[ItemId] | list[list[ItemId]]:
+        """Syntax sugar for fetching an item's children contained in slot *index*.
+
+        Equivelent to `self.children(index)` when *index* is an `int`. If *index* is a
+        `slice` object, returns a sliced list of `self.children().values()`.
         """
+        slots = get_info(self)["children"]
         try:
-            slot, index = indexes
-        except TypeError:
-            raise ValueError("expected `[slot, index]`") from None
-        slot = get_info(self)["children"][slot]
-        return slot[index]
+            return slots[index]
+        except KeyError:
+            raise IndexError(f"expected a valid target slot as 0, 1, 2, or 3 (got {index!r}).") from None
+        except TypeError:  # unhashable
+            if isinstance(index, slice):
+                return [*slots.values()][index.start, index.stop, index.step]
+            raise
 
     def __getattr__(self, name: str) -> Any:  # fallback config getter
         try:
