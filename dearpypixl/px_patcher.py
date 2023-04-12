@@ -53,7 +53,7 @@ def _patch_dearpygui():
 # BUG (`generate_uuid`): Default implementation is very slow when creating items
 # en masse. The below is a more performant alternative. Both users and dearpypixl
 # MUST use the same implementation to avoid uuid collisions.
-_dearpygui.generate_uuid = itertools.count(start=1_000).__next__
+_dearpygui.generate_uuid = itertools.count(start=1_000_000).__next__
 dearpygui.generate_uuid  = _dearpygui.generate_uuid
 
 

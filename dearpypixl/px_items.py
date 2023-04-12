@@ -1,10 +1,8 @@
+"""Contains primitive item type bases and item-related developer tools."""
 import inspect
 import types
 import functools
-from dearpygui import (
-    dearpygui,
-    _dearpygui,
-)
+from dearpygui import dearpygui, _dearpygui
 from .px_typing import (
     # typing
     overload,
@@ -18,7 +16,6 @@ from .px_typing import (
     # px_typing
     T, P,
     ItemId,
-    NULL,
     Array,
     DPGTypeId,
     DPGCommand,
@@ -26,7 +23,6 @@ from .px_typing import (
     DPGItemConfig,
     DPGItemInfo,
     DPGItemState,
-    ITEM_STATES_TEMPLATE
 )
 from . import px_utils
 from .px_utils import (
@@ -60,6 +56,8 @@ __all__ = [
 ]
 
 
+# This kind of complicates user threading, but there's not much
+# that can be done about it.
 dearpygui.create_context()
 
 
@@ -106,8 +104,7 @@ class State(Generic[_GT], DPGProperty):
 
     def __get__(self, inst: 'AppItemType', cls) -> _GT:
         if inst is not None:
-            state = inst.state().get(self._key, NULL)
-            return state if state is not NULL else None
+            return inst.state().get(self._key, None)
         return self
 
 
@@ -129,6 +126,8 @@ def _upd_pxmthd_metadata(mthd: T, parameters: dict[str, inspect.Parameter]) -> T
 
 
 def _new_px_configuration(parameters: dict[str, inspect.Parameter]):
+    """`.configuration` method factory for `AppItemType` subclasses. The returned method
+    filters settings not supported by the item."""
     def configuration(self) -> DPGItemConfig:
         return {k:v for k,v in get_config(self).items() if k in config_kwds}
 
@@ -139,7 +138,8 @@ def _new_px_configuration(parameters: dict[str, inspect.Parameter]):
 
 
 def _new_px_configure(parameters: dict[str, inspect.Parameter]):
-
+    """`.configure` method factory for `AppItemType` subclasses. The returned method
+    tries to throw an appropriate error for the user when something goes wrong."""
     def configure(self, **kwargs) -> None:
         try:
             set_config(self, **kwargs)
@@ -171,24 +171,15 @@ def register_itemtype(itp: T) -> T:
 
     The registry contains `AppItemType.__qualname__: AppItemType` pairs, and is
     primarily used to instantiate the correct itemtype interface when wrapping an
-    existing DearPyGui item. Base itemtypes are automatically registered when they
+    existing Dear PyGui item. Base itemtypes are automatically registered when they
     are created, but not user subclasses.
 
     A user may use this to register a subclass with altered or extended functionality
     to that of an already-registered "built-in" itemtype. That aside, there is nothing
     for a user to immediately gain by registering classes. However, users are free
     to redefine and/or extend objects that use the registry to create desired features.
-    For example, the `AppItemType.wrap_item` class method pulls the internal type
-    "mvAppItemType::mvButton" from a DearPyGui button item, and returns a `mvButton`
-    itemtype interface for it. It is possible to extend the `AppItemType.wrap_item`
-    method to include user types whos names are pulled from an item's `label`, `alias`
-    and/or `user_data`.
     """
-    # XXX The reason why the example in the doc above isn't built into the framework
-    # is because I feel it falls out of the scope of this framework. User types are
-    # expected to have *actual* __init__ methods -- more than just an "interface".
-    # I also do not think that sort of functionality is desirable enough to write an
-    # add-on for it.
+
     if hasattr(itp, _NULL_REGISTER_FLAG):
         delattr(itp, _NULL_REGISTER_FLAG)
     else:
@@ -197,6 +188,11 @@ def register_itemtype(itp: T) -> T:
 
 
 def null_registration(itp: T) -> T:
+    """Instruct `AppItemMeta` to avoid registering the new item type. Can be used
+    as a decorator.
+
+    This is a developer/debugging tool. There's no reason for a user to need this.
+    """
     setattr(itp, _NULL_REGISTER_FLAG, True)
     return itp
 
@@ -321,28 +317,31 @@ class AppItemMeta(type):
 
 
 class _AppItemBase(int, Generic[P], metaclass=AppItemMeta):
-# The "base" is split into two base classes for organizational purposes. AppItemBase
-# contains only class-bound members and dunder methods. AppItemType is the actual base
-# class containing the bulk API. The only direct subclass of AppItemBase should be
-# AppItemType.
+    # The "base" is split into two base classes for organizational purposes. AppItemBase
+    # contains only class-bound members and dunder methods. AppItemType is the actual base
+    # class containing the bulk API. The only direct subclass of AppItemBase should be
+    # AppItemType. Other than that, this class doesn't exist.
 
     @overload
     def __new__(cls, *args: P.args, **kwargs: P.kwargs) -> Self: ...
     def __new__(cls, *args: P.args, tag: ItemId = 0, **kwargs: P.kwargs) -> Self:
-        # XXX Assign item uuid for a future item (`__init__`) or already existing item.
-        # optimized for missing tags
-        if not tag:
+        # `__new__` is responsible for generating an item uuid for the DPG item
+        # created in `__init__`. A new uuid is not generated `tag` is included
+        # and is an integer. If `tag` is a string ('alias'), then `__new__` tries
+        # to work with it (XXX prepare for trouble).
+        if not tag:  # faster op when does not include `tag`
             return super().__new__(cls, generate_uuid())
 
         if isinstance(tag, int):
             int_id = tag
-        elif isinstance(tag, str):
+        elif isinstance(tag, str):  # user has chosen violence
             # a string alias is being used; fetch the existing id or create a new one
             if _dearpygui.does_alias_exist(tag):
                 int_id = _dearpygui.get_alias_id(tag)
             else:
                 int_id = generate_uuid()
                 _dearpygui.set_item_alias(int_id, tag)
+            # pray that everything works
         else:
             raise TypeError(f"expected int, str identifier (got {int_id})")
         return super().__new__(cls, int_id)
@@ -350,14 +349,17 @@ class _AppItemBase(int, Generic[P], metaclass=AppItemMeta):
     @overload
     def __init__(self, *args: P.args, **kwargs: P.kwargs) -> None: ...
     def __init__(self, *args: P.args, tag: ItemId = 0, **kwargs: P.kwargs) -> None:
-        # XXX Create a DPG item for the item uuid generated in `__new__`.
+        # `__init__` creates the DPG item using the item uuid generated in
+        # `__new__`. If `tag` was passed to `__new__`, then the item may
+        # already exist. In that case, `self.command(...)` throws an error.
+        # It is suppressed and the instance is allowed to interface with the
+        # existing item.
         super().__init__()
         try:
             self.command(*args, tag=self, **kwargs)
         except SystemError:
             if not _dearpygui.does_item_exist(self):
                 raise px_utils.err_create_item(self.real, self.command, *args, **kwargs) from None
-            # interface w/existing item
 
     def __repr__(self):
         return (
@@ -368,16 +370,21 @@ class _AppItemBase(int, Generic[P], metaclass=AppItemMeta):
             f")"
         )
 
-    def __getitem__(self, indexes: tuple[Literal[0, 1, 2, 3], int]) -> ItemId:
-        """Return a child of this item in a specific slot at index, via
-        `self[slot, index]`.
+    def __getitem__(self, index: Literal[0, 1, 2, 3] | slice) -> list[ItemId] | list[list[ItemId]]:
+        """Syntax sugar for fetching an item's children contained in slot *index*.
+
+        Equivelent to `self.children(index)` when *index* is an `int`. If *index* is a
+        `slice` object, returns a sliced list of `self.children().values()`.
         """
+        slots = get_info(self)["children"]
         try:
-            slot, index = indexes
-        except TypeError:
-            raise ValueError("expected `[slot, index]`") from None
-        slot = get_info(self)["children"][slot]
-        return slot[index]
+            return slots[index]
+        except KeyError:
+            raise IndexError(f"expected a valid target slot as 0, 1, 2, or 3 (got {index!r}).") from None
+        except TypeError:  # unhashable
+            if isinstance(index, slice):
+                return [*slots.values()][index.start, index.stop, index.step]
+            raise
 
     def __getattr__(self, name: str) -> Any:  # fallback config getter
         try:
@@ -387,16 +394,21 @@ class _AppItemBase(int, Generic[P], metaclass=AppItemMeta):
                 f"{type(self).__qualname__!r} object has no attribute {name!r}."
             ) from None
 
-    def __enter__(self) -> Self:  # defined to improve dynamic class typing
+    def __enter__(self) -> Self:
         """If this item is a container, temporarily place it atop the
         container stack.
 
         `TypeError` is raised if the item is not a container item.
         """
-        raise TypeError
+        try:
+            _dearpygui.push_container_stack(self)
+        except:
+            raise TypeError("not a container item.")
+        return self
 
     def __exit__(self, exc_val: Any = None, exc_tp: Any = None, traceback: Any = None) -> Any:
-        ...
+        if _dearpygui.top_container_stack() == self:
+            _dearpygui.pop_container_stack()
 
     command : DPGCommand = _DEFAULT_COMMAND
     identity: DPGTypeId  = _DEFAULT_IDENTITY
@@ -422,23 +434,23 @@ class _AppItemBase(int, Generic[P], metaclass=AppItemMeta):
 
     @px_utils.classproperty
     def is_plot_item(cls) -> bool:
-        """Return True if items of this type are included in DearPyGui's plotting API."""
+        """Return True if items of this type are included in Dear PyGui's plotting API."""
         identity = cls.identity[1]
         return any(s in identity for s in ("Plot", "mvAnnotation"))
 
     @px_utils.classproperty
     def is_node_item(cls) -> bool:
-        """Return True if items of this type are included in DearPyGui's node API."""
+        """Return True if items of this type are included in Dear PyGui's node API."""
         return "Node" in cls.identity[1]
 
     @px_utils.classproperty
     def is_table_item(cls) -> bool:
-        """Return True if items of this type are included in DearPyGui's table API."""
+        """Return True if items of this type are included in Dear PyGui's table API."""
         return "mvTable" in cls.identity[1]
 
     @px_utils.classproperty
     def is_draw_item(cls) -> bool:
-        """Return True if items of this type are included in DearPyGui's drawing API."""
+        """Return True if items of this type are included in Dear PyGui's drawing API."""
         return "mvDraw" in cls.identity[1]
 
     @px_utils.classproperty
@@ -499,27 +511,19 @@ class _AppItemBase(int, Generic[P], metaclass=AppItemMeta):
 
 
 class AppItemType(_AppItemBase, Generic[P]):
-    """Provides an object-oriented interface for DearPyGui items."""
+    """Generic object-oriented interface for existing Dear PyGui items.
 
-    label             : Config[str | None , str] = Config()
-    user_data         : Config[Any, Any]         = Config()
-    use_internal_label: Config[bool, bool]       = Config()
-
-    parent: Info[ItemId] = Info()
-
-    is_ok                    : State[bool       ] = State(key="ok")
-    is_hovered               : State[bool | None] = State(key="hovered")                  # |
-    is_active                : State[bool | None] = State(key="active")                   # |
-    is_focused               : State[bool | None] = State(key="focused")                  # |
-    is_clicked               : State[bool | None] = State(key="clicked")                  # |
-    is_left_clicked          : State[bool | None] = State(key="left_clicked")             # |
-    is_right_clicked         : State[bool | None] = State(key="right_clicked")            # |- `-> None` == unsupported state for the item
-    is_middle_clicked        : State[bool | None] = State(key="middle_clicked")           # |
-    is_visible               : State[bool | None] = State(key="visible")                  # |
-    is_edited                : State[bool | None] = State(key="edited")                   # |
-    is_activated             : State[bool | None] = State(key="activated")                # |
-    is_deactivated           : State[bool | None] = State(key="deactivated")              # |
-    is_deactivated_after_edit: State[bool | None] = State(key="deactivated_after_edit")   # |
+    >>> import dearpygui.dearpygui as dpg
+    >>>
+    >>> wndw_id = dpg.add_window()
+    >>> wndw = AppItemType(tag=wndw_id)
+    >>> isinstance(wndw, AppItemType)
+    True
+    >>> wndw == wndw_id
+    True
+    >>> dpg.configure_item(wndw, width=500)
+    None
+    """
 
     @property
     def tag(self) -> int:
@@ -529,13 +533,15 @@ class AppItemType(_AppItemBase, Generic[P]):
     @property
     def alias(self) -> str | None:
         """[get] Return the item's unique string identifier."""
-        # XXX Good monkeypatch point if not using aliases.
-        # ex: f'{type(self).__qualname__}:{self.tag}' on init/new to store class "memory"
-        # onto the item for more accurate interface wrapping w/`wrap_item`.
         return dearpygui.get_item_alias(self)
+    @alias.setter
+    def alias(self, value: str | None) -> None:
+        """[set] Set a unique string identifier for the item."""
+        return dearpygui.set_item_alias(value)
 
     def delete(self, children_only: bool = False, slot: Literal[-1, 0, 1, 2, 3] = -1) -> None:
-        """Destroy this item and/or this item's children.
+        """Destroy this item and/or this item's children. Comparable to Dear PyGui's
+        `delete_item` function.
 
         Args:
             * children_only: If True, only this item's children are destroyed, and
@@ -544,25 +550,30 @@ class AppItemType(_AppItemBase, Generic[P]):
             * slot: If *children_only* is True, items in this slot are destroyed.
             Default is -1 (all slots).
 
-        `SystemError` is raised in all cases where this call to DearPyGui fails.
+        `SystemError` is raised in all cases where this call to Dear PyGui fails.
         """
         _dearpygui.delete_item(self, children_only=children_only, slot=slot)
 
     def destroy(self) -> None:
         """Destroy this item and the item's children.
 
-        Functionally equivelent to calling `.delete` method where `children_only=False`, but
-        all any exception resulting from the process is silently handled.
+        Functionally equivelent to calling `.delete(children_only=False)` while
+        ignoring all errors.
         """
         try:
             self.delete(children_only=False)
         except:
             pass
 
+    label             : Config[str | None , str] = Config()
+    user_data         : Config[Any, Any]         = Config()
+    use_internal_label: Config[bool, bool]       = Config()
+
     @overload
     def configure(self, *, label: str = ..., user_data: Any = ..., use_internal_label: bool = ..., **kwargs) -> None: ...
     def configure(self, **kwargs) -> None:
-        """Update the item's writable settings.
+        """Update the item's writable settings. Comparable to Dear PyGui's
+        `configure_item` function.
 
         Args:
             * label: Display name for the item.
@@ -574,15 +585,15 @@ class AppItemType(_AppItemBase, Generic[P]):
 
             Other keyword-only arguments vary between items.
 
-        The available configuration options for an item are not made apparent.
-        Many of the keyword arguments used by the item type's constructor/initializer
-        are writable. Common keyword arguments `parent`, `tag`, and `default_*` cannot
-        be updated this way. If a `default_*` argument is used by the item type's
-        constructor/initializer, it can likely be updated using the `set_value` method.
+        The available configuration options for an item are not always obvious. Many
+        keyword arguments used by the item type's constructor/initializer are writable.
+        Common keyword arguments such as `parent` and `tag`, cannot be updated this
+        way. Note that arguments prefixed with "default" are tied to the item's stored
+        value, and can be updated using the `.set_value` method or `.value` property.
 
-        `TypeError` is raised if this item exists and its configuration could
-        not be updated or if the configuration option is not writable. `SystemError` is
-        raised in all other cases where this call to DearPyGui fails.
+        `TypeError` is raised if this item exists and its configuration could not be
+        updated or if the configuration option is not writable. `SystemError` is
+        raised in all other cases where this call to Dear PyGui fails.
         """
         try:
             set_config(self, **kwargs)
@@ -597,25 +608,61 @@ class AppItemType(_AppItemBase, Generic[P]):
             raise
 
     def configuration(self) -> DPGItemConfig:
-        """Return the item's various settings.
+        """Return the item's various settings. Comparable to Dear PyGui's
+        `get_item_configuration` function.
 
-        `SystemError` is raised in all cases where this call to DearPyGui fails.
+        If the interface is generic (i.e. direct instance of `AppItemType`), calling
+        this method is equivelent to calling `get_item_configuration(self)`. Otherwise,
+        the returned dictionary is filtered to only include settings that are applicable
+        to the item.
+
+        `SystemError` is raised in all cases where this call to Dear PyGui fails.
         """
         # NOTE: This is only for instances where `type(self) == AppItemType`. Derived
         # itemtypes have a different `configuration` method (assigned via metaclass).
         return get_config(self)
 
-    def information(self) -> DPGItemInfo:
-        """Return details about the item.
+    parent: Info[ItemId] = Info()
 
-        `SystemError` is raised in all cases where this call to DearPyGui fails.
+    def information(self) -> DPGItemInfo:
+        """Return item details that are read-only or are updated infrequently. Comparable
+        to Dear PyGui's `get_item_info` function.
+
+        The returned dictionary includes the 'handlers' key as of Dear PyGui v1.9.0.
+
+        `SystemError` is raised in all cases where this call to Dear PyGui fails.
         """
         return get_info(self)
 
-    def state(self) -> DPGItemState:
-        """Return the item's status.
+    is_ok                    : State[bool       ]            = State(key="ok")
+    is_hovered               : State[bool | None]            = State(key="hovered")
+    is_active                : State[bool | None]            = State(key="active")
+    is_focused               : State[bool | None]            = State(key="focused")
+    is_clicked               : State[bool | None]            = State(key="clicked")
+    is_left_clicked          : State[bool | None]            = State(key="left_clicked")
+    is_right_clicked         : State[bool | None]            = State(key="right_clicked")
+    is_middle_clicked        : State[bool | None]            = State(key="middle_clicked")
+    is_visible               : State[bool | None]            = State(key="visible")
+    is_edited                : State[bool | None]            = State(key="edited")
+    is_activated             : State[bool | None]            = State(key="activated")
+    is_deactivated           : State[bool | None]            = State(key="deactivated")
+    is_deactivated_after_edit: State[bool | None]            = State(key="deactivated_after_edit")
+    is_resized               : State[bool | None]            = State(key="resized")
+    rect_min                 : State[Array[int, int] | None] = State()
+    rect_max                 : State[Array[int, int] | None] = State()
+    rect_size                : State[Array[int, int] | None] = State()
+    content_region_avail     : State[Array[int, int] | None] = State()
 
-        `SystemError` is raised in all cases where this call to DearPyGui fails.
+    def state(self) -> DPGItemState:
+        """Return the item's status. Comparable to Dear PyGui's `get_item_state`
+        function.
+
+        `SystemError` is raised in all cases where this call to Dear PyGui fails.
+
+
+        Unlike Dear PyGui's `get_item_state` function, this method will include
+        every state possible, even those that are not supported for the item. Unsupported
+        states have a value of `None` in the returned dictionary.
         """
         return get_state(self)
 
@@ -624,55 +671,61 @@ class AppItemType(_AppItemBase, Generic[P]):
     @overload
     def children(self, slot: Literal[0, 1, 2, 3]) -> list[ItemId]: ...
     def children(self, slot: Literal[-1, 0, 1, 2, 3] = -1) -> dict[Literal[0, 1, 2, 3], list[ItemId]] | list[ItemId]:
-        """Return one or all slots containing the item's children.
+        """Return one or all slots containing the item's children. Comparable to
+        Dear PyGui's `get_item_children` function.
+
+        `SystemError` is raised in all cases where this call to Dear PyGui fails.
 
         Args:
             * slot: The slot to return. Default is -1 (all slots).
 
-        `SystemError` is raised in all cases where this call to DearPyGui fails.
+
         """
         # if the item isn't a container everything will be empty
         return dearpygui.get_item_children(self, slot)
 
     def move(self, parent: ItemId = 0, before: ItemId = 0) -> None:
         """Move this non-root item to another container item and/or before another
-        item.
+        item. Comparable to Dear PyGui's `move_item` function.
+
+        `TypeError` is raised if this item is a root item. `SystemError` is raised
+        in all other cases where this call to Dear PyGui fails.
 
         Args:
             * parent: The unique identifier of the container item that will serve as
-            this item's parent. Default is 0 (do not re-parent).
+            this item's parent. A value of 0 specifies the item's current parent.
+            Default is 0.
 
-            * before: The unique identifier of an item parented by *parent*, or this
-            item's current parent if *parent* is 0. This item will be inserted before
-            it in the same slot. This item must be appropriate for the slot. Default
-            is 0 (append to the end of the appropriate slot, or "add normally").
-
-        `TypeError` is raised if this item is a root item. `SystemError` is raised
-        in all other cases where this call to DearPyGui fails.
+            * before: The unique identifier of an item parented by *parent*. This item
+            will be inserted before it in the same slot. A value of 0 will add the item
+            to *parent* normally, without inserting before any other items. Default is
+            0.
         """
         _dearpygui.move_item(self, parent=parent, before=before)
 
     def move_up(self) -> None:
         """In the slot that contains this item, swap the positions of this non-root
-        item and the item that preceeds it.
+        item and the item that preceeds it. Comparable to Dear PyGui's `move_item_up`
+        function.
 
         `TypeError` is raised if this item is a root item. `SystemError` is raised
-        in all other cases where this call to DearPyGui fails.
+        in all other cases where this call to Dear PyGui fails.
         """
         _dearpygui.move_item_up(self)
 
     def move_down(self) -> None:
         """In the slot that contains this item, swap the positions of this non-root
-        item and the item that follows it.
+        item and the item that follows it. Comparable to Dear PyGui's `move_item_down`
+        function.
 
         `TypeError` is raised if this item is a root item. `SystemError` is raised
-        in all other cases where this call to DearPyGui fails.
+        in all other cases where this call to Dear PyGui fails.
         """
         _dearpygui.move_item_down(self)
 
     def unstage(self) -> None:
         """Move this non-root item from the stage container item parenting it to the
-        item atop the container stack.
+        item atop the container stack. Comparable to Dear PyGui's `unstage` function.
 
         `TypeError` is raised if this item is a root item. `SystemError` is raised if
         this item is not parented by a stage container, and in all other cases where
@@ -681,22 +734,24 @@ class AppItemType(_AppItemBase, Generic[P]):
         _dearpygui.unstage(self)
 
     def reorder(self, slot: Literal[0, 1, 2, 3], new_order: Sequence[ItemId]) -> None:
-        """Rearrange the item's children within a chosen slot.
+        """Rearrange the item's children within a chosen slot. Comparable to Dear
+        PyGui's `reorder_items` function.
+
+        `SystemError` is raised in all cases where this call to Dear PyGui fails.
 
         Args:
             * slot: Index of the target slot.
 
             * new_order: The new order of the item's children. The sequence
             must contain the identifiers of **all** items in the target slot.
-
-        `SystemError` is raised in all cases where this call to DearPyGui fails.
         """
         _dearpygui.reorder_items(self, slot, new_order)
 
     def focus(self) -> None:
-        """Focus the item.
+        """Bring this item to the foreground and set it as 'active' (if able).
+        Comparable to Dear PyGui's `focus_item` function.
 
-        `SystemError` is raised in all cases where this call to DearPyGui fails.
+        `SystemError` is raised in all cases where this call to Dear PyGui fails.
         """
         _dearpygui.focus_item(self)
 
@@ -709,80 +764,98 @@ class AppItemType(_AppItemBase, Generic[P]):
         self.set_value(value)
 
     def get_value(self) -> Any:
-        """Return the item's value.
+        """Return the item's value. Comparable to Dear PyGui's `get_value`
+        function.
 
-        This will always return None if the item cannot store a value.
+        `SystemError` is raised in all cases where this call to Dear PyGui fails.
 
-        `SystemError` is raised in all cases where this call to DearPyGui fails.
+
+        This method will return `None` if the item's value has not or cannot be
+        set.
         """
         return get_value(self)
 
     def set_value(self, value: Any) -> None:
-        """Update the item's value.
+        """Update the item's stored value. Comparable to Dear PyGui's `set_value`
+        function.
+
+        `SystemError` is raised if the value's type is not appropriate for the
+        item, and in all other cases where this call to Dear PyGui fails.
 
         Args:
             * value: The new value to apply to the item. The type of *value*
             varies between items. Does not raise an error if the item cannot
             hold a value.
 
-        Does nothing if the item cannot store a value.
 
-        `SystemError` is raised if the value's type is not appropriate for the
-        item, and in all other cases where this call to DearPyGui fails.
+        Does nothing if the item cannot store a value.
         """
         set_value(self, value)
 
     @property
     def theme(self) -> ItemId | None:
-        """Return the item's bound theme."""
+        """[get] Return the theme set onto the item."""
         return self.get_theme()
     @theme.setter
-    def theme(self, value: ItemId) -> None:
+    def theme(self, value: ItemId | None) -> None:
+        """[set] Set the reflected theme item."""
         return self.set_theme(value)
 
     def get_theme(self) -> ItemId | None:
-        """Return the item's bound item handler registry.
+        """Return the theme set onto the item. Comparable to Dear PyGui's
+        `get_item_theme' function..
 
-        `SystemError` is raised in all cases where this call to DearPyGui fails.
+        `SystemError` is raised in all cases where this call to Dear PyGui fails.
         """
         return self.information()["theme"]
 
-    def set_theme(self, theme: ItemId = 0) -> None:
-        """Bind this item to a theme item.
+    def set_theme(self, theme: ItemId | None = 0) -> None:
+        """Set a theme for the item to use. Comparable to Dear PyGui's `bind_item_theme'
+        function.
+
+        `SystemError` is raised in all cases where this call to Dear PyGui fails.
 
         Args:
-            * theme: A theme item's unique identifier. Default is 0 (unbind this item
-            from the currently bound theme item if applicable).
+            * theme: A theme item's unique identifier. If this value is 0 or `None`,
+            the item is unbound from the set theme (if any). Default is 0.
 
-        `SystemError` is raised in all cases where this call to DearPyGui fails.
+
+        Themes propagate downward, affecting item children. Items reflect elements
+        of their explicity set theme over those propagated from a parenting item
+        or application-level theme.
         """
         _dearpygui.bind_item_theme(self, theme)
 
     @property
     def handlers(self) -> ItemId | None:
-        """Return the item's bound item handler registry."""
+        """[get] Return the handler registry used by the item."""
         return self.get_handlers()
     @handlers.setter
-    def handlers(self, value: ItemId) -> None:
+    def handlers(self, value: ItemId | None) -> None:
+        """[set] Set an item handler registry for the item to use."""
         return self.set_handlers(value)
 
     def get_handlers(self) -> ItemId | None:
-        """Return the item's bound item handler registry.
+        """Return the item handler registry used by the item.
 
-        `SystemError` is raised in all cases where this call to DearPyGui fails.
+        `SystemError` is raised in all cases where this call to Dear PyGui fails.
+
+
+        As of Dear PyGui v1.9.0, this method is now comparable to
+        `get_item_info(...)["handlers"].
         """
-        # XXX currently works for an unofficial DPG build -- pending PR to main
         return self.information().get("handlers", None)
 
-    def set_handlers(self, handler_registry: ItemId = 0) -> None:
-        """Bind this item to a item handler registry item.
+    def set_handlers(self, handler_registry: ItemId | None = 0) -> None:
+        """Bind this item to a item handler registry item. Comparable to Dear PyGui's
+        `bind_item_handler_registry' function.
+
+        `SystemError` is raised in all cases where this call to Dear PyGui fails.
 
         Args:
-            * handler_registry: A item handler registry item's unique identifier.
-            Default is 0 (unbind this item from the currently bound item handler
-            registry item if applicable).
-
-        `SystemError` is raised in all cases where this call to DearPyGui fails.
+            * handler_registry: A item handler registry item's unique identifier. If
+            this value is 0 or `None`, the item is unbound from the set registry.
+            Default is 0.
         """
         _dearpygui.bind_item_handler_registry(self, handler_registry)
 
@@ -794,37 +867,41 @@ class AppItemType(_AppItemBase, Generic[P]):
         self.set_font(value)
 
     def get_font(self) -> ItemId | None:
-        """Return the item's bound font item.
+        """Return the item's bound font item. Comparable to Dear PyGui's `get_item_font`
+        function.
 
-        `SystemError` is raised in all cases where this call to DearPyGui fails.
+        `SystemError` is raised in all cases where this call to Dear PyGui fails.
         """
         return self.information()["font"]
 
     def set_font(self, font: ItemId = 0) -> None:
-        """Bind this item to a font item.
+        """Bind this item to a font item. Comparable to Dear PyGui's `bind_item_font`
+        function.
+
+        `SystemError` is raised in all cases where this call to Dear PyGui fails.
 
         Args:
             * font: A font item's unique identifier. Default is 0 (unbind this
             item from the currently bound font item if applicable).
-
-        `SystemError` is raised in all cases where this call to DearPyGui fails.
         """
         _dearpygui.bind_item_font(self, font)
 
     @property
     def root_parent(self) -> ItemId:
+        """[get] Return the identifier of the top-most container item in this item's
+        parential tree."""
         return self.get_root_parent()
 
     def get_root_parent(self) -> ItemId:
-        """Return the top-most item in this item's parential tree."""
+        """Return the identifier of the top-most container item in this item's
+        parential tree."""
         return px_utils.get_root_parent(self)
 
 
 
 
 class AppItemLike:
-    """Minimal item API for non-item interfaces.
-    """
+    """Minimal item API for non-item interfaces."""
     __slots__ = ()
 
     command : DPGCommand = _null_command
@@ -867,13 +944,7 @@ class AppItemLike:
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
 class PositionedItem(AppItemType):
-    """A rendered DearPyGui item that can have a set position."""
-    is_resized          : State[bool           ] = State(key="resized")
-    rect_min            : State[Array[int, int]] = State()
-    rect_max            : State[Array[int, int]] = State()
-    rect_size           : State[Array[int, int]] = State()
-    content_region_avail: State[Array[int, int]] = State()
-
+    """A rendered Dear PyGui item that can have a set position."""
     @property
     def pos(self) -> Array[int, int]:
         return self.state()["pos"]
@@ -883,7 +954,7 @@ class PositionedItem(AppItemType):
 
 
 class SizedItem(PositionedItem):
-    """A rendered DearPyGui item with a bounding box. Can be resized."""
+    """A rendered Dear PyGui item with a bounding box. Can be resized."""
 
     # Every item with `pos` has sizing support. However, they are not
     # always configured through the `width` and `height` keywords. This
@@ -892,7 +963,7 @@ class SizedItem(PositionedItem):
     width : Config[int, int] = Config()
     height: Config[int, int] = Config()
 
-    # Some items like `mvWindowAppItem` only have `rect_size`. The min/max
+    # Some items like `mvWindowAppItem` only support `rect_size`. The min/max
     # for these can be easily calculated.
 
     @property
@@ -917,11 +988,11 @@ class SizedItem(PositionedItem):
 
 
 class ValueAbleItem(AppItemType):
-    """A DearPyGui item that can store a value."""
+    """A Dear PyGui item that can store a value."""
 
 
 class ValueArrayItem(ValueAbleItem, Generic[T]):
-    """A DearPyGui item that stores an array of values."""
+    """A Dear PyGui item that stores an array of values."""
 
     def __str__(self):
         return self.get_value()
@@ -1026,7 +1097,7 @@ class ValueArrayItem(ValueAbleItem, Generic[T]):
 
 
 class CallableItem(AppItemType):
-    """A DearPyGui item that supports an optional callback, which can be invoked
+    """A Dear PyGui item that supports an optional callback, which can be invoked
     by calling the item. The item can also be passed as a callback-related
     argument for other items."""
 
@@ -1049,13 +1120,13 @@ class CallableItem(AppItemType):
 
 
 class HandlerItem(CallableItem):
-    """A DearPyGui item that fires a callback on certain events."""
+    """A Dear PyGui item that fires a callback on certain events."""
 
 
 
 
 class ContainerItem(AppItemType):
-    """A DearPyGui item that can contain other items."""
+    """A Dear PyGui item that can contain other items."""
 
     def __enter__(self) -> Self:
         self.push_stack()
@@ -1075,7 +1146,7 @@ class ContainerItem(AppItemType):
 
 
 class WindowItem(ContainerItem):  # AFAIK "mvWindowAppItem" and "mvChildWindow" only
-    """A DearPyGui container item that supports scrolling on both axis."""
+    """A Dear PyGui container item that supports scrolling on both axis."""
 
     x_scroll_max: float = property(
         lambda self:_dearpygui.get_x_scroll_max(self),
@@ -1104,7 +1175,7 @@ class WindowItem(ContainerItem):  # AFAIK "mvWindowAppItem" and "mvChildWindow" 
 
 
 class RootItem(ContainerItem):
-    """A top-level DearPyGui container item. It cannot be parented."""
+    """A top-level Dear PyGui container item. It cannot be parented."""
 
     def move(self, *args, **kwargs) -> TypeError:
         raise TypeError(f"{type(self).__qualname__} item cannot be moved.")
@@ -1115,7 +1186,7 @@ class RootItem(ContainerItem):
 
 
 class RegistryItem(RootItem):
-    """A top-level DearPyGui container item. It cannot be parented, and
+    """A top-level Dear PyGui container item. It cannot be parented, and
     it (and its child items) are not typically rendered."""
 
 
@@ -1253,7 +1324,7 @@ class NullInitItem(PatchedItem, Generic[P], metaclass=_NullInitItemMeta):
     passed on instantiation (to `.__new__`).
 
     NOTE: Attempting to call instance methods before calling the `.__init__` method
-    may result in an error because the DearPyGui item may not exist yet. Class-bound
+    may result in an error because the Dear PyGui item may not exist yet. Class-bound
     descriptors will function as normal.
     """
     def __new__(cls, *args: P.args, **kwargs: P.kwargs) -> Self:
@@ -1346,7 +1417,7 @@ _ITEM_TO_CONST = {
 }
 
 def itp_from_callable(command: DPGCommand[P, ItemId]) -> type[AppItemType[P]]:
-    """Create and return a new AppItemType from a DearPyGui item-creating
+    """Create and return a new AppItemType from a Dear PyGui item-creating
     function.
 
     Args:
@@ -1356,7 +1427,7 @@ def itp_from_callable(command: DPGCommand[P, ItemId]) -> type[AppItemType[P]]:
 
     Details from both the function and `dearpygui.dearpygui` module are used
     to help create the class. For example, its name will mirror the item's
-    internal DearPyGui type name:
+    internal Dear PyGui type name:
     >>> # import dearpygui.dearpygui as dearpygui
     ...
     >>> Window = type_from_callable(dearpygui.window)  # or `dearpygui.add_window`
@@ -1393,7 +1464,7 @@ def itp_from_callable(command: DPGCommand[P, ItemId]) -> type[AppItemType[P]]:
     Mixins may extend (or limit) the available interface for the new class.
     Since `Window` is a derived `RootItem`, methods that would manage the item's
     parent will now raise a `TypeError` instead of the ambiguous `SystemError`
-    thrown by DearPyGui.
+    thrown by Dear PyGui.
 
     The logic that includes mixin base classes is kept minimal, and can't
     account for every possibility. Typing information on the returned class is
