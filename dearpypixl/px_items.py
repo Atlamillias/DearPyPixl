@@ -171,7 +171,7 @@ def register_itemtype(itp: T) -> T:
 
     The registry contains `AppItemType.__qualname__: AppItemType` pairs, and is
     primarily used to instantiate the correct itemtype interface when wrapping an
-    existing DearPyGui item. Base itemtypes are automatically registered when they
+    existing Dear PyGui item. Base itemtypes are automatically registered when they
     are created, but not user subclasses.
 
     A user may use this to register a subclass with altered or extended functionality
@@ -179,7 +179,7 @@ def register_itemtype(itp: T) -> T:
     for a user to immediately gain by registering classes. However, users are free
     to redefine and/or extend objects that use the registry to create desired features.
     For example, the `AppItemType.wrap_item` class method pulls the internal type
-    "mvAppItemType::mvButton" from a DearPyGui button item, and returns a `mvButton`
+    "mvAppItemType::mvButton" from a Dear PyGui button item, and returns a `mvButton`
     itemtype interface for it. It is possible to extend the `AppItemType.wrap_item`
     method to include user types whos names are pulled from an item's `label`, `alias`
     and/or `user_data`.
@@ -427,23 +427,23 @@ class _AppItemBase(int, Generic[P], metaclass=AppItemMeta):
 
     @px_utils.classproperty
     def is_plot_item(cls) -> bool:
-        """Return True if items of this type are included in DearPyGui's plotting API."""
+        """Return True if items of this type are included in Dear PyGui's plotting API."""
         identity = cls.identity[1]
         return any(s in identity for s in ("Plot", "mvAnnotation"))
 
     @px_utils.classproperty
     def is_node_item(cls) -> bool:
-        """Return True if items of this type are included in DearPyGui's node API."""
+        """Return True if items of this type are included in Dear PyGui's node API."""
         return "Node" in cls.identity[1]
 
     @px_utils.classproperty
     def is_table_item(cls) -> bool:
-        """Return True if items of this type are included in DearPyGui's table API."""
+        """Return True if items of this type are included in Dear PyGui's table API."""
         return "mvTable" in cls.identity[1]
 
     @px_utils.classproperty
     def is_draw_item(cls) -> bool:
-        """Return True if items of this type are included in DearPyGui's drawing API."""
+        """Return True if items of this type are included in Dear PyGui's drawing API."""
         return "mvDraw" in cls.identity[1]
 
     @px_utils.classproperty
@@ -504,27 +504,19 @@ class _AppItemBase(int, Generic[P], metaclass=AppItemMeta):
 
 
 class AppItemType(_AppItemBase, Generic[P]):
-    """Provides an object-oriented interface for DearPyGui items."""
+    """Generic object-oriented interface for existing Dear PyGui items.
 
-    label             : Config[str | None , str] = Config()
-    user_data         : Config[Any, Any]         = Config()
-    use_internal_label: Config[bool, bool]       = Config()
-
-    parent: Info[ItemId] = Info()
-
-    is_ok                    : State[bool       ] = State(key="ok")
-    is_hovered               : State[bool | None] = State(key="hovered")                  # |
-    is_active                : State[bool | None] = State(key="active")                   # |
-    is_focused               : State[bool | None] = State(key="focused")                  # |
-    is_clicked               : State[bool | None] = State(key="clicked")                  # |
-    is_left_clicked          : State[bool | None] = State(key="left_clicked")             # |
-    is_right_clicked         : State[bool | None] = State(key="right_clicked")            # |- `-> None` == unsupported state for the item
-    is_middle_clicked        : State[bool | None] = State(key="middle_clicked")           # |
-    is_visible               : State[bool | None] = State(key="visible")                  # |
-    is_edited                : State[bool | None] = State(key="edited")                   # |
-    is_activated             : State[bool | None] = State(key="activated")                # |
-    is_deactivated           : State[bool | None] = State(key="deactivated")              # |
-    is_deactivated_after_edit: State[bool | None] = State(key="deactivated_after_edit")   # |
+    >>> import dearpygui.dearpygui as dpg
+    >>>
+    >>> wndw_id = dpg.add_window()
+    >>> wndw = AppItemType(tag=wndw_id)
+    >>> isinstance(wndw, AppItemType)
+    True
+    >>> wndw == wndw_id
+    True
+    >>> dpg.configure_item(wndw, width=500)
+    None
+    """
 
     @property
     def tag(self) -> int:
@@ -549,7 +541,7 @@ class AppItemType(_AppItemBase, Generic[P]):
             * slot: If *children_only* is True, items in this slot are destroyed.
             Default is -1 (all slots).
 
-        `SystemError` is raised in all cases where this call to DearPyGui fails.
+        `SystemError` is raised in all cases where this call to Dear PyGui fails.
         """
         _dearpygui.delete_item(self, children_only=children_only, slot=slot)
 
@@ -563,6 +555,10 @@ class AppItemType(_AppItemBase, Generic[P]):
             self.delete(children_only=False)
         except:
             pass
+
+    label             : Config[str | None , str] = Config()
+    user_data         : Config[Any, Any]         = Config()
+    use_internal_label: Config[bool, bool]       = Config()
 
     @overload
     def configure(self, *, label: str = ..., user_data: Any = ..., use_internal_label: bool = ..., **kwargs) -> None: ...
@@ -587,7 +583,7 @@ class AppItemType(_AppItemBase, Generic[P]):
 
         `TypeError` is raised if this item exists and its configuration could
         not be updated or if the configuration option is not writable. `SystemError` is
-        raised in all other cases where this call to DearPyGui fails.
+        raised in all other cases where this call to Dear PyGui fails.
         """
         try:
             set_config(self, **kwargs)
@@ -604,23 +600,48 @@ class AppItemType(_AppItemBase, Generic[P]):
     def configuration(self) -> DPGItemConfig:
         """Return the item's various settings.
 
-        `SystemError` is raised in all cases where this call to DearPyGui fails.
+        `SystemError` is raised in all cases where this call to Dear PyGui fails.
         """
         # NOTE: This is only for instances where `type(self) == AppItemType`. Derived
         # itemtypes have a different `configuration` method (assigned via metaclass).
         return get_config(self)
 
+    parent: Info[ItemId] = Info()
+
     def information(self) -> DPGItemInfo:
         """Return details about the item.
 
-        `SystemError` is raised in all cases where this call to DearPyGui fails.
+        `SystemError` is raised in all cases where this call to Dear PyGui fails.
         """
         return get_info(self)
+
+    is_ok                    : State[bool       ]            = State(key="ok")
+    is_hovered               : State[bool | None]            = State(key="hovered")
+    is_active                : State[bool | None]            = State(key="active")
+    is_focused               : State[bool | None]            = State(key="focused")
+    is_clicked               : State[bool | None]            = State(key="clicked")
+    is_left_clicked          : State[bool | None]            = State(key="left_clicked")
+    is_right_clicked         : State[bool | None]            = State(key="right_clicked")
+    is_middle_clicked        : State[bool | None]            = State(key="middle_clicked")
+    is_visible               : State[bool | None]            = State(key="visible")
+    is_edited                : State[bool | None]            = State(key="edited")
+    is_activated             : State[bool | None]            = State(key="activated")
+    is_deactivated           : State[bool | None]            = State(key="deactivated")
+    is_deactivated_after_edit: State[bool | None]            = State(key="deactivated_after_edit")
+    is_resized               : State[bool | None]            = State(key="resized")
+    rect_min                 : State[Array[int, int] | None] = State()
+    rect_max                 : State[Array[int, int] | None] = State()
+    rect_size                : State[Array[int, int] | None] = State()
+    content_region_avail     : State[Array[int, int] | None] = State()
 
     def state(self) -> DPGItemState:
         """Return the item's status.
 
-        `SystemError` is raised in all cases where this call to DearPyGui fails.
+        Unlike Dear PyGui's `get_item_state` function, this method will include
+        every state possible, even those that are not supported for the item. Unsupported
+        states have a value of `None` in the returned dictionary.
+
+        `SystemError` is raised in all cases where this call to Dear PyGui fails.
         """
         return get_state(self)
 
@@ -634,7 +655,7 @@ class AppItemType(_AppItemBase, Generic[P]):
         Args:
             * slot: The slot to return. Default is -1 (all slots).
 
-        `SystemError` is raised in all cases where this call to DearPyGui fails.
+        `SystemError` is raised in all cases where this call to Dear PyGui fails.
         """
         # if the item isn't a container everything will be empty
         return dearpygui.get_item_children(self, slot)
@@ -653,7 +674,7 @@ class AppItemType(_AppItemBase, Generic[P]):
             is 0 (append to the end of the appropriate slot, or "add normally").
 
         `TypeError` is raised if this item is a root item. `SystemError` is raised
-        in all other cases where this call to DearPyGui fails.
+        in all other cases where this call to Dear PyGui fails.
         """
         _dearpygui.move_item(self, parent=parent, before=before)
 
@@ -662,7 +683,7 @@ class AppItemType(_AppItemBase, Generic[P]):
         item and the item that preceeds it.
 
         `TypeError` is raised if this item is a root item. `SystemError` is raised
-        in all other cases where this call to DearPyGui fails.
+        in all other cases where this call to Dear PyGui fails.
         """
         _dearpygui.move_item_up(self)
 
@@ -671,7 +692,7 @@ class AppItemType(_AppItemBase, Generic[P]):
         item and the item that follows it.
 
         `TypeError` is raised if this item is a root item. `SystemError` is raised
-        in all other cases where this call to DearPyGui fails.
+        in all other cases where this call to Dear PyGui fails.
         """
         _dearpygui.move_item_down(self)
 
@@ -694,14 +715,14 @@ class AppItemType(_AppItemBase, Generic[P]):
             * new_order: The new order of the item's children. The sequence
             must contain the identifiers of **all** items in the target slot.
 
-        `SystemError` is raised in all cases where this call to DearPyGui fails.
+        `SystemError` is raised in all cases where this call to Dear PyGui fails.
         """
         _dearpygui.reorder_items(self, slot, new_order)
 
     def focus(self) -> None:
         """Focus the item.
 
-        `SystemError` is raised in all cases where this call to DearPyGui fails.
+        `SystemError` is raised in all cases where this call to Dear PyGui fails.
         """
         _dearpygui.focus_item(self)
 
@@ -718,7 +739,7 @@ class AppItemType(_AppItemBase, Generic[P]):
 
         This will always return None if the item cannot store a value.
 
-        `SystemError` is raised in all cases where this call to DearPyGui fails.
+        `SystemError` is raised in all cases where this call to Dear PyGui fails.
         """
         return get_value(self)
 
@@ -733,7 +754,7 @@ class AppItemType(_AppItemBase, Generic[P]):
         Does nothing if the item cannot store a value.
 
         `SystemError` is raised if the value's type is not appropriate for the
-        item, and in all other cases where this call to DearPyGui fails.
+        item, and in all other cases where this call to Dear PyGui fails.
         """
         set_value(self, value)
 
@@ -748,7 +769,7 @@ class AppItemType(_AppItemBase, Generic[P]):
     def get_theme(self) -> ItemId | None:
         """Return the item's bound item handler registry.
 
-        `SystemError` is raised in all cases where this call to DearPyGui fails.
+        `SystemError` is raised in all cases where this call to Dear PyGui fails.
         """
         return self.information()["theme"]
 
@@ -759,7 +780,7 @@ class AppItemType(_AppItemBase, Generic[P]):
             * theme: A theme item's unique identifier. Default is 0 (unbind this item
             from the currently bound theme item if applicable).
 
-        `SystemError` is raised in all cases where this call to DearPyGui fails.
+        `SystemError` is raised in all cases where this call to Dear PyGui fails.
         """
         _dearpygui.bind_item_theme(self, theme)
 
@@ -774,7 +795,7 @@ class AppItemType(_AppItemBase, Generic[P]):
     def get_handlers(self) -> ItemId | None:
         """Return the item's bound item handler registry.
 
-        `SystemError` is raised in all cases where this call to DearPyGui fails.
+        `SystemError` is raised in all cases where this call to Dear PyGui fails.
         """
         return self.information().get("handlers", None)
 
@@ -786,7 +807,7 @@ class AppItemType(_AppItemBase, Generic[P]):
             Default is 0 (unbind this item from the currently bound item handler
             registry item if applicable).
 
-        `SystemError` is raised in all cases where this call to DearPyGui fails.
+        `SystemError` is raised in all cases where this call to Dear PyGui fails.
         """
         _dearpygui.bind_item_handler_registry(self, handler_registry)
 
@@ -800,7 +821,7 @@ class AppItemType(_AppItemBase, Generic[P]):
     def get_font(self) -> ItemId | None:
         """Return the item's bound font item.
 
-        `SystemError` is raised in all cases where this call to DearPyGui fails.
+        `SystemError` is raised in all cases where this call to Dear PyGui fails.
         """
         return self.information()["font"]
 
@@ -811,7 +832,7 @@ class AppItemType(_AppItemBase, Generic[P]):
             * font: A font item's unique identifier. Default is 0 (unbind this
             item from the currently bound font item if applicable).
 
-        `SystemError` is raised in all cases where this call to DearPyGui fails.
+        `SystemError` is raised in all cases where this call to Dear PyGui fails.
         """
         _dearpygui.bind_item_font(self, font)
 
@@ -871,13 +892,7 @@ class AppItemLike:
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
 class PositionedItem(AppItemType):
-    """A rendered DearPyGui item that can have a set position."""
-    is_resized          : State[bool           ] = State(key="resized")
-    rect_min            : State[Array[int, int]] = State()
-    rect_max            : State[Array[int, int]] = State()
-    rect_size           : State[Array[int, int]] = State()
-    content_region_avail: State[Array[int, int]] = State()
-
+    """A rendered Dear PyGui item that can have a set position."""
     @property
     def pos(self) -> Array[int, int]:
         return self.state()["pos"]
@@ -887,7 +902,7 @@ class PositionedItem(AppItemType):
 
 
 class SizedItem(PositionedItem):
-    """A rendered DearPyGui item with a bounding box. Can be resized."""
+    """A rendered Dear PyGui item with a bounding box. Can be resized."""
 
     # Every item with `pos` has sizing support. However, they are not
     # always configured through the `width` and `height` keywords. This
@@ -896,7 +911,7 @@ class SizedItem(PositionedItem):
     width : Config[int, int] = Config()
     height: Config[int, int] = Config()
 
-    # Some items like `mvWindowAppItem` only have `rect_size`. The min/max
+    # Some items like `mvWindowAppItem` only support `rect_size`. The min/max
     # for these can be easily calculated.
 
     @property
@@ -921,11 +936,11 @@ class SizedItem(PositionedItem):
 
 
 class ValueAbleItem(AppItemType):
-    """A DearPyGui item that can store a value."""
+    """A Dear PyGui item that can store a value."""
 
 
 class ValueArrayItem(ValueAbleItem, Generic[T]):
-    """A DearPyGui item that stores an array of values."""
+    """A Dear PyGui item that stores an array of values."""
 
     def __str__(self):
         return self.get_value()
@@ -1030,7 +1045,7 @@ class ValueArrayItem(ValueAbleItem, Generic[T]):
 
 
 class CallableItem(AppItemType):
-    """A DearPyGui item that supports an optional callback, which can be invoked
+    """A Dear PyGui item that supports an optional callback, which can be invoked
     by calling the item. The item can also be passed as a callback-related
     argument for other items."""
 
@@ -1053,13 +1068,13 @@ class CallableItem(AppItemType):
 
 
 class HandlerItem(CallableItem):
-    """A DearPyGui item that fires a callback on certain events."""
+    """A Dear PyGui item that fires a callback on certain events."""
 
 
 
 
 class ContainerItem(AppItemType):
-    """A DearPyGui item that can contain other items."""
+    """A Dear PyGui item that can contain other items."""
 
     def __enter__(self) -> Self:
         self.push_stack()
@@ -1079,7 +1094,7 @@ class ContainerItem(AppItemType):
 
 
 class WindowItem(ContainerItem):  # AFAIK "mvWindowAppItem" and "mvChildWindow" only
-    """A DearPyGui container item that supports scrolling on both axis."""
+    """A Dear PyGui container item that supports scrolling on both axis."""
 
     x_scroll_max: float = property(
         lambda self:_dearpygui.get_x_scroll_max(self),
@@ -1108,7 +1123,7 @@ class WindowItem(ContainerItem):  # AFAIK "mvWindowAppItem" and "mvChildWindow" 
 
 
 class RootItem(ContainerItem):
-    """A top-level DearPyGui container item. It cannot be parented."""
+    """A top-level Dear PyGui container item. It cannot be parented."""
 
     def move(self, *args, **kwargs) -> TypeError:
         raise TypeError(f"{type(self).__qualname__} item cannot be moved.")
@@ -1119,7 +1134,7 @@ class RootItem(ContainerItem):
 
 
 class RegistryItem(RootItem):
-    """A top-level DearPyGui container item. It cannot be parented, and
+    """A top-level Dear PyGui container item. It cannot be parented, and
     it (and its child items) are not typically rendered."""
 
 
@@ -1257,7 +1272,7 @@ class NullInitItem(PatchedItem, Generic[P], metaclass=_NullInitItemMeta):
     passed on instantiation (to `.__new__`).
 
     NOTE: Attempting to call instance methods before calling the `.__init__` method
-    may result in an error because the DearPyGui item may not exist yet. Class-bound
+    may result in an error because the Dear PyGui item may not exist yet. Class-bound
     descriptors will function as normal.
     """
     def __new__(cls, *args: P.args, **kwargs: P.kwargs) -> Self:
@@ -1350,7 +1365,7 @@ _ITEM_TO_CONST = {
 }
 
 def itp_from_callable(command: DPGCommand[P, ItemId]) -> type[AppItemType[P]]:
-    """Create and return a new AppItemType from a DearPyGui item-creating
+    """Create and return a new AppItemType from a Dear PyGui item-creating
     function.
 
     Args:
@@ -1360,7 +1375,7 @@ def itp_from_callable(command: DPGCommand[P, ItemId]) -> type[AppItemType[P]]:
 
     Details from both the function and `dearpygui.dearpygui` module are used
     to help create the class. For example, its name will mirror the item's
-    internal DearPyGui type name:
+    internal Dear PyGui type name:
     >>> # import dearpygui.dearpygui as dearpygui
     ...
     >>> Window = type_from_callable(dearpygui.window)  # or `dearpygui.add_window`
@@ -1397,7 +1412,7 @@ def itp_from_callable(command: DPGCommand[P, ItemId]) -> type[AppItemType[P]]:
     Mixins may extend (or limit) the available interface for the new class.
     Since `Window` is a derived `RootItem`, methods that would manage the item's
     parent will now raise a `TypeError` instead of the ambiguous `SystemError`
-    thrown by DearPyGui.
+    thrown by Dear PyGui.
 
     The logic that includes mixin base classes is kept minimal, and can't
     account for every possibility. Typing information on the returned class is
