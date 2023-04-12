@@ -140,7 +140,7 @@ wndw.is_focused            # -> `wndw.state()["focused"]`           -> True/Fals
 wndw.is_clicked            # -> `wndw.state()["clicked"]`           -> None (unsupported)
 
 ```
-It's important to understand that **any method that can contain item references in their return value(s) are included as they were when returned from Dear PyGui**. That means `wndw.children(1)[0]` from the above example returned the integer identifier of the item interfaced via `btn`, and *not* the actual instance that is `btn`. This might seem problematic -- That doesn't matter much in this case since we have access to `btn` (the interface). What if there was no interface? Consider a more realistic scenario where we want a button to add another button to its parent when clicked. Gonna need a callback for that.
+It's important to understand that **any method that can contain item references in their return value(s) are included as they were when returned from Dear PyGui**. That means `wndw.children(1)[0]` from the above example returned the integer identifier of the item interfaced via `btn`, and *not* the actual instance that is `btn`. It doesn't matter much in this case since we have access to `btn` (the interface). What if there was no interface? Consider a more realistic scenario where we want a button to add another button to its parent when clicked. Gonna need a callback for that.
 ```python
 from typing import Any
 from dearpypixl import *
