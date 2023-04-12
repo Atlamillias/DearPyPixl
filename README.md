@@ -37,7 +37,7 @@ python3 -m pip install <path_to_generated_whl>
 ```
 
 # Overview
-Before reading further, I suggest visiting Dear PyGui's [documentation](https://dearpygui.readthedocs.io/en/latest/index.html) if you are unfamiliar with the project. Basic usage of Dear PyPixl is very similar to that of Dear PyGui. As such, writing "dedicated" documentation is not currently on the to-do list. However, Dear PyPixl is *not* undocumented -- The core API, in addition to several modules and other caveats, includes fairly detailed information via their docstrings.
+Before reading further, I suggest visiting Dear PyGui's [documentation](https://dearpygui.readthedocs.io/en/latest/index.html) if you are unfamiliar with the project. Basic usage of Dear PyPixl is very similar to that of Dear PyGui. As such, this overview focuses on how it is different. Dear PyPixl is *not* undocumented -- The core API, in addition to several modules and other caveats, includes fairly detailed information via their docstrings.
 
 Dear PyPixl is part "framework", part "toolkit". Objects directly available in the `dearpypixl` namespace represent the "framework" part of the package, while other modules represent the "toolkit" part. The framework half is blissfully unaware of the toolkit half, but parts of the toolkit *may* depend on the framework. Dear PyPixl tries to be as "use only what you want" as possible, so tools are often isolated from each other.
 
@@ -198,9 +198,10 @@ As a closing note, keep in mind that **the relationship between an interface and
 
 
 ## TODO
- - non-`AppItemType`s to use `AppItemLike`
+ - non-`AppItemType`s to inherit from `AppItemLike`
  - add API reference
- - "documentation"
+ - `AppItemType` -- add `__copy__`, `__deepcopy__`, `copy` methods
+ - expand overview to include subclassing, other modules
 
 ## FAQ
 
