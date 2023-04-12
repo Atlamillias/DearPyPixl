@@ -45,15 +45,15 @@ Dear PyPixl is part "framework", part "toolkit". Objects directly available in t
 
 The bulk of the framework consists of classes derived from `AppItemType`, which are available in the `dearpypixl` namespace. Each class represents an internal Dear PyGui item type (derived from the framework's own `mvAppItem` base class). The name of each class mirrors the name of the internal type it represents, and *not* necessarily the name of the Dear PyGui function used to create items of that type (although they usually go hand-in-hand);
 ```python
-import dearpypixl as dpx
+import dearpypixl as *
 
 
-# ItemType           | String Repr                      | Int Repr       | Function
+# ItemType       | String Repr                      | Int Repr       | Function
 # ------------------------------------------------------------------------------------
-dpx.mvButton         # "mvAppItemType::mvButton"        | 2              | `add_button`
-dpx.mvText           # "mvAppItemType::mvText"          | 28             | `add_text`
-dpx.mvInputText      # "mvAppItemType::mvInputText"     | 1              | `add_input_text`
-dpx.mvWindowAppItem  # "mvAppItemType::mvWindowAppItem" | 33             | `window`, `add_window`
+mvButton         # "mvAppItemType::mvButton"        | 2              | `add_button`
+mvText           # "mvAppItemType::mvText"          | 28             | `add_text`
+mvInputText      # "mvAppItemType::mvInputText"     | 1              | `add_input_text`
+mvWindowAppItem  # "mvAppItemType::mvWindowAppItem" | 33             | `window`, `add_window`
 
 ```
 Item type classes, when cast, compare equal to certain things. For example, `str(mvWindowAppItem)` will always compare equal to `dearpygui.get_item_type(item)` when `item` is a reference to a window item. Additionally, the class compares equal to a similarly-named constant in `dearpygui` when cast as an `int`;
@@ -126,10 +126,14 @@ wndw.information()         # -> `get_item_info(wndw)`               -> dict[str,
 wndw.theme                 # -> `self.information()["theme"]`       -> None
 wndw.children()            # -> `self.information()["children"]`    -> dict[int, list[int | str]]
 wndw.children(1)           # -> `self.information()["children"][1]` -> list[int | str]
-# Containers like windows can be indexed. This;
-wndw[0]
+# Containers like windows can be indexed. Doing so returns the list of
+# the container's children at slot *index*. This;
+wndw[1]
 # is equivelent to this;
-wndw.children(1)[0]
+wndw.children(1)
+# Containers can be sliced. Slices operate on the values of the dict
+# returned from `wndw.children()` (note no argument/slot specified).
+wndw[0:]                   # -> [[...], [...], [...], [...]]
 
 # States are exposed similarly, except that *most* items have *most*
 # states exposed, regardless if they're actually supported. Unsupported
