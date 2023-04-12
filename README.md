@@ -6,9 +6,9 @@ Dear PyPixl is a light-weight, object-oriented framework and toolkit for [Dear P
  - extensible object-oriented API for creating and/or interfacing with Dear PyGui items
  - allows users to use both `dearpypixl` and`dearpygui` code together with little to no conflicts between packages
  - contains *completely optional* tools to help solve common problems, such as;
-	  - **Grid** item layout manager
-	  - **Application** and **Viewport** classes that help manage their respective global states
-	  - **Runtime** main-loop manager for scheduling tasks, clamping frame rate, etc.
+      - **Grid** item layout manager
+      - **Application** and **Viewport** classes that help manage their respective global states
+      - **Runtime** main-loop manager for scheduling tasks, clamping frame rate, etc.
 
 ## Requirements
 
@@ -84,7 +84,7 @@ from dearpypixl import *
 
 
 with mvWindow(label="An Ordinary Window") as wndw:
-	btn = mvButton(label="An Ordinary Button", callback=lambda: print("stuff happened...!"))
+    btn = mvButton(label="An Ordinary Button", callback=lambda: print("stuff happened...!"))
 
 # DPG usually has two different functions for creating container items --
 # one for "normal" usage, and one for context-manager usage. The same
@@ -106,13 +106,13 @@ int(wndw)                  # 1000
 # freely use existing container interfaces in a `with` statement
 # for "runtime parenting"
 with wndw:
-	mvText("another child")
+    mvText("another child")
 
 try:
-	with btn:  # not a container...
-		...
+    with btn:  # not a container...
+        ...
 except TypeError:
-	pass
+    pass
 
 # configuration/settings hooks
 wndw.configure(width=400)  # -> `configure_item(wndw, width=400)`
@@ -147,13 +147,13 @@ from dearpypixl import *
 
 
 def make_initial_items():
-	with mvWindow():
-		btn1 = mvButton(callback=cb_button)
+    with mvWindow():
+        btn1 = mvButton(callback=cb_button)
 
 
 def cb_button(sender: int | str, app_data: Any, user_data: Any):
-	"""Creates a new button and adds it to the parent of *sender*."""
-	... # no peeking...
+    """Creates a new button and adds it to the parent of *sender*."""
+    ... # no peeking...
 
 
 make_initial_items()
@@ -162,37 +162,37 @@ make_initial_items()
 Dear PyPixl does not interfere with how callbacks are registered or how Dear PyGui runs them, so `cb_button` will recieve the button item reference (`sender`) as type `int` regardless of the fact that the button was originally created using `mvButton`. Since `cb_button` cannot access `btn1` (the interface) created in `make_initial_items`, you would need to either use Dear PyGui's API to manage the process (pretty much invalidating any reason to use this package), or pass the instance itself via `user_data`. Fortunately, interfaces are not unique. We can make more (and without creating additional items) by calling the item type again and passing an existing item reference via the `tag` keyword argument (shown below in our callback);
 ```python
 def cb_button(sender: int | str, app_data: Any, user_data: Any):
-	"""Creates a new button and adds it to the parent of *sender*."""
-	# a new button to `sender`s parent
-	sender = mvButton(tag=sender)
-	parent = mvWindow(tag=sender.parent)
-	with parent:
-		mvButton()
+    """Creates a new button and adds it to the parent of *sender*."""
+    # a new button to `sender`s parent
+    sender = mvButton(tag=sender)
+    parent = mvWindow(tag=sender.parent)
+    with parent:
+        mvButton()
 ```
 The above lets us use interfaces to get the behavior we want. Let's consider another possibility where we don't know what `sender` will be. Now, the framework won't try and stop you from making bad decisions such as calling `mvWindow(tag=button_id)`, but there are many reasons why you *shouldn't* do that. Instead, there are two appropriate ways of wrapping an item of an unknown type. The first is calling the item type base class `AppItemType` in the same manor as above. This will provide you with a generic (and basic) item interface. For convenience, `AppItemType` is aliased as `mvAll`.
 ```python
 def cb_button(sender: int | str, app_data: Any, user_data: Any):
-	"""Creates a new button and adds it to the parent of *sender*.
-	"""
-	# NOTE: Instantiating `AppItemType` without `tag` does not
-	# create any items and will not throw an error (although
-	# trying to call its methods likely will).
-	#`AppItemType` has a numeric representation value of zero.
-	sender = mvAll(tag=sender)
-	parent = mvWindow(tag=sender.parent)
-	with parent:
-		mvButton()
+    """Creates a new button and adds it to the parent of *sender*.
+    """
+    # NOTE: Instantiating `AppItemType` without `tag` does not
+    # create any items and will not throw an error (although
+    # trying to call its methods likely will).
+    #`AppItemType` has a numeric representation value of zero.
+    sender = mvAll(tag=sender)
+    parent = mvWindow(tag=sender.parent)
+    with parent:
+        mvButton()
 ```
 This likely works well enough for most cases. However, you can get the *correct* interface for an item using the `.wrap_item` class method. The result is independant of the class or instance it is called on.
 ```python
 def cb_button(sender: int | str, app_data: Any, user_data: Any):
-	"""Creates a new button and adds it to the parent of *sender*.
-	"""
-	# a new button to `sender`s parent
-	sender = mvAll.wrap_item(sender)           # `type(sender) == mvButton`
-	parent = sender.wrap_item(sender.parent)   # `type(parent) == mvWindow`
-	with parent:
-		mvButton()
+    """Creates a new button and adds it to the parent of *sender*.
+    """
+    # a new button to `sender`s parent
+    sender = mvAll.wrap_item(sender)           # `type(sender) == mvButton`
+    parent = sender.wrap_item(sender.parent)   # `type(parent) == mvWindow`
+    with parent:
+        mvButton()
 ```
 As a closing note, keep in mind that **the relationship between an interface and its target item is one-sided**; the interface *thinks* it's an item, compares equal to its target item's id, and **is even accepted by Dear PyGui as an item reference**. The reality is that **it's just a proxy** -- and *not* an actual Python `proxy` object (unfortunately). Items have no way of informing their handlers of their status, and **when the interface's target item is destroyed, the interface itself is not -- breaking future calls to most instance-bound methods and properties**.
 
