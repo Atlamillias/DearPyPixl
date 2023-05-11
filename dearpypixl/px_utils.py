@@ -12,6 +12,9 @@ from .px_typing import (
     Array,
     DPGCallback,
     DPGCommand,
+    ItemConfig,
+    ItemInfo,
+    ItemState,
     ITEM_CONFIG_TEMPLATE,
     ITEM_INFO_TEMPLATE,
     ITEM_STATES_TEMPLATE,
@@ -64,10 +67,10 @@ class staticproperty(classproperty):
 ########################################
 
 # CONFGURATION
-def get_config(item: ItemId) -> ITEM_CONFIG_TEMPLATE: ...
+def get_config(item: ItemId) -> ItemConfig: ...
 get_config = _dpg.get_item_configuration
 
-def set_config(item: ItemId, **kwargs: ITEM_CONFIG_TEMPLATE) -> None: ...
+def set_config(item: ItemId, **kwargs: ItemConfig) -> None: ...
 set_config = _dpg.configure_item
 
 
@@ -96,12 +99,12 @@ def set_values(items: Iterable[ItemId], values: Sequence[Any]) -> None:
 
 
 # INFO
-def get_info(item: ItemId) -> ITEM_INFO_TEMPLATE: ...
+def get_info(item: ItemId) -> ItemInfo: ...
 get_info = _dpg.get_item_info
 
 
 # STATE
-def get_state(item: ItemId) -> ITEM_STATES_TEMPLATE: ...
+def get_state(item: ItemId) -> ItemState: ...
 get_state = _dpg.get_item_state
 
 
