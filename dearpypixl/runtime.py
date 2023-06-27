@@ -907,3 +907,20 @@ class Runtime(AppItemLike):
         calling `time.sleep` after `.split_frame(delay=0)`.
         """
         return _dpg.split_frame(delay=delay)
+
+    @staticmethod
+    def set_frame_callback(frame: int, callback: DPGCallback | None, *, user_data: Any):
+        """Schedule a callback to run on a specific frame.
+
+        Args:
+            * frame: The target frame.
+
+            * callback: The task to schedule.
+
+            * user_data: Passed to as the third positional argument to *callback*.
+
+
+        Dear PyGui limits the number of frame callbacks that can be registered
+        to a total of 50.
+        """
+        _dpg.set_frame_callback(frame, callback, user_data=user_data)
