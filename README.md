@@ -1,22 +1,50 @@
 # Dear PyPixl
-Dear PyPixl is an object-oriented, lightweight, modular framework and toolkit for [Dear PyGui](https://github.com/hoffstadt/DearPyGui) with minimal dependencies and zero use restrictions (MIT license).
+Dear PyPixl is an object-oriented, lightweight, modular framework and toolkit for [Dear PyGui](https://github.com/hoffstadt/DearPyGui) with minimal dependencies and zero use restrictions (MIT license). It is very "use what you want/need", allowing you to use both Dear PyPixl and Dear PyGui API's in the same project without conflict.
+
+I highly suggest visiting Dear PyGui's [documentation](https://dearpygui.readthedocs.io/en/latest/index.html) if you are unfamiliar with the project. Basic usage of Dear PyPixl is very similar (identical) to that of Dear PyGui.
+
+___
+<!-- @import "[TOC]" {cmd="toc" depthFrom=1 depthTo=6 orderedList=false} -->
+
+<!-- code_chunk_output -->
+
+- [Dear PyPixl](#dear-pypixl)
+  - [Features](#features)
+  - [Requirements](#requirements)
+  - [Installation](#installation)
+- [Overview](#overview)
+  - [Item Interfaces](#item-interfaces)
+          - [Creating Interfaces](#creating-interfaces)
+          - [Properties, Methods & Behaviors](#properties-methods--behaviors)
+  - [Item Types](#item-types)
+  - [Global State & Setup](#global-state--setup)
+  - [Modules](#modules)
+  - [Limitations, Bugs, & Gachas](#limitations-bugs--gachas)
+          - [Interfaces are Integers, For Better or Worse](#interfaces-are-integers-for-better-or-worse)
+          - [Passing Explicit UUID's and Aliases](#passing-explicit-uuids-and-aliases)
+- [FAQ](#faq)
+
+<!-- /code_chunk_output -->
+___
 
 ## Features
-
- - extensible object-oriented API for creating and/or interfacing with Dear PyGui items
- - allows users to use both `dearpypixl` and`dearpygui` code together with little to no conflicts between packages
- - contains *completely optional* tools to help solve common problems, such as;
-      - **Grid** item layout manager
-      - **Application** and **Viewport** classes that help manage their respective global states
-      - **Runtime** main-loop manager for scheduling tasks, clamping frame rate, etc.
+ - extensible high-level object-oriented API for creating and/or interfacing with Dear PyGui items, including theme elements
+ - low-level API that fills various gaps in Dear PyGui's API
+ - strongly typed
+ - allows the use of both `dearpypixl` and `dearpygui` code together with minimal conflicts
+ - typing for `mvBuffer`, `mvVec4`, and `mvMat4`
+ - improved docstrings, errors, and type signatures
+ - contains numerous extensions and other helpful tools
+<br>
 
 ## Requirements
 
  - Operating System; Windows 8.1+, MacOS, Linux*
  - Python 3.11 x64 (or newer)
- - Dear PyGui 1.9 (installed automatically)
+ - Dear PyGui 1.9+ (installed automatically)
 
 *Dear PyPixl is available on all platforms already supported by Dear PyGui. Availability for 32-bit systems and Raspberry Pi OS is *loosely* supported, but requires building Dear PyGui from the source. Please visit their [wiki](https://github.com/hoffstadt/DearPyGui/wiki) for more information.
+<br>
 
 ## Installation
 
@@ -37,13 +65,234 @@ python3 -m pip install <path_to_generated_whl>
 ```
 
 # Overview
-Before reading further, I suggest visiting Dear PyGui's [documentation](https://dearpygui.readthedocs.io/en/latest/index.html) if you are unfamiliar with the project. Basic usage of Dear PyPixl is very similar to that of Dear PyGui. As such, this overview focuses on how it is different. Dear PyPixl is *not* undocumented -- The core API, in addition to several modules and other caveats, includes fairly detailed information via their docstrings.
+Dear PyPixl is not undocumented -- the information below supplements the detailed information is available via docstrings. However, I highly suggest visiting Dear PyGui's [documentation](https://dearpygui.readthedocs.io/en/latest/index.html) if you are unfamiliar with the project. Basic usage of Dear PyPixl is very similar (identical) to that of Dear PyGui, and you may feel lost without some background.
 
-Dear PyPixl is part "framework", part "toolkit". Objects directly available in the `dearpypixl` namespace represent the "framework" part of the package, while other modules represent the "toolkit" part. The framework half is blissfully unaware of the toolkit half, but parts of the toolkit *may* depend on the framework. Dear PyPixl tries to be as "use only what you want" as possible, so tools are often isolated from each other.
+## Item Interfaces
+###### Creating Interfaces
+An item type is, functionally, a drop-in replacement for any Dear PyGui function that would create item an item;
+```python
+from dearpypixl import *
 
-## Item Type Classes
 
-The bulk of the framework consists of classes derived from `AppItemType`, which are available in the `dearpypixl` namespace. Each class represents an internal Dear PyGui item type (derived from the framework's own `mvAppItem` base class). The name of each class mirrors the name of the internal type it represents, and *not* necessarily the name of the Dear PyGui function used to create items of that type (although they usually go hand-in-hand);
+window = Window(label="A window")
+button = Button(
+    label="A button",
+    callback=lambda: print("stuff is happening...!",
+    parent=window
+)
+```
+
+For container items, Dear PyGui offers two functions; a "normal" one, and a context manager. The class replaces *both*;
+```python
+from dearpypixl import *
+
+
+with Window(label="A window") as window:
+    button = Button(label="A button", callback=lambda: print("stuff is happening...!"))
+```
+
+
+The only difference between creating items using an item type class and using a Dear PyGui function is the return value. Where the latter returns a **tag**, or a unique integer or string identifier for the item, the former results in an **item interface** object. Interfaces *are* item identifiers - integers specifically - and can be used wherever an item tag is appropriate. For the lifetime of the interface, instance-bound methods will operate exclusively on the interfaced item. In the case above, the "interfaced item" was created along with the interface. However, interfaces can be made for existing items as well by passing its' identifier to the `mvAll` type, the `interface` function, or as the `tag` keyword argument to the appropriate item type for the item you're interfacing with.
+
+`mvAll` is the generic interface type. Its' API supports every kind of item to some degree, but lacks type identity. As such, it does not implement custom behavior that a more *narrow* interface may have. However, creating them is extremely fast. In addition, the lack of custom behaviors makes their API more performant. This is a good option when you don't care to work with an interface for very long, you don't know the item's type and/or don't care to know, or the item is just a stepping stone to get to another item. Note that `int(mvAll)` will always return `0`.
+
+If you know the type of the item you're trying to interface with, you can simply call the appropriate class and include the item identifier as the value for the `tag` keyword. After the interface is created, it will try to create a new item using its' bound identifier. It can't, however, as an item with the bound identifier already exists. The error is silenced and life continues as normal. Consider this option when you care about the specific item you're working with, or you are intending to work with it for a little bit. This option does have an overhead penalty since the process causes an exception, which may be noticable when it happens a lot. This process also involves creating a new instance, invoking the `__new__` and `__init__` constructor methods. This is a non-issue for "built-in" item types, but user subclasses often implement a custom `__init__`, and likely won't appreciate another initialization. As an alternative, item types have a class-bound `.new` method. Accepting a sole positional `tag` argument, the `.new` method creates and returns an interface of that type while skipping instance initialization.
+
+Lastly, when you want a proper interface for an item and would need to query Dear PyGui for its' type, consider using the `interface` function found in the `dearpypixl` root namespace. The `interface` function accepts a sole positional `tag` argument and a few other optional keywords. Its' default behavior is to query Dear PyGui for the item's type, find the appropriate class for that type, and return the result of calling the class' `.new` method. This procedure is faster than calling the class directly when the "item already exists" exception would be caught and discarded, even if you know the class beforehand.
+
+Here's an example using each of the methods above to create an interface for an existing button item (the *same* button item);
+```python
+from dearpypixl import *
+import dearpygui.dearpygui as dpg
+
+
+with Window() as window:
+    button_id = dpg.add_button(tag=40000)
+
+
+# Method 1: `mvAll`
+generic_if = mvAll(button_id)        # -> `mvAll(tag=40000, ...)`
+
+# Method 2A: `Button`
+button_if1 = Button(tag=button_id)   # -> `mvButton(tag=40000, ...)`
+# Method 2B: `Button.new`
+button_if2 = Button.new(button_id)   # -> `mvButton(tag=40000, ...)`
+
+# Method 3: `interface`
+button_if = interface(button_id)     # -> `mvButton(tag=40000, ...)`
+```
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="" content="width=device-width, initial-scale=1.0" />
+        <title></title>
+        <style>
+          .boxed {
+            background: #f5e07a;
+            color: black;
+            border: 3px solid #535353;
+            margin: 0px auto;
+            width: 600px;
+            padding: 10px;
+            border-radius: 4px;
+          }
+        </style>
+    </head>
+    <body>
+        <div class="boxed">
+            <font color="black">
+                <b>Note</b>: Dear PyPixl makes no attempt to not stop you from using the wrong interface type for an item.
+            </font>
+        </div>
+    </body>
+</html>
+<br>
+
+###### Properties, Methods & Behaviors
+
+With a half-dozen ways to make interfaces, some methods would be nice. Interfaces can have a fairly large API. While member names are not 1-to-1, Dear PyGui users should easily be able to make the connection between the two APIs. The table below outlines the core interface API and the equivelent Dear PyGui function;
+
+| Bound Interface Method   | Dear PyGui Function                     |
+| :----------------------: | :-------------------------------------: |
+| `item.configure(...)`    | `configure_item(item, ...)`             |
+| `item.configuration()`   | `get_item_configuration(item)`          |
+| `item.information()`     | `get_item_info(item)`                   |
+| `item.state()`           | `get_item_state(item)`                  |
+| `item.delete(...)`       | `delete_item(item, ...)`                |
+| `item.set_font(...)`     | `bind_item_font(item, ...)`             |
+| `item.set_theme(...)`    | `bind_item_theme(item, ...)`            |
+| `item.set_handlers(...)` | `bind_item_handler_registry(item, ...)` |
+
+In addition, a few other information-related hooks are also available;
+| Bound Interface Method   | Dear PyGui Function                                                |
+| :----------------------: | :----------------------------------------------------------------: |
+| `item.children(...)`     | `get_item_info(item)['children']`<br>`get_item_children(item, ...)`|
+| `item.get_font()`        | `get_item_info(item)['font']`<br>`get_item_font(item)`             |
+| `item.get_theme()`       | `get_item_info(item)['theme']`<br>`get_item_theme(item)`           |
+| `item.get_handlers()`    | `get_item_info(item)['handlers']`<br>`get_item_handlers(item)`     |
+
+Unlike `get_item_configuration`, the dictionary returned from the `.configuration` method of type-specific interfaces does not include "useless" configuration options. The opposite is true for the `.state` method, which includes keys for every available state an item can have. The value for the state key will be `None` if the state is unsupported for the item. With the exception those two methods, all other members in the above tables that return a value do so as returned from Dear PyGui and are not mutated by Dear PyPixl.
+
+Interfaces also expose several configuration, information, and state options as properties. The configuration properties availible vary depending on the type of item interface; expect one for each key in the dictionary returned from the `.configuration` method. In contrast, available information-related properties are consistent between all item interface types;
+
+| Interface Property | Interface Method Hook                             |
+| :----------------: | :-----------------------------------------------: |
+| `item.parent`      | `item.information()['parent']`                    |
+| `item.theme`       | `item.get_theme()`<br>`item.set_theme(...)`       |
+| `item.font`        | `item.get_font()`<br>`item.set_font(...)`         |
+| `item.handlers`    | `item.get_handlers()`<br>`item.set_handlers(...)` |
+
+Where the related method hook can return an item identifier, the property will return an interface for the item instead. This means that `.theme`, `.font`, `.handlers` will return an instance of `mvTheme`, `mvFont`, or `mvItemHandlerRegistry` respectively, or `None`.
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="" content="width=device-width, initial-scale=1.0" />
+        <title></title>
+        <style>
+          .boxed {
+            background: #f5e07a;
+            color: black;
+            border: 3px solid #535353;
+            margin: 0px auto;
+            width: 600px;
+            padding: 10px;
+            border-radius: 4px;
+          }
+        </style>
+    </head>
+    <body>
+        <div class="boxed">
+            <font color="black">
+                <b>Note</b>: As a reminder, both Dear PyGui and Dear PyPixl do not distinguish item identifiers and item interfaces differently when used as item-related arguments.
+            </font>
+        </div>
+    </body>
+</html>
+<br>
+<br>
+
+Like the above, state-related properties are consistent across all interfaces. And, like configuration properties, one exists for each item state. They are all read-only, and return the value as returned from the `.state` method;
+
+| Interface Property               | Interface Method Hook                    |
+| :------------------------------: | :--------------------------------------: |
+| `item.is_ok`                     | `item.state()["ok"]`                     |
+| `item.is_hovered`                | `item.state()["hovered"]`                |
+| `item.is_active`                 | `item.state()["active"]`                 |
+| `item.is_focused`                | `item.state()["focused"]`                |
+| `item.is_clicked`                | `item.state()["clicked"]`                |
+| `item.is_left_clicked`           | `item.state()["left_clicked"]`           |
+| `item.is_right_clicked`          | `item.state()["right_clicked"]`          |
+| `item.is_middle_clicked`         | `item.state()["middle_clicked"]`         |
+| `item.is_visible`                | `item.state()["visible"]`                |
+| `item.is_edited`                 | `item.state()["edited"]`                 |
+| `item.is_activated`              | `item.state()["activated"]`              |
+| `item.is_deactivated`            | `item.state()["deactivated"]`            |
+| `item.is_deactivated_after_edit` | `item.state()["deactivated_after_edit"]` |
+| `item.is_resized`                | `item.state()["resized"]`                |
+| `item.rect_min`                  | `item.state()["rect_min"]`               |
+| `item.rect_max`                  | `item.state()["rect_max"]`               |
+| `item.rect_size`                 | `item.state()["rect_size"]`              |
+| `item.content_region_avail`      | `item.state()["content_region_avail"]`   |
+
+Unfortunately, there is a sole exception. While `pos` is always included in the return of calling the `.state()` method (as a 2-item list, or `None` if unsupported), not all interface types implement the `.pos` property. This is because it can be updated as a configuration option via `configure_item` function or the `.configuration` method for items that do support explicit positioning. If an interface type implements the `.pos` property, it is writable. If it doesn't, then `.state()["pos"]` will always return `None`.
+
+
+<br>
+<br>
+Moving away from public methods and properties, an interface type may implement or inherit behavior from a parenting proto-type. For example, a previous example was given where an interface was used as a context manager;
+
+```python
+with Window() as window:
+    button = Button(tag=40000)
+
+with window:
+    text = Text("Some text", tag=50000)
+```
+This behavior is unique to container-type interfaces, in addition to instances of `mvAll`. An exception will be thrown trying to do the same for the button;
+```python
+with button:  # this doesn't work
+    ...
+```
+
+One behavior inherited by all interface types is indexing and slicing, operating on the result of calling the `.children` method. Although it is only useful for container-types, even basic items have child slots;
+```python
+# This is equivelent to `window.children(1)`, returning the
+# contents of child slot 1.
+window[1]   # -> [40000, 50000]
+# We can do this  with non-containers, too. Every slot will
+# be empty, though.
+button[1]   # -> []
+
+# Slice to include several slots;
+window[0:]  # -> [[], [40000, 50000], [], []]
+```
+
+Meanwhile, theme color/style and "series"-type interfaces override the above behavior. Indexing and slicing instead operate on the item's value, complimenting their `list`-like API.
+<br>
+
+
+## Item Types
+
+In Dear PyPixl, each of Dear PyGui's item types are represented by a subclass of `AppItemType`. Easily identifiable by their "mv" prefixes, class names mirror the name of the internal type it represents and *not* necessarily the name of the Dear PyGui function used to create items of that type (although, they usually go hand-in-hand). The adherence to a specific naming nomenclature means that some names can be a bit...verbose. As a convenience, classes are aliased (some more than once) to be less-so, or to make them easier to identify from other types;
+```python
+
+# most are straight-forward;
+ChildWindow == mvChildWindow
+DrawNode == mvDrawNode
+# some are obvious...
+Window == mvWindowAppItem
+# some aren't...
+HistogramSeries2D == mv2dHistogramSeries
+PlotAnnotation == mvAnnotation
+```
+<br>
+
+The classes themselves would be poor representations if you couldn't gleam some useful information from them. Casting an item class as an `int` or `str` yields a bit of information regarding the represented type; `str(mvWindowAppItem)` will always compare equal to `dearpygui.get_item_type(item)` when `item` is a window item identifier, wheras casting to an integer returns the enumeration value of the internal type -- the latter compares equal to a similarly-named constant found in the `dearpygui` namespace. Classes also have a `.command` attribute; the (non-context manager) function that is typically called to create items of that type. In addition, several class-level properties regarding the item type's "category" and/or identity are exposed;
+
 ```python
 import dearpypixl as *
 
@@ -54,217 +303,201 @@ mvButton         # "mvAppItemType::mvButton"        | 2              | `add_butt
 mvText           # "mvAppItemType::mvText"          | 28             | `add_text`
 mvInputText      # "mvAppItemType::mvInputText"     | 1              | `add_input_text`
 mvWindowAppItem  # "mvAppItemType::mvWindowAppItem" | 33             | `window`, `add_window`
+mvLabelSeries    # "mvAppItemType::mvLabelSeries    |                | `add_text_point`
 
+
+...
+
+
+str(mvWindowAppItem) == dpg.get_item_type(dpg.add_window())  # True
+int(mvWindowAppItem) == dpg.mvWindowAppItem                  # True
+mvWindowAppItem.command == dpg.add_window                    # True
+
+# some class-level properties
+mvWindowAppItem.is_root_item  # True
+mvWindowAppItem.is_container  # True
+mvWindowAppItem.is_node_item  # False
 ```
-Item type classes, when cast, compare equal to certain things. For example, `str(mvWindowAppItem)` will always compare equal to `dearpygui.get_item_type(item)` when `item` is a reference to a window item. Additionally, the class compares equal to a similarly-named constant in `dearpygui` when cast as an `int`;
+
+
+<br>
+
+## Global State & Setup
+The examples in the previous section omitted any of Dear PyGui's usual setup. Below is one of the first few examples used in a previous section with the added required setup. I'm sure it's a lot to take in;
+
+```python
+from dearpypixl import *
+
+
+with Window(label="A window") as window:
+    button = Button(label="A button", callback=lambda: print("stuff is happening...!"))
+
+Runtime.start()
+```
+
+
+The framework does the bulk of the setup automatically with a 2-step procedure. The first step, the initial application setup (`create_context()`, `setup_dearpgui()`, etc), is done when a user creates the very first item interface, while the second step is done within `Runtime.start()`. The latter will perform the initial setup if necessary (in the event that no interfaces are made) in addition to verifying the state of the viewport (creating and showing it as needed) before starting the runtime loop. Dear PyPixl may also run the initial application setup when using a part of the API that requires initializing Dear PyGui.
+
+Just because setup is done automatically doesn't mean the framework obfuscates the process from users. Any and/or all setup can be performed manually using Dear PyGui's API or through Dear PyPixl. Regardless, the framework will always be aware of what needs done, and what doesn't. In Dear PyPixl, users can run setup procedures and manage global-level settings using the `Application`, `Viewport`, `Runtime` classes. They, like modules, have very "functional" API. Like classes (and unlike modules), they support overrides and extending through subclassing, while not interfering with anything relying on the original implementations. They are not, however, fundamentally different from item interfaces;
+
+
 ```python
 from dearpypixl import *
 import dearpygui.dearpygui as dpg
 
 
-# Because window items are commonly used, I got very annoyed of how friggin'
-# lengthy `mvWindowAppItem` is. Only two item types are assigned aliases --
-# it's one of them, as `mvWindow`.
-wndw_id = dpg.add_window()
-str(mvWindow) == dpg.get_item_type(wndw_id)  # True
-int(mvWindow) == dpg.mvWindow                # True
-mvWindow.command == dpg.add_window           # True
 
-# As an `int`, `mvWindowAppItem` compares equal to the `dpg.mvWindow` const
-# and internal type's enum value, so it can be used for stuff like this;
-theme_component_id = dpg.add_theme_component(int(mvWindow), parent=dpg.add_theme())
+# manually perform app setup (optional)
+Application.create_context()  # `dearpygui.create_context()`
+Application.prepare()         # `dearpygui.setup_dearpygui()`
 
+Application.state()['ok']     # | -> True (False if the above is not done yet)
+Application.is_ok             # |
+
+# update application settings, just like item interfaces
+# NOTE: If we did not manually run setup, DPX would do it
+# at `Application.docking = True` below, since it requires
+# DPG initialization.
+Application.docking = True
+Application.docking           # -> True
+Application.configure(docking=False)
+Application.docking           # -> False
+
+app_theme = Theme(label="Application Theme")
+# set the application theme
+Application.theme = app_theme
+# unlike Dear PyGui's API, you can always fetch it later...
+Application.theme.label      # -> "Application Theme"
+# REGARDLESS of how you set it...
+dpg.bind_theme(None)
+Application.theme            # -> None
+Application().theme = app_theme
+Application.theme.label      # -> "Application Theme"
+
+# the returned mapping mirrors `Item.information(...)`, so
+# it includes `font` and `theme`
+Application.information()    # -> {'type': 'Application', ..., 'font': None, ...}
+
+# Even though the class and instances operate on the
+# same state(s), they are NOT the same object
+Application is Application()    # -> False
+Application == Application()    # -> False
+# again, different objects
+Application() is Application()  # -> False
+
+
+
+# manually setup the viewport (again, optional)
+Viewport.state()['ok']          # | -> False (True once created)
+Viewport.is_ok                  # |
+Viewport.create()
+Viewport.is_ok                  # -> True
+
+Viewport.state()['visible']     # | -> False (not shown yet)
+Viewport.is_visible             # |
+# `Viewport.show()`, but using DPG's API because, again, DPX
+# knows. It knows, and it will always know.
+dpg.show_viewport()
+Viewport.is_visible             # -> True
+
+# NOTE: If application setup has not been done up until now,
+# DPX will do so before creating the `window` interface/item.
+with Window(label="A window", tag=50000) as window:
+    button = Button(label="A button", callback=lambda: print("stuff is happening...!"))
+
+# second verse, same as the first
+Viewport.width = 700
+dpg.configure_viewport(
+    "DPG NOT USED YET",  # `Viewport.tag`
+    label="IT ALWAYS KNOWS",
+)
+# Unique to DPX, 'primary_window', 'callback', and 'user_data'
+# are "configuration". All three of these cannot be fetched
+# using DPG's API, while 'callback', and 'user_data' cannot be
+# set separately. DPX sets things right.
+Viewport.configure(
+    height=550,
+    primary_window=window,
+    callback=lambda sender, app_data, user_data: print(user_data),
+    user_data="the cake is delicious",
+)
+Viewport.user_data = "the cake is a lie"
+Viewport.configuration() # -> {
+#    'label'         : 'IT ALWAYS KNOWS',
+#    'width'         : 700,
+#    'height'        : 550,
+#    ...,
+#    'primary_window': 50000,
+#    'callback'      : <function <lambda> at ...>,
+#    'user_data      : 'the cake is a lie',
+# }
+
+
+# NOTE: DPX will run any app or viewport setup we
+# missed (we didn't miss any) before starting the
+# runtime.
+Runtime.start()
 ```
-Item types also have access to properties that return `True` if the item type falls under certain item "categories". For example, `mvWindow.is_root_item` will return `True`, while `mvWindow.is_node_item` will return `False`. These are class-bound, so they can be used on the class and its instances.
 
-## Item Interfaces
-By default, calling an item type class will also create an item in Dear PyGui of the same type. It's no different from calling the related Dear PyGui function; the rules, arguments, syntax, etc. are identical. If your setup uses a Python language server, it should provide the correct argument signature (which will mirror the related function's argument signature);
-```python
-from dearpypixl import *
+`Application` and `Viewport` interface with already existing global states. `Runtime` is a bit different because the "runtime" state is unique to Dear PyPixl -- manufactured through patching Dear PyGui's API holes and other various things, so it's API is less obvious. The runtime state is the state of the main event loop. This encompasses things like starting and stopping the runtime, target frame rate, and events that occur within the loop such as those scheduled to run on specific frames. It's the closest thing Dear PyPixl has to a `tkinter.Tk`, `kivy.app.App`, etc.
+<br>
 
+## Modules
 
-with mvWindow(label="An Ordinary Window") as wndw:
-    btn = mvButton(label="An Ordinary Button", callback=lambda: print("stuff happened...!"))
+Only interface types are exposed directly within the `dearpypixl` namespace. Other useful tools and extensions are housed within their respective modules;
+* `api`: Contains the lower-level API used by the framework.
+* `typing`: Defines common type variables, aliases, and protocols used throughout the library, including `mvBuffer`, `mvVec4`, and `mvMat4`.
+* `constants`: Stores static Dear PyGui and Dear PyPixl values/variables as enumerations.
+* `interface`: Home to the `AppItemType` base class and other primitive interface types, in addition to the `ABCAppItemType` class and `ABCAppItemTypeMeta` metaclass for creating abstract interface types.
+* `events`: Extensions of callback-related interface types.
+* `theming`: Extensions of theme and font-related interface types.
+* `color`, `style`: Exposes theme color and style elements as individual interface types.
+* `console`: Homebrew stream and console-related item interfaces.
+* `grid`: Contains the `Grid` item layout manager, which leverages the ability to explicitly position items to emulate a table-like layout without creating any items.
+<br>
 
-# DPG usually has two different functions for creating container items --
-# one for "normal" usage, and one for context-manager usage. The same
-# DPX class can be used both ways;
-wndw2 = mvWindow("Another ordinary window")
-btn2 = mvButton(parent=wndw2)  # gotta include the parent here
+## Limitations, Bugs, & Gachas
 
-```
-The only real difference when using either API to create items is what we are left with afterwards. The `add_window` function would return the **tag** -- the unique item identifier -- of the created window so we can mess with it later, where calling `mvWindow` returned an instance of `mvWindowAppItem`. As an **interface**, instance-bound methods will now operate exclusively on that item. They also have a *lot* of properties and methods, and many forward their calls to a Dear PyGui function of similar name. Below showcases a few of them, in addition to some behaviors added via dunder methods;
-```python
-# NOTE: Only a small handful of behaviors, methods, etc. are shown.
-# There's more. A lot more.
-
-# instances have useful string representations
-str(wndw)                  # mvWindowAppItem(tag=1000, label='', parent=None)
-# casting to type `int` yields the interfaced item's integer id
-int(wndw)                  # 1000
-
-# freely use existing container interfaces in a `with` statement
-# for "runtime parenting"
-with wndw:
-    mvText("another child")
-
-try:
-    with btn:  # not a container...
-        ...
-except TypeError:
-    pass
-
-# configuration/settings hooks
-wndw.configure(width=400)  # -> `configure_item(wndw, width=400)`
-wndw.configuration()       # -> `get_item_configuration(wndw)`      -> dict[str, ...]
-# several configuration settings are also exposed as properties
-wndw.width = 600           # -> `wndw.configure(width=600)`
-wndw.width                 # -> `wndw.configuration()["width"]`     -> 600
-
-# same thing here, but for item info
-wndw.information()         # -> `get_item_info(wndw)`               -> dict[str, ...]
-wndw.theme                 # -> `self.information()["theme"]`       -> None
-wndw.children()            # -> `self.information()["children"]`    -> dict[int, list[int | str]]
-wndw.children(1)           # -> `self.information()["children"][1]` -> list[int | str]
-# Containers like windows can be indexed. Doing so returns the list of
-# the container's children at slot *index*. This;
-wndw[1]
-# is equivelent to this;
-wndw.children(1)
-# Containers can be sliced. Slices operate on the values of the dict
-# returned from `wndw.children()` (note no argument/slot specified).
-wndw[0:]                   # -> [[...], [...], [...], [...]]
-
-# States are exposed similarly, except that *most* items have *most*
-# states exposed, regardless if they're actually supported. Unsupported
-# states return NoneType.
-wndw.state()               # -> `get_item_state(wndw)`              -> dict[str, ...]
-wndw.is_visible            # -> `wndw.state()["visible"]`           -> True/False
-wndw.is_focused            # -> `wndw.state()["focused"]`           -> True/False
-wndw.is_clicked            # -> `wndw.state()["clicked"]`           -> None (unsupported)
-
-```
-It's important to understand that **any method that can contain item references in their return value(s) are included as they were when returned from Dear PyGui**. That means `wndw.children(1)[0]` from the above example returned the integer identifier of the item interfaced via `btn`, and *not* the actual instance that is `btn`. It doesn't matter much in this case since we have access to `btn` (the interface). What if there was no interface? Consider a more realistic scenario where we want a button to add another button to its parent when clicked. Gonna need a callback for that.
-```python
-from typing import Any
-from dearpypixl import *
+Dear PyPixl tries to maintain the same semantics and feel that Dear PyGui has so that it's intuitive coming from Dear PyGui, while being different in ways that only benefit the user. However, there are some situations and use-cases where Dear PyGui and Dear PyPixl and aren't exactly 1-to-1 due to implementation details of the framework, bugs within Dear PyGui, etc. Below explains some of Dear PyPixl's behavior and some consequences that stem as a result.
+<br>
 
 
-def make_initial_items():
-    with mvWindow():
-        btn1 = mvButton(callback=cb_button)
+###### Interfaces are Integers, For Better or Worse
 
+Interface types are derived from Python's built-in `int` type. This allows interfaces to be used as arguments where item identifiers are expected. In addition, it simplifies the public and internal API's alike in regards to interface and item creation. This unfortunately has a few side effects;
+* interface subclasses **cannot declare non-empty `__slots__`**
+* interfaces cannot include a `__weakref__` attribute, meaning they **cannot have proxies**
+* **`__bool__` cannot be implemented**
 
-def cb_button(sender: int | str, app_data: Any, user_data: Any):
-    """Creates a new button and adds it to the parent of *sender*."""
-    ... # no peeking...
+The last point has less to do with `int` and more to do with how Dear PyGui is inspecting identifier values. `__bool__` must operate on the integer value of the interface; hard-to-diagnose bugs *will* occur otherwise. For this reason, Dear PyPixl will throw a `TypeError` when defining an interface class that does not point to `int.__bool__`.
+<br>
 
+###### Passing Explicit UUID's and Aliases
 
-make_initial_items()
+Item-creating functions in Dear PyGui all accept a `tag` keyword argument in the form of an item's integer identifier (*uuid*) or string *alias*. While Dear PyPixl does its' best to accomodate, **the basic interface constructor cannot properly manage aliases when the alias is new**. This is in part due to Dear PyPixl's internal design, along with the fact that Dear PyGui's item registry API was never finished. Since the interface's creation logic (`.__new__`) is isolated from the item creation logic (`.__init__`), Dear PyPixl would need to register the new alias to a new uuid in advance. This can be done, however, Dear PyGui does not behave as expected in any scenario.
 
-```
-Dear PyPixl does not interfere with how callbacks are registered or how Dear PyGui runs them, so `cb_button` will recieve the button item reference (`sender`) as type `int` regardless of the fact that the button was originally created using `mvButton`. Since `cb_button` cannot access `btn1` (the interface) created in `make_initial_items`, you would need to either use Dear PyGui's API to manage the process (pretty much invalidating any reason to use this package), or pass the instance itself via `user_data`. Fortunately, interfaces are not unique. We can make more (and without creating additional items) by calling the item type again and passing an existing item reference via the `tag` keyword argument (shown below in our callback);
-```python
-def cb_button(sender: int | str, app_data: Any, user_data: Any):
-    """Creates a new button and adds it to the parent of *sender*."""
-    # a new button to `sender`s parent
-    sender = mvButton(tag=sender)
-    parent = mvWindow(tag=sender.parent)
-    with parent:
-        mvButton()
-```
-The above lets us use interfaces to get the behavior we want. Let's consider another possibility where we don't know what `sender` will be. Now, the framework won't try and stop you from making bad decisions such as calling `mvWindow(tag=button_id)`, but there are many reasons why you *shouldn't* do that. Instead, there are two appropriate ways of wrapping an item of an unknown type. The first is calling the item type base class `AppItemType` in the same manor as above. This will provide you with a generic (and basic) item interface. For convenience, `AppItemType` is aliased as `mvAll`.
-```python
-def cb_button(sender: int | str, app_data: Any, user_data: Any):
-    """Creates a new button and adds it to the parent of *sender*.
-    """
-    # NOTE: Instantiating `AppItemType` without `tag` does not
-    # create any items and will not throw an error (although
-    # trying to call its methods likely will).
-    #`AppItemType` has a numeric representation value of zero.
-    sender = mvAll(tag=sender)
-    parent = mvWindow(tag=sender.parent)
-    with parent:
-        mvButton()
-```
-This likely works well enough for most cases. However, you can get the *correct* interface for an item using the `.wrap_item` class method. The result is independant of the class or instance it is called on.
-```python
-def cb_button(sender: int | str, app_data: Any, user_data: Any):
-    """Creates a new button and adds it to the parent of *sender*.
-    """
-    # a new button to `sender`s parent
-    sender = mvAll.wrap_item(sender)           # `type(sender) == mvButton`
-    parent = sender.wrap_item(sender.parent)   # `type(parent) == mvWindow`
-    with parent:
-        mvButton()
-```
-As a closing note, keep in mind that **the relationship between an interface and its target item is one-sided**; the interface *thinks* it's an item, compares equal to its target item's id, and **is even accepted by Dear PyGui as an item reference**. The reality is that **it's just a proxy** -- and *not* an actual Python `proxy` object (unfortunately). Items have no way of informing their handlers of their status, and **when the interface's target item is destroyed, the interface itself is not -- breaking future calls to most instance-bound methods and properties**.
+As a workaround, interfaces have the `.aliased` class method, an alternative constructor, which will set the alias onto the item once it is created. Note that this is only necessary when creating the interface would also cause the interfaced item to be created, while aliases of existing items can be passed as normal.
 
+<br>
 
-## TODO
- - non-`AppItemType`s to inherit from `AppItemLike`
- - add API reference
- - `AppItemType` -- add `__copy__`, `__deepcopy__`, `copy` methods
- - expand overview to include subclassing, other modules
+# FAQ
 
-## FAQ
+**Q**: **Performance?**
 
-**Q**: **What overhead can I expect using Dear PyPixl's item type classes over Dear PyPixl's functions?**
+**A**: The framework tries to keep a very low profile. When profiling on a pretty low-performance machine, creating one million window items with `mvWindowAppItem` took 15.72 seconds (worst-case); only ~1.2 seconds of that was spent executing Dear PyPixl code. Marginal overhead is to be expected for methods, properties, etc. as there are simply more function calls. In high-traffic areas like the main runtime loop, consider using the `.configuration`, `.information`, and `.state` methods over interface properties.
 
-**A**: **Less than 8%** when creating both items and instances. On my machine, creating one million `mvWindowAppItem` instances took 15.72 seconds (worst-case), while ~1.2 seconds was spent executing Dear PyPixl code (profiled using the `cProfile` module).
 
 ---
 
 **Q**: **Can I use both Dear PyPixl and Dear PyGui code in my project?**
 
-**A**: **Yes**, and you are **encouraged to do so**. Dear PyPixl does not aim to be a stand-alone framework, but exists to make using Dear PyGui more familiar to those not used to its functional API, in addition to other conveniences (hopefully). **Some hooks have yet to be implemented**, such as the **supporting functions for tables, plots, etc, as methods**, so there may be times when you *need* to access Dear PyGui.
-
----
-
-**Q**: **What is the `px_patcher` module and what is it doing?**
-
-**A**: The `px_patcher` module **contains "functional equivalents" of functions found in Dear PyGui**'s `dearpygui` and/or `_dearpygui` modules. When Dear PyPixl is imported, **these functions replace the originals in those modules**. If using both Dear PyPixl and Dear PyGui, it is highly **recommended to import Dear PyPixl *before* importing and/or using Dear PyGui.**
-
-There are several reasons for a function to have been *patched*;
- - to throw proper exceptions in the event that calling the function could result in an irregular or misleading result (subsequent calls to `setup_dearpygui`, `create_viewport`, etc.)
- - the original implementation has a bug with a simple workaround
- - the original implementation is error-prone and/or does not play nice with Dear PyPixl (`run_callbacks`)
- - help Dear PyPixl expose critical features that are missing in Dear PyGui (application-level theme & font access, viewport screen state, etc.)
-
-The replacement function's `__signature__` should be identical to the signature of the original. The original function can be accessed on the replacement function's `__wrapped__` attribute, although there is often little reason to do so.
-
----
-
-**Q**: **Why do items created using Dear PyPixl classes have large integer ids?**
-
-**A**:  This is to **mitigate item id collisions between Dear PyGui-generated and Dear PyPixl-generated identifiers**. Due to a performance-related [issue](https://github.com/hoffstadt/DearPyGui/issues/2028), Dear PyPixl does not use Dear PyGui's `generate_uuid` function. Instead, it uses a `itertools.count` object with a high starting value, hence the large id values.
-
-Note that to further mitigate the risk of collisions, Dear PyPixl patches the `generate_uuid` functions in both the `dearpygui.dearpygui` and `dearpygui._dearpygui` modules *on import* so that they also use the aforementioned workaround .
+**A**: **Yes**, and you are **encouraged to do so**.
 
 ---
 
 **Q**: **I need to conform to an older version of Dear PyGui. Can I still use this?**
 
-**A**: **On paper? No**. The honest answer? ***Maybe***. Dear PyPixl will absolutely *not* work with Dear PyGui beta versions (pre-1.0). Not a chance. However, key areas in the framework were developed using Dear PyGui v1.8.0. A lot may work, even when using slightly older versions -- you are welcome to try.
+**A**: On paper? **No**. Dear PyPixl will absolutely *not* work with Dear PyGui beta versions (pre-1.0). Not a chance. However, key areas in the framework were developed using Dear PyGui v1.8.0. A lot may work, even when using slightly older versions -- you are welcome to try.
 
-With using older versions of Dear PyGui, you may get a warning when trying to import Dear PyPixl indicating that various file definitions do not match the installed Dear PyGui version. You may be able to update them to match your installed version via `python3 -m dearpypixl` (this requires that the parent process has write-access to Dear PyPixl's install directory). Note that this feature may be removed from Dear PyPixl without warning.
-
----
-
-**Q**: **Why do I get errors/weird behavior when using aliases (string IDs)?**
-
-**A**:  The short version; **Dear PyPixl cannot guarantee the support of aliases when interfacing with items via instances**. This is due to an implementation detail of Dear PyPixl's `AppItemType` class, from which all core framework objects are derived.
-
-The core framework was designed not to be not stand-alone and/or proprietary, but to allow users to pick-and-choose what they want to use from both Dear PyPixl and Dear PyGui without conflicts. To accomplish this, `AppItemType` inherits from the built-in `int` type -- the default item identifier type returned when creating items in Dear PyGui -- to allow it's instances to be used as direct item references when using Dear PyGui's API. As a consequence, this means that all of it's instances *must* be created using an integral value. When the `tag` keyword argument is passed to an item type's constructor (`__new__` in this case), that value is used as the "integral value" to create the instance.
-
-When creating item type instances, one of two things can happen; both the instance/interface and item are created, or
-just the instance (interfacing with an already existing item). When a user passes along a tag of type `str`, the constructor tries to work with it as best as it can. It first tries to fetch the numeric identifier associated with the alias using Dear PyGui's `get_alias_id` function. If successful (meaning that the alias is tied to both a numeric identifier AND an existing item), that value is used to create the instance. Otherwise, the instance is created using a newly-generated numeric identifier. The original `tag` value is then associated with the original `tag` value using the the `set_item_alias` function.
-
-That "weird behavior"? Previous experiments show that **Dear PyGui may choose to accept only one of the two identifiers as an item reference**. If the instance creates a new item, users may only be able to use that instance or an `int` of equal value to reference the item using Dear PyGui's API. The opposite may happen when the instance was made to interface with an already existing item. It's expected that Dear PyGui accepts integer identifiers as item references, so the latter has the added consequence of **borking almost every method available to the object**.
-
----
-
-**Q**: **Why does my program crash/error when creating creating [*i*] items?**
-
-**A**:  There is a known Dear PyPixl-related [issue]() where **it is possible to produce item id collisions under specific circumstances**. Other than that, the issue is **likely related to Dear PyGui when your program crashes without error** and *not* Dear PyPixl.
+With using older versions of Dear PyGui, you may want to update the type stubs. At the time of writing, this can be done via `python3 -m dearpypixl` shell command (this requires that the parent process has write-access to Dear PyPixl's install directory). Note that this feature may be removed from Dear PyPixl without warning.
 
