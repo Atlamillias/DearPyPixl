@@ -2,6 +2,7 @@
 # pyright:reportGeneralTypeIssues=information
 import sys
 import abc
+import time
 import types
 import array
 import ctypes
@@ -263,22 +264,6 @@ def create_function(name: str, args: Sequence[str], body: Sequence[str], return_
     fn = scope["__create_function__"](**locals)
     fn.__qualname__ = name
     return fn
-
-
-def cfunction(pfunction: 'ctypes._NamedFuncPointer', argtypes: tuple[Any, ...] = (), restype: Any = None):
-    """Cast a foreign C function pointer as the decorated function.
-
-    *argtypes* and *restypes* will be assigned to *pfunction*.
-    """
-    def func_prototype(fn_signature: Callable[_P, _T]) -> Callable[_P, _T]:
-        pfunction.argtypes = argtypes
-        pfunction.restype  = restype
-        functools.update_wrapper(pfunction, fn_signature, updated='')
-        return pfunction  # type: ignore
-    return func_prototype
-
-
-
 
 @typing.final
 class _MarkerType(typing.Protocol):
@@ -653,6 +638,20 @@ class Locker(typing.Generic[_T]):
 
 
 
+
+def cfunction(pfunction: 'ctypes._NamedFuncPointer', argtypes: tuple[Any, ...] = (), restype: Any = None):
+    """Cast a foreign C function pointer as the decorated function.
+
+    *argtypes* and *restypes* will be assigned to *pfunction*.
+    """
+    def func_prototype(fn_signature: Callable[_P, _T]) -> Callable[_P, _T]:
+        pfunction.argtypes = argtypes
+        pfunction.restype  = restype
+        functools.update_wrapper(pfunction, fn_signature, updated='')
+        return pfunction  # type: ignore
+    return func_prototype
+
+
 # used to cork c-extension memory leaks
 @cfunction(ctypes.pythonapi.Py_DecRef, (ctypes.py_object,))
 def Py_DECREF(_object: Any) -> None:
@@ -661,3 +660,22 @@ def Py_DECREF(_object: Any) -> None:
     An object may be deconstructed (garbage collected) when its
     reference count reaches zero.
     """
+
+
+
+
+def timed(fn: Callable[_P, _T]) -> Callable[_P, _T]:
+    """Decorator that times the execution of a function."""
+    @functools.wraps(fn)
+    def wrap(*args: _P.args, **kwds: _P.kwargs) -> _T:
+        ts = timer()
+        result = fn(*args, **kwds)
+        te = timer()
+        sig = ', '.join((
+            *(repr(v) for v in args),
+            *(f"{k}={v!r}" for k,v in kwds.items()),
+        ))
+        print(f'`{fn.__name__}({sig}) -> ...` took {te-ts} second(s)')
+        return result
+    timer = time.time
+    return wrap
