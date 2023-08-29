@@ -2,14 +2,11 @@
 # pyright:reportGeneralTypeIssues=information
 import sys
 import abc
-import enum
-import copy
 import types
 import array
 import ctypes
 import typing
 import inspect
-import builtins
 import itertools
 import functools
 import threading
@@ -18,54 +15,9 @@ from .common import Callable, Any, Iterable, Mapping, Sequence, MutableSequence,
 
 _T = typing.TypeVar("_T")
 _O = typing.TypeVar("_O")
-_F = typing.TypeVar("_F", bound=types.FunctionType)
-_N = typing.TypeVar("_N", float, int)
 _P = typing.ParamSpec("_P")
 
 _SENTINEL = object()
-
-
-
-
-
-SPECIAL_INTERNALS = (
-    '__abstractmethods__',
-    '__annotations__',
-    '__base__',
-    '__bases__',
-    '__basicsize__',
-    '__class__',
-    '__class_getitem__',
-    '__dict__',
-    '__dictoffset__',
-    '__doc__',
-    '__flags__',
-    '__init__',
-    '__itemsize__',
-    '__module__',
-    '__mro__',
-    '__name__',
-    '__new__',
-    '__qualname__',
-    '__slots__',
-    '__subclasses__',
-    '__subclasshook__',
-    '__text_signature__',
-    '__weakref__',
-    '__weakrefoffset__',
-)
-TYPING_INTERNALS = (
-    '__parameters__',
-    '__orig_bases__',
-    '__orig_class__',
-    '_is_protocol',
-    '_is_runtime_protocol',
-)
-ABSTRACT_INTERNALS = (
-    '__abstractmethod__',
-    '__abstractmethods__',
-    '_MutableMapping__marker',
-)
 
 
 
@@ -218,7 +170,6 @@ def is_mapping(o: Any):
     return False
 
 
-
 def dunders(tp: type[Any], *, excludes: Sequence[str] = (), excl_inherited: bool = False) -> list[str]:
     """Return the names of an object's dunder methods.
 
@@ -314,37 +265,6 @@ def create_function(name: str, args: Sequence[str], body: Sequence[str], return_
     return fn
 
 
-def copy_function(
-    fn      : _F,
-    /,
-    name    : str                   | None = None,
-    code    : types.CodeType        | None = None,
-    globals : dict[str, Any]        | None = None,
-    defaults: tuple[Any]            | None = None,
-    closure : tuple[types.CellType] | None = None,
-) -> _F:
-    """Return a copy of a function.
-
-    NOTE: This function may not work with non-standard Python
-    implementations.
-
-    A deepcopy operation is performed objects code objects and closures
-    before creating the function. Existing references are used for all
-    other objects.
-    """
-    new = types.FunctionType(
-        name=fn.__name__ if name is None else name,
-        globals=fn.__globals__ if globals is None else globals,
-        argdefs=fn.__defaults__ if defaults is None else defaults,
-        # Most users won't mess with these objects. The deepcopy op is
-        # for those that will.
-        code=copy.deepcopy(fn.__code__ if code is None else code),
-        closure=copy.deepcopy(fn.__closure__ if closure is None else closure),
-    )
-    new.__dict__.update(fn.__dict__)
-    return new
-
-
 def cfunction(pfunction: 'ctypes._NamedFuncPointer', argtypes: tuple[Any, ...] = (), restype: Any = None):
     """Cast a foreign C function pointer as the decorated function.
 
@@ -356,6 +276,7 @@ def cfunction(pfunction: 'ctypes._NamedFuncPointer', argtypes: tuple[Any, ...] =
         functools.update_wrapper(pfunction, fn_signature, updated='')
         return pfunction  # type: ignore
     return func_prototype
+
 
 
 
@@ -468,144 +389,6 @@ def frozen_namespace(cls: type[_T]) -> type[_T]:
         }
     )
 
-
-
-
-def resolve_annotation(annotation: Any, globals: Mapping[str, Any], trim: bool = True, *, use_typing: bool = True):
-    """Evaluate a type hint within a global scope.
-
-    Args:
-        * annotation: A `str` instance or class object to evaluate.
-
-        * globals: The namespace to use for the evaluation.
-
-        * trim: If `True`, the root type of the annotation will be returned.
-        When `False`, the entire evaluated annotation is returned.
-
-        * use_typing: If `True`, the `typing` module will be used before
-        *globals* when evaluating parts of the annotation.
-
-
-    If the annotation is not a string, it is returned as-is without
-    modification.
-    """
-    # None is the only object usable as a type hint that is not a class
-    # or "special form". PEP-0484 states that using None as an annotation
-    # is equivelent to `type(None)`. This function always evals None as
-    # just None, since `NoneType` is not available without importing `types`
-    # or a pre-existing alias to `NoneType`.
-    if is_instance(annotation, str):
-        annotation = typing.ForwardRef(annotation, is_argument=False, is_class=True)
-        annotation = typing._eval_type(
-            annotation,
-            globals,
-            typing.__dict__ if use_typing else None
-        )
-    if annotation is type(None):
-        return annotation
-    return typing._strip_annotations(annotation) if trim else annotation
-
-
-def unresolve_annotation(annotation: Any, globals: Mapping[str, Any]):
-    """Return a annotation as if it were read as Python source code.
-
-    Args:
-        * annotation: A `str` instance or class object to evaluate.
-
-
-    If the annotation is already a string, it is returned as-is without
-    modification.
-
-    Depending on the Python version used, the returned annotation may not be
-    proper source code. This is because older versions of Python may lack
-    "quality of life" typing changes. For example, `dict` annotations in
-    Python 3.6 require using `typing.Dict`.
-
-    When (un)resolving the annotation, `Union` and `Optional` annotations are
-    not formatted using the union (`|`) operator.
-
-    The `exec` and/or `resolve_annotations` can reverse this process given
-    the proper globals and locals.
-    """
-    if not is_instance(annotation, str):
-        param = inspect.Parameter(
-            "_",
-            inspect.Parameter.POSITIONAL_ONLY,
-            annotation=annotation
-        )
-        annotation = str(param).split("_: ", maxsplit=1)[-1]
-
-    if not globals:
-        globals = {}
-
-    if '__name__' in globals and globals['__name__'] in annotation:
-        annotation = annotation.replace(f"{globals['__name__']}.", '')
-    elif not (annotation in globals or annotation in builtins.__dict__):
-        anno = ''
-        for part in reversed(annotation.split(".")):
-            if part in globals:
-                annotation = part if not anno else f'{part}.{anno}'
-                break
-            anno = part if not anno else f'{part}.{anno}'
-        else:
-            raise RuntimeError(
-                f'could not find annotation reference in globals.'
-            )
-    return annotation
-
-
-
-
-def _get_typing_internals():
-    import typing, collections.abc
-
-    target_modules = (typing.__name__, collections.abc.__name__,)
-
-    dunders = set()
-    type_members = set(itertools.chain(object.__dict__.keys(), type.__dict__.keys()))  # type: ignore
-    for obj in typing.__dict__.values():
-        try:
-            if obj.__module__ not in target_modules:
-                continue
-        except AttributeError:
-            continue
-
-        members = dir(obj)
-        dunders.update(
-            m for m in members
-            if m not in type_members
-            and m.startswith("_")
-            and not m.endswith("__")
-        )
-    return tuple(sorted(dunders))
-
-
-
-
-
-def protocol_members(cls):
-    """Return a protocol's structural members.
-
-    "Structural" members include the protocol's `__dict__` keys and class-level
-    annotations.
-
-    Special attribute names such as those of significant importance to the
-    Python interpreter, typing (module), or are considered Python "implementation
-    detail"s are excluded.
-    """
-    targets = set()
-    internals = (SPECIAL_INTERNALS, TYPING_INTERNALS, ABSTRACT_INTERNALS)
-    for base in cls.__mro__[:-1]:
-        if base.__name__ in ('Protocol', 'Generic'):
-            continue
-
-        for member in itertools.chain(base.__dict__, getattr(base, '__annotations__', {})):
-            if (
-                not member.startswith('_abc_')
-                and all(member not in c for c in internals)
-            ):
-                targets.add(member)
-    return targets
 
 
 
@@ -830,6 +613,12 @@ class simpleproperty(_property, typing.Generic[_T]):
         return copy
 
 
+
+
+# reentrant locks work better with debuggers
+# XXX: BEWARE -- this may mask deadlocks in release builds!
+Lock = threading.Lock if not sys.gettrace() else threading.RLock
+
 class Locker(typing.Generic[_T]):
     """A mutex-like object that encapsulates a value that is to be managed
     only between select callables.
@@ -862,48 +651,6 @@ class Locker(typing.Generic[_T]):
 
     __call__ = bind
 
-
-
-
-# reentrant locks work better with debuggers
-# XXX: BEWARE -- this may mask deadlocks in release builds!
-Lock = threading.Lock if not sys.gettrace() else threading.RLock
-
-
-class Py_TPFLAG(enum.IntFlag):
-    HAVE_FINALIZE            = 1 <<  0
-    STATIC_BUILTIN           = 1 <<  1   # undocumented
-    MANAGED_WEAKREF          = 1 <<  3
-    MANAGED_DICT             = 1 <<  4
-    SEQUENCE                 = 1 <<  5
-    MAPPING                  = 1 <<  6
-    DISALLOW_INSTANTIATION   = 1 <<  7
-    IMMUTABLETYPE            = 1 <<  8
-    HEAPTYPE                 = 1 <<  9
-    BASETYPE                 = 1 << 10
-    HAVE_VECTORCALL          = 1 << 11
-    READY                    = 1 << 12
-    READYING                 = 1 << 13
-    HAVE_GC                  = 1 << 14
-    HAVE_STACKLESS_EXTENSION = 1 << 15
-    METHOD_DESCRIPTOR        = 1 << 17
-    HAVE_VERSION_TAG         = 1 << 18
-    VALID_VERSION_TAG        = 1 << 19
-    IS_ABSTRACT              = 1 << 20
-    MATCH_SELF               = 1 << 22  # undocumented
-    ITEMS_AT_END             = 1 << 23
-    LONG_SUBCLASS            = 1 << 24
-    LIST_SUBCLASS            = 1 << 25
-    TUPLE_SUBCLASS           = 1 << 26
-    BYTES_SUBCLASS           = 1 << 27
-    UNICODE_SUBCLASS         = 1 << 28
-    DICT_SUBCLASS            = 1 << 29
-    BASE_EXC_SUBCLASS        = 1 << 30
-    TYPE_SUBCLASS            = 1 << 31
-
-    @classmethod
-    def get_tp_flags(cls, tp: type) -> tuple['Py_TPFLAG', ...]:
-        return tuple(f for f in cls.__members__.values() if tp.__flags__ & f)
 
 
 # used to cork c-extension memory leaks
