@@ -469,7 +469,7 @@ class Callstack(Callback):
             # Creating a shallow-copy of the queue is the easiest way to make
             # this op thread-safe while solving key problems. Not the most
             # performant, though...
-            callbacks = [cb for cb in self.callbacks]
+            callbacks = self.callbacks.copy()
             sender, app_data, user_data = [  # type: ignore
                 passed_arg if ovrrd_arg is _empty else ovrrd_arg
                 for passed_arg, ovrrd_arg in zip((sender, app_data, user_data), self._call_args)
