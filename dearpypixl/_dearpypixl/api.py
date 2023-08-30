@@ -644,6 +644,77 @@ class Viewport(common.ItemInterface, str, metaclass=_ViewportMeta):
     """Thread-safe, multi-paradigm "viewport" API for Dear PyGui
     and Dear PyPixl.
 
+    Args:
+        * title: Text visible in the viewport's title bar.
+
+        * small_icon: The icon visible in the top-left corner of the
+        viewport's title bar.
+
+        * large_icon: The icon visible on the operating system taskbar.
+
+        * width: The viewport's horizontal size in non-fractional pixels.
+        Note that this value is interpreted as unsigned by Dear PyGui's
+        parser.
+
+        * height: The viewport's vertical size in non-fractional pixels.
+        Note that this value is interpreted as unsigned by Dear PyGui's
+        parser.
+
+        * x_pos: The horizontal position of the viewport's top-left corner
+        as a non-fractional pixel value.
+
+        * y_pos: The vertical position of the viewport's top-left corner
+        as a non-fractional pixel value.
+
+        * min_width: Lower-bound width clamp.
+
+        * max_width: Upper-bound width clamp.
+
+        * min_height: Lower-bound height clamp.
+
+        * max_height: Upper-bound height clamp.
+
+        * resizable: If True (default), the viewport is made resizable
+        via user interaction. It can be programatically sized regardless
+        of this value.
+
+        * vsync: If True (default), the viewport's frame rate will be
+        synchronized with the active display's refresh rate.
+
+        * always_on_top: If True, the viewport appears above most other
+        application windows.
+
+        * decorated: If False, the viewport's border and title bar will
+        not be rendered.
+
+        * clear_color: A color value to paint the viewport's empty space.
+        Does not work on Windows.
+
+        * disable_close: If True, disables the functionality of the
+        viewport's close button. The visual state of the button is not
+        changed.
+
+        * primary_window: Reference to a `mvWindowAppItem` item that will
+        be used to fill the viewport. Can be unset by setting to None.
+
+        * callback: A Dear PyGui-callable callback that will run whenever
+        the viewport is resized via user interaction. Can be unset by
+        setting to None.
+
+        * user_data: Can be set as any value or reference, stored as-is.
+        If *callback* is specified, Dear PyGui will send this as its' third
+        positional argument (if able).
+
+    Note that icon-related settings cannot be updated once the viewport
+    is visible, although no error is thrown when attempting to do so.
+
+    The coupling of *primary_window*, *callback* and *user_data* within
+    the viewport's configuration is unique to Dear PyPixl, and cannot
+    be updated using `dearpygui.configure_viewport`. Dear PyGui's
+    `set_primary_window` and `set_viewport_resize_callback` functions
+    can still be used to update these settings without dirtying
+    Dear PyPixl's application state.
+
     Using Dear PyGui's API over this API will not invalidate any
     settings or states, including those uniquely exposed through
     Dear PyPixl.
@@ -781,80 +852,7 @@ class Viewport(common.ItemInterface, str, metaclass=_ViewportMeta):
     @staticmethod
     @__vp_config
     def configure(locker: Locker, /, **kwargs: Unpack[_ViewportConfiguration]):
-        """Update the viewport's settings.
-
-        Args:
-            * title: Text visible in the viewport's title bar.
-
-            * small_icon: The icon visible in the top-left corner of the
-            viewport's title bar.
-
-            * large_icon: The icon visible on the operating system taskbar.
-
-            * width: The viewport's horizontal size in non-fractional pixels.
-            Note that this value is interpreted as unsigned by Dear PyGui's
-            parser.
-
-            * height: The viewport's vertical size in non-fractional pixels.
-            Note that this value is interpreted as unsigned by Dear PyGui's
-            parser.
-
-            * x_pos: The horizontal position of the viewport's top-left corner
-            as a non-fractional pixel value.
-
-            * y_pos: The vertical position of the viewport's top-left corner
-            as a non-fractional pixel value.
-
-            * min_width: Lower-bound width clamp.
-
-            * max_width: Upper-bound width clamp.
-
-            * min_height: Lower-bound height clamp.
-
-            * max_height: Upper-bound height clamp.
-
-            * resizable: If True (default), the viewport is made resizable
-            via user interaction. It can be programatically sized regardless
-            of this value.
-
-            * vsync: If True (default), the viewport's frame rate will be
-            synchronized with the active display's refresh rate.
-
-            * always_on_top: If True, the viewport appears above most other
-            application windows.
-
-            * decorated: If False, the viewport's border and title bar will
-            not be rendered.
-
-            * clear_color: A color value to paint the viewport's empty space.
-            Does not work on Windows.
-
-            * disable_close: If True, disables the functionality of the
-            viewport's close button. The visual state of the button is not
-            changed.
-
-            * primary_window: Reference to a `mvWindowAppItem` item that will
-            be used to fill the viewport. Can be unset by setting to None.
-
-            * callback: A Dear PyGui-callable callback that will run whenever
-            the viewport is resized via user interaction. Can be unset by
-            setting to None.
-
-            * user_data: Can be set as any value or reference, stored as-is.
-            If *callback* is specified, Dear PyGui will send this as its' third
-            positional argument (if able).
-
-
-        Note that icon-related settings cannot be updated once the viewport
-        is visible, although no error is thrown when attempting to do so.
-
-        The coupling of *primary_window*, *callback* and *user_data* within
-        the viewport's configuration is unique to Dear PyPixl, and cannot
-        be updated using `dearpygui.configure_viewport`. Dear PyGui's
-        `set_primary_window` and `set_viewport_resize_callback` functions
-        can still be used to update these settings without dirtying
-        Dear PyPixl's application state.
-        """
+        """Update the viewport's settings."""
         with locker:
             states = locker.value
 
@@ -1054,30 +1052,61 @@ from dearpygui._dearpygui import (
 
 
 class _RuntimeConfiguration(TypedDict):
-    frame_rate_limit: int
+    target_frame_rate: int
     clamp_frame_rate: bool
     update_interval : float
 
+class _RuntimeState(common.ItemStateDict):
+    render_interval   : float
+    frame_rate_clamped: bool
+
 
 class _RuntimeMeta(common.ItemInterfaceMeta):
-    frame_rate_limit: Property[int | None] = common.ItemConfig()
-    clamp_frame_rate: Property[bool]       = common.ItemConfig()
-    update_interval : Property[float]      = common.ItemConfig()
+    target_frame_rate: Property[float | None] = common.ItemConfig()
+    clamp_frame_rate : Property[bool]         = common.ItemConfig()
+    update_interval  : Property[float]        = common.ItemConfig()
+
+    is_ok                : Property[bool | None]  = common.ItemState("ok")
+    is_frame_rate_clamped: Property[bool | None]  = common.ItemState("frame_rate_clamped")
+    render_interval      : Property[float | None] = common.ItemState()
 
 
 @_clear_lockers
 class Runtime(common.ItemInterface, metaclass=_RuntimeMeta):
-    frame_rate_limit = cast(int | None, _RuntimeMeta.frame_rate_limit)
-    clamp_frame_rate = cast(bool, _RuntimeMeta.clamp_frame_rate)
-    update_interval  = cast(float, _RuntimeMeta.update_interval)
+    """Thread-safe, multi-paradigm runtime and task manager for
+    Dear PyGui and Dear PyPixl.
+
+    Args:
+        * target_frame_rate: The target number of frames to render
+        per second when *clamp_frame_rate* is True and when this
+        value is not None. Negative and false-like values evaluate
+        to None. Float values are set with a precision of 3.
+
+        * clamp_frame_rate: When True, clamps the number of frames
+        rendered per second to *target_frame_rate* (when not None).
+
+        * update_interval: Fixed time step in fractional milliseconds
+        (min 0.1) used for executing tasks/updates in `Runtime.queue`
+        while running. Negative and false-like values evaluate to 0.1.
+        Float values are set with a precision of 3.
+
+    """
+    target_frame_rate = cast(float | None, _RuntimeMeta.target_frame_rate)
+    clamp_frame_rate  = cast(bool, _RuntimeMeta.clamp_frame_rate)
+    update_interval   = cast(float, _RuntimeMeta.update_interval)
+
+    is_ok                 = cast(bool, _RuntimeMeta.is_ok)
+    is_frame_rate_clamped = cast(bool, _RuntimeMeta.is_frame_rate_clamped)
+    render_interval       = cast(float, _RuntimeMeta.render_interval)
+
 
     __slots__ = ()
 
     __rt_config = Locker({
-        "update_interval" : 2.0,
-        "render_interval" : 0.0,
-        "frame_rate_limit": None,
-        "clamp_frame_rate": False,
+        "update_interval"  : 2.0,
+        "render_interval"  : 0.0,
+        "target_frame_rate": None,
+        "clamp_frame_rate" : False,
     })
     __rt_callbacks = Locker({})
 
@@ -1115,6 +1144,13 @@ class Runtime(common.ItemInterface, metaclass=_RuntimeMeta):
             * user_data: Send as the third positional argument to the
             callback (if able).
         """
+        # Unlike `callback_queue`, I can easily see users doing
+        # this first. It's not likely to be overused once the
+        # runtime has started, so adding a check here won't hurt
+        # anything performance-wise.
+        if not Application.state()['ok']:
+            Application()
+
         def capture_callback(callback: _T) -> _T:
             with locker:
                 _runtime_set_frame_callback(frame, callback, user_data=user_data)  # type: ignore
@@ -1129,20 +1165,31 @@ class Runtime(common.ItemInterface, metaclass=_RuntimeMeta):
         return capture_callback(callback)
 
     @staticmethod
-    def callback_queue():
-        """Return Dear PyGui's callback queue.
+    def callback_queue() -> Sequence[tuple[Callable | None, Any, Any, Any]] | None:
+        """Return Dear PyGui's callback queue, or None if the
+        `manual_callback_management` application setting is not True.
 
-        Raises `SystemError` if the the `manual_callback_management`
-        application setting is not True.
+        This is mainly used to process Dear PyGui's task queue when
+        the `manual_callback_management` application setting is True.
+        `Runtime`s `.start` method does this automatically, so using
+        this method is only necessary when building the main event loop
+        manually, and only when `manual_callback_management` is True.
         """
+        # This can cause a segfault without creating GPU context
+        # first. There's already a ton of things that will do that
+        # automatically; is this really going to be the first call
+        # a user will make...? Not enough to warrant a check. Even
+        # less so, since this is executed in the runtime's event
+        # loop (performance).
         return _dearpygui.get_callback_queue()
 
-    # XXX: `run_callbacks` is one of very few functions implemented in Dear
-    # PyGui's public module. It's also *poorly* implemented -- un-typed, no
-    # docstring, and the execution does not consider several factors.
+    # XXX: `run_callbacks` is one of very few functions implemented
+    # in Dear PyGui's public module. It's also *poorly* implemented.
+    # Un-typed, no docstring, and the execution does not consider
+    # several factors.
     @staticmethod
     @_dearpygui_override(dearpygui.run_callbacks)
-    def run_callback_queue(queue: Sequence[tuple[Callable | None, Any, Any, Any]]) -> None:
+    def run_callback_queue(queue: Sequence[tuple[Callable | None, Any, Any, Any]] | None) -> None:
         """Process all callbacks in the given queue.
 
         Args:
@@ -1150,13 +1197,12 @@ class Runtime(common.ItemInterface, metaclass=_RuntimeMeta):
             three positional arguments to pass to it. Argument(s) will
             not be passed to the callback if it cannot accept them.
 
+        This is mainly used to process Dear PyGui's task queue when
+        the `manual_callback_management` application setting is True.
+        `Runtime`s `.start` method does this automatically, so using
+        this method is only necessary when building the main event loop
+        manually, and only when `manual_callback_management` is True.
 
-        When the `manual_callback_management` application setting is
-        True while building/starting the runtime event loop manually, this
-        function should be called in the runtime event loop -- passing the
-        return of `Runtime.callback_queue` or `dearpygui.get_callback_queue`
-        as *queue*. This is automatically done when starting the runtime
-        through `Runtime.start`.
         """
         if queue is None or not len(queue):  # custom queues may not be falsy when empty
             return
@@ -1189,8 +1235,8 @@ class Runtime(common.ItemInterface, metaclass=_RuntimeMeta):
 
     @staticmethod
     def time_elapsed():
-        """Return the number of seconds elapsed since the runtime was
-        started.
+        """Return the number of fractional seconds elapsed since the
+        runtime was started.
         """
         return _dearpygui.get_total_time()
 
@@ -1232,19 +1278,22 @@ class Runtime(common.ItemInterface, metaclass=_RuntimeMeta):
         """
         return _dearpygui.is_key_released(key)
 
-    # Trying to avoid wrapping these; need to be as fast as
+    # Trying to avoid wrapping these; they need to be as fast as
     # possible.
-    # NOTE: The `staticmethod` wrappers won't stick around long. They
-    #       don't have `__get__`, and therefore cannot be bound. Python
-    #       knows this and will automatically unwrap them (this behavior
-    #       is known but not publicly documented).
+    @staticmethod
+    def render_frame(): ...
+    @staticmethod
+    def is_running() -> bool: ...
+    # NOTE: The `staticmethod` wrappers won't stick around long. C-functions
+    #       don't have `__get__`, and therefore cannot be bound. Python knows
+    #       this and will automatically unwrap them (this behavior is known
+    #       but not publicly documented).
     render_frame = staticmethod(_dearpygui.render_dearpygui_frame)
     is_running   = final(staticmethod(_dearpygui.is_dearpygui_running))
 
     @staticmethod
     def prepare():
-        """Complete any remaining setup necessary before starting
-        the runtime.
+        """Complete any remaining setup before starting the runtime.
         """
         Application.create_context()
         if not Application.state()['ok']:
@@ -1279,34 +1328,63 @@ class Runtime(common.ItemInterface, metaclass=_RuntimeMeta):
         In addition, this function is prepared to handle Dear PyGui's
         event queue when the `manual_callback_management` application
         setting is True without any additional input from the user.
+
+
+        The event loop implementation uses a synchronized fixed time
+        step to improve consistency when ran on machines of varying
+        hardware. This means that the execution of tasks pushed onto
+        the runtime's queue (class-bound `Runtime.queue`) is decoupled
+        from rendering, and that pushing a task onto the queue does not
+        mean it will run before rendering the next frame.
+
+        The *update_interval* `Runtime` setting setting is used control
+        the number of tasks executed over time. For example, a value
+        of 2.0 means that every task executed will "consume" 2.0
+        milliseconds of real-time "produced" by the renderer (Dear PyGui),
+        regardless of how long the task actually takes to run.
         """
         Runtime.prepare()
 
+        # The lock never held for access here. Worst-case is it
+        # fixes itself in a frame.
         rt_config    = Runtime.configure.__self__.value
         # XXX: no hot-swapping
         is_running   = Runtime.is_running
         render_frame = cls.render_frame
         queue        = cls.queue
 
-        # `Queue.get` raises `Queue.Empty` when it's- well, empty. It
-        # can be extremely punishing performance-wise when it's caught
-        # repeatedly. Since a fixed-time step is used to control tasks,
-        # this filler function can be looped without stalling the render.
-        def recursive_task(_put_nowait=queue.put):
-            # TODO: Maybe also do something useful here?
-            _put_nowait(recursive_task)
+        def perf_counter_ms(_counter = time.perf_counter):
+            return 1000.0 * _counter()
+
+        def trunc_6f(f: float, _tolerance = 10**6):  # pre-computed precision
+            # Prevents floating point error micro-leaks, and is
+            # faster than `round(f, 6)`, `format(f, '6f')`, etc.
+            return int(f * _tolerance) / _tolerance
+
+        # `Queue.get` raises `Queue.Empty` when it's - well, empty. It
+        # can be extremely punishing performance-wise when it's raised
+        # repeatedly. It's "suppressed" by adding the below function to
+        # the queue.
+        # It's probably for the best to not handle exceptions here
+        # anyway to avoid unintentionally handling errors thrown from
+        # user code.
+        def recursive_task(_put=queue.put):
+            # TODO: Maybe do something useful here. Debugging? Cleanup?
+            # DPG callbacks tend to leak `app_data` and `user_data` refs
+            # like `None`, so it's not like there isn't stuff to do.
+            _put(recursive_task)
 
         queue.put(recursive_task)
 
-        def perf_counter(_counter=time.perf_counter):
-            return 1000.0 * _counter()  # ms
+        t_updates = 0.0
+        ts_last_update = ts_last_render = perf_counter_ms()
 
-        t_updates = 0
-        ts_last_update = ts_last_render = perf_counter()
+        render_frame()   # initializes DPG item states
 
-        render_frame()   # initialize item states
+        # TODO: isolate ticks and rendering into separate methods
 
         if Application.configuration()['manual_callback_management']:
+            # "debugging" scenario
             get_queue = Runtime.callback_queue
             run_queue = cls.run_callback_queue
 
@@ -1314,33 +1392,34 @@ class Runtime(common.ItemInterface, metaclass=_RuntimeMeta):
 
                 run_queue(get_queue())
 
-                ts_this_update  = perf_counter()
+                ts_this_update  = perf_counter_ms()
                 update_interval = rt_config['update_interval']
-                t_updates += round(ts_this_update - ts_last_update, 3)
+                t_updates = trunc_6f(t_updates + ts_this_update - ts_last_update)
                 ts_last_update = ts_this_update
                 while t_updates >= update_interval:
                     queue.get_nowait()()
                     queue.task_done()
                     t_updates -= update_interval
 
-                ts_this_render  = perf_counter()
+                ts_this_render = perf_counter_ms()
                 if ts_this_render - ts_last_render >= rt_config['render_interval']:
                     ts_last_render = ts_this_render
                     render_frame()
 
         else:
+
             while is_running():
 
-                ts_this_update  = perf_counter()
+                ts_this_update  = perf_counter_ms()
                 update_interval = rt_config['update_interval']
-                t_updates += round(ts_this_update - ts_last_update, 3)
+                t_updates = trunc_6f(t_updates + ts_this_update - ts_last_update)
                 ts_last_update = ts_this_update
                 while t_updates >= update_interval:
                     queue.get_nowait()()
                     queue.task_done()
                     t_updates -= update_interval
 
-                ts_this_render  = perf_counter()
+                ts_this_render  = perf_counter_ms()
                 if ts_this_render - ts_last_render >= rt_config['render_interval']:
                     ts_last_render = ts_this_render
                     render_frame()
@@ -1356,36 +1435,59 @@ class Runtime(common.ItemInterface, metaclass=_RuntimeMeta):
 
     @overload
     @staticmethod
-    def configure(frame_rate_limit: int = ..., clamp_frame_rate: bool = ...): ...  # type: ignore
+    def configure(*, target_frame_rate: int | None = ..., clamp_frame_rate: bool = ..., update_interval: float = ...): ...  # type: ignore
     @staticmethod
-    @__rt_config  # type: ignore
-    def configure(locker, **kwargs):  # type: ignore
-        # This doesn't really need to be atomic. Worst-case is
-        # it'll fix itself in a frame.
-        config = locker.value
+    @__rt_config
+    def configure(locker, **kwargs):
+        with locker:
+            config = locker.value
 
-        config['update_interval'] = kwargs.get('update_interval', config['update_interval'])
+            config['update_interval'] = int(
+                kwargs.get('update_interval', config['update_interval']) * (10 ** 3)
+            ) / (10 ** 3)
 
-        fr_limit = config['frame_rate_limit']
-        if 'frame_rate_limit' in kwargs:
-            fr_limit = kwargs['frame_rate_limit']
-            if not fr_limit:
-                fr_limit = None
+            fr_limit = config['target_frame_rate']
+            if 'target_frame_rate' in kwargs:
+                fr_limit = kwargs['target_frame_rate']
+                if not fr_limit:
+                    fr_limit = None
+                else:
+                    fr_limit = max(round(float(fr_limit), 1), 0) or None
+                config['target_frame_rate'] = fr_limit
+            fr_clamp = config['clamp_frame_rate']
+            if 'clamp_frame_rate' in kwargs:
+                fr_clamp = config['clamp_frame_rate'] = bool(kwargs['clamp_frame_rate'])
+
+            if fr_limit and fr_clamp:
+                config['render_interval'] = int(
+                    (1000.0 / config['target_frame_rate'] * (10 ** 3))
+                ) / (10 ** 3)
             else:
-                fr_limit = max(int(fr_limit), 0)
-            config['frame_rate_limit'] = fr_limit
-        fr_clamp = config['clamp_frame_rate']
-        if 'clamp_frame_rate' in kwargs:
-            fr_clamp = config['clamp_frame_rate'] = bool(kwargs['clamp_frame_rate'])
-        if fr_limit and fr_clamp:
-            config['render_interval'] = round(1000.0 / config['frame_rate_limit'], 1)
+                config['render_interval'] = 0.0
 
     @staticmethod
     @__rt_config
     def configuration(locker) -> _RuntimeConfiguration:
-        config = locker.value.copy()
-        del config['render_interval']
-        return config
+        with locker:
+            config = locker.value.copy()
+            del config['render_interval']
+            return config
+
+    @staticmethod
+    def information():
+        return common.ITEM_INFO_TEMPLATE.copy()
+
+    @staticmethod
+    @__rt_config
+    def state(locker) -> _RuntimeState:
+        state: Any = common.ITEM_STATE_TEMPLATE.copy()
+        state['ok'] = True if Runtime.is_running() else False
+        with locker:
+            state['frame_rate_clamped'] = bool(
+                locker.value['target_frame_rate'] and locker.value['clamp_frame_rate']
+            )
+            state['render_interval'] = locker.value['render_interval']
+            return state
 
 
 
