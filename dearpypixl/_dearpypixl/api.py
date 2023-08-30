@@ -69,6 +69,7 @@ Glossary:
 import os
 import sys
 import time
+import math
 import types
 import inspect
 import functools
@@ -1080,16 +1081,16 @@ class Runtime(common.ItemInterface, metaclass=_RuntimeMeta):
         * target_frame_rate: The target number of frames to render
         per second when *clamp_frame_rate* is True and when this
         value is not None. Negative and false-like values evaluate
-        to None. Float values are set with a precision of 3.
+        to None.
 
         * clamp_frame_rate: When True, clamps the number of frames
-        rendered per second to *target_frame_rate* (when not None).
+        rendered per second to *target_frame_rate* (when not None)
+        within ~1 frame.
 
         * update_interval: Fixed time step in fractional milliseconds
         (min 0.1) used for executing tasks/updates in `Runtime.queue`
         while running. Negative and false-like values evaluate to 0.1.
         Float values are set with a precision of 3.
-
     """
     target_frame_rate = cast(float | None, _RuntimeMeta.target_frame_rate)
     clamp_frame_rate  = cast(bool, _RuntimeMeta.clamp_frame_rate)
@@ -1452,16 +1453,18 @@ class Runtime(common.ItemInterface, metaclass=_RuntimeMeta):
                 if not fr_limit:
                     fr_limit = None
                 else:
-                    fr_limit = max(round(float(fr_limit), 1), 0) or None
+                    fr_limit = max(float(fr_limit), 0.0) or None
                 config['target_frame_rate'] = fr_limit
             fr_clamp = config['clamp_frame_rate']
             if 'clamp_frame_rate' in kwargs:
-                fr_clamp = config['clamp_frame_rate'] = bool(kwargs['clamp_frame_rate'])
+                fr_clamp = config['clamp_frame_rate'] = bool(
+                    kwargs['clamp_frame_rate']
+                )
 
             if fr_limit and fr_clamp:
-                config['render_interval'] = int(
-                    (1000.0 / config['target_frame_rate'] * (10 ** 3))
-                ) / (10 ** 3)
+                # This simplifies comparisons/math in the event loop.
+                # Humans can't percieve a millisecond of time, anyway.
+                config['render_interval'] = math.floor(1000.0 / config['target_frame_rate'])
             else:
                 config['render_interval'] = 0.0
 
