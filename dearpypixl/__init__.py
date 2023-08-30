@@ -5,8 +5,5 @@ from ._dearpypixl import (
     common as typing,
     interface,
 )
-from ._dearpypixl.api import Application, Runtime, Viewport
+from ._dearpypixl.api import Application, Runtime, Registry, Viewport
 from .items import *
-
-
-
