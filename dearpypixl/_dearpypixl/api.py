@@ -1305,7 +1305,7 @@ class Runtime(common.ItemInterface, metaclass=_RuntimeMeta):
         if not vp_state['visible']:
             Viewport.show()
 
-    queue: Queue[Callable] = Queue()
+    queue: Queue[Callable[[], Any]] = Queue()
 
     @classmethod
     def start(cls, *args, **kwargs):
