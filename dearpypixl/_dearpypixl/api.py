@@ -68,12 +68,15 @@ Glossary:
 # pyright: reportTypedDictNotRequiredAccess=none
 import os
 import sys
+import time
 import types
 import inspect
 import functools
 import itertools  # type: ignore
 import contextlib
 import importlib.metadata
+from queue import Queue
+from uuid import uuid4
 from dearpygui import dearpygui, _dearpygui
 from . import common, constants, tools, errors, parsing
 from .common import (
@@ -89,6 +92,7 @@ from .common import (
     Unpack,
     TypeVar,
     Mapping,
+    MappingProxy,
     MutableMapping,
     ParamSpec,
     TypedDict,
@@ -545,34 +549,6 @@ class Application(common.ItemInterface, int, metaclass=_ApplicationMeta):
             * text: A string value to set.
         """
         _dearpygui.set_clipboard_text(text)
-
-    @staticmethod
-    def is_key_down(key: int):
-        """Return True if a key is down, otherwise return False.
-
-        Args:
-            * key: Key event code to query.
-        """
-        return _dearpygui.is_key_down(key)
-
-    @staticmethod
-    def is_key_pressed(key: int):
-        """Return True if a key is pressed, otherwise return False.
-
-        Args:
-            * key: Key event code to query.
-        """
-        return _dearpygui.is_key_pressed(key)
-
-    @staticmethod
-    def is_key_released(key: int):
-        """Return True if a key is not down or pressed, otherwise
-        return False.
-
-        Args:
-            * key: Key event code to query.
-        """
-        return _dearpygui.is_key_released(key)
 
     @staticmethod
     def platform():
@@ -1076,10 +1052,33 @@ from dearpygui._dearpygui import (
     set_frame_callback as _runtime_set_frame_callback,
 )
 
+
+class _RuntimeConfiguration(TypedDict):
+    frame_rate_limit: int
+    clamp_frame_rate: bool
+    update_interval : float
+
+
+class _RuntimeMeta(common.ItemInterfaceMeta):
+    frame_rate_limit: Property[int | None] = common.ItemConfig()
+    clamp_frame_rate: Property[bool]       = common.ItemConfig()
+    update_interval : Property[float]      = common.ItemConfig()
+
+
 @_clear_lockers
-class Runtime:
+class Runtime(common.ItemInterface, metaclass=_RuntimeMeta):
+    frame_rate_limit = cast(int | None, _RuntimeMeta.frame_rate_limit)
+    clamp_frame_rate = cast(bool, _RuntimeMeta.clamp_frame_rate)
+    update_interval  = cast(float, _RuntimeMeta.update_interval)
+
     __slots__ = ()
 
+    __rt_config = Locker({
+        "update_interval" : 2.0,
+        "render_interval" : 0.0,
+        "frame_rate_limit": None,
+        "clamp_frame_rate": False,
+    })
     __rt_callbacks = Locker({})
 
     frame_callbacks: Mapping[int, Callable] = types.MappingProxyType(__rt_callbacks.value)
@@ -1129,13 +1128,14 @@ class Runtime:
             return capture_callback
         return capture_callback(callback)
 
-    # trying to avoid wrapping these; need to be as fast as possible
-    render_frame   = staticmethod(_dearpygui.render_dearpygui_frame)
-    is_running     = final(staticmethod(_dearpygui.is_dearpygui_running))
-    callback_queue = staticmethod(_dearpygui.get_callback_queue)
-    time_elapsed   = staticmethod(_dearpygui.get_total_time)
-    frame_count    = staticmethod(_dearpygui.get_frame_count)
-    frame_rate     = staticmethod(_dearpygui.get_frame_rate)
+    @staticmethod
+    def callback_queue():
+        """Return Dear PyGui's callback queue.
+
+        Raises `SystemError` if the the `manual_callback_management`
+        application setting is not True.
+        """
+        return _dearpygui.get_callback_queue()
 
     # XXX: `run_callbacks` is one of very few functions implemented in Dear
     # PyGui's public module. It's also *poorly* implemented -- un-typed, no
@@ -1188,6 +1188,60 @@ class Runtime:
             callback(*args[:param_count])  # type:ignore
 
     @staticmethod
+    def time_elapsed():
+        """Return the number of seconds elapsed since the runtime was
+        started.
+        """
+        return _dearpygui.get_total_time()
+
+    @staticmethod
+    def frame_count():
+        """Return the number of frames rendered."""
+        return _dearpygui.get_frame_count()
+
+    @staticmethod
+    def frame_rate():
+        """Return the average frame rate over the last 120 frames."""
+        return _dearpygui.get_frame_rate()
+
+    @staticmethod
+    def is_key_down(key: int):
+        """Return True if a key is down, otherwise return False.
+
+        Args:
+            * key: Key event code to query.
+        """
+        return _dearpygui.is_key_down(key)
+
+    @staticmethod
+    def is_key_pressed(key: int):
+        """Return True if a key is pressed, otherwise return False.
+
+        Args:
+            * key: Key event code to query.
+        """
+        return _dearpygui.is_key_pressed(key)
+
+    @staticmethod
+    def is_key_released(key: int):
+        """Return True if a key is not down or pressed, otherwise
+        return False.
+
+        Args:
+            * key: Key event code to query.
+        """
+        return _dearpygui.is_key_released(key)
+
+    # Trying to avoid wrapping these; need to be as fast as
+    # possible.
+    # NOTE: The `staticmethod` wrappers won't stick around long. They
+    #       don't have `__get__`, and therefore cannot be bound. Python
+    #       knows this and will automatically unwrap them (this behavior
+    #       is known but not publicly documented).
+    render_frame = staticmethod(_dearpygui.render_dearpygui_frame)
+    is_running   = final(staticmethod(_dearpygui.is_dearpygui_running))
+
+    @staticmethod
     def prepare():
         """Complete any remaining setup necessary before starting
         the runtime.
@@ -1200,6 +1254,8 @@ class Runtime:
             Viewport.create()
         if not vp_state['visible']:
             Viewport.show()
+
+    queue: Queue[Callable] = Queue()
 
     @classmethod
     def start(cls, *args, **kwargs):
@@ -1220,31 +1276,74 @@ class Runtime:
             >>> from dearpypixl.api import Runtime
             >>>
             >>> Runtime.start()
-        In addition, this function is prepared to handle the event
-        queue when the `manual_callback_management` application
+        In addition, this function is prepared to handle Dear PyGui's
+        event queue when the `manual_callback_management` application
         setting is True without any additional input from the user.
-
-        Updates can be "injected" into the event loop through
-        subclassing and overriding `.render_frame`; run your updates,
-        remembering to call `super().render_frame` or
-        `Runtime.render_frame` towards the end of your implementation.
-        For large-scale modifications, however, it may be necessary
-        to override this function or to implement your own event loop.
         """
         Runtime.prepare()
 
+        rt_config    = Runtime.configure.__self__.value
+        # XXX: no hot-swapping
         is_running   = Runtime.is_running
         render_frame = cls.render_frame
+        queue        = cls.queue
+
+        # `Queue.get` raises `Queue.Empty` when it's- well, empty. It
+        # can be extremely punishing performance-wise when it's caught
+        # repeatedly. Since a fixed-time step is used to control tasks,
+        # this filler function can be looped without stalling the render.
+        def recursive_task(_put_nowait=queue.put):
+            # TODO: Maybe also do something useful here?
+            _put_nowait(recursive_task)
+
+        queue.put(recursive_task)
+
+        def perf_counter(_counter=time.perf_counter):
+            return 1000.0 * _counter()  # ms
+
+        t_updates = 0
+        ts_last_update = ts_last_render = perf_counter()
+
+        render_frame()   # initialize item states
 
         if Application.configuration()['manual_callback_management']:
             get_queue = Runtime.callback_queue
             run_queue = cls.run_callback_queue
+
             while is_running():
+
                 run_queue(get_queue())
-                render_frame()
+
+                ts_this_update  = perf_counter()
+                update_interval = rt_config['update_interval']
+                t_updates += round(ts_this_update - ts_last_update, 3)
+                ts_last_update = ts_this_update
+                while t_updates >= update_interval:
+                    queue.get_nowait()()
+                    queue.task_done()
+                    t_updates -= update_interval
+
+                ts_this_render  = perf_counter()
+                if ts_this_render - ts_last_render >= rt_config['render_interval']:
+                    ts_last_render = ts_this_render
+                    render_frame()
+
         else:
             while is_running():
-                render_frame()
+
+                ts_this_update  = perf_counter()
+                update_interval = rt_config['update_interval']
+                t_updates += round(ts_this_update - ts_last_update, 3)
+                ts_last_update = ts_this_update
+                while t_updates >= update_interval:
+                    queue.get_nowait()()
+                    queue.task_done()
+                    t_updates -= update_interval
+
+                ts_this_render  = perf_counter()
+                if ts_this_render - ts_last_render >= rt_config['render_interval']:
+                    ts_last_render = ts_this_render
+                    render_frame()
 
     @staticmethod
     def stop(*args, **kwargs):
@@ -1254,6 +1353,40 @@ class Runtime:
         """
         if Runtime.is_running():
             _dearpygui.stop_dearpygui()
+
+    @overload
+    @staticmethod
+    def configure(frame_rate_limit: int = ..., clamp_frame_rate: bool = ...): ...  # type: ignore
+    @staticmethod
+    @__rt_config  # type: ignore
+    def configure(locker, **kwargs):  # type: ignore
+        # This doesn't really need to be atomic. Worst-case is
+        # it'll fix itself in a frame.
+        config = locker.value
+
+        config['update_interval'] = kwargs.get('update_interval', config['update_interval'])
+
+        fr_limit = config['frame_rate_limit']
+        if 'frame_rate_limit' in kwargs:
+            fr_limit = kwargs['frame_rate_limit']
+            if not fr_limit:
+                fr_limit = None
+            else:
+                fr_limit = max(int(fr_limit), 0)
+            config['frame_rate_limit'] = fr_limit
+        fr_clamp = config['clamp_frame_rate']
+        if 'clamp_frame_rate' in kwargs:
+            fr_clamp = config['clamp_frame_rate'] = bool(kwargs['clamp_frame_rate'])
+        if fr_limit and fr_clamp:
+            config['render_interval'] = round(1000.0 / config['frame_rate_limit'], 1)
+
+    @staticmethod
+    @__rt_config
+    def configuration(locker) -> _RuntimeConfiguration:
+        config = locker.value.copy()
+        del config['render_interval']
+        return config
+
 
 
 
@@ -1275,6 +1408,14 @@ class Registry:
     def create_uuid():
         """Generate a unique integer id for an item."""
         return _create_uuid()
+
+    @staticmethod
+    def create_alias(pfx: Any):
+        """Generate a unique alias using `uuid.uuid4`."""
+        uuid = str(uuid4())
+        if not pfx:
+            return uuid
+        return f"{pfx}-{uuid}"
 
     @staticmethod
     def capture_next_item(callback: Callable, *, user_data: Any = None):
