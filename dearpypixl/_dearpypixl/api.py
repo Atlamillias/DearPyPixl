@@ -1520,8 +1520,16 @@ class Registry:
         return _create_uuid()
 
     @staticmethod
-    def create_alias(pfx: Any):
-        """Generate a unique alias using `uuid.uuid4`."""
+    def create_alias(pfx: Any = ""):
+        """Generate an alias using `uuid.uuid4`.
+
+        Args:
+            * pfx: Optional prefix for the returned alias.
+
+
+        If *pfx* is specified, the returned alias will be a concatenation
+        of the prefix and generated alias, separated by a dash ("-").
+        """
         uuid = str(uuid4())
         if not pfx:
             return uuid
