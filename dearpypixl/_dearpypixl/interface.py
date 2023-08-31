@@ -783,7 +783,7 @@ class AppItemType(api.Item, int, register=False, metaclass=AppItemMeta):
         return copy_item
 
     def __deepcopy__(self, memo: Any = None):
-        return NotImplemented
+        raise NotImplementedError
 
 
     # [ GLOBAL STATE API ]
