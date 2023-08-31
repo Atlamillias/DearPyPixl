@@ -71,6 +71,7 @@ import sys
 import time
 import math
 import types
+import ctypes
 import inspect
 import functools
 import itertools  # type: ignore
@@ -796,6 +797,10 @@ class Viewport(common.ItemInterface, str, metaclass=_ViewportMeta):
         with locker:
             if locker.value['ok']:
                 raise RuntimeError('viewport already exists.')
+
+            # prevent Windows from stretching render bitmaps
+            if sys.platform == 'win32':
+                ctypes.windll.shcore.SetProcessDpiAwareness(2)
 
             if 'title' not in kwargs:
                 kwargs['title'] = 'Application'
