@@ -1324,9 +1324,13 @@ class SupportsValueArray(AppItemType, Generic[_T]):
     def __getitem__(self, index: Any, /):
         return self.get_value()[index]
 
-    def __setitem__(self, index: int, value: _T) -> None:
+    @overload
+    def __setitem__(self, index: SupportsIndex, value: _T, /) -> None: ...
+    @overload
+    def __setitem__(self, index: slice, value: Sequence[_T], /) -> None: ...
+    def __setitem__(self, index: Any, /, value: Any) -> None:
         item_value = self.get_value()
-        item_value.__setitem__(index, value)
+        item_value[index] = value
         self.set_value(item_value)
 
     def __delitem__(self, index: int):
@@ -1341,10 +1345,10 @@ class SupportsValueArray(AppItemType, Generic[_T]):
         yield from reversed(self.get_value())
 
     def __str__(self):
-        return self.get_value().__str__()
+        return str(self.get_value())
 
     def __len__(self):
-        return self.get_value().__len__()
+        return len(self.get_value())
 
     def __iter__(self):
         return iter(self.get_value())
