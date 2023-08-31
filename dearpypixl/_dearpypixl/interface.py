@@ -688,7 +688,7 @@ class AppItemType(api.Item, int, register=False, metaclass=AppItemMeta):
 
         alias = save_state['alias']
         if not alias:
-            alias = save_state['alias'] = f'{self.tag}-{uuid.uuid4()}'
+            alias = save_state['alias'] = RegistryAPI.create_alias(self.tag)
             self.set_alias(alias)
 
         for k in ('theme', 'font', 'handlers'):
