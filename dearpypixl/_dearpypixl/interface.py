@@ -1356,13 +1356,13 @@ class SupportsValueArray(AppItemType, Generic[_T]):
         return self.get_value() <= other
 
     def __eq__(self, other: Any):
-        self.get_value()
+        return self.get_value() == other
 
     def __ge__(self, other: Any):
-        self.get_value()
+        return self.get_value() >= other
 
     def __gt__(self, other: Any):
-        self.get_value()
+        return self.get_value() > other
 
     def count(self, value: Any) -> int:
         return self.get_value().count(value)
