@@ -9,26 +9,26 @@ ___
 <!-- code_chunk_output -->
 
 - [Dear PyPixl](#dear-pypixl)
-  - [Features](#features)
-  - [Requirements](#requirements)
-  - [Installation](#installation)
+      - [Features](#features)
+      - [Requirements](#requirements)
+      - [Installation](#installation)
 - [Overview](#overview)
   - [Item Interfaces](#item-interfaces)
-        - [Creating Interfaces](#creating-interfaces)
-        - [Methods & Properties](#methods--properties)
-        - [Behaviors](#behaviors)
+      - [Creating Interfaces](#creating-interfaces)
+      - [Methods & Properties](#methods--properties)
+      - [Behaviors](#behaviors)
   - [Item Types](#item-types)
   - [Global State & Setup](#global-state--setup)
   - [Modules](#modules)
   - [Limitations, Bugs, & Gachas](#limitations-bugs--gachas)
-        - [Interfaces are Integers, For Better or Worse](#interfaces-are-integers-for-better-or-worse)
-        - [Passing Explicit UUID's and Aliases](#passing-explicit-uuids-and-aliases)
+      - [Interfaces are Integers, For Better or Worse](#interfaces-are-integers-for-better-or-worse)
+      - [Passing Explicit UUID's and Aliases](#passing-explicit-uuids-and-aliases)
 - [FAQ](#faq)
 
 <!-- /code_chunk_output -->
 ___
 
-## Features
+#### Features
  - extensible high-level object-oriented API for creating and/or interfacing with Dear PyGui items, including theme elements
  - low-level API that fills various gaps in Dear PyGui's API
  - strongly typed
@@ -38,7 +38,7 @@ ___
  - contains numerous extensions and other helpful tools
 <br>
 
-## Requirements
+#### Requirements
  - Operating System; Windows 8.1+, MacOS, Linux*
  - Python: 3.10 x64* (or newer)
  - `pip` dependencies:
@@ -48,7 +48,7 @@ ___
 *Dear PyPixl is available on all platforms already supported by Dear PyGui. Availability for 32-bit systems and Raspberry Pi OS is *loosely* supported, but requires building Dear PyGui from the source. Please visit their [wiki](https://github.com/hoffstadt/DearPyGui/wiki) for more information.
 <br>
 
-## Installation
+#### Installation
 
 Using `pip`;
 ```python
@@ -71,10 +71,10 @@ python3 -m pip install <path_to_generated_whl>
 ```
 
 # Overview
-Dear PyPixl is not undocumented -- the information below supplements the detailed information is available via docstrings. However, I highly suggest visiting Dear PyGui's [documentation](https://dearpygui.readthedocs.io/en/latest/index.html) if you are unfamiliar with the project. Basic usage of Dear PyPixl is very similar (identical) to that of Dear PyGui, and you may feel lost without some background.
+Dear PyPixl is not undocumented. The information below supplements the detailed information available via docstrings. However, I highly suggest visiting Dear PyGui's [documentation](https://dearpygui.readthedocs.io/en/latest/index.html) if you are unfamiliar with the project. Basic usage of Dear PyPixl is very similar (identical) to that of Dear PyGui, and you may feel lost without some background.
 
 ## Item Interfaces
-##### Creating Interfaces
+#### Creating Interfaces
 An item type is, functionally, a drop-in replacement for any Dear PyGui function that would create item an item;
 ```python
 from dearpypixl import *
@@ -98,43 +98,40 @@ with Window(label="A window") as window:
 ```
 
 
-The only difference between creating items using an item type class and using a Dear PyGui function is the return value. Where the latter returns a **tag**, or a unique integer or string identifier for the item, the former results in an **item interface** object. Interfaces *are* item identifiers - integers specifically - and can be used wherever an item tag is appropriate. For the lifetime of the interface, instance-bound methods will operate exclusively on the interfaced item. In the case above, the "interfaced item" was created along with the interface. However, interfaces can be made for existing items as well by passing its' identifier to the `mvAll` type, the `interface` function, or as the `tag` keyword argument to the appropriate item type for the item you're interfacing with.
-
-`mvAll` is the generic interface type. Its' API supports every kind of item to some degree, but lacks type identity. As such, it does not implement custom behavior that a more *narrow* interface may have. However, creating them is extremely fast. In addition, the lack of custom behaviors makes their API more performant. This is a good option when you don't care to work with an interface for very long, you don't know the item's type and/or don't care to know, or the item is just a stepping stone to get to another item. Note that `int(mvAll)` will always return `0`.
-
-If you know the type of the item you're trying to interface with, you can simply call the appropriate class and include the item identifier as the value for the `tag` keyword. After the interface is created, it will try to create a new item using its' bound identifier. It can't, however, as an item with the bound identifier already exists. The error is silenced and life continues as normal. Consider this option when you care about the specific item you're working with, or you are intending to work with it for a little bit. This option does have an overhead penalty since the process causes an exception, which may be noticable when it happens a lot. This process also involves creating a new instance, invoking the `__new__` and `__init__` constructor methods. This is a non-issue for "built-in" item types, but user subclasses often implement a custom `__init__`, and likely won't appreciate another initialization. As an alternative, item types have a class-bound `.new` method. Accepting a sole positional `tag` argument, the `.new` method creates and returns an interface of that type while skipping instance initialization.
-
-Lastly, when you want a proper interface for an item and would need to query Dear PyGui for its' type, consider using the `interface` function found in the `dearpypixl` root namespace. The `interface` function accepts a sole positional `tag` argument and a few other optional keywords. Its' default behavior is to query Dear PyGui for the item's type, find the appropriate class for that type, and return the result of calling the class' `.new` method. This procedure is faster than calling the class directly when the "item already exists" exception would be caught and discarded, even if you know the class beforehand.
-
-Here's an example using each of the methods above to create an interface for an existing button item (the *same* button item);
+While calling `dearpygui.add_window` or `dearpygui.window` returns a **tag**, or a unique integer or string identifier, for the created window, the above results in an **item interface** object. Interfaces *are* item identifiers - integers specifically - and can be used wherever an item tag is appropriate. For the lifetime of the interface, instance-bound methods will operate exclusively on the interfaced item. In the case above, the "interfaced item" was created along with the interface. However, there are ways to create interfaces for existing items, too;
 ```python
 from dearpypixl import *
 import dearpygui.dearpygui as dpg
 
 
 with Window() as window:
-    button_id = dpg.add_button(tag=40000)
+    button_id = dpg.add_button(tag="a button")
 
+# Method 1A: Call the interface class and include an existing `tag`
+button_if1 = Button(tag=button_id)   # -> `mvButton(tag=..., alias='a button', ...)`
+# Method 1B: Call the `.new` classmethod
+button_if2 = Button.new(button_id)   # -> `mvButton(tag=..., alias='a button', ...)`
 
-# Method 1: `mvAll`
-generic_if = mvAll(button_id)        # -> `mvAll(tag=40000, ...)`
+# Method 2: Use the `interface` function
+button_if = interface(button_id)     # -> `mvButton(tag=..., alias='a button', ...)`
 
-# Method 2A: `Button`
-button_if1 = Button(tag=button_id)   # -> `mvButton(tag=40000, ...)`
-# Method 2B: `Button.new`
-button_if2 = Button.new(button_id)   # -> `mvButton(tag=40000, ...)`
-
-# Method 3: `interface`
-button_if = interface(button_id)     # -> `mvButton(tag=40000, ...)`
+# Method 3: Use the `mvAll` interface class
+generic_if = mvAll(button_id)        # -> `mvAll(tag=..., alias='a button', ...)`
 ```
 
+The first is pretty intuitive; include the `tag` keyword argument when creating an interface. If the `tag` value is an existing item identifier, a new interface object will be created but won't (rather, *can't*) create a new item. This is useful when using primitive interfaces and when you are aware of the type of item you're interfacing with. However, this isn't without caveats. User-defined interfaces often implement a custom `__init__` method -- you likely won't appreciate another initialization. Additionally, an exception is raised (and suppressed) when the interface fails to create a new item with the in-use `tag`, so this approach isn't recommended if you're doing it *thousands* of times within a short window. In either case, all interface types have a class-bound `.new` method. Accepting a sole positional `tag` argument, the `.new` method creates and returns an interface of that type while skipping instance initialization.
 
-> **Note**: Dear PyPixl makes no attempt to not stop you from using the wrong interface type for an item.
+There may be times when you'll feel the need to query an item's type to find the correct interface. The `interface` function accepts a sole positional `tag` argument and a few other optional keywords. Its' default behavior is to query Dear PyGui for the item's type, find the appropriate class for that type, and return the result of calling the class' `.new` method. This procedure is faster than calling the class directly when the "item already exists" exception would be caught and discarded, even when you know the correct class beforehand.
+
+Lastly, when just want an interface and you don't know and/or don't care to know the item and interface type, or the interface is just a "stepping stone" to another one (like a parent or child), consider creating a generic item interface with `mvAll`. These interfaces have a *very* broad API, supporting items of any type to some degree. Their creation process is greatly simplified from that of other interfaces, so they're fast to make. The downside is their benefits -- they're *generic*. Some methods only work when interfacing with items of specific types. Additionally, their lack of type identity and simplified creation procedure means that they do not create items or generate identifiers. They also lack behaviors unique to more "narrow" interface types; as a convenience, however, they can be used as context managers when interfacing with container items.
+
+
+> **Note:** *No attempts are made to stop you from trying to bind an interface to an existing item of a different or unsupported type. Don't expect things to go well.*
 
 <br>
-##### Methods & Properties
 
-With a half-dozen ways to make interfaces, some methods would be nice. Interfaces can have a fairly large API. While member names are not 1-to-1, Dear PyGui users should easily be able to make the connection between the two APIs. The table below outlines the core interface API and the equivelent Dear PyGui function;
+#### Methods & Properties
+The members available to an inteface can vary based on the type of item it supports. This means that some interfaces can have a fairly large API. However, all of them do share a collection of core methods and properties. While member names are not 1-to-1, they are named similarly to that of the used Dear PyGui hook. While not exhaustive, the table below outlines many of them;
 
 | Bound Interface Method   | Dear PyGui Function                     |
 | :----------------------: | :-------------------------------------: |
@@ -155,9 +152,12 @@ In addition, a few other information-related hooks are also available;
 | `item.get_theme()`       | `get_item_info(item)['theme']`<br>`get_item_theme(item)`           |
 | `item.get_handlers()`    | `get_item_info(item)['handlers']`<br>`get_item_handlers(item)`     |
 
-Unlike `get_item_configuration`, the dictionary returned from the `.configuration` method of type-specific interfaces does not include "useless" configuration options. The opposite is true for the `.state` method, which includes keys for every available state an item can have. The value for the state key will be `None` if the state is unsupported for the item. With the exception those two methods, all other members in the above tables that return a value do so as returned from Dear PyGui and are not mutated by Dear PyPixl.
+Note that the `.configuration` and `.state` methods are not functionally equivelent to Dear PyGui's `get_item_configuration` and `get_item_state` functions respectively. The `.configuration` method is unique to each dedicated interface type, and filters out useless item configuration options. This allows for the usage of the `type(item)(**item.configuration())` idiom -- in most cases, this creates a "reproduction" or proto-copy of an item. The behavior of the `.state` isn't as glamorous; unlike `get_item_state`, the dictionary returned by the `.state` method includes keys for every state an item could possibly have. When an item does not support a Dear PyGui state, the value of that state in the returned dictionary will be `None`. By default, the mapping returned by the `.information` method is unchanged from that returned by Dear PyGui's `get_item_info` function.
 
-Interfaces also expose several configuration, information, and state options as properties. The configuration properties availible vary depending on the type of item interface; expect one for each key in the dictionary returned from the `.configuration` method. In contrast, available information-related properties are consistent between all item interface types;
+<br>
+<br>
+
+Usage of the `configuration`, `information`, and `.state` methods is common. As a convenience, interfaces also expose various configuration, information, and state options as properties. Availible configuration properties vary between interface types; expect one for each key in the dictionary returned from the `.configuration` method. In contrast, available information-related properties are consistent between all item interface types. However, only the most useful/common-use are exposed;
 
 | Interface Property | Interface Method Hook                             |
 | :----------------: | :-----------------------------------------------: |
@@ -166,15 +166,11 @@ Interfaces also expose several configuration, information, and state options as 
 | `item.font`        | `item.get_font()`<br>`item.set_font(...)`         |
 | `item.handlers`    | `item.get_handlers()`<br>`item.set_handlers(...)` |
 
-Where the related method hook can return an item identifier, the property will return an interface for the item instead. This means that `.theme`, `.font`, `.handlers` will return an instance of `mvTheme`, `mvFont`, or `mvItemHandlerRegistry` respectively, or `None`.
-
-
-> **Note**: As a reminder, both Dear PyGui and Dear PyPixl do not distinguish item identifiers and item interfaces differently when used as item-related arguments.
+The *get* behavior of these properties are not equivelent to their related *get* hook. Calling the method returns an item identifier (or None) as returned by Dear PyGui, where the property returns an item interface when applicable. This means that `.theme`, `.font`, `.handlers` can return `None`, or an instance of `mvTheme`, `mvFont`, or `mvItemHandlerRegistry` respectively.
 
 <br>
-<br>
 
-Like the above, state-related properties are consistent across all interfaces. And, like configuration properties, one exists for each item state. They are all read-only, and return the value as returned from the `.state` method;
+State-related properties don't do anything fancy. They return the value of the related state as returned by the `.state` method, unchanged;
 
 | Interface Property               | Interface Method Hook                    |
 | :------------------------------: | :--------------------------------------: |
@@ -197,12 +193,12 @@ Like the above, state-related properties are consistent across all interfaces. A
 | `item.rect_size`                 | `item.state()["rect_size"]`              |
 | `item.content_region_avail`      | `item.state()["content_region_avail"]`   |
 
-Unfortunately, there is a sole exception. While `pos` is always included in the return of calling the `.state()` method (as a 2-item list, or `None` if unsupported), not all interface types implement the `.pos` property. This is because it can be updated as a configuration option via `configure_item` function or the `.configuration` method for items that do support explicit positioning. If an interface type implements the `.pos` property, it is writable. If it doesn't, then `.state()["pos"]` will always return `None`.
-
+The above properties are consistent across all interface types; one for every possible item state...*almost*. Many items support explicit positioning via the `pos` configuration option. However, queries regarding an item's position are made by checking it's state, making `pos` a bit of an odd-ball. As previously mentioned, the mapping returned by the `.state` method includes keys for *all possible* states, which includes `pos`. Because of this behavior, interfaces only have a `pos` property (read-write) when the supported item type support explicit positioning (`item.state()['pos'] != None`).
 
 <br>
-##### Behaviors
-An interface type may implement or inherit behavior from a parenting proto-type. A previous example was given where an interface was used as a context manager;
+
+#### Behaviors
+Some interface types implement unique behavors or inherit them from a parenting proto-type(s). Previous examples demonstrate using **interfaces as context managers** -- a behavior unique to **container-type** and `mvAll` interfaces;
 
 ```python
 with Window() as window:
@@ -211,15 +207,16 @@ with Window() as window:
 with window:
     text = Text("Some text", tag=50000)
 ```
-This behavior is unique to container-type interfaces, in addition to instances of `mvAll`. An exception will be thrown trying to do the same for the button;
+You'll get yelled at when trying that kind of thing with a primitive button interface;
 ```python
-with button:  # this doesn't work
+with button:  # -> `TypeError: 'mvButton' object does not support the context manager protocol`
     ...
 ```
 
 <br>
-By default, all interfaces support indexing and slicing. This operates on the result of calling the `.children` method. Although it is only useful for container-types, even basic items have child slots;
+<br>
 
+**All interfaces** support some kind of **indexing and slicing** behavior. By default, this operates on the item's child slots; specifically the result of `.information()["children"]` (not the `.children` method). Although only useful for containers, even basic items like buttons have child slots;
 ```python
 # This is equivelent to `window.children(1)`, returning the
 # contents of child slot 1.
@@ -231,8 +228,7 @@ button[1]   # -> []
 # Slice to include several slots;
 window[0:]  # -> [[], [40000, 50000], [], []]
 ```
-
-Meanwhile, theme color/style and "series"-type interfaces override the above behavior. Indexing, slicing, and rich comparisons operate on the item's value;
+Meanwhile, theme element and "series"-type interfaces override the above behavior. Indexing, slicing, and rich comparisons operate on the item's value. In particular, they behave like lists of a fixed size;
 ```python
 from dearpypixl import *
 from dearpypixl import color, style
@@ -257,9 +253,11 @@ window_bg.get_value()  # -> `[200.0, 50.0, 50.0, 200.0]`
 window_bg[:-1] = [50, 200, 50]
 window_bg.get_value()  # -> `[50.0, 200.0, 50.0, 200.0]`
 ```
+
+<br>
 <br>
 
-Primitive interfaces can be pickled. This works by ensuring the items have assigned **aliases** at the time of serialization.
+Additionally, primitive interfaces can be **pickled**;
 ```python
 import pickle
 from dearpypixl import *
@@ -269,10 +267,103 @@ with Window(label="a window") as window:
     Text("some text")
     with ChildWindow(label="a child window"):
         InputText(default_value="more text")
-        with Plot(label="and an empty plot")
+
+pickled = pickle.dumps(window)
+
+# If we were to load the pickled tree now, it would
+# only copy the interface state. The tree would not
+# be reproduced.
+window.delete()
+
+# Reload the pickled hierarchy. Since the item tree
+# no longer exists, this will recreate the interface
+# state and the item tree.
+window = pickled.loads(pickled)
+```
+
+The pickling process is fairly comprehensive. It creates a save state of the target's alias, configuration (including `pos` and `source`), bindings (theme, etc), children, and value. This procedure is repeated on the target's children recursively, ensuring that the *entire* item tree from the target is included. Item `source`s are uniquely handled so that they can be properly set even if the actual source item is created further down the hierarchy. The process also pickles interfaces found on user-defined interfaces (again, recursively). When an item hierarchy is about to be pickled, all items/interfaces found are ensured to have assigned **aliases** at the time of serialization. If an item does not have an alias, one is generated automatically using its' current integer id and a universally-unique id created using the `uuid` module's `uuid4` function<b>*</b>.
+
+Below is a more complex, working example. Note that both `window` and `theme` are destroyed before reloading the pickled hierarchy. The `mvHandlerRegistry` interface object on `window.events`, however, is not. The loading process still creates a `mvHandlerRegistry` interface and sets it on the reconstructed `window.events` interface, but the handler registry itself is not recreated since it exists already.
+
+```python
+import pickle
+from dearpypixl import *
+
+
+class UserWindow(Window):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        # covered through interface association
+        self.events = HandlerRegistry()
+
+
+with Theme() as theme:
+    with ThemeComponent() as tc:
+        window_bg = color.WindowBg(200, 50, 50, 250)
+
+with UserWindow(label="a window") as window:
+    # covered through item association (binding)
+    window.theme = theme
+
+    # covered through item association (children)
+    text = Text("some text")
+    with ChildWindow(label="a child window") as child_window:
+        input_text = InputText(default_value="more text")
+        with Plot(label="and an empty plot"):
+            ...
+    text.source = input_text  # `source` will be properly reflected
+
+
+window_pkl = pickle.dumps(window)
+
+window.delete()
+theme.delete()
+
+window = pickle.loads(window_pkl)
+```
+
+Items/interfaces are pickled from the top-down and does not traverse upward. This is important because parent references of serialized items are *not* tracked. Instead, a loaded "parent" explicitly passes itself down to its' children during the loading process. This is a non-issue when pickling an entire item tree since root items don't require parents. Things are different when pickling item *branches*; the top-level pickled item/interface needs a parent! Simply load the branch while parent is atop the container stack;
+```python
+with Window(label="a window") as window:
+    Text("some text")
+    with ChildWindow(label="a child window") as child_window:
+        InputText(default_value="more text")
+
+child_wndw_pkl = pickle.dumps(child_window)
+child_window.delete()
+
+# load the saved branch within a completely different parent
+with Window():
+    with Table():
+        TableColumn()
+        with TableRow():
+            child_window = pickle.loads(child_wndw_pkl)
 
 
 ```
+Avoid "reference tangles" when making pickle-able trees. An interface of a user-defined type should not keep a reference of a non-root item of a completely different branch. Similarly, don't set item `source`s to items in other branches. The pickling procedure will assign aliases to such items, but will not attempt to pickle the item or reference. The below example results in a `RuntimeError` while trying to load reload `window2`;
+```python
+with Window() as window1:
+    w1_text1 = Text()
+    w1_text2 = Text(source=w_text1)
+
+
+with Window() as window2:
+    w2_text = Text(source=w1_text1)  # "reference tangle"
+
+
+# create a snapshot while `w2_text` is still "outsourcing"
+window2_pkl = pickle.dumps(window1)
+window1.delete()
+window2.delete()
+
+pickle.loads(window2_pkl)  # -> `RuntimeError()`
+```
+A good solution for the above is using value registries, ensuring they are loaded first before anything else. Interfaces of user-defined types have an advantage here, as different interfaces can hold different (or same, doesn't matter) interfaces that operate on the same item (like a value registry). In that case, the value registry would always be loaded regardless of the load order of those that reference it.
+
+
+
+> ***Pickling** is an **experimental feature**. Please submit a bug report if a primitive interface fails to serialize.*
 
 <br>
 
@@ -463,7 +554,7 @@ Dear PyPixl tries to maintain the same semantics and feel that Dear PyGui has so
 <br>
 
 
-##### Interfaces are Integers, For Better or Worse
+#### Interfaces are Integers, For Better or Worse
 
 Interface types are derived from Python's built-in `int` type. This allows interfaces to be used as arguments where item identifiers are expected. In addition, it simplifies the public and internal API's alike in regards to interface and item creation. This unfortunately has a few side effects;
 * interface subclasses **cannot declare non-empty `__slots__`**
@@ -473,7 +564,7 @@ Interface types are derived from Python's built-in `int` type. This allows inter
 The last point has less to do with `int` and more to do with how Dear PyGui is inspecting identifier values. `__bool__` must operate on the integer value of the interface; hard-to-diagnose bugs *will* occur otherwise. For this reason, Dear PyPixl will throw a `TypeError` when defining an interface class that does not point to `int.__bool__`.
 <br>
 
-##### Passing Explicit UUID's and Aliases
+#### Passing Explicit UUID's and Aliases
 
 Item-creating functions in Dear PyGui all accept a `tag` keyword argument in the form of an item's integer identifier (*uuid*) or string *alias*. While Dear PyPixl does its' best to accomodate, **the basic interface constructor cannot properly manage aliases when the alias is new**. This is in part due to Dear PyPixl's internal design, along with the fact that Dear PyGui's item registry API was never finished. Since the interface's creation logic (`.__new__`) is isolated from the item creation logic (`.__init__`), Dear PyPixl would need to register the new alias to a new uuid in advance. This can be done, however, Dear PyGui does not behave as expected in any scenario.
 
