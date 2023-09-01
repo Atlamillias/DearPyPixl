@@ -322,7 +322,7 @@ theme.delete()
 window = pickle.loads(window_pkl)
 ```
 
-Items/interfaces are pickled from the top-down and does not traverse upward. This is important because parent references of serialized items are *not* tracked. Instead, a loaded "parent" explicitly passes itself down to its' children during the loading process. This is a non-issue when pickling an entire item tree since root items don't require parents. Things are different when pickling item *branches*; the top-level pickled item/interface needs a parent! Simply load the branch while parent is atop the container stack;
+Items/interfaces are pickled from the top-down and does not traverse upward. This is important because parent references of serialized items are *not* tracked. Instead, a loaded "parent" explicitly passes itself down to its' children during the loading process. This is a non-issue when pickling an entire item tree since root items don't require parents. Things are different when pickling item *branches*; the top-level pickled item/interface needs a parent! Simply load the branch while a suitable parent is atop the container stack;
 ```python
 with Window(label="a window") as window:
     Text("some text")
@@ -410,7 +410,6 @@ mvWindowAppItem.is_root_item  # True
 mvWindowAppItem.is_container  # True
 mvWindowAppItem.is_node_item  # False
 ```
-
 
 <br>
 
@@ -532,6 +531,7 @@ Runtime.start()
 ```
 
 `Application` and `Viewport` interface with already existing global states. `Runtime` is a bit different because the "runtime" state is unique to Dear PyPixl -- manufactured through patching Dear PyGui's API holes and other various things, so it's API is less obvious. The runtime state is the state of the main event loop. This encompasses things like starting and stopping the runtime, target frame rate, and events that occur within the loop such as those scheduled to run on specific frames. It's the closest thing Dear PyPixl has to a `tkinter.Tk`, `kivy.app.App`, etc.
+
 <br>
 
 ## Modules
