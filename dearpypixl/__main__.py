@@ -1,7 +1,7 @@
 import types
 import inspect
 from inspect import Parameter
-from typing import Any, Mapping
+from typing import Any, Mapping, get_overloads
 from pathlib import Path
 from ._dearpypixl import common, interface, mkstub
 from ._dearpypixl.mkstub import indent
@@ -22,10 +22,12 @@ typing_imports.extend((
     common.Literal,
     common.Sequence,
     common.Callable,
+    common.Unpack,
     common.Property,
     common.Any,
     common.Color,
     common.Point,
+    common.overload,
 ))
 
 interface_imports = mkstub.Imported(interface)
@@ -38,7 +40,7 @@ interface_imports.extend((
 
 
 
-def fetch_exports(module: types.ModuleType) -> Mapping[str, Any]:
+def fetch_exports(module: types.ModuleType):
     return mkstub.Exported.fetch(module)
 
 
@@ -63,19 +65,35 @@ def _to_source_itp_base(tp: type[interface.AppItemType]) -> str:
                 indent(f"{name}: {common.Property.__qualname__}[{anno}] = ...")
             )
 
-        init_params = inspect.signature(tp.__init__).parameters
-        icmd_params = init_params.copy()
-        del icmd_params['self']
+        init_overloads = get_overloads(tp.__init__)
+        if init_overloads:
+            for fn in init_overloads:
+                init_params = inspect.signature(fn).parameters
+                init_p_src  = mkstub.to_source_parameters(init_params)
+                pyi.extend((
+                    indent(f'@overload'),
+                    indent(f"def __init__({mkstub.to_source_parameters(init_params)}) -> None: ..."),
+                ))
 
-        init_p_src       = mkstub.to_source_parameters(init_params)
+        else:
+            init_params = inspect.signature(tp.__init__).parameters
+            init_p_src  = mkstub.to_source_parameters(init_params)
+            icmd_params = init_params.copy()
+            del icmd_params['self']
+
+            pyi.extend((
+                indent(f"def __init__({init_p_src}) -> None: ..."),
+                indent(f"@staticmethod"),
+                indent(f"def command({mkstub.to_source_parameters(icmd_params)}) -> Item: ..."),
+            ))
+
+        configure_params = inspect.signature(tp.configure).parameters
         configuration_rt = mkstub.object_annotation(
             inspect.signature(tp.configuration).return_annotation
         )
         pyi.extend((
-            indent(f"def {tp.__init__.__name__}({init_p_src}) -> None: ..."),
-            indent(f"@staticmethod"),
-            indent(f"def command({mkstub.to_source_parameters(icmd_params)}) -> Item: ..."),
-            indent(f"def configuration(self) -> {configuration_rt}: ...")
+            indent(f"def configure({mkstub.to_source_parameters(configure_params)}) -> None: ..."),
+            indent(f"def configuration(self) -> {configuration_rt}: ..."),
         ))
     return '\n'.join(pyi)
 
@@ -98,7 +116,9 @@ def items_pyi(fpath: str | Path):
 
     pyi_src1 = []
     pyi_src2 = []
-    for name, itp in fetch_exports(items).items():
+    exports = fetch_exports(items)
+    # TODO: use new '__aliased__' member in exports
+    for name, itp in exports.items():
         if name == itp.__qualname__:
             pyi_src1.append(_to_source_itp_base(itp))
         else:
@@ -114,24 +134,33 @@ def items_pyi(fpath: str | Path):
     write_stub(fpath, pyi)
 
 
-
-
-def _to_source_itp_element(tp: type[interface.AppItemType]):
-    return _to_source_itp_base(tp).split("def __init__")[0]
-
 def _theme_element_pyi(fpath: str | Path, module: types.ModuleType):
-    itp_imports = interface_imports.copy()
-    itp_imports.extend((interface.ThemeColor, interface.ThemeStyle))
+    from . import items
+
+    item_imports = mkstub.Imported(items)
+    item_imports.extend((
+        items.mvThemeColor,
+        'ThemeColor',
+        items.mvThemeStyle,
+        'ThemeStyle',
+    ), export=True)
 
     pyi_imp = '\n'.join((
         str(typing_imports),
-        str(itp_imports),
+        str(interface_imports),
+        str(item_imports),
     ))
-    pyi_src = "\n\n".join(
-        _to_source_itp_element(itp)
-        for itp in fetch_exports(module).values()
+
+    exports = fetch_exports(module)
+    aliases = exports.aliased
+    pyi_src1 = "\n\n\n".join(
+        mkstub.to_source_function(itp)
+        for itp in exports.values()
     )
-    pyi = "".join((pyi_imp, "\n\n\n", pyi_src))
+    pyi_src2 = '\n'.join(
+        f"{name} = {obj.__name__}" for name, obj in aliases.items()
+    )
+    pyi = "".join((pyi_imp, "\n\n\n", pyi_src1, '\n\n\n', pyi_src2))
     write_stub(fpath, pyi)
 
 
