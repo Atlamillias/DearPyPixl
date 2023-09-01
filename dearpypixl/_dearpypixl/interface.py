@@ -96,7 +96,7 @@ def _register_itemtype(cls: Any, *, register: bool | None):
         AppItemMeta.__itemtype_registry__[cls.identity[1]] = cls
 
 
-def _get_itp_subclasses(*parent_cls: type[_T]) -> tuple[type[_T]]:
+def _get_itp_subclasses(*parent_cls: type[_T]) -> tuple[type[_T], ...]:
     return tuple(
         cls for cls in AppItemMeta.__itemtype_registry__.values()
         if issubclass(cls, parent_cls)
