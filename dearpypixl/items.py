@@ -11,7 +11,7 @@ def _fill_namespace():
         if not tp_def:
             continue
 
-        itp = exported(interface.itp_base_from_def(tp_def))
+        itp = exported(interface.create_itemtype(tp_def))
         itp.__module__ = __name__
         namespace[itp.__qualname__] = itp
         # set an alias
