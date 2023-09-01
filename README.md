@@ -14,14 +14,15 @@ ___
   - [Installation](#installation)
 - [Overview](#overview)
   - [Item Interfaces](#item-interfaces)
-          - [Creating Interfaces](#creating-interfaces)
-          - [Properties, Methods & Behaviors](#properties-methods--behaviors)
+        - [Creating Interfaces](#creating-interfaces)
+        - [Methods & Properties](#methods--properties)
+        - [Behaviors](#behaviors)
   - [Item Types](#item-types)
   - [Global State & Setup](#global-state--setup)
   - [Modules](#modules)
   - [Limitations, Bugs, & Gachas](#limitations-bugs--gachas)
-          - [Interfaces are Integers, For Better or Worse](#interfaces-are-integers-for-better-or-worse)
-          - [Passing Explicit UUID's and Aliases](#passing-explicit-uuids-and-aliases)
+        - [Interfaces are Integers, For Better or Worse](#interfaces-are-integers-for-better-or-worse)
+        - [Passing Explicit UUID's and Aliases](#passing-explicit-uuids-and-aliases)
 - [FAQ](#faq)
 
 <!-- /code_chunk_output -->
@@ -38,22 +39,27 @@ ___
 <br>
 
 ## Requirements
-
  - Operating System; Windows 8.1+, MacOS, Linux*
- - Python 3.11 x64 (or newer)
- - Dear PyGui 1.9+ (installed automatically)
+ - Python: 3.10 x64* (or newer)
+ - `pip` dependencies:
+    * `dearpygui` 1.9 (or newer)
+    * `typing-extensions` (Python < 3.12 only)
 
 *Dear PyPixl is available on all platforms already supported by Dear PyGui. Availability for 32-bit systems and Raspberry Pi OS is *loosely* supported, but requires building Dear PyGui from the source. Please visit their [wiki](https://github.com/hoffstadt/DearPyGui/wiki) for more information.
 <br>
 
 ## Installation
 
-Using pip;
+Using `pip`;
 ```python
 python3 -m pip install dearpypixl
 ```
-
-Alternatively, build the wheel and install locally;
+<br>
+Alternatively, build the wheel and install locally. Download/clone the source;
+```
+git clone https://github.com/Atlamillias/DearPyPixl
+```
+Then, from the project directory;
 ```
 python3 -m pip install build
 ```
@@ -68,7 +74,7 @@ python3 -m pip install <path_to_generated_whl>
 Dear PyPixl is not undocumented -- the information below supplements the detailed information is available via docstrings. However, I highly suggest visiting Dear PyGui's [documentation](https://dearpygui.readthedocs.io/en/latest/index.html) if you are unfamiliar with the project. Basic usage of Dear PyPixl is very similar (identical) to that of Dear PyGui, and you may feel lost without some background.
 
 ## Item Interfaces
-###### Creating Interfaces
+##### Creating Interfaces
 An item type is, functionally, a drop-in replacement for any Dear PyGui function that would create item an item;
 ```python
 from dearpypixl import *
@@ -122,35 +128,11 @@ button_if2 = Button.new(button_id)   # -> `mvButton(tag=40000, ...)`
 button_if = interface(button_id)     # -> `mvButton(tag=40000, ...)`
 ```
 
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="" content="width=device-width, initial-scale=1.0" />
-        <title></title>
-        <style>
-          .boxed {
-            background: #f5e07a;
-            color: black;
-            border: 3px solid #535353;
-            margin: 0px auto;
-            width: 600px;
-            padding: 10px;
-            border-radius: 4px;
-          }
-        </style>
-    </head>
-    <body>
-        <div class="boxed">
-            <font color="black">
-                <b>Note</b>: Dear PyPixl makes no attempt to not stop you from using the wrong interface type for an item.
-            </font>
-        </div>
-    </body>
-</html>
-<br>
 
-###### Properties, Methods & Behaviors
+> **Note**: Dear PyPixl makes no attempt to not stop you from using the wrong interface type for an item.
+
+<br>
+##### Methods & Properties
 
 With a half-dozen ways to make interfaces, some methods would be nice. Interfaces can have a fairly large API. While member names are not 1-to-1, Dear PyGui users should easily be able to make the connection between the two APIs. The table below outlines the core interface API and the equivelent Dear PyGui function;
 
@@ -186,32 +168,9 @@ Interfaces also expose several configuration, information, and state options as 
 
 Where the related method hook can return an item identifier, the property will return an interface for the item instead. This means that `.theme`, `.font`, `.handlers` will return an instance of `mvTheme`, `mvFont`, or `mvItemHandlerRegistry` respectively, or `None`.
 
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="" content="width=device-width, initial-scale=1.0" />
-        <title></title>
-        <style>
-          .boxed {
-            background: #f5e07a;
-            color: black;
-            border: 3px solid #535353;
-            margin: 0px auto;
-            width: 600px;
-            padding: 10px;
-            border-radius: 4px;
-          }
-        </style>
-    </head>
-    <body>
-        <div class="boxed">
-            <font color="black">
-                <b>Note</b>: As a reminder, both Dear PyGui and Dear PyPixl do not distinguish item identifiers and item interfaces differently when used as item-related arguments.
-            </font>
-        </div>
-    </body>
-</html>
+
+> **Note**: As a reminder, both Dear PyGui and Dear PyPixl do not distinguish item identifiers and item interfaces differently when used as item-related arguments.
+
 <br>
 <br>
 
@@ -242,8 +201,8 @@ Unfortunately, there is a sole exception. While `pos` is always included in the 
 
 
 <br>
-<br>
-Moving away from public methods and properties, an interface type may implement or inherit behavior from a parenting proto-type. For example, a previous example was given where an interface was used as a context manager;
+##### Behaviors
+An interface type may implement or inherit behavior from a parenting proto-type. A previous example was given where an interface was used as a context manager;
 
 ```python
 with Window() as window:
@@ -258,7 +217,9 @@ with button:  # this doesn't work
     ...
 ```
 
-One behavior inherited by all interface types is indexing and slicing, operating on the result of calling the `.children` method. Although it is only useful for container-types, even basic items have child slots;
+<br>
+By default, all interfaces support indexing and slicing. This operates on the result of calling the `.children` method. Although it is only useful for container-types, even basic items have child slots;
+
 ```python
 # This is equivelent to `window.children(1)`, returning the
 # contents of child slot 1.
@@ -271,9 +232,49 @@ button[1]   # -> []
 window[0:]  # -> [[], [40000, 50000], [], []]
 ```
 
-Meanwhile, theme color/style and "series"-type interfaces override the above behavior. Indexing and slicing instead operate on the item's value, complimenting their `list`-like API.
+Meanwhile, theme color/style and "series"-type interfaces override the above behavior. Indexing, slicing, and rich comparisons operate on the item's value;
+```python
+from dearpypixl import *
+from dearpypixl import color, style
+
+with Theme() as theme:
+    with ThemeComponent():
+        # `dearpygui.add_theme_color(
+        #     dearpygui.mvThemeCol_WindowBg,
+        #     (200, 50, 50, 250),
+        #     category=dearpygui.mvThemeCat_Core,
+        # )`
+        window_bg = color.WindowBg(200, 50, 50, 250)
+
+# theme elements are semi-mutable lists (values can change, but not shape)
+window_bg == window_bg.get_value() == list(window_bg) == [*window_bg] == [200, 50, 50, 250]  # -> `True`
+
+# update the alpha channel
+window_bg[-1] = 200
+window_bg.get_value()  # -> `[200.0, 50.0, 50.0, 200.0]`
+
+# update color channels
+window_bg[:-1] = [50, 200, 50]
+window_bg.get_value()  # -> `[50.0, 200.0, 50.0, 200.0]`
+```
 <br>
 
+Primitive interfaces can be pickled. This works by ensuring the items have assigned **aliases** at the time of serialization.
+```python
+import pickle
+from dearpypixl import *
+
+
+with Window(label="a window") as window:
+    Text("some text")
+    with ChildWindow(label="a child window"):
+        InputText(default_value="more text")
+        with Plot(label="and an empty plot")
+
+
+```
+
+<br>
 
 ## Item Types
 
@@ -462,7 +463,7 @@ Dear PyPixl tries to maintain the same semantics and feel that Dear PyGui has so
 <br>
 
 
-###### Interfaces are Integers, For Better or Worse
+##### Interfaces are Integers, For Better or Worse
 
 Interface types are derived from Python's built-in `int` type. This allows interfaces to be used as arguments where item identifiers are expected. In addition, it simplifies the public and internal API's alike in regards to interface and item creation. This unfortunately has a few side effects;
 * interface subclasses **cannot declare non-empty `__slots__`**
@@ -472,7 +473,7 @@ Interface types are derived from Python's built-in `int` type. This allows inter
 The last point has less to do with `int` and more to do with how Dear PyGui is inspecting identifier values. `__bool__` must operate on the integer value of the interface; hard-to-diagnose bugs *will* occur otherwise. For this reason, Dear PyPixl will throw a `TypeError` when defining an interface class that does not point to `int.__bool__`.
 <br>
 
-###### Passing Explicit UUID's and Aliases
+##### Passing Explicit UUID's and Aliases
 
 Item-creating functions in Dear PyGui all accept a `tag` keyword argument in the form of an item's integer identifier (*uuid*) or string *alias*. While Dear PyPixl does its' best to accomodate, **the basic interface constructor cannot properly manage aliases when the alias is new**. This is in part due to Dear PyPixl's internal design, along with the fact that Dear PyGui's item registry API was never finished. Since the interface's creation logic (`.__new__`) is isolated from the item creation logic (`.__init__`), Dear PyPixl would need to register the new alias to a new uuid in advance. This can be done, however, Dear PyGui does not behave as expected in any scenario.
 
