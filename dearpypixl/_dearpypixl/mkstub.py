@@ -16,6 +16,7 @@ from typing import (
     Any,
     Callable,
     Self,
+    get_overloads,
     TYPE_CHECKING,
 )
 if TYPE_CHECKING:
@@ -150,29 +151,31 @@ class Exported(MutableMapping):
 
     module: str | types.ModuleType
 
-    __slots__ = ("_module", "_cache")
+    __slots__ = ("_module", "_exported", "aliased")
 
     EXPORTED = '__exported__'
+    ALIASED  = '__aliased__'
 
     def __init__(self, module: str | types.ModuleType):
-        self._cache  = {}
-        self._module = _get_module(module)
+        self._exported = {}
+        self.aliased   = {}
+        self._module   = _get_module(module)
         setattr(self._module, self.EXPORTED, self)
 
     def __getitem__(self, key: str):
-        return self._cache[key]
+        return self._exported[key]
 
     def __setitem__(self, key: str, value: Any):
-        self._cache[key] = value
+        self._exported[key] = value
 
     def __delitem__(self, key: str):
-        del self._cache[key]
+        del self._exported[key]
 
     def __iter__(self):
-        return iter(self._cache)
+        return iter(self._exported)
 
     def __len__(self):
-        return len(self._cache)
+        return len(self._exported)
 
     def export(self, o: _T | None = None, /, name: str = '') -> _T:
         def capture_object(o: _T) -> _T:
@@ -182,7 +185,7 @@ class Exported(MutableMapping):
                     name = o.__qualname__  # type: ignore
                 except AttributeError:
                     name = o.__name__   # type: ignore
-            self._cache[name] = o
+            self._exported[name] = o  # type: ignore
             return o
         if o is None:
             return capture_object  # type: ignore
@@ -190,11 +193,21 @@ class Exported(MutableMapping):
 
     __call__ = export
 
+    def export_alias(self, name: str, o: _T | None = None) -> _T:
+        def capture_object(o: _T) -> _T:
+            self.aliased[name] = o  # type: ignore
+            return o
+        if o is None:
+            return capture_object  # type: ignore
+        return capture_object(o)
+
     @classmethod
-    def fetch(cls, module: types.ModuleType) -> Mapping[str, Any]:
+    def fetch(cls, module: types.ModuleType) -> Self:
         """Return a mapping of a module's exports."""
         module = _get_module(module)
-        return types.MappingProxyType(getattr(module, cls.EXPORTED, {}))
+        return getattr(module, cls.EXPORTED, None) or cls(module)
+
+
 
 
 
@@ -220,7 +233,8 @@ class Imported(Sequence):
         self._name_map.clear()
         for k, v in self.module.__dict__.items():
             try:
-                self._name_map[v] = k
+                if v not in self._name_map:
+                    self._name_map[v] = k
             except TypeError:
                 continue
 
@@ -241,7 +255,7 @@ class Imported(Sequence):
                 return ''
             stmt.append(f"from {src} import (")
         elif self.relative:
-            if not self._imports:
+            if not self._imports and not self._exports:
                 return ''
             stmt.append(f'from .{src.split(".", maxsplit=1)[-1]} import (')
         else:
@@ -251,7 +265,13 @@ class Imported(Sequence):
         for o in self._imports:
             imports.append(f"    {self._name_map[o]},")
         for o in self._exports:
-            o_name = self._name_map[o]
+            try:
+                o_name = self._name_map[o]
+            except KeyError:
+                if isinstance(o, str) and hasattr(self.module, o):
+                    o_name = o
+                else:
+                    raise
             imports.append(f"    {o_name} as {o_name},")
 
         if self.sorted:
@@ -366,16 +386,27 @@ def to_source_parameters(parameters: Mapping[str, Parameter]) -> str:
 
         src.append(src_string)
 
-    return ', '.join(src)
+    return ', '.join(src).replace("*, /,", "/, *,")
 
 
-def to_source_function(fn: Callable, signature: inspect.Signature | None = None) -> str:
-    """Return a source code string containing the definition and
-    signature of a function.
-    """
-    signature = signature or inspect.signature(fn)
-    if signature.return_annotation is signature.empty:
-        return_tp = 'None'
+def to_source_function(fn: Callable):
+    pyi = []
+
+    overloads = get_overloads(fn)
+    if overloads:
+        for ovrld in overloads:
+            sig = inspect.signature(ovrld)
+            params = to_source_parameters(sig.parameters)
+            return_tp = object_annotation(sig.return_annotation)
+            pyi.extend((
+                f"@overload",
+                f"def {fn.__name__}({params}) -> {return_tp}: ...",
+            ))
+
     else:
-        return_tp = trim_lookup_trail(uneval(signature.return_annotation))
-    return f"def {fn.__name__}({to_source_parameters(signature.parameters)}) -> {return_tp}: ..."
+        sig = inspect.signature(fn)
+        params = to_source_parameters(sig.parameters)
+        return_tp = object_annotation(sig.return_annotation)
+        pyi.append(f"def {fn.__name__}({params}) -> {return_tp}: ...")
+
+    return '\n'.join(pyi)
