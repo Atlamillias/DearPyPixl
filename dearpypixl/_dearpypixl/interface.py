@@ -723,11 +723,11 @@ class AppItemType(api.Item, int, register=False, metaclass=AppItemMeta):
         for k in ('theme', 'font', 'handlers'):
             item = save_state[k]
             if item:
-                save_state[k] = _get_base_itp(item).new(item).__reduce_ex__()
+                save_state[k] = _get_base_itp(item).new(item).__reduce_ex__(protocol)
 
         for slot in save_state['children']:
             for i, child in enumerate(slot):
-                slot[i] = _get_base_itp(child).new(child).__reduce_ex__()
+                slot[i] = _get_base_itp(child).new(child).__reduce_ex__(protocol)
 
         # When unpickled, the loader will inject the parent's
         # alias into a child's save state before loading it.
@@ -756,7 +756,7 @@ class AppItemType(api.Item, int, register=False, metaclass=AppItemMeta):
             for k, v in itf_state.items():
                 # it falls upon the user to serialize anything else
                 if isinstance(v, AppItemType):
-                    itf_state[k] = v.__reduce_ex__()
+                    itf_state[k] = v.__reduce_ex__(protocol)
                     itf_state_keys.append(k)
             save_state['itf_state_keys'] = tuple(itf_state_keys)
 
