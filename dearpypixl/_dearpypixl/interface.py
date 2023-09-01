@@ -442,6 +442,10 @@ class ABCAppItemMeta(AppItemMeta, abc.ABCMeta):
 
 
 
+
+
+
+
 # [ `AppItemType` HELPERS ]
 
 def _onetime_setup(fn: _T) -> _T:
@@ -465,13 +469,15 @@ def _get_base_itp(item: Item, information: common.ItemInfoDict | None = None):
     ]
 
 
+# `AppItemType.__reduce__`
+
 _Reduced = tuple[
-    Callable[..., _ITP],
-    tuple[type[_ITP], tuple[Any, ...], dict[str, Any]],
-    '_SaveState',
-    Iterator[Any] | None,
-    Iterator[tuple[str, Any]] | None,
-    Callable[[_ITP, '_SaveState'], _ITP],
+    Callable[..., _ITP],                                     # `_new_from_reduced`
+    tuple[type[_ITP], str, tuple[Any, ...], dict[str, Any]], # (class, alias, args, kwargs)
+    '_SaveState',                                            # ...
+    Iterator[Any] | None,                                    # None
+    Iterator[tuple[str, Any]] | None,                        # None
+    Callable[[_ITP, '_SaveState'], _ITP],                    # `_load_reduced`
 ]
 
 class _SaveState(TypedDict):
@@ -510,28 +516,16 @@ def _to_save_state(item: 'AppItemType', info: common.ItemInfoDict | None = None,
         "itf_state_keys": (),
     }
 
+def _new_from_reduced(cls: type['AppItemType'], alias: str, *args, **kwargs):
+    if RegistryAPI.item_exists(alias):
+        kwargs['tag'] = alias
+    return cls.__new__(cls, *args, **kwargs)
+
 def _load_reduced(item: 'AppItemType', save_state: _SaveState, source_map: dict['AppItemType', str] | None = None, root_caller: bool = True):
     """Loader for nested reduced/pickled item interfaces."""
     if root_caller:
         assert source_map is None
         source_map = {}
-
-    # The interface state is restored first because the
-    # relationship of the item and `source` are unknown.
-    # This gives every opportunity to ensure it exists.
-    itf_state = save_state['itf_state']
-    if itf_state:
-        for k in save_state['itf_state_keys']:
-            newfn, newargs, ss, *_ = itf_state[k]
-            newcls, newargs, newkwds = newargs
-            itf = newfn(newcls, *newargs, **newkwds)
-            _load_reduced(itf, ss, source_map, False)
-        setstate = getattr(item, '__setstate__', None)
-        if setstate:
-            setstate(itf_state)
-        else:
-            for k, v in itf_state.items():
-                setattr(item, k, v)
 
     # Re-create the item state. The check sort of acts
     # as a memo map; reducing the chances of creating
@@ -551,16 +545,16 @@ def _load_reduced(item: 'AppItemType', save_state: _SaveState, source_map: dict[
             reduced = save_state[k]
             if reduced:
                 newfn, newargs, ss, *_ = reduced
-                newcls, newargs, newkwds = newargs
-                itf = newfn(newcls, *newargs, **newkwds)
+                newcls, _alias, newargs, newkwds = newargs
+                itf = newfn(newcls, _alias, *newargs, **newkwds)
                 _load_reduced(itf, ss, source_map, False)
                 getattr(item, f'set_{k}')(itf)
 
         for slot in save_state['children']:
             for reduced in slot:
                 newfn, newargs, ss, *_ = reduced
-                newcls, newargs, newkwds = newargs
-                itf = newfn(newcls, *newargs, **newkwds)
+                newcls, _alias, newargs, newkwds = newargs
+                itf = newfn(newcls, _alias, *newargs, **newkwds)
                 ss['parent'] = alias
                 _load_reduced(itf, ss, source_map, False)
 
@@ -574,6 +568,21 @@ def _load_reduced(item: 'AppItemType', save_state: _SaveState, source_map: dict[
                 source_map[item] = source  # type: ignore
             else:
                 ItemAPI.configure(item, source=source)
+
+    itf_state = save_state['itf_state']
+    if itf_state:
+        for k in save_state['itf_state_keys']:
+            newfn, newargs, ss, *_ = itf_state[k]
+            newcls, _alias, newargs, newkwds = newargs
+            itf = newfn(newcls, _alias, *newargs, **newkwds)
+            _load_reduced(itf, ss, source_map, False)
+            itf_state[k] = itf
+        setstate = getattr(item, '__setstate__', None)
+        if setstate:
+            setstate(itf_state)
+        else:
+            for k, v in itf_state.items():
+                setattr(item, k, v)
 
     # If sources do not exist at this point, they were not
     # referenced in any identifiable way in the reduced tree.
@@ -762,8 +771,8 @@ class AppItemType(api.Item, int, register=False, metaclass=AppItemMeta):
 
         cls = self.__class__
         return (
-            cls.__new__,
-            (cls, *self.__getnewargs_ex__()),
+            _new_from_reduced,
+            (cls, alias, *self.__getnewargs_ex__()),
             save_state,
             None,
             None,
