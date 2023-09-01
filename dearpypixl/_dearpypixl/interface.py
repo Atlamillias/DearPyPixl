@@ -27,6 +27,7 @@ from .common import (
     Literal,
     Iterable,
     Generic,
+    Unpack,
     Mapping,
     Property,
     Sequence,
@@ -140,8 +141,12 @@ def _create_init_method(cls: Any, parameters: Mapping[str, Parameter]) -> Any:
     )
     method.__name__      = '__init__'
     method.__qualname__  = f'{cls.__qualname__}.__init__'
+
+    params = [Parameter('self', Parameter.POSITIONAL_OR_KEYWORD), *parameters.values()]
+    if 'kwargs' not in parameters:
+        params.append(Parameter('kwargs', Parameter.VAR_KEYWORD))
     method.__signature__ = inspect.Signature(
-        [Parameter('self', Parameter.POSITIONAL_OR_KEYWORD), *parameters.values()],
+        params,
         return_annotation=None,
     )
     command = cls.command
@@ -185,10 +190,10 @@ def _create_configure_method(cls: Any, parameters: Mapping[str, Parameter]) -> A
         ),
         None,
         locals={
-            '__class__'       : cls,
-            'errors'          : errors,
-            'configure_item'  : _dearpygui.configure_item,
-            '_ITEM_CFG_KEYS'  : frozenset(parameters),
+            '__class__'        : cls,
+            'errors'           : errors,
+            'configure_item'   : _dearpygui.configure_item,
+            '_ITEM_CFG_KEYS'   : frozenset(parameters),
         }
     )
     method.__name__      = "configure"
@@ -351,19 +356,25 @@ class AppItemMeta(type):
 
             # these methods are built only once per base type
             if getattr(cls, '__init__', object.__init__) is object.__init__:
-                setattr(cls, '__init__', _create_init_method(cls, tp_def.init_parameters))
+                setattr(cls, '__init__', _create_init_method(cls, tp_def.init_params))
             if getattr(cls, "configure", api.Item.configure) is api.Item.configure:
-                setattr(cls, 'configure', _create_configure_method(cls, tp_def.config_parameters))
+                setattr(cls, 'configure', _create_configure_method(cls, tp_def.wconfig_params))
             if getattr(cls, "configuration", api.Item.configuration) is api.Item.configuration:
-                setattr(cls, 'configuration', _create_configuration_method(cls, tp_def.config_parameters))
+                setattr(cls, 'configuration', _create_configuration_method(cls, tp_def.rconfig_params))
 
-            # set missing configuration descriptors
-            for kwd in tp_def.config_parameters:
-                if hasattr(cls, kwd):
-                    continue
+            # Expose "configuration" options as a rw properties, even if
+            # they aren't writable. The `.configure` method will handle
+            # those errors.
+            config_params = list(tp_def.rconfig_params)
+            config_params.extend(
+                opt for opt in tp_def.wconfig_params if opt not in config_params
+            )
+            for opt in config_params:
+                if hasattr(cls, opt):
+                    continue  # `AppItemType` member, probably
                 config_desc = ItemConfig()
-                setattr(cls, kwd, config_desc)
-                config_desc.__set_name__(cls, kwd)  # type: ignore
+                setattr(cls, opt, config_desc)
+                config_desc.__set_name__(cls, opt)  # type: ignore
 
             _register_itemtype(cls, register=register)
 
@@ -499,18 +510,22 @@ def _to_save_state(item: 'AppItemType', info: common.ItemInfoDict | None = None,
         "itf_state_keys": (),
     }
 
-def _load_reduced(item: 'AppItemType', save_state: _SaveState):
-    """Loader for reduced/pickled item interfaces."""
+def _load_reduced(item: 'AppItemType', save_state: _SaveState, source_map: dict['AppItemType', str] | None = None, root_caller: bool = True):
+    """Loader for nested reduced/pickled item interfaces."""
+    if root_caller:
+        assert source_map is None
+        source_map = {}
+
     # The interface state is restored first because the
     # relationship of the item and `source` are unknown.
     # This gives every opportunity to ensure it exists.
     itf_state = save_state['itf_state']
     if itf_state:
         for k in save_state['itf_state_keys']:
-            newfn, newargs, ss, *_, loader = itf_state[k]
+            newfn, newargs, ss, *_ = itf_state[k]
             newcls, newargs, newkwds = newargs
             itf = newfn(newcls, *newargs, **newkwds)
-            loader(itf, ss)
+            _load_reduced(itf, ss, source_map, False)
         setstate = getattr(item, '__setstate__', None)
         if setstate:
             setstate(itf_state)
@@ -533,34 +548,47 @@ def _load_reduced(item: 'AppItemType', save_state: _SaveState):
         for k in ('theme', 'font', 'handlers'):
             reduced = save_state[k]
             if reduced:
-                newfn, newargs, ss, *_, loader = reduced
+                newfn, newargs, ss, *_ = reduced
                 newcls, newargs, newkwds = newargs
                 itf = newfn(newcls, *newargs, **newkwds)
-                loader(itf, ss)
+                _load_reduced(itf, ss, source_map, False)
                 getattr(item, f'set_{k}')(itf)
 
         for slot in save_state['children']:
             for reduced in slot:
-                newfn, newargs, ss, *_, loader = reduced
+                newfn, newargs, ss, *_ = reduced
                 newcls, newargs, newkwds = newargs
                 itf = newfn(newcls, *newargs, **newkwds)
                 ss['parent'] = alias
-                loader(itf, ss)
+                _load_reduced(itf, ss, source_map, False)
+
+        item.set_value(save_state['value'])
 
         config = save_state['configuration']
-        # If `source` has any ('physical'?) ties to this
-        # interface/item, it should exist by now.
         source = config.get('source', 0)
-        if source and not RegistryAPI.item_exists(source):
-            raise RuntimeError(
-                f'{type(item).__name__!r} state loading error -- '
-                f'`source` item {source!r} does not exist.'
-            )
-        else:
-            item.set_value(save_state['value'])
+        if source:
+            # don't set it now -- the root caller will try later
+            if not RegistryAPI.item_exists(source):
+                del config['source']
+                source_map[item] = source  # type: ignore
+
         ItemAPI.configure(item, **config)
 
+    # If sources do not exist at this point, they were not
+    # referenced in any identifiable way in the reduced tree.
+    if root_caller:
+        for itf, source in source_map.items():    # type: ignore
+            try:
+                itf.configure(source=source)
+            except SystemError:
+                if not RegistryAPI.item_exists(source):
+                    raise RuntimeError(
+                        f'{type(item).__name__!r} state loading error -- '
+                        f'`source` item {source!r} does not exist.'
+                    )
+                raise
     return item
+
 
 
 # Interfaces need to be instances of the built-in `int` or `str` type
@@ -1009,6 +1037,7 @@ class AppItemType(api.Item, int, register=False, metaclass=AppItemMeta):
 
 class ABCAppItemType(AppItemType, metaclass=ABCAppItemMeta):
     """Abstract interface base class."""
+    __slots__ = ()
 
 
 
@@ -1117,8 +1146,7 @@ class mvAll(
 
 
 
-# [ CORE COMPONENTS ]
-
+# [ COMPONENT TYPES ]
 
 # LOW-LEVEL CLASSIFICATION TYPES
 
@@ -1453,9 +1481,17 @@ class SupportsCallback(AppItemType, Generic[_P, _T]):
     __code__ = __call__.__code__
 
 
+assert all(
+    '__slots__' in itp.__dict__
+    for itp in AppItemType.__subclasses__()
+)
 
 
-def itp_base_from_def(tp_def: parsing.ItemDefinition) -> type[AppItemType]:
+
+
+# [ ITEMTYPE FACTORIES ]
+
+def create_itemtype(tp_def: parsing.ItemDefinition) -> type[AppItemType]:
     tp_name: str = tp_def.name # type: ignore
     reg_key = f'mvAppItemType::{tp_name}'
 
@@ -1545,83 +1581,6 @@ def itp_base_from_def(tp_def: parsing.ItemDefinition) -> type[AppItemType]:
 
 
 
-# [ THEME ELEMENT COMPONENTS ]
-
-class ThemeElementType(SupportsValueArray, BasicType, ThemeType):
-    __slots__ = ()
-
-    category: classproperty[constants.ThemeCategory]
-    target  : classproperty[int]
-
-    def __init__(self, tag: Item = 0, **kwargs):
-        kwargs.update(
-            category=self.category,
-            target=self.target,
-        )
-        try:
-            self.command(tag=self, **kwargs)
-        except (SystemError, TypeError) as e:
-            if not errors.does_item_exist(self) or (not tag and kwargs):
-                err_chks = (
-                    errors.err_arg_unexpected,
-                    errors.err_parent_invalid,
-                )
-                for err_chk in err_chks:
-                    err = err_chk(self, self.command, **kwargs)
-                    if err:
-                        self.destroy()
-                self.destroy()
-                raise
-
-
-class ThemeColor(ThemeElementType, register=False):
-    __slots__ = ()
-
-    command  = dearpygui.add_theme_color
-    identity = dearpygui.mvThemeColor, 'mvAppItemType::mvThemeColor'
-
-    @overload
-    def __init__(self, value: Color, /, **kwargs) -> None: ...
-    @overload
-    def __init__(self, r: int, g: int, b: int, a: int = 255, /, **kwargs) -> None: ...
-    def __init__(self, value: Any, /, *args: int, tag: Item = 0, **kwargs) -> None:
-        super().__init__(value=value if not args else (value, *args), **kwargs)
-
-
-class ThemeStyle(ThemeElementType, register=False):
-    __slots__ = ()
-
-    command  = dearpygui.add_theme_style
-    identity = dearpygui.mvThemeStyle, 'mvAppItemType::mvThemeStyle'
-
-    def __init__(self, x: float = 1, y: float = -1, **kwargs) -> None:
-        super().__init__(x=x, y=y, **kwargs)
-
-
-def itp_theme_element_from_def(tp_def: parsing.TElemDefinition) -> type[ThemeElementType]:
-    category = constants.ThemeCategory(tp_def.category)
-
-    if tp_def.type == tp_def.COLOR:
-        tp_base = ThemeColor
-    else:
-        assert tp_def.type == tp_def.STYLE
-        tp_base = ThemeStyle
-
-    name = tp_def.name \
-        .replace("_", "") \
-        .replace("Background", "Bg") \
-        .replace("bg", "Bg")
-
-    return type(  # type: ignore
-        name,
-        (tp_base,),
-        {
-            "__slots__": (),
-            "category" : classproperty(lambda cls, *, _category=category: _category),
-            "target"   : classproperty(lambda cls, *, _target=tp_def.enum: _target),
-        },
-        register=False
-    )
 
 
 

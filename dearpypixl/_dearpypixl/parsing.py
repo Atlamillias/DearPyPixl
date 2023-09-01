@@ -5,12 +5,11 @@ import array
 import typing
 import inspect
 import textwrap
-import functools
 import threading
 import dataclasses
 from inspect import Parameter
 from dearpygui import dearpygui
-from . import common, tools
+from . import common, constants, tools
 from .common import (
     Any,
     Item,
@@ -116,24 +115,24 @@ def is_item_command(o: Any, /) -> bool:
 
 
 
+
+
+
+
 @dataclasses.dataclass(slots=True, frozen=True)
 class ItemDefinition:
-    name         : str
-    enum         : int
-    command1     : ItemCommand
-    command2     : ItemCommand | None
+    name          : str
+    enum          : int
+    command1      : ItemCommand
+    command2      : ItemCommand | None
+    init_params   : Mapping[str, Parameter] = dataclasses.field(repr=False)
+    rconfig_params: Mapping[str, Parameter] = dataclasses.field(repr=False)
+    wconfig_params: Mapping[str, Parameter] = dataclasses.field(repr=False)
 
-    init_parameters  : Mapping[str, Parameter] = dataclasses.field(init=False, repr=False)
-    config_parameters: Mapping[str, Parameter] = dataclasses.field(init=False, repr=False)
-    is_container     : bool                    = dataclasses.field(init=False, repr=False)
+    is_container: bool = dataclasses.field(init=False, repr=False)
 
     def __post_init__(self):
-        parameters = upd_param_annotations(
-            inspect.signature(self.command1).parameters
-        )
         _setattr = object.__setattr__.__get__(self)
-        _setattr('init_parameters', types.MappingProxyType(parameters))
-        _setattr('config_parameters', types.MappingProxyType(get_config_parameters(parameters)))
         _setattr('is_container', bool(self.command2))
 
 
@@ -206,7 +205,7 @@ def item_definitions() -> Mapping[str, ItemDefinition]:
         if tp_cmd2 is not None:
             command_cache.add(tp_cmd2)
 
-        # find/build type name
+        # build final itemtype name
         if tp_cmd1 in commands_to_names:
             tp_name = commands_to_names[tp_cmd1]
             tp_enum = name_to_enum[tp_name]
@@ -232,11 +231,38 @@ def item_definitions() -> Mapping[str, ItemDefinition]:
                 else:
                     raise
 
+        # build method parameters
+        init_params = upd_param_annotations(
+            inspect.signature(tp_cmd1).parameters
+        )
+
+        # Ideally, `.configure` should accept what `.configuration` returns
+        # as keyword args. But not everything is writable. At the very least,
+        # `type(itf)(**.itf.configuration())` MUST be possible so that the
+        # interface can be accurately copied/reconstructed.
+        # `get_config_parameters` handles a lot of this, but some detail work
+        # may need to be done per type.
+        rconfig_params = get_config_parameters(init_params)
+        if tp_name in ("mvThemeColor", "mvThemeStyle"):
+            # `.configure`    : -`target`, -`category`
+            # `.configuration`: +`target`, +`category`
+            wconfig_params = rconfig_params.copy()
+            wconfig_params.pop('category', None)
+            rconfig_params['target'] = init_params['target'].replace(
+                kind=Parameter.KEYWORD_ONLY
+            )
+        else:
+            wconfig_params = rconfig_params
+
+
         name_to_def[tp_name] = ItemDefinition(
-            tp_name,
-            tp_enum,
-            tp_cmd1,
-            tp_cmd2,
+            name=tp_name,
+            enum=tp_enum,
+            command1=tp_cmd1,
+            command2=tp_cmd2,
+            init_params=types.MappingProxyType(init_params),
+            rconfig_params=types.MappingProxyType(rconfig_params),
+            wconfig_params=types.MappingProxyType(wconfig_params),
         )
 
     return types.MappingProxyType({n:name_to_def[n] for n in sorted(name_to_def)})  # type: ignore
@@ -245,18 +271,18 @@ def item_definitions() -> Mapping[str, ItemDefinition]:
 
 
 @dataclasses.dataclass(slots=True, frozen=True)
-class TElemDefinition:
-    name    : str
-    enum    : int
-    type    : Literal['color', 'style']
-    category: int
+class ElementDefinition:
+    name1   : str
+    name2   : str
+    type    : Literal['mvThemeColor', 'mvThemeStyle']
+    constant: str
+    target  : int
+    category: constants.ThemeCategory
 
-    COLOR = 'color'
-    STYLE = 'style'
 
 
 @tools.cache_once
-def theme_element_definitions() -> Mapping[str, TElemDefinition]:
+def element_definitions() -> Mapping[str, ElementDefinition]:
     const_pfxs = (
         "mvThemeCol",
         "mvPlotCol",
@@ -268,26 +294,33 @@ def theme_element_definitions() -> Mapping[str, TElemDefinition]:
         "mvNodesStyleVar",
     )
 
-    CORE = dearpygui.mvThemeCat_Core
-    PLOT = dearpygui.mvThemeCat_Plots
-    NODE = dearpygui.mvThemeCat_Nodes
-    constants = {
+    CORE = constants.ThemeCategory(dearpygui.mvThemeCat_Core)
+    PLOT = constants.ThemeCategory(dearpygui.mvThemeCat_Plots)
+    NODE = constants.ThemeCategory(dearpygui.mvThemeCat_Nodes)
+    const_to_elem: dict[constants.ThemeCategory, dict[str, ElementDefinition]] = {
+        CORE: {},
+        PLOT: {},
+        NODE: {},
+    }
+    name_to_elem: dict[constants.ThemeCategory, dict[str, ElementDefinition]] = {
         CORE: {},
         PLOT: {},
         NODE: {},
     }
 
-    for const, value in dearpygui.__dict__.items():
-        pfx, *name = const.split("_", maxsplit=1)
+    RE_CAPS = re.compile(r'([A-Z])')
+
+    for constant, target in dearpygui.__dict__.items():
+        pfx, *name1 = constant.split("_", maxsplit=1)
         if pfx not in const_pfxs:
             continue
-        name = name[0]
+        name1 = name1[0] \
+            .replace("_", "") \
+            .replace("Background", "Bg") \
+            .replace("bg", "Bg")
+        name2 = '_'.join(re.sub(RE_CAPS, r' \1', name1).split()).lower()
 
-        if pfx.endswith("Col"):
-            kind = TElemDefinition.COLOR
-        else:
-            assert pfx.endswith("StyleVar")
-            kind = TElemDefinition.STYLE
+        kind = 'mvThemeColor' if pfx.endswith("Col") else 'mvThemeStyle'
 
         if pfx.startswith('mvPlot'):
             category = PLOT
@@ -295,37 +328,58 @@ def theme_element_definitions() -> Mapping[str, TElemDefinition]:
             category = NODE
         else:
             category = CORE
+        name_to_elem[category]
 
-        constants[category][const] = TElemDefinition(
-            name,
-            value,
-            kind,
-            category,
+        element = ElementDefinition(
+            name1=name1,
+            name2=name2,
+            type=kind,
+            constant=constant,
+            target=target,
+            category=category,
+        )
+        const_to_elem[category][constant] = element
+        assert name1 not in name_to_elem[category]
+        name_to_elem[category][name1] = element
+
+    # Using the names formated above can cause plot and node
+    # elements to shadow core elements. Core elements should
+    # keep the more simple and intuitive name(s).
+    for cat in (PLOT, NODE):
+        name_map = name_to_elem[cat]
+        for name1, element in name_map.items():
+            if name1 in name_to_elem[CORE]:
+                name1 = f'{cat.name.title()}{name1}'
+                assert name1 not in name_to_elem[CORE]
+                assert name1 not in name_map
+                object.__setattr__(element, 'name1', name1)
+                object.__setattr__(element, 'name2', f'{cat.name.lower()}_{element.name2}')
+
+    for cat in constants.ThemeCategory:
+        const_to_elem[cat] = dict(
+            sorted(const_to_elem[cat].items(), key=lambda x: x[1].name1)  # type: ignore
         )
 
     return types.MappingProxyType(
-        dict(sorted(constants[CORE].items())) | dict(sorted(constants[PLOT].items())) | dict(sorted(constants[NODE].items()))
+        const_to_elem[CORE] | const_to_elem[PLOT] | const_to_elem[NODE]
     )
 
-def theme_color_definitions():
-    return types.MappingProxyType(
-        {k:v for k,v in theme_element_definitions().items() if v.type == TElemDefinition.COLOR}
-    )
-
-def theme_style_definitions():
-    return types.MappingProxyType(
-        {k:v for k,v in theme_element_definitions().items() if v.type == TElemDefinition.STYLE}
-    )
-
-
-
-
-@functools.cache
-def theme_cat_constants() -> Mapping[str, int]:
+@tools.cache_once
+def color_definitions() -> Mapping[str, ElementDefinition]:
     return types.MappingProxyType({
-        c:v for c,v in dearpygui.__dict__.items()
-        if c.startswith("mvThemeCat_")
+        k:v for k,v in element_definitions().items()
+        if v.type == "mvThemeColor"
     })
+
+@tools.cache_once
+def style_definitions() ->  Mapping[str, ElementDefinition]:
+    return types.MappingProxyType({
+        k:v for k,v in element_definitions().items()
+        if v.type == "mvThemeStyle"
+    })
+
+
+
 
 
 
