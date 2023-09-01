@@ -538,11 +538,13 @@ def _load_reduced(item: 'AppItemType', save_state: _SaveState, source_map: dict[
     # interfaces of items already re-created.
     alias = save_state['alias']
     if not RegistryAPI.item_exists(alias):
+        config = save_state['configuration']
+        source = config.pop('source', 0)
         parent = save_state['parent']
         if parent:
-            item.command(tag=item, parent=parent)
+            item.command(tag=item, parent=parent, **config)
         else:
-            item.command(tag=item)
+            item.command(tag=item, **config)
         item.set_alias(alias)
 
         for k in ('theme', 'font', 'handlers'):
@@ -565,14 +567,14 @@ def _load_reduced(item: 'AppItemType', save_state: _SaveState, source_map: dict[
         item.set_value(save_state['value'])
 
         config = save_state['configuration']
-        source = config.get('source', 0)
+
         if source:
             # don't set it now -- the root caller will try later
             if not RegistryAPI.item_exists(source):
                 del config['source']
                 source_map[item] = source  # type: ignore
-
-        ItemAPI.configure(item, **config)
+            else:
+                ItemAPI.configure(item, source=source)
 
     # If sources do not exist at this point, they were not
     # referenced in any identifiable way in the reduced tree.
