@@ -741,7 +741,7 @@ class AppItemType(api.Item, int, register=False, metaclass=AppItemMeta):
         # exist in a separate item branch. Ensure it has an alias
         # and hope for the best. Ideally, the user will pickle it
         # as well, and load beforehand. No worries if `source` is
-        # a child of this item since the loader
+        # a child of this item, since the loader can cover that.
         source = save_state['configuration'].get('source', 0)
         if source:
             _source = ItemAPI.get_alias(source)
@@ -946,7 +946,7 @@ class AppItemType(api.Item, int, register=False, metaclass=AppItemMeta):
 
     # information members
     @property
-    def parent(self) -> 'mvAll | None':
+    def parent(self) -> 'mvAll':
         """[get] Return an interface for the item's parent, or None if
         the item is not parented.
         """
@@ -1091,6 +1091,9 @@ class mvAll(
     def __exit__(self, *args) -> None:
         self.pop_stack()
 
+    def __reduce_ex__(self, protocol: int = -1):
+        return _get_base_itp(self).new(self).__reduce_ex__(protocol)
+
     # Identity-related class properties would always return False,
     # so they need to be re-implemented. Fortunately, class-level
     # insight isn't needed for this interface since the type itself
@@ -1179,6 +1182,8 @@ class RootType(ContainerType):
     """Interface for top-level container items. Root items cannot be parented.
     """
     __slots__ = ()
+
+    parent: Property[None]
 
 
 @_exported
