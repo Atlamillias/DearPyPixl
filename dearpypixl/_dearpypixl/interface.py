@@ -96,7 +96,7 @@ def _register_itemtype(cls: Any, *, register: bool | None):
         AppItemMeta.__itemtype_registry__[cls.identity[1]] = cls
 
 
-def _get_itp_subclasses(*parent_cls: type[_T]) -> tuple[type[_T]]:
+def _get_itp_subclasses(*parent_cls: type[_T]) -> tuple[type[_T], ...]:
     return tuple(
         cls for cls in AppItemMeta.__itemtype_registry__.values()
         if issubclass(cls, parent_cls)
@@ -1613,55 +1613,55 @@ def interface(item: Item, *, initialize: bool = False, default_itp: type[_ITP] =
 
 
 @_exported
-def registry_types() -> tuple[type[RegistryType]]:
+def registry_types():
     """Return all registry-type item classes."""
     return _get_itp_subclasses(RegistryType)
 
 
 @_exported
-def root_types() -> tuple[type[RootType]]:
+def root_types():
     """Return all root-type item classes."""
     return _get_itp_subclasses(RootType)
 
 
 @_exported
-def container_types() -> tuple[type[ContainerType]]:
+def container_types():
     """Return all container-type item classes."""
     return _get_itp_subclasses(ContainerType)
 
 
 @_exported
-def basic_types() -> tuple[type[BasicType]]:
+def basic_types():
     """Return all non-container type item classes."""
     return _get_itp_subclasses(BasicType)
 
 
 @_exported
-def table_types() -> tuple[type[TableType]]:
+def table_types():
     """Return all table-type item classes."""
     return _get_itp_subclasses(TableType)
 
 
 @_exported
-def drawing_items() -> tuple[type[DrawingType]]:
+def drawing_items():
     """Return all drawing-type item classes."""
     return _get_itp_subclasses(DrawingType)
 
 
 @_exported
-def plotting_items() -> tuple[type[PlottingType]]:
+def plotting_items():
     """Return all plotting-type item classes."""
     return _get_itp_subclasses(PlottingType)
 
 
 @_exported
-def node_types() -> tuple[type[NodeType]]:
+def node_types():
     """Return all node-type item classes."""
     return _get_itp_subclasses(NodeType)
 
 
 @_exported
-def theme_types() -> tuple[type[ThemeType]]:
+def theme_types():
     """Return all theming-type item classes."""
     return _get_itp_subclasses(ThemeType)
 
