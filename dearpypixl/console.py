@@ -409,7 +409,7 @@ class ConsoleWindow(items.mvChildWindow):
         if redirect_stderr is not None:
             self.ctx_redirect_stderr = redirect_stderr
         self._attach_resize_handler()
-        
+
 
     # ResizeHandler management
 
@@ -611,7 +611,7 @@ class PythonConsole(ConsoleWindow):
     def filename(self):
         return self.locals.get('__name__', '<console>')
 
-    def _write_syntax_err(self, filename: str | None = None):
+    def _write_syntax_err(self):
         """Format and write the most recent syntax error set and
         write it to the console.
         """
@@ -619,17 +619,19 @@ class PythonConsole(ConsoleWindow):
         sys.last_type        = exc_tp
         sys.last_value       = exc_val
         sys.last_traceback   = tb
-        if filename and exc_tp is SyntaxError:
-            # try to replace the traceback's filename of `<string>`
-            try:
-                msg, _fn, line_no, offset, line = exc_val.args  # type: ignore
-            except ValueError:
-                # Unknown format, or `value` is None?
-                pass
-            else:
-                exc_val = SyntaxError(msg, (filename, line_no, offset, line))
-                sys.last_value = exc_val
+
+        # SyntaxErrors don't actually include the traceback in
+        # stderr. However, the traceback lines are formatted
+        # the same regardless. Remove the indent(s).
         lines = traceback.format_exception_only(exc_tp, exc_val)
+        indent = ""
+        for char in lines[0]:
+            if not char.isspace():
+                break
+            indent += char
+        for idx, ln in enumerate(lines):
+            lines[idx] = ln.removeprefix(indent)
+
         self.value_buffer.write(''.join(lines))
 
     def _write_traceback(self):
@@ -663,7 +665,7 @@ class PythonConsole(ConsoleWindow):
         try:
             code = self._compiler(s, filename, mode)
         except (OverflowError, SyntaxError, ValueError):
-            self._write_syntax_err(filename)
+            self._write_syntax_err()
             return None   # invalid source code
         if code is None:  # incomplete source code
             return False
@@ -727,7 +729,7 @@ class InteractivePython(items.mvChildWindow):
     def __init__(
         self,
         locals: dict[str, Any] | None = None,
-        echo  : bool                  = False,
+        echo  : bool                  = True,
         **kwargs
     ):
         """Args:
@@ -781,6 +783,9 @@ class InteractivePython(items.mvChildWindow):
     def _cb_enter(self, sender: Item, app_data: str, *args):
         self._input_pending.append(app_data)
         self.input.value = ''
+        if self.echo and app_data:
+            self.console.write(f"{self._input_prompt.value} {app_data}")
+            ItemAPI.set_theme(self.console.children(1)[-1], self._echo_theme)
         code = self.console.compile('\n'.join(self._input_pending))
         if code:
             self.console.push(code)
@@ -791,9 +796,6 @@ class InteractivePython(items.mvChildWindow):
             self._input_pending.clear()
         else:  # pending
             self._input_prompt.value = self._PROMPT_2
-            if self.echo:
-                self.console.write(app_data)
-                ItemAPI.set_theme(self.console.children(1)[-1], self._echo_theme)
         self.input.focus()
 
     def _cb_resize(self):
