@@ -4,7 +4,7 @@ from dearpygui import dearpygui
 from ._dearpypixl import api, tools, interface
 from. _dearpypixl.common import (
     Item,
-    Interface,
+    ItemCallback,
     Any,
     Callable,
     TypeVar,
@@ -17,7 +17,6 @@ from ._dearpypixl.callback import (
     Callback,
     Callstack,
     CallStack,
-    ItemCallback,
 )
 from . import items
 

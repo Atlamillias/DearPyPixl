@@ -8,9 +8,9 @@ from inspect import Parameter as _Parameter
 from .common import (
     Any,
     Item,
+    ItemCallback,
     Array,
     ItemConfig,
-    Protocol,
     Property,
     Iterable,
     Callable,
@@ -47,37 +47,6 @@ class _empty: ... # this declaration keeps the typechecker quiet
 _empty = tools.create_marker_type("Empty")  # type: ignore
 
 Empty = type[_empty]
-
-
-
-class _ItemCallback0(Protocol):
-    __code__: types.CodeType
-    def __call__(self, /) -> Any: ...
-
-class _ItemCallback1(Protocol):
-    __code__: types.CodeType
-    def __call__(self, __sender: Item, /) -> Any: ...
-
-class _ItemCallback2(Protocol):
-    __code__: types.CodeType
-    def __call__(self, __sender: Item, __app_data: Any, /) -> Any: ...
-
-class _ItemCallback3(Protocol):
-    __code__: types.CodeType
-    def __call__(self, __sender: Item, __app_data: Any, __user_data: Any, /) -> Any: ...
-
-class _ItemCallback4(Protocol):
-    __code__: types.CodeType
-    def __call__(self, /, *args: Any) -> Any: ...
-
-ItemCallback = TypeVar(
-    "ItemCallback",
-    _ItemCallback0,
-    _ItemCallback1,
-    _ItemCallback2,
-    _ItemCallback3,
-    _ItemCallback4,
-)
 
 
 
