@@ -282,11 +282,11 @@ class Imported(Sequence):
         return '\n'.join(stmt)
 
     @property
-    def imports(self) -> tuple[Any]:
+    def imports(self) -> tuple:
         return tuple(self._imports)
 
     @property
-    def exports(self) -> tuple[Any]:
+    def exports(self) -> tuple:
         return tuple(self._exports)
 
     def copy(self) -> Self:
