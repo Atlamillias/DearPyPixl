@@ -74,6 +74,9 @@ else:
     from typing import override
 from . import tools
 
+if TYPE_CHECKING:
+    from .interface import AppItemType
+
 
 # Super-primitive types and protocols are declared here.
 # Parts of the lib rely on runtime type annotations, so
@@ -224,6 +227,10 @@ Point = Array[int, int]
 ItemAlias  = str
 ItemUUID   = int
 Item       = ItemUUID | ItemAlias
+
+Interface = TypeVar("Interface", bound='AppItemType')
+ItemType  = TypeVar("ItemType", bound=type['AppItemType'])
+
 
 class ItemCommand(Protocol[_P]):
     __name__: str
