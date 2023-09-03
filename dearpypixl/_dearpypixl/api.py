@@ -239,6 +239,20 @@ _dearpygui_override(_dearpygui.generate_uuid)(lambda: _create_uuid())
 # :::::::::::::::::::::::::::::::::::::::::::::::::::::::: API ::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 # :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
+# Used like `dearpygui.mutex. This doesn't carry the extra
+# baggage that`contextlib.contextmanager` does.
+class mutex:
+    __slots__ = ()
+
+    def __enter__(self):
+        return _dearpygui.lock_mutex()
+
+    def __exit__(self, *args):
+        _dearpygui.unlock_mutex()
+
+
+
+
 # It's best to think of the classes below as modules. Because that's
 # what they are -- inheritable modules.
 
@@ -1255,6 +1269,19 @@ class Runtime(common.ItemInterface, metaclass=_RuntimeMeta):
     def frame_rate():
         """Return the average frame rate over the last 120 frames."""
         return _dearpygui.get_frame_rate()
+
+    @staticmethod
+    @__rt_config
+    def split_frame(locker, delay: int | None = None) -> None:
+        """Adds a delay in milliseconds. Similar to `time.sleep`.
+
+        Args:
+            delay: Time to wait in milliseconds. False-like values
+            evaluate to a delay of one frame.
+        """
+        _dearpygui.split_frame(
+            delay=delay or int(locker.value['render_interval']) or 16,
+        )
 
     @staticmethod
     def is_key_down(key: int):
