@@ -35,13 +35,10 @@ __all__ = [
     'CallStack',
     # functions
     'callback',
-    'cooldown',
-    'cooldown_s',
 ]
 
 
 
-_N = TypeVar("_N", float, int)
 _P = ParamSpec("_P")
 _T = TypeVar("_T")
 
@@ -674,91 +671,3 @@ def callback(callback: Any = None, sender: Any = _empty, app_data: Any = _empty,
     if callback is None:
         return capture_callback
     return capture_callback(callback)
-
-
-@overload
-def cooldown(timer_fn: Callable[[], _N], interval: _N, /, *, no_args: bool = False) -> Callable[[Callable[_P, Any]], Callable[_P, None]]: ...
-@overload
-def cooldown(timer_fn: Callable[[], _N], interval: _N, /, *, no_args: bool = True) -> Callable[[Callable[[], Any]], Callable[[], None]]: ...
-@overload
-def cooldown(timer_fn: Callable[[], _N], interval: _N, callback: Callable[_P, Any], /, *, no_args: bool = False) -> Callable[_P, None]: ...
-@overload
-def cooldown(timer_fn: Callable[[], _N], interval: _N, callback: Callable[_P, Any], /, *, no_args: bool = True) -> Callable[[], None]: ...
-def cooldown(timer_fn: Callable[[], _N], interval: _N, callback: Any = None, /, *, no_args: bool = False):
-    """Return a wrapper that, when called, executes the target callable only
-    if enough time has elapsed since the last time it was ran. Can be used
-    as a function decorator.
-
-    This function adds a "cooldown" to a callable, limiting how often it can
-    be executed over a period of time. In the event that not enough time has
-    elapsed between calls (where *callback* was actually executed), the call
-    simply does nothing.
-
-    *timer_fn* should be a zero-argument callable that returns a number
-    representing a unit of time, while *interval* is the amount of time needed
-    between consecutive calls. *interval* and the return of *timer_fn* must
-    be of the same time unit. For example, if *timer_fn* returns fractional
-    seconds (i.e. `time.perf_counter`), then the value of *interval* is expected
-    to also be a fractional number of seconds.
-
-    By default, the returned wrapper forwards all arguments to the target
-    callable. The process adds some overhead which may be notable for more time-
-    sensitive programs. Setting the *no_args* flag reduces this overhead
-    considerably by simplifying the returned wrapper. It cannot accept
-    arguments, however, and will call *callback* without trying to pass any.
-
-    This function does not create or utilize threads, nor does it queue
-    the callable for execution in any way.
-    """
-    def capture_callback(callback: Callable) -> Callable:
-        if no_args:
-            def recurring_tasker():  # type: ignore
-                ts_last_update = timer_fn() - interval
-                while True:
-                    ts_this_update = timer_fn()
-                    if ts_this_update - ts_last_update >= interval:
-                        ts_last_update = ts_this_update
-                        callback()
-                    yield
-
-            dispatcher = recurring_tasker().__next__  # type: ignore
-
-        else:
-            def recurring_tasker():
-                ts_last_update = timer_fn() - interval
-                args, kwds = yield
-                while True:
-                    ts_this_update = timer_fn()
-                    if ts_this_update - ts_last_update >= interval:
-                        ts_last_update = ts_this_update
-                        callback(*args, **kwds)
-                    args, kwds = yield
-
-            @functools.wraps(callback)
-            def dispatcher(*args, **kwargs) -> None:
-                _dispatcher.send((args, kwargs))
-
-            _dispatcher = recurring_tasker()
-            next(_dispatcher)  # prime generator
-
-        return dispatcher
-
-    if callback is None:
-        return capture_callback
-    return capture_callback(callback)
-
-
-@overload
-def cooldown_s(interval: _N, /, *, no_args: bool = False) -> Callable[[Callable[_P, Any]], Callable[_P, None]]: ...
-@overload
-def cooldown_s(interval: _N, /, *, no_args: bool = True) -> Callable[[Callable[[], Any]], Callable[[], None]]: ...
-@overload
-def cooldown_s(interval: _N, callback: Callable[_P, Any], /, *, no_args: bool = False) -> Callable[_P, None]: ...
-@overload
-def cooldown_s(interval: _N, callback: Callable[_P, Any], /, *, no_args: bool = True) -> Callable[[], None]: ...
-def cooldown_s(interval: _N, callback: Any = None, /, no_args: bool = False):  # type: ignore
-    """Adds a cooldown to a callable with an interval in fractional seconds.
-
-    Refer to the `cooldown` function for more information.
-    """
-    return cooldown(time.perf_counter, interval, callback, no_args=no_args)
