@@ -1,246 +1,24 @@
-"""Theming extensions for DearPyGui."""
-
-import collections
 import types
 import enum
 import functools
-import itertools
-import contextlib
+import itertools  # type: ignore
 import os
-import threading
-from dearpygui import dearpygui, _dearpygui
-from .px_items import AppItemType, AutoParentItem
-from .px_typing import overload, Any, ItemId, Self, Sequence, KeysView, Iterable
-from .px_theme import pxThemeColor, pxThemeStyle
-from . import appitems, px_utils
-from . import _tcoloritems as color
-from . import _tstyleitems as style
-
-
-__all__ = [
-    "color",
-    "style",
-    "pxTheme",
-    "pxFont",
-    "FontRangeHint",
-]
+from dearpygui import dearpygui
+from ._dearpypixl.common import (
+    Any,
+    Item,
+    overload,
+)
+from . import items, color, style
+from ._dearpypixl import api, interface, tools
+from ._dearpypixl.api import Registry as RegistryAPI, Item as ItemAPI
 
 
 
 
-class _ThemeColor(pxThemeColor):
-    def __init__(self, target: int, category: int, value: Sequence[int | float], **kwargs) -> None:
-        self.target   = target
-        self.category = category
-        super().__init__(*value, **kwargs)
+# TODO: re-implement ez-theme
 
-class _ThemeStyle(pxThemeStyle):
-    def __init__(self, target: int, category: int, value: Sequence[int | float], **kwargs) -> None:
-        self.target   = target
-        self.category = category
-        super().__init__(*value, **kwargs)
-
-_TPSTR_TO_ITP = {
-    _ThemeColor.identity[1]: _ThemeColor,
-    _ThemeStyle.identity[1]: _ThemeStyle,
-}
-
-def _trim_comp_elements(element_items: Sequence[ItemId]) -> None:
-    origin_elems: dict[str, dict[tuple[int, int], ItemId]] = collections.defaultdict(dict)
-    for e in element_items:
-        _cfg = px_utils.get_config(e)
-        elem_key = _cfg["target"], _cfg["category"]
-        elements = origin_elems[px_utils.get_info(e)["type"]]
-        if elem_key in elements:
-            px_utils.set_value(elements[elem_key], px_utils.get_value(e))
-            _dearpygui.delete_item(e)
-        else:
-            elements[elem_key] = e
-
-
-class pxTheme(appitems.mvTheme):
-    """A DearPyGui theme item interface that automatically manages theme components. It greatly
-    simplifies the process of adding and updating theme elements.
-
-    Basic usage will simplify this:
-        >>> with dpg.theme() as theme:
-        ...     with dpg.theme_component(dpg.mvAll):
-        ...        dpg.add_theme_color(dpg.mvThemeCol_WindowBg, (200, 50, 50))
-    To this:
-        >>> with pxTheme(dpg.mvAll) as theme:
-        ...     dpg.add_theme_color(dpg.mvThemeCol_WindowBg, (200, 50, 50))
-
-    The constructor accepts an arbitrary number of item types. These values can be any value that
-    would be accepted by `dpg.add_theme_component` as the *item_type* argument, in addition to any
-    usable `AppItemType` subclass. `dpg.mvAll` is used as a fallback if no values are passed.
-
-    Two theme components are made for each item type value passed to the constructor; an "enabled state"
-    component and a "disabled state" component. When creating theme elements in a `with` statement using
-    a `pxTheme`, the underlying theme components will be updated with new theme elements to match. Which
-    components are updated depends on the value of the instance's `default_state` value; `True` (default)
-    would mean that "enabled state" components are updated, and vice-versa. You can update components
-    of a specific state without changine the `default_state` attribute by using the `.enabled_state` and
-    `.disabled_state` context manager instance methods.
-
-    Each theme component managed by the instance will never parent more than one element of the same
-    target and category. Instead, the newest element is deleted and oldest element's value is updated
-    accordingly.
-
-    The class-level read-only properties `.color` and `.style` return the `color` and `style` modules
-    respectively (available in `dearpypixl.theme`). The objects in these modules wrap DearPyGui's
-    `add_theme_color` and `add_theme_style` functions to automatically include `target` and `category`
-    arguments. The user only needs to include the color/style value(s).
-
-    Here's the equivelent to the initial above example:
-        >>> with pxTheme(dpg.mvAll) as theme:
-        ...     theme.color.WindowBg((200, 50, 50))  # *(200, 50, 50) would also work!
-
-    NOTE: It's worth mentioning that the constructors aren't picky about how you send the values -- as
-    sequence as `(200, 50, 50)` or individually as `200, 50, 50` is fine.
-    """
-
-    _components: dict[bool, tuple[ItemId, frozenset[ItemId]]]
-
-    @overload
-    def __init__(self, *item_types: int | type[AppItemType], default_state: bool = True, label: str = None, user_data: Any = None, use_internal_label: bool = True, tag: ItemId = 0, **kwargs) -> None: ...
-    def __init__(self, *item_types: int | type[AppItemType], default_state: bool = True, **kwargs) -> None:
-        super().__init__(**kwargs)
-        self.default_state = default_state
-
-        self._components = {True: [], False: []}
-        itp_constants  = []
-        for tp in set(item_types) if item_types else set((0,)):
-            tp = int(tp)  # AppItemType -> tp const
-            self._components[True ].append(dearpygui.add_theme_component(tp, parent=self, tag=px_utils.generate_uuid(), enabled_state=True))
-            self._components[False].append(dearpygui.add_theme_component(tp, parent=self, tag=px_utils.generate_uuid(), enabled_state=False))
-            itp_constants.append(tp)
-        # Set aside a component of each state to operate on later. They will parent "original"
-        # theme elements created by the user. This helps prevent references made to elements in
-        # ctx from dying once closed -- a side effect from deleting the original elements and
-        # replacing with copies only. All other components are updated with copy elements.
-        self._components[True ] = self._components[True ].pop(0), frozenset(self._components[True ])
-        self._components[False] = self._components[False].pop(0), frozenset(self._components[False])
-
-    __ctx_comp : ItemId
-    __ctx_elems: frozenset[int]
-    __ctx_state: bool
-
-    def __enter__(self) -> Self:
-        """Updates enabled/disabled state theme components based on theme elements created
-        in-context.
-
-        Updates to the `.default_state` attribute while in-context are internally ignored.
-        """
-        self.__ctx_state = self.default_state
-        self.__ctx_comp  = self._components[self.__ctx_state][0]
-        self.__ctx_elems = frozenset(px_utils.get_info(self.__ctx_comp)["children"][1])
-        dearpygui.push_container_stack(self.__ctx_comp)
-        return self
-
-    def __exit__(self, *args) -> None:
-        if dearpygui.top_container_stack() == self.__ctx_comp:
-            dearpygui.pop_container_stack()
-
-        tgt_elements = px_utils.get_info(self.__ctx_comp)["children"][1]
-        new_elements = (e for e in tgt_elements if e not in self.__ctx_elems)
-        new_elem_cfg = []
-        # cache element metadata to avoid recursive getter calls later
-        for element in new_elements:
-            _cfg = px_utils.get_config(element)
-            new_elem_cfg.append(
-                (
-                    px_utils.get_info(element)["type"],
-                    _cfg["target"],
-                    _cfg["category"],
-                    px_utils.get_value(element)
-                )
-            )
-        _trim_comp_elements(tgt_elements)
-        for comp in self._components[self.__ctx_state][1]:
-            for tp_str, target, category, value in new_elem_cfg:
-                itp = _TPSTR_TO_ITP[tp_str]
-                itp(target, category, value, parent=comp)
-            _trim_comp_elements(px_utils.get_info(comp)["children"][1])
-        del self.__ctx_comp, self.__ctx_state, self.__ctx_elems
-
-    @contextlib.contextmanager
-    def enabled_state(self):
-        """Context manager instance method for updating "enabled state" theme components.
-
-        Upon opening the context manager, the `.default_state` attribute is set to `True`.
-        It is restored to the prior state when the context manager closes.
-
-        Updates to the `.default_state` attribute while in-context are internally ignored.
-        """
-        try:
-            prev_state = self.default_state
-            self.default_state = True
-            yield self.__enter__()
-        finally:
-            self.__exit__()
-            self.default_state = prev_state
-
-    @contextlib.contextmanager
-    def disabled_state(self):
-        """Context manager instance method for updating "disabled state" theme components.
-
-        Upon opening the context manager, the `.default_state` attribute is set to `False`.
-        It is restored to the prior state when the context manager closes.
-
-        Updates to the `.default_state` attribute while in-context are internally ignored.
-        """
-        try:
-            prev_state = self.default_state
-            self.default_state = False
-            yield self.__enter__()
-        finally:
-            self.__exit__()
-            self.default_state = prev_state
-
-    @px_utils.classproperty
-    def color(cls) -> color:
-        """Module containing wrappers that create specific DearPyGui theme colors."""
-        return color
-
-    @px_utils.classproperty
-    def style(cls) -> style:
-        """Module containing wrappers that create specific DearPyGui theme styles."""
-        return style
-
-    def bind(self, *items: ItemId, app_level: bool = False) -> None:
-        """Bind items to this theme and/or set the application-level theme. They will reflect
-        the theme's elements.
-
-        Args:
-            * item: Identifiers of items to bind.
-
-            * app_level: If True, set this theme as the application default theme. Default
-            is False.
-        """
-        if app_level:
-            _dearpygui.bind_theme(self)
-
-        for item in items:
-            _dearpygui.bind_item_theme(item, self)
-
-    @classmethod
-    def unbind(cls, *items: ItemId, app_level: bool = False) -> None:
-        """Break theme bindings for items and/or unset the application-level theme, regardless
-        of the bound theme.
-
-        Args:
-            * item: Identifiers of items to bind.
-
-            * app_level: If True, set this theme as the application default theme. Default
-            is False.
-        """
-        if app_level:
-            _dearpygui.bind_theme(0)
-
-        for item in items:
-            _dearpygui.bind_item_theme(item, 0)
-
-
+Theme = items.Theme
 
 
 
@@ -378,10 +156,10 @@ class FontRangeHint(enum.Enum):
 
     @classmethod
     def _missing_(cls, value: Any) -> 'FontRangeHint | None':
-        return _DPGFRH_TO_DPXFRH.get(value, None)
+        return _MVFRH_TO_PXFRH.get(value, None)
 
 
-_DPGFRH_TO_DPXFRH: dict[int, FontRangeHint] = {  # helper for `FontRangeHint._missing_`
+_MVFRH_TO_PXFRH: dict[int, FontRangeHint] = {  # helper for `FontRangeHint._missing_`
     dearpygui.mvFontRangeHint_Default                  : FontRangeHint.DEFAULT,
     dearpygui.mvFontRangeHint_Japanese                 : FontRangeHint.JAPANESE,
     dearpygui.mvFontRangeHint_Korean                   : FontRangeHint.KOREAN,
@@ -393,46 +171,10 @@ _DPGFRH_TO_DPXFRH: dict[int, FontRangeHint] = {  # helper for `FontRangeHint._mi
 }
 
 
-class _pxFontBindings:
-    __slots__ = ("_lock", "bindings", "app_binding",)
-
-    def __init__(self) -> None:
-        self._lock       = threading.RLock()
-        self.bindings    = {}
-        self.app_binding = 0
-
-    def __iter__(self):
-        return types.MappingProxyType(self.bindings)
-
-    def __contains__(self, x: Any) -> bool:
-        return x in self.bindings
-
-    def __enter__(self) -> Self:
-        self._lock.acquire()
-        return self
-
-    def __exit__(self, *args) -> None:
-        self._lock.release()
-
-    def set_app_binding(self, pxfont: 'pxFont', active_font: ItemId) -> None:
-        _dearpygui.bind_font(active_font)
-        self.app_binding = int(pxfont)
-
-    def unset_app_binding(self):
-        _dearpygui.bind_font(0)
-        self.app_binding = 0
-
-    def update(self, bindings: dict[ItemId, int]) -> None:
-        self.bindings = self.bindings | bindings
-
-    def remove(self, bindings: Sequence[ItemId]) -> None:
-        self.bindings = {k: v for k, v in self.bindings.items() if k not in bindings}
-
-    def get(self, item: ItemId) -> int:
-        return self.bindings.get(item, 0)
 
 
-class pxFont(appitems.mvFontRegistry):
+
+class SizedFont(items.mvFontRegistry):
     """A DearPyGui font registry interface that manages font items of different sizes
     of a specific font.
 
@@ -487,7 +229,13 @@ class pxFont(appitems.mvFontRegistry):
     VIETNAMESE                = FontRangeHint.VIETNAMESE
     ALL                       = FontRangeHint.ALL
 
-    __glbl_bindings = _pxFontBindings()
+    __glbl_lock  = tools.Lock()
+    __glbl_binds = {}
+
+    _font_cache : dict[float, Item]
+    _bound_items: frozenset[Item]
+    _characters : frozenset[int]
+    _char_remaps: dict[int, int]
 
     def __init__(self, file: str, *sizes: float, label: str = "", default_size: float = 16.0, **kwargs) -> None:
         """Args:
@@ -500,15 +248,15 @@ class pxFont(appitems.mvFontRegistry):
         file = str(file)
         self._filename = file.split(os.sep)[-1]
         super().__init__(label=label or f"pxFont [{self._filename}]", **kwargs)
-        _dearpygui.set_item_alias(self, f"{file}##{self.tag}")
+        ItemAPI.set_alias(self, f"{file}##{self.tag}")
 
-        self._font_cache : dict[float, ItemId] = {}
-        self._bound_items: frozenset[ItemId]   = frozenset()
-        self._characters : frozenset[int]      = frozenset()
-        self._char_remaps: dict[int, int]      = {}
+        self._font_cache   = {}
+        self._bound_items  = frozenset()
+        self._characters   = frozenset()
+        self._char_remaps  = {}
         self._active_size  = default_size
         self._font_factory = functools.partial(
-            _dearpygui.add_font,
+            dearpygui.add_font,
             file,
             user_data=self,
             parent=self,
@@ -517,10 +265,10 @@ class pxFont(appitems.mvFontRegistry):
         self._get_font_of_size(default_size)
         self.add_sizes(*sizes)
 
-    def __call__(self, size: float) -> appitems.mvFont:
+    def __call__(self, size: float) -> items.mvFont:
         return self._get_font_of_size(size)
 
-    def _get_font_of_size(self, size: float) -> appitems.mvFont:
+    def _get_font_of_size(self, size: float) -> items.mvFont:
         try:
             size = float(f"{size:1f}")
         except TypeError:
@@ -529,26 +277,25 @@ class pxFont(appitems.mvFontRegistry):
             ) from None
 
         if font:=self._font_cache.get(size, None):
-            return appitems.mvFont.wrap_item(font)
+            return items.mvFont.new(font)
 
         font = self._font_factory(
-            size,
+            size,  # type: ignore
             label=f"{self._filename} [{size}]",
-            tag=px_utils.generate_uuid(),
         )
         self._font_cache[size] = font
         self._upd_font_details(font)
-        return appitems.mvFont.wrap_item(font)
+        return items.mvFont.new(font)
 
-    def _upd_font_details(self, font_item: ItemId = 0) -> None:
+    def _upd_font_details(self, font_item: Item = 0) -> None:
         """Update one or all fonts in the registry."""
         fonts = self._font_cache.values() if not font_item else (font_item,)
         chars = tuple(self.characters)
         for font in fonts:
-            _dearpygui.delete_item(font, children_only=True, slot=1)
+            RegistryAPI.delete_item(font, children_only=True, slot=1)
             dearpygui.add_font_chars(chars, parent=font)
 
-    def bind(self, *items: ItemId, app_level: bool = False) -> None:
+    def bind(self, *items: Item, app_level: bool = False) -> None:
         """Bind items to the registry and/or set the registry to apply the application-level
         font. They will reflect a font of `self.file` and `self.size`.
 
@@ -562,34 +309,38 @@ class pxFont(appitems.mvFontRegistry):
         font_id = self._get_font_of_size(self._active_size)
         bound_items   = set(self._bound_items)
         missing_items = set()
-        with self.__glbl_bindings:
+        with self.__glbl_lock:
             try:
                 for item in items:
                     try:
-                        _dearpygui.bind_item_font(item, font_id)
+                        ItemAPI.set_font(item, font_id)
                     except SystemError:
-                        if not px_utils.does_itemid_exist(item):
+                        if not RegistryAPI.item_exists(item):
                             missing_items.add(item)
                             continue
                         raise
                     bound_items.add(item)
                 if app_level:
-                    self.__glbl_bindings.set_app_binding(self, font_id)
+                    api.Application.set_font(font_id)
             finally:
-                self.__glbl_bindings.update({item: self_id for item in bound_items})
-                self.__glbl_bindings.remove(missing_items)
+                self.__glbl_binds.update({item: self_id for item in bound_items})
+                for item in missing_items:
+                    if item in self.__glbl_binds:
+                        del self.__glbl_binds[item]
                 self._bound_items = frozenset(bound_items.difference(missing_items))
 
-    def unbind(self, *items: ItemId, app_level: bool = False) -> None:
-        with self.__glbl_bindings:
+    def unbind(self, *items: Item, app_level: bool = False) -> None:
+        with self.__glbl_lock:
             for item in items:
                 try:
-                    _dearpygui.bind_item_font(item, 0)
+                    ItemAPI.set_font(item, 0)
                 except SystemError:
                     pass
             if app_level:
-                self.__glbl_bindings.unset_app_binding()
-            self.__glbl_bindings.remove(items)
+                api.Application.set_font(0)
+            for item in items:
+                if item in self.__glbl_binds:
+                    del self.__glbl_binds[item]
             self._bound_items = self._bound_items.difference(items)
 
     @property
@@ -597,7 +348,7 @@ class pxFont(appitems.mvFontRegistry):
         """[get] Return the file used for fonts created and parented by the
         registry.
         """
-        return self.alias.split("##")[0]
+        return self.alias.split("##")[0]  # type: ignore
 
 
     @property
@@ -655,7 +406,7 @@ class pxFont(appitems.mvFontRegistry):
             raise TypeError(
                 f"expected `int`, `FontRangeHint` member (got {type(range_hint).__qualname__!r})."
             ) from None
-        self.add_characters(*characters)
+        self.add_characters(*characters)  # type: ignore
 
     def del_char_hint(self, range_hint: int | FontRangeHint) -> None:
         """Remove characters formerly added to the registry from a pre-defined
@@ -671,7 +422,7 @@ class pxFont(appitems.mvFontRegistry):
             raise TypeError(
                 f"expected `int`, `FontRangeHint` member (got {type(range_hint).__qualname__!r})."
             ) from None
-        self.del_characters(*characters)
+        self.del_characters(*characters)  # type: ignore
 
 
     @property
@@ -706,7 +457,7 @@ class pxFont(appitems.mvFontRegistry):
     def set_size(self, size: float) -> None:
         """Set the active font size for items bound to the registry."""
         self._active_size = size
-        self.bind(*self._bound_items, app_level=True if self.__glbl_bindings.app_binding == self.tag else False)
+        self.bind(*self._bound_items, app_level=True if api.Application.get_font() == self else False)
 
     @property
     def sizes(self) -> tuple[float, ...]:
@@ -724,7 +475,7 @@ class pxFont(appitems.mvFontRegistry):
             self._get_font_of_size(size)
 
     @overload
-    def add_size_range(self, stop: float) -> None: ...
+    def add_size_range(self, stop: float, /) -> None: ...
     @overload
     def add_size_range(self, start: float, stop: float, step: float = 1.0) -> None: ...
     def add_size_range(self, start: float, stop: float | None = None, step: float = 1.0) -> None:
@@ -734,7 +485,7 @@ class pxFont(appitems.mvFontRegistry):
         This method exists for convenience -- the registry creates font items
         automatically as necessary."""
         if stop is None:
-            rng = range(start)
+            rng = range(start)  # type: ignore
         else:
             i = start
             rng = []

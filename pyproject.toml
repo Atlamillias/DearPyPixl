@@ -1,9 +1,9 @@
 [project]
 name = "dearpypixl"
-version = "0.4.1"
-description = "A lightweight framework and toolkit for DearPyGui."
+version = "1.0.0"
+description = "An object-oriented, lightweight, modular framework and toolkit for Dear PyGui."
 authors = [{name="Anthony Doupe", email="atlamillias@outlook.com"}]
-keywords = []
+keywords = ["dearpygui", "gui", "ui", "user-interface"]
 urls = {Homepage="https://github.com/Atlamillias/DearPyPixl"}
 readme = "README.md"
 classifiers = [
@@ -11,7 +11,7 @@ classifiers = [
 
     "Programming Language :: Python :: Implementation :: CPython",
     "Programming Language :: Python :: 3 :: Only",
-    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.10",
 
     "Operating System :: Microsoft :: Windows :: Windows 8.1",
     "Operating System :: Microsoft :: Windows :: Windows 10",
@@ -20,13 +20,13 @@ classifiers = [
     "Operating System :: POSIX",
     "Operating System :: Unix",
 
-    "Software Development :: Libraries :: Python Modules",
-    "Software Development :: User Interfaces",
-
     "License :: OSI Approved :: MIT License",
 ]
-requires-python = ">=3.11"
-dependencies = ["dearpygui ~= 1.9.0"]
+requires-python = ">=3.10"
+dependencies = [
+    "dearpygui ~= 1.9.0",
+    "typing-extensions; python_version < '3.12'",
+]
 
 
 [build-system]
@@ -35,4 +35,12 @@ build-backend = "setuptools.build_meta"
 
 
 [tool.setuptools]
-packages = ["dearpypixl"]
+packages = [
+    "dearpypixl",
+    "dearpypixl._dearpypixl",
+]
+include-package-data = true
+
+[tool.setuptools.package-data]
+dearpypixl = ["*.typed", "*.pyi"]
+
