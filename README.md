@@ -529,8 +529,61 @@ Viewport.configuration() # -> {
 # runtime.
 Runtime.start()
 ```
+ <br>
+ <br>
 
 `Application` and `Viewport` interface with already existing global states. `Runtime` is a bit different because the "runtime" state is unique to Dear PyPixl -- manufactured through patching Dear PyGui's API holes and other various things, so it's API is less obvious. The runtime state is the state of the main event loop. This encompasses things like starting and stopping the runtime, target frame rate, and events that occur within the loop such as those scheduled to run on specific frames. It's the closest thing Dear PyPixl has to a `tkinter.Tk`, `kivy.app.App`, etc.
+
+The `Runtime` class' `.start` method implements a general-purpose event loop. Although kept relatively simple, it is more complex than most user implementations. It uses a synchronized fixed time step to decouple task execution from rendering. Tasks can be pushed to the event loop using the `queue.Queue` object found on `Runtime.queue`, but users replace it with another object implementing `queue.Queue`s protocol before starting the event loop. Tasks are de-queued upon prior to their execution. However, tasks can re-queue themselves, making them reoccuring tasks.
+```python
+from dearpypixl import *
+
+
+def printer():
+    print('the cake is a lie')
+
+# this is ran once
+Runtime.queue.put(printer)
+
+
+with Window() as window:
+    ...
+
+def print_window_state():
+    print(window.state())
+    Runtime.queue.put(print_window_state)
+
+# this is re-occuring
+Runtime.queue.put(print_window_state)
+
+# Since task execution is fairly isolated, the
+# re-occuring task will not block rendering frames.
+# A LONG running task may result in dropped frames,
+# though.
+Runtime.start()
+```
+The number of tasks executed is limited to a number of real-time milliseconds, set on `Runtime.update_interval`.
+
+<br>
+
+Frame rate can be managed by updating the `target_frame_rate` and `clamp_frame_rate` attributes. When `clamp_frame_rate` is True, the number of frames rendered per second is limited to the value of `target_frame_rate`, as long as it isn't zero or `None`. These values can be updated at any time, even after the event loop has started.
+```python
+from dearpypixl import *
+
+
+def print_frame_rate():
+    print(Runtime.frame_rate())
+    Runtime.queue.put(print_frame_rate)
+
+Runtime.queue.put(print_frame_rate)
+
+
+# limit to 30 fps
+Runtime.target_frame_rate = 30
+Runtime.clamp_frame_rate  = True
+
+Runtime.start()
+```
 
 <br>
 
@@ -561,7 +614,8 @@ Interface types are derived from Python's built-in `int` type. This allows inter
 * interfaces cannot include a `__weakref__` attribute, meaning they **cannot have proxies**
 * **`__bool__` cannot be implemented**
 
-The last point has less to do with `int` and more to do with how Dear PyGui is inspecting identifier values. `__bool__` must operate on the integer value of the interface; hard-to-diagnose bugs *will* occur otherwise. For this reason, Dear PyPixl will throw a `TypeError` when defining an interface class that does not point to `int.__bool__`.
+The last limitation has less to do with `int` and more to do with how Dear PyGui is inspecting identifier values. `__bool__` must operate on the integer value of the interface; hard-to-diagnose bugs *will* occur otherwise. For this reason, Dear PyPixl will throw a `TypeError` when defining an interface class that does not point to `int.__bool__`.
+
 <br>
 
 #### Passing Explicit UUID's and Aliases
@@ -570,9 +624,13 @@ Item-creating functions in Dear PyGui all accept a `tag` keyword argument in the
 
 As a workaround, interfaces have the `.aliased` class method, an alternative constructor, which will set the alias onto the item once it is created. Note that this is only necessary when creating the interface would also cause the interfaced item to be created, while aliases of existing items can be passed as normal.
 
+As is recommended when using Dear PyGui, users should *not* generate their own integer identifiers for Dear PyPixl interfaces.
+
 <br>
 
 # FAQ
+
+---
 
 **Q**: **Performance?**
 
@@ -589,7 +647,6 @@ As a workaround, interfaces have the `.aliased` class method, an alternative con
 
 **Q**: **I need to conform to an older version of Dear PyGui. Can I still use this?**
 
-**A**: On paper? **No**. Dear PyPixl will absolutely *not* work with Dear PyGui beta versions (pre-1.0). Not a chance. However, key areas in the framework were developed using Dear PyGui v1.8.0. A lot may work, even when using slightly older versions -- you are welcome to try.
+**A**: On paper? **No**. Dear PyPixl will absolutely *not* work with Dear PyGui beta versions (pre-1.0).
 
-With using older versions of Dear PyGui, you may want to update the type stubs. At the time of writing, this can be done via `python3 -m dearpypixl` shell command (this requires that the parent process has write-access to Dear PyPixl's install directory). Note that this feature may be removed from Dear PyPixl without warning.
-
+However, key areas in the framework were developed using Dear PyGui v1.8.0. A lot may work, some stuff won't. You are welcome to try.
