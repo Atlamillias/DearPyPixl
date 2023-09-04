@@ -71,7 +71,7 @@ _ANCHOR_MAP = {}
 
 
 class FAnchor(Protocol):
-    def __call__(self, item_wt: float, item_ht: float, cell_x: float, cell_y: float, cell_wt: float, cell_ht: float) -> tuple[int, int]: ...
+    def __call__(self, item_wt: float, item_ht: float, cell_x: float, cell_y: float, cell_wt: float, cell_ht: float, /) -> tuple[int, int]: ...
 
 
 def _register_anchors(*anchor: str) -> Callable[[FAnchor], FAnchor]:
@@ -238,6 +238,7 @@ def redraw_grid(grid: 'Grid', *args):
     )
     row_len = len(grid._rows)
     col_len = len(grid._cols)
+    del_items = None
     for item, coords1, coords2, item_width, item_height, anchor, size_setter, in grid._members.values():
         r1, c1, r2, c2 = normalize_cellspan(*coords1, *coords2, row_len, col_len)
         x_pos , y_pos , width1, height1 = cells[(r1, c1)]
@@ -250,14 +251,25 @@ def redraw_grid(grid: 'Grid', *args):
             item_width = cell_width
         if not item_height or item_height > cell_height:
             item_height = cell_height
-        size_setter(
-            item,
-            pos=anchor(item_width, item_height, x_pos, y_pos, cell_width, cell_height),
-            # BUG: DPG will parse an integer as an unsigned long, so a negative value
-            # would actually make the item larger...
-            width=max(int(item_width), 1),
-            height=max(int(item_height), 1),
-        )
+        try:
+            size_setter(
+                item,
+                pos=anchor(item_width, item_height, x_pos, y_pos, cell_width, cell_height),
+                # BUG: DPG parses integers as unsigned longs, so a
+                # negative value would actually make the item larger.
+                width=max(int(item_width), 1),
+                height=max(int(item_height), 1),
+            )
+        except SystemError:
+            if not RegistryAPI.item_exists(item):
+                if not del_items:
+                    del_items = []
+                del_items.append(item)
+            else:
+                raise
+    if del_items:
+        for item in del_items:
+            grid.pop(item)
 
 
 
@@ -277,7 +289,7 @@ class GridConfigure(Generic[_GT, _ST]):
         self._set_eval = compile(f"instance.configure({name}=value)", __name__, mode="exec")
 
     def __get__(self, instance, cls) -> _GT:
-        if not instance:
+        if instance is None:
             return self  # type: ignore
         return eval(self._get_eval)
 
@@ -292,7 +304,7 @@ class GridMember(NamedTuple):
     max_wt   : int
     max_ht   : int
     anchor   : FAnchor
-    fset_size: Callable     = _set_item_size
+    fset_size: Callable = _set_item_size
 
 
 class GridOffset(NamedTuple):
