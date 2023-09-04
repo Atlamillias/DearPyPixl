@@ -28,7 +28,8 @@ from. _dearpypixl.common import (
     ParamSpec,
     Self,
     overload,
-    override
+    override,
+    cast,
 )
 from . import items
 
@@ -1058,7 +1059,6 @@ def resized_fill_content_region(
     *,
     autosize_x : bool = True,
     autosize_y : bool = True,
-    share_space: bool = False,
 ) -> items.ResizeHandler:
     """Emulate the behavior of assigning a "stretch" policy
     onto the target item; when its' root parent is resized,
@@ -1069,18 +1069,10 @@ def resized_fill_content_region(
         * item: Target item to resize.
 
         * autosize_x: If True, the target item's width will be
-        adjusted to fill its' parent's available space. Cannot
-        be False if *autosize_y* is False.
+        adjusted to fill its' parent's available space.
 
         * autosize_y: If True, the target item's height will be
-        adjusted to fill its' parent's available space. Cannot
-        be False if *autosize_x* is False.
-
-        * share_space: If True, the target item will be sized
-        to fit as many of its' parent's children in the default
-        view as possible. Otherwise, it will occupy as much of
-        the default viewing space as possible; pushing its'
-        younger sibling items into its' parent's scroll region.
+        adjusted to fill its' parent's available space.
 
 
     A `TypeError` or `ValueError` is raised when one or more of
@@ -1105,10 +1097,6 @@ def resized_fill_content_region(
     callback is triggered and either the target item or its'
     direct parent are destroyed.
 
-    *share_space* is automatically set to False when the
-    scroll region of the target's direct parent cannot be
-    managed.
-
     The target's root parent will almost always be a
     `mvWindowAppItem` item, which supports 'resized'. Parent
     items that support 'content_region_avail' include
@@ -1116,8 +1104,9 @@ def resized_fill_content_region(
     any sizable item, such as a `mvButton`, `mvChildWindow`,
     or `mvPlot` item.
     """
-    item_config = api.Item.configuration(item)
-    item_info   = api.Item.information(item)
+    item        = interface.mvAll(item)
+    item_config = item.configuration()
+    item_info   = item.information()
     if (
         (autosize_x and "width" not in item_config) or
         (autosize_y and "height" not in item_config)
@@ -1125,25 +1114,29 @@ def resized_fill_content_region(
         raise TypeError(
             f"{item_info['type'].split('::')[1]!r} item {item!r} cannot be sized."
         )
-    elif not (autosize_x or autosize_y):
-        raise ValueError(
-            f"`autosize_x/y` cannot both be False."
-        )
 
     parent = item_info['parent']
     if not parent:
         raise TypeError(
             f"target cannot be a top-level root item."
         )
-    parent_state  = api.Item.state(parent)
-    if not parent_state['content_region_avail']:
-        _parent_tp = api.Item.information(parent)['type'].split('::')[1]
+    parent = interface.mvAll(parent)
+
+    if not parent.state()['content_region_avail']:
+        _parent_tp = parent.information()['type'].split('::')[1]
         raise TypeError(
             f"parent {_parent_tp!r} item does not have a content region."
         )
 
-    root_parent = api.Item.root_parent(item)
-    root_info   = api.Item.information(root_parent)
+    get_x_scr_max = dearpygui.get_x_scroll_max
+    get_y_scr_max = dearpygui.get_y_scroll_max
+    try:
+        parent.get_x_scroll_pos()
+    except:
+        get_x_scr_max = get_y_scr_max = lambda x: 0
+
+    root_parent = cast(interface.mvAll, item.root_parent)
+    root_info   = root_parent.information()
     if not root_info['resized_handler_applicable']:
         raise TypeError(
             f"top-level parent {root_info['type'].split('::')[1]!r} item "
@@ -1155,67 +1148,47 @@ def resized_fill_content_region(
         root_ihr = ItemHandlerRegistry()
         api.Item.set_handlers(root_parent, root_ihr)
 
-    if share_space:
-        try:
-            api.Window.get_x_scroll_pos(parent)
-        except:
-            share_space = False
-
-    # When *share_space* is False, the target item will
-    # always push its' younger siblings into its' parent's
-    # scroll area.
-    # When *share_space* is True, it tries to accomodate
-    # them instead. This adjustment is made next frame to
-    # allow DPG to update the parent's scroll area; taking
-    # into account the prior change(s) made to the target.
-    #
-    # In either case, the calculation can be negative. DPG
-    # will parse those values as unsigned (positive). This
-    # works out fine when *share_space* is False, but `max`
-    # needs to be used otherwise.
     if autosize_x and autosize_y:
-        cb_body = [
+        cb_body = (
             "avail_wt, avail_ht = parent.state()['content_region_avail']",
             "item.configure(",
-            "    width=avail_wt - parent.x_scroll_max(),",
-            "    height=avail_ht - parent.y_scroll_max(),",
+            "    width=avail_wt,",
+            "    height=avail_ht,",
             ")",
-        ]
-        if share_space:
-            cb_body.extend((
-                "split_frame()",
-                "item.configure(",
-                "    width=max(1, avail_wt - parent.x_scroll_max()),",
-                "    height=max(1, avail_ht - parent.y_scroll_max()),",
-                ")",
-            ))
+            "split_frame()",
+            "avail_wt, avail_ht = parent.state()['content_region_avail']",
+            "item.configure(",
+            "    width=max(1, avail_wt - get_x_scr_max(parent)),",
+            "    height=max(1, avail_ht - get_y_scr_max(parent)),",
+            ")",
+        )
     elif autosize_x:
-        cb_body = [
-            "avail_wt = parent.state()['content_region_avail'][0]",
-            "item.configure(width=avail_wt - parent.x_scroll_max())",
-        ]
-        if share_space:
-            cb_body.extend((
-                "split_frame()",
-                "item.configure(width=max(1, avail_wt - parent.x_scroll_max()))",
-            ))
+        cb_body = (
+            "item.configure(width=parent.state()['content_region_avail'][0])",
+            "split_frame()",
+            "item.configure(",
+            "    width=max(1, parent.state()['content_region_avail'][0] - get_x_scr_max(parent))",
+            ")",
+        )
+    elif autosize_y:
+        cb_body = (
+            "item.configure(height=parent.state()['content_region_avail'][1])",
+            "split_frame()",
+            "item.configure(",
+            "    height=max(1, parent.state()['content_region_avail'][1] - get_y_scr_max(parent))",
+            ")",
+        )
     else:
-        cb_body = [
-            "avail_ht = parent.state()['content_region_avail'][1]",
-            "item.configure(height=avail_ht - parent.y_scroll_max())",
-        ]
-        if share_space:
-            cb_body.extend((
-                "split_frame()",
-                "item.configure(height=max(1, avail_ht - parent.y_scroll_max()))",
-            ))
+        cb_body = ("...",)
 
     cb_body = (
         "try:",
         *(f'    {ln}' for ln in cb_body),
         "except SystemError:",
         "    if not item.exists() or not parent.exists():",
+        "        handler.callback = None",
         "        handler.destroy()",
+        "        del callback",
         "    else:",
         "        raise",
     )
@@ -1227,10 +1200,12 @@ def resized_fill_content_region(
         cb_body,
         globals=globals(),
         locals={
-            'item'       : interface.mvAll(item),
-            'parent'     : interface.mvAll(parent),
-            'handler'    : handler,
-            'split_frame': api.Runtime.split_frame,
+            'item'            : interface.mvAll(item),
+            'parent'          : interface.mvAll(parent),
+            'handler'         : handler,
+            'get_x_scr_max'   : get_x_scr_max,
+            'get_y_scr_max'   : get_y_scr_max,
+            'split_frame'     : api.Runtime.split_frame,
         }
     )
     handler.init(callback=callback, parent=root_ihr)
