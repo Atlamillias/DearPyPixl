@@ -1336,6 +1336,13 @@ class SupportsSized(AppItemType):
             x, y = state["pos"]  # type: ignore
             return x + config["width"], y + config["height"]  # type: ignore
 
+    @property
+    def pos(self) -> Array[int, int]:
+        return self.state()['pos']  # type: ignore
+    @pos.setter
+    def pos(self, value: Array[int, int]):
+        self.configure(pos=value)
+
 
 @_exported
 class SupportsValueArray(AppItemType, Generic[_T]):

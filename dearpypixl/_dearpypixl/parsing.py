@@ -252,8 +252,9 @@ def item_definitions() -> Mapping[str, ItemDefinition]:
                 kind=Parameter.KEYWORD_ONLY
             )
         else:
-            wconfig_params = rconfig_params
-
+            wconfig_params = rconfig_params.copy()
+        # `pos` is writable as configuration, but is considered a state...
+        rconfig_params.pop('pos', '')
 
         name_to_def[tp_name] = ItemDefinition(
             name=tp_name,
