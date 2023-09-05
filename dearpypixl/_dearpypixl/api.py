@@ -653,6 +653,14 @@ class _ViewportMeta(common.ItemInterfaceMeta):
     is_visible    : Property[bool | None]     = common.ItemState("visible")
     is_fullscreen : Property[bool | None]     = common.ItemState("is_fullscreen")
 
+    @property
+    def client_width(self) -> int:
+        return self.configuration()['client_width']
+
+    @property
+    def client_height(self) -> int:
+        return self.configuration()['client_height']
+
 
 @_onetime_setup(lambda: Viewport(), ('create', 'state', 'close'))
 @_clear_lockers
@@ -755,6 +763,9 @@ class Viewport(common.ItemInterface, str, metaclass=_ViewportMeta):
     primary_window = cast(ItemT | None, _ViewportMeta.primary_window)
     callback       = cast(Callable | None, _ViewportMeta.callback)
     user_data      = cast(Any, _ViewportMeta.user_data)
+
+    client_width   = cast(int, _ViewportMeta.client_width)
+    client_height  = cast(int, _ViewportMeta.client_height)
 
     is_ok          = cast(bool, _ViewportMeta.is_ok)
     is_visible     = cast(bool, _ViewportMeta.is_visible)
