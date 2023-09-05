@@ -7,8 +7,6 @@ keywords = ["dearpygui", "gui", "ui", "user-interface"]
 urls = {Homepage="https://github.com/Atlamillias/DearPyPixl"}
 readme = "README.md"
 classifiers = [
-    "Development Status :: 4 - Beta",
-
     "Programming Language :: Python :: Implementation :: CPython",
     "Programming Language :: Python :: 3 :: Only",
     "Programming Language :: Python :: 3.10",
