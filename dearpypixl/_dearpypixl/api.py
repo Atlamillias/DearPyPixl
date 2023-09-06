@@ -2219,6 +2219,52 @@ class NodeEditor:
 class Table:
     __slots__ = ()
 
+    def add_columns(
+        self: Any,
+        num_cols: int,
+        *,
+        item_command: common.ItemCommand = dearpygui.add_table_column,
+        **kwargs
+    ) -> list[ItemT]:
+        """Create a specified number of columns in the table and
+        return the resulting item identifiers.
+
+        Args:
+            * num_cols: The number of columns to generate.
+
+            * item_command: A callable that can be called without
+            arguments that creates a Dear PyGui item and returns
+            the item's identifier.
+
+
+        Additional keyword arguments are passed to *item_command*.
+        """
+        kwargs['parent'] = self
+        return [dearpygui.add_table_column(**kwargs) for i in range(num_cols)]
+
+    def add_rows(
+        self: Any,
+        num_cols: int,
+        *,
+        item_command: common.ItemCommand = dearpygui.add_table_row,
+        **kwargs
+    ) -> list[ItemT]:
+        """Create a specified number of rows in the table and return
+        the resulting item identifiers.
+
+        Args:
+            * num_cols: The number of rows to generate.
+
+            * item_command: A callable that can be called without
+            arguments that creates a Dear PyGui item and returns
+            the item's identifier.
+
+
+        Additional keyword arguments are passed to *item_command*.
+        """
+        kwargs['parent'] = self
+        return [dearpygui.add_table_row(**kwargs) for i in range(num_cols)]
+
     def is_cell_highlighted(self: Any, irow: int, icol: int) -> bool:
         """Return True if a specific cell is highlighted.
 
