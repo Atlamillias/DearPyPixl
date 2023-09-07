@@ -2265,6 +2265,26 @@ class Table:
         kwargs['parent'] = self
         return [dearpygui.add_table_row(**kwargs) for i in range(num_cols)]
 
+    def apply_borders(self: Any, value: bool = True, *, horizontal: bool = True, vertical: bool = True):
+        """Show or hide the table's borders.
+
+        Args:
+            * value: If True (default), display the table's borders.
+            False will hide them.
+
+            * horizontal: If True (default), *value* is applied to the
+            table's inner and outer horizontal borders.
+
+            * vertical: If True (default), *value* is applied to the
+            table's inner and outer vertical borders.
+        """
+        kwds = {}
+        if horizontal:
+            kwds.update(borders_innerH=value, borders_outerH=value)
+        if vertical:
+            kwds.update(borders_innerV=value, borders_outerV=value)
+        Item.configure(self, **kwds)
+
     def is_cell_highlighted(self: Any, irow: int, icol: int) -> bool:
         """Return True if a specific cell is highlighted.
 
