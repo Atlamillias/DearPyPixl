@@ -237,9 +237,11 @@ Interface = TypeVar("Interface", bound='AppItemType')
 ItemType  = TypeVar("ItemType", bound=type['AppItemType'])
 
 
-class ItemCommand(Protocol[_P]):
+_Item_co = TypeVar("_Item_co", covariant=True, bound=int | str)
+
+class ItemCommand(Protocol[_P, _Item_co]):
     __name__: str
-    def __call__(self, *, tag: Item = 0, **kwargs) -> Item: ...
+    def __call__(self, *, tag: Item = 0, **kwargs) -> _Item_co: ...
 
 
 class ItemCallback(Protocol):

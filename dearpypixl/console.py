@@ -131,7 +131,7 @@ class FileStream(interface.SupportsValueArray[str], items.mvValueRegistry):
         add_item_callback : Callable[[Self, _T], Any] | None       = None,
         del_item_callback : Callable[[Self, _T], Any] | None       = None,
         set_value_callback: Callable[[Self, _T, Any], Any] | None  = None,
-        item_factory      : ItemCommand[_P]                        = dearpygui.add_string_value,
+        item_factory      : ItemCommand[_P, Item]                  = dearpygui.add_string_value,
         **kwargs
     ):
         """Args:
@@ -362,7 +362,7 @@ class ConsoleWindow(items.mvChildWindow):
         redirect_stderr: bool | None        = None,
         auto_scroll    : bool               = True,
         wrap_text      : bool               = True,
-        text_factory   : ItemCommand[_P]    = dearpygui.add_text,
+        text_factory   : ItemCommand[_P, Item] = dearpygui.add_text,
         buffer_factory : type[FileStream] = FileStream,
         **kwargs,
     ):
