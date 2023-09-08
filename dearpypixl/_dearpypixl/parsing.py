@@ -303,11 +303,6 @@ def element_definitions() -> Mapping[str, ElementDefinition]:
         PLOT: {},
         NODE: {},
     }
-    name_to_elem: dict[constants.ThemeCategory, dict[str, ElementDefinition]] = {
-        CORE: {},
-        PLOT: {},
-        NODE: {},
-    }
 
     RE_CAPS = re.compile(r'([A-Z])')
 
@@ -325,11 +320,16 @@ def element_definitions() -> Mapping[str, ElementDefinition]:
 
         if pfx.startswith('mvPlot'):
             category = PLOT
+            if not name1.startswith('Plot'):
+                name1 = f'Plot{name1}'
+                name2 = f'plot_{name2}'
         elif pfx.startswith('mvNode'):
             category = NODE
+            if not name1.startswith('Node'):
+                name1 = f'Node{name1}'
+                name2 = f'node_{name2}'
         else:
             category = CORE
-        name_to_elem[category]
 
         element = ElementDefinition(
             name1=name1,
@@ -340,21 +340,19 @@ def element_definitions() -> Mapping[str, ElementDefinition]:
             category=category,
         )
         const_to_elem[category][constant] = element
-        assert name1 not in name_to_elem[category]
-        name_to_elem[category][name1] = element
 
     # Using the names formated above can cause plot and node
     # elements to shadow core elements. Core elements should
     # keep the more simple and intuitive name(s).
-    for cat in (PLOT, NODE):
-        name_map = name_to_elem[cat]
-        for name1, element in name_map.items():
-            if name1 in name_to_elem[CORE]:
-                name1 = f'{cat.name.title()}{name1}'
-                assert name1 not in name_to_elem[CORE]
-                assert name1 not in name_map
-                object.__setattr__(element, 'name1', name1)
-                object.__setattr__(element, 'name2', f'{cat.name.lower()}_{element.name2}')
+    #for cat in (PLOT, NODE):
+    #    name_map = name_to_elem[cat]
+    #    for name1, element in name_map.items():
+    #        if name1 in name_to_elem[CORE]:
+    #            name1 = f'{cat.name.title()}{name1}'
+    #            assert name1 not in name_to_elem[CORE]
+    #            assert name1 not in name_map
+    #            object.__setattr__(element, 'name1', name1)
+    #            object.__setattr__(element, 'name2', f'{cat.name.lower()}_{element.name2}')
 
     for cat in constants.ThemeCategory:
         const_to_elem[cat] = dict(

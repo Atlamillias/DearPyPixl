@@ -190,141 +190,9 @@ def window_title_align(x: float = ..., y: float = ..., /, *, label: str | None =
 
 
 @overload
-def annotation_padding(value: Array[float, float] = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
+def plot_annotation_padding(value: Array[float, float] = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
 @overload
-def annotation_padding(x: float = ..., y: float = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
-
-
-@overload
-def digital_bit_gap(value: Array[float, float] = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
-@overload
-def digital_bit_gap(x: float = ..., y: float = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
-
-
-@overload
-def digital_bit_height(value: Array[float, float] = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
-@overload
-def digital_bit_height(x: float = ..., y: float = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
-
-
-@overload
-def error_bar_size(value: Array[float, float] = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
-@overload
-def error_bar_size(x: float = ..., y: float = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
-
-
-@overload
-def error_bar_weight(value: Array[float, float] = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
-@overload
-def error_bar_weight(x: float = ..., y: float = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
-
-
-@overload
-def fill_alpha(value: Array[float, float] = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
-@overload
-def fill_alpha(x: float = ..., y: float = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
-
-
-@overload
-def fit_padding(value: Array[float, float] = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
-@overload
-def fit_padding(x: float = ..., y: float = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
-
-
-@overload
-def label_padding(value: Array[float, float] = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
-@overload
-def label_padding(x: float = ..., y: float = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
-
-
-@overload
-def legend_inner_padding(value: Array[float, float] = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
-@overload
-def legend_inner_padding(x: float = ..., y: float = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
-
-
-@overload
-def legend_padding(value: Array[float, float] = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
-@overload
-def legend_padding(x: float = ..., y: float = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
-
-
-@overload
-def legend_spacing(value: Array[float, float] = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
-@overload
-def legend_spacing(x: float = ..., y: float = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
-
-
-@overload
-def line_weight(value: Array[float, float] = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
-@overload
-def line_weight(x: float = ..., y: float = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
-
-
-@overload
-def major_grid_size(value: Array[float, float] = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
-@overload
-def major_grid_size(x: float = ..., y: float = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
-
-
-@overload
-def major_tick_len(value: Array[float, float] = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
-@overload
-def major_tick_len(x: float = ..., y: float = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
-
-
-@overload
-def major_tick_size(value: Array[float, float] = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
-@overload
-def major_tick_size(x: float = ..., y: float = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
-
-
-@overload
-def marker(value: Array[float, float] = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
-@overload
-def marker(x: float = ..., y: float = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
-
-
-@overload
-def marker_size(value: Array[float, float] = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
-@overload
-def marker_size(x: float = ..., y: float = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
-
-
-@overload
-def marker_weight(value: Array[float, float] = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
-@overload
-def marker_weight(x: float = ..., y: float = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
-
-
-@overload
-def minor_alpha(value: Array[float, float] = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
-@overload
-def minor_alpha(x: float = ..., y: float = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
-
-
-@overload
-def minor_grid_size(value: Array[float, float] = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
-@overload
-def minor_grid_size(x: float = ..., y: float = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
-
-
-@overload
-def minor_tick_len(value: Array[float, float] = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
-@overload
-def minor_tick_len(x: float = ..., y: float = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
-
-
-@overload
-def minor_tick_size(value: Array[float, float] = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
-@overload
-def minor_tick_size(x: float = ..., y: float = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
-
-
-@overload
-def mouse_pos_padding(value: Array[float, float] = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
-@overload
-def mouse_pos_padding(x: float = ..., y: float = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
+def plot_annotation_padding(x: float = ..., y: float = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
 
 
 @overload
@@ -340,51 +208,147 @@ def plot_default_size(x: float = ..., y: float = ..., /, *, label: str | None = 
 
 
 @overload
+def plot_digital_bit_gap(value: Array[float, float] = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
+@overload
+def plot_digital_bit_gap(x: float = ..., y: float = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
+
+
+@overload
+def plot_digital_bit_height(value: Array[float, float] = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
+@overload
+def plot_digital_bit_height(x: float = ..., y: float = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
+
+
+@overload
+def plot_error_bar_size(value: Array[float, float] = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
+@overload
+def plot_error_bar_size(x: float = ..., y: float = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
+
+
+@overload
+def plot_error_bar_weight(value: Array[float, float] = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
+@overload
+def plot_error_bar_weight(x: float = ..., y: float = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
+
+
+@overload
+def plot_fill_alpha(value: Array[float, float] = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
+@overload
+def plot_fill_alpha(x: float = ..., y: float = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
+
+
+@overload
+def plot_fit_padding(value: Array[float, float] = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
+@overload
+def plot_fit_padding(x: float = ..., y: float = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
+
+
+@overload
+def plot_label_padding(value: Array[float, float] = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
+@overload
+def plot_label_padding(x: float = ..., y: float = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
+
+
+@overload
+def plot_legend_inner_padding(value: Array[float, float] = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
+@overload
+def plot_legend_inner_padding(x: float = ..., y: float = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
+
+
+@overload
+def plot_legend_padding(value: Array[float, float] = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
+@overload
+def plot_legend_padding(x: float = ..., y: float = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
+
+
+@overload
+def plot_legend_spacing(value: Array[float, float] = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
+@overload
+def plot_legend_spacing(x: float = ..., y: float = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
+
+
+@overload
+def plot_line_weight(value: Array[float, float] = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
+@overload
+def plot_line_weight(x: float = ..., y: float = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
+
+
+@overload
+def plot_major_grid_size(value: Array[float, float] = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
+@overload
+def plot_major_grid_size(x: float = ..., y: float = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
+
+
+@overload
+def plot_major_tick_len(value: Array[float, float] = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
+@overload
+def plot_major_tick_len(x: float = ..., y: float = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
+
+
+@overload
+def plot_major_tick_size(value: Array[float, float] = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
+@overload
+def plot_major_tick_size(x: float = ..., y: float = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
+
+
+@overload
+def plot_marker(value: Array[float, float] = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
+@overload
+def plot_marker(x: float = ..., y: float = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
+
+
+@overload
+def plot_marker_size(value: Array[float, float] = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
+@overload
+def plot_marker_size(x: float = ..., y: float = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
+
+
+@overload
+def plot_marker_weight(value: Array[float, float] = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
+@overload
+def plot_marker_weight(x: float = ..., y: float = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
+
+
+@overload
 def plot_min_size(value: Array[float, float] = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
 @overload
 def plot_min_size(x: float = ..., y: float = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
 
 
 @overload
+def plot_minor_alpha(value: Array[float, float] = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
+@overload
+def plot_minor_alpha(x: float = ..., y: float = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
+
+
+@overload
+def plot_minor_grid_size(value: Array[float, float] = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
+@overload
+def plot_minor_grid_size(x: float = ..., y: float = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
+
+
+@overload
+def plot_minor_tick_len(value: Array[float, float] = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
+@overload
+def plot_minor_tick_len(x: float = ..., y: float = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
+
+
+@overload
+def plot_minor_tick_size(value: Array[float, float] = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
+@overload
+def plot_minor_tick_size(x: float = ..., y: float = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
+
+
+@overload
+def plot_mouse_pos_padding(value: Array[float, float] = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
+@overload
+def plot_mouse_pos_padding(x: float = ..., y: float = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
+
+
+@overload
 def plot_padding(value: Array[float, float] = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
 @overload
 def plot_padding(x: float = ..., y: float = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
-
-
-@overload
-def grid_spacing(value: Array[float, float] = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
-@overload
-def grid_spacing(x: float = ..., y: float = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
-
-
-@overload
-def link_hover_distance(value: Array[float, float] = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
-@overload
-def link_hover_distance(x: float = ..., y: float = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
-
-
-@overload
-def link_line_segments_per_length(value: Array[float, float] = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
-@overload
-def link_line_segments_per_length(x: float = ..., y: float = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
-
-
-@overload
-def link_thickness(value: Array[float, float] = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
-@overload
-def link_thickness(x: float = ..., y: float = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
-
-
-@overload
-def mini_map_offset(value: Array[float, float] = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
-@overload
-def mini_map_offset(x: float = ..., y: float = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
-
-
-@overload
-def mini_map_padding(value: Array[float, float] = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
-@overload
-def mini_map_padding(x: float = ..., y: float = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
 
 
 @overload
@@ -400,45 +364,81 @@ def node_corner_rounding(x: float = ..., y: float = ..., /, *, label: str | None
 
 
 @overload
+def node_grid_spacing(value: Array[float, float] = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
+@overload
+def node_grid_spacing(x: float = ..., y: float = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
+
+
+@overload
+def node_link_hover_distance(value: Array[float, float] = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
+@overload
+def node_link_hover_distance(x: float = ..., y: float = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
+
+
+@overload
+def node_link_line_segments_per_length(value: Array[float, float] = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
+@overload
+def node_link_line_segments_per_length(x: float = ..., y: float = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
+
+
+@overload
+def node_link_thickness(value: Array[float, float] = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
+@overload
+def node_link_thickness(x: float = ..., y: float = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
+
+
+@overload
+def node_mini_map_offset(value: Array[float, float] = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
+@overload
+def node_mini_map_offset(x: float = ..., y: float = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
+
+
+@overload
+def node_mini_map_padding(value: Array[float, float] = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
+@overload
+def node_mini_map_padding(x: float = ..., y: float = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
+
+
+@overload
 def node_padding(value: Array[float, float] = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
 @overload
 def node_padding(x: float = ..., y: float = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
 
 
 @overload
-def pin_circle_radius(value: Array[float, float] = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
+def node_pin_circle_radius(value: Array[float, float] = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
 @overload
-def pin_circle_radius(x: float = ..., y: float = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
+def node_pin_circle_radius(x: float = ..., y: float = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
 
 
 @overload
-def pin_hover_radius(value: Array[float, float] = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
+def node_pin_hover_radius(value: Array[float, float] = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
 @overload
-def pin_hover_radius(x: float = ..., y: float = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
+def node_pin_hover_radius(x: float = ..., y: float = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
 
 
 @overload
-def pin_line_thickness(value: Array[float, float] = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
+def node_pin_line_thickness(value: Array[float, float] = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
 @overload
-def pin_line_thickness(x: float = ..., y: float = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
+def node_pin_line_thickness(x: float = ..., y: float = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
 
 
 @overload
-def pin_offset(value: Array[float, float] = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
+def node_pin_offset(value: Array[float, float] = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
 @overload
-def pin_offset(x: float = ..., y: float = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
+def node_pin_offset(x: float = ..., y: float = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
 
 
 @overload
-def pin_quad_side_length(value: Array[float, float] = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
+def node_pin_quad_side_length(value: Array[float, float] = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
 @overload
-def pin_quad_side_length(x: float = ..., y: float = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
+def node_pin_quad_side_length(x: float = ..., y: float = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
 
 
 @overload
-def pin_triangle_side_length(value: Array[float, float] = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
+def node_pin_triangle_side_length(value: Array[float, float] = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
 @overload
-def pin_triangle_side_length(x: float = ..., y: float = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
+def node_pin_triangle_side_length(x: float = ..., y: float = ..., /, *, label: str | None = ..., user_data: Any = ..., use_internal_label: bool = ...) -> mvThemeStyle: ...
 
 
 Alpha = alpha
@@ -465,45 +465,45 @@ WindowMinSize = window_min_size
 WindowPadding = window_padding
 WindowRounding = window_rounding
 WindowTitleAlign = window_title_align
-AnnotationPadding = annotation_padding
-DigitalBitGap = digital_bit_gap
-DigitalBitHeight = digital_bit_height
-ErrorBarSize = error_bar_size
-ErrorBarWeight = error_bar_weight
-FillAlpha = fill_alpha
-FitPadding = fit_padding
-LabelPadding = label_padding
-LegendInnerPadding = legend_inner_padding
-LegendPadding = legend_padding
-LegendSpacing = legend_spacing
-LineWeight = line_weight
-MajorGridSize = major_grid_size
-MajorTickLen = major_tick_len
-MajorTickSize = major_tick_size
-Marker = marker
-MarkerSize = marker_size
-MarkerWeight = marker_weight
-MinorAlpha = minor_alpha
-MinorGridSize = minor_grid_size
-MinorTickLen = minor_tick_len
-MinorTickSize = minor_tick_size
-MousePosPadding = mouse_pos_padding
+PlotAnnotationPadding = plot_annotation_padding
 PlotBorderSize = plot_border_size
 PlotDefaultSize = plot_default_size
+PlotDigitalBitGap = plot_digital_bit_gap
+PlotDigitalBitHeight = plot_digital_bit_height
+PlotErrorBarSize = plot_error_bar_size
+PlotErrorBarWeight = plot_error_bar_weight
+PlotFillAlpha = plot_fill_alpha
+PlotFitPadding = plot_fit_padding
+PlotLabelPadding = plot_label_padding
+PlotLegendInnerPadding = plot_legend_inner_padding
+PlotLegendPadding = plot_legend_padding
+PlotLegendSpacing = plot_legend_spacing
+PlotLineWeight = plot_line_weight
+PlotMajorGridSize = plot_major_grid_size
+PlotMajorTickLen = plot_major_tick_len
+PlotMajorTickSize = plot_major_tick_size
+PlotMarker = plot_marker
+PlotMarkerSize = plot_marker_size
+PlotMarkerWeight = plot_marker_weight
 PlotMinSize = plot_min_size
+PlotMinorAlpha = plot_minor_alpha
+PlotMinorGridSize = plot_minor_grid_size
+PlotMinorTickLen = plot_minor_tick_len
+PlotMinorTickSize = plot_minor_tick_size
+PlotMousePosPadding = plot_mouse_pos_padding
 PlotPadding = plot_padding
-GridSpacing = grid_spacing
-LinkHoverDistance = link_hover_distance
-LinkLineSegmentsPerLength = link_line_segments_per_length
-LinkThickness = link_thickness
-MiniMapOffset = mini_map_offset
-MiniMapPadding = mini_map_padding
 NodeBorderThickness = node_border_thickness
 NodeCornerRounding = node_corner_rounding
+NodeGridSpacing = node_grid_spacing
+NodeLinkHoverDistance = node_link_hover_distance
+NodeLinkLineSegmentsPerLength = node_link_line_segments_per_length
+NodeLinkThickness = node_link_thickness
+NodeMiniMapOffset = node_mini_map_offset
+NodeMiniMapPadding = node_mini_map_padding
 NodePadding = node_padding
-PinCircleRadius = pin_circle_radius
-PinHoverRadius = pin_hover_radius
-PinLineThickness = pin_line_thickness
-PinOffset = pin_offset
-PinQuadSideLength = pin_quad_side_length
-PinTriangleSideLength = pin_triangle_side_length
+NodePinCircleRadius = node_pin_circle_radius
+NodePinHoverRadius = node_pin_hover_radius
+NodePinLineThickness = node_pin_line_thickness
+NodePinOffset = node_pin_offset
+NodePinQuadSideLength = node_pin_quad_side_length
+NodePinTriangleSideLength = node_pin_triangle_side_length
