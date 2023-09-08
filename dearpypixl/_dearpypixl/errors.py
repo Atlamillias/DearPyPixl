@@ -10,7 +10,7 @@ _P = ParamSpec("_P")
 
 
 class ItemError(Protocol[_P]):
-    def __call__(self, item: Item, command: ItemCommand[_P]) -> Exception | None: ...
+    def __call__(self, item: Item, command: ItemCommand[_P, Item]) -> Exception | None: ...
 
 
 # [ HELPER FUNCTIONS ]

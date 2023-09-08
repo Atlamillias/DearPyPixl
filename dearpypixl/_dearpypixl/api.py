@@ -653,6 +653,14 @@ class _ViewportMeta(common.ItemInterfaceMeta):
     is_visible    : Property[bool | None]     = common.ItemState("visible")
     is_fullscreen : Property[bool | None]     = common.ItemState("is_fullscreen")
 
+    @property
+    def client_width(self) -> int:
+        return self.configuration()['client_width']
+
+    @property
+    def client_height(self) -> int:
+        return self.configuration()['client_height']
+
 
 @_onetime_setup(lambda: Viewport(), ('create', 'state', 'close'))
 @_clear_lockers
@@ -755,6 +763,9 @@ class Viewport(common.ItemInterface, str, metaclass=_ViewportMeta):
     primary_window = cast(ItemT | None, _ViewportMeta.primary_window)
     callback       = cast(Callable | None, _ViewportMeta.callback)
     user_data      = cast(Any, _ViewportMeta.user_data)
+
+    client_width   = cast(int, _ViewportMeta.client_width)
+    client_height  = cast(int, _ViewportMeta.client_height)
 
     is_ok          = cast(bool, _ViewportMeta.is_ok)
     is_visible     = cast(bool, _ViewportMeta.is_visible)
@@ -2207,6 +2218,72 @@ class NodeEditor:
 
 class Table:
     __slots__ = ()
+
+    def add_columns(
+        self: Any,
+        num_cols: int,
+        *,
+        item_command: common.ItemCommand = dearpygui.add_table_column,
+        **kwargs
+    ) -> list[ItemT]:
+        """Create a specified number of columns in the table and
+        return the resulting item identifiers.
+
+        Args:
+            * num_cols: The number of columns to generate.
+
+            * item_command: A callable that can be called without
+            arguments that creates a Dear PyGui item and returns
+            the item's identifier.
+
+
+        Additional keyword arguments are passed to *item_command*.
+        """
+        kwargs['parent'] = self
+        return [dearpygui.add_table_column(**kwargs) for i in range(num_cols)]
+
+    def add_rows(
+        self: Any,
+        num_cols: int,
+        *,
+        item_command: common.ItemCommand = dearpygui.add_table_row,
+        **kwargs
+    ) -> list[ItemT]:
+        """Create a specified number of rows in the table and return
+        the resulting item identifiers.
+
+        Args:
+            * num_cols: The number of rows to generate.
+
+            * item_command: A callable that can be called without
+            arguments that creates a Dear PyGui item and returns
+            the item's identifier.
+
+
+        Additional keyword arguments are passed to *item_command*.
+        """
+        kwargs['parent'] = self
+        return [dearpygui.add_table_row(**kwargs) for i in range(num_cols)]
+
+    def apply_borders(self: Any, value: bool = True, *, horizontal: bool = True, vertical: bool = True):
+        """Show or hide the table's borders.
+
+        Args:
+            * value: If True (default), display the table's borders.
+            False will hide them.
+
+            * horizontal: If True (default), *value* is applied to the
+            table's inner and outer horizontal borders.
+
+            * vertical: If True (default), *value* is applied to the
+            table's inner and outer vertical borders.
+        """
+        kwds = {}
+        if horizontal:
+            kwds.update(borders_innerH=value, borders_outerH=value)
+        if vertical:
+            kwds.update(borders_innerV=value, borders_outerV=value)
+        Item.configure(self, **kwds)
 
     def is_cell_highlighted(self: Any, irow: int, icol: int) -> bool:
         """Return True if a specific cell is highlighted.

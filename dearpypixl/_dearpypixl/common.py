@@ -237,42 +237,16 @@ Interface = TypeVar("Interface", bound='AppItemType')
 ItemType  = TypeVar("ItemType", bound=type['AppItemType'])
 
 
-class ItemCommand(Protocol[_P]):
+_Item_co = TypeVar("_Item_co", covariant=True, bound=int | str)
+
+class ItemCommand(Protocol[_P, _Item_co]):
     __name__: str
-    def __call__(self, *, tag: Item = 0, **kwargs) -> Item: ...
+    def __call__(self, *, tag: Item = 0, **kwargs) -> _Item_co: ...
 
 
-
-
-
-class _ItemCallback0(Protocol):
+class ItemCallback(Protocol):
     __code__: CodeType
-    def __call__(self, /) -> Any: ...
-
-class _ItemCallback1(Protocol):
-    __code__: CodeType
-    def __call__(self, __sender: Item, /) -> Any: ...
-
-class _ItemCallback2(Protocol):
-    __code__: CodeType
-    def __call__(self, __sender: Item, __app_data: Any, /) -> Any: ...
-
-class _ItemCallback3(Protocol):
-    __code__: CodeType
-    def __call__(self, __sender: Item, __app_data: Any, __user_data: Any, /) -> Any: ...
-
-class _ItemCallback4(Protocol):
-    __code__: CodeType
-    def __call__(self, /, *args: Any) -> Any: ...
-
-ItemCallback = TypeVar(
-    "ItemCallback",
-    _ItemCallback0,
-    _ItemCallback1,
-    _ItemCallback2,
-    _ItemCallback3,
-    _ItemCallback4,
-)
+    def __call__(self, *args: Unpack[tuple[Item, Any, Any]]) -> Any: ...
 
 
 
