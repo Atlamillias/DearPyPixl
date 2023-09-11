@@ -707,6 +707,10 @@ class AppItemType(api.Item, int, register=False, metaclass=AppItemMeta):
             f")"
         )
 
+    @overload
+    def __getitem__(self, index: Literal[0, 1, 2, 3]) -> list[Item]: ...
+    @overload
+    def __getitem__(self, index: slice) -> list[list[Item]]: ...
     def __getitem__(self, index: Literal[0, 1, 2, 3] | slice) -> list[Item] | list[list[Item]]:
         slots = self.information()["children"]
         try:
