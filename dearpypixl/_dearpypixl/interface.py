@@ -1063,6 +1063,7 @@ class mvAll(
     api.Plot,
     api.NodeEditor,
     api.Container,
+    api.ThemeElement,
     api.BasicItem,
     AppItemType,
 ):
@@ -1226,9 +1227,12 @@ class NodeEditorType(api.NodeEditor, NodeType):
     __slots__ = ()
 
 
-
 @_exported
 class ThemeType(AppItemType):
+    __slots__ = ()
+
+@_exported
+class ThemeElementType(api.ThemeElement, ThemeType):
     __slots__ = ()
 
 
@@ -1569,8 +1573,10 @@ def create_itemtype(tp_def: parsing.ItemDefinition) -> type[AppItemType]:
             hl_bases.append(NodeEditorType)
         elif tp_name.startswith("mvNode"):
             hl_bases.append(NodeType)
-        if tp_name.startswith("mvTheme"):
+        elif tp_name == "mvTheme":
             hl_bases.append(ThemeType)
+        elif tp_name.startswith("mvTheme"):
+            hl_bases.append(ThemeElementType)
 
         fn_bases = []
         if any(

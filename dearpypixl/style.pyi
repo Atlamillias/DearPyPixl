@@ -33,6 +33,7 @@ from ._dearpypixl.interface import (
     SupportsValueArray,
     TableItemType,
     TableType,
+    ThemeElementType,
     ThemeType,
     WindowType,
     mvAll,

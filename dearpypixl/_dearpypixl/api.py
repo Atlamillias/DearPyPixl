@@ -2821,6 +2821,32 @@ class Window:
         return _dearpygui.get_y_scroll_max(self)
 
 
+@functools.cache
+def _identify_element(category: int, target: int) -> str:
+    for definition in parsing.element_definitions().values():
+        if definition.target == target and definition.category == category:
+            return definition.name2
+    raise RuntimeError('could not identify theme element.')
+
+class ThemeElement:
+    __slots__ = ()
+
+    def identify(self: Any) -> str:
+        """Return the name the element.
+
+        Dear PyGui has no concept of element names, and instead
+        uses a combination of constants ("target" and "category")
+        to identify specific elements.
+
+        The name returned by this method will match the name of a
+        theme element factory function found in Dear PyPixl's
+        `color` or `style` modules.
+        """
+        e_cfg  = Item.configuration(self)
+        return _identify_element(e_cfg['category'], e_cfg['target'])
+
+
+
 
 mvBuffer = cast(type[mvBuffer], dearpygui.mvBuffer)
 mvVec4   = cast(type[mvVec4], dearpygui.mvVec4)

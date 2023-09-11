@@ -33,6 +33,7 @@ from ._dearpypixl.interface import (
     SupportsValueArray,
     TableItemType,
     TableType,
+    ThemeElementType,
     ThemeType,
     WindowType,
     auto_parent as auto_parent,
@@ -12835,7 +12836,7 @@ class mvTheme(ThemeType, RegistryType):
     def configuration(self) -> dict[Literal['label', 'user_data', 'use_internal_label'], Any]: ...
 
 
-class mvThemeColor(SupportsValueArray, ThemeType, BasicType):
+class mvThemeColor(SupportsValueArray, ThemeElementType, BasicType):
     """Adds a theme color.
 
     Args:
@@ -12882,7 +12883,7 @@ class mvThemeColor(SupportsValueArray, ThemeType, BasicType):
     def configuration(self) -> dict[Literal['label', 'user_data', 'use_internal_label', 'category', 'target'], Any]: ...
 
 
-class mvThemeComponent(ThemeType, ContainerType, BasicType):
+class mvThemeComponent(ThemeElementType, ContainerType, BasicType):
     """Adds a theme component.
 
     Args:
@@ -12928,7 +12929,7 @@ class mvThemeComponent(ThemeType, ContainerType, BasicType):
     def configuration(self) -> dict[Literal['label', 'user_data', 'use_internal_label', 'before', 'enabled_state'], Any]: ...
 
 
-class mvThemeStyle(SupportsValueArray, ThemeType, BasicType):
+class mvThemeStyle(SupportsValueArray, ThemeElementType, BasicType):
     """Adds a theme style.
 
     Args:
