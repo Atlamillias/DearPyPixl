@@ -1,6 +1,6 @@
 [project]
 name = "dearpypixl"
-version = "1.0.5"
+version = "1.1.0"
 description = "An object-oriented, lightweight, modular framework and toolkit for Dear PyGui."
 authors = [{name="Anthony Doupe", email="atlamillias@outlook.com"}]
 keywords = ["dearpygui", "gui", "ui", "user-interface"]

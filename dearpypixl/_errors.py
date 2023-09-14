@@ -2,8 +2,8 @@
 import inspect
 import functools
 from dearpygui import _dearpygui
-from .common import Item, ItemCommand, Protocol, ParamSpec
-from . import parsing
+from ._typing import Item, ItemCommand, Protocol, ParamSpec
+from . import _parsing
 
 
 _P = ParamSpec("_P")
@@ -52,7 +52,7 @@ def command_signature(command: ItemCommand):
 def command_itp_name(command: ItemCommand) -> str:
     from . import api
 
-    for tp_def in parsing.item_definitions().values():
+    for tp_def in _parsing.item_definitions().values():
         try:
             if command == tp_def.command1 or command == tp_def.command2:  # type: ignore
                 return tp_def.name  # type: ignore

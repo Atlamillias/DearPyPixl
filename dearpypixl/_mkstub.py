@@ -20,7 +20,7 @@ from typing import (
     TYPE_CHECKING,
 )
 if TYPE_CHECKING:
-    from .interface import AppItemType
+    from ._interface import AppItemType
 
 
 

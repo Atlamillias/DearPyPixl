@@ -1,17 +1,17 @@
 
 def _fill_namespace():
-    from ._dearpypixl import interface, parsing, mkstub
+    from . import _interface, _parsing, _mkstub
 
-    exported = mkstub.Exported(__name__)
+    exported = _mkstub.Exported(__name__)
 
     namespace = dict(
-        exp for exp in mkstub.Exported.fetch(interface).items()
+        exp for exp in _mkstub.Exported.fetch(_interface).items()
     )
-    for tp_def in parsing.item_definitions().values():
+    for tp_def in _parsing.item_definitions().values():
         if not tp_def:
             continue
 
-        itp = exported(interface.create_itemtype(tp_def))
+        itp = exported(_interface.create_itemtype(tp_def))
         itp.__module__ = __name__
         namespace[itp.__qualname__] = itp
         # set an alias

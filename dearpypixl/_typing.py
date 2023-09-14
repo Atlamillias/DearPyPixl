@@ -72,10 +72,10 @@ if sys.version_info < (3, 12):
         raise ImportError("Python < 3.12 requires `typing-extensions` module.") from None
 else:
     from typing import override
-from . import tools
+from . import _tools
 
 if TYPE_CHECKING:
-    from .interface import AppItemType
+    from ._interface import AppItemType
 
 
 # Super-primitive types and protocols are declared here.
@@ -283,7 +283,7 @@ class ItemConfig(_ItemProperty[_T]):
         #      since it's a dunder method, will call the class-level
         #      member i.e. `member_descriptor.__call__`, which doesn't
         #      exist. Any other dunder would work fine, just not `__get__`.
-        __set__ = tools.create_function(
+        __set__ = _tools.create_function(
             '__set__',
             ('self', 'instance', 'value'),
             (f"instance.configure({self._key}=value)",)

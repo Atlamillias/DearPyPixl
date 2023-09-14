@@ -6,7 +6,7 @@ from dearpygui._dearpygui import (  # using the "raw" API to help w/performance 
     get_viewport_configuration as _get_viewport_size,
     configure_item as _set_item_size,
 )
-from ._dearpypixl.common import (
+from ._typing import (
     Item,
 
     Any,
@@ -24,8 +24,7 @@ from ._dearpypixl.common import (
 
     TypeVar,
 )
-from ._dearpypixl.api import Registry as RegistryAPI
-from ._dearpypixl import errors
+from .api import Registry as RegistryAPI
 
 
 # TODO: add thread lock

@@ -9,8 +9,8 @@ import threading
 import dataclasses
 from inspect import Parameter
 from dearpygui import dearpygui
-from . import common, constants, tools
-from .common import (
+from . import constants, _typing, _tools
+from ._typing import (
     Any,
     Item,
     Callable,
@@ -136,7 +136,7 @@ class ItemDefinition:
         _setattr('is_container', bool(self.command2))
 
 
-@tools.cache_once
+@_tools.cache_once
 def item_definitions() -> Mapping[str, ItemDefinition]:
     """Parse Dear PyGui's API and return compiled item type definitions.
 
@@ -156,7 +156,7 @@ def item_definitions() -> Mapping[str, ItemDefinition]:
     _t.start()
     _t.join()
 
-    name_to_enum      = common.cast(dict[str, int], name_to_enum)
+    name_to_enum      = _typing.cast(dict[str, int], name_to_enum)
     name_to_def       = {}
     commands_to_names = {
         dearpygui.add_2d_histogram_series: "mv2dHistogramSeries",
@@ -282,7 +282,7 @@ class ElementDefinition:
 
 
 
-@tools.cache_once
+@_tools.cache_once
 def element_definitions() -> Mapping[str, ElementDefinition]:
     const_pfxs = (
         "mvThemeCol",
@@ -363,14 +363,14 @@ def element_definitions() -> Mapping[str, ElementDefinition]:
         const_to_elem[CORE] | const_to_elem[PLOT] | const_to_elem[NODE]
     )
 
-@tools.cache_once
+@_tools.cache_once
 def color_definitions() -> Mapping[str, ElementDefinition]:
     return types.MappingProxyType({
         k:v for k,v in element_definitions().items()
         if v.type == "mvThemeColor"
     })
 
-@tools.cache_once
+@_tools.cache_once
 def style_definitions() ->  Mapping[str, ElementDefinition]:
     return types.MappingProxyType({
         k:v for k,v in element_definitions().items()
@@ -449,7 +449,7 @@ def upd_param_annotations(parameters: Mapping[str, Parameter]) -> dict[str, Para
 _item_ref  = "A reference to an existing item (as a `int` uuid, `str` alias, or `int` item interface)"
 _empty_ref = "None or 0 (default)"
 
-@tools.frozen_namespace
+@_tools.frozen_namespace
 class _DocParseConst:
     RE_ARGS = re.compile(
         r'^\s*Args[;:]$', re.MULTILINE

@@ -9,11 +9,11 @@ import itertools  # type: ignore
 import contextlib
 import types
 from dearpygui import dearpygui
-from dearpypixl._dearpypixl.common import Item, Color
+from ._typing import Item, Color
 from . import items, color, style
-from ._dearpypixl import api, interface, tools
-from ._dearpypixl.api import Item as ItemAPI
-from ._dearpypixl.common import (
+from . import api, _interface, _tools
+from .api import Item as ItemAPI
+from ._typing import (
     Item,
     Any,
     Sequence,
@@ -48,7 +48,7 @@ def _item_generator(item_factory: Callable[_P, _T], *args: _P.args, **kwargs: _P
         yield item_factory(*args, **kwargs)
 
 
-class FileStream(interface.SupportsValueArray[str], items.mvValueRegistry):
+class FileStream(_interface.SupportsValueArray[str], items.mvValueRegistry):
     """A value registry that acts like pseudo file stream or buffer. It
     represents itself as a living multiline string split at newlines.
         >>> f = FileStream()
@@ -160,7 +160,7 @@ class FileStream(interface.SupportsValueArray[str], items.mvValueRegistry):
         self._max_len = max_len
 
         self._add_value_item = Method(
-            tools.create_function(
+            _tools.create_function(
                 '_new_value_item',
                 ('self', "*args", "**kwargs"),
                 (
@@ -178,7 +178,7 @@ class FileStream(interface.SupportsValueArray[str], items.mvValueRegistry):
             self,
         )
         self._del_value_item = Method(
-            tools.create_function(
+            _tools.create_function(
                 '_del_value_item',
                 ('self', 'item: int | str', '/'),
                 ('callback(self, item)', 'delete_item(item)'),
@@ -191,7 +191,7 @@ class FileStream(interface.SupportsValueArray[str], items.mvValueRegistry):
             self,
         )
         self._set_value_item = Method(
-            tools.create_function(
+            _tools.create_function(
                 '_set_value_item',
                 ('self', 'item: int | str', 'value: str', '/'),
                 ('set_value(item, callback(self, item, value))',),
@@ -706,7 +706,7 @@ class PythonConsole(ConsoleWindow):
 
 
 
-@interface.auto_parent(functools.partial(  # type: ignore
+@_interface.auto_parent(functools.partial(  # type: ignore
     dearpygui.add_window,
     width=600,
     height=400,

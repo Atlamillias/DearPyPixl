@@ -5,10 +5,10 @@ import inspect
 import functools
 from inspect import Parameter
 from dearpygui import dearpygui, _dearpygui
-from . import api, common, constants, tools, errors, parsing, mkstub
+from . import api, _typing, constants, _tools, _errors, _parsing, _mkstub
 from .api import Item as ItemAPI, Registry as RegistryAPI, _create_uuid
-from .tools import classproperty
-from .common import (
+from ._tools import classproperty
+from ._typing import (
     Item,
     ItemInterface,
     ItemCommand,
@@ -42,7 +42,7 @@ from .common import (
     TYPE_CHECKING,
 )
 if TYPE_CHECKING:
-    from ..items import mvTheme, mvFont, mvItemHandlerRegistry
+    from .items import mvTheme, mvFont, mvItemHandlerRegistry
 
 
 
@@ -53,7 +53,7 @@ _P = ParamSpec("_P")
 _ITP = TypeVar("_ITP", bound='AppItemType')
 
 
-_exported = mkstub.Exported(__name__)
+_exported = _mkstub.Exported(__name__)
 
 
 
@@ -104,7 +104,7 @@ def _get_itp_subclasses(*parent_cls: type[_T]) -> tuple[type[_T], ...]:
 
 
 def _create_init_method(cls: Any, parameters: Mapping[str, Parameter]) -> Any:
-    method = tools.create_function(
+    method = _tools.create_function(
         '__init__',
         ('self', '*args', 'tag: int | str = 0', '**kwargs'),
         (
@@ -120,10 +120,10 @@ def _create_init_method(cls: Any, parameters: Mapping[str, Parameter]) -> Any:
             # case, it scuffs "does item exist" checks. Explicit `tag`s are *usually*
             # sent without arguments, and can be used as a decent `does_item_exist`
             # substitute.
-            f"    if not errors.{errors.does_item_exist.__name__}(self) or (not tag and (args or kwargs)):",
+            f"    if not _errors.{_errors.does_item_exist.__name__}(self) or (not tag and (args or kwargs)):",
             f"        err_chks = (",
-            f"            errors.{errors.err_arg_unexpected.__name__},",
-            f"            errors.{errors.err_parent_invalid.__name__},",
+            f"            _errors.{_errors.err_arg_unexpected.__name__},",
+            f"            _errors.{_errors.err_parent_invalid.__name__},",
             f"        )",
             f"        for err_chk in err_chks:",
             f"            err = err_chk(self, self.command, *args, **kwargs)",
@@ -136,7 +136,7 @@ def _create_init_method(cls: Any, parameters: Mapping[str, Parameter]) -> Any:
         None,
         locals={
             '__class__': cls,
-            'errors'   : errors,
+            '_errors'   : _errors,
         }
     )
     method.__name__      = '__init__'
@@ -164,14 +164,14 @@ def _create_init_method(cls: Any, parameters: Mapping[str, Parameter]) -> Any:
 def _create_configure_method(cls: Any, parameters: Mapping[str, Parameter]) -> Any:
     """Generate and return a new `.configure` method using item
     command parameters."""
-    method = tools.create_function(
+    method = _tools.create_function(
         'configure',
         ('self', '**kwargs'),
         (
             "try:",
             "    configure_item(self, **kwargs)",
             "except SystemError:",
-           f"    err = errors.{errors.err_item_nonexistant.__name__}(self, self.command, **kwargs)",
+           f"    err = _errors.{_errors.err_item_nonexistant.__name__}(self, self.command, **kwargs)",
             "    if err: raise err from None",
             "    bad_kwds = ', '.join(repr(k) for k in kwargs if k not in _ITEM_CFG_KEYS)",
             "    if bad_kwds:",
@@ -191,7 +191,7 @@ def _create_configure_method(cls: Any, parameters: Mapping[str, Parameter]) -> A
         None,
         locals={
             '__class__'        : cls,
-            'errors'           : errors,
+            '_errors'           : _errors,
             'configure_item'   : _dearpygui.configure_item,
             '_ITEM_CFG_KEYS'   : frozenset(parameters),
         }
@@ -221,7 +221,7 @@ def _create_configuration_method(cls: Any, parameters: Mapping[str, Parameter]) 
         globals(),
         locals(),
     )
-    method = tools.create_function(
+    method = _tools.create_function(
         'configuration',
         ('self',),
         (
@@ -231,14 +231,14 @@ def _create_configuration_method(cls: Any, parameters: Mapping[str, Parameter]) 
             f"        if k in _ITEM_CFG_KEYS",
             f"    }}",
             f"except SystemError:",
-            f"    err = errors.{errors.err_item_nonexistant.__name__}(self, self.command)",
+            f"    err = _errors.{_errors.err_item_nonexistant.__name__}(self, self.command)",
             f"    if err: raise err from None",
             f"    raise",
         ),
         return_annotation,
         locals={
             '__class__'             : cls,
-            'errors'                : errors,
+            '_errors'                : _errors,
             'get_item_configuration': _dearpygui.get_item_configuration,
             '_ITEM_CFG_KEYS'        : frozenset(parameters),
         },
@@ -306,9 +306,9 @@ class AppItemMeta(type):
         identity: Any = namespace.get("identity", identity)
 
         if command and not _is_default_command(command):
-            if parsing.is_contextmanager(command):
+            if _parsing.is_contextmanager(command):
                 command = command.__wrapped__
-            if not parsing.is_item_command(command):
+            if not _parsing.is_item_command(command):
                 if callable(command):
                     raise ValueError(f'{command!r} is not a valid item command.')
                 raise TypeError(f'{command!r} is not callable.')
@@ -350,7 +350,7 @@ class AppItemMeta(type):
                     f"cannot create class {name!r} -- incompatible union of bases."
                 )
 
-            tp_def = parsing.item_definitions()[
+            tp_def = _parsing.item_definitions()[
                 cls.identity[1].removeprefix("mvAppItemType::")
             ]
 
@@ -364,7 +364,7 @@ class AppItemMeta(type):
 
             # Expose "configuration" options as a rw properties, even if
             # they aren't writable. The `.configure` method will handle
-            # those errors.
+            # those _errors.
             config_params = list(tp_def.rconfig_params)
             config_params.extend(
                 opt for opt in tp_def.wconfig_params if opt not in config_params
@@ -463,7 +463,7 @@ def _onetime_setup(fn: _T) -> _T:
     return application_setup  # type: ignore
 
 
-def _get_base_itp(item: Item, information: common.ItemInfoDict | None = None):
+def _get_base_itp(item: Item, information: _typing.ItemInfoDict | None = None):
     return AppItemMeta.__itemtype_registry__[
         (information or ItemAPI.information(item))['type']
     ]
@@ -493,7 +493,7 @@ class _SaveState(TypedDict):
     itf_state     : dict[str, Any] | None
     itf_state_keys: tuple[str, ...]
 
-def _to_save_state(item: 'AppItemType', info: common.ItemInfoDict | None = None, **kwargs) -> _SaveState:
+def _to_save_state(item: 'AppItemType', info: _typing.ItemInfoDict | None = None, **kwargs) -> _SaveState:
     info   = info or item.information()
     config = item.configuration()
     pos    = item.state()['pos']
@@ -661,7 +661,7 @@ class AppItemType(api.Item, int, register=False, metaclass=AppItemMeta):
             integer identifier is automatically generated.
 
 
-        If the instance's tag value is unused, expect errors when using
+        If the instance's tag value is unused, expect _errors when using
         most of the instance-bound API. The instance can be initialized
         at any time by calling the `.__init__` or `.init` methods.
 
@@ -1319,7 +1319,7 @@ class SupportsSized(AppItemType):
 
     # Every item with `pos` has sizing support. However, they are not
     # always configured through the `width` and `height` keywords. This
-    # covers the common case.
+    # covers the _typing case.
 
     width : Property[int] = ItemConfig()
     height: Property[int] = ItemConfig()
@@ -1521,7 +1521,7 @@ assert all(
 
 # [ ITEMTYPE FACTORIES ]
 
-def create_itemtype(tp_def: parsing.ItemDefinition) -> type[AppItemType]:
+def create_itemtype(tp_def: _parsing.ItemDefinition) -> type[AppItemType]:
     tp_name: str = tp_def.name # type: ignore
     reg_key = f'mvAppItemType::{tp_name}'
 
@@ -1591,7 +1591,7 @@ def create_itemtype(tp_def: parsing.ItemDefinition) -> type[AppItemType]:
 
         bases = [*fn_bases, *hl_bases, *ll_bases]
         class_body = {
-            '__doc__'  : parsing.upd_command_doc(tp_def.command1),
+            '__doc__'  : _parsing.upd_command_doc(tp_def.command1),
             '__slots__': (),
         }
 

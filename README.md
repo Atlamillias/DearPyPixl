@@ -591,12 +591,11 @@ Runtime.start()
 
 Only interface types are exposed directly within the `dearpypixl` namespace. Other useful tools and extensions are housed within their respective modules;
 * `api`: Contains the lower-level API used by the framework.
-* `typing`: Defines common type variables, aliases, and protocols used throughout the library, including `mvBuffer`, `mvVec4`, and `mvMat4`.
+* `typing`: Exposes type aliases and protocols used by the library. In addition to the `AppItemType` base class, primitive interface bases, abstract bases, and protocols for Dear PyGui's `mvBuffer`, `mvVec4`, and `mvMat4` objects.
 * `constants`: Stores static Dear PyGui and Dear PyPixl values/variables as enumerations.
-* `interface`: Home to the `AppItemType` base class and other primitive interface types, in addition to the `ABCAppItemType` class and `ABCAppItemTypeMeta` metaclass for creating abstract interface types.
-* `events`: Extensions of callback-related interface types.
+* `events`: Extensions of callback-related interface types and related utilities.
 * `theming`: Extensions of theme and font-related interface types.
-* `color`, `style`: Exposes theme color and style elements as individual interface types.
+* `color`, `style`: Contains helper functions for creating specific theme color and style elements.
 * `console`: Homebrew stream and console-related item interfaces.
 * `grid`: Contains the `Grid` item layout manager, which leverages the ability to explicitly position items to emulate a table-like layout without creating any items.
 <br>
