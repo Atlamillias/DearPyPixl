@@ -1,11 +1,11 @@
 import inspect
-from ._dearpypixl import common, parsing, tools, mkstub
-from ._dearpypixl.common import overload, Item, Color, Any, Array
+from . import _typing, _parsing, _tools, _mkstub
+from ._typing import overload, Item, Color, Any, Array
 from .items import mvThemeColor, ThemeColor, mvThemeStyle, ThemeStyle
 
 
 def _init_module():
-    overloads = common.get_overloads(_add_theme_element)
+    overloads = _typing.get_overloads(_add_theme_element)
 
     for ovld in overloads:
         try:
@@ -33,11 +33,11 @@ def _init_module():
             parameters=list((ovld_args | ovld_kwds).values())
         )
 
-    exported = mkstub.Exported(__name__)
+    exported = _mkstub.Exported(__name__)
 
     ns = {}
-    for elem_def in parsing.color_definitions().values():
-        fn = tools.create_function(
+    for elem_def in _parsing.color_definitions().values():
+        fn = _tools.create_function(
             elem_def.name2, _DFN_ARGS,
             _DFN_BODY,
             _ITP_BASE,

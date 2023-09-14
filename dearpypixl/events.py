@@ -2,17 +2,17 @@
 and Dear PyGui."""
 import time
 import enum
-import array
 import inspect
 import functools
 import threading
 import collections
 from inspect import Parameter as _Parameter
 from dearpygui import dearpygui
-from ._dearpypixl import (
+from .constants import KeyInput, MouseInput
+from . import (
     api,
-    interface,
-    tools,
+    _interface,
+    _tools,
 )
 # BUG: DPG leaks callback arguments. `user_data` is leaked
 # in some cases, but `app_data` leaks are plentiful and can
@@ -20,9 +20,8 @@ from ._dearpypixl import (
 # even if these do leak, they're not the primary concern.
 # Containters though...we decref those. We decref those to
 # *heck*.
-from ._dearpypixl.tools import Py_DECREF
-from ._dearpypixl.constants import KeyInput, MouseInput
-from ._dearpypixl.common import (
+from ._tools import Py_DECREF
+from ._typing import (
     Any,
     Item,
     ItemCommand,
@@ -54,7 +53,7 @@ _P   = ParamSpec("_P")
 
 
 class _empty: ... # this declaration keeps the typechecker quiet
-_empty = tools.create_marker_type("Empty")  # type: ignore
+_empty = _tools.create_marker_type("Empty")  # type: ignore
 
 Empty = type[_empty]
 
@@ -732,7 +731,7 @@ class MousePoller(_InputPoller):
 _CALLBACK_MARKER = '__item_callback__'
 
 
-@tools.frozen_namespace
+@_tools.frozen_namespace
 class _CallArgs:
     SENDER    = 'sender'
     APP_DATA  = 'app_data'
@@ -745,7 +744,7 @@ def _count_pargs(_callable: Callable):
     except TypeError:
         raise TypeError(f"{_callable!r} is not callable.") from None
     except ValueError: # "built-in"/ c-extension function?
-        if tools.is_builtin(_callable):
+        if _tools.is_builtin(_callable):
             raise ValueError(
                 f"built-in object {_callable.__name__!r} has no signature."
             ) from None
@@ -823,7 +822,7 @@ class Callback(ItemInterface):
 
     empty = _empty
 
-    priority: Property[int] = tools.simpleproperty()
+    priority: Property[int] = _tools.simpleproperty()
 
     def __init__(
         self,
@@ -999,7 +998,7 @@ class Callback(ItemInterface):
                 passed_arg if call_locals[ovrrd_arg] is _empty else ovrrd_arg
                 for passed_arg, ovrrd_arg in self.__CALLBACK_ARGS[:arg_count]
             )
-            __call__ = tools.create_function(
+            __call__ = _tools.create_function(
                 '__call__',
                 self.__CALL_ARGS,
                 (f'_callback({", ".join(callback_args)})',),
@@ -1133,7 +1132,7 @@ class CallStack(Callback):
     def __exit__(self, *args):
         self._lock.release()
 
-    callbacks: Property[list[Callable]] = tools.simpleproperty()
+    callbacks: Property[list[Callable]] = _tools.simpleproperty()
 
     @property
     def callback(self):
@@ -1491,7 +1490,7 @@ def resized_fill_content_region(
     any sizable item, such as a `mvButton`, `mvChildWindow`,
     or `mvPlot` item.
     """
-    item        = interface.mvAll(item)
+    item        = _interface.mvAll(item)
     item_config = item.configuration()
     item_info   = item.information()
     if (
@@ -1507,7 +1506,7 @@ def resized_fill_content_region(
         raise TypeError(
             f"target cannot be a top-level root item."
         )
-    parent = interface.mvAll(parent)
+    parent = _interface.mvAll(parent)
 
     if not parent.state()['content_region_avail']:
         _parent_tp = parent.information()['type'].split('::')[1]
@@ -1522,7 +1521,7 @@ def resized_fill_content_region(
     except:
         get_x_scr_max = get_y_scr_max = lambda x: 0
 
-    root_parent = cast(interface.mvAll, item.root_parent)
+    root_parent = cast(_interface.mvAll, item.root_parent)
     root_info   = root_parent.information()
     if not root_info['resized_handler_applicable']:
         raise TypeError(
@@ -1581,14 +1580,14 @@ def resized_fill_content_region(
     )
 
     handler  = items.ResizeHandler.new()
-    callback = tools.create_function(
+    callback = _tools.create_function(
         'callback',
         (),
         cb_body,
         globals=globals(),
         locals={
-            'item'            : interface.mvAll(item),
-            'parent'          : interface.mvAll(parent),
+            'item'            : _interface.mvAll(item),
+            'parent'          : _interface.mvAll(parent),
             'handler'         : handler,
             'get_x_scr_max'   : get_x_scr_max,
             'get_y_scr_max'   : get_y_scr_max,

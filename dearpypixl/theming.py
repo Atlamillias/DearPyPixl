@@ -4,14 +4,14 @@ import functools
 import itertools  # type: ignore
 import os
 from dearpygui import dearpygui
-from ._dearpypixl.common import (
+from ._typing import (
     Any,
     Item,
     overload,
 )
 from . import items, color, style
-from ._dearpypixl import api, interface, tools
-from ._dearpypixl.api import Registry as RegistryAPI, Item as ItemAPI
+from . import api, _interface, _tools
+from .api import Registry as RegistryAPI, Item as ItemAPI
 
 
 
@@ -229,7 +229,7 @@ class SizedFont(items.mvFontRegistry):
     VIETNAMESE                = FontRangeHint.VIETNAMESE
     ALL                       = FontRangeHint.ALL
 
-    __glbl_lock  = tools.Lock()
+    __glbl_lock  = _tools.Lock()
     __glbl_binds = {}
 
     _font_cache : dict[float, Item]

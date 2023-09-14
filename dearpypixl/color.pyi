@@ -1,4 +1,4 @@
-from ._dearpypixl.common import (
+from ._typing import (
     Item,
     ItemAlias,
     ItemUUID,
@@ -14,7 +14,7 @@ from ._dearpypixl.common import (
     Point,
     overload,
 )
-from ._dearpypixl.interface import (
+from ._interface import (
     BasicType,
     ContainerType,
     DrawNodeType,
@@ -33,6 +33,7 @@ from ._dearpypixl.interface import (
     SupportsValueArray,
     TableItemType,
     TableType,
+    ThemeElementType,
     ThemeType,
     WindowType,
     mvAll,

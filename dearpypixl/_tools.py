@@ -11,7 +11,14 @@ import inspect
 import itertools
 import functools
 import threading
-from .common import Callable, Any, Iterable, Mapping, Sequence, MutableSequence, MutableMapping
+from typing import (
+    Any,
+    Callable,
+    Iterable,
+    Mapping,
+    Sequence,
+    MutableSequence
+)
 
 
 _T = typing.TypeVar("_T")
