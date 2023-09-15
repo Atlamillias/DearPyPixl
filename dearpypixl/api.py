@@ -2822,8 +2822,12 @@ class Window:
 
 
 @functools.cache
-def _identify_element(category: int, target: int) -> str:
-    for definition in _parsing.element_definitions().values():
+def _identify_element(category: int, target: int, type: str) -> str:
+    if type.endswith('mvThemeColor'):
+        elem_defs = _parsing.color_definitions()
+    else:
+        elem_defs = _parsing.style_definitions()
+    for definition in elem_defs.values():
         if definition.target == target and definition.category == category:
             return definition.name2
     raise RuntimeError('could not identify theme element.')
@@ -2843,7 +2847,11 @@ class ThemeElement:
         `color` or `style` modules.
         """
         e_cfg  = Item.configuration(self)
-        return _identify_element(e_cfg['category'], e_cfg['target'])
+        return _identify_element(
+            e_cfg['category'],
+            e_cfg['target'],
+            Item.information(self)['type'],
+        )
 
 
 
