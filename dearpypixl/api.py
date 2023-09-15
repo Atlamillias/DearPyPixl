@@ -999,7 +999,7 @@ class Viewport(_typing.ItemInterface, str, metaclass=_ViewportMeta):
         fullscreen.
         """
         with locker:
-            if not locker.value['fullscreen']:
+            if locker.value['fullscreen']:
                 _viewport_toggle_fullscreen()
                 locker.value['fullscreen'] = False
             _viewport_maximize()
@@ -1012,7 +1012,7 @@ class Viewport(_typing.ItemInterface, str, metaclass=_ViewportMeta):
         fullscreen.
         """
         with locker:
-            if not locker.value['fullscreen']:
+            if locker.value['fullscreen']:
                 _viewport_toggle_fullscreen()
                 locker.value['fullscreen'] = False
             _viewport_minimize()
