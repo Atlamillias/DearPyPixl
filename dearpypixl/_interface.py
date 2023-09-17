@@ -13,7 +13,6 @@ from ._typing import (
     ItemInterface,
     ItemCommand,
     ItemConfig,
-    ItemInfo,
     ItemState,
     null_itemtype,
     null_command,
@@ -27,12 +26,10 @@ from ._typing import (
     Literal,
     Iterable,
     Generic,
-    Unpack,
     Mapping,
     Property,
     Sequence,
     SupportsIndex,
-    final,
     overload,
 
     TypedDict,
@@ -1067,6 +1064,21 @@ class mvAll(
     api.BasicItem,
     AppItemType,
 ):
+    """Generic interface for Dear PyGui items.
+
+    Unlike other interface types, `mvAll` cannot create new
+    items. Instead, its' constructor is optimized for existing
+    uuids and aliases.
+
+    Instances of `mvAll` have an expansive API to accomodate a
+    wide range of items. However, they lack type identity and
+    do not implement behavior methods unique to other
+    interfaces. They can still be used as context managers;
+    a `TypeError` is raised if the interfaced item is not a
+    container.
+
+    The `mvAll` type has an identity integer value of 0.
+    """
     """Generic item interface with a constructor optimized for existing
     items. It features an expansive API, but lacks type identity and
     behavior unique to specific interface types.
@@ -1084,11 +1096,11 @@ class mvAll(
     __slots__ = ()
 
     def __new__(cls, tag: Item) -> Self:
-        # I've tried every implementation under the sun trying to get
-        # this to be as fast as possible. Only one exists, and the
-        # extremely marginal gain isn't warrant given the straight-
-        # forward approach. Even then, it was only a gain when `tag`
-        # was actually an integer.
+        # I've profiled almost every realistic implementation
+        # under the sun trying to get this to be as fast as
+        # possible. One exists, but the gain is EXTREMELY
+        # marginal. Even then, it would only benefit integer
+        # `tag` values.
         if isinstance(tag, int):
             return int.__new__(cls, tag)
         return int.__new__(cls, RegistryAPI.get_item_uuid(tag))
@@ -1099,7 +1111,11 @@ class mvAll(
         try:
             self.push_stack()
         except:
-            raise TypeError(f"{type(self).__qualname__!r} is not a container item.")
+            if RegistryAPI.item_exists(self):
+                raise TypeError(
+                    f"{type(self).__qualname__!r} is not a container item."
+                )
+            raise
         return self
 
     def __exit__(self, *args) -> None:
@@ -1110,8 +1126,7 @@ class mvAll(
 
     # Identity-related class properties would always return False,
     # so they need to be re-implemented. Fortunately, class-level
-    # insight isn't needed for this interface since the type itself
-    # lacks identity.
+    # insight isn't necessary.
 
     @property
     def is_container(self) -> bool:
@@ -1170,13 +1185,17 @@ class mvAll(
 
 @_exported
 class BasicType(api.BasicItem, AppItemType):
-    """Interface for basic non-container items."""
+    """Interface for Dear PyGui's basic non-container items."""
     __slots__ = ()
 
 
 @_exported
 class ContainerType(api.Container, AppItemType):
-    """Interface for items that can contain others."""
+    """Interface for Dear PyGui items that can parent other
+    items.
+
+    Items that can be parented vary based on the item's type.
+    """
     __slots__ = ()
 
     def __enter__(self) -> Self:
@@ -1193,7 +1212,8 @@ class ContainerType(api.Container, AppItemType):
 
 @_exported
 class RootType(ContainerType):
-    """Interface for top-level container items. Root items cannot be parented.
+    """Interface for top-level Dear PyGui container items.
+    Root items cannot be parented.
     """
     __slots__ = ()
 
@@ -1202,6 +1222,8 @@ class RootType(ContainerType):
 
 @_exported
 class RegistryType(RootType):
+    """Interface for hidden, non-interactable, top-level
+    Dear PyGui items."""
     __slots__ = ()
 
 
@@ -1210,7 +1232,9 @@ class RegistryType(RootType):
 
 @_exported
 class HandlerType(api.BasicItem, AppItemType):
-    """Interface for items that fire a callback given a certain event.
+    """Interface for basic Dear PyGui items that fire a
+    callback given a certain event. They are always parent
+    by a `RegistryType` item.
     """
     __slots__ = ()
 
@@ -1480,11 +1504,17 @@ class SupportsValueArray(AppItemType, Generic[_T]):
 
 @_exported
 class SupportsCallback(AppItemType, Generic[_P, _T]):
-    """Interface for items that support an optional callback.
+    """Interface for items that support an optional callback
+    event.
 
-    The callback can be invoked by calling the interface.which
-    can be invoked by calling the item. They can also be passed
-    as a callback-related argument for other items.
+    The callback is exposed via the 'callback' item
+    configuration option and instance attribute. Additonally,
+    calls made to the interface are forwarded to the assigned
+    callback.
+
+    Instances of `SupportsCallback` implement Dear PyPixl's
+    `ItemCallback` protocol, and can be used as arguments for
+    Dear PyGui `callback`-related arguments.
     """
     __slots__ = ()
 
@@ -1511,6 +1541,7 @@ class SupportsCallback(AppItemType, Generic[_P, _T]):
     __code__ = __call__.__code__
 
 
+
 assert all(
     '__slots__' in itp.__dict__
     for itp in AppItemType.__subclasses__()
@@ -1519,9 +1550,10 @@ assert all(
 
 
 
-# [ ITEMTYPE FACTORIES ]
-
 def create_itemtype(tp_def: _parsing.ItemDefinition) -> type[AppItemType]:
+    # XXX: Maybe move to `items.py`? It's the only caller.
+    # Although it's kinda nice having this and the necessary
+    # implementations in the same place.
     tp_name: str = tp_def.name # type: ignore
     reg_key = f'mvAppItemType::{tp_name}'
 
