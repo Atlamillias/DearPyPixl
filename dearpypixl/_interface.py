@@ -1298,6 +1298,28 @@ class TableType(AppItemType):
 class TableItemType(api.Table, TableType):
     __slots__ = ()
 
+    @property
+    def x_scroll_max(self):
+        return super().x_scroll_max()
+
+    @property
+    def x_scroll_pos(self):
+        return self.get_x_scroll_pos()
+    @x_scroll_pos.setter
+    def x_scroll_pos(self, value: float):
+        self.set_x_scroll_pos(value)
+
+    @property
+    def y_scroll_max(self):
+        return super().y_scroll_max()
+
+    @property
+    def y_scroll_pos(self):
+        return self.get_y_scroll_pos()
+    @y_scroll_pos.setter
+    def y_scroll_pos(self, value: float):
+        self.set_y_scroll_pos(value)
+
 
 @_exported
 class WindowType(api.Window, AppItemType):
@@ -1338,7 +1360,6 @@ class WindowType(api.Window, AppItemType):
 class _ItemStateSized(_typing.ItemStateDict):
     pos                 : Array[int, int]  # type: ignore
     rect_size           : Array[int, int]  # type: ignore
-
 
 @_exported
 class SupportsSized(AppItemType):
