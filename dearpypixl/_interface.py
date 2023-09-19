@@ -1335,42 +1335,43 @@ class WindowType(api.Window, AppItemType):
 # FUNCTIONAL CLASSIFICATION TYPES
 # (these do not inherit from a base API)
 
+class _ItemStateSized(_typing.ItemStateDict):
+    pos                 : Array[int, int]  # type: ignore
+    rect_size           : Array[int, int]  # type: ignore
+
+
 @_exported
 class SupportsSized(AppItemType):
     """Interface for rendered items with a bounding box. They can be resized
     and explicitly positioned."""
     __slots__ = ()
 
-    # Every item with `pos` has sizing support. However, they are not
-    # always configured through the `width` and `height` keywords. This
-    # covers the _typing case.
-
     width : Property[int] = ItemConfig()
     height: Property[int] = ItemConfig()
+
+    def state(self) -> _ItemStateSized: ...
+    del state
 
     # Some items like `mvWindowAppItem` only support `rect_size`. The min/max
     # for these can be easily calculated.
     @property
     def rect_min(self) -> Array[int, int]:
         state = self.state()
-        try:
-            return state["rect_min"]  # type: ignore
-        except KeyError:
-            return state["pos"]  # type: ignore
+        return state['rect_min'] or state['pos']
 
     @property
     def rect_max(self) -> Array[int, int]:
         state = self.state()
-        try:
-            return state["rect_max"]  # type: ignore
-        except KeyError:
-            config = self.configuration()
-            x, y = state["pos"]  # type: ignore
-            return x + config["width"], y + config["height"]  # type: ignore
+        if rect_max:=state['rect_max']:
+            return rect_max
+
+        x_pos, y_pos = state['pos']
+        config = self.configuration()
+        return x_pos + config["width"], y_pos + config["height"]
 
     @property
     def pos(self) -> Array[int, int]:
-        return self.state()['pos']  # type: ignore
+        return self.state()['pos']
     @pos.setter
     def pos(self, value: Array[int, int]):
         self.configure(pos=value)
