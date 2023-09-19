@@ -2372,7 +2372,8 @@ class Table:
         else:
             _dearpygui.set_table_row_color(self, irow, color)  # type: ignore
 
-    if Application.version < "1.9.2":
+
+    if _tools.compare_versions(Application.version, '>=', "1.9.2"):
         def get_x_scroll_pos(self: Any):
             """Return the current horizontal view position of the item.
 

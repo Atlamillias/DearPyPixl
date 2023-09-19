@@ -235,6 +235,23 @@ def namespace_path(o: type | types.FunctionType) -> tuple[str, str]:
     return o.__module__, o.__name__
 
 
+def compare_versions(lo: str, comp: typing.Literal['<', '<=', '==', '!=', '>=', '>'], ro: str) -> bool:
+    """Simple software version comparison tool.
+
+    Does not follow PEP standards.
+
+    Args:
+        * lo: Left operand version string.
+
+        * comp: Rich comparison symbol(s).
+
+        * ro: Right operand version string.
+    """
+    l_vers = tuple(int(v.strip()) for v in lo.split('.') if v.isdigit())
+    r_vers = tuple(int(v.strip()) for v in ro.split('.') if v.isdigit())
+    return eval(f'{l_vers} {comp} {r_vers}')
+
+
 def create_function(name: str, args: Sequence[str], body: Sequence[str], return_type: _T = Any, *, globals: dict | None = None, locals: dict | None = None) -> Callable[..., _T]:
     """Dynamically define and return a new function.
 
