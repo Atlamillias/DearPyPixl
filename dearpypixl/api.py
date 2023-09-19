@@ -416,7 +416,7 @@ class Application(_typing.ItemInterface, int, metaclass=_ApplicationMeta):
 
     @_tools.staticproperty
     @final
-    def verison() -> str:
+    def version() -> str:
         # There's a 'DPG version' hook through `get_app_configuration`
         # but it requires created context.
         """[get] Return Dear PyGui's version number."""
@@ -2372,7 +2372,7 @@ class Table:
         else:
             _dearpygui.set_table_row_color(self, irow, color)  # type: ignore
 
-    if Application.verison < "1.9.2":
+    if Application.version < "1.9.2":
         def get_x_scroll_pos(self: Any):
             """Return the current horizontal view position of the item.
 
