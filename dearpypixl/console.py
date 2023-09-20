@@ -741,6 +741,9 @@ class InteractivePython(items.mvChildWindow):
         if not 'label' in kwargs:
             kwargs['label'] = f'[{type(self).__qualname__}]'
         super().__init__(**kwargs)
+        if not self.parent.label:
+            self.parent.label = f'[{type(self).__qualname__}]'
+            
         self._input_pending = []
 
         self.echo = echo
