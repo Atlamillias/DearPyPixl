@@ -39,7 +39,16 @@ from ._typing import (
     TYPE_CHECKING,
 )
 if TYPE_CHECKING:
-    from .items import mvTheme, mvFont, mvItemHandlerRegistry
+    from .items import (
+        mvTheme,
+        mvFont,
+        mvItemHandlerRegistry,
+        mvWindowAppItem,
+        mvHandlerRegistry,
+        mvViewportDrawlist,
+        mvFontRegistry,
+        mvStage,
+    )
 
 
 
@@ -1039,11 +1048,12 @@ class AppItemType(api.Item, int, register=False, metaclass=AppItemMeta):
         self.set_value(value)
 
     @property
-    def root_parent(self) -> 'mvAll | None':
-        """[get] Return an interface for the item's top-level parent, or
-        None if the item is a root item."""
+    def root_parent(self):
+        """[get] Return an interface for the top-level parent of this item
+        branch."""
         root_parent = super().root_parent()
-        return mvAll(root_parent) if root_parent else root_parent  # type: ignore
+        return self if self == root_parent else interface(root_parent)
+
 
 
 class ABCAppItemType(AppItemType, metaclass=ABCAppItemMeta):
@@ -1188,6 +1198,8 @@ class BasicType(api.BasicItem, AppItemType):
     """Interface for Dear PyGui's basic non-container items."""
     __slots__ = ()
 
+    root_parent: Property['RootType']
+
 
 @_exported
 class ContainerType(api.Container, AppItemType):
@@ -1217,7 +1229,8 @@ class RootType(ContainerType):
     """
     __slots__ = ()
 
-    parent: Property[None]
+    parent     : Property[None]
+    root_parent: Property[Self]
 
 
 @_exported
@@ -1233,10 +1246,12 @@ class RegistryType(RootType):
 @_exported
 class HandlerType(api.BasicItem, AppItemType):
     """Interface for basic Dear PyGui items that fire a
-    callback given a certain event. They are always parent
+    callback given a certain event. They are always parented
     by a `RegistryType` item.
     """
     __slots__ = ()
+
+    root_parent: Property['mvHandlerRegistry | mvItemHandlerRegistry | mvStage']
 
     MouseInput = constants.MouseInput
     KeyInput   = constants.KeyInput
@@ -1255,14 +1270,19 @@ class NodeEditorType(api.NodeEditor, NodeType):
 class ThemeType(AppItemType):
     __slots__ = ()
 
+    root_parent: Property['mvTheme']
+
 @_exported
 class ThemeElementType(api.ThemeElement, ThemeType):
     __slots__ = ()
 
 
+
 @_exported
 class FontType(AppItemType):
     __slots__ = ()
+
+    root_parent: Property['mvFontRegistry']
 
     def text_size(self, text: str, *, wrap_width: int = -1):
         return ItemAPI.text_size(text, wrap_width=wrap_width, font=self)
@@ -1271,6 +1291,8 @@ class FontType(AppItemType):
 @_exported
 class DrawingType(api.Drawing, AppItemType):
     __slots__ = ()
+
+    root_parent: Property['mvWindowAppItem | mvViewportDrawlist | mvStage']
 
 @_exported
 class DrawNodeType(api.DrawNode, DrawingType):

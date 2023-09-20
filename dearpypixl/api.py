@@ -1992,7 +1992,7 @@ class Item:
         return _dearpygui.focus_item(self)
 
     def root_parent(self: Any) -> ItemT:
-        """Return the item's top-level parent."""
+        """Return the top-level parent of this item branch."""
         current_item = self
         while parent := _dearpygui.get_item_info(current_item)["parent"]:
             current_item = parent
