@@ -1385,8 +1385,16 @@ class Runtime(_typing.ItemInterface, metaclass=_RuntimeMeta):
     queue: Queue[Callable[[], Any]] = Queue()
 
     @classmethod
-    def start(cls, *args, **kwargs):
+    def start(cls, *args, debug_aware: bool = False, **kwargs):
         """Start the runtime event loop and render the user interface.
+
+        Args:
+            * debug_aware: If True, the `manual_callback_management`
+            application setting will be set to True when a trace
+            function is returned as a result of `sys.gettrace()`.
+            Most callbacks will be executed in the main thread instead
+            of Dear PyGui's worker thread.
+
 
         This function performs all of the required setup as necessary
         to start the runtime. For example, the minimum code required to
@@ -1461,7 +1469,11 @@ class Runtime(_typing.ItemInterface, metaclass=_RuntimeMeta):
 
         # TODO: isolate ticks and rendering into separate methods
 
-        if Application.configuration()['manual_callback_management']:
+        if (
+            Application.configuration()['manual_callback_management']
+            or
+            debug_aware and sys.gettrace()
+        ):
             # "debugging" scenario
             get_queue = Runtime.callback_queue
             run_queue = cls.run_callback_queue
