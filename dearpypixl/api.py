@@ -1079,6 +1079,7 @@ class Viewport(_typing.ItemInterface, str, metaclass=_ViewportMeta):
 
 from dearpygui._dearpygui import (
     set_frame_callback as _runtime_set_frame_callback,
+    set_exit_callback as _runtime_set_exit_callback,
 )
 
 
@@ -1147,7 +1148,7 @@ class Runtime(_typing.ItemInterface, metaclass=_RuntimeMeta):
     @__rt_callbacks
     def get_frame_callback(locker: Locker, /, frame: int) -> Callable | None:
         """Return the callback scheduled to run on a specific frame,
-        or None if no callback is scheduled.
+        or None a callback is not scheduled.
 
         Args:
             * frame: Frame number to query.
@@ -1174,26 +1175,59 @@ class Runtime(_typing.ItemInterface, metaclass=_RuntimeMeta):
 
             * user_data: Send as the third positional argument to the
             callback (if able).
+
+
+        When *frame* is a positive integer, *callback* will run immediately
+        before rendering that frame. When *frame* is -1, *callback* will
+        run when destroying the GPU context (`dearpygui.destroy_context`
+        or `Application.destroy_context`).
         """
         # Unlike `callback_queue`, I can easily see users doing
-        # this first. It's not likely to be overused once the
-        # runtime has started, so adding a check here won't hurt
-        # anything performance-wise.
+        # this before setup.
         if not Application.state()['ok']:
             Application()
 
         def capture_callback(callback: _T) -> _T:
             with locker:
-                _runtime_set_frame_callback(frame, callback, user_data=user_data)  # type: ignore
-                if not callback:
+                if frame == -1:
+                    _runtime_set_exit_callback(callback, user_data=user_data)  # type: ignore
+                else:
+                    _runtime_set_frame_callback(frame, callback, user_data=user_data)  # type: ignore
+
+                if callback is None:
                     locker.value.pop(frame, None)
                 else:
                     locker.value[frame] = callback
+
                 return callback
 
         if callback is _SENTINEL:
             return capture_callback
         return capture_callback(callback)
+
+    @staticmethod
+    def get_exit_callback() -> Callable | None:
+        """Return the callback scheduled to run when destroying the
+        GPU context, or None if a callback is not scheduled."""
+        return Runtime.get_frame_callback(-1)
+
+    @staticmethod
+    @_dearpygui_override(_dearpygui.set_exit_callback)
+    def set_exit_callback(
+        callback : Callable | None = _SENTINEL,  # type: ignore
+        *,
+        user_data: Any             = None
+    ):
+        """Schedule a callback to run when destroying the GPU
+        context. Can be used as a decorator.
+
+        Args:
+            * callback: A Dear PyGui-callable callback, or None.
+
+            * user_data: Send as the third positional argument to the
+            callback (if able).
+        """
+        return Runtime.set_frame_callback(-1, callback, user_data=user_data)
 
     @staticmethod
     def callback_queue() -> Sequence[tuple[Callable | None, Any, Any, Any]] | None:
