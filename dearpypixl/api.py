@@ -74,13 +74,13 @@ import types
 import ctypes
 import inspect
 import functools
-import itertools  # type: ignore
+import itertools
 import contextlib
 import importlib.metadata
 from queue import Queue
 from uuid import uuid4
 from dearpygui import dearpygui, _dearpygui
-from . import _typing, constants, _tools, _errors, _parsing
+from . import _typing, constants, _tools, _errors, _parsing, _mkstub
 from ._typing import (
     Item as ItemT,
     Any,
@@ -121,6 +121,8 @@ _T = TypeVar("_T")
 _P = ParamSpec("_P")
 
 _ItemTree = dict[ItemT, tuple[list['_ItemTree'], list['_ItemTree'], list['_ItemTree'], list['_ItemTree']]]
+
+
 
 
 # :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -167,7 +169,7 @@ def _onetime_setup(setup_fn: Callable[[], Any], exclusions: Sequence[str] = ()) 
     # API will probably be used before any runtime interfaces are
     # made (if any are made at all).
 
-    # NOTE: Debuggers will almost always trigger the setup.
+    # NOTE: Modern debugging tools will ALWAYS trigger the setup.
     def capture_class(cls: type[_T]) -> type[_T]:
         mcls    = type(cls)
         wrapped = {}
@@ -209,28 +211,72 @@ def _onetime_setup(setup_fn: Callable[[], Any], exclusions: Sequence[str] = ()) 
     return capture_class
 
 
-# HACK/BUG: This is part2 of the hack in `__init__.py`. Default
-# implementation of `generate_uuid` is a HUGE bottleneck creating
-# items en masse. This isn't not a micro optimization, but a matter
-# of dozens of seconds when creating very large tables, registry
-# children, etc. Honestly, I still wonder if it's worth all this
-# trouble...
-# Both users and dearpypixl MUST use the same implementation to
-# avoid uuid collisions. This still doesn't completely fix the problem
-# though; aliases are a big issue. When a user calls a DPG function to
-# create an item and uses an alias, Dear PyGui will check its' alias
-# registry only far enough to check if it exists, and will throw an
-# error if it does. Otherwise, it creates a uuid and binds it to the
-# alias. And nothing can be done about it. Nothing. Fortunately,
-# users tend to only create aliases for important items. Using Dear
-# PyGui's API, this can't be more than 100,000 items, right...?
-# Otherwise, why even use Dear PyPixl?
+
+
+# HACK/BUG: Default implementation of `generate_uuid` is poorly
+# optimized for mass item creation. While not a micro-
+# optimization, this only affects those creating more than a
+# couple thousand items (table rows, drawing, nodes, etc) in a
+# single session.
 _create_uuid : Callable[[], int] = itertools.count(start=100_000).__next__
 _dearpygui_override(_dearpygui.generate_uuid)(lambda: _create_uuid())
 
 
+# HACK: Both frameworks need to be on the same "page" regarding
+# uuids. This replaces all item commands with new ones that fall
+# back on using our `generate_uuid` when *tag* is unspecified to
+# prevent DPG from generating its' own. It still will, however,
+# when creating items w/aliases -- which is why the *start* counter
+# above is set where it is.
+# XXX: A side-effect of this process is that deprecation
+# warnings are lost.
 
+def _patch_item_commands():
+    fn_lcls = {'internal_dpg': _dearpygui, 'generate_uuid': _create_uuid}
 
+    for tp_def in _parsing.item_definitions().values():
+
+        cmd_sig    = inspect.signature(tp_def.command1)
+
+        _sig_src = repr(cmd_sig).removeprefix('<Signature (').removesuffix('>')
+        call_args, r_type = _sig_src.split(') -> ')
+        body_arg_str = ', '.join(f"{p}={p}" for p in cmd_sig.parameters).replace(
+            'tag=tag', 'tag=tag or generate_uuid()'
+        ).removesuffix(', kwargs=kwargs')
+
+        command = functools.update_wrapper(_tools.create_function(
+            tp_def.command1.__name__,
+            (call_args,),
+            (f'return internal_dpg.{tp_def.command1.__name__}({body_arg_str})',),
+            return_type=r_type,
+            globals=dearpygui.__dict__,
+            locals=fn_lcls,
+        ), tp_def.command1)
+        command.__signature__ = cmd_sig   # type: ignore
+        del command.__wrapped__
+        setattr(dearpygui, command.__name__, command)
+
+        if tp_def.command2:
+            ctx_command = functools.update_wrapper(_tools.create_function(
+                tp_def.command2.__name__,
+                (call_args,),
+                (
+                    f'try:',
+                    f'  widget = internal_dpg.{tp_def.command1.__name__}({body_arg_str})',
+                    f'  internal_dpg.push_container_stack(widget)',
+                    f'  yield widget',
+                    f'finally:',
+                    f'  internal_dpg.pop_container_stack()',
+                ),
+                return_type=r_type,
+                globals=dearpygui.__dict__,
+                locals=fn_lcls,
+            ), tp_def.command2)
+            del ctx_command.__wrapped__
+            ctx_command = contextlib.contextmanager(ctx_command)   # type: ignore
+            setattr(dearpygui, ctx_command.__name__, ctx_command)
+
+_patch_item_commands()
 
 
 
@@ -830,7 +876,7 @@ class Viewport(_typing.ItemInterface, str, metaclass=_ViewportMeta):
             if 'title' not in kwargs:
                 kwargs['title'] = 'Application'
             kwds = dearpygui.create_viewport.__kwdefaults__ | kwargs
-            _viewport_create(**kwds)
+            _viewport_create(**kwds)  # type: ignore
             locker.value['ok'] = True
 
     create.__func__.__func__.__kwdefaults__ = (
