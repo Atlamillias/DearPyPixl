@@ -497,6 +497,11 @@ ITEM_STATE_TEMPLATE: ItemStateDict = MappingProxyType(  # type:ignore
 
 # Dear PyGui buffer types
 
+# NOTE: The proper *index* argument type of the below `__get/setitem__`
+# methods is `SupportsIndex`. Normal Python arrays will throw
+# `IndexError` when out-of-range, however, DPG's buffers will NOT.
+# Since `mvVec4` and `mvMat4` are s
+
 class mvBuffer(Protocol):
     """Protocol for Dear PyGui's `mvBuffer` type."""
     def __init__(self, length: int = 0) -> None: ...
@@ -510,7 +515,10 @@ class mvBuffer(Protocol):
 
 
 class mvVec4(Protocol):
-    """Protocol for Dear PyGui's 4-dimensional vector type `mvVec4`."""
+    """Protocol for Dear PyGui's 4-dimensional vector type `mvVec4`.
+
+    >NOTE: `IndexError` is NOT thrown when the index is out-of-range.
+    """
     def __init__(self, x: float = 0.0, y: float = 0.0, z: float = 0.0, w: float = 0.0) -> None: ...
     def __str__(self) -> str: ...
     def __len__(self) -> Literal[4]: ...
@@ -525,8 +533,11 @@ class mvVec4(Protocol):
 
 
 class mvMat4(Protocol):
-    """Protocol for Dear PyGui's 4x4 matrix type `mvMat4`."""
-    def __init__(self, km00: float = 0.0, km01: float = 0.0, km02: float = 0.0, km03: float = 0.0, km10: float = 0.0, km11: float = 0.0, km12: float = 0.0, km13: float = 0.0, km20: float = 0.0, km21: float = 0.0, km22: float = 0.0, km23: float = 0.0, km30: float = 0.0, km31: float = 0.0, km32: float = 0.0, km33: float = 0.0) -> None: ...
+    """Protocol for Dear PyGui's 4x4 matrix type `mvMat4`.
+
+    >NOTE: `IndexError` is NOT thrown when the index is out-of-range.
+    """
+    def __init__(self, m00: float = 0.0, m01: float = 0.0, m02: float = 0.0, m03: float = 0.0, m10: float = 0.0, m11: float = 0.0, m12: float = 0.0, m13: float = 0.0, m20: float = 0.0, m21: float = 0.0, m22: float = 0.0, m23: float = 0.0, m30: float = 0.0, m31: float = 0.0, m32: float = 0.0, m33: float = 0.0) -> None: ...
     def __str__(self) -> str: ...
     def __len__(self) -> Literal[16]: ...
     def __getitem__(self, __i: SupportsIndex, /) -> float: ...

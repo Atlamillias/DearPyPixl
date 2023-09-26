@@ -2945,10 +2945,3 @@ class ThemeElement:
             e_cfg['target'],
             Item.information(self)['type'],
         )
-
-
-
-
-mvBuffer = cast(type[mvBuffer], dearpygui.mvBuffer)
-mvVec4   = cast(type[mvVec4], dearpygui.mvVec4)
-mvMat4   = cast(type[mvMat4], dearpygui.mvMat4)
