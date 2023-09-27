@@ -235,12 +235,15 @@ def _patch_item_commands():
     fn_lcls = {'internal_dpg': _dearpygui, 'generate_uuid': _create_uuid}
 
     for tp_def in _parsing.item_definitions().values():
-
         cmd_sig    = inspect.signature(tp_def.command1)
 
         _sig_src = repr(cmd_sig).removeprefix('<Signature (').removesuffix('>')
         call_args, r_type = _sig_src.split(') -> ')
-        body_arg_str = ', '.join(f"{p}={p}" for p in cmd_sig.parameters).replace(
+        body_arg_str = ', '.join(
+            p.name if p.kind in (p.POSITIONAL_ONLY, p.POSITIONAL_OR_KEYWORD)
+            else f"{p.name}={p.name}"
+            for p in cmd_sig.parameters.values()
+        ).replace(
             'tag=tag', 'tag=tag or generate_uuid()'
         ).removesuffix(', kwargs=kwargs')
 
