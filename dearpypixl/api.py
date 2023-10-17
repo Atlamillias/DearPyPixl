@@ -312,7 +312,7 @@ from dearpygui._dearpygui import (
 )
 
 
-class _AppConfigDict(TypedDict, total=False):
+class AppConfigDict(TypedDict, total=False):
     docking                   : bool
     docking_space             : bool
     load_init_file            : str
@@ -430,10 +430,10 @@ class Application(_typing.ItemInterface, int, metaclass=_ApplicationMeta):
 
     clipboard_text = cast(str, _ApplicationMeta.clipboard_text)
 
-    def __new__(cls, **kwargs: Unpack[_AppConfigDict]) -> Self:
+    def __new__(cls, **kwargs: Unpack[AppConfigDict]) -> Self:
         return super().__new__(cls, Application.tag)
 
-    def __init__(self, **kwargs: Unpack[_AppConfigDict]):
+    def __init__(self, **kwargs: Unpack[AppConfigDict]):
         super().__init__()
         if not Application.state()['ok']:
             Application.create_context()
@@ -520,7 +520,7 @@ class Application(_typing.ItemInterface, int, metaclass=_ApplicationMeta):
             locker.value['ok'] = True
 
     @staticmethod
-    def configure(**kwargs: Unpack[_AppConfigDict]):
+    def configure(**kwargs: Unpack[AppConfigDict]):
         """Update the application's settings.
 
         This function does nothing once a frame has been rendered.
@@ -528,7 +528,7 @@ class Application(_typing.ItemInterface, int, metaclass=_ApplicationMeta):
         _dearpygui.configure_app(**kwargs)
 
     @staticmethod
-    def configuration() -> _AppConfigDict:
+    def configuration() -> AppConfigDict:
         """Return the application's settings."""
         return _dearpygui.get_app_configuration()  # type: ignore
 
@@ -650,7 +650,7 @@ from dearpygui._dearpygui import (
 )
 
 
-class _ViewportConfigDict(TypedDict, total=False):
+class ViewportConfigDict(TypedDict, total=False):
     title        : str
     small_icon   : str
     large_icon   : str
@@ -820,10 +820,10 @@ class Viewport(_typing.ItemInterface, str, metaclass=_ViewportMeta):
     is_visible     = cast(bool, _ViewportMeta.is_visible)
     is_fullscreen  = cast(bool, _ViewportMeta.is_fullscreen)
 
-    def __new__(cls, **kwargs: Unpack[_AppConfigDict]) -> Self:
+    def __new__(cls, **kwargs: Unpack[AppConfigDict]) -> Self:
         return super().__new__(cls, Viewport.tag)
 
-    def __init__(self, **kwargs: Unpack[_AppConfigDict]):
+    def __init__(self, **kwargs: Unpack[AppConfigDict]):
         super().__init__()
         if not Viewport.state()['ok']:
             Application()
@@ -851,7 +851,7 @@ class Viewport(_typing.ItemInterface, str, metaclass=_ViewportMeta):
     @staticmethod
     @_dearpygui_override(_dearpygui.create_viewport)
     @__vp_state
-    def create(locker: Locker, /, **kwargs: Unpack[_ViewportConfigDict]) -> None:
+    def create(locker: Locker, /, **kwargs: Unpack[ViewportConfigDict]) -> None:
         """Creates the Dear PyGui viewport.
 
         This will not display the viewport. To display it, call
@@ -931,7 +931,7 @@ class Viewport(_typing.ItemInterface, str, metaclass=_ViewportMeta):
 
     @staticmethod
     @__vp_config
-    def configure(locker: Locker, /, **kwargs: Unpack[_ViewportConfigDict]):
+    def configure(locker: Locker, /, **kwargs: Unpack[ViewportConfigDict]):
         """Update the viewport's settings."""
         with locker:
             states = locker.value
@@ -972,7 +972,7 @@ class Viewport(_typing.ItemInterface, str, metaclass=_ViewportMeta):
 
     @staticmethod
     @__vp_config
-    def configuration(locker: Locker, /) -> _ViewportConfigDict:
+    def configuration(locker: Locker, /) -> ViewportConfigDict:
         """Return the viewport's current settings.
 
         The coupling of *primary_window*, *callback* and *user_data*
@@ -1132,7 +1132,7 @@ from dearpygui._dearpygui import (
 )
 
 
-class _RuntimeConfigDict(TypedDict):
+class RuntimeConfigDict(TypedDict):
     target_frame_rate: int
     clamp_frame_rate: bool
     update_interval : float
@@ -1608,7 +1608,7 @@ class Runtime(_typing.ItemInterface, metaclass=_RuntimeMeta):
 
     @staticmethod
     @__rt_config
-    def configuration(locker) -> _RuntimeConfigDict:
+    def configuration(locker) -> RuntimeConfigDict:
         with locker:
             config = locker.value.copy()
             del config['render_interval']
