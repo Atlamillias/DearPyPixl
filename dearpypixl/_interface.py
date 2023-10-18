@@ -387,6 +387,9 @@ class AppItemMeta(type):
         elif register is True:
             _register_itemtype(cls, register=register)
 
+        if cls.__module__ == __name__:
+            assert '__slots__' in cls.__dict__
+
         return cls
 
     def __repr__(self) -> str:
@@ -1666,6 +1669,8 @@ def create_itemtype(tp_def: _parsing.ItemDefinition) -> type[AppItemType]:
             fn_bases.append(SupportsCallback)
 
         bases = [*fn_bases, *hl_bases, *ll_bases]
+        assert bases
+
         class_body = {
             '__doc__'  : _parsing.upd_command_doc(tp_def.command1),
             '__slots__': (),
@@ -1678,12 +1683,6 @@ def create_itemtype(tp_def: _parsing.ItemDefinition) -> type[AppItemType]:
             command=tp_def.command1,
             identity=(tp_def.enum, f"mvAppItemType::{tp_name}")
         )
-
-        assert bases
-        for b in cls.mro():
-            if b in (object, int):
-                continue
-            assert hasattr(b, '__slots__')
 
     return cls  # type: ignore
 
