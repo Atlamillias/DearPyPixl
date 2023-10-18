@@ -56,6 +56,7 @@ python3 -m pip install dearpypixl
 ```
 <br>
 Alternatively, build the wheel and install locally. Download/clone the source;
+
 ```
 git clone https://github.com/Atlamillias/DearPyPixl
 ```
@@ -131,7 +132,7 @@ Lastly, when just want an interface and you don't know and/or don't care to know
 <br>
 
 #### Methods & Properties
-The members available to an inteface can vary based on the type of item it supports. This means that some interfaces can have a fairly large API. However, all of them do share a collection of core methods and properties. While member names are not 1-to-1, they are named similarly to that of the used Dear PyGui hook. While not exhaustive, the table below outlines many of them;
+The members available to interface can vary based on the type of item they support. This means that some interfaces can have a fairly large However, all of them do share a collection of core methods and properties. While member names are not 1-to-1, they are named similarly to that of the used Dear PyGui hook. While not exhaustive, the table below outlines many of them;
 
 | Bound Interface Method   | Dear PyGui Function                     |
 | :----------------------: | :-------------------------------------: |
