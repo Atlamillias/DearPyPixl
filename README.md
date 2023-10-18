@@ -132,7 +132,7 @@ Lastly, when just want an interface and you don't know and/or don't care to know
 <br>
 
 #### Methods & Properties
-The members available to interface can vary based on the type of item they support. This means that some interfaces can have a fairly large However, all of them do share a collection of core methods and properties. While member names are not 1-to-1, they are named similarly to that of the used Dear PyGui hook. While not exhaustive, the table below outlines many of them;
+The members available to interface can vary based on the type of item they support. However, all interfaces share a collection of core methods and properties. While member names are not 1-to-1, they are similar to that of the Dear PyGui hook used for each; the table below outlines many of them;
 
 | Bound Interface Method   | Dear PyGui Function                     |
 | :----------------------: | :-------------------------------------: |
@@ -145,7 +145,8 @@ The members available to interface can vary based on the type of item they suppo
 | `item.set_theme(...)`    | `bind_item_theme(item, ...)`            |
 | `item.set_handlers(...)` | `bind_item_handler_registry(item, ...)` |
 
-In addition, a few other information-related hooks are also available;
+In addition, interfaces also define a few other methods for accessing item-related information;
+
 | Bound Interface Method   | Dear PyGui Function                                                |
 | :----------------------: | :----------------------------------------------------------------: |
 | `item.children(...)`     | `get_item_info(item)['children']`<br>`get_item_children(item, ...)`|
@@ -153,48 +154,43 @@ In addition, a few other information-related hooks are also available;
 | `item.get_theme()`       | `get_item_info(item)['theme']`<br>`get_item_theme(item)`           |
 | `item.get_handlers()`    | `get_item_info(item)['handlers']`<br>`get_item_handlers(item)`     |
 
-Note that the `.configuration` and `.state` methods are not functionally equivelent to Dear PyGui's `get_item_configuration` and `get_item_state` functions respectively. The `.configuration` method is unique to each dedicated interface type, and filters out useless item configuration options. This allows for the usage of the `type(item)(**item.configuration())` idiom -- in most cases, this creates a "reproduction" or proto-copy of an item. The behavior of the `.state` isn't as glamorous; unlike `get_item_state`, the dictionary returned by the `.state` method includes keys for every state an item could possibly have. When an item does not support a Dear PyGui state, the value of that state in the returned dictionary will be `None`. By default, the mapping returned by the `.information` method is unchanged from that returned by Dear PyGui's `get_item_info` function.
+<br>
+
+> *The `.configuration` and `.state` methods are not functionally equivelent to Dear PyGui's `get_item_configuration` and `get_item_state` functions. The `.configuration` method of each dedicated interface type is unique and filters out options not applicable to the supported item type. This allows for the usage of the `type(item)(**item.configuration())` idiom which, in most cases, creates a "reproduction" of the item and interface. The behavior of the `.state` method isn't as interesting; unlike `get_item_state`, the dictionary returned by the `.state` method includes keys for every state an item could possibly have. When a state is not applicable for the supported item, the value of that key in the returned dictionary will be `None`.*
 
 <br>
 <br>
 
-Usage of the `configuration`, `information`, and `.state` methods is common. As a convenience, interfaces also expose various configuration, information, and state options as properties. Availible configuration properties vary between interface types; expect one for each key in the dictionary returned from the `.configuration` method. In contrast, available information-related properties are consistent between all item interface types. However, only the most useful/common-use are exposed;
+For convenience, interfaces expose several item-related settings and states as instance properties. Available "configuration" properties vary per interface, but expect one for each of the supported item's writable settings. In contrast, "information" properties are consistent between all item interface types, but only the most commonly-used are exposed. While the related methods return the result as returned by Dear PyGui, the on-access behavior of each property will always return an item interface when applicable. However, "state" properties will always return the result as-is;
 
-| Interface Property | Interface Method Hook                             |
-| :----------------: | :-----------------------------------------------: |
-| `item.parent`      | `item.information()['parent']`                    |
-| `item.theme`       | `item.get_theme()`<br>`item.set_theme(...)`       |
-| `item.font`        | `item.get_font()`<br>`item.set_font(...)`         |
-| `item.handlers`    | `item.get_handlers()`<br>`item.set_handlers(...)` |
+| Interface Property               | Interface Method Hook                             |
+| :----------------:               | :-----------------------------------------------: |
+| `item.parent`                    | `item.information()['parent']`                    |
+| `item.theme`                     | `item.get_theme()`<br>`item.set_theme(...)`       |
+| `item.font`                      | `item.get_font()`<br>`item.set_font(...)`         |
+| `item.handlers`                  | `item.get_handlers()`<br>`item.set_handlers(...)` |
+| `item.is_ok`                     | `item.state()["ok"]`                              |
+| `item.is_hovered`                | `item.state()["hovered"]`                         |
+| `item.is_active`                 | `item.state()["active"]`                          |
+| `item.is_focused`                | `item.state()["focused"]`                         |
+| `item.is_clicked`                | `item.state()["clicked"]`                         |
+| `item.is_left_clicked`           | `item.state()["left_clicked"]`                    |
+| `item.is_right_clicked`          | `item.state()["right_clicked"]`                   |
+| `item.is_middle_clicked`         | `item.state()["middle_clicked"]`                  |
+| `item.is_visible`                | `item.state()["visible"]`                         |
+| `item.is_edited`                 | `item.state()["edited"]`                          |
+| `item.is_activated`              | `item.state()["activated"]`                       |
+| `item.is_deactivated`            | `item.state()["deactivated"]`                     |
+| `item.is_deactivated_after_edit` | `item.state()["deactivated_after_edit"]`          |
+| `item.is_resized`                | `item.state()["resized"]`                         |
+| `item.rect_min`                  | `item.state()["rect_min"]`                        |
+| `item.rect_max`                  | `item.state()["rect_max"]`                        |
+| `item.rect_size`                 | `item.state()["rect_size"]`                       |
+| `item.content_region_avail`      | `item.state()["content_region_avail"]`            |
 
-The *get* behavior of these properties are not equivelent to their related *get* hook. Calling the method returns an item identifier (or None) as returned by Dear PyGui, where the property returns an item interface when applicable. This means that `.theme`, `.font`, `.handlers` can return `None`, or an instance of `mvTheme`, `mvFont`, or `mvItemHandlerRegistry` respectively.
+ <br>
 
-<br>
-
-State-related properties don't do anything fancy. They return the value of the related state as returned by the `.state` method, unchanged;
-
-| Interface Property               | Interface Method Hook                    |
-| :------------------------------: | :--------------------------------------: |
-| `item.is_ok`                     | `item.state()["ok"]`                     |
-| `item.is_hovered`                | `item.state()["hovered"]`                |
-| `item.is_active`                 | `item.state()["active"]`                 |
-| `item.is_focused`                | `item.state()["focused"]`                |
-| `item.is_clicked`                | `item.state()["clicked"]`                |
-| `item.is_left_clicked`           | `item.state()["left_clicked"]`           |
-| `item.is_right_clicked`          | `item.state()["right_clicked"]`          |
-| `item.is_middle_clicked`         | `item.state()["middle_clicked"]`         |
-| `item.is_visible`                | `item.state()["visible"]`                |
-| `item.is_edited`                 | `item.state()["edited"]`                 |
-| `item.is_activated`              | `item.state()["activated"]`              |
-| `item.is_deactivated`            | `item.state()["deactivated"]`            |
-| `item.is_deactivated_after_edit` | `item.state()["deactivated_after_edit"]` |
-| `item.is_resized`                | `item.state()["resized"]`                |
-| `item.rect_min`                  | `item.state()["rect_min"]`               |
-| `item.rect_max`                  | `item.state()["rect_max"]`               |
-| `item.rect_size`                 | `item.state()["rect_size"]`              |
-| `item.content_region_avail`      | `item.state()["content_region_avail"]`   |
-
-The above properties are consistent across all interface types; one for every possible item state...*almost*. Many items support explicit positioning via the `pos` configuration option. However, queries regarding an item's position are made by checking it's state, making `pos` a bit of an odd-ball. As previously mentioned, the mapping returned by the `.state` method includes keys for *all possible* states, which includes `pos`. Because of this behavior, interfaces only have a `pos` property (read-write) when the supported item type support explicit positioning (`item.state()['pos'] != None`).
+> *Every possible item state is available as an instance property regardless of the interface type...almost. Many items support explicit positioning via the `pos` configuration option. However, queries regarding an item's position are made only by checking its' state, making `pos` a bit of an odd-ball. Because of this behavior, interfaces only have the `.pos` property when the supported item type can be positioned. In this case, assigning a value to `.pos` is equivelent to `item.configure(pos=value)`.*
 
 <br>
 
@@ -362,9 +358,9 @@ pickle.loads(window2_pkl)  # -> `RuntimeError()`
 ```
 A good solution for the above is using value registries, ensuring they are loaded first before anything else. Interfaces of user-defined types have an advantage here, as different interfaces can hold different (or same, doesn't matter) interfaces that operate on the same item (like a value registry). In that case, the value registry would always be loaded regardless of the load order of those that reference it.
 
+<br>
 
-
-> ***Pickling** is an **experimental feature**. Please submit a bug report if a primitive interface fails to serialize.*
+> ***Pickling** is an **experimental feature**, and not all primitive interfaces are guaranteed to serialize at this time.*
 
 <br>
 
@@ -415,7 +411,8 @@ mvWindowAppItem.is_node_item  # False
 <br>
 
 ## Global State & Setup
-The examples in the previous section omitted any of Dear PyGui's usual setup. Below is one of the first few examples used in a previous section with the added required setup. I'm sure it's a lot to take in;
+
+All examples in previous sections omitted any of Dear PyGui's usual setup code, so here's one of the first few examples with all of the code needed to start the user interface;
 
 ```python
 from dearpypixl import *
@@ -427,11 +424,11 @@ with Window(label="A window") as window:
 Runtime.start()
 ```
 
+Dear PyPixl automatically executes any and all setup steps, freeing users of the obligation. Setup is typically broken out as users make API calls to Dear PyPixl without asking, but only on an as-needed basis. For example, `create_context` is not called until Dear PyPixl makes its' first call to Dear PyGui, while `create_viewport` is only called when an existing viewport is necessary for the procedure. Don't like the automated stuff? Users can perform any and/or all setup manually using Dear PyGui or Dear PyPixl; regardless, the framework keeps an accurate record of all of it, and will only run what's needed. Whether it be setup or configuration, Dear PyGui's global state can be managed using the `Application`, `Viewport`, and `Runtime` classes.
 
-The framework does the bulk of the setup automatically with a 2-step procedure. The first step, the initial application setup (`create_context()`, `setup_dearpgui()`, etc), is done when a user creates the very first item interface, while the second step is done within `Runtime.start()`. The latter will perform the initial setup if necessary (in the event that no interfaces are made) in addition to verifying the state of the viewport (creating and showing it as needed) before starting the runtime loop. Dear PyPixl may also run the initial application setup when using a part of the API that requires initializing Dear PyGui.
+<br>
 
-Just because setup is done automatically doesn't mean the framework obfuscates the process from users. Any and/or all setup can be performed manually using Dear PyGui's API or through Dear PyPixl. Regardless, the framework will always be aware of what needs done, and what doesn't. In Dear PyPixl, users can run setup procedures and manage global-level settings using the `Application`, `Viewport`, `Runtime` classes. They, like modules, have very "functional" API. Like classes (and unlike modules), they support overrides and extending through subclassing, while not interfering with anything relying on the original implementations. They are not, however, fundamentally different from item interfaces;
-
+The `Application`, `Viewport`, and `Runtime` classes are not too far removed from Dear PyPixl's interface types. They each define the `.configure`, `.configuration`, `.information` and `.state` methods, and expose a full suite of properties to complement them. However, they are also the most unique objects in Dear PyPixl. In contrast to interfaces types whose instances operate on a specific item, the API for `Application` and `Viewport` is entirely *static*.
 
 ```python
 from dearpypixl import *
@@ -525,17 +522,20 @@ Viewport.configuration() # -> {
 # }
 
 
-# NOTE: DPX will run any app or viewport setup we
-# missed (we didn't miss any) before starting the
-# runtime.
+# DPX will run any app or viewport setup we missed (we
+# didn't miss any) before starting the runtime.
 Runtime.start()
 ```
+
+> *Although static-bound, `Application` and `Viewport` can still be instantiated. Doing so will execute any setup procedures required to fully utilize their API. Additionally, keyword arguments passed to the constructor are forwarded to the class' `.configure` method. `Runtime` can also be instantiated, but does not share the mentioned behavior upon instantiation.*
+
  <br>
  <br>
 
-`Application` and `Viewport` interface with already existing global states. `Runtime` is a bit different because the "runtime" state is unique to Dear PyPixl -- manufactured through patching Dear PyGui's API holes and other various things, so it's API is less obvious. The runtime state is the state of the main event loop. This encompasses things like starting and stopping the runtime, target frame rate, and events that occur within the loop such as those scheduled to run on specific frames. It's the closest thing Dear PyPixl has to a `tkinter.Tk`, `kivy.app.App`, etc.
+`Application` and `Viewport` interact solely with the already-existing global state provided by Dear PyGui. Unique to Dear PyPixl, the `Runtime` class manages the "runtime" state. It represents the status of the main event loop, and allows users to interact with aspects of the loop (framerate clamping, task queuing, etc.) without needing to implement it themselves. Unlike `Application` and `Viewport` whose API is completely unbound, `Runtime` is partially class-bound, allowing users a level of control through overrides.
 
-The `Runtime` class' `.start` method implements a general-purpose event loop. Although kept relatively simple, it is more complex than most user implementations. It uses a synchronized fixed time step to decouple task execution from rendering. Tasks can be pushed to the event loop using the `queue.Queue` object found on `Runtime.queue`, but users replace it with another object implementing `queue.Queue`s protocol before starting the event loop. Tasks are de-queued upon prior to their execution. However, tasks can re-queue themselves, making them reoccuring tasks.
+The `.start` method is used to start the main event loop in Dear PyPixl. It implements a general-purpose event loop using a synchronized fixed time step to decouple task execution from rendering. Tasks can be pushed to the event loop by adding them to `.queue` (an instance of `queue.Queue`), and are de-queued upon execution. When necessary, tasks can re-queue themselves, making them reoccuring tasks. Task execution is limited to a number of real-time milliseconds, set on the `.update_interval` property.
+
 ```python
 from dearpypixl import *
 
@@ -563,11 +563,10 @@ Runtime.queue.put(print_window_state)
 # though.
 Runtime.start()
 ```
-The number of tasks executed is limited to a number of real-time milliseconds, set on `Runtime.update_interval`.
 
 <br>
 
-Frame rate can be managed by updating the `target_frame_rate` and `clamp_frame_rate` attributes. When `clamp_frame_rate` is True, the number of frames rendered per second is limited to the value of `target_frame_rate`, as long as it isn't zero or `None`. These values can be updated at any time, even after the event loop has started.
+Frame rate can be managed by setting values on `.target_frame_rate` and `.clamp_frame_rate`. When `clamp_frame_rate` is True, the number of frames rendered per second is limited to the value of `target_frame_rate`, as long as it isn't zero or `None`. These values can be updated at any time, even after the event loop has started.
 ```python
 from dearpypixl import *
 
@@ -586,13 +585,17 @@ Runtime.clamp_frame_rate  = True
 Runtime.start()
 ```
 
+ <br>
+
+Additionally, the `.start` method features a "debug mode". In this mode, Dear PyGui's callback queue is automatically processed without any additional input from the user. This is set to run when the application-level `manual_callback_management` is `True`, or when the `.start` method is called with `debug_aware=True` when using a debugger.
+
 <br>
 
 ## Modules
 
 Only interface types are exposed directly within the `dearpypixl` namespace. Other useful tools and extensions are housed within their respective modules;
 * `api`: Contains the lower-level API used by the framework.
-* `typing`: Exposes type aliases and protocols used by the library. In addition to the `AppItemType` base class, primitive interface bases, abstract bases, and protocols for Dear PyGui's `mvBuffer`, `mvVec4`, and `mvMat4` objects.
+* `typing`: Exposes type aliases and protocols used by the library. In addition to the `AppItemType` base class, primitive interface bases, abstract bases, and typed implementations of Dear PyGui's `mvBuffer`, `mvVec4`, and `mvMat4` objects.
 * `constants`: Stores static Dear PyGui and Dear PyPixl values/variables as enumerations.
 * `events`: Extensions of callback-related interface types and related utilities.
 * `theming`: Extensions of theme and font-related interface types.
@@ -634,14 +637,14 @@ As is recommended when using Dear PyGui, users should *not* generate their own i
 
 **Q**: **Performance?**
 
-**A**: The framework tries to keep a very low profile. When profiling on a pretty low-performance machine, creating one million window items with `mvWindowAppItem` took 15.72 seconds (worst-case); only ~1.2 seconds of that was spent executing Dear PyPixl code. Marginal overhead is to be expected for methods, properties, etc. as there are simply more function calls. In high-traffic areas like the main runtime loop, consider using the `.configuration`, `.information`, and `.state` methods over interface properties.
+**A**: The framework tries to keep a very low profile. When profiling on a pretty low-performance machine, creating one million window items with `mvWindowAppItem` took 15.72 seconds (worst-case); only ~1.2 seconds of that was spent executing Dear PyPixl code. Marginal overhead is to be expected for methods, properties, etc. as there are simply more function calls. In high-traffic areas like the main event loop, consider using the `.configuration`, `.information`, and `.state` methods over interface properties.
 
 
 ---
 
 **Q**: **Can I use both Dear PyPixl and Dear PyGui code in my project?**
 
-**A**: **Yes**, and you are **encouraged to do so**.
+**A**: **Yes**, and you are encouraged to do so.
 
 ---
 
