@@ -22,7 +22,7 @@ from .items import (
 
 def _onetime_setup():
     if not api.Application.state()['ok']:
-        api.Application.setup()
+        api.Application()
     global _onetime_setup
     _onetime_setup = lambda: None
 
