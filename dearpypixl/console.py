@@ -743,7 +743,7 @@ class InteractivePython(items.mvChildWindow):
         super().__init__(**kwargs)
         if not self.parent.label:
             self.parent.label = f'[{type(self).__qualname__}]'
-            
+
         self._input_pending = []
 
         self.echo = echo
@@ -808,10 +808,7 @@ class InteractivePython(items.mvChildWindow):
         # area, etc) y_scroll_max will be initially set to 0. This can
         # be worked around by setting the initial height of the console
         # to *smol-er* to keep it from being a fatass.
-        text_wt, text_ht = self.text_size(
-            self._PROMPT_1,
-            font=self.font or api.Application.get_font()  # type: ignore
-        )
+        text_wt, text_ht = self._input_prompt.rect_size  # type: ignore
         wt_avail, ht_avail = self.content_region_avail  # type: ignore
         # Resize the input so that it's just tall enough for the
         # rendered font. It could be larger or smaller than before;
