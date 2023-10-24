@@ -642,7 +642,7 @@ class AppItemType(api.Item, int, register=False, metaclass=AppItemMeta):
                 # aliases does absolutely nothing. A work-around is complicated,
                 # so just use the alternate constructor.
                 raise ValueError(
-                    "using use the `.aliased` method "
+                    "cannot construct interface using a new alias - use the `.aliased` method instead"
                 )
         return super().__new__(cls, tag)
 
