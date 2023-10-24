@@ -389,7 +389,12 @@ def style_definitions() ->  Mapping[str, ElementDefinition]:
 def get_config_parameters(parameters: Mapping[str, Parameter]):
     """Return a mapping of item command parameters containing only
     configuration-related parameters."""
-    excluded_names = ("tag", "id", "parent", "default_value",)
+    excluded_names = (
+        "tag", "id",      # read-only
+        "parent",         # read-only (ish)
+        "default_value",  # exposed via `item.g/set_value`
+        "delay_search",   # can be set if supported, but never incl in `get_item_configuration`
+    )
     excluded_parts = ("default",)
     return {
         p.name:p for p in parameters.values()
