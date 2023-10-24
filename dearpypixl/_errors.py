@@ -28,14 +28,9 @@ def is_item_interface(item: Item) -> bool:
 
 
 def does_item_exist(tag: Item) -> bool:
-    try:
-        if isinstance(tag, int):
-            return _dearpygui.does_item_exist(tag)
-        elif isinstance(tag, str):
-            return _dearpygui.does_alias_exist(tag)
-    except SystemError:
-        return False
-    return False
+    if isinstance(tag, str):
+        tag = _dearpygui.get_alias_id(tag)
+    return tag in _dearpygui.get_all_items()
 
 
 def command_signature(command: ItemCommand):
@@ -71,16 +66,25 @@ def err_tag_invalid(item: Item, command: ItemCommand, *args, **kwargs):
 
 
 def err_item_nonexistant(item: Item, command: ItemCommand, *args, **kwargs):
+    exists = does_item_exist(item)
+    if exists:
+        return
+
+    invalid_id = err_tag_invalid(item, command, *args, **kwargs)
+    if invalid_id:
+        return invalid_id
+
     if isinstance(item, int):
-        item_exists = _dearpygui.does_item_exist(item)
-        id_type     = 'uuid'
-    elif isinstance(item, str):
-        item_exists = _dearpygui.does_alias_exist(item)
-        id_type     = 'alias'
+        item = int(item)
+        id_type = ' uuid'
     else:
-        return err_tag_invalid(item, command, *args, **kwargs)
-    if item and item_exists:
-        return ValueError(f"item {id_type} already exists and/or is in use.")
+        item = str(item)
+        id_type = 'n alias'
+
+    return ValueError(
+        f"{item!r} is not currently in-use as a{id_type} for any "
+        "existing item - perhaps the item using it was deleted?"
+    )
 
 
 def err_arg_unexpected(item: Item, command: ItemCommand, *args, **kwargs):
