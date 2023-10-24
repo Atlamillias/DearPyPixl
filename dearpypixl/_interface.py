@@ -232,10 +232,16 @@ def _create_configuration_method(cls: Any, parameters: Mapping[str, Parameter]) 
         ('self',),
         (
             f"try:",
-            f"    return {{",
-            f"        k:v for k,v in get_item_configuration(self).items()",
-            f"        if k in _ITEM_CFG_KEYS",
-            f"    }}",
+            # XXX: On Python 3.11, this is ~35% faster than the older
+            #      implementation (conditional dict comp). It's ~15%
+            #      faster if `config.get` is used, instead. Unlike the
+            #      dict comp, this impl. will highlight item-specific
+            #      configuration issues via KeyError that were previously
+            #      masked.
+            f"    config = get_item_configuration(self)",
+            f"    return {{{', '.join(f'{c!r}: config[{c!r}]' for c in parameters)}}}",
+            f"except KeyError:",
+            f"    raise RuntimeError('encountered an item-specific configuration error')",
             f"except SystemError:",
             f"    err = _errors.{_errors.err_item_nonexistant.__name__}(self, self.command)",
             f"    if err: raise err from None",
