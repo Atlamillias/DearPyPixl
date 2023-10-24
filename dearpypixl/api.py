@@ -256,8 +256,8 @@ def _patch_item_commands():
             locals=fn_lcls,
         ), tp_def.command1)
         command.__signature__ = cmd_sig   # type: ignore
-        del command.__wrapped__
         setattr(dearpygui, command.__name__, command)
+        object.__setattr__(tp_def, 'command1', command)
 
         if tp_def.command2:
             ctx_command = functools.update_wrapper(_tools.create_function(
@@ -278,6 +278,7 @@ def _patch_item_commands():
             del ctx_command.__wrapped__
             ctx_command = contextlib.contextmanager(ctx_command)   # type: ignore
             setattr(dearpygui, ctx_command.__name__, ctx_command)
+            object.__setattr__(tp_def, 'command2', ctx_command)
 
 _patch_item_commands()
 
