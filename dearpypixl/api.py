@@ -1862,7 +1862,13 @@ class Registry:
     def windows() -> list[ItemT]:
         """Return the identifiers of all window (`mvWindowAppItem`) items.
         """
-        return _dearpygui.get_windows()  # type: ignore
+        # BUG: `get_windows` actually returns all root
+        # items.
+        return [
+            item
+            for item in _dearpygui.get_windows()
+            if _dearpygui.get_item_info(item)['type'] == 'mvAppItemType::mvWindowAppItem'
+        ]
 
     @staticmethod
     def root_items() -> list[ItemT]:
