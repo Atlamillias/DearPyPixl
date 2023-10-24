@@ -1870,7 +1870,7 @@ class Registry:
         return [
             item
             for item in _dearpygui.get_all_items()
-            if _dearpygui.get_item_info(item)["parent"]
+            if not _dearpygui.get_item_info(item)["parent"]
         ]
 
     @staticmethod
