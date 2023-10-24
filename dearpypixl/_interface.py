@@ -1714,8 +1714,8 @@ def interface(item: Item, *, initialize: bool = False, default_itp: type[_ITP] =
         default_itp,
     )
     if initialize:
-        return itp.new(item)
-    return itp(tag=item)
+        return itp(item)
+    return itp.new(tag=item)
 
 
 @_exported
