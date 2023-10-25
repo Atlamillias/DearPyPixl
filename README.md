@@ -1,17 +1,9 @@
 # Dear PyPixl
-Dear PyPixl is an object-oriented, lightweight, modular framework and toolkit for [Dear PyGui](https://github.com/hoffstadt/DearPyGui) with minimal dependencies and zero use restrictions (MIT license). It is very "use what you want/need", allowing you to use both Dear PyPixl and Dear PyGui API's in the same project without conflict.
+Dear PyPixl is an object-oriented, lightweight, modular framework and toolkit for [Dear PyGui](https://github.com/hoffstadt/DearPyGui) with minimal dependencies and zero use restrictions (MIT license).
 
-I highly suggest visiting Dear PyGui's [documentation](https://dearpygui.readthedocs.io/en/latest/index.html) if you are unfamiliar with the project. Basic usage of Dear PyPixl is very similar (identical) to that of Dear PyGui.
-
-___
-<!-- @import "[TOC]" {cmd="toc" depthFrom=1 depthTo=6 orderedList=false} -->
-
-<!-- code_chunk_output -->
-
-- [Dear PyPixl](#dear-pypixl)
-      - [Features](#features)
-      - [Requirements](#requirements)
-      - [Installation](#installation)
+- [Features](#features)
+- [Requirements](#requirements)
+- [Installation](#installation)
 - [Overview](#overview)
   - [Item Interfaces](#item-interfaces)
       - [Creating Interfaces](#creating-interfaces)
@@ -23,24 +15,30 @@ ___
   - [Limitations, Bugs, & Gachas](#limitations-bugs--gachas)
       - [Interfaces are Integers, For Better or Worse](#interfaces-are-integers-for-better-or-worse)
       - [Passing Explicit UUID's and Aliases](#passing-explicit-uuids-and-aliases)
+      - [Typestubs and Dear PyGui Versions](#typestubs-and-dear-pygui-versions)
 - [FAQ](#faq)
 
-<!-- /code_chunk_output -->
-___
+<br>
+
 
 #### Features
- - extensible high-level object-oriented API for creating and/or interfacing with Dear PyGui items, including theme elements
- - low-level API that fills various gaps in Dear PyGui's API
- - strongly typed
- - allows the use of both `dearpypixl` and `dearpygui` code together with minimal conflicts
- - typing for `mvBuffer`, `mvVec4`, and `mvMat4`
- - improved docstrings, errors, and type signatures
- - contains numerous extensions and other helpful tools
+
+At its' core, Dear PyPixl provides object-oriented interfaces for Dear PyGui items. In addition, it ships with a wide arrangement of extensions and tools that remedy hurdles and inconveniences commonly encountered when using Dear PyGui.
+
+ - Extensible high-level and object-oriented API for creating and/or interfacing with Dear PyGui items
+ - Low-level API that fills a plethora of holes within Dear PyGui's API
+ - Strongly typed
+ - "Use what you want" - code from Dear PyPixl and Dear PyGui can be used together with minimal conflict
+ - Provides functions for creating specific theme element items within the `color` and `style` modules - no more passing enum values to `add_theme_color/style`!
+ - Typing for Dear PyGui's `mvBuffer`, `mvVec4`, and `mvMat4` objects
+ - Improved docstrings and errors
+ - Contains numerous extensions and other helpful tools
+
 <br>
 
 #### Requirements
  - Operating System; Windows 8.1+, MacOS, Linux*
- - Python: 3.10 x64* (or newer)
+ - Python: 3.10 x64 (or newer)
  - `pip` dependencies:
     * `dearpygui` 1.9 (or newer)
     * `typing-extensions` (Python < 3.12 only)
@@ -631,25 +629,31 @@ As is recommended when using Dear PyGui, users should *not* generate their own i
 
 <br>
 
+#### Typestubs and Dear PyGui Versions
+
+Most of the objects found in Dear PyPixl are dynamically generated on-import to support the installed Dear PyGui version. In contrast, newer versions of Dear PyPixl will always ship with stubs generated against the most recent (and compatible) version of Dear PyGui available on PyPi at the time of development; unlike code, type stub files cannot be reliably written at runtime. This means that the typing information may not reflect the version of Dear PyGui installed.
+
+There are two options to remedy this. The first is to simply use the most up-to-date versions of Dear PyPixl and Dear PyGui. Dear PyGui has been put into "maintenance mode" as of version 1.9 - breaking changes are not expected for newer versions. Dear PyPixl will automatically install the newest version of Dear PyGui available on PyPi, provided a compatible version isn't already installed. Alternatively, a new set of stub files can be generated within Dear PyPixl's installation directory by running the library as a top-level script via `python -m dearpypixl`, provided that the user or client has the proper permissions to do so.
+
+ <br>
+
 # FAQ
 
 ---
 
-**Q**: **Performance?**
+**Q**: **Are there performance implications from Dear PyPixl?**
 
-**A**: The framework tries to keep a very low profile. When profiling on a pretty low-performance machine, creating one million window items with `mvWindowAppItem` took 15.72 seconds (worst-case); only ~1.2 seconds of that was spent executing Dear PyPixl code. Marginal overhead is to be expected for methods, properties, etc. as there are simply more function calls. In high-traffic areas like the main event loop, consider using the `.configuration`, `.information`, and `.state` methods over interface properties.
-
+**A**: The framework keeps a very low profile where possible, optimizing high-traffic areas of the API to keep overhead to a minimum. For example, creating one million window items via `mvWindowAppItem()` on a low-end machine took ~15.7 seconds (worst-case); only ~1.2 seconds of which contributed to executing Dear PyPixl's code.
 
 ---
 
 **Q**: **Can I use both Dear PyPixl and Dear PyGui code in my project?**
 
-**A**: **Yes**, and you are encouraged to do so.
+**A**: **Yes**.
 
 ---
 
-**Q**: **I need to conform to an older version of Dear PyGui. Can I still use this?**
+**Q**: **I need to conform to an older version (<1.9) of Dear PyGui- will Dear PyPixl still work?**
 
-**A**: On paper? **No**. Dear PyPixl will absolutely *not* work with Dear PyGui beta versions (pre-1.0).
+**A**: Dear PyPixl is designed to work with most with most Dear PyGui versions. In fact, key components of the core framework were implemented using Dear PyGui v1.8. However, using some of Dear PyPixl's extension modules may throw errors when using older versions of Dear PyGui (in the future, these areas may issue a warning when using such versions). Regardless, you are welcome to try.
 
-However, key areas in the framework were developed using Dear PyGui v1.8.0. A lot may work, some stuff won't. You are welcome to try.
