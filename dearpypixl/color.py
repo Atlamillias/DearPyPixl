@@ -7,6 +7,8 @@ from .items import mvThemeColor, ThemeColor, mvThemeStyle, ThemeStyle
 def _init_module():
     overloads = _typing.get_overloads(_add_theme_element)
 
+    p_kwargs = inspect.Parameter('kwargs', inspect.Parameter.VAR_KEYWORD)
+
     for ovld in overloads:
         try:
             ovld_sig = ovld.__signature__
@@ -27,6 +29,7 @@ def _init_module():
             n:p for n, p in kwargs_sig.parameters.items()
             if n not in ovld_args
             and p.kind in (p.POSITIONAL_OR_KEYWORD, p.KEYWORD_ONLY)}
+        ovld_kwds['kwargs'] = p_kwargs
         ovld_kwds.pop('self', None)
         ovld_kwds.pop('cls', None)
         ovld.__signature__ = ovld_sig.replace(
