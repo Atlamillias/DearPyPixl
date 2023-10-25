@@ -938,21 +938,46 @@ class Viewport(_typing.ItemInterface, str, metaclass=_ViewportMeta):
             states = locker.value
 
             if 'primary_window' in kwargs:
+                main_window    = states['primary_window']
+                primary_window = kwargs['primary_window']
+
                 # BUG: process of setting the primary window makes the window forget its'
                 # 'no_scrollbar' option, so it needs to be cached and re-applied when
                 # the change is made.
-                main_window = states['primary_window']
-                primary_window = kwargs['primary_window']
-                if primary_window:  # apply the new primary window
-                    no_scrollbar = _dearpygui.get_item_configuration(primary_window)["no_scrollbar"]
+                # BUG (DPG =< 1.10): also affects "no_scroll_with_mouse"
+                if primary_window:  # replace current primary window
+                    wndw_cfg = _dearpygui.get_item_configuration(primary_window)
                     _viewport_set_primary_window(primary_window, True)
                     states['primary_window'] = primary_window
-                    _dearpygui.configure_item(primary_window, no_scrollbar=no_scrollbar)
+
+                    if "no_scroll_with_mouse" in wndw_cfg:
+                        _dearpygui.configure_item(
+                            primary_window,
+                            no_scrollbar=wndw_cfg['no_scrollbar'],
+                            no_scroll_with_mouse=wndw_cfg['no_scroll_with_mouse'],
+                        )
+                    else:
+                        _dearpygui.configure_item(
+                            primary_window,
+                            no_scrollbar=wndw_cfg['no_scrollbar'],
+                        )
+
                 elif main_window:  # unset the primary window
-                    no_scrollbar = _dearpygui.get_item_configuration(main_window)["no_scrollbar"]
+                    wndw_cfg = _dearpygui.get_item_configuration(main_window)
                     _viewport_set_primary_window(main_window, False)
                     states['primary_window'] = None
-                    _dearpygui.configure_item(main_window, no_scrollbar=no_scrollbar)
+
+                    if "no_scroll_with_mouse" in wndw_cfg:
+                        _dearpygui.configure_item(
+                            main_window,
+                            no_scrollbar=wndw_cfg['no_scrollbar'],
+                            no_scroll_with_mouse=wndw_cfg['no_scroll_with_mouse'],
+                        )
+                    else:
+                        _dearpygui.configure_item(
+                            main_window,
+                            no_scrollbar=wndw_cfg['no_scrollbar'],
+                        )
 
             if 'callback' in kwargs or 'user_data' in kwargs:
                 callback  = kwargs.pop('callback', states['callback'])
