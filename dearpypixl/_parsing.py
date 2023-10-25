@@ -392,6 +392,7 @@ def get_config_parameters(parameters: Mapping[str, Parameter]):
     excluded_names = (
         "tag", "id",      # read-only
         "parent",         # read-only (ish)
+        "before",         # not config
         "default_value",  # exposed via `item.g/set_value`
         "delay_search",   # can be set if supported, but never incl in `get_item_configuration`
     )
