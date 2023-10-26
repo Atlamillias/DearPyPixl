@@ -692,9 +692,11 @@ class ContextMenu(items.mvWindowAppItem):
                     tc_style,
                     (style.item_spacing, (8, 10)),
                     (style.window_rounding, (0, -1)),
+                    (style.window_rounding, (0, -1)),
                     (style.window_padding, (24, 8)),
                     (style.popup_rounding, (0, -1)),
                     (style.frame_rounding, (0, -1)),
+                    (style.frame_padding, (4, 3)),
                     (style.frame_padding, (4, 3)),
                 )
 
