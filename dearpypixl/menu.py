@@ -535,6 +535,8 @@ class ContextItem(_interface.SupportsCallback, items.mvGroup):
         super().configure(**kwargs)
 
 
+
+
 class ContextMenu(items.mvWindowAppItem):
     """An extension of `mvWindowAppItem` used for creating
     and managing stylized context menus.
@@ -542,8 +544,8 @@ class ContextMenu(items.mvWindowAppItem):
     The main appeal of using `ContextMenu`s over `mvMenu`s are
     their styling options. Built-in items like `mvMenu` and
     `mvMenuItem` have very rigid layouts and minimal customization.
-    On the other hand, `ContextMenu` and `ContextItem` --
-    `ContextMenu`s child of choice -- reflect a *lot* of theme
+    On the other hand, `ContextMenu` and `ContextItem` -
+    `ContextMenu`s child of choice - reflect a *lot* of theme
     elements. They're influenced by theme elements to such an
     extent that the `ContextMenu` class has its' own dedicated
     global theme, and exposes elements such as `frame_rounding`
@@ -676,13 +678,18 @@ class ContextMenu(items.mvWindowAppItem):
                     (color.button, (0, 0, 0, 0)),
                     (color.button_active, (29, 151, 236, 103)),
                     (color.button_hovered, (29, 151, 236, 103)),
+                    (color.header, (0, 0, 0, 0)),
+                    (color.header_active, (29, 151, 236, 103)),
+                    (color.header_hovered, (29, 151, 236, 103)),
                 )
                 _ensure_theme_elements(
                     tc_style,
                     (style.item_spacing, (8, 10)),
+                    (style.window_rounding, (0, -1)),
                     (style.window_padding, (24, 8)),
                     (style.popup_rounding, (0, -1)),
                     (style.frame_rounding, (0, -1)),
+                    (style.frame_padding, (4, 3)),
                 )
 
         self.configure(
@@ -726,16 +733,36 @@ class ContextMenu(items.mvWindowAppItem):
         return self._get_theme_element('color', 'button_hovered')
 
     @property
+    def header(self) -> items.mvThemeColor:
+        return self._get_theme_element('color', 'header')
+
+    @property
+    def header_active(self) -> items.mvThemeColor:
+        return self._get_theme_element('color', 'header_active')
+
+    @property
+    def header_hovered(self) -> items.mvThemeColor:
+        return self._get_theme_element('color', 'header_hovered')
+
+    @property
     def item_spacing(self) -> items.mvThemeStyle:
         return self._get_theme_element('style', 'item_spacing')
+
+    @property
+    def popup_rounding(self) -> items.mvThemeStyle:
+        return self._get_theme_element('style', 'popup_rounding')
 
     @property
     def window_padding(self) -> items.mvThemeStyle:
         return self._get_theme_element('style', 'window_padding')
 
     @property
-    def popup_rounding(self) -> items.mvThemeStyle:
-        return self._get_theme_element('style', 'popup_rounding')
+    def window_rounding(self) -> items.mvThemeStyle:
+        return self._get_theme_element('style', 'window_rounding')
+
+    @property
+    def frame_padding(self) -> items.mvThemeStyle:
+        return self._get_theme_element('style', 'frame_padding')
 
     @property
     def frame_rounding(self) -> items.mvThemeStyle:
