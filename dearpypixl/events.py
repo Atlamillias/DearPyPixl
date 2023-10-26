@@ -26,11 +26,11 @@ from ._typing import (
     Item,
     ItemCommand,
     ItemCallback,
-    Array,
     ItemConfig,
     Property,
     Iterable,
     Collection,
+    Sequence,
     Callable,
     MethodType,
     SupportsIndex,
@@ -889,10 +889,20 @@ class Callback(ItemInterface):
     user_data: Property[Any | Empty]     = ItemConfig()
 
     @property
-    def args(self):
-        return self._call_args
+    def args(self) -> tuple[Item | Empty, Item | Empty, Item | Empty]:
+        """A 3-tuple containing "sender", "app_data", and "user_data".
+        Any non-`Empty` value will replace the corresponding argument
+        sent by Dear PyGui when calling this object.
+
+        [get] Return the overriding positional arguments for
+        `self.callback`.
+
+        [set] Set overriding positional arguments for `self.callback`
+        """
+        return self._call_args  # type: ignore
     @args.setter
-    def args(self, value: Array[Item | Empty, Any | Empty, Any | Empty] | Empty | None):
+    def args(self, value: tuple[Item | Empty, Item | Empty, Item | Empty] | Sequence[Item | Empty] | Empty | None):
+        """[set] """
         try:
             sender, app_data, user_data = value  # type:ignore
         except TypeError:

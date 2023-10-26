@@ -1,6 +1,6 @@
 import inspect
 from . import _typing, _parsing, _tools, _mkstub
-from ._typing import overload, Item, Color, Any, Array
+from ._typing import overload, Item, Color, Any, Vec2
 from .items import mvThemeColor, ThemeColor, mvThemeStyle, ThemeStyle
 
 
@@ -86,7 +86,7 @@ _DFN_BODY = (
 
 
 @overload
-def _add_theme_element(value: Array[float, float] = ..., /, **kwargs) -> _ITP_BASE: ...
+def _add_theme_element(value: Vec2[float] = ..., /, **kwargs) -> _ITP_BASE: ...
 @overload
 def _add_theme_element(x: float = ..., y: float = ..., /, **kwargs) -> _ITP_BASE: ...
 def _add_theme_element(value: Any = 1, y: Any = -1, /, **kwargs) -> _ITP_BASE: ...

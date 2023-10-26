@@ -20,15 +20,12 @@ typing_imports.extend((
     _typing.ItemAlias,
     _typing.ItemUUID,
     _typing.ItemCommand,
-    _typing.Array,
     _typing.Literal,
     _typing.Sequence,
     _typing.Callable,
     _typing.Unpack,
     _typing.Property,
     _typing.Any,
-    _typing.Color,
-    _typing.Point,
     _typing.overload,
 ))
 

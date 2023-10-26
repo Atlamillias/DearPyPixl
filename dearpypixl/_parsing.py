@@ -432,7 +432,7 @@ def upd_param_annotations(parameters: Mapping[str, Parameter]) -> dict[str, Para
             and len(p.default) == 4
             and anno == typing.List[int] | typing.Tuple[int, ...]
         ):
-            anno = tuple[int, int, int, int | None] | list[int]
+            anno = tuple[int, int, int] | tuple[int, int, int, int] | list[int]
         elif anno == typing.List[typing.List[float]]:
             anno = Sequence[Sequence[float]]
         # general-case formatting

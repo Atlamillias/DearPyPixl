@@ -86,7 +86,10 @@ from ._typing import (
     Any,
     Color,
     Self,
-    Array,
+    Vec,
+    Vec2,
+    Vec3,
+    Vec4,
     Sequence,
     Callable,
     Property,
@@ -2181,7 +2184,7 @@ class Item:
         return treeview
 
     @staticmethod
-    def text_size(text: str, *, wrap_width: int = -1, font: ItemT = 0) -> Array[float, float]:
+    def text_size(text: str, *, wrap_width: int = -1, font: ItemT = 0) -> Vec2[float]:
         """Return the width and height of a string when rendered using a
         specific font.
 
@@ -2608,7 +2611,7 @@ class Plot:
         return _dearpygui.fit_axis_data(axis)
 
     @staticmethod
-    def get_limits(axis: ItemT) -> Array[float, float]:
+    def get_limits(axis: ItemT) -> Vec2[float]:
         """Return the lower and upper limits of the axis of an axis.
 
         Args:
@@ -2639,7 +2642,7 @@ class Plot:
         _dearpygui.set_axis_limits_auto(axis)
 
     @staticmethod
-    def set_ticks(axis: ItemT, label_pairs: Sequence[Array[str, int | str]]):
+    def set_ticks(axis: ItemT, label_pairs: Sequence[tuple[str, int | str] | Sequence[str | int]]):
         """Update the axis' tick labels and values of an axis.
 
         Args:
@@ -2665,7 +2668,7 @@ class PlotAxis:
         """
         return _dearpygui.fit_axis_data(self)
 
-    def get_limits(self: Any) -> Array[float, float]:
+    def get_limits(self: Any) -> Vec2[float]:
         """Return the lower and upper limits of the axis."""
         return _dearpygui.get_axis_limits(self)  # type: ignore
 
@@ -2683,7 +2686,7 @@ class PlotAxis:
         """Clear explicitly set lower and upper limits."""
         _dearpygui.set_axis_limits_auto(self)
 
-    def set_ticks(self: Any, label_pairs: Sequence[Array[str, int | str]]):
+    def set_ticks(self: Any, label_pairs: Sequence[tuple[str, int | str] | Sequence[str | int]]):
         """Update the axis' tick labels and values.
 
         Args:
@@ -2704,7 +2707,7 @@ class Drawing:
     __slots__ = ()
 
     @staticmethod
-    def apply_transform(draw_node: ItemT, transform: Sequence[float] | mvBuffer | mvVec4 | mvMat4) -> None:
+    def apply_transform(draw_node: ItemT, transform: Vec[float]) -> None:
         """Apply a transformation to a drawing node.
 
         Args:
@@ -2868,7 +2871,7 @@ class DrawLayer(Drawing):
 class DrawNode(Drawing):
     __slots__ = ()
 
-    def apply_transform(self: Any, transform: Sequence[float] | mvBuffer | mvVec4 | mvMat4) -> None:
+    def apply_transform(self: Any, transform: Vec[float]) -> None:
         """Apply a transformation to the drawing node.
 
         Args:

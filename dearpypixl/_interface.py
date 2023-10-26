@@ -17,10 +17,8 @@ from ._typing import (
     null_itemtype,
     null_command,
 
-    Color,
     Any,
     Self,
-    Array,
     Callable,
     Iterator,
     Literal,
@@ -1027,24 +1025,24 @@ class AppItemType(api.Item, int, register=False, metaclass=AppItemMeta):
         self.set_handlers(value)
 
     # state members
-    is_ok                    : Property[bool | None]            = ItemState("ok")
-    is_hovered               : Property[bool | None]            = ItemState("hovered")
-    is_active                : Property[bool | None]            = ItemState("active")
-    is_focused               : Property[bool | None]            = ItemState("focused")
-    is_clicked               : Property[bool | None]            = ItemState("clicked")
-    is_left_clicked          : Property[bool | None]            = ItemState("left_clicked")
-    is_right_clicked         : Property[bool | None]            = ItemState("right_clicked")
-    is_middle_clicked        : Property[bool | None]            = ItemState("middle_clicked")
-    is_visible               : Property[bool | None]            = ItemState("visible")
-    is_edited                : Property[bool | None]            = ItemState("edited")
-    is_activated             : Property[bool | None]            = ItemState("activated")
-    is_deactivated           : Property[bool | None]            = ItemState("deactivated")
-    is_deactivated_after_edit: Property[bool | None]            = ItemState("deactivated_after_edit")
-    is_resized               : Property[bool | None]            = ItemState("resized")
-    rect_min                 : Property[Array[int, int] | None] = ItemState()
-    rect_max                 : Property[Array[int, int] | None] = ItemState()
-    rect_size                : Property[Array[int, int] | None] = ItemState()
-    content_region_avail     : Property[Array[int, int] | None] = ItemState()
+    is_ok                    : Property[bool | None]                            = ItemState("ok")
+    is_hovered               : Property[bool | None]                            = ItemState("hovered")
+    is_active                : Property[bool | None]                            = ItemState("active")
+    is_focused               : Property[bool | None]                            = ItemState("focused")
+    is_clicked               : Property[bool | None]                            = ItemState("clicked")
+    is_left_clicked          : Property[bool | None]                            = ItemState("left_clicked")
+    is_right_clicked         : Property[bool | None]                            = ItemState("right_clicked")
+    is_middle_clicked        : Property[bool | None]                            = ItemState("middle_clicked")
+    is_visible               : Property[bool | None]                            = ItemState("visible")
+    is_edited                : Property[bool | None]                            = ItemState("edited")
+    is_activated             : Property[bool | None]                            = ItemState("activated")
+    is_deactivated           : Property[bool | None]                            = ItemState("deactivated")
+    is_deactivated_after_edit: Property[bool | None]                            = ItemState("deactivated_after_edit")
+    is_resized               : Property[bool | None]                            = ItemState("resized")
+    rect_min                 : Property[tuple[int, int] | Sequence[int] | None] = ItemState()
+    rect_max                 : Property[tuple[int, int] | Sequence[int] | None] = ItemState()
+    rect_size                : Property[tuple[int, int] | Sequence[int] | None] = ItemState()
+    content_region_avail     : Property[tuple[int, int] | Sequence[int] | None] = ItemState()
 
     # misc
     @property
@@ -1389,8 +1387,8 @@ class WindowType(api.Window, AppItemType):
 # (these do not inherit from a base API)
 
 class _ItemStateSized(_typing.ItemStateDict):
-    pos                 : Array[int, int]  # type: ignore
-    rect_size           : Array[int, int]  # type: ignore
+    pos      : tuple[int, int] | Sequence[int]  # type: ignore
+    rect_size: tuple[int, int] | Sequence[int]  # type: ignore
 
 @_exported
 class SupportsSized(AppItemType):
@@ -1407,12 +1405,12 @@ class SupportsSized(AppItemType):
     # Some items like `mvWindowAppItem` only support `rect_size`. The min/max
     # for these can be easily calculated.
     @property
-    def rect_min(self) -> Array[int, int]:
+    def rect_min(self) -> tuple[int, int] | Sequence[int]:
         state = self.state()
         return state['rect_min'] or state['pos']
 
     @property
-    def rect_max(self) -> Array[int, int]:
+    def rect_max(self) -> tuple[int, int] | Sequence[int]:
         state = self.state()
         if rect_max:=state['rect_max']:
             return rect_max
@@ -1422,10 +1420,10 @@ class SupportsSized(AppItemType):
         return x_pos + config["width"], y_pos + config["height"]
 
     @property
-    def pos(self) -> Array[int, int]:
+    def pos(self) -> tuple[int, int] | Sequence[int]:
         return self.state()['pos']
     @pos.setter
-    def pos(self, value: Array[int, int]):
+    def pos(self, value: tuple[int, int] | Sequence[int]):
         self.configure(pos=value)
 
 

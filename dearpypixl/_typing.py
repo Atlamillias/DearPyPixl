@@ -85,7 +85,7 @@ if TYPE_CHECKING:
 
 
 _T     = TypeVar("_T")
-_N     = TypeVar("_N", bound=Number)
+_N     = TypeVar("_N", bound=float | int)
 _T_co  = TypeVar("_T_co", covariant=True)
 _P     = ParamSpec("_P")
 
@@ -94,126 +94,18 @@ _P     = ParamSpec("_P")
 
 # [ GENERAL ]
 
-Shape = TypeVarTuple("Shape")
+Vec  = tuple[_N, ...] | Sequence[_N]
+Vec2 = tuple[_N, _N] | Sequence[_N]
+Vec3 = tuple[_N, _N, _N] | Sequence[_N]
+Vec4 = tuple[_N, _N, _N, _N] | Sequence[_N]
 
-
-@runtime_checkable
-class Array(Protocol[*Shape]):  # type: ignore
-    __slots__ = ()
-
-    def __iter__(self) -> Iterator[Any]: ...
-    @overload
-    def __getitem__(self, key: SupportsIndex, /) -> Union[*Shape] | Any: ...
-    @overload
-    def __getitem__(self, key: slice, /) -> 'Array[*Shape]': ...
-    def __len__(self) -> int: ...
-    def __contains__(self, value: Any, /) -> bool: ...
-    def __reversed__(self) -> Any: ...
-    def index(self, value: Any, start: SupportsIndex = 0, stop: SupportsIndex = sys.maxsize, /) -> int: ...
-    def count(self, value: Any, /) -> int: ...
-
-
-@runtime_checkable
-class SupportsComp(Protocol):
-    __slots__ = ()
-
-    def __lt__(self, other: Any) -> bool: ...
-    def __le__(self, other: Any) -> bool: ...
-    def __eq__(self, other: Any) -> bool: ...
-    def __ge__(self, other: Any) -> bool: ...
-    def __gt__(self, other: Any) -> bool: ...
+Color = Vec3[int] | Vec4[int]
+Point = Vec2[int]
 
 
 class Property(Protocol[_T_co]):
     def __get__(self, instance: Any, cls: type[Any] | None = None) -> _T_co: ...
     def __set__(self, instance: Any, value: Any): ...
-
-
-class ValueRange(tuple[int, int]):
-    __SENTINEL = object()
-
-    @overload
-    def __new__(cls, sequence: Sequence[_N], /) -> Self: ...
-    @overload
-    def __new__(cls, vmin: _N | Sequence[_N], vmax: _N | Sequence[_N], /) -> Self: ...
-    def __new__(cls, vmin: Any, vmax: Any = __SENTINEL, /) -> Self:
-        if vmax is cls.__SENTINEL:
-            # get both min & max from `vmin`
-            try:
-                values = min(vmin), max(vmin)
-            except TypeError:
-                raise TypeError('missing required positional argument `vmax.')
-        else:
-            values = min(vmin), max(vmax)
-
-        assert values[0] <= values[1]
-        return super().__new__(cls, values)
-
-    def __lt__(self, other: SupportsComp | Sequence[int | float]):
-        if isinstance(other, Sequence):
-            return self[1] < min(other)
-        return self[1] < other
-
-    def __le__(self, other: SupportsComp | Sequence[int | float]):
-        if isinstance(other, Sequence):
-            return self[1] <= min(other)
-        return self[1] <= other
-
-    def __eq__(self, other: SupportsComp | Sequence[int | float]):
-        if not isinstance(other, Sequence):
-            if self[0] == self[1]:
-                return self[0] == other
-            return False
-        return self[0] == min(other) and self[1] == max(other)
-
-    def __ge__(self, other: SupportsComp | Sequence[int | float]):
-        if isinstance(other, Sequence):
-            return self[0] >= max(other)
-        return self[0] >= other
-
-    def __gt__(self, other: SupportsComp | Sequence[int | float]):
-        if isinstance(other, Sequence):
-            return self[0] < max(other)
-        return self[0] < other
-
-    def __iter__(self):
-        yield from range(self[0], self[1])
-
-    def __class_getitem__(cls, item: tuple[_N | EllipsisType, _N | EllipsisType]):
-        try:
-            vmin, vmax = item
-        except (TypeError, ValueError):
-            raise TypeError('subscript must contain a minimum and maximum value.') from None
-
-        unknown_min = vmin in cls.__CLASS_GETITEM_COMP
-        unknown_max = vmax in cls.__CLASS_GETITEM_COMP
-        if unknown_min and unknown_max:
-            raise TypeError("subscript must contain at least one known boundry.")
-        elif unknown_min and isinstance(vmax, SupportsComp):
-            tp = type(vmax)
-        elif unknown_max and isinstance(vmin, SupportsComp):
-            tp = type(vmin)
-        else:
-            raise TypeError(
-                "subscript must contain literal values supporting "
-                "rich comparisons or ellipsis (got {vmin!r}, {vmax!r})."
-            )
-        return Annotated[tp, (vmin, vmax)]
-
-    __CLASS_GETITEM_COMP = (
-        ...,
-        type(...),
-        "...",
-        f"{type(...).__name__}"
-    )
-
-
-Color = Array[int, int, int, int | None]
-Point = Array[int, int]
-
-
-
-
 
 
 
@@ -449,7 +341,7 @@ ITEM_INFO_TEMPLATE: ItemInfoDict = MappingProxyType(
 
 class ItemStateDict(TypedDict):
     ok                   : Required[bool]
-    pos                  : Array[int, int] | None
+    pos                  : Vec2[int] | None
     hovered              : bool | None
     active               : bool | None
     focused              : bool | None
@@ -462,10 +354,10 @@ class ItemStateDict(TypedDict):
     activated            : bool | None
     deactivated          : bool | None
     resized              : bool | None
-    rect_min             : Array[int, int] | None
-    rect_max             : Array[int, int] | None
-    rect_size            : Array[int, int] | None
-    content_region_avail : Array[int, int] | None
+    rect_min             : Vec2[int] | None
+    rect_max             : Vec2[int] | None
+    rect_size            : Vec2[int] | None
+    content_region_avail : Vec2[int] | None
 
 ITEM_STATE_TEMPLATE: ItemStateDict = MappingProxyType(  # type:ignore
     ItemStateDict(

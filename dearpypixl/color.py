@@ -1,6 +1,6 @@
 import inspect
 from . import _typing, _parsing, _tools, _mkstub
-from ._typing import overload, Item, Color, Any, Array
+from ._typing import overload, Item, Color, Any
 from .items import mvThemeColor, ThemeColor, mvThemeStyle, ThemeStyle
 
 
