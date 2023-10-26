@@ -762,7 +762,7 @@ class ContextMenu(items.mvWindowAppItem):
 
     @property
     def window_bg(self) -> items.mvThemeStyle:
-        return self._get_theme_element('style', 'window_bg')
+        return self._get_theme_element('color', 'window_bg')
 
     @property
     def window_padding(self) -> items.mvThemeStyle:
