@@ -379,6 +379,14 @@ class AppItemMeta(type):
             config_params.extend(
                 opt for opt in tp_def.wconfig_params if opt not in config_params
             )
+            # `pos` is an odd-ball, so it's handled uniquely
+            if 'pos' in config_params and not hasattr(cls, 'pos'):
+                desc = property(
+                    lambda self: self.state()['pos'],
+                    lambda self, value: self.configure(pos=value),
+                )
+                setattr(cls, 'pos', desc)
+                cls.__annotations__['pos'] = Property[tuple[int, int] | Sequence[int]]
             for opt in config_params:
                 if hasattr(cls, opt):
                     continue  # `AppItemType` member, probably
