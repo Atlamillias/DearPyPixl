@@ -807,15 +807,16 @@ class AppItemType(api.Item, int, register=False, metaclass=AppItemMeta):
     __getstate__: Callable[..., dict[str, Any]]
 
     @overload
-    def __copy__(self, **kwargs) -> Self: ...
+    def __copy__(self, /, **kwargs) -> Self: ...
     @overload
-    def __copy__(self) -> Self: ...
-    def __copy__(self, __save_state__: _SaveState | None = None, **kwargs) -> Self:
+    def __copy__(self, /) -> Self: ...
+    def __copy__(self, __save_state__: _SaveState | None = None, /, **kwargs) -> Self:
         copy_state = __save_state__ or _to_save_state(self, **kwargs)
 
         nargs, nkwds = self.__getnewargs_ex__()
         copy_item = self.__class__.__new__(self.__class__, *nargs, **nkwds)
         copy_item.command(tag=copy_item, **copy_state['configuration'])
+        copy_item.set_value(copy_state['value'])
 
         for k in ('font', 'theme', 'handlers'):
             item = copy_state[k]
@@ -832,7 +833,7 @@ class AppItemType(api.Item, int, register=False, metaclass=AppItemMeta):
                 child_itf  = _get_base_itp(child).new(child)
                 child_ss   = _to_save_state(child_itf, child_info)
                 child_ss['configuration']['parent'] = c_parent
-                child_itf.__copy__(parent=c_parent)
+                child_itf.__copy__(child_ss, parent=c_parent)  # type: ignore
 
         itf_state = copy_state['itf_state']
         if itf_state:
