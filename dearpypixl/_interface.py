@@ -4,7 +4,7 @@ import uuid
 import inspect
 import functools
 from inspect import Parameter
-from dearpygui import dearpygui, _dearpygui
+from dearpygui import _dearpygui
 from . import api, _typing, constants, _tools, _errors, _parsing, _mkstub
 from .api import Item as ItemAPI, Registry as RegistryAPI, _create_uuid
 from ._tools import classproperty
@@ -70,7 +70,7 @@ def _is_default_command(value: Any) -> bool:
     return bool(value is null_command)
 
 
-def _incompatible_bases(command: ItemCommand, identity: tuple[int, str], *bases: type['AppItemType | Any']) -> bool:
+def _incompatible_bases(command: ItemCommand, identity: tuple[int, str], *bases: type) -> bool:
     """Return True if a new item type from *bases* would
     create an incompatible union between two or more Dear
     PyGui item types.
@@ -80,13 +80,13 @@ def _incompatible_bases(command: ItemCommand, identity: tuple[int, str], *bases:
     except NameError:
         return False
     commands = {
-        b.command if not isinstance(b.command, (classmethod, staticmethod))
-        else b.command.__wrapped__
+        b.command if not isinstance(b.command, (classmethod, staticmethod))  # type: ignore
+        else b.command.__wrapped__  # type: ignore
         for b in bases
     }
     commands.add(command)
     commands.discard(null_command)
-    identities = {b.identity for b in bases}
+    identities = {b.identity for b in bases}  # type: ignore
     identities.add(identity)
     identities.discard(null_itemtype)
     return any(len(s) > 1 for s in (commands, identities))
