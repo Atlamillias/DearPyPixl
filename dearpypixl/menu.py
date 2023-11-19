@@ -142,7 +142,7 @@ class _CtxMenuStack(collections.deque[tuple['ContextMenu', 'ContextItem | None']
 
 
 
-_CTX_MENU_STACK = _CtxMenuStack()
+_CTX_MENU_STACK = _CtxMenuStack()  #type: ignore
 
 
 def close_context_menus():
