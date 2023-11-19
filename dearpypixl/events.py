@@ -53,7 +53,7 @@ _P   = ParamSpec("_P")
 
 
 class _empty: ... # this declaration keeps the typechecker quiet
-_empty = _tools.create_marker_type("Empty")  # type: ignore
+_empty = _tools.create_marker_type("Empty", __name__)  # type: ignore
 
 Empty = type[_empty]
 

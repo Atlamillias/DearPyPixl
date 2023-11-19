@@ -299,7 +299,7 @@ class _MarkerType(typing.Protocol):
     def __setattr__(self, name: str, value: Any) -> TypeError: ...
 
 
-def create_marker_type(name: str, *, body: Mapping[str, Any] | Sequence[tuple[str, Any]] = ()) -> type[_MarkerType]:
+def create_marker_type(name: str, module: str, *, body: Mapping[str, Any] | Sequence[tuple[str, Any]] = ()) -> type[_MarkerType]:
     """Dynamically create and return a new marker type as if it were defined
     in the module this function is called from.
 
@@ -323,14 +323,10 @@ def create_marker_type(name: str, *, body: Mapping[str, Any] | Sequence[tuple[st
     returning the marker class.
     """
     body = dict(body)
-    if '__module__' in body:
-        module = sys.modules[body['__module__']]
-    else:
-        module = inspect.getmodule(inspect.stack()[1][0])
-        assert module.__name__  # type:ignore
+    module = sys.modules[module]  # type: ignore
 
     namespace = {
-        '__module__': module.__name__,  # type:ignore
+        '__module__': module.__name__,
         '__repr__': create_function(
             '__repr__',
             ('cls',),
@@ -385,8 +381,8 @@ def frozen_namespace(cls: type[_T]) -> type[_T]:
     contents = tuple(m for m in dir(cls) if not m.startswith('_'))
     return create_marker_type(  # type: ignore
         cls.__qualname__,
+        cls.__module__,
         body={
-            "__module__": cls.__module__,
             '__annotations__': cls.__annotations__,
             "__iter__": create_function(
                 '__iter__',
