@@ -6,19 +6,328 @@ import os
 from dearpygui import dearpygui
 from ._typing import (
     Any,
+    Sequence,
     Item,
     overload,
 )
 from . import items, color, style
 from . import api, _interface, _tools
+from .items import ThemeColor, ThemeStyle, ThemeComponent, Theme
 from .api import Registry as RegistryAPI, Item as ItemAPI
 
 
 
 
-# TODO: re-implement ez-theme
+class _ElementHook:
+    __slots__ = ("_name", "_func", '_type')
 
-Theme = items.Theme
+    def __set_name__(self, cls: type[ThemeComponent], name: str):
+        self._name = name
+        if name in color.__dict__:
+            assert name not in style.__dict__
+            self._type = ThemeColor.new
+            self._func = getattr(color, name)
+        else:
+            assert name in style.__dict__
+            self._type = ThemeStyle.new
+            self._func = getattr(style, name)
+
+    def __get__(self, inst: ThemeComponent | None = None, cls: type[ThemeComponent] | None = None) -> _interface.SupportsValueArray[int | float] | Any:
+        if inst is None:
+            return self
+
+        element_id = self._get_element_alias(inst)
+        if not RegistryAPI.alias_exists(element_id):
+            return None
+        return self._type(element_id)
+
+    def __set__(self, inst: ThemeComponent, value: Sequence[int | float] | None):
+        element_id = self._get_element_alias(inst)
+        if not RegistryAPI.alias_exists(element_id):
+            # The `ThemeColor` & `ThemeStyle` classes do not have
+            # compatible signatures, whereas the color & style helper
+            # functions both accept sequences or individual args.
+            if value is not None:
+                e = self._func(value, parent=inst)
+                e.set_alias(element_id)
+        else:
+            if value is None:
+                # The element simply existing will prevent theme
+                # propegation, so it needs to be deleted for now.
+                # It will be assigned the same alias if recreated
+                # later.
+                RegistryAPI.delete_item(element_id)
+            else:
+                self._type(element_id).set_value(value)
+
+    def __delete__(self, inst: ThemeComponent):
+        # Equivelent to `component.element = None`.
+        try:
+            RegistryAPI.delete_item(self._get_element_alias(inst))
+        except SystemError:
+            pass
+
+    def _get_element_alias(self, inst: ThemeComponent):
+        return f"{self._name}##{inst.tag}"
+
+
+# Exists to define a common docstring for the actual classes --
+# Language servers are typically unaware `.__doc__` assignments.
+class ElementComponent:
+    """A `mvThemeComponent` subclass that creates and manages child
+    element items and exposes them as instance attributes. The names
+    of element-attributes mirror the names of helper functions
+    defined in Dear PyPixl's `color` and `style` modules.
+
+    `ColorComponent` and `StyleComponent` interfaces automatically
+    create child elements for their underlying theme components; one
+    for each attribute they expose. However, a theme component
+    created by either of them won't have any children yet. When an
+    element doesn't exist for a particular attribute, expect it to
+    return None:
+        >>> with Theme() as theme:
+        ...     color_comp = ColorComponent()
+        >>>
+        >>> color_comp.window_bg
+        None
+
+    The result is a bit different when accessing the same attribute
+    after assigning it a value:
+        >>> color_comp.window_bg = [255, 180, 180]
+        >>> color_comp.window_bg
+        mvThemeColor(...)
+
+    Instead of None, `color_comp.window_bg` returns an instance of
+    `mvThemeColor`. On assignment, the interface tries to update the
+    element's value associated with the attribute. Since the element
+    did not exist, it created one instead, and used the assigned value
+    and the default value for the element.
+        >>> color_comp.window_bg.value
+        [255, 180, 180]
+        >>> color_comp.window_bg = [180, 180, 255]  # updates the existing element's value
+        >>> color_comp.window_bg.value
+        [180, 180, 255]
+
+    Instead of assigning a completely new value to the element, you can
+    take advantage of the subscript behavior of the returned `mvThemeColor`
+    or `mvThemeStyle` instance to update values selectively:
+        >>> color_comp.window_bg[0]   = 255         # update red channel
+        >>> color_comp.window_bg[1:3] = 100, 150    # update the green and blue channels
+
+    There may be situations where it's desirable for an element to only
+    exist temporarily; for example, to overwrite the color of the
+    application-level theme given a certain event. Since there is no means
+    of disabling select elements, you're forced to destroy them. Users
+    can do this any way they want, but the most intuitive way is to simply
+    delete the attribute or set its' value to None.
+        >>> color_comp.window_bg = None  # equivelent to `del color_comp.window_bg`
+        >>> color_comp.window_bg
+        None
+        >>> color_comp.window_bg = [120, 120, 120, 255]  # creates a new element item
+        >>> color_comp.window_bg.value
+        [120, 120, 120, 255]
+
+    The `.tag` of like-elements are always unique. However, the `.alias`
+    of the element associated with the attribute will remain consistent
+    regardless of how many times it's (de)constructed -- A concatenation
+    of the element's name and parent's `.tag`, delimited by "##":
+        >>> color_comp.window_bg.alias == f'window_bg##{color_comp.tag}'
+        True
+
+
+    Element-attributes are managed using a custom descriptor.
+    `ColorComponent` and `StyleComponent` are otherwise identical
+    to `mvThemeComponent`, as they do not implement or redefine
+    behavior, nor do their instances hold custom state.
+
+    Because interfaces do not hold any custom state, the same theme
+    component can be managed by several interfaces simultaneously.
+    The *type* of interface is not a limiting factor -- A theme
+    component created as a result of initializing a `ColorComponent`
+    interface can also be managed by `StyleComponent` objects, in
+    addition to other `ColorComponent` interfaces.
+
+    Although their implementations do not differ from
+    `mvThemeComponent`, any theme component that is created or
+    managed by instances of `ColorComponent` or `StyleComponent`
+    have restricted usage as parents -- Do not allow the underlying
+    theme component to parent color and style items other than those
+    created and/or managed internally via descriptors. When creating
+    an instance for an existing theme component, that component should
+    not be user-managed. Ideally, instances should only interface with
+    theme components created as a result of initializing a
+    `ColorComponent` or `StyleComponent` object. Since newer element
+    items shadow all of their like-element siblings (those of the same
+    kind, target, and category), "foreign" child elements will cause
+    conflicts between managed elements and those actually reflected by
+    items using the theme.
+    """
+    __slots__ = ()
+
+
+class ColorComponent(ThemeComponent):
+    __slots__ = ()
+
+    border = _ElementHook()
+    border_shadow = _ElementHook()
+    button = _ElementHook()
+    button_active = _ElementHook()
+    button_hovered = _ElementHook()
+    check_mark = _ElementHook()
+    child_bg = _ElementHook()
+    docking_empty_bg = _ElementHook()
+    docking_preview = _ElementHook()
+    drag_drop_target = _ElementHook()
+    frame_bg = _ElementHook()
+    frame_bg_active = _ElementHook()
+    frame_bg_hovered = _ElementHook()
+    header = _ElementHook()
+    header_active = _ElementHook()
+    header_hovered = _ElementHook()
+    menu_bar_bg = _ElementHook()
+    modal_window_dim_bg = _ElementHook()
+    nav_highlight = _ElementHook()
+    nav_windowing_dim_bg = _ElementHook()
+    nav_windowing_highlight = _ElementHook()
+    plot_histogram = _ElementHook()
+    plot_histogram_hovered = _ElementHook()
+    plot_lines = _ElementHook()
+    plot_lines_hovered = _ElementHook()
+    popup_bg = _ElementHook()
+    resize_grip = _ElementHook()
+    resize_grip_active = _ElementHook()
+    resize_grip_hovered = _ElementHook()
+    scrollbar_bg = _ElementHook()
+    scrollbar_grab = _ElementHook()
+    scrollbar_grab_active = _ElementHook()
+    scrollbar_grab_hovered = _ElementHook()
+    separator = _ElementHook()
+    separator_active = _ElementHook()
+    separator_hovered = _ElementHook()
+    slider_grab = _ElementHook()
+    slider_grab_active = _ElementHook()
+    tab = _ElementHook()
+    tab_active = _ElementHook()
+    tab_hovered = _ElementHook()
+    tab_unfocused = _ElementHook()
+    tab_unfocused_active = _ElementHook()
+    table_border_light = _ElementHook()
+    table_border_strong = _ElementHook()
+    table_header_bg = _ElementHook()
+    table_row_bg = _ElementHook()
+    table_row_bg_alt = _ElementHook()
+    text = _ElementHook()
+    text_disabled = _ElementHook()
+    text_selected_bg = _ElementHook()
+    title_bg = _ElementHook()
+    title_bg_active = _ElementHook()
+    title_bg_collapsed = _ElementHook()
+    window_bg = _ElementHook()
+    plot_bg = _ElementHook()
+    plot_border = _ElementHook()
+    plot_crosshairs = _ElementHook()
+    plot_error_bar = _ElementHook()
+    plot_fill = _ElementHook()
+    plot_frame_bg = _ElementHook()
+    plot_inlay_text = _ElementHook()
+    plot_legend_bg = _ElementHook()
+    plot_legend_border = _ElementHook()
+    plot_legend_text = _ElementHook()
+    plot_line = _ElementHook()
+    plot_marker_fill = _ElementHook()
+    plot_marker_outline = _ElementHook()
+    plot_query = _ElementHook()
+    plot_selection = _ElementHook()
+    plot_title_text = _ElementHook()
+    plot_x_axis = _ElementHook()
+    plot_x_axis_grid = _ElementHook()
+    plot_y_axis = _ElementHook()
+    plot_y_axis2 = _ElementHook()
+    plot_y_axis3 = _ElementHook()
+    plot_y_axis_grid = _ElementHook()
+    plot_y_axis_grid2 = _ElementHook()
+    plot_y_axis_grid3 = _ElementHook()
+    node_bg = _ElementHook()
+    node_bg_hovered = _ElementHook()
+    node_bg_selected = _ElementHook()
+    node_box_selector = _ElementHook()
+    node_box_selector_outline = _ElementHook()
+    node_grid_bg = _ElementHook()
+    node_grid_line = _ElementHook()
+    node_grid_line_primary = _ElementHook()
+    node_link = _ElementHook()
+    node_link_hovered = _ElementHook()
+    node_link_selected = _ElementHook()
+    node_mini_map_bg = _ElementHook()
+    node_mini_map_bg_hovered = _ElementHook()
+    node_mini_map_canvas = _ElementHook()
+    node_mini_map_canvas_outline = _ElementHook()
+    node_mini_map_link = _ElementHook()
+    node_mini_map_link_selected = _ElementHook()
+    node_mini_map_node_bg = _ElementHook()
+    node_mini_map_node_bg_hovered = _ElementHook()
+    node_mini_map_node_bg_selected = _ElementHook()
+    node_mini_map_node_outline = _ElementHook()
+    node_mini_map_outline = _ElementHook()
+    node_mini_map_outline_hovered = _ElementHook()
+    node_outline = _ElementHook()
+    node_pin = _ElementHook()
+    node_pin_hovered = _ElementHook()
+    node_title_bar = _ElementHook()
+    node_title_bar_hovered = _ElementHook()
+    node_title_bar_selected = _ElementHook()
+
+
+class StyleComponent(ThemeComponent):
+    __slots__ = ()
+
+    alpha = _ElementHook()
+    button_text_align = _ElementHook()
+    cell_padding = _ElementHook()
+    child_border_size = _ElementHook()
+    child_rounding = _ElementHook()
+    frame_border_size = _ElementHook()
+    frame_padding = _ElementHook()
+    frame_rounding = _ElementHook()
+    grab_min_size = _ElementHook()
+    grab_rounding = _ElementHook()
+    indent_spacing = _ElementHook()
+    item_inner_spacing = _ElementHook()
+    item_spacing = _ElementHook()
+    popup_border_size = _ElementHook()
+    popup_rounding = _ElementHook()
+    scrollbar_rounding = _ElementHook()
+    scrollbar_size = _ElementHook()
+    plot_line_weight = _ElementHook()
+    plot_major_grid_size = _ElementHook()
+    plot_major_tick_len = _ElementHook()
+    plot_major_tick_size = _ElementHook()
+    plot_marker = _ElementHook()
+    plot_marker_size = _ElementHook()
+    plot_marker_weight = _ElementHook()
+    plot_min_size = _ElementHook()
+    plot_minor_alpha = _ElementHook()
+    plot_minor_grid_size = _ElementHook()
+    plot_minor_tick_len = _ElementHook()
+    plot_minor_tick_size = _ElementHook()
+    plot_mouse_pos_padding = _ElementHook()
+    plot_padding = _ElementHook()
+    node_border_thickness = _ElementHook()
+    node_corner_rounding = _ElementHook()
+    node_grid_spacing = _ElementHook()
+    node_link_hover_distance = _ElementHook()
+    node_link_line_segments_per_length = _ElementHook()
+    node_link_thickness = _ElementHook()
+    node_mini_map_offset = _ElementHook()
+    node_mini_map_padding = _ElementHook()
+    node_padding = _ElementHook()
+    node_pin_circle_radius = _ElementHook()
+    node_pin_hover_radius = _ElementHook()
+    node_pin_line_thickness = _ElementHook()
+    node_pin_offset = _ElementHook()
+    node_pin_quad_side_length = _ElementHook()
+    node_pin_triangle_side_length = _ElementHook()
+
 
 
 
