@@ -43,8 +43,8 @@ class KeyInput(enum.IntEnum):
     END                      = 35
     HOME                     = 36
     ARROW_LEFT               = 37
-    ARROW_RIGHT              = 38
-    ARROW_UP                 = 39
+    ARROW_UP                 = 38
+    ARROW_RIGHT              = 39
     ARROW_DN                 = 40
     SELECT                   = 41
     PRINT                    = 42
