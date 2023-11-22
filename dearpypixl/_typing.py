@@ -67,7 +67,7 @@ from typing import (
 )
 if sys.version_info < (3, 12):
     try:
-        from typing_extensions import override
+        from typing_extensions import override, TypeAliasType
     except ImportError:
         raise ImportError("Python < 3.12 requires `typing-extensions` module.") from None
 else:
