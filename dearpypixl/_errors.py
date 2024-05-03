@@ -114,14 +114,12 @@ def err_arg_invalid(item: Item, command: ItemCommand, *args, **kwargs):
 
 
 
-def _invld_p_err(parent_tp: str, child_tp: str, *tp_list: str) -> ValueError:
-    msg = f"incompatible parent {parent_tp!r} for {child_tp!r} item{{}}."
+def _invld_p_err(parent_tp: str, parent: int | str, child_tp: str, *tp_list: str) -> ValueError:
+    msg = f"incompatible parent {parent_tp}(tag={parent!r}) for child {child_tp!r} item{{}}"
     if tp_list:
         if isinstance(tp_list, str):
             tp_list = ''.join(tp_list),
         msg = msg.format(f", try {', '.join(repr(s) for s in tp_list)}.")
-    else:
-        msg = msg.format(".")
     return ValueError(msg)
 
 def err_parent_invalid(item: Item, command: ItemCommand, *args, **kwargs):
@@ -133,7 +131,7 @@ def err_parent_invalid(item: Item, command: ItemCommand, *args, **kwargs):
 
     # CASE 1: `parent` is not `int` nor `str` (also prevents error in CASE 2)
     if not is_tag_valid(parent):
-        return ValueError(f"`parent` expected as int or str, got {type(parent)!r}.")
+        return ValueError(f"`parent` expected as int or str, got {type(parent)!r}")
 
     if parent:
         # CASE 2: the included parent does not exist
@@ -141,7 +139,7 @@ def err_parent_invalid(item: Item, command: ItemCommand, *args, **kwargs):
             return ValueError(f"`parent` item {parent!r} does not exist.")
         # CASE 3: is it even a container?
         if _dearpygui.get_item_info(parent)['container'] is False:
-            raise ValueError(f"`parent` item {parent!r} is not a container and cannot parent items.")
+            return ValueError(f"`parent` item {parent!r} is not a container and cannot parent items")
 
     # CASE 4: did not include parent while the container stack is empty
     elif not parent and not cstack:
@@ -156,13 +154,13 @@ def err_parent_invalid(item: Item, command: ItemCommand, *args, **kwargs):
     )["type"].removeprefix("mvAppItemType::")
     c_tp_name = command_itp_name(command).removeprefix('mvAppItemType::')
 
+    err = functools.partial(_invld_p_err, p_tp_name, parent, c_tp_name)
+
     # these are supposed to be "universal" parents, but there are some exceptions
     if p_tp_name in ("mvStage", "mvTemplateRegistry"):
-        return ValueError(f"incompatible parent {p_tp_name!r} for {c_tp_name!r} item.")
+        return err()
 
-    err = functools.partial(_invld_p_err, p_tp_name, c_tp_name)
-
-    if c_tp_name.startswith("mvDraw") and p_tp_name not in ("mvDraw", "mvViewportDraw"):
+    if c_tp_name.startswith("mvDraw") and "Drawlist" not in c_tp_name and p_tp_name not in ('mvDrawlist', 'mvViewportDrawlist', 'mvDrawLayer'):
         return err('mvDrawlist', 'mvViewportDrawlist', 'mvDrawLayer')
     if c_tp_name.startswith("mvThemeComponent") and p_tp_name not in ("mvTheme",):
         return err('mvTheme',)

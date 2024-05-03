@@ -107,24 +107,39 @@ def _get_itp_subclasses(*parent_cls: type[_T]) -> tuple[type[_T], ...]:
     )
 
 
-def _create_init_method(cls: Any, parameters: Mapping[str, Parameter]) -> Any:
+def _create_init_method(cls: Any, parameters: Mapping[str, Parameter], *, __item_exists=f"_errors.{_errors.does_item_exist.__name__}(self)", __argless_init="(tag and not (args or kwargs))") -> Any:
     method = _tools.create_function(
         '__init__',
         ('self', '*args', 'tag: int | str = 0', '**kwargs'),
         (
-            "super(__class__, self).__init__()",
-            "try:",
-            "    self.command(*args, tag=self, **kwargs)",
-            "except (SystemError, TypeError) as e:",
-            # BUG: The patch applied in __init__.py revealed that DPG will still
-            # sometimes register foreign `tag`s even when throwing an argument-related
-            # `SystemError`s (the patch ensures a `tag` is always sent so they're never
-            # internally generated i.e. are always 'foreign'). In fact, the item is
-            # still created in cases where no arguments are actually required. In any
-            # case, it scuffs "does item exist" checks. Explicit `tag`s are *usually*
-            # sent without arguments, and can be used as a decent `does_item_exist`
-            # substitute.
-            f"    if not _errors.{_errors.does_item_exist.__name__}(self) or (not tag and (args or kwargs)):",
+            f"super(__class__, self).__init__()",
+            f"try:",
+            f"    self.command(*args, tag=self, **kwargs)",
+            # Allow creating interfaces for existing items. When doing so, `tag`
+            # should be the existing item uuid. Additionally, no other arguments
+            # should be sent.
+            # BUG: When explicit `tag`s are passed, DPG will add them to its'
+            #      registry even when it throws an error while trying to create
+            #      an item, spoofing `dearpygui.does_item_exist` checks.
+            f"except TypeError as e:",
+            #     Suppress errors from missing required positional arguments
+            #     when only creating interfaces.
+            f"    if not ({__item_exists} and {__argless_init}):",
+            f"        msg = e.args[0]",
+            f"        if self.command.__name__ in msg:",
+            f"            msg = msg.replace(self.command.__name__, __class__.__name__ + '.__init__')",
+            f"            raise TypeError(msg) from None",
+            f"        raise",
+            f"except SystemError:",
+            #     Suppress errors from duplicate items when only creating interfaces.
+            #     NOTE: There's some behavior differences between DPG versions on when it
+            #     throws errors. Newer DPG versions don't care when you try to create
+            #     "duplicate" items (ignoring the other arguments), but will add a duplicate
+            #     uuid to the internal registry (doesn't affect cleanup/deletion). For others,
+            #     an explicitly passed, completely unique tag may still get added to the
+            #     internal registry even when DPG does throw an error (which is why
+            #     `dpg.does_item_exist` is not used here -- it'll spoof that).
+            f"    if not ({__item_exists} and {__argless_init}):",
             f"        err_chks = (",
             f"            _errors.{_errors.err_arg_unexpected.__name__},",
             f"            _errors.{_errors.err_parent_invalid.__name__},",
