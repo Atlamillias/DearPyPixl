@@ -824,10 +824,10 @@ class Viewport(_typing.ItemInterface, str, metaclass=_ViewportMeta):
     is_visible     = cast(bool, _ViewportMeta.is_visible)
     is_fullscreen  = cast(bool, _ViewportMeta.is_fullscreen)
 
-    def __new__(cls, **kwargs: Unpack[AppConfigDict]) -> Self:
+    def __new__(cls, **kwargs: Unpack[ViewportConfigDict]) -> Self:
         return super().__new__(cls, Viewport.tag)
 
-    def __init__(self, **kwargs: Unpack[AppConfigDict]):
+    def __init__(self, **kwargs: Unpack[ViewportConfigDict]):
         super().__init__()
         if not Viewport.state()['ok']:
             Application()
