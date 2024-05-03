@@ -682,42 +682,50 @@ class _ViewportState(_typing.ItemStateDict, total=False):
 
 
 class _ViewportMeta(_typing.ItemInterfaceMeta):
-    title         : Property[str]             = _typing.ItemConfig()
-    small_icon    : Property[str]             = _typing.ItemConfig()
-    large_icon    : Property[str]             = _typing.ItemConfig()
-    width         : Property[int]             = _typing.ItemConfig()
-    height        : Property[int]             = _typing.ItemConfig()
-    x_pos         : Property[int]             = _typing.ItemConfig()
-    y_pos         : Property[int]             = _typing.ItemConfig()
-    min_width     : Property[int]             = _typing.ItemConfig()
-    max_width     : Property[int]             = _typing.ItemConfig()
-    min_height    : Property[int]             = _typing.ItemConfig()
-    max_height    : Property[int]             = _typing.ItemConfig()
-    resizable     : Property[bool]            = _typing.ItemConfig()
-    vsync         : Property[bool]            = _typing.ItemConfig()
-    always_on_top : Property[bool]            = _typing.ItemConfig()
-    decorated     : Property[bool]            = _typing.ItemConfig()
-    clear_color   : Property[Color]           = _typing.ItemConfig()
-    disable_close : Property[bool]            = _typing.ItemConfig()
-    primary_window: Property[ItemT | None]    = _typing.ItemConfig()
-    callback      : Property[Callable | None] = _typing.ItemConfig()
-    user_data     : Property[Any]             = _typing.ItemConfig()
-    is_ok         : Property[bool | None]     = _typing.ItemState("ok")
-    is_visible    : Property[bool | None]     = _typing.ItemState("visible")
-    is_fullscreen : Property[bool | None]     = _typing.ItemState("is_fullscreen")
+    title          = cast(str, _typing.ItemConfig())
+    small_icon     = cast(str, _typing.ItemConfig())
+    large_icon     = cast(str, _typing.ItemConfig())
+    width          = cast(int, _typing.ItemConfig())
+    height         = cast(int, _typing.ItemConfig())
+    x_pos          = cast(int, _typing.ItemConfig())
+    y_pos          = cast(int, _typing.ItemConfig())
+    min_width      = cast(int, _typing.ItemConfig())
+    max_width      = cast(int, _typing.ItemConfig())
+    min_height     = cast(int, _typing.ItemConfig())
+    max_height     = cast(int, _typing.ItemConfig())
+    resizable      = cast(bool, _typing.ItemConfig())
+    vsync          = cast(bool, _typing.ItemConfig())
+    always_on_top  = cast(bool, _typing.ItemConfig())
+    decorated      = cast(bool, _typing.ItemConfig())
+    clear_color    = cast(Color, _typing.ItemConfig())
+    disable_close  = cast(bool, _typing.ItemConfig())
+    primary_window = cast(ItemT | None, _typing.ItemConfig())
+    callback       = cast(Callable | None, _typing.ItemConfig())
+    user_data      = cast(Any, _typing.ItemConfig())
+    is_ok          = cast(bool, _typing.ItemState("ok"))
+    is_visible     = cast(bool, _typing.ItemState("visible"))
+    is_fullscreen  = cast(bool, _typing.ItemState("is_fullscreen"))
+
+    def __new__(mcls, name, bases, namespace, **kwargs):
+        try:
+            Viewport  # type: ignore
+        except NameError:
+            assert int not in bases
+            if str not in bases:
+                bases += (str,)
 
     @property
-    def client_width(self) -> int:
+    def client_width(self: Any) -> int:
         return self.configuration()['client_width']
 
     @property
-    def client_height(self) -> int:
+    def client_height(self: Any) -> int:
         return self.configuration()['client_height']
 
 
 @_onetime_setup(lambda: Viewport(), ('create', 'state', 'close'))
 @_clear_lockers
-class Viewport(_typing.ItemInterface, str, metaclass=_ViewportMeta):
+class Viewport(_typing.ItemInterface, metaclass=_ViewportMeta):
     """Thread-safe, multi-paradigm "viewport" API for Dear PyGui
     and Dear PyPixl.
 
@@ -796,8 +804,8 @@ class Viewport(_typing.ItemInterface, str, metaclass=_ViewportMeta):
     settings or states, including those uniquely exposed through
     Dear PyPixl.
     """
-    title: str     = cast(str, _ViewportMeta.title)
-    small_icon     = cast(str, _ViewportMeta.small_icon)
+    title          = _ViewportMeta.title  # type: ignore
+    small_icon     = _ViewportMeta.small_icon
     large_icon     = cast(str, _ViewportMeta.large_icon)
     width          = cast(int, _ViewportMeta.width)
     height         = cast(int, _ViewportMeta.height)
@@ -825,7 +833,7 @@ class Viewport(_typing.ItemInterface, str, metaclass=_ViewportMeta):
     is_fullscreen  = cast(bool, _ViewportMeta.is_fullscreen)
 
     def __new__(cls, **kwargs: Unpack[ViewportConfigDict]) -> Self:
-        return super().__new__(cls, Viewport.tag)
+        return super().__new__(cls, Viewport.tag)  # type: ignore
 
     def __init__(self, **kwargs: Unpack[ViewportConfigDict]):
         super().__init__()
@@ -1201,13 +1209,13 @@ class Runtime(_typing.ItemInterface, metaclass=_RuntimeMeta):
         while running. Negative and false-like values evaluate to 0.1.
         Float values are set with a precision of 3.
     """
-    target_frame_rate = cast(float | None, _RuntimeMeta.target_frame_rate)
-    clamp_frame_rate  = cast(bool, _RuntimeMeta.clamp_frame_rate)
-    update_interval   = cast(float, _RuntimeMeta.update_interval)
+    target_frame_rate = cast(float | None, _RuntimeMeta.target_frame_rate)  # type: ignore
+    clamp_frame_rate  = cast(bool, _RuntimeMeta.clamp_frame_rate)  # type: ignore
+    update_interval   = cast(float, _RuntimeMeta.update_interval)  # type: ignore
 
-    is_ok                 = cast(bool, _RuntimeMeta.is_ok)
-    is_frame_rate_clamped = cast(bool, _RuntimeMeta.is_frame_rate_clamped)
-    render_interval       = cast(float, _RuntimeMeta.render_interval)
+    is_ok                 = cast(bool, _RuntimeMeta.is_ok)  # type: ignore
+    is_frame_rate_clamped = cast(bool, _RuntimeMeta.is_frame_rate_clamped)  # type: ignore
+    render_interval       = cast(float, _RuntimeMeta.render_interval)  # type: ignore
 
 
     __slots__ = ()
