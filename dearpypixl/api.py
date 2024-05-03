@@ -307,7 +307,7 @@ class mutex:
 
 
 # It's best to think of the classes below as modules. Because that's
-# what they are -- inheritable modules.
+# what they are -- inheritable modules...that aren't `ModuleType`...
 
 from dearpygui._dearpygui import (
     setup_dearpygui as _app_prepare,
@@ -337,23 +337,23 @@ class _ApplicationMeta(_typing.ItemInterfaceMeta):
     # XXX: All of this needs to be set onto into `Application`
     # as well. Instances need their own hooks since their lookup
     # procedure doesn't extend this far up.
-    docking                   : Property[bool] = _typing.ItemConfig()
-    docking_space             : Property[bool] = _typing.ItemConfig()
-    load_init_file            : Property[str]  = _typing.ItemConfig()
-    init_file                 : Property[str]  = _typing.ItemConfig()
-    auto_save_init_file       : Property[bool] = _typing.ItemConfig()
-    device                    : Property[int]  = _typing.ItemConfig()
-    auto_device               : Property[bool] = _typing.ItemConfig()
-    allow_alias_overwrites    : Property[bool] = _typing.ItemConfig()
-    manual_alias_management   : Property[bool] = _typing.ItemConfig()
-    skip_required_args        : Property[bool] = _typing.ItemConfig()
-    skip_positional_args      : Property[bool] = _typing.ItemConfig()
-    skip_keyword_args         : Property[bool] = _typing.ItemConfig()
-    wait_for_input            : Property[bool] = _typing.ItemConfig()
-    manual_callback_management: Property[bool] = _typing.ItemConfig()
+    docking                    = cast(bool, _typing.ItemConfig())
+    docking_space              = cast(bool, _typing.ItemConfig())
+    load_init_file             = cast(str, _typing.ItemConfig())
+    init_file                  = cast(str, _typing.ItemConfig())
+    auto_save_init_file        = cast(bool, _typing.ItemConfig())
+    device                     = cast(int, _typing.ItemConfig())
+    auto_device                = cast(bool, _typing.ItemConfig())
+    allow_alias_overwrites     = cast(bool, _typing.ItemConfig())
+    manual_alias_management    = cast(bool, _typing.ItemConfig())
+    skip_required_args         = cast(bool, _typing.ItemConfig())
+    skip_positional_args       = cast(bool, _typing.ItemConfig())
+    skip_keyword_args          = cast(bool, _typing.ItemConfig())
+    wait_for_input             = cast(bool, _typing.ItemConfig())
+    manual_callback_management = cast(bool, _typing.ItemConfig())
 
     @property
-    def theme(self) -> 'mvTheme | Item | None':
+    def theme(self: type['Application']) -> 'mvTheme | Any':
         """[get] Return the application-level theme."""
         theme = self.get_theme()
         try:
@@ -363,12 +363,12 @@ class _ApplicationMeta(_typing.ItemInterfaceMeta):
         except KeyError:
             return theme
     @theme.setter
-    def theme(self, value: ItemT | None) -> None:
+    def theme(self: type['Application'], value: ItemT | None) -> None:
         """[set] Set application-level theme."""
         return self.set_theme(value)
 
     @property
-    def font(self) -> 'mvFont | Item | None':
+    def font(self: type['Application']) -> 'mvFont | Any':
         """[get] Return the application-level font item."""
         font = self.get_font()
         try:
@@ -378,7 +378,7 @@ class _ApplicationMeta(_typing.ItemInterfaceMeta):
         except KeyError:
             return font
     @font.setter
-    def font(self, value: ItemT) -> None:
+    def font(self: type['Application'], value: ItemT | None) -> None:
         """[set] Set the application-level font item."""
         self.set_font(value)
 
@@ -390,11 +390,11 @@ class _ApplicationMeta(_typing.ItemInterfaceMeta):
         return Application.state()['ok']
 
     @property
-    def clipboard_text(self):
+    def clipboard_text(self: type['Application']):
         """[get] Return the current text value of the clipboard."""
         return self.get_clipboard_text()
     @clipboard_text.setter
-    def clipboard_text(self, text: str):
+    def clipboard_text(self: type['Application'], text: str):
         """[set] Set a text value onto the clipboard."""
         self.set_clipboard_text(text)
 
@@ -412,20 +412,20 @@ class Application(_typing.ItemInterface, int, metaclass=_ApplicationMeta):
     settings or states, including those uniquely exposed through
     Dear PyPixl.
     """
-    docking                    = cast(bool, _ApplicationMeta.docking)
-    docking_space              = cast(bool, _ApplicationMeta.docking_space)
-    load_init_file             = cast(str , _ApplicationMeta.load_init_file)
-    init_file                  = cast(str , _ApplicationMeta.init_file)
-    auto_save_init_file        = cast(bool, _ApplicationMeta.auto_save_init_file)
-    device                     = cast(int , _ApplicationMeta.device)
-    auto_device                = cast(bool, _ApplicationMeta.auto_device)
-    allow_alias_overwrites     = cast(bool, _ApplicationMeta.allow_alias_overwrites)
-    manual_alias_management    = cast(bool, _ApplicationMeta.manual_alias_management)
-    skip_required_args         = cast(bool, _ApplicationMeta.skip_required_args)
-    skip_positional_args       = cast(bool, _ApplicationMeta.skip_positional_args)
-    skip_keyword_args          = cast(bool, _ApplicationMeta.skip_keyword_args)
-    wait_for_input             = cast(bool, _ApplicationMeta.wait_for_input)
-    manual_callback_management = cast(bool, _ApplicationMeta.manual_callback_management)
+    docking                    = _ApplicationMeta.docking
+    docking_space              = _ApplicationMeta.docking_space
+    load_init_file             = _ApplicationMeta.load_init_file
+    init_file                  = _ApplicationMeta.init_file
+    auto_save_init_file        = _ApplicationMeta.auto_save_init_file
+    device                     = _ApplicationMeta.device
+    auto_device                = _ApplicationMeta.auto_device
+    allow_alias_overwrites     = _ApplicationMeta.allow_alias_overwrites
+    manual_alias_management    = _ApplicationMeta.manual_alias_management
+    skip_required_args         = _ApplicationMeta.skip_required_args
+    skip_positional_args       = _ApplicationMeta.skip_positional_args
+    skip_keyword_args          = _ApplicationMeta.skip_keyword_args
+    wait_for_input             = _ApplicationMeta.wait_for_input
+    manual_callback_management = _ApplicationMeta.manual_callback_management
 
     theme = cast(ItemT | None, _ApplicationMeta.theme)
     font  = cast(ItemT | None, _ApplicationMeta.font)
@@ -713,6 +713,8 @@ class _ViewportMeta(_typing.ItemInterfaceMeta):
             assert int not in bases
             if str not in bases:
                 bases += (str,)
+
+        return super().__new__(mcls, name, bases, namespace, **kwargs)
 
     @property
     def client_width(self: Any) -> int:
