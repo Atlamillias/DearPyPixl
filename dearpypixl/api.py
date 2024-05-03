@@ -704,7 +704,7 @@ class _ViewportMeta(_typing.ItemInterfaceMeta):
     user_data      = cast(Any, _typing.ItemConfig())
     is_ok          = cast(bool, _typing.ItemState("ok"))
     is_visible     = cast(bool, _typing.ItemState("visible"))
-    is_fullscreen  = cast(bool, _typing.ItemState("is_fullscreen"))
+    is_fullscreen  = cast(bool, _typing.ItemState("fullscreen"))
 
     def __new__(mcls, name, bases, namespace, **kwargs):
         try:
