@@ -107,6 +107,27 @@ def _get_itp_subclasses(*parent_cls: type[_T]) -> tuple[type[_T], ...]:
     )
 
 
+def _create_init_overload(
+    cls: Any,
+    *,
+    # cached for reuse
+    __signature=inspect.Signature(
+        (
+            Parameter('self', Parameter.POSITIONAL_OR_KEYWORD),
+            Parameter('tag', Parameter.KEYWORD_ONLY, annotation=int | str)
+        ),
+
+    return_annotation=None)
+) -> Any:
+    def method(self, *, tag): ...
+
+    method.__name__      = '__init__'
+    method.__qualname__  = f'{cls.__qualname__}.__init__'
+    method.__module__    = cls.__module__
+    method.__signature__ = __signature
+    return method
+
+
 def _create_init_method(cls: Any, parameters: Mapping[str, Parameter], *, __item_exists=f"_errors.{_errors.does_item_exist.__name__}(self)", __argless_init="(tag and not (args or kwargs))") -> Any:
     method = _tools.create_function(
         '__init__',
@@ -160,6 +181,7 @@ def _create_init_method(cls: Any, parameters: Mapping[str, Parameter], *, __item
     )
     method.__name__      = '__init__'
     method.__qualname__  = f'{cls.__qualname__}.__init__'
+    method.__module__    = cls.__module__
 
     params = [Parameter('self', Parameter.POSITIONAL_OR_KEYWORD), *parameters.values()]
     if 'kwargs' not in parameters:
@@ -217,6 +239,7 @@ def _create_configure_method(cls: Any, parameters: Mapping[str, Parameter]) -> A
     )
     method.__name__      = "configure"
     method.__qualname__  = f'{cls.__qualname__}.configure'
+    method.__module__    = cls.__module__
     method.__signature__ = inspect.Signature(
         parameters=[
             Parameter('self', Parameter.POSITIONAL_OR_KEYWORD),
@@ -270,6 +293,7 @@ def _create_configuration_method(cls: Any, parameters: Mapping[str, Parameter]) 
     )
     method.__name__      = 'configuration'
     method.__qualname__  = f'{cls.__qualname__}.configuration'
+    method.__module__    = cls.__module__
     method.__signature__ = inspect.Signature(
         parameters=[
             Parameter('self', Parameter.POSITIONAL_OR_KEYWORD),
@@ -381,7 +405,11 @@ class AppItemMeta(type):
 
             # these methods are built only once per base type
             if getattr(cls, '__init__', object.__init__) is object.__init__:
-                setattr(cls, '__init__', _create_init_method(cls, tp_def.init_params))
+                init = _create_init_method(cls, tp_def.init_params)
+                # overloads registered for typestub generation
+                overload(init)
+                overload(_create_init_overload(cls))
+                setattr(cls, '__init__', init)
             if getattr(cls, "configure", api.Item.configure) is api.Item.configure:
                 setattr(cls, 'configure', _create_configure_method(cls, tp_def.wconfig_params))
             if getattr(cls, "configuration", api.Item.configuration) is api.Item.configuration:

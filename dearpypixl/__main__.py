@@ -64,27 +64,26 @@ def _to_source_itp_base(tp: type[_interface.AppItemType]) -> str:
                 indent(f"{name}: {_typing.Property.__qualname__}[{anno}] = ...")
             )
 
+        init_params    = inspect.signature(tp.__init__).parameters
         init_overloads = get_overloads(tp.__init__)
         if init_overloads:
             for fn in init_overloads:
-                init_params = inspect.signature(fn).parameters
-                init_p_src  = _mkstub.to_source_parameters(init_params)
+                params = inspect.signature(fn).parameters
                 pyi.extend((
                     indent(f'@overload'),
-                    indent(f"def __init__({_mkstub.to_source_parameters(init_params)}) -> None: ..."),
+                    indent(f"def __init__({_mkstub.to_source_parameters(params)}) -> None: ..."),
                 ))
-
         else:
-            init_params = inspect.signature(tp.__init__).parameters
-            init_p_src  = _mkstub.to_source_parameters(init_params)
-            icmd_params = init_params.copy()
-            del icmd_params['self']
-
             pyi.extend((
-                indent(f"def __init__({init_p_src}) -> None: ..."),
-                indent(f"@staticmethod"),
-                indent(f"def command({_mkstub.to_source_parameters(icmd_params)}) -> Item: ..."),
+                indent(f"def __init__({_mkstub.to_source_parameters(init_params)}) -> None: ..."),
             ))
+
+        icmd_params = init_params.copy()
+        del icmd_params['self']
+        pyi.extend((
+            indent(f"@staticmethod"),
+            indent(f"def command({_mkstub.to_source_parameters(icmd_params)}) -> Item: ..."),
+        ))
 
         configure_params = inspect.signature(tp.configure).parameters
         configuration_rt = _mkstub.object_annotation(
