@@ -29,7 +29,7 @@ __all__ = [
 
 
 class _CtxMenuStack(collections.deque[tuple['ContextMenu', 'ContextItem | None']]):
-    __slots__ = ('_lock',)
+    __slots__ = ('_lock', '_allow_global_hr')
 
     __ctx_hregistry: items.mvHandlerRegistry
 
@@ -43,6 +43,7 @@ class _CtxMenuStack(collections.deque[tuple['ContextMenu', 'ContextItem | None']
     def __init__(self, *, maxlen: int | None = None) -> None:
         super().__init__(maxlen=maxlen)
         self._lock = api.mutex()
+        self._allow_global_hr = True
 
     def __cb_close_all(self, sender, mdown_info: tuple[int,  float]):
         '''Close all context menus when a mouse down event is
@@ -50,9 +51,9 @@ class _CtxMenuStack(collections.deque[tuple['ContextMenu', 'ContextItem | None']
         duration = mdown_info[1]
         events.Py_DECREF(mdown_info)
         # ignore long-press/drag events
-        if duration >= 0.05 or self.hovered_menu():
+        if duration >= 0.05 or self.hovered_context_menu():
             return
-        self.close_menus()  # disables hregistry
+        self.close_context_menus()  # disables hregistry
 
     def __get_ctx_hregistry(self):
         try:
@@ -71,12 +72,13 @@ class _CtxMenuStack(collections.deque[tuple['ContextMenu', 'ContextItem | None']
         return self.__ctx_hregistry
 
     def _enable_ctx_hregistry(self):
-        self.__get_ctx_hregistry().configure(show=True)
+        if self._allow_global_hr:
+            self.__get_ctx_hregistry().configure(show=True)
 
     def _disable_ctx_hregistry(self):
         self.__get_ctx_hregistry().configure(show=False)
 
-    def hovered_menu(self):
+    def hovered_context_menu(self):
         with self._lock:
             csr_x_pos, csr_y_pos = Viewport.mouse_pos_global()
             for ctx_branch in self:
@@ -91,13 +93,20 @@ class _CtxMenuStack(collections.deque[tuple['ContextMenu', 'ContextItem | None']
                     return ctx_branch
             return None
 
-    def push_menu(self, menu: 'ContextMenu', menu_item: 'ContextItem | None' = None):
+    def is_context_menu_visible(self, menu: 'ContextMenu'):
+        with self._lock:
+            for context_menu, menu_item in self:
+                if context_menu == menu:
+                    return True
+            return False
+
+    def push_context_menu(self, menu: 'ContextMenu', menu_item: 'ContextItem | None' = None):
         """Push a context menu branch onto the stack."""
         with self._lock:
             self.appendleft((menu, menu_item))
             self._enable_ctx_hregistry()
 
-    def pop_menu(self):
+    def pop_context_menu(self):
         """Pop the most-recent context menu branch off the stack."""
         with self._lock:
             menu = self.popleft()
@@ -109,7 +118,7 @@ class _CtxMenuStack(collections.deque[tuple['ContextMenu', 'ContextItem | None']
 
     # TODO: trigger window `on_close` callbacks
 
-    def close_menus_from(self, menu: 'ContextMenu', menu_item: 'ContextItem | None' = None):
+    def close_context_menus_from(self, menu: 'ContextMenu', menu_item: 'ContextItem | None' = None):
         with self._lock:
             if not self:
                 # `menu` is the origin and not a sub menu
@@ -129,7 +138,7 @@ class _CtxMenuStack(collections.deque[tuple['ContextMenu', 'ContextItem | None']
                         no_bring_to_front_on_focus=False,
                     )
 
-    def close_menus(self):
+    def close_context_menus(self):
         with self._lock:
             self._disable_ctx_hregistry()
             for sub_menu, menu_item in self:
@@ -145,21 +154,42 @@ class _CtxMenuStack(collections.deque[tuple['ContextMenu', 'ContextItem | None']
 _CTX_MENU_STACK = _CtxMenuStack()  #type: ignore
 
 
+def allow_context_menus_close_handler(allow: bool, *, enable_now: bool = True):
+    """Allow or deny the framework use of its' module-level
+    handler that calls `close_context_menus` on most non-drag
+    mouse button inputs made on non-context menu windows.
+
+    This is True (`allow=True`) by default, as it allows context
+    menus to act as such. The handler itself is not always
+    active; the framework enables it when context menus are
+    visible -- The handler disables itself up execution.
+
+    When disabled (`allow=False`), it becomes the user's
+    responsibility to ensure context menus are intuitively
+    closed.
+
+    If allowed and *enable_now* is True, the framework will
+    immediately enable the handler if a context menu is open.
+    Otherwise, it will remain disabled until another menu
+    becomes visible.
+    """
+
+
 def close_context_menus():
     """Dismiss all open context menus."""
-    _CTX_MENU_STACK.close_menus()
+    _CTX_MENU_STACK.close_context_menus()
 
 
 def close_context_menus_from(menu: 'ContextMenu'):
-    """Close all context menus and sub menus owned (directly
-    or indirectly) by other menus.
+    """Dismiss all open context menus, except *menu* and its'
+    parent menu(s).
 
     Args:
         * menu: Target context menu.
 
 
-    If *menu* is not opened, all open context menus are
-    closed.
+    Equivelent to `close_context_menus()` if *menu* is not
+    opened.
     """
     with api.mutex():
         while _CTX_MENU_STACK:
@@ -170,25 +200,99 @@ def close_context_menus_from(menu: 'ContextMenu'):
                 no_bring_to_front_on_focus=False,
             )
 
-
 def hovered_context_menu():
-    """Return the open context menu or sub menu under the
-    cursor.
+    """Return the youngest context menu under the cursor,
+    or None if the cursor is not over a context menu.
 
     The result of this function is independent of the menu's
-    "hovered" state and may return a menu even when that menu's
+    "hovered" state, and may return a menu even when that menu's
     "hovered" state is False. This is because item children
-    can "own" state over their parents. Instead, this function
-    compares the explicit positions of the cursor and all open
-    menus.
+    can "own" state over their parents.
+
+    The "youngest" context menu refers to the menu that has
+    only recently become visible. For example, if a context menu
+    visually overlaps its' root context menu parent, this
+    function will return the former over the latter.
     """
-    menu_branch = _CTX_MENU_STACK.hovered_menu()
+    menu_branch = _CTX_MENU_STACK.hovered_context_menu()
     if menu_branch:
         return menu_branch[0]
 
 
+def show_context_menu(menu: 'ContextMenu', menu_item: 'ContextItem | None' = None):
+    """Show the given context menu at its' current position.
+
+    Use of this function is necessary to make the framework
+    aware of the menu.
+
+    Args:
+        * menu: The menu to display.
+
+        * menu_item: Usually None. If *menu* is to be displayed
+        as a submenu, this is the `ContextItem` instance that owns
+        it.
+
+    This is a low-level function. It is not necessary to call
+    it when a context menu is made visible via their
+    `.to_cursor` or `.to_position` methods, or when summoned
+    as a sub-menu by clicking a `ContextItem` widget.
+
+    Use the `close_context_menus` or `close_context_menus_from`
+    functions to hide the context menu(s) made visible this way.
+
+    Consider pre-positioning the menu before calling this function.
+
+    If showing a root context menu, you will likely want to close
+    all other context menus first.
+    """
+    if not _CTX_MENU_STACK.is_context_menu_visible(menu):
+        menu.configure(
+            show=True,
+            no_bring_to_front_on_focus=False,
+        )
+        _CTX_MENU_STACK.push_context_menu(menu, menu_item)
 
 
+def content_aware_menu_pos(menu: 'ContextMenu', target_x_pos: int, target_y_pos: int) -> tuple[int, int]:
+    """Return an adjusted menu position that, if used as the given
+    menu's position, would allow for most of its' content to be
+    visible.
+
+    A context menu that becomes visible is often positioned so that
+    its' top-left corner is at the cursor position. However, its'
+    position may be flipped as to avoid clipping the menu's content.
+    This function helps to emulate that behavior by adjusting the
+    coordinates of the desired position if the menu's content would
+    be clipped.
+
+    For example, with a viewport 1200x800 pixels and desired menu
+    position of `(800, 500)`:
+        - menu width <= 400, menu height <= 300: No adjustment.
+        The top-left corner of the menu will be at `(800, 500)`.
+
+        - menu width > 400 <= 800, menu height <= 300: Applies a
+        negative offset to *target_x_pos* equal to the menu's
+        width. The top-right corner of the menu will be at
+        `(800, 500)`.
+
+        - menu width <= 400, menu height > 300 <= 500: Applies a
+        negative offset to *target_y_pos* equal to the menu's
+        height. The lower-left corner of the menu will be at
+        `(800, 500)`.
+
+        - menu width > 400 <= 800, menu height > 300 <= 500: Applies
+        negative offsets to both *target_x_pos* and *target_y_pos*
+        equal to the menu's width and height respectively. The lower-
+        right corner of the menu will be at `(800, 500)`.
+
+    The minimum value of each component returned by this function
+    is 0.
+    """
+    return _content_aware_menu_pos(
+        *menu.state()['rect_size'],
+        target_x_pos,  # type: ignore
+        target_y_pos,  # type: ignore
+    )
 
 
 
@@ -240,7 +344,7 @@ def _ensure_theme_elements(theme_component: items.mvThemeComponent, *elems: tupl
                 element.alias = alias
 
 
-def _fix_menu_position(menu_x_size: int, menu_y_size: int, x_pos: int, y_pos: int):
+def _content_aware_menu_pos(menu_x_size: int, menu_y_size: int, x_pos: int, y_pos: int):
     "Adjust a menu's new position depending on the menu's size."
     # XXX: The only difference between this positioning behavior
     # and `MenuItem._cb_hovered`s behavior is that padding isn't
@@ -447,9 +551,9 @@ class ContextItem(_interface.SupportsCallback, items.mvGroup):
         smenu = self._internal_data[2]
         pmenu = self.root_parent
 
-        _CTX_MENU_STACK.close_menus_from(pmenu, self)
+        _CTX_MENU_STACK.close_context_menus_from(pmenu, self)
         if smenu:
-            _CTX_MENU_STACK.push_menu(smenu, self)
+            _CTX_MENU_STACK.push_context_menu(smenu, self)
             if not smenu.is_visible:
                 # HACK: imgui won't calculate an item's size if it hasn't
                 # been rendered yet. Show it off-screen and wait a frame.
@@ -500,7 +604,7 @@ class ContextItem(_interface.SupportsCallback, items.mvGroup):
         'Triggers when the click area is clicked.'
         callback = self._internal_data[-1]
         if callback:
-            _CTX_MENU_STACK.close_menus()
+            _CTX_MENU_STACK.close_context_menus()
             # Invokes the callback set by the user as if called by
             # DPG. This is not ideal (i.e. variadics count as 1 arg),
             # but it is the fastest (and perhaps the most expected)
@@ -834,10 +938,10 @@ class ContextMenu(items.mvWindowAppItem):
         This is a no-op when the cursor is positioned over an open
         context menu.
         """
-        if not _CTX_MENU_STACK.hovered_menu():
-            _CTX_MENU_STACK.close_menus()
+        if not _CTX_MENU_STACK.hovered_context_menu():
+            _CTX_MENU_STACK.close_context_menus()
             self.configure(
-                pos=(x_pos, y_pos) if not content_aware else _fix_menu_position(
+                pos=(x_pos, y_pos) if not content_aware else _content_aware_menu_pos(
                     *self.state()['rect_size'],
                     x_pos, # type: ignore
                     y_pos, # type: ignore
@@ -845,7 +949,7 @@ class ContextMenu(items.mvWindowAppItem):
                 show=True,
                 no_bring_to_front_on_focus=False,
             )
-            _CTX_MENU_STACK.push_menu(self)
+            _CTX_MENU_STACK.push_context_menu(self)
 
     def to_cursor(self):
         """Close all context menus, then show this menu at the
@@ -855,10 +959,10 @@ class ContextMenu(items.mvWindowAppItem):
         This is a no-op when the cursor is positioned over an open
         context menu.
         """
-        if not _CTX_MENU_STACK.hovered_menu():
-            _CTX_MENU_STACK.close_menus()
+        if not _CTX_MENU_STACK.hovered_context_menu():
+            _CTX_MENU_STACK.close_context_menus()
             self.configure(
-                pos=_fix_menu_position(
+                pos=_content_aware_menu_pos(
                     # BUG: Just like with `MenuItem`s on-hover behavior, this
                     # menu's size will be 0 if it has never been rendered. The
                     # menu's content is at risk of getting clipped for its'
@@ -869,4 +973,4 @@ class ContextMenu(items.mvWindowAppItem):
                 show=True,
                 no_bring_to_front_on_focus=False,
             )
-            _CTX_MENU_STACK.push_menu(self)
+            _CTX_MENU_STACK.push_context_menu(self)
