@@ -2,6 +2,7 @@
 and Dear PyGui."""
 import time
 import enum
+import types
 import inspect
 import functools
 import threading
@@ -24,13 +25,13 @@ from ._tools import Py_DECREF
 from ._typing import (
     Any,
     Item,
-    ItemCommand,
     ItemCallback,
     ItemConfig,
     Property,
     Iterable,
     Collection,
     Sequence,
+    Generic,
     Callable,
     MethodType,
     SupportsIndex,
@@ -58,8 +59,40 @@ _empty = _tools.create_marker_type("Empty", __name__)  # type: ignore
 Empty = type[_empty]
 
 
+# NOTE: Several classes (or their instances) with a `__call__` member may
+# also have a `__code__` member. This is necessary to make non-function
+# instances "DPG-callable", as DearPyGui needs `.__code__.co_argcount` to
+# help determine the number of arguments it needs to send to the callback.
+# This creates a few issues; variadic arguments cannot be considered by
+# only inspecting `__code__.co_argcount` -- which can be empty or may not
+# even exist when the callable is a bound method compiled via nuitka or
+# another JIT compiler. DPG can't even call a typical bound method
+# correctly either since since it can't distinguish `self` from `sender`!
+# These issues are relevant here, because they are easily fixed with a better
+# `mvRunCallback` implementation -- and that the initial attempt to do so
+# broke the "hack" used here to make instances callable. Future attempts
+# could as well. A "proper" implementation would better analyze the callback:
+#
+#   * If an object's `.tp_call` member is not NULL, it's a callable non-
+#   function PyObject. `self` is the registered "callback", while the
+#   actual callback is `PyObject_GetAttrString(callback, "__call__")`.
+#
+#   * An object with `__self__` and `__func__` is a bound method. `self` is
+#   `PyObject_GetAttrString(callback, "__self__")`, while the actual
+#   callback is `PyObject_GetAttrString(callback, "__func__")`.
+#
+#   * Any other callable is likely a PyCFunction object.
+#
+#   * The underlying function is always called, not the top-level object
+#   (ex. not `obj.method()`, but `method(obj)`). In case 1 or 2, `self`
+#   should be considered when reading `.co_argcount`.
+#
+#   * Parsing variadic params is probably annoying w/o the `inspect`
+#   module. Worst-case they can be ignored completely as they aren't
+#   included in `.co_argcount`.
 
 
+_CODE_NO_ARGS = (lambda: ...).__code__
 
 
 
@@ -726,7 +759,7 @@ class MousePoller(_InputPoller):
 
 
 
-# [ `Callback`, `CallStack` ]
+# [ CALLBACK WRAPPERS ]
 
 _CALLBACK_MARKER = '__item_callback__'
 
@@ -1307,6 +1340,243 @@ Callstack = CallStack
 
 
 
+class Cooldown(Generic[_N]):
+    """A wrapper that limits the frequency of a target callable's
+    execution over a period of time.
+
+
+    `Cooldown` objects require a zero-argument callable, a measurement of
+    time, and a timer function to initialize. The unit represented by the
+    time interval should be consistent with the timer function's return
+    value:
+        >>> import time
+        >>>
+        >>>
+        >>> # `time.perf_counter()` returns a number of fractional seconds, so
+        >>> # *interval* must be a number of seconds.
+        >>> cd = Cooldown(lambda: print('foobar'), 1.0, time.perf_counter)
+
+    Once created, calls to the `Cooldown` object are forwarded to the
+    underlying callable. Once the callable is executed, it goes on cooldown.
+    Any call made to the `Cooldown` object while the callable is on cooldown
+    becomes a no-op. The cooldown is lifted once an amount of real time has
+    elapsed equal to or greater than the interval value it's assigned --
+    Unless the below example is running on a literal potato, "foobar"
+    should only appear once as output:
+        >>> for _ in range(100_000):
+        ...     cd()
+
+    It becomes easier to notice by pacing out our calls. Here, `cd` is called
+    twice a second. However, "foobar" will only appear 5 times as output:
+        >>> for _ in range(10):
+        ...     cd()
+        ...     time.sleep(0.5)
+
+    The cooldown interval can be updated at any time by assigning a new value
+    to the `.interval` attribute. However, the target callable and the timer
+    function cannot be re-assigned.
+
+
+    `Cooldown` objects support the accumulation of a set number of "uses" for
+    the target callable, allowing it to be executed multiple times in short
+    succession. This is controlled by the values found on the instance's `stock`
+    and `stock_max` attributes. Whenever an amount of real time equal to
+    `self.interval` has elapsed, the value of `self.stock` is incremented by 1.
+    When calling a `Cooldown` object, its' underlying callable is only executed
+    when `self.stock` is at least 1 - the value is decremented by 1 upon
+    executing the callable. The default maximum stock value is 1.
+        >>> import time
+        >>>
+        >>>
+        >>> # +1 stock every second, up to a max of 5. Additionally, the
+        >>> # instance will have an initial stock value of 5.
+        >>> cd = Cooldown(lambda: print('foobar'), 1.0, stock_max=5)
+        >>>
+        >>> # `cd` loses 1 stock every second, given the initial stock and
+        >>> # the rate at which they're accumulated. This means that the
+        >>> # callback will be ran almost every time `cd` is called over the
+        >>> # next 5 seconds; except the very last one, where `cd.stock` will
+        >>> # be 0.
+        >>> for _ in range(10):
+        ...     cd()
+        ...     time.sleep(0.5)
+
+    Although uses accumulate over time, the current stock value of a `Cooldown`
+    object can be set at any time via the `.stock` attribute, but any new value
+    will be automatically clamped to `.stock_max` before assignment. Additionally,
+    updating `.stock_max` will clamp `.stock` using the new value. Calling the
+    `.refresh` or `.reset` methods will set the stock value to maximum or 0
+    respectively.
+
+    """
+    __slots__ = (
+        'interval',
+        '_callback',
+        '_stock_max',
+        '_stock',
+        '_target',
+        '_timer',
+        '_ts_last_advance',
+    )
+
+    def __init_subclass__(cls) -> None:
+        super().__init_subclass__()
+        # Event loop performance micro-optimization (`cls.__code__`
+        # could just be made a property).
+        if cls.__code__ is not cls.__call__.__code__:
+            cls.__code__ = cls.__call__.__code__
+
+    def __init__(
+        self,
+        target   : Callable[[], Any],
+        interval : _N = 0.0,
+        timer    : Callable[[], _N] = time.perf_counter,
+        *,
+        stock_max: int = 1,
+        callback : Callable[[Self, bool], Any] | None = None,
+    ) -> None:
+        super().__init__()
+        self._ts_last_advance = timer()
+        self._target          = target
+        self._timer           = timer
+        self._stock           = 1.0
+        self._stock_max       = 1
+        self._callback        = None
+
+        self.callback  = callback
+        self.interval  = interval
+        self.stock_max = stock_max
+        self.stock     = self.stock_max
+
+    def __hash__(self):
+        return hash((self._target, self._timer))
+
+    _trunc = staticmethod(float.__trunc__)  # ~2x faster than `int(...)` & floor division
+
+    def __call__(self, *args, clock: Any = None) -> None:
+        """Advances the object via `self.advance(clock)`. If `self.stock` is
+        at least 1, it is decremented by 1, then `self.target` is called. If
+        `self.callback` is then called (if able), receiving `self` and a
+        boolean indicating if `self.target` was ran as a result of this call.
+
+        Args:
+            - clock: Used as the "time now" value for the advancement.
+            Defaults to `self.timer()`.
+        """
+        self.advance(clock)
+        if self._trunc(self._stock):
+            # XXX: race-condition risk
+            self._stock -= 1.0
+            self._target()
+            if self._callback is not None:
+                self._callback(self, True)
+        elif self._callback is not None:
+            self._callback(self, False)
+
+    __code__ = __call__.__code__
+
+    @property
+    def __wrapped__(self):
+        """[Get] the underlying callable."""
+        return self._target
+
+    @property
+    def timer(self):
+        """[Get] the timer function used by the object."""
+        return self._timer
+
+    @property
+    def clock(self):
+        """[Get] the object's internal clock."""
+        return self._ts_last_advance
+
+    @property
+    def stock_max(self):
+        """[Get, Set] the upper limit for the target callable's stock count (min.
+        0).
+
+        Additionally, clamp the value of `self.stock` when set.
+        """
+        return self._stock_max
+    @stock_max.setter
+    def stock_max(self, count: int, *, __int=int, __min=min, __max=max):  # cached globals for faster access
+        # XXX: race-condition risk
+        self._stock_max = __int(__max(count, 0))
+        self._stock     = __min(self._stock, self._stock_max)
+
+    @property
+    def stock(self) -> float:
+        """[Get, Set] the number of times the target callable can be invoked in
+        short succession (min. 0, max. `self.stock_max`).
+        """
+        return self._stock
+    @stock.setter
+    def stock(self, count: float | None):
+        self._stock = min(self._stock_max, max(count or 0.0, 0.0))
+
+    @property
+    def callback(self) -> Callable[[Self, bool], Any] | None:
+        """[Get, Set] a callback that is invoked after calling the instance,
+        regardless if the underlying target callable is invoked.
+
+        If callable, it should accept the instance of `Cooldown` (the caller)
+        as the sole positional argument.
+        """
+        if self._callback is None:
+            return None
+        return self._callback.__func__
+    @callback.setter
+    def callback(self, value: Callable[[Self, bool], Any] | None):
+        if value is not None:
+            value = types.MethodType(value, self)  # event loop performance micro-optimization
+        self._callback = value
+
+    def forward(self, interval: _N):
+        """Update `self.stock` based on `self.interval` and *interval*.
+
+        Does not update the object's internal clock.
+
+        Args:
+            - interval: Elapsed time value.
+        """
+        self.stock += interval / self.interval
+
+    def advance(self, clock: _N | None = None):
+        """Advance the object's state based on the amount of time that has
+        elapsed since the its' last update.
+
+        Args:
+            - clock: Used as the "time now" value for the advancement.
+            Defaults to `self.timer()`.
+        """
+        if clock is None:
+            clock = self._timer()
+        self.stock += (clock - self._ts_last_advance) / self.interval  # inlined `self.forward`
+        self._ts_last_advance = clock
+
+    def refresh(self):
+        """Sets `self.stock` to `self.stock_max`.
+
+        Updates the object's internal clock.
+        """
+        self._ts_last_advance = self.timer()
+        self._stock = self._stock_max
+
+    def exhaust(self):
+        """Sets `self.stock` to zero and resets the cooldown timer.
+
+        Updates the object's internal clock.
+        """
+        self._ts_last_advance = self.timer()
+        self._stock = 0
+
+
+
+
+
+
+
+
 
 
 
@@ -1318,8 +1588,7 @@ def callback(*, sender: Item = ..., app_data: Any = ..., user_data: Any = ..., p
 @overload
 def callback(callback: ItemCallback, /, sender: Item = ..., app_data: Any = ..., user_data: Any = ..., priority: int = ...) -> Callback: ...
 def callback(callback: Any = None, sender: Any = _empty, app_data: Any = _empty, user_data: Any = _empty, priority: int = 1) -> Any:
-    """Convenience decorator for wrapping a callable in a
-    `Callback` object.
+    """Convenience decorator for creating `Callback` objects.
 
     See the `Callback` class for more information.
     """
@@ -1338,102 +1607,28 @@ def callback(callback: Any = None, sender: Any = _empty, app_data: Any = _empty,
 
 
 @overload
-def cooldown(timer_fn: Callable[[], _N], interval: _N, /, *, no_args: bool = False) -> Callable[[Callable[_P, Any]], Callable[_P, None]]: ...
+def cooldown(interval: _N = ..., timer: Callable[[], _N] = ..., **kwargs) -> Callable[[Callable[[], Any]], Cooldown]: ...
 @overload
-def cooldown(timer_fn: Callable[[], _N], interval: _N, /, *, no_args: bool = True) -> Callable[[Callable[[], Any]], Callable[[], None]]: ...
-@overload
-def cooldown(timer_fn: Callable[[], _N], interval: _N, callback: Callable[_P, Any], /, *, no_args: bool = False) -> Callable[_P, None]: ...
-@overload
-def cooldown(timer_fn: Callable[[], _N], interval: _N, callback: Callable[_P, Any], /, *, no_args: bool = True) -> Callable[[], None]: ...
-def cooldown(timer_fn: Callable[[], _N], interval: _N, callback: Any = None, /, *, no_args: bool = False):
-    """Return a wrapper that, when called, executes the target
-    callable only if enough time has elapsed since the last time
-    it was ran. This limits how often it can be executed over a
-    period of time. Calls made to the returned wrapper while the
-    target function is "cooling down" are no-op's.
+def cooldown(interval: _N = ..., timer: Callable[[], _N] = ..., target: Callable[[], Any] = ..., **kwargs) -> Cooldown: ...
 
-    Can be used as a function decorator.
+def cooldown(interval: Any = None, timer: Any = None, target: Any = None, *, no_args=None, **kwargs) -> Any:
+    """Convenience decorator for creating `Cooldown` objects.
 
-    Args:
-        * timer_fn: A zero-argument callable that returns a time.
-
-        * interval: The cooldown timer. The unit of time should match
-        that of *timer_fn*s returned value.
-
-        * callback: The target callable to apply the cooldown to.
-        If *no_args* is set, it must be callable without arguments.
-
-        * no_args: Improves the efficieny of the returned function,
-        but limits *callback* options to zero-argument callables.
-
-    The time units of *interval* and the return of *timer_fn*
-    should match. For example, if *timer_fn* returns a number of
-    fractional seconds (i.e. `time.perf_counter`), then *interval*
-    is also expected to be a number of seconds.
-
-    By default, the target callback's metadata is passed onto
-    the returned wrapper via `functools.wraps`. When the *no_args*
-    flag is set, the `.__next__` method of the underlying generator
-    object is returned instead of a wrapper function. In this case,
-    metadata is not copied over.
-
-    This function does not create or utilize threads.
+    See the `Cooldown` class for more information
     """
-    def capture_callback(callback: Callable) -> Callable:
-        if no_args:
+    def capture_callback(target):
+        return Cooldown(**kwargs)
 
-            def recurring_tasker():  # type: ignore
-                ts_last_update = timer_fn() - interval
-                while True:
-                    ts_this_update = timer_fn()
-                    if ts_this_update - ts_last_update >= interval:
-                        ts_last_update = ts_this_update
-                        callback()
-                    yield
-
-            dispatcher = recurring_tasker().__next__  # type: ignore
-
-        else:
-
-            def recurring_tasker():
-                ts_last_update = timer_fn() - interval
-                args, kwds = yield
-                while True:
-                    ts_this_update = timer_fn()
-                    if ts_this_update - ts_last_update >= interval:
-                        ts_last_update = ts_this_update
-                        callback(*args, **kwds)
-                    args, kwds = yield
-
-            @functools.wraps(callback)
-            def dispatcher(*args, **kwargs) -> None:
-                _dispatcher.send((args, kwargs))
-
-            _dispatcher = recurring_tasker()
-            next(_dispatcher)  # prime generator
-
-        return dispatcher
-
-    if callback is None:
+    if interval is not None:
+        kwargs['interval'] = interval
+    if timer is not None:
+        kwargs['timer'] = timer
+    if target is None:
         return capture_callback
-    return capture_callback(callback)
+    return capture_callback(target)
 
 
-@overload
-def cooldown_s(interval: _N, /, *, no_args: bool = False) -> Callable[[Callable[_P, Any]], Callable[_P, None]]: ...
-@overload
-def cooldown_s(interval: _N, /, *, no_args: bool = True) -> Callable[[Callable[[], Any]], Callable[[], None]]: ...
-@overload
-def cooldown_s(interval: _N, callback: Callable[_P, Any], /, *, no_args: bool = False) -> Callable[_P, None]: ...
-@overload
-def cooldown_s(interval: _N, callback: Callable[_P, Any], /, *, no_args: bool = True) -> Callable[[], None]: ...
-def cooldown_s(interval: _N, callback: Any = None, /, no_args: bool = False):  # type: ignore
-    """Adds a cooldown to a callable with an interval in
-    fractional seconds.
-
-    Refer to the `cooldown` function for more information.
-    """
-    return cooldown(time.perf_counter, interval, callback, no_args=no_args)
+cooldown_s = cooldown  # deprecated
 
 
 def root_ihandler_registry(item: Item) -> items.mvItemHandlerRegistry:
