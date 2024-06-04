@@ -1,29 +1,23 @@
-"""Python junk drawer."""
-# pyright:reportGeneralTypeIssues=information
 import sys
 import abc
 import time
+import enum
 import types
-import array
 import ctypes
 import typing
 import inspect
 import itertools
 import functools
 import threading
-from typing import (
-    Any,
-    Callable,
-    Iterable,
-    Mapping,
-    Sequence,
-    MutableSequence
-)
+from typing import overload, Any, Mapping, Iterable, Callable, Sequence, TypeVar, ParamSpec
 
 
-_T = typing.TypeVar("_T")
-_O = typing.TypeVar("_O")
-_P = typing.ParamSpec("_P")
+P     = ParamSpec("P")
+T     = TypeVar("T")
+KT    = TypeVar("KT")
+VT    = TypeVar("VT")
+O     = TypeVar("O")
+
 
 _SENTINEL = object()
 
@@ -31,254 +25,83 @@ _SENTINEL = object()
 
 
 
-def is_builtin(o: Any) -> bool:
-    """Return `True` if an object is a built-in class or function.
+# [Dynamic Code Generation]
 
-    A 'built-in' object is any object available in the `builtins` module.
-    This includes all primitive types (`str`, `list`, etc.) and functions
-    such as `print` and `isinstance`.
-    """
-    try:
-        return o.__module__ == type.__module__
-    except:
-        return False
-
-
-def is_type_object(o: Any) -> bool:
-    """Return `True` if an object is a class/type.
-
-    A class/type object is any object that is, or is an instance of, the `type`
-    built-in class.
-    """
-    return isinstance(o, type)
-
-
-def is_inst_object(o: Any) -> bool:
-    """Return `True` if an object is an instance object.
-
-    An instance object is any object that is not, or is not an instance of, the
-    `type` built-in class.
-    """
-    return not isinstance(o, type)
-
-
-def is_instance(o: Any, tp: type[Any] | tuple[type[Any], ...], /) -> bool:
-    """Return `True` if an object is an instance of a type, or is an instance
-    of any of the included types. Returns `False` otherwise, or if the object
-    is not an instance.
+def create_module(
+    name : str,
+    body : Mapping[str, Any] | Iterable[tuple[str, Any]] = (),
+    attrs: Mapping[str, Any] | Iterable[tuple[str, Any]] = (),
+) -> types.ModuleType:
+    """Create a new module object.
 
     Args:
-        * o: The class/type or instance object to test.
+        - name: Name for the new module.
 
-        * tp: A single class/type, or a tuple of class/type objects.
+        - body: Used to update the module's contents/dictionary.
 
-
-    There is no functional difference between this function and the `isinstance`
-    built-in.
+        - attrs: Used to update the module's attributes.
     """
-    # unlike `issubclass`, no TypeError is thrown due to the object's
-    # classification
-    return isinstance(o, tp)
+    m = types.ModuleType(name, None)
+    for k, v in tuple(attrs):
+        setattr(m, k, v)
+    m.__dict__.update(body)
+
+    return m
 
 
-def is_subclass(o: Any, tp: type[Any] | tuple[type[Any], ...], /) -> bool:
-    """Return `True` if an object is (or is a subclass of) a type, or is (or is a
-    subclass of) any of the included types. Returns `False` otherwise, or if the
-    object is not a class.
+@overload
+def create_function(name: str, args: Sequence[str], body: Sequence[str], return_type: T = Any, module: str = '', *, globals: dict[str,  Any] | None = None, locals: Mapping[str,  Any] | Iterable[tuple[str,  Any]] = ()) -> Callable[..., T]: ...  # type: ignore
+def create_function(name: str, args: Sequence[str], body: Sequence[str], return_type: T = Any, module: str = '', *, globals: dict[str,  Any] | None = None, locals: Mapping[str,  Any] | Iterable[tuple[str,  Any]] = (), __default_module=create_module('')) -> Callable[..., T]:
+    """Compile a new function from source.
 
     Args:
-        * o: The class/type object to test.
+        * name: Name for the new function.
 
-        * tp: A single class/type, or a tuple of class/type objects.
+        * args: A sequence containing argument signatures (as strings)
+        for the new function. Each value in *args* should be limited to
+        a single argument signature.
+
+        * body: A sequence containing the source that will be executed when
+        the when the new function is called. Each value in the sequence should
+        be limited to one line of code.
+
+        * return_type: Object to use as the function's return annotation.
+
+        * module: Used to update the function's `__module__` attribute
+        and to fetch the appropriate global mapping when *globals* is
+        None.
+
+        * globals: The global scope for the new function.
+
+        * locals: The (non)local scope for the new function.
 
 
-    The only functional difference between this function and the `isinstance`
-    built-in is that the `TypeError` is handled when *o* is not a class.
+    When *globals* is None, this function will attempt to look up *module*
+    in `sys.modules`, and will use the returned module's dictionary as
+    *globals* if found. If the module could not be found or both *module*
+    and *globals* are unspecified, *globals* defaults to the dictionary of
+    a dedicated internal dummy module.
+
+    Note that, when including *locals*, the created function's local scope
+    will not be *locals*, but a new mapping created from its' contents.
+    However, *globals* is used as-is.
+
     """
-    try:
-        return issubclass(o, tp)
-    except TypeError:
-        if is_type_object(o):
-            raise
-        return False
+    assert not isinstance(body, str)
+    body = '\n'.join(f'        {line}' for line in body)
 
+    locals = dict(locals)
+    locals["_return_type"] = return_type
 
-def is_iterable(o: Any):
-    """Return `True` if an object has an `.__iter__` method.
+    if globals is None:
+        if module in sys.modules:
+            globals = sys.modules[module].__dict__
+        else:
+            globals = __default_module.__dict__
 
-    An object is iterable if the result of `iter(object)` returns an iterator.
-    All iterators, sequences, and containers are iterable.
-    """
-    return hasattr(o, "__iter__")
-
-
-def is_iterator(o: Any):
-    """Return `True` if an object is iterable and has a `.__next__` method.
-
-    All iterators are iterable, but not all iterables are iterators. For
-    example, `next([0, 1, 2])` results in an error, but `next(iter([0, 1, 2]))`
-    does not.
-    """
-    try:
-        o.__next__
-        o.__iter__
-    except:
-        return False
-    return True
-
-
-def is_container(o: Any, *, protocol_only: bool = False):
-    """Return `True` if an object is a container.
-
-    Containers are iterables capable of storing various objects. They are
-    required to implement the `.__contains__` method.
-    """
-    return hasattr(o, "__contains__")
-
-
-def is_sequence(o: Any):
-    """Return `True` if an object is a sequence.
-
-    Sequences are subscriptable containers storing ordered values and feature
-    position-based lookups -- typically using integers or integer-like keys as
-    subscript -- called indexes. They are required to implement the `.__len__` and
-    `.__getitem__` methods, where `.__getitem__` differs to the subscript's
-    `.__index__` method for lookups.
-
-    Mappings and sequences share the same protocol. A sequence's `.__getitem__`
-    method will raise 'IndexError' when the subscript is out-of-range, where
-    a mapping's `.__getitem__` method will raise `KeyError`.
-    """
-    try:
-        o[len(o) + 1]
-    except IndexError:
-        return True
-    except:
-        pass
-    return False
-
-
-def is_mapping(o: Any):
-    """Return `True` if an object is a mapping.
-
-    Mappings are subscriptable containers storing associated key-value pairs
-    and support arbitrary key lookups, allowing any hashable object to be used as
-    a key. They are required to implement the `.__len__` and `.__getitem__` methods,
-    where `.__getitem__` differs to the subscript's `.__hash__` method for lookups.
-
-    Mappings and sequences share the same protocol.
-    """
-    try:
-        o.__len__
-        o[_SENTINEL]
-    except KeyError:
-        return True
-    except:
-        pass
-    return False
-
-
-def dunders(tp: type[Any], *, excludes: Sequence[str] = (), excl_inherited: bool = False) -> list[str]:
-    """Return the names of an object's dunder methods.
-
-    Args:
-        * o: The object of inquiry.
-
-        * excludes: Names of members to exclude.
-
-        * excl_inherited: If `True`, only fetch members from the type's
-        `__dict__`.
-    """
-    startsw = str.startswith
-    endsw   = str.endswith
-    # `.startswith("__")` is *usually* enough, since most that also
-    # don't end with "__" are name-mangled. But just in case...
-    return sorted(set(
-        n
-        for n in (tp.__dict__ if excl_inherited else dir(tp))
-        if startsw(n, "__") and endsw(n, "__") and n not in excludes
-    ))
-
-
-def flatten(tp: type[_T], *iterables: Iterable[Any]) -> _T:
-    """Return a flattened collection object from iterables."""
-    return tp(itertools.chain(*iterables))
-
-
-def flatten_as_set(*iterables: Iterable[Any]) -> set[Any]:
-    """Return a flattened set from several iterables."""
-    return flatten(set, *iterables)
-
-
-def flatten_as_list(*iterables: Iterable[Any]) -> list[Any]:
-    """Return a flattened list from several iterables."""
-    return flatten(list, *iterables)
-
-
-def flatten_as_tuple(*iterables: Iterable[Any]) -> tuple[Any]:
-    """Return a flattened tuple from several iterables."""
-    return flatten(tuple, *iterables)
-
-
-def flatten_as_arr(tp_code: str, *iterables: Iterable[Iterable[_T]]) -> array.array | MutableSequence[_T]:
-    """Return a flattened Python array from several iterables."""
-    return array.array(tp_code, itertools.chain(*iterables))
-
-
-def hasattrs(o: Any, *names: str) -> bool:
-    """Return True if an object has attribute(s) of all given names."""
-    return all(hasattr(o, name) for name in names)
-
-
-def namespace_path(o: type | types.FunctionType) -> tuple[str, str]:
-    assert hasattr(sys.modules[o.__module__], o.__name__)
-    return o.__module__, o.__name__
-
-
-def compare_versions(lo: str, comp: typing.Literal['<', '<=', '==', '!=', '>=', '>'], ro: str) -> bool:
-    """Simple software version comparison tool.
-
-    Does not follow PEP standards.
-
-    Args:
-        * lo: Left operand version string.
-
-        * comp: Rich comparison symbol(s).
-
-        * ro: Right operand version string.
-    """
-    l_vers = tuple(int(v.strip()) for v in lo.split('.') if v.isdigit())
-    r_vers = tuple(int(v.strip()) for v in ro.split('.') if v.isdigit())
-    return eval(f'{l_vers} {comp} {r_vers}')
-
-
-def create_function(name: str, args: Sequence[str], body: Sequence[str], return_type: _T = Any, *, globals: dict | None = None, locals: dict | None = None) -> Callable[..., _T]:
-    """Dynamically define and return a new function.
-
-    Args:
-        * name: Formal name for the new function.
-
-        * args: A sequence containing argument signatures (as strings) for the new
-        function. Each value in *args* should be limited to a single argument
-        signature.
-
-        * body: A sequence containing the source code (as strings) that will execute
-        when the new function is called. Each value in *body* should be limited to
-        one line of executable source code.
-
-        * return_tp: The type/annotation indicating the new function's return type.
-
-        * globals: The global scope that will be available to the new function.
-
-        * locals: The local scope that will be available to the new function.
-    """
-    locals = locals if locals is not None else {}
-    locals["_return"] = return_type
-
-    body    = '\n'.join(f"        {line}" for line in body)
     closure = (
         f"def __create_function__({', '.join(locals)}):\n"
-        f"    def {name}({', '.join(args)}) -> _return:\n{body}\n"
+        f"    def {name}({', '.join(args)}) -> _return_type:\n{body}\n"
         f"    return {name}"
     )
 
@@ -286,8 +109,11 @@ def create_function(name: str, args: Sequence[str], body: Sequence[str], return_
     exec(closure, globals, scope)
 
     fn = scope["__create_function__"](**locals)
-    fn.__qualname__ = name
+    fn.__module__   = module or __default_module.__name__
+    fn.__qualname__ = fn.__name__ = name
+
     return fn
+
 
 @typing.final
 class _MarkerType(typing.Protocol):
@@ -326,7 +152,7 @@ def create_marker_type(name: str, module: str, *, body: Mapping[str, Any] | Sequ
     module = sys.modules[module]  # type: ignore
 
     namespace = {
-        '__module__': module.__name__,
+        '__module__': module.__name__,  # type: ignore
         '__repr__': create_function(
             '__repr__',
             ('cls',),
@@ -368,7 +194,7 @@ def create_marker_type(name: str, module: str, *, body: Mapping[str, Any] | Sequ
         (f"raise TypeError(\"{name!r} class cannot be instantiated.\")",),
         globals=module.__dict__,
     )
-    type(cls).__new__ = create_function(
+    type(cls).__new__ = create_function(  # type: ignore
         '__new__',
         ('*args', '**kwargs'),
         (f"raise TypeError(\"one or more bases cannot be subclassed.\")",),
@@ -377,7 +203,7 @@ def create_marker_type(name: str, module: str, *, body: Mapping[str, Any] | Sequ
     return typing.final(cls)
 
 
-def frozen_namespace(cls: type[_T]) -> type[_T]:
+def frozen_namespace(cls: type[T]) -> type[T]:
     contents = tuple(m for m in dir(cls) if not m.startswith('_'))
     return create_marker_type(  # type: ignore
         cls.__qualname__,
@@ -396,46 +222,194 @@ def frozen_namespace(cls: type[_T]) -> type[_T]:
 
 
 
+# [Inspection Tools]
 
-def cache_once(fn: Callable[_P, _T], /) -> Callable[_P, _T]:
-    """Similar to `functools.cached_property` but for functions. Returns the
-    same result regardless of the arguments passed to the decorated function.
+class PyTypeFlag(enum.IntFlag):
+    """Python type bit masks (`type.__flags__`, `PyTypeObject.tp_flags`).
+
+    A type's flag bit mask is created when the object is defined --
+    changing it from Python does nothing helpful.
     """
-    @functools.wraps(fn)
-    def cached_result(*args: _P.args, **kwargs: _P.kwargs) -> _T:
-        nonlocal cache
-        try:
-            return cache
-        except NameError:
-            cache = fn(*args, **kwargs)
-            return cache
-    cache: _T
-    return cached_result
+    STATIC_BUILTIN           = (1 << 1)  # (undocumented, internal)
+    MANAGED_WEAKREF          = (1 << 3)
+    MANAGED_DICT             = (1 << 4)
+    PREHEADER                = (MANAGED_WEAKREF | MANAGED_DICT)
+    SEQUENCE                 = (1 << 5)
+    MAPPING                  = (1 << 6)
+    DISALLOW_INSTANTIATION   = (1 << 7)  # `tp_new == NULL`
+    IMMUTABLETYPE            = (1 << 8)
+    HEAPTYPE                 = (1 << 9)
+    BASETYPE                 = (1 << 10)  # allows subclassing
+    HAVE_VECTORCALL          = (1 << 11)
+    READY                    = (1 << 12)  # fully constructed type
+    READYING                 = (1 << 13)  # type is under construction
+    HAVE_GC                  = (1 << 14)  # allow garbage collection
+    HAVE_STACKLESS_EXTENSION = (3 << 15)  # Stackless Python
+    METHOD_DESCRIPTOR        = (1 << 17)  # behaves like unbound methods
+    VALID_VERSION_TAG        = (1 << 19)  # has up-to-date type attribute cache
+    ABSTRACT                 = (1 << 20)  # `ABCMeta.__new__`
+    MATCH_SELF               = (1 << 22)  # "builtin" class pattern-matting behavior (undocumented, internal)
+    ITEMS_AT_END             = (1 << 23)  # items at tail end of instance memory
+    LONG_SUBCLASS            = (1 << 24)  # |- used for `Py<type>_Check`, `isinstance`, `issubclass`
+    LIST_SUBCLASS            = (1 << 25)  # |
+    TUPLE_SUBCLASS           = (1 << 26)  # |
+    BYTES_SUBCLASS           = (1 << 27)  # |
+    UNICODE_SUBCLASS         = (1 << 28)  # |
+    DICT_SUBCLASS            = (1 << 29)  # |
+    BASE_EXC_SUBCLASS        = (1 << 30)  # |
+    TYPE_SUBCLASS            = (1 << 31)  # |
 
 
-@functools.lru_cache(128)
-def parameters(c: Callable) -> tuple[inspect.Parameter]:
-    """Return the parameters of the given callable. The result
-    is cached for future calls.
+def has_feature(cls: type[Any], flag: int | PyTypeFlag):
+    """Python implementation of CPython's `PyType_HasFeature` macro."""
+    return bool(cls.__flags__ & flag)
+
+
+def managed_dict_type(o: Any) -> bool:
+    """Check if an instance, or future instances of a class, support
+    the dynamic assignment of new members/variables.
 
     Args:
-        * c: Callable for the query.
+        - o: Class or instance object to inspect.
+
+
+    If *o* is an instance object, this function returns True if it has
+    a `__dict__` attribute. For class objects; return True if instances
+    of that class are expected to have a `__dict__` attribute, instead.
+
+    This function will return False on "slotted" classes if any of its'
+    non-builtin bases did not declare `__slots__` at the time of their
+    creation.
     """
-    return tuple(inspect.signature(c).parameters.values())
+    if not isinstance(o, type):
+        o = type(o)
+    return has_feature(o, PyTypeFlag.MANAGED_DICT)
+
+
+def is_cclass(o: Any):
+    """Return True if an object is a class implemented in C."""
+    return isinstance(o, type) and not has_feature(o, PyTypeFlag.HEAPTYPE)
+
+
+def is_cfunction(o: Any) -> bool:
+    """Return True if an object is a function implemented in C. This
+    includes built-in functions like `len` and `isinstance`, as well
+    as those exported in C-extensions.
+    """
+    return isinstance(o, types.BuiltinFunctionType)
+
+
+@overload
+def is_builtin(o: Any) -> bool: ...  # type: ignore
+def is_builtin(o: Any, *, __module=type.__module__) -> bool:
+    """Return True if an object is a built-in function or class.
+
+    Unlike `inspect.isbuiltin`, the result of this function is not
+    falsified by C-extension objects, and can also identify built-in
+    classes.
+
+    Args:
+        - o: Object to test.
+    """
+    try:
+        return o.__module__ == __module
+    except:
+        return False
+
+
+@overload
+def is_mapping(o: Any) -> bool: ...  # type: ignore
+def is_mapping(o: Any, *, __key=object()):
+    """Return True if an object implements the basic behavior of a
+    mapping.
+
+    Useful to validate an object based on protocol rather than type;
+    objects need not be derived from `Mapping` to be considered a
+    mapping or mapping-like.
+
+    Args:
+        - o: Object to test.
+
+
+    This function returns True if `KeyError` is raised when attempting
+    to "key" the object with one it does not contain. The object
+    must also implement or inherit the `__len__`, `__iter__`, and
+    `__contains__` methods.
+
+    Note that this function only tests/inspects behavior methods,
+    and may return True even if an object does implement high-level
+    `Mapping` methods such as `.get`.
+    """
+    # Could also throw it a non-hashable and check for `TypeError`, but
+    # it feels more ambiguous than `KeyError` in this context.
+    try:
+        o[__key]
+    except KeyError: pass
+    except:
+        return False
+    return (
+        hasattr(o, '__len__')
+        and
+        hasattr(o, '__contains__')
+        and
+        hasattr(o, '__iter__')
+    )
+
+
+def is_sequence(o: Any) -> bool:
+    """Return True if an object implements the basic behavior of a
+    sequence.
+
+    Useful to validate an object based on protocol rather than type;
+    objects need not be derived from `Sequence` to be considered a
+    sequence or sequence-like.
+
+    Args:
+        - o: Object to test.
+
+
+    This function returns True if `IndexError` is raised when attempting
+    to "key" the object with an index outside of its' range. The object
+    must also implement or inherit the `__len__`, `__iter__`, and
+    `__contains__` methods.
+
+    Note that this function only tests/inspects behavior methods,
+    and may return True even if an object does implement high-level
+    `Sequence` methods such as `.count` and `.index`.
+    """
+    try:
+        o[len(o)]
+    except IndexError: pass
+    except:
+        return False
+    return hasattr(o, '__contains__') and hasattr(o, '__iter__')
+
+
+def compare_versions(lo: str, comp: typing.Literal['<', '<=', '==', '!=', '>=', '>'], ro: str) -> bool:
+    """Simple software version comparison tool.
+
+    Does not follow PEP standards.
+
+    Args:
+        * lo: Left operand version string.
+
+        * comp: Rich comparison symbol(s).
+
+        * ro: Right operand version string.
+    """
+    l_vers = tuple(int(v.strip()) for v in lo.split('.') if v.isdigit())
+    r_vers = tuple(int(v.strip()) for v in ro.split('.') if v.isdigit())
+    return eval(f'{l_vers} {comp} {r_vers}')
 
 
 
 
+# [ Descriptors ]
 
-
-
-
-
-
-class _property(typing.Generic[_T], abc.ABC):
+class _property(typing.Generic[T], abc.ABC):
     __slots__ = ('__wrapped__',)
 
-    def __init__(self, fget: Callable[..., _T]):
+    def __init__(self, fget: Callable[..., T]):
         self.__wrapped__ = fget
 
     def __set_name__(self, cls: type[Any], name: str):
@@ -444,10 +418,10 @@ class _property(typing.Generic[_T], abc.ABC):
             set_name(cls, name)
 
     @abc.abstractmethod
-    def __get__(self, instance: Any, cls: type | None = None) -> _T | typing.Self: ...
+    def __get__(self, instance: Any, cls: type | None = None) -> T | typing.Self: ...
 
 
-class classproperty(_property, typing.Generic[_T]):
+class classproperty(_property, typing.Generic[T]):
     """A descriptor for emulating class-bound virtual attributes. Can
     optionally be used as a decorator.
 
@@ -462,11 +436,11 @@ class classproperty(_property, typing.Generic[_T]):
     """
     __slots__ = ()
 
-    def __get__(self, instance: Any, cls: type[Any]) -> _T:
+    def __get__(self, instance: Any, cls: type[Any]) -> T:
         return self.__wrapped__(cls)
 
 
-class staticproperty(_property, typing.Generic[_T]):
+class staticproperty(_property, typing.Generic[T]):
     """A descriptor for emulating unbound virtual attributes. Can optionally
     be used as a decorator.
 
@@ -481,11 +455,11 @@ class staticproperty(_property, typing.Generic[_T]):
     """
     __slots__ = ()
 
-    def __get__(self, instance: Any, cls: type[Any]) -> _T:
+    def __get__(self, instance: Any, cls: type[Any]) -> T:
         return self.__wrapped__()
 
 
-class simpleproperty(_property, typing.Generic[_T]):
+class simpleproperty(_property, typing.Generic[T]):
     """A data descriptor for emulating read-only virtual attributes. Can
     optionally be used as a decorator.
         >>> class MyClass:
@@ -561,7 +535,7 @@ class simpleproperty(_property, typing.Generic[_T]):
     """
     __slots__ = ('name',)
 
-    def __init__(self, fset: Callable[[Any, Any], _T] | None = None):
+    def __init__(self, fset: Callable[[Any, Any], T] | None = None):
         self.__wrapped__ = fset
         self.name = ''
 
@@ -577,7 +551,7 @@ class simpleproperty(_property, typing.Generic[_T]):
                 )
         self.name = name
 
-    def __get__(self, instance: Any, cls: type | None = None) -> _T:
+    def __get__(self, instance: Any, cls: type | None = None) -> T:
         try:
             return instance.__dict__[self.name]
         except AttributeError:
@@ -620,11 +594,12 @@ class simpleproperty(_property, typing.Generic[_T]):
 
 
 
-# reentrant locks work better with debuggers
-# XXX: BEWARE -- this may mask deadlocks in release builds!
+# [ Misc ]
+
 Lock = threading.Lock if not sys.gettrace() else threading.RLock
 
-class Locker(typing.Generic[_T]):
+
+class Locker(typing.Generic[T]):
     """A mutex-like object that encapsulates a value that is to be managed
     only between select callables.
     """
@@ -633,7 +608,7 @@ class Locker(typing.Generic[_T]):
         '__lock',
     )
 
-    def __init__(self, default_value: _T):
+    def __init__(self, default_value: T):
         self.value  = default_value
         self.__lock = Lock()
 
@@ -649,14 +624,12 @@ class Locker(typing.Generic[_T]):
     def release(self):
         self.__lock.release()
 
-    def bind(self, fn: Callable[typing.Concatenate[typing.Self, _P], _O]) -> Callable[_P, _O]:
+    def bind(self, fn: Callable[typing.Concatenate[typing.Self, P], O]) -> Callable[P, O]:
         """Return a callable as a method bound to this object. Can be used
         as a decorator."""
-        return typing.cast(Callable[_P, _O], types.MethodType(fn, self))
+        return typing.cast(Callable[P, O], types.MethodType(fn, self))
 
     __call__ = bind
-
-
 
 
 def cfunction(pfunction: 'ctypes._NamedFuncPointer', argtypes: tuple[Any, ...] = (), restype: Any = None):
@@ -664,7 +637,7 @@ def cfunction(pfunction: 'ctypes._NamedFuncPointer', argtypes: tuple[Any, ...] =
 
     *argtypes* and *restypes* will be assigned to *pfunction*.
     """
-    def func_prototype(fn_signature: Callable[_P, _T]) -> Callable[_P, _T]:
+    def func_prototype(fn_signature: Callable[P, T]) -> Callable[P, T]:
         pfunction.argtypes = argtypes
         pfunction.restype  = restype
         functools.update_wrapper(pfunction, fn_signature, updated='')
@@ -682,12 +655,10 @@ def Py_DECREF(_object: Any) -> None:
     """
 
 
-
-
-def timed(fn: Callable[_P, _T]) -> Callable[_P, _T]:
+def timed(fn: Callable[P, T]) -> Callable[P, T]:
     """Decorator that times the execution of a function."""
     @functools.wraps(fn)
-    def wrap(*args: _P.args, **kwds: _P.kwargs) -> _T:
+    def wrap(*args: P.args, **kwds: P.kwargs) -> T:
         ts = timer()
         result = fn(*args, **kwds)
         te = timer()
@@ -699,3 +670,30 @@ def timed(fn: Callable[_P, _T]) -> Callable[_P, _T]:
         return result
     timer = time.time
     return wrap
+
+
+def cache_once(fn: Callable[P, T], /) -> Callable[P, T]:
+    """Similar to `functools.cached_property` but for functions. Returns the
+    same result regardless of the arguments passed to the decorated function.
+    """
+    @functools.wraps(fn)
+    def cached_result(*args: P.args, **kwargs: P.kwargs) -> T:
+        nonlocal cache
+        try:
+            return cache
+        except NameError:
+            cache = fn(*args, **kwargs)
+            return cache
+    cache: T
+    return cached_result
+
+
+@functools.lru_cache(128)
+def parameters(c: Callable) -> tuple[inspect.Parameter, ...]:
+    """Return the parameters of the given callable. The result
+    is cached for future calls.
+
+    Args:
+        * c: Callable for the query.
+    """
+    return tuple(inspect.signature(c).parameters.values())
