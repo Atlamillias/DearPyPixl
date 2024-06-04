@@ -676,7 +676,6 @@ class AppItemType(api.Item, int, register=False, metaclass=AppItemMeta):
 
     # [ CONSTRUCTORS ]
 
-
     @_onetime_setup
     def __new__(cls, *args, tag: Item = 0, **kwargs) -> Self:
         """Args:
@@ -1436,7 +1435,7 @@ class WindowType(api.Window, AppItemType):
 
 
 # FUNCTIONAL CLASSIFICATION TYPES
-# (these do not inherit from a base API)
+# (these do not inherit from an API class)
 
 class _ItemStateSized(_typing.ItemStateDict):
     pos      : tuple[int, int] | Sequence[int]  # type: ignore
@@ -1642,7 +1641,6 @@ class SupportsCallback(AppItemType, Generic[_P, _T]):
             callback(*args, **kwargs)
 
     __code__ = __call__.__code__
-
 
 
 assert all(
