@@ -892,31 +892,7 @@ class AppItemType(api.Item, int, register=False, metaclass=AppItemMeta):
 
     def __deepcopy__(self, memo: Any = None):
         raise NotImplementedError
-
-
-    # [ GLOBAL STATE API ]
-
-    # These are dependant on hooks being defined in two places; on
-    # the metaclass, and below. They are read/write at the (non-meta)
-    # class level, but read-only at the instance level. It falls upon
-    # the user to set these at runtime, if they want. Otherwise they'll
-    # simply return None.
-
-    @property
-    def application(self):
-        """[get] Return the global `Application` object."""
-        return AppItemMeta.application
-
-    @property
-    def viewport(self):
-        """[get] Return the global `Viewport` object."""
-        return AppItemMeta.viewport
-
-    @property
-    def runtime(self):
-        """[get] Return the global `Runtime` object."""
-        return AppItemMeta.runtime
-
+    
 
     # [ CLASS-BOUND API ]
 
