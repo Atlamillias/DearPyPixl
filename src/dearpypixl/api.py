@@ -335,6 +335,8 @@ class AppConfigDict(TypedDict, total=False):
     manual_callback_management: bool
 
 
+type _ApplicationT = type['Application | Any']
+
 class _ApplicationMeta(_typing.ItemInterfaceMeta):
     # XXX: All of this needs to be set onto into `Application`
     # as well. Instances need their own hooks since their lookup
@@ -355,7 +357,7 @@ class _ApplicationMeta(_typing.ItemInterfaceMeta):
     manual_callback_management = cast(bool, _typing.ItemConfig())
 
     @property
-    def theme(self: type['Application']) -> 'mvTheme | Any':
+    def theme(self: _ApplicationT) -> 'mvTheme | Any':
         """[get] Return the application-level theme."""
         theme = self.get_theme()
         try:
@@ -365,12 +367,12 @@ class _ApplicationMeta(_typing.ItemInterfaceMeta):
         except KeyError:
             return theme
     @theme.setter
-    def theme(self: type['Application'], value: ItemT | None) -> None:
+    def theme(self: _ApplicationT, value: ItemT | None) -> None:
         """[set] Set application-level theme."""
         return self.set_theme(value)
 
     @property
-    def font(self: type['Application']) -> 'mvFont | Any':
+    def font(self: _ApplicationT) -> 'mvFont | Any':
         """[get] Return the application-level font item."""
         font = self.get_font()
         try:
@@ -380,7 +382,7 @@ class _ApplicationMeta(_typing.ItemInterfaceMeta):
         except KeyError:
             return font
     @font.setter
-    def font(self: type['Application'], value: ItemT | None) -> None:
+    def font(self: _ApplicationT, value: ItemT | None) -> None:
         """[set] Set the application-level font item."""
         self.set_font(value)
 
@@ -392,11 +394,11 @@ class _ApplicationMeta(_typing.ItemInterfaceMeta):
         return Application.state()['ok']
 
     @property
-    def clipboard_text(self: type['Application']):
+    def clipboard_text(self: _ApplicationT):
         """[get] Return the current text value of the clipboard."""
         return self.get_clipboard_text()
     @clipboard_text.setter
-    def clipboard_text(self: type['Application'], text: str):
+    def clipboard_text(self: _ApplicationT, text: str):
         """[set] Set a text value onto the clipboard."""
         self.set_clipboard_text(text)
 
