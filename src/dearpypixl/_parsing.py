@@ -115,10 +115,6 @@ def is_item_command(o: Any, /) -> bool:
 
 
 
-
-
-
-
 @dataclasses.dataclass(slots=True, frozen=True)
 class ItemDefinition:
     name          : str
@@ -281,7 +277,6 @@ class ElementDefinition:
     category: constants.ThemeCategory
 
 
-
 @_tools.cache_once
 def element_definitions() -> Mapping[str, ElementDefinition]:
     const_pfxs = (
@@ -341,19 +336,6 @@ def element_definitions() -> Mapping[str, ElementDefinition]:
         )
         const_to_elem[category][constant] = element
 
-    # Using the names formated above can cause plot and node
-    # elements to shadow core elements. Core elements should
-    # keep the more simple and intuitive name(s).
-    #for cat in (PLOT, NODE):
-    #    name_map = name_to_elem[cat]
-    #    for name1, element in name_map.items():
-    #        if name1 in name_to_elem[CORE]:
-    #            name1 = f'{cat.name.title()}{name1}'
-    #            assert name1 not in name_to_elem[CORE]
-    #            assert name1 not in name_map
-    #            object.__setattr__(element, 'name1', name1)
-    #            object.__setattr__(element, 'name2', f'{cat.name.lower()}_{element.name2}')
-
     for cat in constants.ThemeCategory:
         const_to_elem[cat] = dict(
             sorted(const_to_elem[cat].items(), key=lambda x: x[1].name1)  # type: ignore
@@ -363,12 +345,14 @@ def element_definitions() -> Mapping[str, ElementDefinition]:
         const_to_elem[CORE] | const_to_elem[PLOT] | const_to_elem[NODE]
     )
 
+
 @_tools.cache_once
 def color_definitions() -> Mapping[str, ElementDefinition]:
     return types.MappingProxyType({
         k:v for k,v in element_definitions().items()
         if v.type == "mvThemeColor"
     })
+
 
 @_tools.cache_once
 def style_definitions() ->  Mapping[str, ElementDefinition]:
@@ -380,6 +364,82 @@ def style_definitions() ->  Mapping[str, ElementDefinition]:
 
 
 
+@dataclasses.dataclass(slots=True, frozen=True)
+class ConstantDefinition:
+    name  : str
+    target: int
+    prefix: str
+    suffix: str
+
+
+@_tools.cache_once
+def constant_definitions() -> Mapping[str, ConstantDefinition]:
+    definitions = {}
+
+    prefixes = {
+        "mvKey": "Key",
+        "mvPlot_Location": "PlotLocation",
+        "mvNodeMiniMap_Location": "NodeMiniMapLocation",
+        "mvTable_Sizing": "TablePolicy",
+        "mvFormat_Float": "ColorFloatFormat",
+        "mvThemeCat": "ThemeCategory",
+        "mvReserved": "ReservedUUID",
+        "mvNode_PinShape": "NodePinShape",
+        "mvNode_Attr": "NodeAttr",
+        "mvPlotColormap": "PlotColorMap"
+    }
+    suffixes = {
+        "uint8": "UINT_8",
+        "RdBu": "RdBu",
+        "BrBG": "BrBG",
+        "PiYG": "PiYG",
+    }
+    prefix_noformat = {"GraphicsBackend",}
+    suffix_noformat = {"NORTHWEST", "NORTHEAST", "SOUTHWEST", "SOUTHEAST"}
+    suffix_tolower  = {"Us", "Ms", "S"}
+
+    re_capwords = re.compile(
+        r"[A-Z][a-z][a-z]+|^(?:L|R)(?=[A-Z][a-z])|[A-Z]*\d+|[A-Z][A-Z][A-Z]+"
+    )
+
+    const_exclusions = set(element_definitions())
+    for name, value in dearpygui.__dict__.items():
+        if (
+            name in const_exclusions or
+            not (name.startswith('mv') and '_' in name)
+        ):
+            continue
+
+        assert isinstance(value, int)
+
+        startswith = name.startswith
+        for raw_pfx, new_pfx in prefixes.items():
+            if startswith(raw_pfx):
+                prefix = new_pfx
+                suffix = name.removeprefix(raw_pfx).lstrip('_')
+                break
+        else:
+            prefix, suffix = name.removeprefix('mv').split('_', 1)
+
+        if suffix in suffixes:
+            suffix = suffixes[suffix]
+        elif suffix.isdigit():
+            suffix = f"DIGIT_{suffix}"
+        elif suffix in suffix_tolower:
+            suffix = suffix.lower()
+        else:
+            if not (prefix in prefix_noformat or suffix.upper() in suffix_noformat):
+                matches = re_capwords.findall(suffix)
+                if matches:
+                    suffix = '_'.join(matches)
+
+            suffix = suffix.upper()
+
+        definitions[name] = ConstantDefinition(
+            name=name, target=value, prefix=prefix, suffix=suffix
+        )
+
+    return types.MappingProxyType(definitions)
 
 
 
