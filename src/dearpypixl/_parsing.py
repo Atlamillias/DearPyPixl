@@ -669,7 +669,7 @@ def upd_command_doc(command: "ItemCommand", line_width: int = 92) -> str:
     for replacement in _DocParserConstants.TYPE_REPLACEMENTS_1:
         body = body.replace(*replacement)
 
-    params = array.array('u')
+    params = array.array('w')
     for param in _DocParserConstants.RE_PARAM.finditer(body):
         name, tp, doc = param.groups()
         if '(deprecated)' in doc:
