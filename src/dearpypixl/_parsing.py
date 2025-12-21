@@ -4,12 +4,13 @@ import types
 import array
 import typing
 import inspect
+import functools
 import textwrap
 import threading
 import dataclasses
 from inspect import Parameter
 from dearpygui import dearpygui
-from . import constants, _typing, _tools
+from . import constants, _typing
 from ._typing import (
     Any,
     Item,
@@ -19,6 +20,26 @@ from ._typing import (
     Mapping,
     Literal,
 )
+
+
+
+
+# [ helpers ]
+
+def _static_output[T: typing.Callable](fn: T, /) -> T:
+
+    @functools.wraps(fn)
+    def cached_result(*args, **kwargs):
+        nonlocal result
+        try:
+            return result
+        except NameError:
+            result = fn(*args, **kwargs)
+            return result
+
+    result: typing.Any
+
+    return cached_result  # type: ignore
 
 
 
@@ -132,7 +153,7 @@ class ItemDefinition:
         _setattr('is_container', bool(self.command2))
 
 
-@_tools.cache_once
+@_static_output
 def item_definitions() -> Mapping[str, ItemDefinition]:
     """Parse Dear PyGui's API and return compiled item type definitions.
 
@@ -277,7 +298,7 @@ class ElementDefinition:
     category: constants.ThemeCategory
 
 
-@_tools.cache_once
+@_static_output
 def element_definitions() -> Mapping[str, ElementDefinition]:
     const_pfxs = (
         "mvThemeCol",
@@ -346,7 +367,7 @@ def element_definitions() -> Mapping[str, ElementDefinition]:
     )
 
 
-@_tools.cache_once
+@_static_output
 def color_definitions() -> Mapping[str, ElementDefinition]:
     return types.MappingProxyType({
         k:v for k,v in element_definitions().items()
@@ -354,7 +375,7 @@ def color_definitions() -> Mapping[str, ElementDefinition]:
     })
 
 
-@_tools.cache_once
+@_static_output
 def style_definitions() ->  Mapping[str, ElementDefinition]:
     return types.MappingProxyType({
         k:v for k,v in element_definitions().items()
@@ -372,7 +393,7 @@ class ConstantDefinition:
     suffix: str
 
 
-@_tools.cache_once
+@_static_output
 def constant_definitions() -> Mapping[str, ConstantDefinition]:
     definitions = {}
 
@@ -515,8 +536,8 @@ def upd_param_annotations(parameters: Mapping[str, Parameter]) -> dict[str, Para
 _item_ref  = "A reference to an existing item (as a `int` uuid, `str` alias, or `int` item interface)"
 _empty_ref = "None or 0 (default)"
 
-@_tools.frozen_namespace
-class _DocParseConst:
+
+class _DocParserConstants:
     RE_ARGS = re.compile(
         r'^\s*Args[;:]$', re.MULTILINE
     )
@@ -636,7 +657,7 @@ def upd_command_doc(command: ItemCommand, line_width: int = 92) -> str:
         .split('    Returns:')[0] \
         .split("    Yields:")[0] \
 
-    key = _DocParseConst.RE_ARGS.search(s)
+    key = _DocParserConstants.RE_ARGS.search(s)
     if not key:
         return s
 
@@ -649,21 +670,21 @@ def upd_command_doc(command: ItemCommand, line_width: int = 92) -> str:
 
     # TODO: Build an accurate regex for unions. Harder than it seems -- like
     # reading alphabet soup while drunk.
-    for replacement in _DocParseConst.TYPE_REPLACEMENTS_1:
+    for replacement in _DocParserConstants.TYPE_REPLACEMENTS_1:
         body = body.replace(*replacement)
 
     params = array.array('u')
-    for param in _DocParseConst.RE_PARAM.finditer(body):
+    for param in _DocParserConstants.RE_PARAM.finditer(body):
         name, tp, doc = param.groups()
         if '(deprecated)' in doc:
             continue
-        if name in _DocParseConst.PARAM_GENERAL_REPLACEMENTS:
-            doc = _DocParseConst.PARAM_GENERAL_REPLACEMENTS[name]
+        if name in _DocParserConstants.PARAM_GENERAL_REPLACEMENTS:
+            doc = _DocParserConstants.PARAM_GENERAL_REPLACEMENTS[name]
         else:
             doc = doc.rstrip().rstrip('.')
             if doc:
                 doc = f"{doc}."
-        for replacement in _DocParseConst.TYPE_REPLACEMENTS_2:
+        for replacement in _DocParserConstants.TYPE_REPLACEMENTS_2:
             tp = tp.replace(*replacement)
         params.fromunicode(textwrap.fill(
             f"* {name} ({tp}): {doc}",
