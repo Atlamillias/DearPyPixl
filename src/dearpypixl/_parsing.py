@@ -19,7 +19,6 @@ else:
 
 
 
-
 # [ helpers ]
 
 def _static_output[T: typing.Callable](fn: T, /) -> T:
@@ -398,7 +397,7 @@ def constant_definitions() -> typing.Mapping[str, ConstantDefinition]:
         "mvPlot_Location": "PlotLocation",
         "mvNodeMiniMap_Location": "NodeMiniMapLocation",
         "mvTable_Sizing": "TablePolicy",
-        "mvFormat_Float": "ColorFloatFormat",
+        "mvFormat_Float": "ColorFormat",
         "mvThemeCat": "ThemeCategory",
         "mvReserved": "ReservedUUID",
         "mvNode_PinShape": "NodePinShape",
