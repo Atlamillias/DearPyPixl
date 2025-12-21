@@ -106,12 +106,6 @@ def err_arg_unexpected(item: Item, command: ItemCommand, *args, **kwargs):
     return TypeError(f'{callee!r} received unexpected keyword argument(s) {bad_kwds}.')
 
 
-def err_arg_invalid(item: Item, command: ItemCommand, *args, **kwargs):
-    # TODO
-    ...
-
-
-
 
 
 def _invld_p_err(parent_tp: str, parent: int | str, child_tp: str, *tp_list: str) -> ValueError:
