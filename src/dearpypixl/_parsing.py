@@ -115,7 +115,7 @@ def is_item_command(o: typing.Any, /) -> bool:
     except AttributeError:
         return False
 
-    if signature.return_annotation != int | str:
+    if signature.return_annotation != Item:
         return False
 
     if all(kwd not in signature.parameters for kwd in ("tag", "id")):
