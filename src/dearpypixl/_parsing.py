@@ -10,16 +10,12 @@ import threading
 import dataclasses
 from inspect import Parameter
 from dearpygui import dearpygui
-from . import constants, _typing
-from ._typing import (
-    Any,
-    Item,
-    Callable,
-    ItemCommand,
-    Sequence,
-    Mapping,
-    Literal,
-)
+from . import constants
+
+if typing.TYPE_CHECKING:
+    from .typing import Item, ItemCommand
+else:
+    Item = int | str  # code dependency
 
 
 
@@ -46,7 +42,7 @@ def _static_output[T: typing.Callable](fn: T, /) -> T:
 
 # [ API Parsers ]
 
-def is_contextmanager(o: Any, /) -> bool:
+def is_contextmanager(o: typing.Any, /) -> bool:
     """Return True if a function is wrapped by `contextlib.contextmanager`.
 
     Args:
@@ -76,7 +72,7 @@ def is_contextmanager(o: Any, /) -> bool:
     return is_ctx_manager or False
 
 
-def is_item_command(o: Any, /) -> bool:
+def is_item_command(o: typing.Any, /) -> bool:
     """Return True if an object is a callable defined in DearPyGui that creates
     and yields/returns an item identifier.
 
@@ -140,11 +136,11 @@ def is_item_command(o: Any, /) -> bool:
 class ItemDefinition:
     name          : str
     enum          : int
-    command1      : ItemCommand
-    command2      : ItemCommand | None
-    init_params   : Mapping[str, Parameter] = dataclasses.field(repr=False)
-    rconfig_params: Mapping[str, Parameter] = dataclasses.field(repr=False)
-    wconfig_params: Mapping[str, Parameter] = dataclasses.field(repr=False)
+    command1      : "ItemCommand"
+    command2      : "ItemCommand | None"
+    init_params   : typing.Mapping[str, Parameter] = dataclasses.field(repr=False)
+    rconfig_params: typing.Mapping[str, Parameter] = dataclasses.field(repr=False)
+    wconfig_params: typing.Mapping[str, Parameter] = dataclasses.field(repr=False)
 
     is_container: bool = dataclasses.field(init=False, repr=False)
 
@@ -154,7 +150,7 @@ class ItemDefinition:
 
 
 @_static_output
-def item_definitions() -> Mapping[str, ItemDefinition]:
+def item_definitions() -> typing.Mapping[str, ItemDefinition]:
     """Parse Dear PyGui's API and return compiled item type definitions.
 
     The result of this function is only built once and is cached
@@ -173,7 +169,7 @@ def item_definitions() -> Mapping[str, ItemDefinition]:
     _t.start()
     _t.join()
 
-    name_to_enum      = _typing.cast(dict[str, int], name_to_enum)
+    name_to_enum      = typing.cast(dict[str, int], name_to_enum)
     name_to_def       = {}
     commands_to_names = {
         dearpygui.add_2d_histogram_series: "mv2dHistogramSeries",
@@ -292,14 +288,14 @@ def item_definitions() -> Mapping[str, ItemDefinition]:
 class ElementDefinition:
     name1   : str
     name2   : str
-    type    : Literal['mvThemeColor', 'mvThemeStyle']
+    type    : typing.Literal['mvThemeColor', 'mvThemeStyle']
     constant: str
     target  : int
     category: constants.ThemeCategory
 
 
 @_static_output
-def element_definitions() -> Mapping[str, ElementDefinition]:
+def element_definitions() -> typing.Mapping[str, ElementDefinition]:
     const_pfxs = (
         "mvThemeCol",
         "mvPlotCol",
@@ -368,7 +364,7 @@ def element_definitions() -> Mapping[str, ElementDefinition]:
 
 
 @_static_output
-def color_definitions() -> Mapping[str, ElementDefinition]:
+def color_definitions() -> typing.Mapping[str, ElementDefinition]:
     return types.MappingProxyType({
         k:v for k,v in element_definitions().items()
         if v.type == "mvThemeColor"
@@ -376,7 +372,7 @@ def color_definitions() -> Mapping[str, ElementDefinition]:
 
 
 @_static_output
-def style_definitions() ->  Mapping[str, ElementDefinition]:
+def style_definitions() -> typing.Mapping[str, ElementDefinition]:
     return types.MappingProxyType({
         k:v for k,v in element_definitions().items()
         if v.type == "mvThemeStyle"
@@ -394,7 +390,7 @@ class ConstantDefinition:
 
 
 @_static_output
-def constant_definitions() -> Mapping[str, ConstantDefinition]:
+def constant_definitions() -> typing.Mapping[str, ConstantDefinition]:
     definitions = {}
 
     prefixes = {
@@ -467,7 +463,7 @@ def constant_definitions() -> Mapping[str, ConstantDefinition]:
 
 # [ Signature Parsing, Formatting ]
 
-def get_config_parameters(parameters: Mapping[str, Parameter]):
+def get_config_parameters(parameters: typing.Mapping[str, Parameter]):
     """Return a mapping of item command parameters containing only
     configuration-related parameters."""
     excluded_names = (
@@ -486,7 +482,7 @@ def get_config_parameters(parameters: Mapping[str, Parameter]):
     }
 
 
-def upd_param_annotations(parameters: Mapping[str, Parameter]) -> dict[str, Parameter]:
+def upd_param_annotations(parameters: typing.Mapping[str, Parameter]) -> dict[str, Parameter]:
     """Return item command parameters with updated annotations."""
     upd_params = {}
     for p in parameters.values():
@@ -506,7 +502,7 @@ def upd_param_annotations(parameters: Mapping[str, Parameter]) -> dict[str, Para
         elif name == 'pos':
             anno = tuple[int, int] | list[int]
         elif 'callback' in name or name == 'on_close':
-            anno = Callable | None   # type: ignore
+            anno = typing.Callable | None   # type: ignore
         elif (
             'color' in name
             or (p.default and isinstance(p.default, tuple))
@@ -515,13 +511,13 @@ def upd_param_annotations(parameters: Mapping[str, Parameter]) -> dict[str, Para
         ):
             anno = tuple[int, int, int] | tuple[int, int, int, int] | list[int]
         elif anno == typing.List[typing.List[float]]:
-            anno = Sequence[Sequence[float]]
+            anno = typing.Sequence[typing.Sequence[float]]
         # general-case formatting
         else:
             for tp in str, float, int:
                 if anno != ((typing.List[tp] | typing.Tuple[tp, ...])):
                     continue
-                anno = Sequence[tp]
+                anno = typing.Sequence[tp]
                 break
         upd_params[name] = Parameter(
             name,
@@ -648,7 +644,7 @@ class _DocParserConstants:
     PARAM_SPECIFIC_REPLACEMENTS: dict[str, str] = {}
 
 
-def upd_command_doc(command: ItemCommand, line_width: int = 92) -> str:
+def upd_command_doc(command: "ItemCommand", line_width: int = 92) -> str:
     """Return a formatted docstring parsed from a Dear PyGui item
     command."""
     s = command.__doc__ or ''
