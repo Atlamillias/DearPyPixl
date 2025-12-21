@@ -1562,7 +1562,7 @@ assert all(
 
 
 
-def create_itemtype(tp_def: _parsing.ItemDefinition) -> type[AppItemType]:
+def _create_itemtype(tp_def: _parsing.ItemDefinition) -> type[AppItemType]:
     # XXX: Maybe move to `items.py`? It's the only caller.
     # Although it's kinda nice having this and the necessary
     # implementations in the same place.
@@ -1650,10 +1650,6 @@ def create_itemtype(tp_def: _parsing.ItemDefinition) -> type[AppItemType]:
         )
 
     return cls  # type: ignore
-
-
-
-
 
 
 
