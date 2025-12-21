@@ -449,41 +449,6 @@ class AppItemMeta(type):
     def __int__(self) -> int:
         return self.identity[0]
 
-    def start(self, *args, **kwargs) -> Any:
-        """Start the user interface event loop, blocking the thread until
-        the viewport is closed.
-
-        This method forwards the call to `self.runtime.start`. If a
-        `Runtime` object has not yet been set, an internal default
-        `.start` method is called instead. The default implementation
-        performs all required setup, if not done so already.
-        """
-        rt = self.runtime
-        if rt is None:
-            rt = api.Runtime
-        return rt.start(*args, **kwargs)
-
-    def stop(self, *args, **kwargs) -> Any:
-        """Close the viewport and kill the runtime.
-
-        This method forwards the call to `self.runtime.stop`. If a
-        `Runtime` object has not yet been set, an internal default
-        `.stop` method is called instead.
-        """
-        rt = self.runtime
-        if rt is None:
-            rt = api.Runtime
-        return rt.stop(*args, **kwargs)
-
-
-class ABCAppItemMeta(AppItemMeta, abc.ABCMeta):
-    """Metaclass for creating abstract app item interface types."""
-
-
-
-
-
-
 
 
 
@@ -1063,11 +1028,6 @@ class AppItemType(api.Item, int, register=False, metaclass=AppItemMeta):
         root_parent = super().root_parent()
         return self if self == root_parent else interface(root_parent)
 
-
-
-class ABCAppItemType(AppItemType, metaclass=ABCAppItemMeta):
-    """Abstract interface base class."""
-    __slots__ = ()
 
 
 

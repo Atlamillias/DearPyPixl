@@ -14,8 +14,6 @@ from ._typing import (
 from ._interface import (
     AppItemMeta as AppItemMeta,
     AppItemType as AppItemType,
-    ABCAppItemMeta as ABCAppItemMeta,
-    ABCAppItemType as ABCAppItemType,
 
     BasicType as BasicType,
     ContainerType as ContainerType,
