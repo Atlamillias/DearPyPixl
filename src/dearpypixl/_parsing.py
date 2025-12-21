@@ -10,12 +10,12 @@ import threading
 import dataclasses
 from inspect import Parameter
 from dearpygui import dearpygui
-from . import constants
 
 if typing.TYPE_CHECKING:
     from .typing import Item, ItemCommand
 else:
     Item = int | str  # code dependency
+
 
 
 
@@ -291,7 +291,7 @@ class ElementDefinition:
     type    : typing.Literal['mvThemeColor', 'mvThemeStyle']
     constant: str
     target  : int
-    category: constants.ThemeCategory
+    category: int
 
 
 @_static_output
@@ -307,10 +307,10 @@ def element_definitions() -> typing.Mapping[str, ElementDefinition]:
         "mvNodesStyleVar",
     )
 
-    CORE = constants.ThemeCategory(dearpygui.mvThemeCat_Core)
-    PLOT = constants.ThemeCategory(dearpygui.mvThemeCat_Plots)
-    NODE = constants.ThemeCategory(dearpygui.mvThemeCat_Nodes)
-    const_to_elem: dict[constants.ThemeCategory, dict[str, ElementDefinition]] = {
+    CORE = dearpygui.mvThemeCat_Core
+    PLOT = dearpygui.mvThemeCat_Plots
+    NODE = dearpygui.mvThemeCat_Nodes
+    const_to_elem: dict[int, dict[str, ElementDefinition]] = {
         CORE: {},
         PLOT: {},
         NODE: {},
@@ -353,7 +353,7 @@ def element_definitions() -> typing.Mapping[str, ElementDefinition]:
         )
         const_to_elem[category][constant] = element
 
-    for cat in constants.ThemeCategory:
+    for cat in (CORE, PLOT, NODE):
         const_to_elem[cat] = dict(
             sorted(const_to_elem[cat].items(), key=lambda x: x[1].name1)  # type: ignore
         )
