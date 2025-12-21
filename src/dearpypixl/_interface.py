@@ -310,29 +310,6 @@ def _create_configuration_method(cls: Any, parameters: Mapping[str, Parameter]) 
 
 # [ ITEM META & BASE ]
 
-_AppT = TypeVar("_AppT", bound=api.Application)
-_VpT  = TypeVar("_VpT", bound=api.Viewport)
-_RtT  = TypeVar("_RtT", bound=api.Runtime)
-
-class _GlobalStateObject(Generic[_T]):
-    __slots__ = ("_key",)
-
-    def __init__(self, key: str = '', /):
-        self._key = key
-
-    def __set_name__(self, cls: Any, name: str):
-        self._key = self._key or f"_{name}"
-
-    def __get__(self, instance: Any, cls: Any = None) -> _T | None:
-        if instance is None:
-            return self  # type: ignore
-        getattr(AppItemMeta, self._key, None)
-
-    def __set__(self, instance: Any, value: _T) -> None:
-        setattr(AppItemMeta, self._key, value)
-
-
-
 class AppItemMeta(type):
     __slots__ = ()
 
@@ -471,10 +448,6 @@ class AppItemMeta(type):
 
     def __int__(self) -> int:
         return self.identity[0]
-
-    application: Property[_AppT | None] = _GlobalStateObject()  # type: ignore
-    viewport   : Property[_VpT  | None] = _GlobalStateObject()  # type: ignore
-    runtime    : Property[_RtT  | None] = _GlobalStateObject()  # type: ignore
 
     def start(self, *args, **kwargs) -> Any:
         """Start the user interface event loop, blocking the thread until
@@ -892,7 +865,7 @@ class AppItemType(api.Item, int, register=False, metaclass=AppItemMeta):
 
     def __deepcopy__(self, memo: Any = None):
         raise NotImplementedError
-    
+
 
     # [ CLASS-BOUND API ]
 
