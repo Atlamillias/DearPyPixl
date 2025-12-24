@@ -316,6 +316,14 @@ class _GridComponent:
         return {f:getattr(self, f'_{f}') for f in self.__dataclass_fields__}
 
 
+@dataclasses.dataclass(slots=True)
+class _SlotState:
+    pos    : float = 0
+    size   : float = 0
+    spacing: float = 0
+    padding: tuple[float, float] = (0, 0)
+
+
 @dataclasses.dataclass(init=False)
 class Slot(_GridComponent):
     """A row or column in a table-like structure.
@@ -376,15 +384,7 @@ class Slot(_GridComponent):
             non-NaN values. None is treated as NaN.
         """
         # managed by the parenting `Grid` during a draw event
-        self._state = cast(
-            dict[Literal['pos' ,'size', 'spacing', 'padding'], Any],
-            {
-                'pos'    : 0,
-                'size'   : 0,
-                'spacing': 0,
-                'padding': (0, 0),
-            }
-        )
+        self._state = _SlotState()
         super().__init__(weight=weight, size=size, **kwargs)
 
     @overload
@@ -1265,19 +1265,19 @@ class Grid(_GridComponent):
             slot_size_offset = slot._spacing
             if slot_size_offset != slot_size_offset:  # is NaN?
                 slot_size_offset = _slot_size_offset
-            slot_state['spacing'] = slot_size_offset
+            slot_state.spacing = slot_size_offset
 
-            slot_state['pos'] = alloc_size + area_c1_pad + slot_pos_offset
+            slot_state.pos = alloc_size + area_c1_pad + slot_pos_offset
 
             slot_c1_pad, slot_c2_pad = slot._padding
             if slot_c1_pad != slot_c1_pad:  # is NaN?
                 slot_c1_pad = _slot_c1_pad
             if slot_c2_pad != slot_c2_pad:  # is NaN?
                 slot_c2_pad = _slot_c2_pad
-            slot_state['padding'] = slot_c1_pad, slot_c2_pad
+            slot_state.padding = slot_c1_pad, slot_c2_pad
 
             slot_size = slot._size or slot_weight_size * slot._weight  # FIXED or SIZED
-            slot_state['size'] = slot_size - _slot_size_offset
+            slot_state.size = slot_size - _slot_size_offset
             alloc_size += slot_size
 
     def _upd_item_states(self):  # XXX: performance-sensitive
@@ -1315,20 +1315,20 @@ class Grid(_GridComponent):
                 x1_pad, y1_pad, x2_pad, y2_pad = item_data.padding
 
                 if x1_pad != x1_pad:  # is NaN?
-                    x1_pad = col1_state['padding'][0]
-                cell_x_pos = col1_state['pos'] + x1_pad
+                    x1_pad = col1_state.padding[0]
+                cell_x_pos = col1_state.pos + x1_pad
 
                 if y1_pad != y1_pad:  # is NaN?
-                    y1_pad = row1_state['padding'][0]
-                cell_y_pos  = row1_state['pos'] + y1_pad
+                    y1_pad = row1_state.padding[0]
+                cell_y_pos  = row1_state.pos + y1_pad
 
                 if x2_pad != x2_pad:  # is NaN?
-                    x2_pad = col2_state['padding'][1]
-                cell_width = col2_state['pos'] + col2_state['size'] - cell_x_pos - x2_pad
+                    x2_pad = col2_state.padding[1]
+                cell_width = col2_state.pos + col2_state.size - cell_x_pos - x2_pad
 
                 if y2_pad != y2_pad:  # is NaN?
-                    y2_pad = row1_state['padding'][1]
-                cell_height = row2_state['pos'] + row2_state['size'] - cell_y_pos - y2_pad
+                    y2_pad = row1_state.padding[1]
+                cell_height = row2_state.pos + row2_state.size - cell_y_pos - y2_pad
 
                 # XXX: It's really common for users to want to align text items.
                 # Unfortunately, they must be handled differently since their size
@@ -1435,15 +1435,15 @@ class Grid(_GridComponent):
 
         for col in self.cols:
             col_state = col._state
-            cell_x_min  = x_min + col_state['pos']
-            cell_x_max  = cell_x_min + col_state['size']
-            cell_x1_pad, cell_x2_pad = col_state['padding']
+            cell_x_min  = x_min + col_state.pos
+            cell_x_max  = cell_x_min + col_state.size
+            cell_x1_pad, cell_x2_pad = col_state.padding
 
             for row in self.rows:
                 row_state = row._state
-                cell_y_min  = y_min + row_state['pos']
-                cell_y_max  = cell_y_min + row_state['size']
-                cell_y1_pad, cell_y2_pad = row_state['padding']
+                cell_y_min  = y_min + row_state.pos
+                cell_y_max  = cell_y_min + row_state.size
+                cell_y1_pad, cell_y2_pad = row_state.padding
 
                 if cell_x1_pad:
                     dearpygui.draw_rectangle(
