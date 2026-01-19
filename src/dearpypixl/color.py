@@ -1,88 +1,78 @@
-# pyright: reportFunctionMemberAccess=false
-import inspect
-from . import _typing, _parsing, _tools, _mkstub
-from ._typing import overload, Item, Color, Any
-from .items import mvThemeColor, ThemeColor, mvThemeStyle, ThemeStyle
-
-
 def _init_module():
-    overloads = _typing.get_overloads(_add_theme_element)
+    from typing import overload, Sequence, Any
 
-    p_kwargs = inspect.Parameter('kwargs', inspect.Parameter.VAR_KEYWORD)
-
-    for ovld in overloads:
-        try:
-            ovld_sig = ovld.__signature__
-        except AttributeError:
-            ovld_sig = inspect.signature(ovld)
-        try:
-            kwargs_sig = _ITP_BASE.configure.__signature__
-        except AttributeError:
-            kwargs_sig = _ITP_BASE.configure.__signature__ = inspect.signature(
-                _ITP_BASE.configure
-        )
-
-        ovld_args = {
-            n:p for n, p in ovld_sig.parameters.items()
-            if p.kind is p.POSITIONAL_ONLY
-        }
-        ovld_kwds = {
-            n:p for n, p in kwargs_sig.parameters.items()
-            if n not in ovld_args
-            and p.kind in (p.POSITIONAL_OR_KEYWORD, p.KEYWORD_ONLY)}
-        ovld_kwds['kwargs'] = p_kwargs
-        ovld_kwds.pop('self', None)
-        ovld_kwds.pop('cls', None)
-        ovld.__signature__ = ovld_sig.replace(
-            parameters=list((ovld_args | ovld_kwds).values())
-        )
-
-    exported = _mkstub.Exported(__name__)
-
-    ns = {}
-    for elem_def in _parsing.color_definitions().values():
-        fn = _tools.create_function(
-            elem_def.name2, _DFN_ARGS,
-            _DFN_BODY,
-            _ITP_BASE,
-            globals=globals(),
-            locals={
-                'itp'      : _ITP_BASE,
-                'category' : int(elem_def.category),
-                'target'   : elem_def.target,
-            }
-        )
-        fn.__module__ = __name__
-
-        # HACK: force register existing overloads
-        for ovld in overloads:
-            ovld.__name__     = fn.__name__
-            ovld.__qualname__ = fn.__qualname__
-            overload(ovld)
-
-        exported[fn.__name__] = fn
-        exported.aliased[elem_def.name1] = fn
-        ns[elem_def.name2] = ns[elem_def.name1] = fn
-
-    globals().update(ns)
+    from dearpypixl.core import parsing
+    from dearpypixl.items import mvTheme, mvThemeComponent, mvThemeColor, mvThemeStyle
 
 
+    namespace = {
+        "mvTheme": mvTheme,
+        "mvThemeComponent": mvThemeComponent,
+        "mvThemeColor": mvThemeColor,
+        "mvThemeStyle": mvThemeStyle,
+    }
 
+    def _overload1[T = Any](
+        value: tuple[int, int, int] | tuple[int, int, int, int] | Sequence[int],
+        /, *,
+        label: str | None = None,
+        user_data: T = None,
+        use_internal_label: bool = True,
+    ) -> mvThemeColor[T]: ...
 
-_ITP_BASE = mvThemeColor
-_DFN_ARGS = ('value: Any, /', '*args: float', '**kwargs')
-_DFN_BODY = (
-    "kwargs.update(",
-    "    value=value if not args else (value, *args),",
-    "    target=target, category=category,",
-    ")",
-    "return itp(**kwargs)"
-)
+    def _overload2[T = Any](
+        r: float, g: float, b: float, a: float = 255.0,
+        /, *,
+        label: str | None = None,
+        user_data: T = None,
+        use_internal_label: bool = True,
+    ) -> mvThemeColor[T]: ...
 
-@overload
-def _add_theme_element(value: Color, /, **kwargs) -> _ITP_BASE: ...
-@overload
-def _add_theme_element(r: float, g: float, b: float, a: float = ..., /, **kwargs) -> _ITP_BASE: ...
-def _add_theme_element(*args, **kwargs) -> _ITP_BASE: ...
+    ELEM_INFO = parsing.theme_color_info().values()
+    ITEM_TYPE = mvThemeColor
+    ITEM_FUNC = ITEM_TYPE.__itemtype_command__
+
+    for info in ELEM_INFO:
+
+        def func(
+            value,
+            /,
+            *args,
+            label = None,
+            use_internal_label = True,
+            user_data = None,
+            target = None,
+            category = None,
+            __type=ITEM_TYPE,
+            __func=ITEM_FUNC,
+            __category=info.category,
+            __target=info.target,
+            **kwargs
+        ):
+            return __type._interface(
+                __type,
+                __func(
+                    __target,
+                    value if not args else (value, *args),
+                    label=label,
+                    use_internal_label=use_internal_label,
+                    user_data=user_data,
+                    category=__category,
+                ),
+            )
+
+        name = info.func_name
+        _overload1.__name__ = _overload2.__name__ = func.__name__ = \
+        _overload1.__qualname__ = _overload2.__qualname__ = func.__qualname__ = name
+
+        overload(_overload1)
+        overload(_overload2)
+
+        namespace[name] = func
+
+    namespace["__all__"] = tuple(namespace)
+
+    globals().update(namespace)
+    del globals()["_init_module"]
 
 _init_module()

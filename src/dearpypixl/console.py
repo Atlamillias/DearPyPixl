@@ -1,884 +1,739 @@
 """Items for emulating consoles and other streams."""
-# pyright: reportIncompatibleVariableOverride=false, reportIncompatibleMethodOverride=false
 import sys
 import types
+import typing
 import codeop
-import traceback
 import functools
+import traceback
 import threading
 import itertools
-import contextlib
-import types
-from dearpygui import dearpygui
-from ._typing import Item, Color
-from . import items, color, style
-from . import api, _interface, _tools
-from .api import Item as ItemAPI
-from ._typing import (
-    Item,
-    Any,
-    Sequence,
-    ItemCommand,
-    Callable,
-    Self,
-    Literal,
-    SupportsIndex,
-    Generator,
-    TypeVar,
-    ParamSpec,
-    Method,
-    override,
-)
+import collections
 
+from dearpygui import _dearpygui
 
-_T = TypeVar("_T")
-_P = ParamSpec("_P")
+from dearpypixl.core.protocols import Item, ItemCommand, ItemCallback
+from dearpypixl.core import itemtype
+from dearpypixl.core import codegen
+from dearpypixl import items
+from dearpypixl import color
+from dearpypixl import style
+from dearpypixl import constants
 
 
 
 
+class _Event[T: typing.Callable]:
+    __slots__ = ("_subscribers", "_lock", "_positional_only", "_pos_arg_count", "_callback")
 
-def _null_item_processing(self: 'FileStream', obj: _T) -> _T:
-    return obj
+    _callback: typing.Any
 
-def _null_value_processing(self: 'FileStream', obj: _T, value: Any) -> _T:
-    return value
+    def __init__(self, positional_only: bool = True, pos_arg_count: int = -1) -> None:
+        self._lock = threading.Lock()
+        self._positional_only = positional_only
+        self._pos_arg_count = None if pos_arg_count < 0 else pos_arg_count
+        self._callback = None
+        self._subscribers = []
 
-def _item_generator(item_factory: Callable[_P, _T], *args: _P.args, **kwargs: _P.kwargs) -> Generator[_T, None, None]:
-    while True:
-        yield item_factory(*args, **kwargs)
+    @staticmethod
+    def _noop(*args, **kwargs):
+        pass
+
+    def _create_callback(self, /) -> typing.Callable:
+        if len(self._subscribers) == 0:
+            return __class__._noop
+
+        if self._pos_arg_count is not None:
+            s_args = [f"arg{i}" for i in range(self._pos_arg_count)]
+        else:
+            s_args = ("*args",)
+
+        if self._positional_only:
+            s_kwds = ()
+        else:
+            s_kwds = ("**kwargs",)
+
+        fn_lcls = {f"func{i}":func for i,func in enumerate(self._subscribers)}
+        fn_args = (*s_args, *s_kwds)
+        fn_body = f"({', '.join(fn_args)})\n".join(fn_lcls).split("\n")
+        fn_body[-1] = fn_body[-1] + f"({', '.join(fn_args)})"
+
+        return codegen.create_function(
+            "callback", fn_args, fn_body, module=__name__, globals=globals(), locals=fn_lcls,
+        )
+
+    def notify(self, *args, **kwargs):
+        callback = self._callback
+        try:
+            callback(*args, **kwargs)
+            return
+        except TypeError:
+            if callback is not None:
+                raise
+
+        with self._lock:
+            if self._callback is not None:
+                callback = self._callback
+            else:
+                callback = self._callback = self._create_callback()
+
+        callback(*args, **kwargs)
+
+    __call__ = notify
+
+    def subscribe(self, callback: T, /) -> T:
+        with self._lock:
+            self._subscribers.append(callback)
+            self._callback = None
+        return callback
+
+    def unsubscribe(self, callback: typing.Any, /) -> None:
+        with self._lock:
+            self._subscribers.remove(callback)
+            self._callback = None
+
+    def subscribed(self, callback: typing.Any, /) -> bool:
+        return callback in self._subscribers
+
+    def cancel(self) -> None:
+        with self._lock:
+            self._subscribers.clear()
+            self._callback = None
 
 
-class FileStream(_interface.SupportsValueArray[str], items.mvValueRegistry):
-    """A value registry that acts like pseudo file stream or buffer. It
-    represents itself as a living multiline string split at newlines.
-        >>> f = FileStream()
-        >>> f.value = "foo\\nbar"
-        >>> f.value
-        ['f', 'o', 'o', '\\n', 'b', 'a', 'r']
-        >>> f[0] = 'b'
-        >>> f.value
-        ['b', 'o', 'o', '\\n', 'b', 'a', 'r']
-        >>> f[-1] = "FOO"
-        >>> f.value
-        ['b', 'o', 'o', '\\n', 'b', 'a', 'FOO']
-        >>> f.value = ["foobar"]
-        >>> f.value
-        ["foobar"]
+class LogRegistry[U = typing.Any](itemtype.CompositeItem, itemtype.SupportsValueArray[str], items.mvValueRegistry[U]):
+    type _AddValueCallback = typing.Callable[[LogRegistry, Item], None]
+    type _DelValueCallback = typing.Callable[[LogRegistry, Item], None]
+    type _SetValueCallback = typing.Callable[[LogRegistry, Item, str], typing.Any]
 
-    Writing to the stream appends the value written:
-        >>> f.write("helloworld")
-        >>> f.value
-        ['foobar', 'helloworld']
+    item_factory: ItemCommand
 
-    The stream will always use the string representation of any object used
-    as a value or values. When setting its' value as a whole:
-        >>> f.value = ['a', 'b', None, 'd']
-        >>> f.value
-        ['a', 'b', 'None', 'd']
+    on_value_add: _Event[_AddValueCallback]
+    on_value_del: _Event[_DelValueCallback]
+    on_value_set: _Event[_SetValueCallback]
 
-    Setting part of the value at a specific line number/index:
-        >>> f[1] = None
-        >>> f.value
-        ['a', 'None', 'None', 'd']
-
-    The string representation of the stream is the assembled value as if
-    joined by newlines:
-        >>> str(f)
-        'a\\nNone\\nNone\\nd\\n'
-
-
-    Individual 'mvStringValue' items are created to store each value added to
-    the registry. These items can be used as a source for other items. Iterating
-    through the stream will yield the identifier of the 'mvStringValue' and its
-    value. Alternatively, you can get the identifier of a value item at a specific
-    line number by indexing the stream's children (slot 1).
-
-    The stream accepts three optional callbacks during initialization. This
-    makes it easier to interface with the stream when it performs notable
-    operations. For example, when making a primitive file display:
-        >>> with dpg.window() as file_window: ...
-        >>>
-        >>> def add_line(buffer: FileStream, value_item: int | str):
-        ...     # Add a new line to the display when a value is added to
-        ...     # the stream. If the value is updated at this line, the
-        ...     # text will display accordingly.
-        ...     # Also, store the text item id within the value item for
-        ...     # `del_line`.
-        ...     text_item = dpg.add_text(parent=file_window, source=value_item)
-        >>>
-        >>> def del_line(buffer: FileStream, value_item: int | str):
-        ...     # Destroy the associated text item when the value item is
-        ...     # deleted.
-        ...     dpg.delete_item(dpg.get_item_configuration(value_item)["user_data"])
-        >>>
-        >>> f = FileStream(
-        ...     ["f", "o", "o", "bar"],
-        ...     add_item_callback=add_line,
-        ...     del_item_callback=del_line,
-        ... )
-    In the above example, writing to `f` will display content written in
-    `file_window`. There's a lot of room for creativity here; you can use `f`
-    as a logging handler for a log display. Want a more interactive display?
-    Pass `dpg.add_input_text` as the value to the *text_factory* keyword argument
-    when initializing the stream.
-    """
-
-    def __init__(
-        self,
-        default_value: Sequence[str] | str = '',
-        max_len      : int | None          = None,
+    @classmethod
+    def create(
+        cls,
+        default_value: typing.Sequence[str] | str = '',
+        max_len: int | None = None,
         *,
-        add_item_callback : Callable[[Self, _T], Any] | None       = None,
-        del_item_callback : Callable[[Self, _T], Any] | None       = None,
-        set_value_callback: Callable[[Self, _T, Any], Any] | None  = None,
-        item_factory      : ItemCommand[_P, Item]                  = dearpygui.add_string_value,
+        item_factory: ItemCommand = items.mvStringValue.__itemtype_command__,
+        label: str | None = None,
+        use_internal_label: bool = True,
+        tag: Item = 0,
+        user_data: U = None,
         **kwargs
-    ):
-        """Args:
-            * default_value: Starting value for the item.
-
-            * max_len: The total number of lines the buffer will store. Once at
-            capacity, lines are deleted in FIFO order. If unspecified or is None
-            (default), the buffer can grow to an arbitrary length.
-
-            * item_factory: Callable that returns a DearPyGui item identifier.
-
-            * add_item_callback: Callable that accepts this item and the new child value
-            item as positional arguments. It will be called immediately following the
-            value item's creation.
-
-            * del_item_callback: Callable that accepts this item and the child value item
-            scheduled for destruction as item as positional arguments. It will be called
-            before destroying the value item.
-
-            * set_value_callback: Callable that accepts this item, the child value item
-            who's value will be set, and the value to set, while returning the value to
-            set. It will be called before updating the value of a value item.
-
-        """
-        super().__init__(**kwargs)
-        self._max_len = max_len
-
-        self._add_value_item = Method(
-            _tools.create_function(
-                '_new_value_item',
-                ('self', "*args", "**kwargs"),
-                (
-                    'kwargs["parent"] = self',
-                    'vitem = item_factory(*args, **kwargs)',
-                    'callback(self, vitem)',
-                    'return vitem',
-                ),
-                Item,
-                locals={
-                    'item_factory': item_factory,
-                    'callback': add_item_callback or _null_item_processing,
-                }
-            ),
-            self,
-        )
-        self._del_value_item = Method(
-            _tools.create_function(
-                '_del_value_item',
-                ('self', 'item: int | str', '/'),
-                ('callback(self, item)', 'delete_item(item)'),
-                Item,
-                locals={
-                    'callback': del_item_callback or _null_item_processing,
-                    'delete_item': api.Registry.delete_item
-                }
-            ),
-            self,
-        )
-        self._set_value_item = Method(
-            _tools.create_function(
-                '_set_value_item',
-                ('self', 'item: int | str', 'value: str', '/'),
-                ('set_value(item, callback(self, item, value))',),
-                locals={
-                    'set_value': api.Item.set_value,
-                    'callback': set_value_callback or _null_value_processing,
-                }
-            ),
-            self,
+    ) -> typing.Self:
+        item = cls.__itemtype_command__(
+            label=label,
+            use_internal_label=use_internal_label,
+            user_data={"user_data": user_data},
+            tag=tag
         )
 
-        self._generate_items = functools.partial(_item_generator, self._add_value_item)
+        self = cls(tag=item)
+        self.max_len = max_len
+        self.item_factory = item_factory
+        self.on_value_add = _Event(True, 2)
+        self.on_value_del = _Event(True, 2)
+        self.on_value_set = _Event(True, 3)
 
         if default_value:
             self.set_value(default_value)
 
-    def __str__(self):
-        return '\n'.join(self.get_value())
+        return self
 
-    def __iter__(self):
-        vitems = self.children(1)
-        yield from zip(vitems, ItemAPI.get_values(vitems))
-
-    def __setitem__(self, index: SupportsIndex, value: Any):
-        ItemAPI.set_value(self.children(1)[index], value)
-
-    def _add_value_item(self, *args, **kwargs) -> Item: ...
-
-    def _del_value_item(self, item: Item, /) -> None: ...
-
-    def _set_value_item(self, item: Item, value: str, /) -> None: ...
-
-    def _generate_items(self, *args, **kwargs) -> Generator[Item, None, None]: ...
-
-    def _truncate_lines(self):
-        if self._max_len is not None:
-            for vitem in self.children(1)[self._max_len:]:
-                self._del_value_item(vitem)
+    def destroy(self, /) -> None:
+        for attr in ("on_value_add", "on_value_set", "on_value_del"):
+            try:
+                event = getattr(self, attr)
+            except AttributeError:
+                pass
+            else:
+                event.cancel()
+        super().destroy()
 
     @property
     def max_len(self) -> int | None:
         return self._max_len
     @max_len.setter
     def max_len(self, value: int | None):
-        if value is not None:
-            value = int(value)
-            if value < 0:
-                raise ValueError("`max_len` cannot be less than zero.")
+        if value is not None and value < 0:
+            raise ValueError("`max_len` cannot be less than zero.")
         self._max_len = value
+    @max_len.deleter
+    def max_len(self, /) -> None:
+        self._max_len = None
 
-    @override
+    @property
+    def value(self) -> list[str]:  # pyright: ignore[reportIncompatibleMethodOverride]
+        return self.get_value()
+    @value.setter
+    def value(self, value: list[str], /) -> None:  # pyright: ignore[reportIncompatibleMethodOverride]
+        self.set_value(value)
+    @value.deleter
+    def value(self) -> None:
+        self.set_value('')
+
     def get_value(self) -> list[str]:
-        return ItemAPI.get_values(self.children(1))
+        return _dearpygui.get_values(_dearpygui.get_item_configuration(self)["children"][1])
 
-    @override
-    def set_value(self, value: Sequence[Any]):
-        vitems = self.children(1)
-        for v, item in zip(value, itertools.chain(vitems, self._generate_items())):
-            self._set_value_item(item, v)
-        # delete leftover children if any
-        for item in vitems[len(value):]:
-            self._del_value_item(item)
-        self._truncate_lines()
+    def set_value(self, value: typing.Sequence[typing.Any], /) -> None:   # pyright: ignore[reportIncompatibleMethodOverride]
+        update_child = self._update_child
+        delete_child = self._delete_child
 
-    @override
-    def delete(self, *, children_only: bool = False, slot: Literal[-1, 0, 1, 2, 3] = -1) -> None:
-        self.clear()
-        super().delete(children_only=children_only, slot=slot)
+        items = self.children(1)
+        for v, item in zip(value, self._itergen_items(items)):
+            update_child(item, v)
 
-    # list-like methods
+        # delete leftover children
+        for item in items[len(value):]:
+            delete_child(item)
 
-    @override
-    def pop(self, index: SupportsIndex) -> tuple[Item, str]:
-        """Remove a line from the buffer at *index*, returning both the value
-        item identifier and value."""
-        vitem = self.children(1)[index]
-        value = ItemAPI.get_value(vitem)
-        self._del_value_item(vitem)
-        return value
+        self._truncate()
 
-    @override
-    def remove(self, value: str) -> None:
-        """At the first occurence of *value*, remove the line and value."""
-        index = self.get_value().index(value)
-        self._del_value_item(self.children(1)[index])
+    def __str__(self) -> str:
+        return '\n'.join(self.get_value())
 
-    @override
-    def insert(self, index: SupportsIndex, value: Any) -> None:
+    def __len__(self) -> int:
+        return len(self._get_children())
+
+    def __iter__(self) -> typing.Iterator[str]:
+        yield from self.get_value()
+
+    @typing.overload
+    def __setitem__(self, index: typing.SupportsIndex, value: str, /) -> None: ...
+    @typing.overload
+    def __setitem__(self, slice: slice, value: list[str], /) -> None: ...
+    def __setitem__(self, index, value, /) -> None:   # pyright: ignore[reportIncompatibleMethodOverride]
+        items = self._get_children()
+        if isinstance(index, slice):
+            items = items[index]
+            if len(items) != len(value):
+                raise ValueError("slice and string sequence must be the same length")
+
+            update_child = self._update_child
+            for item, text in zip(items[index], value):
+                update_child(item, text)
+        else:
+            self._update_child(items[index], value)
+
+    def insert(self, index: typing.SupportsIndex, value: typing.Any, /) -> None:
         """Insert *value* at *index*, offsetting the position of trailing values by 1.
-            >>> f = FileStream(["one", "two", "three"])
+            >>> f = LogRegistry(["one", "two", "three"])
             >>> f.insert(1, "four")
             >>> arr
             ["one", "four", "two", "three"]
         """
-        # Unlike most child items, value items don't have a "before" option.
-        # The new item must be added first, then rearrange the children.
-        vitems = self.children(1)
-        vitem  = self._add_value_item()
-        self._set_value_item(vitem, value)
-        vitems.insert(index, vitem)
-        self.reorder(1, vitems)
-        self._truncate_lines()
+        # value items don't have a "before" option, so first create
+        # the child then reorder the children
+        items = self._get_children()
+        child = self._create_child()
+        self._update_child(child, value)
+        items.insert(index, child)
+        self.reorder(1, items)
+        self._truncate()
 
-    @override
-    def extend(self, value: Sequence[Any]):
+    def remove(self, value: str, /) -> None:
+        """Remove the first line equal to *value*."""
+        index = self.get_value().index(value)
+        self._delete_child(self.children(1)[index])
+
+    def extend(self, value: typing.Iterable[str]) -> None:
         v = self.get_value()
         v.extend(value)
         self.set_value(v)
 
-    @override
-    def append(self, value: Any):
-        self._set_value_item(self._add_value_item(), value)
-        self._truncate_lines()
+    def append(self, value: str, /) -> None:
+        self._update_child(self._create_child(), value)
+        self._truncate()
 
-    def clear(self, *, use_del_item_callback: bool = False):
-        if not use_del_item_callback:
-            ItemAPI.delete(self, children_only=True, slot=1)
-        else:
-            self.set_value('')
+    def clear(self) -> None:
+        self.set_value('')
 
-    # misc
+    # writable stream
+    write = append
+    writelines = extend
 
-    def strip(self):
-        """Remove all empty lines from the start and end of the buffer.
-            >>> f = FileStream(["", "", "foo", "bar", ""])
-            >>> f.strip()
-            >>> arr
-            ["foo", "bar"]
-        """
-        for item, value in self:
-            if value:
-                break
-            self._del_value_item(item)
-        for item, value in self[::-1]:
-            if value:
-                break
-            self._del_value_item(item)
+    def flush(self) -> None:
+        pass
 
-    def write(self, s: str):
-        self.append(s)
+    def _itergen_items(self, items: typing.Iterable) -> typing.Generator[Item, None, None]:
+        yield from items
+        item_factory = self._create_child
+        while True:
+            yield item_factory()
+
+    def _create_child(self, /, *args, parent = 0, **kwargs):
+        child = self.item_factory(*args, parent=self, **kwargs)
+        self.on_value_add(self, child)
+        return child
+
+    def _delete_child(self, child: Item, /):
+        self.on_value_del(self, child)
+        _dearpygui.delete_item(child, children_only=False, slot=-1)
+
+    def _update_child(self, child: Item, value: str, /):
+        _dearpygui.set_value(child, value)
+        self.on_value_set(self, child, value)
+
+    def _get_children(self, /):
+        return _dearpygui.get_item_configuration(self)["children"][1]
+
+    def _truncate(self):
+        if self._max_len is not None:
+            delete_child = self._delete_child
+            for item in self._get_children()[self._max_len:]:
+                delete_child(item)
+
+
+@codegen.wrapped(LogRegistry.create)
+def add_log_registry(*args, **kwargs):
+    return LogRegistry.create(*args, **kwargs)
 
 
 
 
-class ConsoleWindow(items.mvChildWindow):
-    """A child window for displaying text logs. Writing to the item updates
-    the display with the written text.
+class Console[U = typing.Any, P: itemtype.ContainerItemT = typing.Any](itemtype.CompositeItem, items.mvChildWindow[U, P]):
+    """Renders an underlying `LogRegistry` item."""
 
-    The window does not push to and pop itself from the container stack when
-    used as a context manager. Instead, any write to stdout and/or stderr
-    will be written to the window instead. This behavior can be altered by
-    setting the boolean `.ctx_redirect_stdout` and `.ctx_redirect_stderr`
-    attributes on the class or instance.
+    _item_factory: ItemCommand
 
-    Note that when this interface is initialized, a resize handler is
-    added to the handler registry of the root parent. The handler registry
-    will be created if necessary.
+    log: LogRegistry
+    auto_scroll: bool
+    wrap_text: bool
 
-    """
-    ctx_redirect_stdout: bool = True
-    ctx_redirect_stderr: bool = False
-
-    def __init__(
-        self,
+    @typing.overload
+    @classmethod
+    def create(cls, default_value: typing.Sequence[str] | str = ..., max_len: int | None = ..., /, *, item_factory: ItemCommand = ..., auto_scroll: bool = ..., wrap_text: bool = ..., label: str | None = ..., user_data: U = ..., use_internal_label: bool = ..., tag: int | str = ..., width: int = ..., height: int = ..., indent: int = ..., parent: int | str = ..., before: int | str = ..., payload_type: str = ..., drop_callback: ItemCallback | None = ..., show: bool = ..., pos: typing.Sequence[int] = ..., filter_key: str = ..., delay_search: bool = ..., tracked: bool = ..., track_offset: float = ..., border: bool = ..., autosize_x: bool = ..., autosize_y: bool = ..., no_scrollbar: bool = ..., horizontal_scrollbar: bool = ..., menubar: bool = ..., no_scroll_with_mouse: bool = ..., flattened_navigation: bool = ..., always_use_window_padding: bool = ..., resizable_x: bool = ..., resizable_y: bool = ..., always_auto_resize: bool = ..., frame_style: bool = ..., auto_resize_x: bool = ..., auto_resize_y: bool = ..., **kwargs) -> typing.Self: ...
+    @typing.overload
+    @classmethod
+    def create(cls, /, *, log_registry: LogRegistry | Item, item_factory: ItemCommand = ..., auto_scroll: bool = ..., wrap_text: bool = ..., label: str | None = ..., user_data: U = ..., use_internal_label: bool = ..., tag: int | str = ..., width: int = ..., height: int = ..., indent: int = ..., parent: int | str = ..., before: int | str = ..., payload_type: str = ..., drop_callback: ItemCallback | None = ..., show: bool = ..., pos: typing.Sequence[int] = ..., filter_key: str = ..., delay_search: bool = ..., tracked: bool = ..., track_offset: float = ..., border: bool = ..., autosize_x: bool = ..., autosize_y: bool = ..., no_scrollbar: bool = ..., horizontal_scrollbar: bool = ..., menubar: bool = ..., no_scroll_with_mouse: bool = ..., flattened_navigation: bool = ..., always_use_window_padding: bool = ..., resizable_x: bool = ..., resizable_y: bool = ..., always_auto_resize: bool = ..., frame_style: bool = ..., auto_resize_x: bool = ..., auto_resize_y: bool = ..., **kwargs) -> typing.Self: ...
+    @classmethod
+    def create(
+        cls,
+        default_value: typing.Sequence[str] | str = '',
         max_len: int | None = None,
-        *,
-        redirect_stdout: bool | None        = None,
-        redirect_stderr: bool | None        = None,
-        auto_scroll    : bool               = True,
-        wrap_text      : bool               = True,
-        text_factory   : ItemCommand[_P, Item] = dearpygui.add_text,
-        buffer_factory : type[FileStream] = FileStream,
-        **kwargs,
+        /, *,
+        log_registry: typing.Any = 0,
+        auto_scroll: bool = True,
+        wrap_text: bool = True,
+        item_factory: ItemCommand = items.mvText.__itemtype_command__,
+        tag: Item = 0,
+        user_data: U = None,
+        **kwargs
     ):
-        """Args:
-            * max_len: The total number of records to display before deleting
-            older records in FIFO order.
+        item = cls.__itemtype_command__(user_data={"user_data": user_data, }, tag=tag, **kwargs)
 
-            * redirect_stdout: If True (class-level default), all writes to stdout
-            will instead write to this window when it is used as a context manager.
-            If None, the `.ctx_redirect_stdout` attribute will not be set at the
-            instance-level.
+        self = cls(tag=item)
+        self._item_factory = item_factory
+        self.auto_scroll = auto_scroll
+        self.wrap_text = wrap_text
 
-            * redirect_stderr: If True, all writes to stderr will instead write to
-            this window when it is used as a context manager. If None, the
-            `.ctx_redirect_stderr` attribute will not be set at the instance-level.
-
-            * auto_scroll: If True (default), the scroll position is set to view the newest
-            record when it is added.
-
-            * wrap_text: If True, displayed text will be wrapped when the root
-            window parent item is resized. Ignored when *text_factory* does produce
-            'mvText' items.
-
-            * text_factory: Creates the text items that the window displays. Supports
-            callables that create 'mvText' and 'mvInputText' items.
-
-        """
-        super().__init__(**kwargs)
-        self.wrap_text    = wrap_text
-        self.text_factory = text_factory
-        self.auto_scroll  = auto_scroll
-        self.value_buffer = buffer_factory(
-            max_len=max_len,
-            add_item_callback=self._cb_add_record,
-            del_item_callback=self._cb_del_record,
-            set_value_callback=self._cb_set_record,
-        )
-        self.__ctx_lock    = threading.RLock()
-        self.__ctx_counter = 0
-        self.__ctx_stdout  = contextlib.redirect_stdout(self)  # type: ignore
-        self.__ctx_stderr  = contextlib.redirect_stderr(self)  # type: ignore
-        if redirect_stdout is not None:
-            self.ctx_redirect_stdout = redirect_stdout
-        if redirect_stderr is not None:
-            self.ctx_redirect_stderr = redirect_stderr
-        self._attach_resize_handler()
-
-
-    # ResizeHandler management
-
-    _resize_handler_uuid = 0
-
-    def _destroy_resize_handler(self):
-        try:
-            ItemAPI.delete(self._resize_handler_uuid)
-        except SystemError:
-            pass
-
-    def _attach_resize_handler(self):
-        # XXX: this needs to be called whenever the console is re-parented!
-        if self._resize_handler_uuid:
-            self._destroy_resize_handler()
+        if log_registry:
+            if not isinstance(log_registry, LogRegistry):
+                log_registry = LogRegistry(tag=log_registry)
         else:
-            # this uuid is recycled and should not change for this object
-            self._resize_handler_uuid = api.Registry.create_uuid()
-        root_parent   = self.root_parent
-        root_handlers = ItemAPI.information(root_parent)['handlers']
-        if root_handlers is None:
-            root_handlers = items.ItemHandlerRegistry(label='')
-            ItemAPI.set_handlers(root_parent, root_handlers)
-        items.ResizeHandler(
-            label='',
-            parent=root_handlers,
-            callback=self._cb_resize,
-            tag=self._resize_handler_uuid,
-        )
+            log_registry = LogRegistry.create(default_value, max_len)
+            self.components = (log_registry,)  # cleanup on `destroy()`
 
-    # buffer callbacks
+        self.log = log_registry
+        log_registry.on_value_add.subscribe(self._on_value_add)
+        log_registry.on_value_del.subscribe(self._on_value_del)
 
-    def _cb_add_record(self, b: FileStream, item: Item):
-        text_item = self.text_factory(
-            parent=self,
-            source=item,
-        )
-        if self.wrap_text and 'wrap' in ItemAPI.configuration(text_item):
-            ItemAPI.configure(text_item, wrap=self.content_region_avail[0])   # type: ignore
-        # The 'del_item' callback will receive the source value item but
-        # not the text item. Keep a reference to the text item in the value
-        # item so it can be easily deleted later.
-        ItemAPI.configure(item, user_data=text_item)
+        return self
+
+    def destroy(self, /) -> None:
+        try:
+            log = self.log
+        except AttributeError:
+            pass
+        else:
+            try:
+                log.on_value_add.unsubscribe(self._on_value_add)
+            except (AttributeError, ValueError):
+                pass
+
+            try:
+                log.on_value_del.unsubscribe(self._on_value_del)
+            except (AttributeError, ValueError):
+                pass
+
+        super().destroy()
+
+    def write(self, s: str, /) -> None:
+        self.log.write(s)
+
+    def writelines(self, s: typing.Iterable[str], /) -> None:
+        self.log.writelines(s)
+
+    def flush(self) -> None:
+        self.log.flush()
+
+    def _on_value_add(self, log: LogRegistry, item: Item, /):
+        text_item = self._item_factory(parent=self, source=item)
+
+        if self.wrap_text and 'wrap' in _dearpygui.get_item_configuration(text_item):
+            _dearpygui.configure_item(text_item, wrap=self.content_region_avail[0])
+
+        # our callback on item delete will receive the registry value item
+        # but not out text item, so store a reference so it can find it later
+        _dearpygui.configure_item(item, user_data=text_item)
+
         if self.auto_scroll:
             self.y_scroll_pos = -1.0
 
-    def _cb_del_record(self, b: FileStream, item: Item):
-        ItemAPI.delete(ItemAPI.configuration(item)['user_data'])
-
-    def _cb_set_record(self, b: FileStream, item: Item, value: str)  -> str:
-        # XXX: This is unchanged from the default behavior and can be overridden
-        return value
-
-    def _cb_resize(self, sender: Item, *args):
-        if self.wrap_text:
-            width = self.content_region_avail[0]   # type: ignore
-            configuraton = ItemAPI.configuration
-            for text in self.children(1):
-                if 'wrap' in configuraton(text):
-                    try:
-                        ItemAPI.configure(text, wrap=width)
-                    except SystemError:
-                        pass
-
-    # context usage
-
-    __ctx_no_redirect = contextlib.nullcontext()
-    __stdout_redirect = __ctx_no_redirect
-    __stderr_redirect = __ctx_no_redirect
-
-    def __enter__(self) -> Self:
-        self.redirect()
-        return self
-
-    def __exit__(self, *args):
-        self.restore(*args)
-
-    def redirect(self):
-        with self.__ctx_lock:
-            if self.__ctx_counter > 1:
-                self.__ctx_counter += 1
-                return
-            self.__ctx_counter = 1
-            if self.ctx_redirect_stdout:
-                self.__stdout_redirect = self.__ctx_stdout
-                self.__stdout_redirect.__enter__()
-            if self.ctx_redirect_stderr:
-                self.__stderr_redirect = self.__ctx_stderr
-                self.__stderr_redirect.__enter__()
-
-    def restore(self, *args):
-        with self.__ctx_lock:
-            if self.__ctx_counter > 1:
-                self.__ctx_counter -= 1
-                return
-            self.__stdout_redirect.__exit__(*args)
-            self.__stdout_redirect = self.__ctx_no_redirect
-            self.__stderr_redirect.__exit__(*args)
-            self.__stderr_redirect = self.__ctx_no_redirect
-            self.__ctx_counter = 0
-
-    # the rest
-
-    @property
-    def max_len(self):
-        return self.value_buffer.max_len
-    @max_len.setter
-    def max_len(self, value: Any):
-        self.value_buffer.max_len = value
-
-    @override
-    def move(self, *, parent: Item = 0, before: Item = 0) -> None:
-        super().move(parent=parent, before=before)
-        if parent:
-            self._attach_resize_handler()
-
-    @override
-    def unstage(self):
-        super().unstage()
-        self._attach_resize_handler()
-
-    @override
-    def delete(self, *, children_only: bool = False, slot: Literal[-1, 0, 1, 2, 3] = -1) -> None:
-        if not children_only:
-            self._destroy_resize_handler()
-        self.value_buffer.delete(children_only=children_only, slot=slot)
-        super().delete(children_only=children_only, slot=slot)
-
-    @override
-    def destroy(self):
-        try: self._destroy_resize_handler()
-        except: pass
-        try: self.value_buffer.destroy()
-        except: pass
-        super().destroy()
-
-    def clear(self, **kwargs):
-        self.value_buffer.clear(use_del_item_callback=True)
-
-    def write(self, s: str):
-        return self.value_buffer.write(s)
+    def _on_value_del(self, log: LogRegistry, item: Item, /):
+        text_item = _dearpygui.get_item_configuration(item)["user_data"]
+        _dearpygui.delete_item(text_item, children_only=False, slot=-1)
 
 
 
-class PythonConsole(ConsoleWindow):
-    """A console window for displaying the output of executed Python
-    code.
 
-    See the `.push` and `.compile` methods for more information.
-    """
+# [ PyRepl ]
+
+class PyInterpreter:
+    type _CompileMode = typing.Literal["single", "exec", "eval"]
+
+    class _WritableBuffer[T](typing.Protocol):
+        def write(self, object: T, /) -> typing.Any: ...
+
+    def _write_traceback(self, exc_type, error, trace, source = '', /):
+        sys.last_type, sys.last_traceback = exc_type, trace
+
+        error = error.with_traceback(trace)
+        if source and isinstance(error, SyntaxError):
+            err_text = error.text
+            err_line = error.lineno
+            if not err_text and err_line is not None and source.count("\n") >= err_line:
+                error.text = source.splitlines()[err_line - 1]
+
+        sys.last_exc = sys.last_value = error
+
+        lines = traceback.format_exception(exc_type, error, trace)
+        self._stderr.write(''.join(lines))
+
+    def _write_syntaxerror(self, filename: str, source: str = ''):
+        try:
+            exc_type, error, trace = sys.exc_info()
+
+            if filename and isinstance(error, SyntaxError):
+                error.filename = filename
+
+            self._write_traceback(exc_type, error, None, source)
+        finally:
+            exc_type = error = trace = None
+
+    def _write_exception(self):
+        self._write_traceback(*sys.exc_info(), "")
+
+    _stdout_lock = threading.Lock()
+    _stdout_stack = collections.deque()
+
+    @staticmethod
+    def _redirect_stdout(file, /, *, __lock=_stdout_lock, __stack=_stdout_stack):
+        __lock.acquire()
+        sys.stdout, stdout = file, sys.stdout
+        __stack.appendleft(stdout)
+
+    @staticmethod
+    def _restore_stdout(*, __lock=_stdout_lock, __stack=_stdout_stack):
+        sys.stdout = __stack.popleft()
+        __lock.release()
+
+    del _stdout_lock, _stdout_stack
+
     def __init__(
         self,
-        locals : dict[str, Any] | None = None,
-        max_len: int | None            = None,
-        **kwargs
-    ):
-        super().__init__(
-            max_len,
-            redirect_stderr=True,
-            redirect_stdout=True,
-            auto_scroll=True,
-            wrap_text=True,
-            text_factory=dearpygui.add_text,
-            **kwargs
-        )
-        self._compiler = codeop.CommandCompiler()
+        /,
+        locals: dict[str, typing.Any] | None = None,
+        stdout: _WritableBuffer[str] | None = None,
+        stderr: _WritableBuffer[str] | None = None,
+        history: typing.Sequence[str] = (),
+        histlen: int | None = 64,
+        filename: str = "<console>"
+    ) -> None:
+        if locals is None:
+            try:
+                locals = sys.modules["__main__"].__dict__
+            except KeyError, AttributeError:
+                locals = {"__name__": "__console__", "__doc__" : None}
 
-        self.locals = locals if locals is not None else {
-            "__name__": "__console__",
-            "__doc__" : None,
-        }
-
-        with items.mvTheme(label='') as self.theme:
-            with items.mvThemeComponent(int(items.mvChildWindow), label=''):
-                self.console_color = color.ChildBg(25, 25, 25)
-                style.WindowPadding(8, 0)
-
-        with items.mvTheme() as self._stdout_theme:
-            with items.mvThemeComponent(label=''):
-                self.stdout_color = color.Text(255, 255, 255)
-                color.FrameBg(0, 0, 0, 0)
-
-        with items.mvTheme() as self._stderr_theme:
-            with items.mvThemeComponent(label=''):
-                self.stderr_color = color.Text(255, 20, 20)
-                color.FrameBg(0, 0, 0, 0)
-
-    def _cb_set_record(self, b: FileStream, item: Item, value: str) -> str:
-        # set the theme of the text
-        text_item = ItemAPI.configuration(item)['user_data']
-        if value.startswith("Traceback (") or '\nSyntaxError:' in value or '\nIndentationError:' in value:
-            theme = self._stderr_theme
-        else:
-            theme = self._stdout_theme
-        ItemAPI.set_theme(text_item, theme)
-        return value
-
-    @property
-    def filename(self):
-        return self.locals.get('__name__', '<console>')
-
-    def _write_syntax_err(self):
-        """Format and write the most recent syntax error set and
-        write it to the console.
-        """
-        exc_tp, exc_val, tb  = sys.exc_info()
-        sys.last_type        = exc_tp
-        sys.last_value       = exc_val
-        sys.last_traceback   = tb
-
-        # SyntaxErrors don't actually include the traceback in
-        # stderr. However, the traceback lines are formatted
-        # the same regardless. Remove the indent(s).
-        lines = traceback.format_exception_only(exc_tp, exc_val)
-        indent = ""
-        for char in lines[0]:
-            if not char.isspace():
-                break
-            indent += char
-        for idx, ln in enumerate(lines):
-            lines[idx] = ln.removeprefix(indent)
-
-        self.value_buffer.write(''.join(lines))
-
-    def _write_traceback(self):
-        """Format the most recent exception set and write it to the
-        console.
-        """
-        sys.last_type, sys.last_value, last_tb = ei = sys.exc_info()
-        sys.last_traceback = last_tb
         try:
-            # use the next traceback because the first is from *our* code
-            lines = traceback.format_exception(ei[0], ei[1], last_tb.tb_next)  # type: ignore
-            self.value_buffer.write(''.join(lines))
-        finally:
-            last_tb = ei = None
+            if stdout is None:
+                stdout = sys.stdout
+                if stdout is None:
+                    raise SystemError
+            if stderr is None:
+                stderr = sys.stderr
+                if stderr is None:
+                    raise SystemError
+        except AttributeError, SystemError:
+            raise SystemError(f"`stdout` and/or `stderr` not found") from None
 
-    def compile(self, s: str, filename: str = '', mode: str = 'single'):
+        self._compile = codeop.CommandCompiler()
+        self._stdout = stdout
+        self._stderr = stderr
+        self.filename = filename
+        self.locals = locals
+        self.buffer = collections.deque[str]()
+        self.history = collections.deque[str](history, histlen)
+
+    def execute(self, code: types.CodeType, source: str = '', /):
+        self.flush()
+        if source.strip() and (not self.history or self.history[0] != source):
+            self.history.appendleft(source)
+
+        try:
+            __class__._redirect_stdout(self._stdout)
+            try:
+                exec(code, self.locals)
+            finally:
+                __class__._restore_stdout()
+        except SystemExit:
+            raise
+        except:
+            self._write_exception()
+
+    def compile(self, source: str, filename: str, mode: _CompileMode = 'single'):
+        try:
+            return self._compile(source, filename, mode)
+        except (OverflowError, SyntaxError, ValueError):
+
+            self.flush()
+            if source.strip() and (not self.history or self.history[0] != source):
+                self.history.appendleft(source)
+
+            self._write_syntaxerror(filename, source)
+            return 1
+
+    def push(self, line: str, filename: str = '', mode: _CompileMode = 'single'):
         """Compile a string as source code.
 
         The return of this method varies based on the outcome of the compilation:
-            * CodeType: The code compiled sucessfully (as the returned object).
+            * `None`: More input is required.
+            * `0`: Input compiled successfully and was executed (the result of
+            which is uncertain).
+            * `1`: An exception was raised compiling the input.
 
-            * False: The code was compiled successfully but could not be executed
-            because it is incomplete.
-
-            * None: `SyntaxError` was thrown while compiling the code.
-
-        All exceptions that occur from compiling the code are displayed in the
-        console and are not raised.
+        When this method returns non-`None`, the completed source string is
+        pushed to the history cache and the input buffer is flushed.
         """
-        filename = filename or self.filename
-        try:
-            code = self._compiler(s, filename, mode)
-        except (OverflowError, SyntaxError, ValueError):
-            self._write_syntax_err()
-            return None   # invalid source code
-        if code is None:  # incomplete source code
-            return False
-        return code
+        self.buffer.append(line)
+        source = "\n".join(self.buffer)
 
-    def push(self, c: types.CodeType | str):
-        """Compile a string as source code, execute it, and display the output
-        in the console.
+        code = self.compile(source, filename, mode)
+        if code == 1:
+            return 1
 
-        The return of this method varies based on the outcome of the compilation:
-            * True: The code compiled sucessfully or was not needed, and was
-            executed.
+        if code is not None:
+            self.execute(code, source)
+            return 0
 
-            * False: The code was compiled successfully but could not be executed
-            because it is incomplete.
+        return None
 
-            * None: `SyntaxError` was thrown while compiling the code.
+    def write(self, s: str, /):
+        self.push(s)
 
-        All exceptions that occur from compiling or executing the code are
-        displayed in the console and are not raised.
+    def flush(self):
+        """Clear the input buffer."""
+        self.buffer.clear()
 
-        Accepts a string or `CodeType` object as an argument. This method will
-        execute a `CodeType` object immediately and will always return True.
-        """
-        if isinstance(c, types.CodeType):
-            code = c
-        else:
-            code = self.compile(c, self.filename)
-            if not code:
-                return code
-        with self:
+
+class PyRepl[U = typing.Any, P: itemtype.ContainerItemT = typing.Any](itemtype.CompositeItem, items.mvChildWindow[U, P]):
+    ps1 = ">>>"
+    ps2 = "..."
+
+    python: PyInterpreter
+    console: Console
+    cprompt: items.mvText
+    cinput: items.mvInputText
+
+    cin_frame: items.mvChildWindow
+
+    @typing.overload
+    @classmethod
+    def create(cls, locals: dict[str, typing.Any] | None = ..., *, log_registry: LogRegistry | Item = ..., label: str | None = None, user_data: typing.Any = None, use_internal_label: bool = True, tag: int | str = 0, width: int = 0, height: int = 0, indent: int = -1, parent: int | str = 0, before: int | str = 0, payload_type: str = '$', drop_callback: ItemCallback | None = None, show: bool = True, pos: typing.Sequence[int] = ..., filter_key: str = '', delay_search: bool = False, tracked: bool = False, track_offset: float = 0.5, border: bool = True, autosize_x: bool = False, autosize_y: bool = False, horizontal_scrollbar: bool = False, menubar: bool = False, flattened_navigation: bool = True, always_use_window_padding: bool = False, resizable_x: bool = False, resizable_y: bool = False, always_auto_resize: bool = False, frame_style: bool = False, auto_resize_x: bool = False, auto_resize_y: bool = False, **kwargs) -> typing.Self:  ... # pyright: ignore[reportInconsistentOverload]
+    @classmethod
+    def create(cls, locals = None, *, parent: int | str = 0, log_registry: Item = 0, no_scrollbar = True, no_scroll_with_mouse=True, **kwargs) ->  typing.Any:
+        if locals is None:
             try:
-                exec(code, self.locals)
-            except:
-                self._write_traceback()
-        return True
+                locals = sys.modules["__main__"].__dict__
+            except KeyError, AttributeError:
+                locals = {"__name__": "__console__", "__doc__" : None}
 
+        item = cls.__itemtype_command__(
+            parent=parent or _dearpygui.top_container_stack() or cls._create_window_parent(),
+            no_scrollbar=True,
+            no_scroll_with_mouse=True,
+            **kwargs,
+        )
+        self = cls(tag=item)
 
+        with items.handler_registry() as key_handlers:
+            items.add_key_press_handler(constants.Key.UP, callback=self.set_history_text_next)
+            items.add_key_press_handler(constants.Key.DOWN, callback=self.set_history_text_prev)
+            items.add_key_press_handler(constants.Key.ESC, callback=self.set_history_text_prev)
 
+        with items.theme() as theme:
+            with items.theme_component():
+                color.frame_bg(0, 0, 0, 0)
+                color.child_bg(0, 0, 0)
+                style.window_padding(8, 0)
+                style.frame_padding(4, 4)
+                style.item_spacing(8, 1)
 
-@_interface.auto_parent(functools.partial(  # type: ignore
-    dearpygui.add_window,
-    width=600,
-    height=400,
-    no_scrollbar=True
-))
-class InteractivePython(items.mvChildWindow):
-    """Execute Python code from an emulated interactive session.
-
-    This item will create a root parent window for itself if a parent is
-    unspecified or unavailable.
-
-    When this interface is initialized, a resize handler is added to the
-    handler registry of the root parent. The handler registry will be
-    created if necessary.
-    """
-
-    _PROMPT_1 = ">>>"
-    _PROMPT_2 = "..."
-
-    def __init__(
-        self,
-        locals: dict[str, Any] | None = None,
-        echo  : bool                  = True,
-        **kwargs
-    ):
-        """Args:
-            * locals: Namespace used for lookups.
-
-            * echo: If True, text from the input will be displayed in the
-            console when the 'enter' key is pressed.
-        """
-        if not 'label' in kwargs:
-            kwargs['label'] = f'[{type(self).__qualname__}]'
-        super().__init__(**kwargs)
-        if not self.parent.label:
-            self.parent.label = f'[{type(self).__qualname__}]'
-
-        self._input_pending = []
-
-        self.echo = echo
-
-        with items.mvTheme() as self.theme:
-            with items.mvThemeComponent():
-                style.WindowPadding(0, 0)
-                style.FramePadding(4, 4)
-                style.ItemSpacing(8, 0)
-                color.FrameBg(0, 0, 0, 0)
-
-        with items.mvTheme() as self._echo_theme:
-            with items.mvThemeComponent():
-                self.echo_color = color.Text(50, 210, 230, 150)  # cyan
+        self.theme = theme
 
         with self:
-            # The initial height needs to be very small so the input parent can
-            # have room to stretch its' legs for the initial render. Otherwise,
-            # the console will squish it and its y_scroll_max will be 0.
-            with PythonConsole(locals=locals, height=1) as self.console:
-                ...
-            with items.mvChildWindow(no_scrollbar=True, border=False, height=24) as self._input_parent:
-                self._input_parent.theme = self.theme
-                with items.mvGroup(horizontal=True, horizontal_spacing=0):
-                    self._input_prompt = items.mvText(self._PROMPT_1, indent=8)  # indent == WindowPadding[0]
-                    self.input = items.mvInputText(
-                        on_enter=True,
-                        callback=self._cb_enter,
-                        hint="(enter a partial or complete Python expression/statement)"
-                    )
+            self.console = Console.create(log_registry=log_registry, autosize_x=True, height=10, border=False)
+            self.console.log.on_value_set.subscribe(self.on_value_set)
 
-        self._attach_resize_handler()
+            with items.child_window(no_scrollbar=True, border=False, auto_resize_y=True) as self.cin_frame:
+                with items.group(horizontal=True, horizontal_spacing=0, indent=0) as group:
 
-        self.console.write("Python {} on {}\n{}\n".format(
-            sys.version,
-            sys.platform,
-            'Type "help", "copyright", "credits" or "license" for more information.\n',
-        ))
+                    with items.item_handler_registry() as handlers:
+                        items.add_item_visible_handler(callback=self.resize_console)
 
-    def _cb_enter(self, sender: Item, app_data: str, *args):
-        self._input_pending.append(app_data)
-        self.input.value = ''
-        if self.echo and app_data:
-            self.console.write(f"{self._input_prompt.value} {app_data}")
-            ItemAPI.set_theme(self.console.children(1)[-1], self._echo_theme)
-        code = self.console.compile('\n'.join(self._input_pending))
-        if code:
-            self.console.push(code)
-            self._input_prompt.value = self._PROMPT_1
-            self._input_pending.clear()
-        elif code is None:  # SyntaxError, etc.
-            self._input_prompt.value = self._PROMPT_1
-            self._input_pending.clear()
-        else:  # pending
-            self._input_prompt.value = self._PROMPT_2
-        self.input.focus()
+                    group.handlers = handlers
 
-    def _cb_resize(self):
-        # XXX: ALL of the input window must be "visible" for the first
-        # render so its' y_scroll_max gets set before `_cb_resize` reads
-        # it. If it's only viewable off-screen (in the parent's scroll
-        # area, etc) y_scroll_max will be initially set to 0. This can
-        # be worked around by setting the initial height of the console
-        # to *smol-er* to keep it from being a fatass.
-        text_wt, text_ht = self._input_prompt.rect_size  # type: ignore
-        wt_avail, ht_avail = self.content_region_avail  # type: ignore
-        # Resize the input so that it's just tall enough for the
-        # rendered font. It could be larger or smaller than before;
-        # set the height to *smol* and wait a frame (at least), then
-        # set the height based off the upd. max scroll position.
-        self._input_parent.height = 5
-        dearpygui.split_frame(delay=16)
-        input_ht = int(self._input_parent.y_scroll_max) + 8   # account for `FramePadding[1]`
-        self._input_parent.height = input_ht
+                    self.cprompt = items.add_text(self.ps1, indent=4)
+                    self.cinput = self._create_console_input()
 
-        self.input.configure(width=wt_avail - text_wt - 8)  # account for `WindowPadding[0]`
+        self.python = PyInterpreter(locals, self.console, self.console)
+        self.components = (key_handlers, handlers, theme, self.console)
 
-        self.console.height = ht_avail - input_ht
-
-    _resize_handler_uuid = 0
-
-    def _destroy_resize_handler(self):
-        try:
-            ItemAPI.delete(self._resize_handler_uuid)
-        except SystemError:
-            pass
-
-    def _attach_resize_handler(self):
-        # XXX: this needs to be called whenever the console is re-parented!
-        if self._resize_handler_uuid:
-            self._destroy_resize_handler()
-        else:
-            # this uuid is recycled and should not change for this object
-            self._resize_handler_uuid = api.Registry.create_uuid()
-        root_parent   = self.root_parent
-        root_handlers = ItemAPI.information(root_parent)['handlers']
-        if root_handlers is None:
-            root_handlers = items.ItemHandlerRegistry(label='')
-            ItemAPI.set_handlers(root_parent, root_handlers)
-        items.ResizeHandler(
-            label='',
-            parent=root_handlers,
-            callback=self._cb_resize,
-            tag=self._resize_handler_uuid,
+        self.console.write(
+            ''.join((
+                "Python ", sys.version, " on ", sys.platform,
+                '\nType "help", "copyright", "credits" or "license" for more information.\n\n'
+            ))
         )
 
-    @override
-    def move(self, *, parent: Item = 0, before: Item = 0) -> None:
-        super().move(parent=parent, before=before)
-        if parent:
-            self._attach_resize_handler()
+        return self
 
-    @override
-    def unstage(self):
-        super().unstage()
-        self._attach_resize_handler()
+    _echo: bool = False
 
-    @override
-    def delete(self, *, children_only: bool = False, slot: Literal[-1, 0, 1, 2, 3] = -1) -> None:
-        if not children_only:
-            self._destroy_resize_handler()
-        self.console.delete(children_only=children_only, slot=slot)
-        super().delete(children_only=children_only, slot=slot)
+    def on_value_set(self, log: LogRegistry, item: Item, value: str):
+        text_item = _dearpygui.get_item_configuration(item)['user_data']
+        if self._echo:
+            label = "stdin"
+            color = 50, 210, 230, 150
+        elif value.startswith("Traceback (") or '\nSyntaxError:' in value or '\nIndentationError:' in value:
+            label = "stderr"
+            color = 255, 20, 20, 255
+        else:
+            label = "stdout"
+            color = 255, 255, 255, 255
+        _dearpygui.configure_item(text_item, label=label, color=color)
 
-    @override
-    def destroy(self):
-        try: self._destroy_resize_handler()
-        except: pass
-        try: self.console.destroy()
-        except: pass
-        super().destroy()
+    _ihist_offset: int = -1
 
-    def clear_input(self):
-        """Empty the input buffer."""
-        self._input_pending.clear()
+    def reset_history_index(self, /):
+        self._ihist_offset = -1
+
+    def set_history_text(self, index: int, /):
+        try:
+            value = self.python.history[index]
+        except IndexError:  # concurrency issue?
+            return self.reset_history_index()
+
+        # BUG/HACK [concurrency issue?]: Setting the input's value right now
+        # doesn't "stick", so re-create it instead. The issue is re-produced
+        # if we try re-using the old uuid.
+        cinput = self.cinput
+        parent = self.cinput.parent
+        cinput.destroy()
+        cinput = self.cinput = self._create_console_input(value, parent)
+        cinput.focus()
+
+    def set_history_text_next(self, /):
+        hist_len = len(self.python.history)
+        if not (
+            hist_len and
+            self.cinput.is_focused and
+            self.cprompt.value == self.ps1
+        ):
+            return
+
+        index = self._ihist_offset + 1
+
+        if index > hist_len:
+            self._ihist_offset = hist_len
+            return
+
+        self.set_history_text(index)
+
+        if index == hist_len:
+            self._ihist_offset = index - 1
+        else:
+            self._ihist_offset = index
+
+    def set_history_text_prev(self, /):
+        hist_len = len(self.python.history)
+        if not (
+            hist_len and
+            self.cinput.is_focused and
+            self.cprompt.value == self.ps1
+        ):
+            return
+
+        index = self._ihist_offset - 1
+
+        if index == -1:
+            self.reset_history_index()
+            self.cinput.value = ''
+            return
+        if index < -1:
+            return
+
+        self.set_history_text(index)
+        self._ihist_offset = index
+
+    def on_cinput_enter(self, sender: Item, text: str, user_data = None):
+        self.cinput.value = ''
+
+        if text:
+            try:
+                self._echo = True
+                self.console.write(f"{self.cprompt.value} {text}")
+            finally:
+                self._echo = False
+
+        result = self.python.push(text)
+        if result is None:
+            self.cprompt.value = self.ps2
+        else:
+            self.reset_history_index()
+            self.cprompt.value = self.ps1
+
+        self.cinput.focus()
+
+    def resize_console(self, /):
+        # 4 == padding/2
+        ht_avail = self.rect_size[1] - self.cin_frame.rect_size[1] - 4
+        if ht_avail < 4:
+            self.console.configure(show=False)
+        else:
+            self.console.configure(show=True, height=ht_avail)
+
+    @staticmethod
+    def _create_window_parent():
+        return items.window(width=600, height=400, no_scrollbar=True, no_scroll_with_mouse=True)
+
+    def _create_console_input(self, default_value='', parent=0, tag=0):
+        return items.add_input_text(
+            default_value=default_value,
+            parent=parent,
+            tag=tag,
+            hint="(enter a partial or complete Python expression/statement)",
+            on_enter=True,
+            escape_clears_all=True,
+            width=-1,
+            callback=self.on_cinput_enter,
+        )
 
 
+@codegen.wrapped(PyRepl.create)
+def add_pyrepl(*args, **kwargs): # type: ignore
+    return PyRepl.create(*args, **kwargs)

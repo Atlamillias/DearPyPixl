@@ -1,23 +1,19 @@
-"""[EXPERIMENTAL] Tools for creating and managing menus."""
-# pyright: reportIncompatibleVariableOverride=false, reportIncompatibleMethodOverride=false
-import warnings
-warnings.warn(
-    f"The {__name__!r} module and its' contents are experimental "
-    "and may change without notice."
-)
 
 import collections
-from ._typing import (
+from typing import (
     Any,
     Callable,
     Sequence,
     overload,
     override,
     Any,
-    Item,
 )
-from . import _interface, api,items, color, style, events
-from .api import Viewport
+
+from dearpygui import dearpygui, _dearpygui
+
+from dearpypixl.core import protocols
+from dearpypixl.core import itemtype
+from dearpypixl import items, color, style, events
 
 
 __all__ = [
@@ -31,6 +27,18 @@ __all__ = [
 
 
 
+
+class _mutex:
+    __slots__ = ()
+
+    acquire = _dearpygui.lock_mutex
+    release = _dearpygui.unlock_mutex
+
+    def __enter__(self, /) -> None:
+        self.acquire()  # type: ignore
+
+    def __exit__(self, exc_type=None, error=None, traceback=None, /) -> None:
+        self.release()  # type: ignore
 
 class _CtxMenuStack(collections.deque[tuple['ContextMenu', 'ContextItem | None']]):
     __slots__ = ('_lock',)
@@ -46,13 +54,14 @@ class _CtxMenuStack(collections.deque[tuple['ContextMenu', 'ContextItem | None']
 
     def __init__(self, *, maxlen: int | None = None) -> None:
         super().__init__(maxlen=maxlen)
-        self._lock = api.mutex()
+        self._lock = _mutex()
 
     def __cb_close_all(self, sender, mdown_info: tuple[int,  float]):
         '''Close all context menus when a mouse down event is
         captured while the cursor is away from them.'''
         duration = mdown_info[1]
-        events.Py_DECREF(mdown_info)
+        events._Py_DECREF(mdown_info)
+
         # ignore long-press/drag events
         if duration >= 0.05 or self.hovered_menu():
             return
@@ -65,11 +74,10 @@ class _CtxMenuStack(collections.deque[tuple['ContextMenu', 'ContextItem | None']
         except AttributeError:
             hr_id = f'[{items.mvHandlerRegistry.__name__}] {__name__}'
 
-            if api.Registry.alias_exists(hr_id):
-                type(self).__ctx_hregistry = items.mvHandlerRegistry.new(hr_id)
-
+            if _dearpygui.does_alias_exist(hr_id):
+                __class__.__ctx_hregistry = items.mvHandlerRegistry(tag=hr_id)
             else:
-                with items.mvHandlerRegistry.aliased(tag=hr_id, show=False) as type(self).__ctx_hregistry:
+                with items.mvHandlerRegistry.create(tag=hr_id, show=False) as __class__.__ctx_hregistry:
                     items.mvMouseDownHandler(callback=self.__cb_close_all)
 
         return self.__ctx_hregistry
@@ -82,7 +90,7 @@ class _CtxMenuStack(collections.deque[tuple['ContextMenu', 'ContextItem | None']
 
     def hovered_menu(self):
         with self._lock:
-            csr_x_pos, csr_y_pos = Viewport.mouse_pos_global()
+            csr_x_pos, csr_y_pos = _dearpygui.get_mouse_pos(local=False)
             for ctx_branch in self:
                 state = ctx_branch[0].state()
                 x_pos, y_pos   = state['pos']        # type: ignore
@@ -165,7 +173,7 @@ def close_context_menus_from(menu: 'ContextMenu'):
     If *menu* is not opened, all open context menus are
     closed.
     """
-    with api.mutex():
+    with _mutex():
         while _CTX_MENU_STACK:
             if _CTX_MENU_STACK[0][0] == menu:
                 break
@@ -212,23 +220,23 @@ def _get_default_theme_items(cls: type, component_name: str):
         cls, items.mvThemeComponent, f'{component_name}.style'
     ).replace('..', '.')
 
-    if api.Registry.alias_exists(theme_alias):
-        theme = items.mvTheme.new(theme_alias)
+    if _dearpygui.does_alias_exist(theme_alias):
+        theme = items.mvTheme(tag=theme_alias)
 
-        if api.Registry.alias_exists(tc_color_alias):
-            tc_color = items.mvThemeComponent.new(tc_color_alias)
+        if _dearpygui.does_alias_exist(tc_color_alias):
+            tc_color = items.mvThemeComponent(tag=tc_color_alias)
         else:
-            tc_color = items.mvThemeComponent.aliased(tag=tc_color_alias, parent=theme)
+            tc_color = items.mvThemeComponent.create(tag=tc_color_alias, parent=theme)
 
-        if api.Registry.alias_exists(tc_style_alias):
-            tc_style = items.mvThemeComponent.new(tc_style_alias)
+        if _dearpygui.does_alias_exist(tc_style_alias):
+            tc_style = items.mvThemeComponent(tag=tc_style_alias)
         else:
-            tc_style = items.mvThemeComponent.aliased(tag=tc_style_alias, parent=theme)
+            tc_style = items.mvThemeComponent.create(tag=tc_style_alias, parent=theme)
 
     else:
-        with items.mvTheme.aliased(tag=theme_alias) as theme:
-            tc_color = items.mvThemeComponent.aliased(tag=tc_color_alias)
-            tc_style = items.mvThemeComponent.aliased(tag=tc_style_alias)
+        with items.mvTheme.create(tag=theme_alias) as theme:
+            tc_color = items.mvThemeComponent.create(tag=tc_color_alias)
+            tc_style = items.mvThemeComponent.create(tag=tc_style_alias)
 
     return theme, tc_color, tc_style
 
@@ -239,7 +247,7 @@ def _ensure_theme_elements(theme_component: items.mvThemeComponent, *elems: tupl
     with theme_component:
         for fn, elem_v in elems:
             alias = f'{tc_alias}.{fn.__name__}'
-            if not api.Registry.alias_exists(alias):
+            if not _dearpygui.does_alias_exist(alias):
                 element = fn(*elem_v)
                 element.alias = alias
 
@@ -249,7 +257,7 @@ def _fix_menu_position(menu_x_size: int, menu_y_size: int, x_pos: int, y_pos: in
     # XXX: The only difference between this positioning behavior
     # and `MenuItem._cb_hovered`s behavior is that padding isn't
     # a factor here.
-    _vp_cfg = Viewport.configuration()
+    _vp_cfg = _dearpygui.get_viewport_configuration(0)
     vp_wt = _vp_cfg['client_width']  # type: ignore
     vp_ht = _vp_cfg['client_height'] # type: ignore
     if menu_x_size > vp_wt - x_pos:
@@ -260,7 +268,7 @@ def _fix_menu_position(menu_x_size: int, menu_y_size: int, x_pos: int, y_pos: in
 
 
 
-class ContextItem(_interface.SupportsCallback, items.mvGroup):
+class ContextItem(itemtype.SupportsCallback, items.mvGroup):
     """A highly-customizable implementation of `mvMenuItem` for
     vertical context menus.
 
@@ -299,7 +307,7 @@ class ContextItem(_interface.SupportsCallback, items.mvGroup):
         width             : int = ...,
         height            : int = ...,
         indent            : int = ...,
-        before            : Item = ...,
+        before            : int | str = ...,
         payload_type      : str = ...,
         drag_callback     : Callable | None = ...,
         drop_callback     : Callable | None = ...,
