@@ -24,19 +24,20 @@ dependencies = [
     "dearpygui ~= 2.0",
 ]
 
-[project.optional-dependencies]
-dev = ['build']
+[dependency-groups]
+dev = ["build", "setuptools"]
 
 
 [tool.pyright]
 include = ["src"]
 openFilesOnly = false
 
-[tool.setuptools]
-packages = [
-    "src/dearpypixl",
-]
-include-package-data = true
+[build-system]
+requires  = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
 
 [tool.setuptools.package-data]
-dearpypixl = ["*.typed", "*.pyi"]
+"*" = ["*.typed", "*.pyi"]
