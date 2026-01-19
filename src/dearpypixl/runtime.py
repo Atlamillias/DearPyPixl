@@ -258,6 +258,8 @@ class Runtime:
 
                         self._signal_hook()
 
+                    break
+
                 except RESUME:
                     continue
 
