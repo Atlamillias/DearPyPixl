@@ -177,7 +177,7 @@ def item_state_property(doc: str | None = None) -> property[typing.Any, typing.A
     return codegen.DescriptorDelegate(factory)  # type: ignore
 
 
-class AppItem[U = typing.Any, V = typing.Any, P: typing.Any = ContainerItem | None](
+class AppItem[U = typing.Any, V = typing.Any, P: typing.Any = ContainerItem | None](  
     interface.Interface, int, metaclass=AppItemType
 ):
     __slots__ = ()

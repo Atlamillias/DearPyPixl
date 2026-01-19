@@ -177,7 +177,7 @@ __all__ = (
 )
 
 
-class mvStage[U = Any](RootItem[U, Any, None]):
+class mvStage[U = Any, C: ChildItemT = Any](RootItem[U, C, None]):
     __slots__ = ()
     @staticmethod
     def __itemtype_command__(*, label: str | None = None, user_data: Any = None, use_internal_label: bool = True, tag: Item = 0, **kwargs) -> Item: ...
@@ -190,7 +190,7 @@ def stage[U: Any](*, label: str | None = None, user_data: U = None, use_internal
 def add_stage[U: Any](*, label: str | None = None, user_data: U = None, use_internal_label: bool = True, tag: Item = 0, **kwargs) -> mvStage[U]: ...
 
 
-class mvWindowAppItem[U = Any](SupportsRect, RootItem[U, Any, None]):
+class mvWindowAppItem[U = Any, C: ChildItemT = Any](SupportsRect, RootItem[U, C, None]):
     __slots__ = ()
     x_scroll_max: Property[float, Never, false]
     x_scroll_pos: Property[float, float, false]
@@ -402,7 +402,7 @@ def theme_component[U: Any](item_type: int = 0, *, label: str | None = None, use
 def add_theme_component[U: Any](item_type: int = 0, *, label: str | None = None, user_data: U = None, use_internal_label: bool = True, tag: Item = 0, parent: Item = 0, before: Item = 0, enabled_state: bool = True, **kwargs) -> mvThemeComponent[U]: ...
 
 
-class mvTheme[U = Any](ThemeAPI, RootItem[U, mvThemeComponent, None]):
+class mvTheme[U = Any, C: mvThemeComponent = mvThemeComponent](ThemeAPI, RootItem[U, C, None]):
     __slots__ = ()
     @staticmethod
     def __itemtype_command__(*, label: str | None = None, user_data: Any = None, use_internal_label: bool = True, tag: Item = 0, **kwargs) -> Item: ...
@@ -459,7 +459,7 @@ def font[U: Any](file: str, size: int, *, label: str | None = None, user_data: U
 def add_font[U: Any](file: str, size: int, *, label: str | None = None, user_data: U = None, use_internal_label: bool = True, tag: Item = 0, pixel_snapH: bool = False, parent: Item = 10, **kwargs) -> mvFont[U]: ...
 
 
-class mvFontRegistry[U = Any](FontAPI, RootItem[U, mvFont, None]):
+class mvFontRegistry[U = Any, C: mvFont = mvFont](FontAPI, RootItem[U, C, None]):
     __slots__ = ()
     show: Property[bool, bool, false]
     @staticmethod
@@ -647,7 +647,7 @@ class mvMouseWheelHandler[U = Any, CB: ItemCallback = Any](ChildCallbackItem[U, 
 def add_mouse_wheel_handler[U: Any](*, label: str | None = None, user_data: U = None, use_internal_label: bool = True, tag: Item = 0, callback: ItemCallback | None = None, show: bool = True, parent: Item = 11, **kwargs) -> mvMouseWheelHandler[U]: ...
 
 
-class mvHandlerRegistry[U = Any](RootItem[U, HandlerItem, None]):
+class mvHandlerRegistry[U = Any, C: ChildItemT = HandlerItem](RootItem[U, C, None]):
     __slots__ = ()
     show: Property[bool, bool, false]
     @staticmethod
@@ -859,7 +859,7 @@ class mvVisibleHandler[U = Any, CB: ItemCallback = Any](ChildCallbackItem[U, Non
 def add_item_visible_handler[U: Any](*, label: str | None = None, user_data: U = None, use_internal_label: bool = True, tag: Item = 0, parent: Item = 0, callback: ItemCallback | None = None, show: bool = True, **kwargs) -> mvVisibleHandler[U]: ...
 
 
-class mvItemHandlerRegistry[U = Any](RootItem[U, HandlerItem, None]):
+class mvItemHandlerRegistry[U = Any, C: ChildItemT = HandlerItem](RootItem[U, C, None]):
     __slots__ = ()
     show: Property[bool, bool, false]
     @staticmethod
@@ -1102,7 +1102,7 @@ class mvColorPicker[U = Any, P: ContainerItemT = Any, CB: ItemCallback = Any](Su
 def add_color_picker[U: Any](default_value: Sequence[int] = (0, 0, 0, 255), *, label: str | None = None, user_data: U = None, use_internal_label: bool = True, tag: Item = 0, width: int = 0, height: int = 0, indent: int = -1, parent: Item = 0, before: Item = 0, source: int | str = 0, payload_type: str = '$$DPG_PAYLOAD', callback: ItemCallback | None = None, drag_callback: ItemCallback | None = None, drop_callback: ItemCallback | None = None, show: bool = True, enabled: bool = True, pos: Sequence[int] = (), filter_key: str = '', tracked: bool = False, track_offset: float = 0.5, no_alpha: bool = False, no_side_preview: bool = False, no_small_preview: bool = False, no_inputs: bool = False, no_tooltip: bool = False, no_label: bool = False, alpha_bar: bool = False, display_rgb: bool = False, display_hsv: bool = False, display_hex: bool = False, picker_mode: int = 33554432, alpha_preview: int = 0, display_type: int = 8388608, input_mode: int = 134217728, **kwargs) -> mvColorPicker[U]: ...
 
 
-class mvValueRegistry[U = Any](RootItem[U, Any, None]):
+class mvValueRegistry[U = Any, C: ChildItemT = ChildItem](RootItem[U, C, None]):
     __slots__ = ()
     @staticmethod
     def __itemtype_command__(*, label: str | None = None, user_data: Any = None, use_internal_label: bool = True, tag: Item = 0, **kwargs) -> Item: ...
@@ -1232,7 +1232,7 @@ class mvBoolValue[U = Any, V: bool = bool](ChildItem[U, V, mvValueRegistry]):
 def add_bool_value[U: Any](*, label: str | None = None, user_data: U = None, use_internal_label: bool = True, tag: Item = 0, source: int | str = 0, default_value: bool = False, parent: Item = 13, **kwargs) -> mvBoolValue[U]: ...
 
 
-class mvTemplateRegistry[U = Any](RootItem[U, Any, None]):
+class mvTemplateRegistry[U = Any, C: ChildItemT = Any](RootItem[U, C, None]):
     __slots__ = ()
     @staticmethod
     def __itemtype_command__(*, label: str | None = None, user_data: Any = None, use_internal_label: bool = True, tag: Item = 0, **kwargs) -> Item: ...
@@ -1245,7 +1245,7 @@ def template_registry[U: Any](*, label: str | None = None, user_data: U = None, 
 def add_template_registry[U: Any](*, label: str | None = None, user_data: U = None, use_internal_label: bool = True, tag: Item = 0, **kwargs) -> mvTemplateRegistry[U]: ...
 
 
-class mvTextureRegistry[U = Any](RootItem[U, Any, None]):
+class mvTextureRegistry[U = Any, C: ChildItemT = Any](RootItem[U, C, None]):
     __slots__ = ()
     show: Property[bool, bool, false]
     @staticmethod
@@ -1813,7 +1813,7 @@ class mvPlotLegend[U = Any](ChildItem[U, None, mvPlot]):
 def add_plot_legend[U: Any](*, label: str | None = None, user_data: U = None, use_internal_label: bool = True, tag: Item = 0, parent: Item = 0, payload_type: str = '$$DPG_PAYLOAD', drop_callback: ItemCallback | None = None, show: bool = True, location: int = 5, horizontal: bool = False, sort: bool = False, outside: bool = False, no_highlight_item: bool = False, no_highlight_axis: bool = False, no_menus: bool = False, no_buttons: bool = False, **kwargs) -> mvPlotLegend[U]: ...
 
 
-class mvViewportDrawlist[U = Any](DrawingAPI, RootItem[U, Any, None]):
+class mvViewportDrawlist[U = Any, C: ChildItemT = Any](DrawingAPI, RootItem[U, C, None]):
     __slots__ = ()
     show: Property[bool, bool, false]
     filter_key: Property[str, str, false]
@@ -1846,7 +1846,7 @@ def drawlist[U: Any](width: int, height: int, *, label: str | None = None, user_
 def add_drawlist[U: Any](width: int, height: int, *, label: str | None = None, user_data: U = None, use_internal_label: bool = True, tag: Item = 0, parent: Item = 0, before: Item = 0, callback: ItemCallback | None = None, show: bool = True, pos: Sequence[int] = (), filter_key: str = '', delay_search: bool = False, tracked: bool = False, track_offset: float = 0.5, **kwargs) -> mvDrawlist[U]: ...
 
 
-class mvDrawLayer[U = Any, P: mvDrawlist[Any, Any] | mvViewportDrawlist[Any] | mvWindowAppItem[Any] = Any](DrawingAPI, ChildContainerItem[U, None, P, Any]):
+class mvDrawLayer[U = Any, P: mvDrawlist[Any, Any] | mvViewportDrawlist[Any, Any] | mvWindowAppItem[Any, Any] = Any](DrawingAPI, ChildContainerItem[U, None, P, Any]):
     __slots__ = ()
     show: Property[bool, bool, false]
     perspective_divide: Property[bool, bool, false]
@@ -1864,7 +1864,7 @@ def draw_layer[U: Any](*, label: str | None = None, user_data: U = None, use_int
 def add_draw_layer[U: Any](*, label: str | None = None, user_data: U = None, use_internal_label: bool = True, tag: Item = 0, parent: Item = 0, before: Item = 0, show: bool = True, perspective_divide: bool = False, depth_clipping: bool = False, cull_mode: int = 0, **kwargs) -> mvDrawLayer[U]: ...
 
 
-class mvDrawNode[U = Any, P: mvDrawlist[Any, Any] | mvViewportDrawlist[Any] | mvWindowAppItem[Any] | mvDrawLayer[Any, Any] | mvDrawNode[Any, Any] = Any](DrawingAPI, ChildContainerItem[U, None, P, Any]):
+class mvDrawNode[U = Any, P: mvDrawlist[Any, Any] | mvViewportDrawlist[Any, Any] | mvWindowAppItem[Any, Any] | mvDrawLayer[Any, Any] | mvDrawNode[Any, Any] = Any](DrawingAPI, ChildContainerItem[U, None, P, Any]):
     __slots__ = ()
     show: Property[bool, bool, false]
     @staticmethod
@@ -1879,7 +1879,7 @@ def draw_node[U: Any](*, label: str | None = None, user_data: U = None, use_inte
 def add_draw_node[U: Any](*, label: str | None = None, user_data: U = None, use_internal_label: bool = True, tag: Item = 0, parent: Item = 0, before: Item = 0, show: bool = True, **kwargs) -> mvDrawNode[U]: ...
 
 
-class mvDrawArrow[U = Any, P: mvDrawlist[Any, Any] | mvViewportDrawlist[Any] | mvWindowAppItem[Any] | mvDrawLayer[Any, Any] | mvDrawNode[Any, Any] = Any](DrawingAPI, ChildItem[U, None, P]):
+class mvDrawArrow[U = Any, P: mvDrawlist[Any, Any] | mvViewportDrawlist[Any, Any] | mvWindowAppItem[Any, Any] | mvDrawLayer[Any, Any] | mvDrawNode[Any, Any] = Any](DrawingAPI, ChildItem[U, None, P]):
     __slots__ = ()
     show: Property[bool, bool, false]
     color: Property[Sequence[int], Sequence[int], false]
@@ -1895,7 +1895,7 @@ class mvDrawArrow[U = Any, P: mvDrawlist[Any, Any] | mvViewportDrawlist[Any] | m
 def draw_arrow[U: Any](p1: Sequence[float], p2: Sequence[float], *, label: str | None = None, user_data: U = None, use_internal_label: bool = True, tag: Item = 0, parent: Item = 0, before: Item = 0, show: bool = True, color: Sequence[int] = (255, 255, 255, 255), thickness: float = 1.0, size: int = 4, **kwargs) -> mvDrawArrow[U]: ...
 
 
-class mvDrawBezierCubic[U = Any, P: mvDrawlist[Any, Any] | mvViewportDrawlist[Any] | mvWindowAppItem[Any] | mvDrawLayer[Any, Any] | mvDrawNode[Any, Any] = Any](DrawingAPI, ChildItem[U, None, P]):
+class mvDrawBezierCubic[U = Any, P: mvDrawlist[Any, Any] | mvViewportDrawlist[Any, Any] | mvWindowAppItem[Any, Any] | mvDrawLayer[Any, Any] | mvDrawNode[Any, Any] = Any](DrawingAPI, ChildItem[U, None, P]):
     __slots__ = ()
     show: Property[bool, bool, false]
     color: Property[Sequence[int], Sequence[int], false]
@@ -1911,7 +1911,7 @@ class mvDrawBezierCubic[U = Any, P: mvDrawlist[Any, Any] | mvViewportDrawlist[An
 def draw_bezier_cubic[U: Any](p1: Sequence[float], p2: Sequence[float], p3: Sequence[float], p4: Sequence[float], *, label: str | None = None, user_data: U = None, use_internal_label: bool = True, tag: Item = 0, parent: Item = 0, before: Item = 0, show: bool = True, color: Sequence[int] = (255, 255, 255, 255), thickness: float = 1.0, segments: int = 0, **kwargs) -> mvDrawBezierCubic[U]: ...
 
 
-class mvDrawBezierQuadratic[U = Any, P: mvDrawlist[Any, Any] | mvViewportDrawlist[Any] | mvWindowAppItem[Any] | mvDrawLayer[Any, Any] | mvDrawNode[Any, Any] = Any](DrawingAPI, ChildItem[U, None, P]):
+class mvDrawBezierQuadratic[U = Any, P: mvDrawlist[Any, Any] | mvViewportDrawlist[Any, Any] | mvWindowAppItem[Any, Any] | mvDrawLayer[Any, Any] | mvDrawNode[Any, Any] = Any](DrawingAPI, ChildItem[U, None, P]):
     __slots__ = ()
     show: Property[bool, bool, false]
     color: Property[Sequence[int], Sequence[int], false]
@@ -1927,7 +1927,7 @@ class mvDrawBezierQuadratic[U = Any, P: mvDrawlist[Any, Any] | mvViewportDrawlis
 def draw_bezier_quadratic[U: Any](p1: Sequence[float], p2: Sequence[float], p3: Sequence[float], *, label: str | None = None, user_data: U = None, use_internal_label: bool = True, tag: Item = 0, parent: Item = 0, before: Item = 0, show: bool = True, color: Sequence[int] = (255, 255, 255, 255), thickness: float = 1.0, segments: int = 0, **kwargs) -> mvDrawBezierQuadratic[U]: ...
 
 
-class mvDrawCircle[U = Any, P: mvDrawlist[Any, Any] | mvViewportDrawlist[Any] | mvWindowAppItem[Any] | mvDrawLayer[Any, Any] | mvDrawNode[Any, Any] = Any](DrawingAPI, ChildItem[U, None, P]):
+class mvDrawCircle[U = Any, P: mvDrawlist[Any, Any] | mvViewportDrawlist[Any, Any] | mvWindowAppItem[Any, Any] | mvDrawLayer[Any, Any] | mvDrawNode[Any, Any] = Any](DrawingAPI, ChildItem[U, None, P]):
     __slots__ = ()
     show: Property[bool, bool, false]
     color: Property[Sequence[int], Sequence[int], false]
@@ -1944,7 +1944,7 @@ class mvDrawCircle[U = Any, P: mvDrawlist[Any, Any] | mvViewportDrawlist[Any] | 
 def draw_circle[U: Any](center: Sequence[float], radius: float, *, label: str | None = None, user_data: U = None, use_internal_label: bool = True, tag: Item = 0, parent: Item = 0, before: Item = 0, show: bool = True, color: Sequence[int] = (255, 255, 255, 255), fill: Sequence[int] = (0, 0, 0, -255), thickness: float = 1.0, segments: int = 0, **kwargs) -> mvDrawCircle[U]: ...
 
 
-class mvDrawEllipse[U = Any, P: mvDrawlist[Any, Any] | mvViewportDrawlist[Any] | mvWindowAppItem[Any] | mvDrawLayer[Any, Any] | mvDrawNode[Any, Any] = Any](DrawingAPI, ChildItem[U, None, P]):
+class mvDrawEllipse[U = Any, P: mvDrawlist[Any, Any] | mvViewportDrawlist[Any, Any] | mvWindowAppItem[Any, Any] | mvDrawLayer[Any, Any] | mvDrawNode[Any, Any] = Any](DrawingAPI, ChildItem[U, None, P]):
     __slots__ = ()
     show: Property[bool, bool, false]
     color: Property[Sequence[int], Sequence[int], false]
@@ -1961,7 +1961,7 @@ class mvDrawEllipse[U = Any, P: mvDrawlist[Any, Any] | mvViewportDrawlist[Any] |
 def draw_ellipse[U: Any](pmin: Sequence[float], pmax: Sequence[float], *, label: str | None = None, user_data: U = None, use_internal_label: bool = True, tag: Item = 0, parent: Item = 0, before: Item = 0, show: bool = True, color: Sequence[int] = (255, 255, 255, 255), fill: Sequence[int] = (0, 0, 0, -255), thickness: float = 1.0, segments: int = 32, **kwargs) -> mvDrawEllipse[U]: ...
 
 
-class mvDrawImage[U = Any, P: mvDrawlist[Any, Any] | mvViewportDrawlist[Any] | mvWindowAppItem[Any] | mvDrawLayer[Any, Any] | mvDrawNode[Any, Any] = Any](DrawingAPI, ChildItem[U, None, P]):
+class mvDrawImage[U = Any, P: mvDrawlist[Any, Any] | mvViewportDrawlist[Any, Any] | mvWindowAppItem[Any, Any] | mvDrawLayer[Any, Any] | mvDrawNode[Any, Any] = Any](DrawingAPI, ChildItem[U, None, P]):
     __slots__ = ()
     show: Property[bool, bool, false]
     uv_min: Property[Sequence[float], Sequence[float], false]
@@ -1977,7 +1977,7 @@ class mvDrawImage[U = Any, P: mvDrawlist[Any, Any] | mvViewportDrawlist[Any] | m
 def draw_image[U: Any](texture_tag: int | str, pmin: Sequence[float], pmax: Sequence[float], *, label: str | None = None, user_data: U = None, use_internal_label: bool = True, tag: Item = 0, parent: Item = 0, before: Item = 0, show: bool = True, uv_min: Sequence[float] = (0.0, 0.0), uv_max: Sequence[float] = (1.0, 1.0), color: Sequence[int] = (255, 255, 255, 255), **kwargs) -> mvDrawImage[U]: ...
 
 
-class mvDrawImageQuad[U = Any, P: mvDrawlist[Any, Any] | mvViewportDrawlist[Any] | mvWindowAppItem[Any] | mvDrawLayer[Any, Any] | mvDrawNode[Any, Any] = Any](DrawingAPI, ChildItem[U, None, P]):
+class mvDrawImageQuad[U = Any, P: mvDrawlist[Any, Any] | mvViewportDrawlist[Any, Any] | mvWindowAppItem[Any, Any] | mvDrawLayer[Any, Any] | mvDrawNode[Any, Any] = Any](DrawingAPI, ChildItem[U, None, P]):
     __slots__ = ()
     show: Property[bool, bool, false]
     uv1: Property[Sequence[float], Sequence[float], false]
@@ -1995,7 +1995,7 @@ class mvDrawImageQuad[U = Any, P: mvDrawlist[Any, Any] | mvViewportDrawlist[Any]
 def draw_image_quad[U: Any](texture_tag: int | str, p1: Sequence[float], p2: Sequence[float], p3: Sequence[float], p4: Sequence[float], *, label: str | None = None, user_data: U = None, use_internal_label: bool = True, tag: Item = 0, parent: Item = 0, before: Item = 0, show: bool = True, uv1: Sequence[float] = (0.0, 0.0), uv2: Sequence[float] = (1.0, 0.0), uv3: Sequence[float] = (1.0, 1.0), uv4: Sequence[float] = (0.0, 1.0), color: Sequence[int] = (255, 255, 255, 255), **kwargs) -> mvDrawImageQuad[U]: ...
 
 
-class mvDrawLine[U = Any, P: mvDrawlist[Any, Any] | mvViewportDrawlist[Any] | mvWindowAppItem[Any] | mvDrawLayer[Any, Any] | mvDrawNode[Any, Any] = Any](DrawingAPI, ChildItem[U, None, P]):
+class mvDrawLine[U = Any, P: mvDrawlist[Any, Any] | mvViewportDrawlist[Any, Any] | mvWindowAppItem[Any, Any] | mvDrawLayer[Any, Any] | mvDrawNode[Any, Any] = Any](DrawingAPI, ChildItem[U, None, P]):
     __slots__ = ()
     show: Property[bool, bool, false]
     color: Property[Sequence[int], Sequence[int], false]
@@ -2010,7 +2010,7 @@ class mvDrawLine[U = Any, P: mvDrawlist[Any, Any] | mvViewportDrawlist[Any] | mv
 def draw_line[U: Any](p1: Sequence[float], p2: Sequence[float], *, label: str | None = None, user_data: U = None, use_internal_label: bool = True, tag: Item = 0, parent: Item = 0, before: Item = 0, show: bool = True, color: Sequence[int] = (255, 255, 255, 255), thickness: float = 1.0, **kwargs) -> mvDrawLine[U]: ...
 
 
-class mvDrawPolygon[U = Any, P: mvDrawlist[Any, Any] | mvViewportDrawlist[Any] | mvWindowAppItem[Any] | mvDrawLayer[Any, Any] | mvDrawNode[Any, Any] = Any](DrawingAPI, ChildItem[U, None, P]):
+class mvDrawPolygon[U = Any, P: mvDrawlist[Any, Any] | mvViewportDrawlist[Any, Any] | mvWindowAppItem[Any, Any] | mvDrawLayer[Any, Any] | mvDrawNode[Any, Any] = Any](DrawingAPI, ChildItem[U, None, P]):
     __slots__ = ()
     show: Property[bool, bool, false]
     color: Property[Sequence[int], Sequence[int], false]
@@ -2026,7 +2026,7 @@ class mvDrawPolygon[U = Any, P: mvDrawlist[Any, Any] | mvViewportDrawlist[Any] |
 def draw_polygon[U: Any](points: list[list[float]], *, label: str | None = None, user_data: U = None, use_internal_label: bool = True, tag: Item = 0, parent: Item = 0, before: Item = 0, show: bool = True, color: Sequence[int] = (255, 255, 255, 255), fill: Sequence[int] = (0, 0, 0, -255), thickness: float = 1.0, **kwargs) -> mvDrawPolygon[U]: ...
 
 
-class mvDrawPolyline[U = Any, P: mvDrawlist[Any, Any] | mvViewportDrawlist[Any] | mvWindowAppItem[Any] | mvDrawLayer[Any, Any] | mvDrawNode[Any, Any] = Any](DrawingAPI, ChildItem[U, None, P]):
+class mvDrawPolyline[U = Any, P: mvDrawlist[Any, Any] | mvViewportDrawlist[Any, Any] | mvWindowAppItem[Any, Any] | mvDrawLayer[Any, Any] | mvDrawNode[Any, Any] = Any](DrawingAPI, ChildItem[U, None, P]):
     __slots__ = ()
     show: Property[bool, bool, false]
     closed: Property[bool, bool, false]
@@ -2042,7 +2042,7 @@ class mvDrawPolyline[U = Any, P: mvDrawlist[Any, Any] | mvViewportDrawlist[Any] 
 def draw_polyline[U: Any](points: list[list[float]], *, label: str | None = None, user_data: U = None, use_internal_label: bool = True, tag: Item = 0, parent: Item = 0, before: Item = 0, show: bool = True, closed: bool = False, color: Sequence[int] = (255, 255, 255, 255), thickness: float = 1.0, **kwargs) -> mvDrawPolyline[U]: ...
 
 
-class mvDrawQuad[U = Any, P: mvDrawlist[Any, Any] | mvViewportDrawlist[Any] | mvWindowAppItem[Any] | mvDrawLayer[Any, Any] | mvDrawNode[Any, Any] = Any](DrawingAPI, ChildItem[U, None, P]):
+class mvDrawQuad[U = Any, P: mvDrawlist[Any, Any] | mvViewportDrawlist[Any, Any] | mvWindowAppItem[Any, Any] | mvDrawLayer[Any, Any] | mvDrawNode[Any, Any] = Any](DrawingAPI, ChildItem[U, None, P]):
     __slots__ = ()
     show: Property[bool, bool, false]
     color: Property[Sequence[int], Sequence[int], false]
@@ -2058,7 +2058,7 @@ class mvDrawQuad[U = Any, P: mvDrawlist[Any, Any] | mvViewportDrawlist[Any] | mv
 def draw_quad[U: Any](p1: Sequence[float], p2: Sequence[float], p3: Sequence[float], p4: Sequence[float], *, label: str | None = None, user_data: U = None, use_internal_label: bool = True, tag: Item = 0, parent: Item = 0, before: Item = 0, show: bool = True, color: Sequence[int] = (255, 255, 255, 255), fill: Sequence[int] = (0, 0, 0, -255), thickness: float = 1.0, **kwargs) -> mvDrawQuad[U]: ...
 
 
-class mvDrawRect[U = Any, P: mvDrawlist[Any, Any] | mvViewportDrawlist[Any] | mvWindowAppItem[Any] | mvDrawLayer[Any, Any] | mvDrawNode[Any, Any] = Any](DrawingAPI, ChildItem[U, None, P]):
+class mvDrawRect[U = Any, P: mvDrawlist[Any, Any] | mvViewportDrawlist[Any, Any] | mvWindowAppItem[Any, Any] | mvDrawLayer[Any, Any] | mvDrawNode[Any, Any] = Any](DrawingAPI, ChildItem[U, None, P]):
     __slots__ = ()
     show: Property[bool, bool, false]
     color: Property[Sequence[int], Sequence[int], false]
@@ -2077,7 +2077,7 @@ class mvDrawRect[U = Any, P: mvDrawlist[Any, Any] | mvViewportDrawlist[Any] | mv
 def draw_rectangle[U: Any](pmin: Sequence[float], pmax: Sequence[float], *, label: str | None = None, user_data: U = None, use_internal_label: bool = True, tag: Item = 0, parent: Item = 0, before: Item = 0, show: bool = True, color: Sequence[int] = (255, 255, 255, 255), fill: Sequence[int] = (0, 0, 0, -255), multicolor: bool = False, rounding: float = 0.0, thickness: float = 1.0, corner_colors: Any = None, **kwargs) -> mvDrawRect[U]: ...
 
 
-class mvDrawText[U = Any, P: mvDrawlist[Any, Any] | mvViewportDrawlist[Any] | mvWindowAppItem[Any] | mvDrawLayer[Any, Any] | mvDrawNode[Any, Any] = Any](DrawingAPI, ChildItem[U, None, P]):
+class mvDrawText[U = Any, P: mvDrawlist[Any, Any] | mvViewportDrawlist[Any, Any] | mvWindowAppItem[Any, Any] | mvDrawLayer[Any, Any] | mvDrawNode[Any, Any] = Any](DrawingAPI, ChildItem[U, None, P]):
     __slots__ = ()
     show: Property[bool, bool, false]
     color: Property[Sequence[int], Sequence[int], false]
@@ -2092,7 +2092,7 @@ class mvDrawText[U = Any, P: mvDrawlist[Any, Any] | mvViewportDrawlist[Any] | mv
 def draw_text[U: Any](pos: Sequence[float], text: str, *, label: str | None = None, user_data: U = None, use_internal_label: bool = True, tag: Item = 0, parent: Item = 0, before: Item = 0, show: bool = True, color: Sequence[int] = (255, 255, 255, 255), size: float = 10.0, **kwargs) -> mvDrawText[U]: ...
 
 
-class mvDrawTriangle[U = Any, P: mvDrawlist[Any, Any] | mvViewportDrawlist[Any] | mvWindowAppItem[Any] | mvDrawLayer[Any, Any] | mvDrawNode[Any, Any] = Any](DrawingAPI, ChildItem[U, None, P]):
+class mvDrawTriangle[U = Any, P: mvDrawlist[Any, Any] | mvViewportDrawlist[Any, Any] | mvWindowAppItem[Any, Any] | mvDrawLayer[Any, Any] | mvDrawNode[Any, Any] = Any](DrawingAPI, ChildItem[U, None, P]):
     __slots__ = ()
     show: Property[bool, bool, false]
     color: Property[Sequence[int], Sequence[int], false]
@@ -2569,7 +2569,7 @@ class mvDynamicTexture[U = Any](SupportsValueArray[float], ChildItem[U, list[flo
 def add_dynamic_texture[U: Any](width: int, height: int, default_value: Sequence[float], *, label: str | None = None, user_data: U = None, use_internal_label: bool = True, tag: Item = 0, parent: Item = 12, **kwargs) -> mvDynamicTexture[U]: ...
 
 
-class mvFileDialog[U = Any](RootItem[U, ChildItem, bool]):
+class mvFileDialog[U = Any, C: ChildItemT = Any](RootItem[U, C, bool]):
     __slots__ = ()
     width: Property[int, int, false]
     height: Property[int, int, false]
@@ -3697,7 +3697,7 @@ def tree_node[U: Any](*, label: str | None = None, user_data: U = None, use_inte
 def add_tree_node[U: Any](*, label: str | None = None, user_data: U = None, use_internal_label: bool = True, tag: Item = 0, indent: int = -1, parent: Item = 0, before: Item = 0, payload_type: str = '$$DPG_PAYLOAD', drag_callback: ItemCallback | None = None, drop_callback: ItemCallback | None = None, show: bool = True, pos: Sequence[int] = (), filter_key: str = '', delay_search: bool = False, tracked: bool = False, track_offset: float = 0.5, default_open: bool = False, open_on_double_click: bool = False, open_on_arrow: bool = False, leaf: bool = False, bullet: bool = False, selectable: bool = False, span_text_width: bool = False, span_full_width: bool = False, **kwargs) -> mvTreeNode[U]: ...
 
 
-class mvViewportMenuBar[U = Any](RootItem[U, Any, None]):
+class mvViewportMenuBar[U = Any, C: ChildItemT = Any](RootItem[U, C, None]):
     __slots__ = ()
     indent: Property[int, int, false]
     show: Property[bool, bool, false]

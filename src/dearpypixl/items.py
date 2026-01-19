@@ -43,11 +43,11 @@ def _build[T: type](cls: T, /, *, _build=appitem.build, _register=itemtype.regis
 # [ special ]
 
 @_build
-class mvStage[U = Any](RootItem[U]):
+class mvStage[U = Any, C: itemtype.ChildItemT = Any](RootItem[U, C, None]):
     __slots__ = ()
 
 @_build
-class mvWindowAppItem[U = Any](SupportsRect, RootItem[U]):
+class mvWindowAppItem[U = Any, C: itemtype.ChildItemT = Any](SupportsRect, RootItem[U, C, None]):
     __slots__ = ()
 
     x_scroll_max: property[float, typing.Never]  # type: ignore
@@ -255,7 +255,7 @@ class mvThemeComponent[U = Any](itemtype.ThemeAPI, ChildContainerItem[U, None, "
     __slots__ = ()
     __itemtype_indexer_type__ = itemtype.ElementItem
 @_build
-class mvTheme[U = Any](itemtype.ThemeAPI, RootItem[U, mvThemeComponent]):
+class mvTheme[U = Any, C: mvThemeComponent = mvThemeComponent](itemtype.ThemeAPI, RootItem[U, C]):
     __slots__ = ()
     __itemtype_indexer_type__ = mvThemeComponent
 
@@ -278,7 +278,7 @@ class mvThemeStyle[U = Any, V: int | float = float](itemtype.ThemeAPI, ChildValu
 class mvFont[U = Any](itemtype.FontAPI, ChildContainerItem[U, None, "mvFontRegistry"]):
     __slots__ = ()
 @_build
-class mvFontRegistry[U = Any](itemtype.FontAPI, RootItem[U, mvFont]):
+class mvFontRegistry[U = Any, C: mvFont = mvFont](itemtype.FontAPI, RootItem[U, C]):
     __slots__ = ()
     __itemtype_indexer_type__ = mvFont
 @_build
@@ -400,7 +400,7 @@ class mvMouseReleaseHandler[U = Any, CB: ItemCallback = Any](ChildCallbackItem[U
 class mvMouseWheelHandler[U = Any, CB: ItemCallback = Any](ChildCallbackItem[U, None, "mvHandlerRegistry", CB]):
     __slots__ = ()
 @_build
-class mvHandlerRegistry[U = Any](RootItem[U, itemtype.HandlerItem]):
+class mvHandlerRegistry[U = Any, C: itemtype.ChildItemT = itemtype.HandlerItem](RootItem[U, C]):
     __slots__ = ()
     __itemtype_indexer_type__ = itemtype.HandlerItem
     on_mouse_click = _bind_handler_method(mvMouseClickHandler)
@@ -452,7 +452,7 @@ class mvToggledOpenHandler[U = Any, CB: ItemCallback = Any](ChildCallbackItem[U,
 class mvVisibleHandler[U = Any, CB: ItemCallback = Any](ChildCallbackItem[U, None, "mvItemHandlerRegistry", CB]):
     __slots__ = ()
 @_build
-class mvItemHandlerRegistry[U = Any](RootItem[U, itemtype.HandlerItem]):
+class mvItemHandlerRegistry[U = Any, C: itemtype.ChildItemT = itemtype.HandlerItem](RootItem[U, C]):
     __slots__ = ()
     __itemtype_indexer_type__ = itemtype.HandlerItem
     on_resize = _bind_handler_method(mvResizeHandler)
@@ -494,7 +494,7 @@ class mvColorPicker[U = Any, P: ContainerItemT = Any, CB: ItemCallback = Any](Su
     __slots__ = ()
 
 @_build
-class mvValueRegistry[U = Any](RootItem[U]):
+class mvValueRegistry[U = Any, C: itemtype.ChildItemT = itemtype.ChildItem](RootItem[U, C]):
     __slots__ = ()
 @_build
 class mvFloat4Value[U = Any](ChildValueArrayItem[U, float, mvValueRegistry]):
@@ -525,11 +525,11 @@ class mvBoolValue[U = Any, V: bool = bool](ChildItem[U, V, mvValueRegistry]):
     __slots__ = ()
 
 @_build
-class mvTemplateRegistry[U = Any](RootItem[U]):
+class mvTemplateRegistry[U = Any, C: itemtype.ChildItemT = Any](RootItem[U, C]):
     __slots__ = ()
 
 @_build
-class mvTextureRegistry[U = Any](RootItem[U]):
+class mvTextureRegistry[U = Any, C: itemtype.ChildItemT = Any](RootItem[U, C]):
     __slots__ = ()
 
 
@@ -767,7 +767,7 @@ class mvPlotLegend[U = Any](ChildItem[U, None, mvPlot]):
 # [ drawing ]
 
 @_build
-class mvViewportDrawlist[U = Any](itemtype.DrawingAPI, RootItem[U]):
+class mvViewportDrawlist[U = Any, C: itemtype.ChildItemT = Any](itemtype.DrawingAPI, RootItem[U, C]):
     __slots__ = ()
 @_build
 class mvDrawlist[U = Any, P: ContainerItemT = Any](SupportsRect, SupportsCallback, itemtype.DrawingAPI, ChildContainerItem[U, P]):
@@ -931,7 +931,7 @@ class mvDragRect[U = Any](SupportsValueArray[float], ChildItem[U, list[float], m
 class mvDynamicTexture[U = Any](SupportsValueArray[float], ChildItem[U, list[float], mvTextureRegistry]):
     __slots__ = ()
 @_build
-class mvFileDialog[U = Any](RootItem[U, ChildItem, bool]):
+class mvFileDialog[U = Any, C: itemtype.ChildItemT = Any](RootItem[U, C, bool]):
     __slots__ = ()
 @_build
 class mvFileExtension[U = Any](ChildItem[U, None, mvFileDialog]):
@@ -1063,5 +1063,5 @@ class mvTooltip[U = Any, P: appitem.AppItem[Any, Any, Any] = Any](ChildContainer
 class mvTreeNode[U = Any, P: ContainerItemT = Any](ChildContainerItem[U, bool, P]):
     __slots__ = ()
 @_build
-class mvViewportMenuBar[U = Any](RootItem[U]):
+class mvViewportMenuBar[U = Any, C: itemtype.ChildItemT = Any](RootItem[U, C]):
     __slots__ = ()
