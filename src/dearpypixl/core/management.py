@@ -31,7 +31,7 @@ def patched[F: typing.Callable](target, replacement=None, /) -> typing.Any:
 
 
 
-_init_lock = threading.Lock()
+_init_lock = threading.RLock()
 _init_wrapped = []
 
 
