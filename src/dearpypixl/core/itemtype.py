@@ -345,6 +345,8 @@ class ChildItem[U = Any, V = Any, P: ContainerItem[Any, Any, Any, Any] = Any](ap
     """A standard item. It can be parented by other items."""
     __slots__ = ()
 
+    root_parent: property[RootItem, typing.Never]  # type: ignore
+
     def unstage(self) -> None:
         """Remove this item from its stage parent and move it to the
         item currently atop the container stack.
@@ -499,7 +501,7 @@ type ContainerItemT = ContainerItem[Any, Any, Any, Any]
 
 
 @register
-class RootItem[U = Any, C: ChildItemT = Any, V: Any = None](ContainerItem[U, None, None, C]):
+class RootItem[U = Any, C: ChildItemT = Any, V: Any = None](ContainerItem[U, V, None, C]):
     """Top-level container. It cannot be parented by other items, making
     `RootItem` and `ChildItem` mutually exclusive."""
     __slots__ = ()
