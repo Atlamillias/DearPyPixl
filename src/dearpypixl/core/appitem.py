@@ -177,7 +177,7 @@ def item_state_property(doc: str | None = None) -> property[typing.Any, typing.A
     return codegen.DescriptorDelegate(factory)  # type: ignore
 
 
-class AppItem[U = typing.Any, V = typing.Any, P: typing.Any = ContainerItem | None](  
+class AppItem[U = typing.Any, V = typing.Any, P: typing.Any = typing.Any](
     interface.Interface, int, metaclass=AppItemType
 ):
     __slots__ = ()
@@ -210,20 +210,18 @@ class AppItem[U = typing.Any, V = typing.Any, P: typing.Any = ContainerItem | No
         return __int_new(type, tag)
 
     @typing.overload
-    def __new__(cls, /, tag: int | str = 0, **kwargs) -> typing.Self: ... # pyright: ignore[reportInconsistentOverload]
+    def __new__(cls, /, tag: int | str) -> typing.Self: ... # pyright: ignore[reportInconsistentOverload]
     @management.initializer
     def __new__(
         cls,
         /,
-        *args,
-        tag: int | str = 0,
+        tag: int | str,
         __isinstance=isinstance,
         __wrap_item=int.__new__,
         __int=int,
         __alloc=uuidpool.alloc,
         __set_item_alias=_dearpygui.add_alias,
         __get_item_uuid=_dearpygui.get_alias_id,
-        **kwargs
     ) -> typing.Self:
         if __isinstance(tag, __int):
             return __wrap_item(cls, tag or __alloc())
@@ -602,7 +600,7 @@ def _build_create_method(cls: type[AppItem | typing.Any], parameters: typing.Map
     method = codegen.create_function(
         "create",
         codegen.source_signature_from_parameters(params),
-        f"return cls._interface(cls, cls.__itemtype_command__({call_args}))",
+        f"return cls(tag=cls.__itemtype_command__({call_args}))",
         return_type=typing.Self,
     )
     _update_method_metadata(cls, "create", method, signature)
