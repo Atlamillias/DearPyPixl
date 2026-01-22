@@ -549,14 +549,14 @@ def _build_CompositeItem() -> typing.Any:
             else:
                 self.__dict__ = user_data
 
-        def destroy(self, /) -> None:
+        def destroy(self, /, *, _delete_item=_dearpygui.delete_item) -> None:
             for item in self.components:
                 destructor = getattr(item, "destroy", None)
                 if callable(destructor):
                     destructor()
                 else:
                     try:
-                        _dearpygui.delete_item(item, children_only=False,  slot=-1)
+                        _delete_item(item, children_only=False, slot=-1)
                     except SystemError:
                         pass
 
