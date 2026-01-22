@@ -516,7 +516,8 @@ class _ViewportConfigDict(_ViewportBaseConfigDict, total=False):
     callback      : _ViewportCallback | None
     user_data     : typing.Any
 
-class _ViewportStateDict(interface.ItemStateDict, total=True):
+class _ViewportStateDict(typing.TypedDict, total=True):
+    ok: bool
     pos: list[int]
     rect_size: list[int]
     fullscreen: bool
@@ -677,7 +678,7 @@ class Viewport(interface.Interface):
         return [config["client_width"], config["client_height"]]
 
     def state(self) -> _ViewportStateDict:
-        state = interface.ITEM_STATE_TEMPLATE.copy()
+        state = {}
 
         config = _dearpygui.get_viewport_configuration(_VIEWPORT_UUID)
         state["rect_size"] = [config["client_width"], config["client_height"]]  # type: ignore

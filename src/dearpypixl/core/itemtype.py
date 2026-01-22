@@ -192,10 +192,30 @@ class DrawingAPI:
 
 # [ behavior mixin types ]
 
+class _RectItemStateDict(typing.TypedDict):
+    ok: bool
+    pos: typing.Annotated[list[int], 2]
+    active: typing.NotRequired[bool]
+    clicked: typing.NotRequired[bool]
+    left_clicked: typing.NotRequired[bool]
+    right_clicked: typing.NotRequired[bool]
+    middle_clicked: typing.NotRequired[bool]
+    edited: typing.NotRequired[bool]
+    activated: typing.NotRequired[bool]
+    deactivated: typing.NotRequired[bool]
+    hovered: bool
+    focused: bool
+    visible: bool
+    resized: typing.Annotated[list[int], 2]
+    rect_min: typing.Annotated[list[int], 2]
+    rect_max: typing.Annotated[list[int], 2]
+    rect_size: typing.Annotated[list[int], 2]
+    content_region_avail: typing.Annotated[list[int], 2]
+
 class SupportsRect:
     __slots__ = ()
 
-    width : property[int, int, true] = appitem.item_config_property(0)
+    width: property[int, int, true] = appitem.item_config_property(0)
     height: property[int, int, true] = appitem.item_config_property(0)
 
     @property
@@ -208,24 +228,22 @@ class SupportsRect:
     def pos(self: typing.Any, /) -> None:
         _dearpygui.configure_item(self, pos=())
 
-    resized: property[bool] = appitem.item_state_property()
-    rect_min: property[list[int]] = appitem.item_state_property()
-    rect_max: property[list[int]] = appitem.item_state_property()
-    rect_size: property[list[int]] = appitem.item_state_property()
-    content_region_avail: property[list[int]] = appitem.item_state_property()
+    @property
+    def content_region_avail(self: typing.Any, /) -> typing.Annotated[list[int], 2]:
+        return _dearpygui.get_item_state(self).get("content_region_avail") or [-1, -1]
 
-    def _get_rect_min(self: Any, state) -> list[int]:
-        value = state.get("rect_min")
-        if value is None:
-            return state["pos"]
-        return value
+    @property
+    def rect_size(self: typing.Any, /) -> typing.Annotated[list[int], 2]:
+        return _dearpygui.get_item_state(self)["rect_size"]
 
-    rect_min = typing.cast(
-        property[list[int]],
-        property(lambda self: self._get_rect_min(_dearpygui.get_item_state(self)))
-    )
+    @property
+    def rect_min(self: typing.Any, /) -> typing.Annotated[list[int], 2]:
+        state = _dearpygui.get_item_state(self)
+        return state.get("rect_min") or state["pos"]
 
-    def _get_rect_max(self: Any, state) -> list[int]:
+    @property
+    def rect_max(self: typing.Any, /) -> typing.Annotated[list[int], 2]:
+        state = _dearpygui.get_item_state(self)
         value = state.get("rect_max")
         if value is not None:
             return value
@@ -234,23 +252,16 @@ class SupportsRect:
         config = _dearpygui.get_item_configuration(self)
         return [x_pos + config["width"], y_pos + config["height"]]
 
-    rect_max = typing.cast(
-        property[list[int], typing.Never],
-        property(lambda self: self._get_rect_max(_dearpygui.get_item_state(self)))
-    )
-
-    class _SizedItemState(interface.ItemStateDict):
-        resized: bool
-        rect_size: list[int]  # type: ignore
-        rect_min: list[int]  # type: ignore
-        rect_max: list[int]  # type: ignore
-        pos: list[int]  # type: ignore
-        content_region_avail: list[int]
-
-    def state(self: Any) -> _SizedItemState:
+    def state(self: Any) -> _RectItemStateDict | typing.Any:
         state = _dearpygui.get_item_state(self)
-        state["rect_min"] = self._get_rect_min(state)
-        state["rect_max"] = self._get_rect_max(state)
+        if "content_region_avail" not in state:
+            state["content_region_avail"] = [-1, -1]
+        if "rect_min" not in state:
+            state["rect_min"] = state["pos"]
+        if "rect_max" not in state:
+            x_pos, y_pos = state['pos']
+            config = _dearpygui.get_item_configuration(self)
+            state["rect_max"] = [x_pos + config["width"], y_pos + config["height"]]
         return state # pyright: ignore[reportReturnType]
 
 
@@ -391,7 +402,7 @@ class ChildItem[U = Any, V = Any, P: ContainerItem[Any, Any, Any, Any] = Any](ap
 
         For a basic item such as a button,
         `button.insert(0, parent=new_parent)` is roughly equivelent to
-        `button.move(parent=new_parent, before=new_parent.children()[button.child_slot_target()][0])`.
+        `button.move(parent=new_parent, before=new_parent.children()[button.information()["target"]][0])`.
 
         :type index: `int | str`
         :param index: The new position of the item amongst other items

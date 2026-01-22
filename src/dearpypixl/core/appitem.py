@@ -156,27 +156,6 @@ def item_info_property(item_type: str, doc: str | None = None) -> property[typin
     return codegen.DescriptorDelegate(factory)  # type: ignore
 
 
-def item_state_property(doc: str | None = None) -> property[typing.Any, typing.Any]:
-    def factory(name):
-        name = name.removeprefix("is_")
-        prop = codegen.create_property(
-            (
-                f"try:",
-                f"  return get_item_state(self)['{name}']",
-                f"except KeyError:",
-                f"  return null",
-            ),
-            doc=doc,
-            module=__name__,
-            locals=_LOCALS_ITEMTYPE_FUNC,
-        )
-        prop.fget.__module__ = __name__
-
-        return prop
-
-    return codegen.DescriptorDelegate(factory)  # type: ignore
-
-
 class AppItem[U = typing.Any, V = typing.Any, P: typing.Any = typing.Any](
     interface.Interface, int, metaclass=AppItemType
 ):
@@ -501,31 +480,12 @@ class AppItem[U = typing.Any, V = typing.Any, P: typing.Any = typing.Any](
         interface = __class__._interface
         return [interface(__class__, i) for i in items[slot]]
 
-    is_ok: property[bool] = item_state_property()
-    is_hovered: property[bool | None] = item_state_property()
-    is_active: property[bool | None] = item_state_property()
-    is_focused: property[bool | None] = item_state_property()
-    is_clicked: property[bool | None] = item_state_property()
-    is_left_clicked: property[bool | None] = item_state_property()
-    is_right_clicked: property[bool | None] = item_state_property()
-    is_middle_clicked: property[bool | None] = item_state_property()
-    is_visible: property[bool | None] = item_state_property()
-    is_edited: property[bool | None] = item_state_property()
-    is_activated: property[bool | None] = item_state_property()
-    is_deactivated: property[bool | None] = item_state_property()
-    rect_size: property[typing.Any] = item_state_property()
-    rect_min: property[typing.Any] = item_state_property()
-    rect_max: property[typing.Any] = item_state_property()
-    content_region_avail: property[typing.Any] = item_state_property()
-
-    def state(self, /) -> interface.ItemStateDict | typing.Mapping[str, typing.Any]:
+    def state(self, /) -> typing.Any | interface.ItemStateDict:
         """Return the associated item's state(s).
 
         Similar to `dearpygui.get_item_state(self)`.
         """
-        d = interface.ITEM_STATE_TEMPLATE.copy()
-        d.update(_dearpygui.get_item_state(self))
-        return d  # pyright: ignore[reportReturnType]
+        return _dearpygui.get_item_state(self)  # pyright: ignore[reportReturnType]
 
     def focus(self, /) -> None:
         """Set focus to the associated item. Does nothing if the

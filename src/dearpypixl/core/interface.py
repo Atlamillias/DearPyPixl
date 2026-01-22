@@ -3,13 +3,10 @@ import types
 
 from . import protocols
 
-if typing.TYPE_CHECKING:
-    from .appitem import AppItem
-
 
 __all__ = (
-    "ItemInfoDict", "ITEM_INFO_TEMPLATE",
-    "ItemStateDict", "ITEM_STATE_TEMPLATE",
+    "ItemInfoDict",
+    "ItemStateDict",
     "Interface",
 )
 
@@ -66,40 +63,29 @@ ITEM_INFO_TEMPLATE: ItemInfoDict = types.MappingProxyType(  # type:ignore
 
 class ItemStateDict(typing.TypedDict):
     ok: bool
-    hovered: bool | None
-    active: bool | None
-    focused: bool | None
-    clicked: bool | None
-    left_clicked: bool | None
-    right_clicked: bool | None
-    middle_clicked: bool | None
-    visible: bool | None
-    edited: bool | None
-    activated: bool | None
-    deactivated: bool | None
-
-ITEM_STATE_TEMPLATE: ItemStateDict = types.MappingProxyType(  # type: ignore
-    ItemStateDict(
-        ok=True,
-        hovered=None,
-        active=None,
-        focused=None,
-        clicked=None,
-        left_clicked=None,
-        right_clicked=None,
-        middle_clicked=None,
-        visible=None,
-        edited=None,
-        activated=None,
-        deactivated=None,
-    )
-)
+    pos: typing.Annotated[list[int], 2]
+    active: typing.NotRequired[bool]
+    clicked: typing.NotRequired[bool]
+    left_clicked: typing.NotRequired[bool]
+    right_clicked: typing.NotRequired[bool]
+    middle_clicked: typing.NotRequired[bool]
+    edited: typing.NotRequired[bool]
+    activated: typing.NotRequired[bool]
+    deactivated: typing.NotRequired[bool]
+    deactivated_after_edit: typing.NotRequired[bool]
+    hovered: typing.NotRequired[bool]
+    focused: typing.NotRequired[bool]
+    visible: typing.NotRequired[bool]
+    resized: typing.NotRequired[typing.Annotated[list[int], 2]]
+    rect_min: typing.NotRequired[typing.Annotated[list[int], 2]]
+    rect_max: typing.NotRequired[typing.Annotated[list[int], 2]]
+    rect_size: typing.NotRequired[typing.Annotated[list[int], 2]]
+    content_region_avail: typing.NotRequired[typing.Annotated[list[int], 2]]
 
 
 
 
 # [ item interface type ]
-
 
 # XXX: should be a protocol/abc, but it's not to make it easier
 # to write metaclasses
@@ -110,7 +96,7 @@ class Interface:
     # `Viewport` without fuss
     __itemtype_registry__: typing.ClassVar[dict[str, typing.Any]] = {}
 
-    def __repr__(self) -> str:
+    def __repr__(self, /) -> str:
         return f"{self.__class__.__name__}(tag={self.tag!r})"
 
     def information(self, /) -> ItemInfoDict | typing.Mapping[str, typing.Any]:
@@ -118,20 +104,20 @@ class Interface:
         info['type'] = self.__class__.__name__
         return info
 
-    def state(self, /) -> ItemStateDict | typing.Mapping[str, typing.Any]:
-        return ITEM_STATE_TEMPLATE.copy()
+    @classmethod
+    def create(cls, /) -> typing.Self:
+        raise NotImplementedError
+
+    def destroy(self, /) -> None:
+        raise NotImplementedError
 
     tag: protocols.Descriptor[int | str]
 
     def configure(self, /, **kwargs) -> None:
         raise NotImplementedError
 
-    def configuration(self) -> typing.Mapping[str, typing.Any]:
+    def configuration(self, /) -> typing.Mapping[str, typing.Any]:
         raise NotImplementedError
 
-    @classmethod
-    def create(cls) -> typing.Self:
-        raise NotImplementedError
-
-    def destroy(self, /) -> None:
+    def state(self, /) -> typing.Mapping[str, typing.Any]:
         raise NotImplementedError

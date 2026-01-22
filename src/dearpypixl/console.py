@@ -651,7 +651,7 @@ class PyRepl[U = typing.Any, P: itemtype.ContainerItemT = typing.Any](itemtype.C
         hist_len = len(self.python.history)
         if not (
             hist_len and
-            self.cinput.is_focused and
+            self.cinput.state()["focused"] and  # pyright: ignore[reportTypedDictNotRequiredAccess]
             self.cprompt.value == self.ps1
         ):
             return
@@ -673,7 +673,7 @@ class PyRepl[U = typing.Any, P: itemtype.ContainerItemT = typing.Any](itemtype.C
         hist_len = len(self.python.history)
         if not (
             hist_len and
-            self.cinput.is_focused and
+            self.cinput.state()["focused"] and  # pyright: ignore[reportTypedDictNotRequiredAccess]
             self.cprompt.value == self.ps1
         ):
             return

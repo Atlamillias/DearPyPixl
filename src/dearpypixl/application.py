@@ -167,6 +167,9 @@ if DEARPYGUI_VERSION >= (2, 0):
         anti_aliased_lines_use_tex: bool
         anti_aliased_fill         : bool
 
+class _AppStateDict(typing.TypedDict, total=True):
+    ok: bool
+
 
 class Application(interface.Interface):
     __slots__ = ()
@@ -272,17 +275,10 @@ class Application(interface.Interface):
             info["font"]  = _get_app_font()
         return info
 
-    @property
-    def is_ok(self) -> bool:
-        """[get] `True` if the application has undergone its setup
-        procedure."""
-        return _get_app_ok()
-
-    def state(self, /) ->  interface.ItemStateDict:
-        state = interface.ITEM_STATE_TEMPLATE.copy()
+    def state(self, /) -> _AppStateDict:
         with _GLOBAL_LOCK:
-            state["ok"] = _get_app_ok()
-        return state
+            state = {"ok": _get_app_ok()}
+        return state  # type: ignore
 
     @property
     def clipboard_text(self) -> str:
