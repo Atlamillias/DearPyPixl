@@ -1,98 +1,148 @@
-
+import sys
+import typing
+import threading
 import collections
-from typing import (
-    Any,
-    Callable,
-    Sequence,
-    overload,
-    override,
-    Any,
-)
 
 from dearpygui import dearpygui, _dearpygui
 
 from dearpypixl.core import protocols
 from dearpypixl.core import itemtype
-from dearpypixl import items, color, style, events
+from dearpypixl.core import codegen
+from dearpypixl import items, color, style, theming
 
-
-__all__ = [
-    'close_context_menus',
-    'close_context_menus_from',
-    'hovered_context_menu',
-
-    'ContextMenu',
-    'ContextItem',
-]
+__all__ = (
+    "ContextMenuStack",
+    "ContextMenu", "add_context_menu", "context_menu",
+    "ContextMenuItem", "add_context_menu_item",
+)
 
 
 
 
-class _mutex:
-    __slots__ = ()
+_MISSING = object()
 
-    acquire = _dearpygui.lock_mutex
-    release = _dearpygui.unlock_mutex
 
-    def __enter__(self, /) -> None:
-        self.acquire()  # type: ignore
+class ContextMenuStack:
+    __slots__ = ("_stack", "_lock", "_root_menu", "_open_handler", "_close_handler", "_handlers")
+
+    @property
+    def root_menu(self, /) -> ContextMenu | None:
+        return self._root_menu
+    @root_menu.setter
+    def root_menu(self, value: ContextMenu | None, /) -> None:
+        try:
+            if value is None:
+                self._open_handler.callback = None
+            else:
+                self._open_handler.callback = self._cb_open_menus
+        except AttributeError:
+            self._item_init()
+            self.root_menu = value
+
+        self._root_menu  = value
+
+    def __init__(self, /) -> None:
+        self._stack = collections.deque[tuple["ContextMenu", "ContextMenuItem | None"]]()
+        self._lock = threading.RLock()
+
+    def __del__(self, /) -> None:
+        if sys.is_finalizing():
+            return
+        try:
+            dearpygui.delete_item(self._handlers)
+        except (AttributeError, SystemError):
+            pass
+
+    def __enter__(self) -> None:
+        self._lock.acquire()
 
     def __exit__(self, exc_type=None, error=None, traceback=None, /) -> None:
-        self.release()  # type: ignore
+        self._lock.release()
 
-class _CtxMenuStack(collections.deque[tuple['ContextMenu', 'ContextItem | None']]):
-    __slots__ = ('_lock',)
+    def __bool__(self, /) -> bool:
+        return bool(self._stack)
 
-    __ctx_hregistry: items.mvHandlerRegistry
+    def __iter__(self):
+        return iter(self._stack)
 
-    # Each pair in the stack contains a context menu and the
-    # menu item that spawned it (hovered). If the menu item
-    # (2nd value) is None, the menu (1st value) is the origin
-    # context menu and not a sub menu. The stack will always
-    # properly hide menus as they are popped, but will not
-    # display them when added.
+    def __len__(self):
+        return len(self._stack)
 
-    def __init__(self, *, maxlen: int | None = None) -> None:
-        super().__init__(maxlen=maxlen)
-        self._lock = _mutex()
+    def __getitem__(self, index: typing.SupportsIndex, /):
+        return self._stack[index]
 
-    def __cb_close_all(self, sender, mdown_info: tuple[int,  float]):
-        '''Close all context menus when a mouse down event is
-        captured while the cursor is away from them.'''
-        duration = mdown_info[1]
-        events._Py_DECREF(mdown_info)
+    def _item_init(self, /):
+        self._handlers = items.handler_registry()
+        self._close_handler = items.add_mouse_down_handler(parent=self._handlers, callback=self._cb_close_menus)
+        self._open_handler = items.add_mouse_release_handler(_dearpygui.mvMouseButton_Right, parent=self._handlers)
 
-        # ignore long-press/drag events
-        if duration >= 0.05 or self.hovered_menu():
-            return
-        self.close_menus()  # disables hregistry
-
-    def __get_ctx_hregistry(self):
+    def _menus_opened(self, /) -> None:
         try:
-            return self.__ctx_hregistry
-
+            self._close_handler.show = True
+            self._open_handler.show = False
         except AttributeError:
-            hr_id = f'[{items.mvHandlerRegistry.__name__}] {__name__}'
+            self._item_init()
+            self._menus_opened()
 
-            if _dearpygui.does_alias_exist(hr_id):
-                __class__.__ctx_hregistry = items.mvHandlerRegistry(tag=hr_id)
-            else:
-                with items.mvHandlerRegistry.create(tag=hr_id, show=False) as __class__.__ctx_hregistry:
-                    items.mvMouseDownHandler(callback=self.__cb_close_all)
+    def _menus_closed(self, /) -> None:
+        try:
+            self._close_handler.show = False
+            self._open_handler.show = True
+        except AttributeError:
+            self._item_init()
+            self._menus_closed()
 
-        return self.__ctx_hregistry
+    def _cb_close_menus(self, _, input_info: tuple[int,  float], /) -> None:
+        if not self._stack:
+            return
 
-    def _enable_ctx_hregistry(self):
-        self.__get_ctx_hregistry().configure(show=True)
+        duration = input_info[1]
+        if duration >= 0.05 or self.hovered():  # ignore long-press/drag events
+            return
 
-    def _disable_ctx_hregistry(self):
-        self.__get_ctx_hregistry().configure(show=False)
+        self.clear()
 
-    def hovered_menu(self):
+    def _cb_open_menus(self, /) -> None:
+        root_menu = self.root_menu
+        if not root_menu:
+            return
+
+        root_menu.to_cursor()
+
+    _PUSH_KWARGS: typing.Any = {"show": True, "no_bring_to_front_on_focus": False}
+
+    def push(self, context: ContextMenu | tuple[ContextMenu, ContextMenuItem | None], /, **config) -> None:
+        config.update(__class__._PUSH_KWARGS)
+
+        with self._lock:
+            if not isinstance(context, tuple):
+                if self._stack:
+                    raise TypeError("owner item required when stack is not empty")
+                context = (context, None)
+
+            if not self._stack:
+                self._menus_opened()
+
+            self._stack.appendleft(context)
+            context[0].configure(**config)
+
+    _POP_KWARGS: typing.Any = {"show": False, "no_bring_to_front_on_focus": False}
+
+    def pop(self, /) -> tuple[ContextMenu, ContextMenuItem | None]:
+        with self._lock:
+            items = self._stack.popleft()
+            items[0].configure(**__class__._POP_KWARGS)
+
+            if not self._stack:
+                self._menus_closed()
+
+        return items
+
+    def hovered(self) -> tuple[ContextMenu, ContextMenuItem | None] | None:
         with self._lock:
             csr_x_pos, csr_y_pos = _dearpygui.get_mouse_pos(local=False)
-            for ctx_branch in self:
-                state = ctx_branch[0].state()
+            for menus in self._stack:
+                state = menus[0].state()
                 x_pos, y_pos   = state['pos']        # type: ignore
                 x_size, y_size = state['rect_size']  # type: ignore
                 if (
@@ -100,619 +150,384 @@ class _CtxMenuStack(collections.deque[tuple['ContextMenu', 'ContextItem | None']
                     and
                     (y_pos <= csr_y_pos <=  y_pos + y_size)
                 ):
-                    return ctx_branch
-            return None
+                    return menus
 
-    def push_menu(self, menu: 'ContextMenu', menu_item: 'ContextItem | None' = None):
-        """Push a context menu branch onto the stack."""
+    def remove(self, context: ContextMenu | tuple[ContextMenu, ContextMenuItem | None], /) -> None:
+        if not isinstance(context, tuple):
+            context = (context, None)
+
+        stack = self._stack
+        config = __class__._POP_KWARGS
+
         with self._lock:
-            self.appendleft((menu, menu_item))
-            self._enable_ctx_hregistry()
+            if not stack:
+                return
 
-    def pop_menu(self):
-        """Pop the most-recent context menu branch off the stack."""
-        with self._lock:
-            menu = self.popleft()
-            menu[0].configure(
-                show=False,
-                no_bring_to_front_on_focus=False,
-            )
-            return menu
+            target_menu, target_owner = context
 
-    # TODO: trigger window `on_close` callbacks
-
-    def close_menus_from(self, menu: 'ContextMenu', menu_item: 'ContextItem | None' = None):
-        with self._lock:
-            if not self:
-                # `menu` is the origin and not a sub menu
-                self._enable_ctx_hregistry()
-                return self.appendleft((menu, None))
-
-            # XXX: An `IndexError` here is a problem, but not the
-            # stacks' problem.
             while True:
-                sub_menu, owner_item = self.popleft()
-                if sub_menu == menu:
-                    self.appendleft((sub_menu, owner_item))
+                items = (menu, owner) = stack.popleft()
+                if menu == target_menu:
+                    self._stack.appendleft(items)
                     break
-                elif owner_item != menu_item:
-                    sub_menu.configure(
-                        show=False,
-                        no_bring_to_front_on_focus=False,
-                    )
 
-    def close_menus(self):
+                if owner != target_owner:
+                    menu.configure(**config)
+
+            if not stack:
+                self._menus_closed()
+
+    def clear(self, /) -> None:
+        config = __class__._POP_KWARGS
+
         with self._lock:
-            self._disable_ctx_hregistry()
-            for sub_menu, menu_item in self:
-                sub_menu.configure(
-                    show=False,
-                    no_bring_to_front_on_focus=False,
-                )
-            self.clear()
+            if not self._stack:
+                return
+
+            for menu, owner in self._stack:
+                menu.configure(**config)
+
+            self._menus_closed()
+            self._stack.clear()
+
+
+_CONTEXT_STACK = ContextMenuStack()  # type: ignore
 
 
 
 
-_CTX_MENU_STACK = _CtxMenuStack()  #type: ignore
+class ContextMenuColor(
+    theming.color_component_type((
+        color.button,
+        color.button_active,
+        color.button_hovered,
+        color.header,
+        color.header_active,
+        color.header_hovered,
+        color.window_bg,
+    ))
+):
+    __slots__ = ()
 
+    button: typing.Any
+    button_active: typing.Any
+    button_hovered: typing.Any
+    header: typing.Any
+    header_active: typing.Any
+    header_hovered: typing.Any
+    window_bg: typing.Any
 
-def close_context_menus():
-    """Dismiss all open context menus."""
-    _CTX_MENU_STACK.close_menus()
+class ContextMenuStyle(
+    theming.style_component_type((
+        style.item_spacing,
+        style.window_rounding,
+        style.window_rounding,
+        style.window_padding,
+        style.popup_rounding,
+        style.frame_rounding,
+        style.frame_padding,
+        style.frame_padding,
+    ))
+):
+    __slots__ = ()
 
-
-def close_context_menus_from(menu: 'ContextMenu'):
-    """Close all context menus and sub menus owned (directly
-    or indirectly) by other menus.
-
-    Args:
-        * menu: Target context menu.
-
-
-    If *menu* is not opened, all open context menus are
-    closed.
-    """
-    with _mutex():
-        while _CTX_MENU_STACK:
-            if _CTX_MENU_STACK[0][0] == menu:
-                break
-            _CTX_MENU_STACK.popleft()[0].configure(
-                show=False,
-                no_bring_to_front_on_focus=False,
-            )
-
-
-def hovered_context_menu():
-    """Return the open context menu or sub menu under the
-    cursor.
-
-    The result of this function is independent of the menu's
-    "hovered" state and may return a menu even when that menu's
-    "hovered" state is False. This is because item children
-    can "own" state over their parents. Instead, this function
-    compares the explicit positions of the cursor and all open
-    menus.
-    """
-    menu_branch = _CTX_MENU_STACK.hovered_menu()
-    if menu_branch:
-        return menu_branch[0]
-
-
-
+    item_spacing: typing.Any
+    window_rounding: typing.Any
+    window_rounding: typing.Any
+    window_padding: typing.Any
+    popup_rounding: typing.Any
+    frame_rounding: typing.Any
+    frame_padding: typing.Any
+    frame_padding: typing.Any
 
 
 
 
+class ContextMenuItem(itemtype.CompositeItem, items.mvGroup):
+    _name_text: items.mvText
+    _tail_text: items.mvText
+    _child_menu: ContextMenu | None = None  # see `ContextMenu.pop()`
 
-def _get_default_deps_alias(cls: type, itp: type, component_name: str) -> str:
-    "Returns the alias of a class' dependency item."
-    return f'[{itp.__name__}] {cls.__name__}.{component_name}'.replace('..', '.')
+    context_stack: ContextMenuStack = _CONTEXT_STACK
+    callback: protocols.ItemCallback | None = None
 
-
-def _get_default_theme_items(cls: type, component_name: str):
-    "Returns a class' dependency theme item and components."
-    theme_alias    = _get_default_deps_alias(cls, items.mvTheme, component_name)
-    tc_color_alias = _get_default_deps_alias(
-        cls, items.mvThemeComponent, f'{component_name}.color'
-    ).replace('..', '.')
-    tc_style_alias = _get_default_deps_alias(
-        cls, items.mvThemeComponent, f'{component_name}.style'
-    ).replace('..', '.')
-
-    if _dearpygui.does_alias_exist(theme_alias):
-        theme = items.mvTheme(tag=theme_alias)
-
-        if _dearpygui.does_alias_exist(tc_color_alias):
-            tc_color = items.mvThemeComponent(tag=tc_color_alias)
-        else:
-            tc_color = items.mvThemeComponent.create(tag=tc_color_alias, parent=theme)
-
-        if _dearpygui.does_alias_exist(tc_style_alias):
-            tc_style = items.mvThemeComponent(tag=tc_style_alias)
-        else:
-            tc_style = items.mvThemeComponent.create(tag=tc_style_alias, parent=theme)
-
-    else:
-        with items.mvTheme.create(tag=theme_alias) as theme:
-            tc_color = items.mvThemeComponent.create(tag=tc_color_alias)
-            tc_style = items.mvThemeComponent.create(tag=tc_style_alias)
-
-    return theme, tc_color, tc_style
-
-
-def _ensure_theme_elements(theme_component: items.mvThemeComponent, *elems: tuple[Callable, tuple[float, ...]]):
-    'Creates missing theme element items of dependency items.'
-    tc_alias = theme_component.alias
-    with theme_component:
-        for fn, elem_v in elems:
-            alias = f'{tc_alias}.{fn.__name__}'
-            if not _dearpygui.does_alias_exist(alias):
-                element = fn(*elem_v)
-                element.alias = alias
-
-
-def _fix_menu_position(menu_x_size: int, menu_y_size: int, x_pos: int, y_pos: int):
-    "Adjust a menu's new position depending on the menu's size."
-    # XXX: The only difference between this positioning behavior
-    # and `MenuItem._cb_hovered`s behavior is that padding isn't
-    # a factor here.
-    _vp_cfg = _dearpygui.get_viewport_configuration(0)
-    vp_wt = _vp_cfg['client_width']  # type: ignore
-    vp_ht = _vp_cfg['client_height'] # type: ignore
-    if menu_x_size > vp_wt - x_pos:
-        x_pos -= menu_x_size
-    if menu_y_size > vp_ht - y_pos:
-        y_pos = max(0, y_pos - menu_y_size)
-    return x_pos, y_pos
-
-
-
-class ContextItem(itemtype.SupportsCallback, items.mvGroup):
-    """A highly-customizable implementation of `mvMenuItem` for
-    vertical context menus.
-
-    > NOTE: `ContextItem`s are **compound items**; composed of several
-    other items. They may break when configured using Dear PyGui's API.
-    """
-    # Expect some 'excessive' block comments here. This
-    # implementation is confusing at a glance, but addresses many
-    # issues other implementations may have;
-    #   - Dependency data is not stored onto the interface, unless
-    #   it can be "handled" when missing.
-    #
-    #   - It acts like any other built-in interface/item. Users
-    #   should not need to walk on eggshells when using them (i.e.
-    #   minimal 'gacha's).
-    #
-    #   - Most customization (color, padding, size, etc.) is made by
-    #   tweaking theme element values. The default look is inherited
-    #   by the parent menu, and adjustments can be made per-item by
-    #   binding it to an appropriate theme. Best part is that the
-    #   menu theme can just be copied (`menu.theme.__copy__()`),
-    #   set onto the menu item, and adjusted from there; zero element
-    #   conflicts.
-
-    __c_area_theme: items.mvTheme
-    __spacer_theme: items.mvTheme
-
-    @overload
-    def __init__(  # type: ignore
-        self,
+    @typing.overload
+    @classmethod
+    def create(cls, label: str, *, context_stack: ContextMenuStack | None = None, callback: typing.Callable | None = None, user_data: typing.Any = None, use_internal_label: bool = True, tag: int | str = 0, width: int = 0, height: int = 0, indent: int = -1, parent: int | str = 0, before: int | str = 0, payload_type: str = '$', drag_callback: protocols.ItemCallback0 | protocols.ItemCallback1[int | str] | protocols.ItemCallback2[int | str, typing.Any] | protocols.ItemCallback3[int | str, typing.Any, typing.Any] | None = None, drop_callback: protocols.ItemCallback0 | protocols.ItemCallback1[int | str] | protocols.ItemCallback2[int | str, typing.Any] | protocols.ItemCallback3[int | str, typing.Any, typing.Any] | None = None, show: bool = True, enabled: bool = True, pos: typing.Sequence[int] = ..., filter_key: str = '', delay_search: bool = False, tracked: bool = False, track_offset: float = 0.5, horizontal: bool = False, horizontal_spacing: float = -1, xoffset: float = 0, **kwargs) -> typing.Self: ... # pyright: ignore[reportInconsistentOverload]
+    @classmethod
+    def create(  # pyright: ignore[reportIncompatibleMethodOverride]
+        cls,
         label: str,
         *,
-        callback          : Callable | None = ...,
-        user_data         : Any = ...,
-        use_internal_label: bool = ...,
-        width             : int = ...,
-        height            : int = ...,
-        indent            : int = ...,
-        before            : int | str = ...,
-        payload_type      : str = ...,
-        drag_callback     : Callable | None = ...,
-        drop_callback     : Callable | None = ...,
-        show              : bool = ...,
-        pos               : tuple[int, int] | list[int] = ...,
-        filter_key        : str = ...,
-        delay_search      : bool = ...,
-        tracked           : bool = ...,
-        track_offset      : float = ...,
+        context_stack: typing.Any = None,
+        callback: typing.Any = None,
         **kwargs,
-    ): ...
-    def __init__(self, label: str, *, callback: Callable | None = None, **kwargs) -> None:
-        super().__init__(**kwargs)
+    ) -> typing.Self:
+        self = cls(tag=cls.__itemtype_command__(**kwargs))
 
-        with events.root_ihandler_registry(self):
-            items.ResizeHandler(callback=self._cb_resized)
+        if context_stack is not None:
+            self.context_stack = context_stack
 
-        if not self.handlers:
-            with items.mvItemHandlerRegistry() as self.handlers:
-                items.mvHoverHandler(callback=self._cb_hovered)
+        with items.mvItemHandlerRegistry.create() as handlers:
+            items.mvHoverHandler.create(callback=self._on_hover)
+        self.handlers = handlers
 
-        with self:
-            # The button below is the menu item's "click area".
-            # The label layout is within the group further down.
-            # "Why a button? Why not just an in-table selectable
-            # w/`span_columns=True`?"
-            #   - Buttons support more customizations w/theme elements.
-            #   Do you like rounded buttons? I like rounded buttons.
-            #
-            #   - Customization is MUCH easier w/themes vs different
-            #   config. options spread thin over several items.
-            #
-            # In addition, the button's user_data is used internally
-            # over the "face value" group item to that it's free for
-            # users to use.
-            button = items.mvButton(
-                width=-1,
-                height=1,
-                callback=self._cb_clicked,
-            )
-            try:
-                button.theme = self.__c_area_theme
-            except AttributeError:
-                theme, tc_color, tc_style = _get_default_theme_items(type(self), 'click_area')
-                button.theme = self.__class__.__c_area_theme = theme
-                _ensure_theme_elements(
-                    tc_color,
-                    (color.button, (0, 0, 0, 0)),
-                )
+        # This button is this item's clickable element and will
+        # span the entire group. It's used over other items for
+        # theme element compatibility (e.g. rounded corners, etc).
+        items.add_button(width=-1, height=1, callback=self._on_click, parent=self).theme = __class__._get_clickitem_theme()
 
-            # Two reasons for this inner group. First, the click area
-            # needs to scale with the table, which is a problem since
-            # tables cannot be explicitly positioned and do not support
-            # states/handlers. Groups support many states/handlers,
-            # with a rect calculated from its' contents.
-            # The second reason is that last bit -- We ONLY want the
-            # table size, so the click area and table cannot be
-            # parented by the same group.
-            # BUG: Updates to most relevant style elements will trigger
-            # a resize event on the parenting menu. However, some do not,
-            # and others only do so indirectly (if, for example, the
-            # parent is auto-sized). If the parent is auto-sized, the
-            # vertical component of `frame_padding` and `cell_padding`
-            # won't trigger one if the result causes the parent to shrink.
-            with items.mvGroup(label="[1] layout"):
-                with items.mvTable(
-                    header_row=False,
-                    no_host_extendX=True,
-                    no_keep_columns_visible=True,
-                    context_menu_in_body=False,
-                    sortable=False,
-                    resizable=False,
-                    reorderable=False,
-                    scrollY=False,
-                    scrollX=False,
-                    no_clip=True,
-                ) as table:
-                    with items.mvTableRow():
-                        items.mvTableColumn(label='[0] padding', width_fixed=True, parent=table, no_clip=True, no_reorder=True, no_sort=True)
-                        items.mvSpacer()
+        with items.table(
+            parent=items.add_group(label="[1] layout", parent=self),  # needed for rect size & positioning
+            header_row=False,
+            no_host_extendX=True,
+            no_keep_columns_visible=True,
+            context_menu_in_body=False,
+            sortable=False,
+            resizable=False,
+            reorderable=False,
+            scrollY=False,
+            scrollX=False,
+            no_clip=True,
+        ):
+            row = items.add_table_row()
 
-                        # menu name
-                        items.mvTableColumn(label='[1] label (name)', width_fixed=True, parent=table, no_clip=True, no_reorder=True, no_sort=True)
-                        name_lbl = items.mvText()
+            # padding (affected by theme padding)
+            items.add_table_column(label='[0] padding', width_fixed=True, no_clip=True, no_reorder=True, no_sort=True)
+            items.add_spacer(parent=row)
+            # text (name)
+            items.add_table_column(label='[1] text (name)', width_fixed=True, no_clip=True, no_reorder=True, no_sort=True)
+            self._name_text = items.add_text(parent=row)
+            # spacing (affected by theme spacing)
+            # XXX: This "spacer" is needed so the parent group can
+            # report an accurate rect size. An empty, stretchy column
+            # is not enough — it needs content to consume the space.
+            items.add_table_column(label='[2] spacing', no_reorder=True, no_sort=True, width_stretch=True, indent_disable=True, indent_enable=False)
+            items.add_button(parent=row, width=-1, height=1).theme = __class__._get_dummyitem_theme()
+            # text (tail)
+            items.add_table_column(label='[3] text (tail)', width_fixed=True, no_reorder=True, no_sort=True)
+            self._tail_text = items.add_text(parent=row)
+            # padding (affected by theme padding)
+            items.add_table_column(label='[4] padding', width_fixed=True, no_clip=True, no_reorder=True, no_sort=True)
+            items.add_spacer(parent=row)
 
-                        # The "spacer" is necessary for the group to calculate its
-                        # size properly. An empty, stretchy column is not enough; it
-                        # needs content to consume the space.
-                        items.mvTableColumn(label='[2] spacing', width_stretch=True, parent=table, no_reorder=True, no_sort=True, indent_disable=True, indent_enable=False)
-                        spacer = items.mvButton(width=-1, height=1)
-                        try:
-                            spacer.theme = self.__spacer_theme
-                        except AttributeError:
-                            theme, tc_color, tc_style = _get_default_theme_items(type(self), 'spacer')
-                            spacer.theme = self.__class__.__spacer_theme = theme
-                            _ensure_theme_elements(
-                                tc_color,
-                                (color.button, (0, 0, 0, 0)),
-                                (color.button_active, (0, 0, 0, 0)),
-                                (color.button_hovered, (0, 0, 0, 0)),
-                            )
+        self.label = label
+        self.callback = callback
+        self.components = (handlers,)
 
-                        # menu shortcut
-                        items.mvTableColumn(label='[3] label (shortcut)', width_fixed=True, parent=table, no_reorder=True, no_sort=True)
-                        shortcut_lbl = items.mvText()
-
-                        items.mvTableColumn(label='[4] padding', width_fixed=True, parent=table, no_clip=True, no_reorder=True, no_sort=True)
-                        items.mvSpacer()
-
-        self._internal_data = (name_lbl, shortcut_lbl, None, None)
-        self.configure(label=label, callback=callback)
+        return self
 
     @property
-    def root_parent(self):
-        return ContextMenu.new(api.Item.root_parent(self))
+    def label(self, /) -> str:
+        return _dearpygui.get_item_configuration(self)["label"]
+    @label.setter
+    def label(self, value: str, /) -> None:
+        _dearpygui.configure_item(self, label=value)
+        name, _, tail = value.partition("##")
+        self._name_text.value = name
+        self._tail_text.value = tail
+    @label.deleter
+    def label(self, /) -> None:
+        _dearpygui.configure_item(self, label='')
+        self._name_text.value = self._tail_text.value = ''
 
-    @property
-    def _internal_data(self) -> tuple[items.mvText, items.mvText, 'ContextMenu | None', Callable | None]:
-        # store in click_area (button)
-        return api.Item.configuration(self.children(1)[0])['user_data']
-    @_internal_data.setter
-    def _internal_data(self, value: tuple[items.mvText, items.mvText, 'ContextMenu | None', Callable | None]):
-        # XXX: The submenu is set by the menus themselves and
-        # not this item.
-        api.Item.configure(self.children(1)[0], user_data=value)
-
-    def _set_submenu(self, menu: 'ContextMenu | None', ):
-        name_item, shtcut_item, _, callback = self._internal_data
-        self._internal_data = name_item, shtcut_item, menu, callback
-
-    def _cb_resized(self, handler: Item = 0):
-        'Triggers when the parenting root item is resized.'
-        try:
-            button, layout = self.children(1)
-        except SystemError:
-            if handler and not api.Registry.item_exists(self):
-                return api.Item.destroy(handler)
-            raise
-        layout_state = api.Item.state(layout)
-        api.Item.configure(
-            button,
-            pos=layout_state['pos'],
-            height=layout_state['rect_size'][1],    # type: ignore
-        )
-
-    def _cb_hovered(self, *args):
-        'Triggers when the click area is hovered.'
-        # TODO: show cascade menu on hover (popup)
-        smenu = self._internal_data[2]
-        pmenu = self.root_parent
-
-        _CTX_MENU_STACK.close_menus_from(pmenu, self)
-        if smenu:
-            _CTX_MENU_STACK.push_menu(smenu, self)
-            if not smenu.is_visible:
-                # HACK: imgui won't calculate an item's size if it hasn't
-                # been rendered yet. Show it off-screen and wait a frame.
-                # BUG: This is enough to force imgui to calculate the
-                # the menu's inner padding, but not enough to actually
-                # size the menu's content. It risks getting clipped off-
-                # screen when displaying for the first time.
-                smenu_x_size, smenu_y_size = smenu.state()['rect_size']  # type: ignore
-                if not (smenu_x_size or smenu_y_size):
-                    smenu.configure(show=True, pos=(100 + Viewport.client_width, 0))
-                    api.Runtime.split_frame()
-                    smenu_x_size, smenu_y_size = smenu.state()['rect_size']  # type: ignore
-
-                _vp_cfg = Viewport.configuration()
-                vp_wt = _vp_cfg['client_width']  # type: ignore
-                vp_ht = _vp_cfg['client_height'] # type: ignore
-
-                _self_state = self.state()
-                self_x_min, self_y_min = _self_state['rect_min']  # type: ignore
-                self_x_max, self_y_max = _self_state['rect_max']  # type: ignore
-
-                # right/left edge of sub menu aligns with x_max/x_min of this
-                # item, accounting for 50% of the parent menu's inner padding
-                _wndw_padx_offset = int(
-                    (pmenu.state()['rect_size'][0] - _self_state['rect_size'][0]) * 0.25  # type: ignore
-                )
-                if smenu_x_size < vp_wt - self_x_max:
-                    new_x_pos = self_x_max + _wndw_padx_offset
-                else:
-                    new_x_pos = self_x_min - smenu_x_size - _wndw_padx_offset
-
-                if smenu_y_size < vp_ht - self_y_min:
-                    # y_min of the sub menu('s first item) ~aligned with
-                    # y_min of this menu item
-                    try:
-                        new_y_pos = self_y_min - api.Item.state(  # type: ignore
-                            smenu.information()['children'][1][0]
-                        )['pos'][1]
-                    except IndexError:
-                        new_y_pos = self_y_min
-                else:
-                    new_y_pos = max(0, vp_ht - smenu_y_size)
-
-                smenu.configure(show=True, pos=(new_x_pos, new_y_pos), no_bring_to_front_on_focus=False)
-                pmenu.configure(no_bring_to_front_on_focus=True)
-
-    def _cb_clicked(self):
-        'Triggers when the click area is clicked.'
-        callback = self._internal_data[-1]
-        if callback:
-            _CTX_MENU_STACK.close_menus()
-            # Invokes the callback set by the user as if called by
-            # DPG. This is not ideal (i.e. variadics count as 1 arg),
-            # but it is the fastest (and perhaps the most expected)
-            # way.
-            callback(
-                *(self, None, self.user_data)[:callback.__code__.co_argcount]
-            )
-
-    @override
-    def configure(self, **kwargs):
-        name_item, shtcut_item, sub_menu, callback = self._internal_data
-
-        if 'label' in kwargs:
-            name = kwargs['label']
-            if '##' in name:
-                name, shortcut = name.split('##')
-            else:
-                shortcut = ''
-
-            name_item.value   = name
-            shtcut_item.value = shortcut
-            self._cb_resized()
-
-        if 'callback' in kwargs:
-            self._internal_data = (
-                name_item,
-                shtcut_item,
-                sub_menu,
-                kwargs.pop('callback')  # `mvGroup` does not support `callback`
-            )
-
+    @typing.overload
+    def configure(self, *, label: str = ..., user_data: typing.Any = None, use_internal_label: bool = True, width: int = 0, height: int = 0, indent: int = -1, payload_type: str = '$', drag_callback: protocols.ItemCallback | None = None, drop_callback: protocols.ItemCallback, show: bool = True, enabled: bool = True, pos: typing.Sequence[int] = ..., filter_key: str = '', tracked: bool = False, track_offset: float = 0.5, horizontal: bool = False, horizontal_spacing: float = -1, xoffset: float = 0) -> None: ... # pyright: ignore[reportInconsistentOverload]
+    def configure(self, *, label=_MISSING, callback=_MISSING, **kwargs):
         super().configure(**kwargs)
+        if callback is not _MISSING:
+            self.callback = callback  # type: ignore
+        if label is not _MISSING:
+            self.label = label  # type: ignore
+
+    def configuration(self) -> dict[typing.Literal['label', 'user_data', 'use_internal_label', 'width', 'height', 'indent', 'payload_type', 'drag_callback', 'drop_callback', 'show', 'enabled', 'filter_key', 'tracked', 'track_offset', 'horizontal', 'horizontal_spacing', 'xoffset', 'callback'], typing.Any]: # pyright: ignore[reportIncompatibleMethodOverride]
+        config = super().configuration()
+        config["callback"] = self.callback # type: ignore
+        return config # type: ignore
+
+    @staticmethod
+    def _get_clickitem_theme():
+        alias = f"{__name__}.{__class__.__name__}.<internal-0>"
+        if _dearpygui.does_item_exist(alias):
+            return items.mvTheme(tag=alias)
+
+        with items.mvTheme.create(tag=alias) as theme:
+            with items.mvThemeComponent.create():
+                color.button(0, 0, 0, 0)
+
+        return theme
+
+    @staticmethod
+    def _get_dummyitem_theme():
+        alias = f"{__name__}.{__class__.__name__}.<internal-1>"
+        if _dearpygui.does_item_exist(alias):
+            return items.mvTheme(tag=alias)
+
+        with items.mvTheme.create(tag=alias) as theme:
+            with items.mvThemeComponent.create():
+                color.button(0, 0, 0, 0)
+                color.button_active(0, 0, 0, 0)
+                color.button_hovered(0, 0, 0, 0)
+
+        return theme
+
+    def _on_click(self, sender = 0, app_data = None, user_data = None, /) -> None:
+        callback = self.callback
+        if callback is None:
+            return
+
+        match callback.__code__.co_argcount:
+            case 0:
+                args = ()
+            case 1:
+                args = (self,)
+            case 2:
+                args = (self, app_data)
+            case _:
+                args = (self, app_data, self.user_data)
+
+        self.context_stack.clear()
+        callback(*args)  # pyright: ignore[reportArgumentType]
+
+    def _on_hover(self, sender = 0, app_data = None, user_data = None, /) -> None:
+        child_menu  = self._child_menu
+        parent_menu = ContextMenu(tag=self.root_parent)
+
+        stack = self.context_stack
+        entry = (child_menu, self)
+
+        with stack:
+            if stack:
+                if stack[0] == entry:
+                    return
+
+                stack.remove(parent_menu)
+
+            if child_menu is None:
+                return
+
+            # HACK: imgui won't calculate an item's size if it hasn't
+            # been rendered yet, so show it off-screen and wait a frame
+            # BUG: this will make imgui calculate the the menu's inner
+            # padding, but the menu's content size — it still risks getting
+            # clipped off-screen when displayed for the first time
+            menu_wt, menu_ht = child_menu.rect_size
+            if not (menu_wt or menu_ht):
+                client_wt = _dearpygui.get_viewport_configuration(0)["client_width"]
+                child_menu.configure(show=True, pos=(100 + client_wt, 0))
+                _dearpygui.split_frame(delay=16)
+
+                menu_wt, menu_ht = child_menu.rect_size
+
+            # the position of the child menu defaults to the right/down, but
+            # may be positioned left/up if the menu is at risk of clipping
+            viewport_config = _dearpygui.get_viewport_configuration(0)
+            viewport_wt = viewport_config["client_width"]
+            viewport_ht = viewport_config["client_height"]
+
+            state = _dearpygui.get_item_state(self)
+            x_min, y_min = state["rect_min"]
+            x_max, y_max = state["rect_max"]
+
+            # horizontal alignment
+            x_offset = int((parent_menu.rect_size[0] - state["rect_size"][0]) * 0.25)  # w/50% of our parent's padding
+            if menu_wt < viewport_wt - x_max:
+                x_pos = x_max + x_offset  # show menu right
+            else:
+                x_pos = x_min - menu_wt - x_offset  # show menu left
+            # vertical alignment
+            if menu_ht < viewport_ht - y_min:
+                # position menu so that the the top edge of its first child
+                # aligns with the top edge of THIS item
+                try:
+                    menu_child_item = _dearpygui.get_item_info(child_menu)['children'][1][0]
+                except IndexError:  # menu is empty
+                    y_pos = y_min
+                else:
+                    y_pos = y_min - _dearpygui.get_item_state(menu_child_item)['pos'][1]
+            else:
+                y_pos = viewport_ht - menu_ht
+                if y_pos < 0:
+                    y_pos = 0
+
+            stack.push(entry, pos=(x_pos, y_pos))  # pyright: ignore[reportArgumentType]
+            #parent_menu.configure(no_bring_to_front_on_focus=True)
+
+
+@codegen.wrapped(ContextMenuItem.create)
+def add_context_menu_item(*args, **kwargs) -> ContextMenuItem:  # pyright: ignore
+    return ContextMenuItem.create(*args, **kwargs)
 
 
 
-# TODO: separate context menu theme & bind to class
-class _ContextTheme(items.mvTheme):
-    def __init__(self, *args, **kwargs) -> None:
-        super().__init__(*args, **kwargs)
+
+class _ContextMenuItemCommand[T: ContextMenuItem = ContextMenuItem](typing.Protocol):
+    def __call__(self, *, label: str, parent: int | str, tag: int | str = ..., context_stack: ContextMenuStack = ...) -> T: ...
 
 
-class ContextMenu(items.mvWindowAppItem):
-    """An extension of `mvWindowAppItem` used for creating
-    and managing stylized context menus.
+class ContextMenu[U = typing.Any, C: ContextMenuItem = typing.Any](itemtype.CompositeItem, items.mvWindowAppItem[U, C]):
+    __itemtype_indexer_type__ = ContextMenuItem
+    __itemtype_indexer_slot__ = 1
 
-    The main appeal of using `ContextMenu`s over `mvMenu`s are
-    their styling options. Built-in items like `mvMenu` and
-    `mvMenuItem` have very rigid layouts and minimal customization.
-    On the other hand, `ContextMenu` and `ContextItem` -
-    `ContextMenu`s child of choice - reflect a *lot* of theme
-    elements. They're influenced by theme elements to such an
-    extent that the `ContextMenu` class has its' own dedicated
-    global theme, and exposes elements such as `frame_rounding`
-    and `item_spacing` as instance properties. Additionally, users
-    have a bit more control here than they would using built-in
-    menu; sub-menus can be thrown as their own root context menu,
-    and the hovered/in-focus menu can be easily obtained using the
-    module-level `hovered_context_menu` function. And while they
-    do not perfectly emulate the of built-in menus and menu items,
-    their behavior is very close.
+    @staticmethod
+    def get_default_theme() -> items.mvTheme[typing.Any, items.mvThemeComponent]:
+        alias = f"{__name__}.{__class__.__name__}.theme<default>"
+        if _dearpygui.does_item_exist(alias):
+            return items.mvTheme(tag=alias)
 
+        with items.mvTheme.create(tag=alias) as theme:
+            color = ContextMenuColor.create(
+                tag=f"{__name__}.{__class__.__name__}.color<default>"
+            )
+            color.button = (0, 0, 0, 0)
+            color.button_active = (29, 151, 236, 103)
+            color.button_hovered = (29, 151, 236, 103)
+            color.header = (0, 0, 0, 0)
+            color.header_active = (29, 151, 236, 103)
+            color.header_hovered = (29, 151, 236, 103)
+            color.window_bg = (37, 37, 38, 255)
 
-    Typically, a "context menu" is a menu that becomes visible
-    on input (right-click, etc) or state change. `ContextMenu`
-    instances are intended (but not limited) to replace the role
-    of `mvMenu` items for that purpose. Like windows, they cannot be
-    parented. However, context-manager usage mimics the tree-like
-    nesting behavor of menu items when used within the statement
-    body of other `ContextMenu` context managers:
-        >>> import dearpypixl as dpx
-        >>> from dearpypixl.menus import *
-        >>>
-        >>>
-        >>> with ContextMenu("RootMenu") as ctx_menu:
-        ...     ContextItem("Item1")
-        ...     ContextItem("Item2", callback=lambda: print('clicked Item2'))
-        ...
-        ...     with ContextMenu("SubMenu1") as submenu_1:
-        ...         dpx.ColorPicker([225, 100, 100, 255])
-        ...         ContextItem("Item3")
+            style = ContextMenuStyle.create(
+                tag=f"{__name__}.{__class__.__name__}.style<default>"
+            )
+            style.item_spacing = (8, 10)
+            style.window_rounding = (0, -1)
+            style.window_rounding = (0, -1)
+            style.window_padding = (24, 8)
+            style.popup_rounding = (0, -1)
+            style.frame_rounding = (0, -1)
+            style.frame_padding = (4, 3)
+            style.frame_padding = (4, 3)
 
-    The menus are hidden by default. The menu's `show` configuration
-    can still be updated to display/hide it like normal. The
-    `.to_position` and `.to_cursor` methods are other convenient
-    ways to display them on screen; taking into account the menu's
-    content so that it is not clipped. When used for their intended
-    purpose, opt to use the methods over the `show` configuration
-    to ensure that the menu will hide when non-context menus are
-    brought into focus or vice-versa.
+        return theme
 
+    context_stack: ContextMenuStack = _CONTEXT_STACK
+    item_factory: _ContextMenuItemCommand = ContextMenuItem.create
 
-    As with most other interfaces, `ContextMenu` instances are not
-    required to create the items they manage, allowing for normal
-    window items to be selectively repurposed as context menus.
-    However, updates to the following configuration options should
-    be avoided while the item is managed through the interface or
-    `menu` module framework:
-        - `no_focus_on_appearing`
-        - `no_bring_to_front_on_focus`
-        - `no_collapse`
-        - `modal`
-        - `popup`
-    """
-    __theme    : items.mvTheme
-
-    mitem_factory: type[ContextItem] = ContextItem
-    cascade_arrow: str               = '\u009b'
-
-    label: str
-
-    @overload
-    def __init__(  # type: ignore
-        self,
-        label                      : str = '',
+    @classmethod
+    def create(
+        cls,
+        label         = '',
         *,
-        width                      : int  = -1,
-        height                     : int  = -1,
-        show                       : bool = False,
-        autosize                   : bool = True,
-        no_resize                  : bool = True,
-        no_title_bar               : bool = True,
-        no_move                    : bool = True,
-        user_data                  : Any = ...,
-        use_internal_label         : bool = ...,
-        tag                        : Item = ...,
-        pos                        : tuple[int, int] | list[int] = ...,
-        delay_search               : bool = ...,
-        min_size                   : Sequence[int] = ...,
-        max_size                   : Sequence[int] = ...,
-        menubar                    : bool = ...,
-        no_scrollbar               : bool = ...,
-        horizontal_scrollbar       : bool = ...,
-        no_close                   : bool = ...,
-        indent                     : int = ...,
-        no_background              : bool = ...,
-        no_open_over_existing_popup: bool = ...,
-        no_scroll_with_mouse       : bool = ...,
-        on_close                   : Callable | None = ...,
+        context_stack: ContextMenuStack | None = None,
+        item_factory: _ContextMenuItemCommand | None = None,
+        width        = -1,
+        height       = -1,
+        show         = False,
+        autosize     = True,
+        no_resize    = True,
+        no_title_bar = True,
+        no_move      = True,
+        min_size     = (5, 5),
+        # ignored
+        no_focus_on_appearing      = False,
+        no_bring_to_front_on_focus = False,
+        no_collapse                = True,
+        modal                      = False,
+        popup                      = False,
         **kwargs,
-    ): ...
-    def __init__(
-        self,
-        label                     : str = '',
-        *,
-        width                     : int = -1,
-        height                    : int = -1,
-        show                      : bool = False,
-        autosize                  : bool = True,
-        no_resize                 : bool = True,
-        no_title_bar              : bool = True,
-        no_move                   : bool = True,
-        min_size                  : tuple[int, int] | Sequence[int] = (5, 5),
-        # ignore these kwds from caller
-        no_focus_on_appearing     : Any = ...,
-        no_bring_to_front_on_focus: Any = ...,
-        no_collapse               : Any = ...,
-        modal                     : Any = ...,
-        popup                     : Any = ...,
-        **kwargs,
-    ) -> None:
-        super().__init__(
-            no_focus_on_appearing=False,
-            no_bring_to_front_on_focus=False,
-            no_collapse=True,
-            modal=False,
-            popup=False,
-        )
-
-        if not self.handlers:
-            self.handlers = items.mvItemHandlerRegistry()
-
-        if not self.theme:
-            try:
-                self.theme = self.__theme
-            except AttributeError:
-                theme, tc_color, tc_style = _get_default_theme_items(type(self), '')
-                self.theme = self.__class__.__theme = theme
-                _ensure_theme_elements(
-                    tc_color,
-                    (color.button, (0, 0, 0, 0)),
-                    (color.button_active, (29, 151, 236, 103)),
-                    (color.button_hovered, (29, 151, 236, 103)),
-                    (color.header, (0, 0, 0, 0)),
-                    (color.header_active, (29, 151, 236, 103)),
-                    (color.header_hovered, (29, 151, 236, 103)),
-                    (color.window_bg, (37, 37, 38, 255)),
-                )
-                _ensure_theme_elements(
-                    tc_style,
-                    (style.item_spacing, (8, 10)),
-                    (style.window_rounding, (0, -1)),
-                    (style.window_rounding, (0, -1)),
-                    (style.window_padding, (24, 8)),
-                    (style.popup_rounding, (0, -1)),
-                    (style.frame_rounding, (0, -1)),
-                    (style.frame_padding, (4, 3)),
-                    (style.frame_padding, (4, 3)),
-                )
-
-        self.configure(
+    ):
+        item = cls.__itemtype_command__(
             label=label,
             width=width,
             height=height,
@@ -722,112 +537,112 @@ class ContextMenu(items.mvWindowAppItem):
             no_title_bar=no_title_bar,
             no_move=no_move,
             min_size=min_size,
-            **kwargs
+            **kwargs,
+            no_focus_on_appearing=False,
+            no_bring_to_front_on_focus=False,
+            no_collapse=True,
+            modal=False,
+            popup=False,
+
         )
+        self = cls(tag=item)
 
-    def _get_theme_element(self, component_name: str, element_name: str) -> Any:
-        theme = self.theme
-        if not theme or theme == self.__theme:
-            alias = _get_default_deps_alias(
-                self.__class__,
-                items.ThemeComponent,
-                component_name
+        if context_stack is not None:
+            self.context_stack = context_stack
+        if item_factory is not None:
+            self.item_factory = item_factory
+
+        handlers = self.handlers = items.item_handler_registry()
+        items.add_item_resize_handler(callback=self._on_resize, parent=handlers)
+
+        self.theme = self.get_default_theme()
+        self.components = (handlers,)
+
+        return self
+
+    _cascade_arrow = '\u009b'
+
+    @property
+    def cascade_arrow(self, /) -> str:
+        return self._cascade_arrow
+    @cascade_arrow.setter
+    def cascade_arrow(self, value: str, /) -> None:
+        self._cascade_arrow = value
+
+    # independent of "context_stack"
+    __stack_lock = threading.RLock()
+    __window_stack = collections.deque["ContextMenu[typing.Any, typing.Any]"]()
+
+    def push(self) -> bool:
+        with __class__.__stack_lock:
+            stack = __class__.__window_stack
+            if not stack or stack[0] != self:
+                stack.appendleft(self)
+
+        return super().push()
+
+    def __enter__(self, /) -> typing.Self:
+        self.push()
+        return self
+
+    def pop(self) -> None:   # pyright: ignore[reportIncompatibleMethodOverride]
+        super().pop()
+        with __class__.__stack_lock:
+            stack = __class__.__window_stack
+            if stack and stack[0] == self:
+                stack.popleft()
+
+                if not (stack and stack[0] != self):
+                    return
+
+                # if we've gotten this far, we're going to emulate a "parent" for
+                # this window (the context menu atop the stack)
+                parent = stack[0]
+            else:
+                return
+
+        label = self.label
+        assert label is not None
+        label = f'{label.partition("##")[0]}{self.cascade_arrow}'
+
+        # This item represents our menu in the parent menu. Our menu
+        # will be displayed when the representative is hovered.
+        item = self.item_factory(label=label, parent=parent, context_stack=self.context_stack)
+        item._child_menu = self
+
+    def __exit__(self, exc_type=None, value=None, traceback=None, /) -> None:
+        self.pop()
+
+    def _on_resize(self, handler: int | str = 0, /):
+        configure_item = _dearpygui.configure_item
+        get_item_state = _dearpygui.get_item_state
+
+        for menu in self[:]:
+            button, group = menu.children(1)
+
+            rect_info = get_item_state(group)
+            configure_item(
+                button, pos=rect_info["pos"], height=rect_info["rect_size"][1]
             )
-            return items.interface(f'{alias}.{element_name}')  # type: ignore
-        for c in theme.children(1)[1]:  # type: ignore
-            for e in api.Item.children(c, 1):
-                if api.ThemeElement.identify(e) == element_name:
-                    return items.interface(e)  # type: ignore
-        raise ValueError(f'assigned theme has no element item {element_name!r}.')
 
-    @property
-    def button(self) -> items.mvThemeColor:
-        return self._get_theme_element('color', 'button')
+    @staticmethod
+    def _fix_menu_position(menu_x_size: int, menu_y_size: int, x_pos: int, y_pos: int):
+        "Adjust menu's new position depending on the menu's size."
+        # XXX: The only difference between this positioning behavior
+        # and `ContextMenuItem._cb_hovered`s behavior is that padding isn't
+        # a factor here.
+        viewport_config = _dearpygui.get_viewport_configuration(0)
+        viewport_wt = viewport_config['client_width']  # type: ignore
+        viewport_ht = viewport_config['client_height'] # type: ignore
 
-    @property
-    def button_active(self) -> items.mvThemeColor:
-        return self._get_theme_element('color', 'button_active')
+        if menu_x_size > viewport_wt - x_pos:
+            x_pos -= menu_x_size
+        if menu_y_size > viewport_ht - y_pos:
+            y_pos = max(0, y_pos - menu_y_size)
 
-    @property
-    def button_hovered(self) -> items.mvThemeColor:
-        return self._get_theme_element('color', 'button_hovered')
+        return x_pos, y_pos
 
-    @property
-    def header(self) -> items.mvThemeColor:
-        return self._get_theme_element('color', 'header')
-
-    @property
-    def header_active(self) -> items.mvThemeColor:
-        return self._get_theme_element('color', 'header_active')
-
-    @property
-    def header_hovered(self) -> items.mvThemeColor:
-        return self._get_theme_element('color', 'header_hovered')
-
-    @property
-    def item_spacing(self) -> items.mvThemeStyle:
-        return self._get_theme_element('style', 'item_spacing')
-
-    @property
-    def popup_rounding(self) -> items.mvThemeStyle:
-        return self._get_theme_element('style', 'popup_rounding')
-
-    @property
-    def window_bg(self) -> items.mvThemeStyle:
-        return self._get_theme_element('color', 'window_bg')
-
-    @property
-    def window_padding(self) -> items.mvThemeStyle:
-        return self._get_theme_element('style', 'window_padding')
-
-    @property
-    def window_rounding(self) -> items.mvThemeStyle:
-        return self._get_theme_element('style', 'window_rounding')
-
-    @property
-    def frame_padding(self) -> items.mvThemeStyle:
-        return self._get_theme_element('style', 'frame_padding')
-
-    @property
-    def frame_rounding(self) -> items.mvThemeStyle:
-        return self._get_theme_element('style', 'frame_rounding')
-
-    # NOTE:'ctx' in this case refers to both the type of menu AND
-    # language, as it's managed through the item's `with` statement
-    # hooks. Completely independent and in no way related to
-    # `_CTX_MENU_STACK`.
-    __ctx_menu_stack: collections.deque[items.mvWindowAppItem] = collections.deque()
-
-    @override
-    def push_stack(self):
-        stack = self.__class__.__ctx_menu_stack
-        if not stack or stack[0] != self:
-            stack.appendleft(self)
-        return super().push_stack()
-
-    @override
-    def pop_stack(self):
-        super().pop_stack()
-        stack = self.__class__.__ctx_menu_stack
-        if stack and stack[0] == self:
-            stack.popleft()
-            if stack and stack[0] != self:
-                mitem = self.mitem_factory(label=self.label, parent=stack[0])
-                mitem._set_submenu(self)
-                self.configure()
-
-    @overload
-    def configure(self, *, label: str = ..., width: int = ..., height: int = ..., show: bool = ..., autosize: bool = ..., no_resize: bool = ..., no_title_bar: bool = ..., no_move: bool = ..., user_data: Any = ..., use_internal_label: bool = ..., tag: Item = ..., pos: tuple[int, int]|list[int] = ..., delay_search: bool = ..., min_size: Sequence[int] = ..., max_size: Sequence[int] = ..., menubar: bool = ..., no_scrollbar: bool = ..., horizontal_scrollbar: bool = ..., no_close: bool = ..., indent: int = ..., no_background: bool = ..., no_open_over_existing_popup: bool = ..., no_scroll_with_mouse: bool = ..., on_close: Callable|None = ..., **kwargs) -> None: ...  # type: ignore
-    @override
-    def configure(self, **kwargs):
-        if 'label' in kwargs:
-            label = kwargs['label']
-            if not '##' in label:
-                kwargs['label'] = f'{label}##{self.cascade_arrow}'
-
-        super().configure(**kwargs)
-
-    def to_position(self, x_pos: int, y_pos: int, *, content_aware: bool = True):
+    def to_position(self: ContextMenu, /, x_pos: int, y_pos: int, *, content_aware: bool = True) -> None:
         """Close all context menus, then show this menu at the
         the given position. The menu will be brought into the
         foreground as the active window.
@@ -846,20 +661,18 @@ class ContextMenu(items.mvWindowAppItem):
         This is a no-op when the cursor is positioned over an open
         context menu.
         """
-        if not _CTX_MENU_STACK.hovered_menu():
-            _CTX_MENU_STACK.close_menus()
-            self.configure(
-                pos=(x_pos, y_pos) if not content_aware else _fix_menu_position(
-                    *self.state()['rect_size'],
-                    x_pos, # type: ignore
-                    y_pos, # type: ignore
-                ),
-                show=True,
-                no_bring_to_front_on_focus=False,
-            )
-            _CTX_MENU_STACK.push_menu(self)
+        stack = self.context_stack
+        with stack:
+            if not stack.hovered():
+                stack.clear()
 
-    def to_cursor(self):
+                if content_aware:
+                    pos = self._fix_menu_position(*self.rect_size, x_pos, y_pos)  # type: ignore
+                else:
+                    pos = (x_pos, y_pos)
+                stack.push(self, pos=pos)
+
+    def to_cursor(self: ContextMenu, /) -> None:
         """Close all context menus, then show this menu at the
         cursor's position. The menu will be brought into the
         foreground as the active window.
@@ -867,18 +680,30 @@ class ContextMenu(items.mvWindowAppItem):
         This is a no-op when the cursor is positioned over an open
         context menu.
         """
-        if not _CTX_MENU_STACK.hovered_menu():
-            _CTX_MENU_STACK.close_menus()
-            self.configure(
-                pos=_fix_menu_position(
-                    # BUG: Just like with `MenuItem`s on-hover behavior, this
-                    # menu's size will be 0 if it has never been rendered. The
-                    # menu's content is at risk of getting clipped for its'
-                    # first viewing.
-                    *self.state()['rect_size'],
-                    *Viewport.mouse_pos_global()
-                ),
-                show=True,
-                no_bring_to_front_on_focus=False,
-            )
-            _CTX_MENU_STACK.push_menu(self)
+        stack = self.context_stack
+        with stack:
+            if not stack.hovered():
+                stack.clear()
+                stack.push(
+                    self,
+                    pos=self._fix_menu_position(
+                        # BUG: Just like with `ContextMenuItem`s on-hover behavior, this
+                        # menu's size will be 0 if it has never been rendered. The
+                        # menu's content is at risk of getting clipped for its
+                        # first viewing.
+                        *self.rect_size, *_dearpygui.get_mouse_pos(local=False)
+                    )
+                )
+
+    def as_root(self, /) -> typing.Self:
+        self.context_stack.root_menu = self
+        return self
+
+
+@codegen.wrapped(ContextMenu.create)
+def context_menu(*args, **kwargs):
+    return ContextMenu.create(*args, **kwargs)
+
+@codegen.wrapped(ContextMenu.create)
+def add_context_menu(*args, **kwargs):
+    return ContextMenu.create(*args, **kwargs)
