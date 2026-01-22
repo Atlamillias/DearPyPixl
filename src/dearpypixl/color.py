@@ -18,6 +18,8 @@ def _init_module():
         label: str | None = None,
         user_data: T = None,
         use_internal_label: bool = True,
+        tag: int | str = 0,
+        parent: int | str = 0,
     ) -> mvThemeColor[T]: ...
 
     def _overload2[T = Any](
@@ -26,6 +28,8 @@ def _init_module():
         label: str | None = None,
         user_data: T = None,
         use_internal_label: bool = True,
+        tag: int | str = 0,
+        parent: int | str = 0,
     ) -> mvThemeColor[T]: ...
 
     ELEM_INFO = parsing.theme_color_info().values()
@@ -41,23 +45,25 @@ def _init_module():
             label = None,
             use_internal_label = True,
             user_data = None,
+            tag = 0,
+            parent = 0,
             target = None,
             category = None,
             __type=ITEM_TYPE,
             __func=ITEM_FUNC,
             __category=info.category,
             __target=info.target,
-            **kwargs
         ):
-            return __type._interface(
-                __type,
-                __func(
+            return __type(
+                tag=__func(
                     __target,
                     value if not args else (value, *args),
                     label=label,
                     use_internal_label=use_internal_label,
                     user_data=user_data,
                     category=__category,
+                    tag=tag,
+                    parent=parent,
                 ),
             )
 

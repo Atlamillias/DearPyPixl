@@ -18,6 +18,8 @@ def _init_module():
         label: str | None = None,
         user_data: T = None,
         use_internal_label: bool = True,
+        tag: int | str = 0,
+        parent: int | str = 0,
     ) -> mvThemeStyle[T]: ...
 
     def _overload2[T = Any](
@@ -26,6 +28,8 @@ def _init_module():
         label: str | None = None,
         user_data: T = None,
         use_internal_label: bool = True,
+        tag: int | str = 0,
+        parent: int | str = 0,
     ) -> mvThemeStyle[T]: ...
 
     ELEM_INFO = parsing.theme_style_info().values()
@@ -41,6 +45,8 @@ def _init_module():
             label = None,
             use_internal_label = True,
             user_data = None,
+            tag = 0,
+            parent = 0,
             __type=ITEM_TYPE,
             __func=ITEM_FUNC,
             __category=info.category,
@@ -49,14 +55,15 @@ def _init_module():
             if hasattr(x, "__iter__"):
                 x, y = x  # type: ignore
 
-            return __type._interface(
-                __type,
-                __func(
+            return __type(
+                tag=__func(
                     __target, x, y,
                     label=label,
                     use_internal_label=use_internal_label,
                     user_data=user_data,
                     category=__category,
+                    tag=tag,
+                    parent=parent,
                 ),
             )
 
