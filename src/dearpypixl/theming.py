@@ -1,177 +1,226 @@
 import typing
-import functools
 import threading
 
 from dearpygui import _dearpygui
-from dearpygui.dearpygui import (
-    bind_font, bind_item_font,
-    bind_theme, bind_item_theme,
-)
-assert getattr(bind_font, "_patched", True)
-assert getattr(bind_theme, "_patched", True)
 
-from dearpypixl.core.protocols import Item, property
-from dearpypixl.core import itemtype
-from dearpypixl.core import parsing
-from dearpypixl.core import codegen
-from dearpypixl.items import (
-    mvTheme, theme, add_theme,
-    mvThemeComponent, theme_component, add_theme_component,
-    mvThemeColor, add_theme_color,
-    mvThemeStyle, add_theme_style,
-    mvFontRegistry, font_registry, add_font_registry,
-    mvFont, font, add_font,
-    mvFontRange, add_font_range,
-    mvFontRangeHint, add_font_range_hint,
-    mvCharRemap, add_char_remap,
+from dearpypixl.core.protocols import Item, Array
+from dearpypixl.core import appitem
+from dearpypixl.core import management
+from dearpypixl.lib.items import (
+    mvThemeComponent,
+    mvThemeColor,
+    mvThemeStyle,
+    mvFontRegistry,
+    mvFont,
 )
-from dearpypixl import application
+from dearpypixl.lib import application
 from dearpypixl import color
 from dearpypixl import style
 
 
 __all__ = (
-    # dearpygui
-    "bind_font", "bind_item_font",
-    "bind_theme", "bind_item_theme",
-    # dearpypixl
-    "color", "style",
-    "mvTheme", "theme", "add_theme",
-    "mvThemeComponent", "theme_component", "add_theme_component",
-    "mvThemeColor", "add_theme_color",
-    "mvThemeStyle", "add_theme_style",
-    "mvFontRegistry", "font_registry", "add_font_registry",
-    "mvFont", "font", "add_font",
-    "mvFontRange", "add_font_range",
-    "mvFontRangeHint", "add_font_range_hint",
-    "mvCharRemap", "add_char_remap",
-    # module
-    "ColorComponent", "add_color_component", "color_component_type",
-    "StyleComponent", "add_style_component", "style_component_type",
+    "ElementProperty", "color_property", "style_property",
     "SizedFont",  "add_sized_font",
 )
 
 
 
 
-# [ mvThemeComponent extensions ]
+# [ ElementProperty ]
 
-if typing.TYPE_CHECKING:
-    class ElementComponent(mvThemeComponent):
-        __slots__ = ()
-        def __getattr__(self, name: str, /) -> itemtype.ElementItem: ...
-else:
-    class ElementComponent(mvThemeComponent):
-        __slots__ = ()
+class ElementProperty[T: Array[int | float, typing.Literal[2]] | Array[int, typing.Literal[3, 4]], R: mvThemeColor | mvThemeStyle]:
+    __slots__ = ("_name", "_type", "_default", "_factory",)
 
-@functools.cache
-def _build_component_type(default_value: tuple[float, ...], *elements) -> type[ElementComponent]:
-    class ElementComponent(mvThemeComponent):
-        __slots__ = ()
+    @typing.overload
+    def __init__(self, default: T, factory: typing.Callable[..., R] = ..., /) -> None: ...
+    @typing.overload
+    def __init__(self, default: T, cls: type[R], category: int, target: int) -> None: ...
+    def __init__(self, default, obj = None, category = None, target = None, /):
+        self._default = default
+        self._factory = (obj, category, target)
 
-    annotations = ElementComponent.__annotations__
-    for func in elements:
-        name = func.__name__
-        setattr(ElementComponent, name, _build_element_property(func, default_value))
-        annotations[name] = itemtype.ElementItem[typing.Any, int | float]
+    def __set_name__(self, cls: type[mvThemeComponent], name: str, /) -> None:
+        obj, category, target = self._factory  # type: ignore
 
-    return ElementComponent  # pyright: ignore[reportReturnType]
+        if obj is None:
+            color_factory = getattr(color, name, None)
+            style_factory = getattr(style, name, None)
 
-@functools.cache
-def _build_element_property(factory, default_value: tuple[float, ...], /):
-    name = factory.__name__
+            if color_factory is not None:
+                assert style_factory is None
+                self._factory = color_factory
+                self._type = mvThemeColor
+            elif style_factory is not None:
+                self._factory = style_factory
+                self._type = mvThemeStyle
+            else:
+                raise RuntimeError(f"could not find appropriate factory named {name!r}")
 
-    def fget(self: int, /, *, name=name, factory=factory, item_type=itemtype.ElementItem, default_value=default_value):
-        alias = f'{name}<{self.real}>'
-        item = _dearpygui.get_alias_id(alias)
-        if not item:
-            item = factory(default_value, parent=self, tag=alias)
-        return item_type(tag=item)
+        elif category is None:
+            assert callable(obj)
+            self._factory = obj
 
-    def fset(self: int, value: typing.Sequence[int | float], /, *, name=name, factory=factory) -> None:
-        alias = f'{name}<{self.real}>'
-        item = _dearpygui.get_alias_id(alias)
-        if not item:
-            factory(value, parent=self, tag=alias)
+        elif issubclass(obj, mvThemeColor):
+
+            def _factory(value, *, parent=0, tag=0, __type=obj, __category=category, __target=target):
+                return __type.create(__target, value, category=__category, parent=parent, tag=tag)
+
+            self._factory = _factory
+            self._type = obj
+
         else:
-            _dearpygui.set_value(item, value)
+            assert issubclass(obj, mvThemeStyle)
 
-    def fdel(self: int, /, *, name=name) -> None:
+            def _factory(value, *, parent=0, tag=0, __type=obj, __category=category, __target=target):
+                return __type.create(__target, *value, category=__category, parent=parent, tag=tag)
+
+            self._factory = _factory
+            self._type = obj
+
+        self._name = name
+
+    def _get_element_item(self, instance: mvThemeComponent, /) -> R:
+        alias = f'mvThemeComponent<{instance.tag}>.{self._name}'
+        item = _dearpygui.get_alias_id(alias)
+        if not item:
+            item = self._factory(self._default, parent=instance, tag=alias)  # ty:ignore[call-non-callable]
+            try:
+                self._type
+            except AttributeError:
+                self._type = type(item)
+        else:
+            item = self._type(tag=item)
+
+        return item  # ty:ignore[invalid-return-type]
+
+    @typing.overload
+    def __get__(self, obj: None = None, cls: type | None = None, /) -> typing.Self: ...
+    @typing.overload
+    def __get__(self, instance: mvThemeComponent, cls: type | None = ..., /) -> R: ...
+    def __get__(self, instance: mvThemeComponent | None = None, cls = None, /):
+        if instance is None:
+            return self
+        return self._get_element_item(instance)
+
+    def __set__(self, instance: mvThemeComponent, value: T, /) -> None:
+        item = self._get_element_item(instance)
+        item.value = value
+
+    def __delete__(self, instance: mvThemeComponent, /) -> None:
         try:
-            _dearpygui.delete_item(f'{name}<{self.real}>', children_only=False, slot=-1)
+            _dearpygui.delete_item(f'mvThemeComponent<{instance.tag}>.{self._name}', children_only=False, slot=-1)
         except SystemError:
             pass
 
-    del name, factory, default_value
+@typing.overload
+def color_property(default: Array[int, typing.Literal[3, 4]] = ..., /) -> ElementProperty[Array[int, typing.Literal[3, 4]], mvThemeColor]: ...
+@typing.overload
+def color_property(name: str, default: Array[int, typing.Literal[3, 4]] = ..., /) -> ElementProperty[Array[int, typing.Literal[3, 4]], mvThemeColor]: ...
+def color_property(obj = None, default = (0, 0, 0, -255), /):
+    """Lazy descriptor for :py:class:`mvThemeComponent` subclasses. The descriptor
+    uses a :py:class:`mvThemeColor` factory function from the :py:module:`color`
+    module with the same name as *name* (if omitted, the name of the variable
+    bound to the descriptor object is used, instead). On instance lookup, the
+    function is invoked to create a :py:class:`mvThemeColor` item and interface unique
+    to the :py:class:`mvThemeComponent` instance if it does not exist.
 
-    return property(fget, fset, fdel)
+    The descriptor implements the following methods:
 
-def _get_element_functions(
-    namespace,
-    elem_info: typing.Iterable[parsing.ThemeElementInfo],
-    elements: typing.Iterable | None = None,
-    /
-):
-    if elements is None:
-        elements = (getattr(namespace, info.func_name) for info in elem_info)
-    else:
-        module = namespace.__name__
-        elements, seen, _elements = [], set(), elements
+    - ``__get__()``: Returns a :py:class:`mvThemeColor` item interface.
 
-        for func in _elements:
-            if func in seen:
-                continue
+    - ``__set__()``: Set the **value** of the associated :py:class:`mvThemeColor` item/interface.
 
-            if isinstance(func, str):
-                name = func
-                func = getattr(namespace, func)
-            elif func.__module__ != module:
-                raise ValueError(f"must be a function [name] in the {module!r} module — got {func}")
-            else:
-                name = func.__name__
+    - ``__delete__()``: Destroys the :py:class:`mvThemeColor` item. It may be re-created via a `__get__()` or `__set__()` operation.
 
-            seen.add(name)
-            seen.add(func)
-            elements.append(func)
+    .. code-block:: python3
+        :emphasize-lines: 18
 
-    return sorted(elements, key=lambda fn: fn.__name__)
+        class ThemeComponent(mvThemeComponent):
+            __slots__ = ()
 
+            # factory == `color.window_bg()`
+            window_bg = color_property()
 
+            # factory == `color.button()`
+            button_bg = color_property("button", (255, 0, 0, 255))
 
+        with mvTheme() as theme:
+            color_component = ThemeComponent.create()
 
-def color_component_type(elements: typing.Iterable | None = None, /) -> type[ElementComponent]:
-    return _build_component_type(
-        (0, 0, 0, 255),
-        *_get_element_functions(color, parsing.theme_color_info().values(), elements)
-    )
+            # creates the item (first access) and updates the value
+            color_component.window_bg = [200, 200, 200, 255]
 
-def add_color_component(item_type: int = 0, **kwargs) -> ColorComponent:
-    return ColorComponent.create(**kwargs)
+            # creates the item (first access) and update the alpha channel
+            color_component.button_bg[-1] = 120
 
+    """
+    if obj is None:
+        return ElementProperty(default)
 
-def style_component_type(elements: typing.Iterable | None = None, /) -> type[ElementComponent]:
-    return _build_component_type(
-        (1, -1),
-        *_get_element_functions(style, parsing.theme_style_info().values(), elements)
-    )
+    if isinstance(obj, str):
+        try:
+            factory = getattr(color, obj)
+        except AttributeError:
+            raise ValueError(f"could not find appropriate theme color factory named {obj!r}")
 
-def add_style_component(item_type: int = 0, **kwargs) -> StyleComponent:
-    return StyleComponent.create(**kwargs)
+        return ElementProperty(default, factory)
 
+    return ElementProperty(obj)
 
-if typing.TYPE_CHECKING:
-    class ColorComponent(mvThemeComponent):
-        __slots__ = ()
-        def __getattr__(self, name: str, /) -> itemtype.ElementItem: ...
+@typing.overload
+def style_property(default: Array[int | float, typing.Literal[2]] = ..., /) -> ElementProperty[Array[int | float, typing.Literal[2]], mvThemeStyle]: ...
+@typing.overload
+def style_property(name: str, default: Array[int | float, typing.Literal[2]] = ..., /) -> ElementProperty[Array[int, typing.Literal[3, 4]], mvThemeStyle]: ...
+def style_property(obj = None, default = (1, -1), /):
+    """Lazy descriptor for :py:class:`mvThemeComponent` subclasses. The descriptor
+    uses a :py:class:`mvThemeStyle` factory function from the :py:module:`style`
+    module with the same name as *name* (if omitted, the name of the variable
+    bound to the descriptor object is used, instead). On instance lookup, the
+    function is invoked to create a :py:class:`mvThemeStyle` item and interface unique
+    to the :py:class:`mvThemeComponent` instance if it does not exist.
 
-    class StyleComponent(mvThemeComponent):
-        __slots__ = ()
-        def __getattr__(self, name: str, /) -> itemtype.ElementItem: ...
-else:
-    ColorComponent = color_component_type()
-    ColorComponent.__name__ = "ColorComponent"
-    StyleComponent = style_component_type()
-    StyleComponent.__name__ = "StyleComponent"
+    The descriptor implements the following methods:
+
+    * ``__get__()``: Returns a :py:class:`mvThemeStyle` item/interface.
+
+    * ``__set__()``: Set the **value** of the associated :py:class:`mvThemeStyle` item/interface.
+
+    * ``__delete__()``: Destroys the :py:class:`mvThemeStyle` item. It may be re-created via a `__get__()` or `__set__()` operation.
+
+    .. code-block:: python3
+        :emphasize-lines: 18
+
+        class ThemeComponent(mvThemeComponent):
+            __slots__ = ()
+
+            # factory == `style.window_bg()`
+            window_bg = style_property()
+
+            # factory == `style.button()`
+            button_bg = style_property("button", (255, 0, 0, 255))
+
+        with mvTheme() as theme:
+            style_component = ThemeComponent.create()
+
+            # creates the item (first access) and updates the value
+            style_component.window_bg = [200, 200, 200, 255]
+
+            # creates the item (first access) and update the alpha channel
+            style_component.button_bg[-1] = 120
+
+    """
+    if obj is None:
+        return ElementProperty(default)
+
+    if isinstance(obj, str):
+        try:
+            factory = getattr(style, obj)
+        except AttributeError:
+            raise ValueError(f"could not find appropriate theme style factory named {obj!r}")
+
+        return ElementProperty(default, factory)
+
+    return ElementProperty(obj)
 
 
 
@@ -182,7 +231,7 @@ class _FontCommand(typing.Protocol):
     def __call__(self, file: str, size: typing.Any, /, *, parent: Item = ..., tag: Item = ...) -> int | str: ...
 
 
-class SizedFont(itemtype.CompositeItem, mvFontRegistry):
+class SizedFont(appitem.CompositeItem, mvFontRegistry):
     _file: str
 
     @property
@@ -193,7 +242,7 @@ class SizedFont(itemtype.CompositeItem, mvFontRegistry):
 
     @property
     def size(self) -> int:
-        """[get, set] the current font size."""
+        """[**get**, **set**] the current font size."""
         return self._size
     @size.setter
     def size(self, size: int):
@@ -220,10 +269,10 @@ class SizedFont(itemtype.CompositeItem, mvFontRegistry):
     _bindings: set[Item]
 
     @classmethod
-    def create(cls, /, file: str, size: int = 16, *, item_factory: _FontCommand = mvFont.__itemtype_command__, label: str | None = None, user_data: typing.Any = None, use_internal_label: bool = True, tag: int | str = 0, show: bool = True, **kwargs) -> typing.Self:   # pyright: ignore[reportIncompatibleMethodOverride]
-        self = cls(tag=cls.__itemtype_command__(
+    def create(cls, /, file: str, size: int = 16, *, item_factory: _FontCommand = mvFont.create, label: str | None = None, user_data: typing.Any = None, use_internal_label: bool = True, tag: int | str = 0, show: bool = True, **kwargs) -> typing.Self:   # pyright: ignore[reportIncompatibleMethodOverride]  # ty:ignore[invalid-method-override]
+        self = super().create(
             label=label, user_data=user_data, use_internal_label=use_internal_label, tag=tag, show=show
-        ))
+        )
 
         self._bindings = set()
         self._lock = threading.Lock()
@@ -302,6 +351,6 @@ class SizedFont(itemtype.CompositeItem, mvFontRegistry):
                 self._unbind_item(items)
 
 
-@codegen.wrapped(SizedFont.create)
+@management.cast_signature(SizedFont.create)
 def add_sized_font(*args, **kwargs):
     return SizedFont.create(*args, **kwargs)

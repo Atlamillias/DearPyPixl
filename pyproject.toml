@@ -21,16 +21,14 @@ classifiers = [
 ]
 requires-python = ">=3.14"
 dependencies = [
-    "dearpygui ~= 2.0",
+    "dearpygui >= 2.2, < 3.0",
 ]
 
 [dependency-groups]
 dev = ["build", "setuptools"]
 
 
-[tool.pyright]
-include = ["src"]
-openFilesOnly = false
+# build
 
 [build-system]
 requires  = ["setuptools"]
@@ -41,3 +39,39 @@ where = ["src"]
 
 [tool.setuptools.package-data]
 "*" = ["*.typed", "*.pyi"]
+
+
+# type-checking
+
+[tool.ty.src]
+exclude = ["!./src/dearpypixl/lib/**", "./docs"]
+
+[tool.ty.environment]
+python-version = "3.14"
+root = ["./src"]
+
+[tool.ty.rules]
+unused-ignore-comment = "ignore"
+unused-type-ignore-comment = "ignore"
+unresolved-global = "ignore"
+empty-body = "ignore"
+unresolved-reference = "ignore"  # BUG: reports on `__class__` cell reference?
+invalid-legacy-positional-parameter = "ignore"
+
+[[tool.ty.overrides]]
+include = ["./src/**/*.pyi", "**/dearpypixl/lib/items.py"]
+[tool.ty.overrides.rules]
+invalid-type-arguments = "ignore"
+invalid-method-override = "ignore"
+
+[[tool.ty.overrides]]
+include = ["**/libgen/dearpypixl_lib_items.py"]
+[tool.ty.overrides.rules]
+invalid-argument-type = "warn"
+
+[tool.pyright]
+typeCheckingMode = "off"
+include = ["./src/dearpypixl", "./src/dearpypixl/lib", "./src/libgen", "./scripts"]
+exclude = ["./docs"]
+extraPaths = ["./src/libgen"]
+openFilesOnly = false

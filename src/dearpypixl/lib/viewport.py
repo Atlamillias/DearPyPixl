@@ -7,12 +7,12 @@ from dearpygui import dearpygui, _dearpygui
 from dearpypixl.core import management
 from dearpypixl.core import interface
 from dearpypixl.core import codegen
-from dearpypixl.core import parsing
+from dearpypixl.core import management
 from dearpypixl.core import protocols
-from dearpypixl.core.protocols import property, ItemCallback
+from dearpypixl.core.protocols import Property as property, ItemCallback, Array
 
 if typing.TYPE_CHECKING:
-    from dearpypixl.items import mvWindowAppItem
+    from dearpypixl.lib.items import mvWindowAppItem
 
 
 __all__ = ("Viewport",)
@@ -44,9 +44,9 @@ class _FrameCallbackMap(typing.Mapping[int, tuple[ItemCallback, typing.Any]]):
     ) -> None:
         if frame < 0:
             frame = -1
-            _set_exit_callback(callback, user_data=user_data)
+            _set_exit_callback(callback, user_data=user_data)  # ty:ignore[invalid-argument-type]
         else:
-            _set_frame_callback(frame, callback, user_data=user_data)
+            _set_frame_callback(frame, callback, user_data=user_data)  # ty:ignore[invalid-argument-type]
         self._mapping[frame] = (callback, user_data)
 
     def _del_callback(
@@ -57,10 +57,10 @@ class _FrameCallbackMap(typing.Mapping[int, tuple[ItemCallback, typing.Any]]):
     ) -> None:
         if frame < 0:
             del self._mapping[-1]
-            _set_exit_callback(None, user_data=None)
+            _set_exit_callback(None, user_data=None)  # ty:ignore[invalid-argument-type]
         else:
             del self._mapping[frame]
-            _set_frame_callback(frame, None, user_data=None)
+            _set_frame_callback(frame, None, user_data=None)  # ty:ignore[invalid-argument-type]
 
     def __init__(self, /) -> None:
         self._lock = threading.Lock()
@@ -110,11 +110,9 @@ class _FrameCallbackMap(typing.Mapping[int, tuple[ItemCallback, typing.Any]]):
     @typing.overload
     def get(self, key: int, /) -> tuple[ItemCallback, typing.Any] | None: ...
     @typing.overload
-    def get(self, key: int, /, default: tuple[ItemCallback, typing.Any]) -> tuple[ItemCallback, typing.Any]: ...  # type: ignore[misc] # pyright: ignore[reportGeneralTypeIssues] # Covariant type as parameter
+    def get(self, key: int, /, default: tuple[ItemCallback, typing.Any]) -> tuple[ItemCallback, typing.Any]: ...
     @typing.overload
     def get[T](self, key: int, /, default: T) -> tuple[ItemCallback, typing.Any] | T: ...
-    @typing.overload
-    def get[T](self, key: typing.Any, /, default: T = None) -> tuple[ItemCallback, typing.Any] | T: ...
     def get(self, key, /, default = None, ):
         return self._mapping.get(key, default)
 
@@ -187,7 +185,7 @@ _FRAME_CALLBACKS = _FrameCallbackMap()
 
 
 
-if parsing.DEARPYGUI_VERSION >= (2, 0):
+if management.DEARPYGUI_VERSION >= (2, 0):
     _VIEWPORT_UUID = 0
 else:
     _VIEWPORT_UUID = "DPG NOT USED YET"
@@ -207,7 +205,7 @@ def _get_vp_primary_window() -> mvWindowAppItem | None:  # pyright: ignore[repor
 
     def _get_vp_primary_window(
         *,
-        _item_type=interface.Interface.__itemtype_registry__["mvAppItemType::mvWindowAppItem"]
+        _item_type=interface.Interface.__item_registry__["mvAppItemType::mvWindowAppItem"]
     ) -> mvWindowAppItem | None:
         ...
         config = _GLOBAL_CONFIG
@@ -275,7 +273,7 @@ def _set_vp_callback(callback: typing.Any = _MISSING, user_data: typing.Any = _M
 
     elif user_data is not _MISSING:
         callback = config["callback"]
-        _dearpygui.set_viewport_resize_callback(callback, user_data=user_data)
+        _dearpygui.set_viewport_resize_callback(callback, user_data=user_data)  # ty:ignore[invalid-argument-type]
         config["callback"] = callback
         config["user_data"] = user_data
 
@@ -339,7 +337,7 @@ def _set_vp_minimize():
 
 # [ API patches ]
 
-@management.patched(dearpygui.create_viewport)
+@management.patch(dearpygui.create_viewport)
 def create_viewport(**kwargs: typing.Unpack[_ViewportBaseConfigDict]) -> None:
     with _GLOBAL_LOCK:
         _set_vp_ok(True)
@@ -348,7 +346,7 @@ def create_viewport(**kwargs: typing.Unpack[_ViewportBaseConfigDict]) -> None:
 create_viewport.__kwdefaults__ = _VIEWPORT_DEFAULTS
 
 
-@management.patched(dearpygui.show_viewport)
+@management.patch(dearpygui.show_viewport)
 def show_viewport(*, minimized: bool = False, maximized: bool = False, **kwargs) -> None:
     with _GLOBAL_LOCK:
         _set_vp_visible()
@@ -358,7 +356,7 @@ def show_viewport(*, minimized: bool = False, maximized: bool = False, **kwargs)
             _set_vp_maximize()
 
 
-@management.patched(dearpygui.set_primary_window)
+@management.patch(dearpygui.set_primary_window)
 def set_primary_window(window: int | str, value: bool, **kwargs) -> None:
     with _GLOBAL_LOCK:
         _dearpygui.set_primary_window(window, value)
@@ -368,37 +366,37 @@ def set_primary_window(window: int | str, value: bool, **kwargs) -> None:
             _GLOBAL_CONFIG["primary_window"] = None
 
 
-@management.patched(dearpygui.stop_dearpygui)
+@management.patch(dearpygui.stop_dearpygui)
 def stop_dearpygui(**kwargs) -> None:
     with _GLOBAL_LOCK:
         _set_vp_ok(False)
 
 
-@management.patched(dearpygui.set_viewport_resize_callback)
+@management.patch(dearpygui.set_viewport_resize_callback)
 def set_viewport_resize_callback(callback: _ViewportCallback | None = None, *, user_data: typing.Any = None, **kwargs) -> None:
     with _GLOBAL_LOCK:
         _set_vp_callback(callback=callback, user_data=user_data)
 
 
-@management.patched(dearpygui.toggle_viewport_fullscreen)
+@management.patch(dearpygui.toggle_viewport_fullscreen)
 def toggle_viewport_fullscreen(**kwargs) -> None:
     with _GLOBAL_LOCK:
         _set_vp_fullscreen()
 
 
-@management.patched(dearpygui.maximize_viewport)
+@management.patch(dearpygui.maximize_viewport)
 def maximize_viewport(**kwargs) -> None:
     with _GLOBAL_LOCK:
         _set_vp_maximize()
 
 
-@management.patched(dearpygui.minimize_viewport)
+@management.patch(dearpygui.minimize_viewport)
 def minimize_viewport(**kwargs) -> None:
     with _GLOBAL_LOCK:
         _set_vp_minimize()
 
 
-@management.patched(dearpygui.set_frame_callback)
+@management.patch(dearpygui.set_frame_callback)
 def set_frame_callback(frame: int, callback: ItemCallback | None, *, user_data: typing.Any = None, **kwargs) -> None:
     if frame < 1:
         return
@@ -412,7 +410,7 @@ def set_frame_callback(frame: int, callback: ItemCallback | None, *, user_data: 
         _FRAME_CALLBACKS.set(frame, callback, user_data=user_data)
 
 
-@management.patched(dearpygui.set_exit_callback)
+@management.patch(dearpygui.set_exit_callback)
 def set_exit_callback(callback: ItemCallback | None, *, user_data: typing.Any = None, **kwargs) -> None:
     if callback is None:
         try:
@@ -425,7 +423,7 @@ def set_exit_callback(callback: ItemCallback | None, *, user_data: typing.Any = 
 
 _JOB_ARGCOUNTS = {}
 
-@management.patched(dearpygui.run_callbacks)
+@management.patch(dearpygui.run_callbacks)
 def run_callbacks(jobs: typing.Sequence[tuple[typing.Callable | None, typing.Any, typing.Any, typing.Any]]) -> None:
     global _JOB_ARGCOUNTS
 
@@ -508,7 +506,7 @@ class _ViewportBaseConfigDict(typing.TypedDict, total=False):
     vsync        : bool
     always_on_top: bool
     decorated    : bool
-    clear_color  : protocols.RGBA[float]
+    clear_color  : protocols.Array[float, typing.Literal[3, 4]]
     disable_close: bool
 
 class _ViewportConfigDict(_ViewportBaseConfigDict, total=False):
@@ -569,7 +567,7 @@ class Viewport(interface.Interface):
     vsync: property[bool, bool] = _config_property()
     always_on_top: property[bool, bool] = _config_property()
     decorated: property[bool, bool] = _config_property()
-    clear_color: property[protocols.RGBA, protocols.RGBA] = _config_property()
+    clear_color: property[Array[int | float, typing.Literal[3, 4]], Array[int | float, typing.Literal[3, 4]]] = _config_property()
     disable_close: property[bool, bool] = _config_property()
 
     @property
@@ -615,7 +613,7 @@ class Viewport(interface.Interface):
             _set_vp_callback(user_data=None)
 
     @typing.overload
-    def configure(self, /, **kwargs: typing.Unpack[_ViewportConfigDict]) -> None: ...  # pyright: ignore[reportInconsistentOverload]
+    def configure(self, /, **kwargs: typing.Unpack[_ViewportConfigDict]) -> None: ...  # pyright: ignore[reportInconsistentOverload]  # ty:ignore[invalid-overload]
     def configure(
         self,
         /, *,
@@ -681,11 +679,11 @@ class Viewport(interface.Interface):
         state = {}
 
         config = _dearpygui.get_viewport_configuration(_VIEWPORT_UUID)
-        state["rect_size"] = [config["client_width"], config["client_height"]]  # type: ignore
-        state["pos"] = [config["x_pos"], config["y_pos"]]  # type: ignore
+        state["rect_size"] = [config["client_width"], config["client_height"]]
+        state["pos"] = [config["x_pos"], config["y_pos"]]
 
         with _GLOBAL_LOCK:
-            state.update(_GLOBAL_STATE)  # type: ignore
+            state.update(_GLOBAL_STATE)
 
         return state  # type: ignore
 
@@ -705,7 +703,7 @@ class Viewport(interface.Interface):
         """Returns the identifier of the foreground root window item."""
         return _dearpygui.get_active_window()
 
-    def get_mouse_pos(self, /, *, local: bool = True) -> protocols.SizedList[typing.Literal[2], float]:
+    def get_mouse_pos(self, /, *, local: bool = True) -> Array[float, typing.Literal[2]]:
         return _dearpygui.get_mouse_pos(local=local)  # type: ignore
 
     def get_mouse_drag_delta(self, /) -> float:
@@ -714,13 +712,13 @@ class Viewport(interface.Interface):
         """
         return _dearpygui.get_mouse_drag_delta()
 
-    def get_mouse_plot_pos(self, /) -> protocols.SizedList[typing.Literal[2], float]:
+    def get_mouse_plot_pos(self, /) -> Array[float, typing.Literal[2]]:
         """Return the position of the mouse cursor relative to the
         active `mvPlot` item.
         """
         return _dearpygui.get_plot_mouse_pos()  # type: ignore
 
-    def get_mouse_drawing_pos(self, /) -> protocols.SizedList[typing.Literal[2], float]:
+    def get_mouse_drawing_pos(self, /) -> Array[float, typing.Literal[2]]:
         """Return the position of the mouse cursor relative to the
         active `mvDrawlist` or  `mvViewportDrawlist` item."""
         return _dearpygui.get_drawing_mouse_pos()  # type: ignore
@@ -737,11 +735,11 @@ class Viewport(interface.Interface):
         Args:
             * file: A filename for the screenshot, saved in `.png` format.
 
-            * callback: A Dear PyGui-callable callback. If specified, Dear
+            * callback: A DearPyGui-callable callback. If specified, Dear
             PyGui will call it next frame; passing it a `mvBuffer` object
             as the callback's second positional argument. The buffer will
             contain the raw image data.
         """
         dearpygui.output_frame_buffer(file, callback=callback)  # type: ignore
 
-Viewport.create = management.initializer(Viewport.create)
+Viewport.create = management.initializer(Viewport.create)  # ty:ignore[invalid-assignment]

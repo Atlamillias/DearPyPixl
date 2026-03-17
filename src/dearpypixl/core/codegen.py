@@ -1,14 +1,10 @@
+""":meta private:"""
 import sys
-import enum
 import types
-import functools
 import typing
-import annotationlib
-import inspect
 
-if typing.TYPE_CHECKING:
-    from .protocols import Property
 
+__all__ = ()
 
 
 
@@ -90,7 +86,7 @@ def create_property(
     module: str = '',
     globals: dict[str, typing.Any] | None = None,
     locals: dict[str, typing.Any] | None = None,
-) -> "Property[typing.Any, typing.Any, typing.Any]":
+) -> property:
     fget = create_function(
         "getter", FGET_SOURCE_ARGS, fget_body, module, globals=globals, locals=locals
     )
@@ -124,83 +120,3 @@ class DescriptorDelegate:
     def __set_name__(self, cls, name):
         prop = self.factory(name)
         setattr(cls, name, prop)
-
-
-def source_signature_from_parameters(parameters: typing.Sequence[inspect.Parameter], /) -> list[str]:
-    source = str(inspect.Signature(parameters, __validate_parameters__=False)) \
-        .partition(" ->")[0] \
-        .removeprefix('(') \
-        .removesuffix(')') \
-        .split(", ")
-
-    return source
-
-
-def wrapped[T: typing.Callable](wrapped: T, /) -> typing.Callable[[typing.Any], T]:
-    def get_wrapper(wrapper, /):
-        return wrapper
-    return get_wrapper
-
-
-
-
-# The library will create a LOT of parameter objects — many of
-# which contain the same information. Since they aren't the
-# cheapest objects to make anyway, caching them reduces memory
-# usage and has performance benefits.
-_Parameter = inspect.Parameter
-
-
-class _ParameterCache(dict[tuple[str, int, typing.Any, typing.Any], _Parameter]):
-    __slots__ = ("_state",)
-
-    def __enter__(self, /):
-        assert inspect.Parameter is _Parameter
-        inspect.Parameter = Parameter
-
-    def __exit__(self, exc_type = None, exc_value = None, traceback = None, /):
-        inspect.Parameter = _Parameter
-
-
-cached_parameters = _ParameterCache()
-
-
-class Parameter(_Parameter):
-    __slots__ = ()
-
-    def __new__(cls, name: str, kind: typing.Any, default: typing.Any = _Parameter.empty, annotation: typing.Any = _Parameter.empty) -> inspect.Parameter:
-        return parameter(name, kind, default, annotation)
-
-    def __init__(self, name: str, kind: typing.Any, default: typing.Any = _Parameter.empty, annotation: typing.Any = _Parameter.empty) -> None:
-        pass
-
-
-_get_parameter = cached_parameters.get
-
-def parameter(name: str, kind: int, default: typing.Any = _Parameter.empty, annotation: typing.Any = _Parameter.empty) -> inspect.Parameter:
-    # HACK: Dear PyGui functions sometimes have default list
-    # values. Mutable defaults in public functions are VERY
-    # uncommon, which is why we only check for lists here.
-    if isinstance(default, list):
-        default = tuple(default)
-
-    key = (name, kind, default, annotation)
-
-    param = _get_parameter(key)
-    if param is not None:
-        return param
-
-    param = cached_parameters[key] = _Parameter(name, kind, default=default, annotation=annotation)  # pyright: ignore[reportArgumentType]
-    return param
-
-
-CLASS_PARAMETER = parameter("cls", _Parameter.POSITIONAL_OR_KEYWORD)
-SELF_PARAMETER = parameter("self", _Parameter.POSITIONAL_OR_KEYWORD)
-ARGS_PARAMETER = parameter("args", _Parameter.VAR_POSITIONAL)
-KWDS_PARAMETER = parameter("kwargs", _Parameter.VAR_KEYWORD)
-
-
-def signature(obj: typing.Callable, **kwargs) -> inspect.Signature:
-    with cached_parameters:
-        sig = inspect.signature(obj, **kwargs)
-    return sig

@@ -6,11 +6,12 @@ from dearpygui import dearpygui, _dearpygui
 from dearpypixl.core import management
 from dearpypixl.core import interface
 from dearpypixl.core import codegen
-from dearpypixl.core.protocols import property, Item
-from dearpypixl.core.parsing import DEARPYGUI_VERSION
+from dearpypixl.core.protocols import Item, Property as property
+from dearpypixl.core.management import DEARPYGUI_VERSION
 
 if typing.TYPE_CHECKING:
-    from dearpypixl.items import mvTheme, mvFont
+    from dearpypixl.lib.items import mvTheme, mvFont
+    from dearpypixl.core.appitem import _ItemInfoDict
 
 
 __all__ = ("Application",)
@@ -41,15 +42,15 @@ def _create_app_info_getter(key, item_type) -> typing.Any:
         if not isinstance(item, interface.Interface):
             return _item_type(tag=item)
 
-        return item  # type: ignore
+        return item  # pyright: ignore
 
     del key, item_type
     return func
 
-def _get_app_theme() -> typing.Any:  # type: ignore
+def _get_app_theme() -> typing.Any:  # pyright: ignore
     global _get_app_theme
     _get_app_theme = _create_app_info_getter(
-        "theme", interface.Interface.__itemtype_registry__["mvAppItemType::mvTheme"]
+        "theme", interface.Interface.__item_registry__["mvAppItemType::mvTheme"]
     )
     return _get_app_theme()
 
@@ -57,10 +58,10 @@ def _set_app_theme(theme, /):
     _dearpygui.bind_theme(theme or 0)
     _GLOBAL_INFO["theme"] = theme or None
 
-def _get_app_font() -> typing.Any:  # type: ignore
+def _get_app_font() -> typing.Any:  # pyright: ignore
     global _get_app_font
     _get_app_font = _create_app_info_getter(
-        "font", interface.Interface.__itemtype_registry__["mvAppItemType::mvFont"]
+        "font", interface.Interface.__item_registry__["mvAppItemType::mvFont"]
     )
     return _get_app_font()
 
@@ -95,23 +96,23 @@ def _set_app_ok(value = True, /):
 
 # [ API patches ]
 
-@management.patched(dearpygui.setup_dearpygui)
+@management.patch(dearpygui.setup_dearpygui)
 def setup_dearpygui(**kwargs):
     with _GLOBAL_LOCK:
         _set_app_ok(True)
 
-@management.patched(dearpygui.destroy_context)
+@management.patch(dearpygui.destroy_context)
 def destroy_context(**kwargs):
     with _GLOBAL_LOCK:
         _set_app_ok(False)
 
-@management.patched(dearpygui.bind_font)
+@management.patch(dearpygui.bind_font)
 def bind_font(font: int | str, **kwargs) -> int | str:
     with _GLOBAL_LOCK:
         _set_app_font(font)
     return font
 
-@management.patched(dearpygui.bind_theme)
+@management.patch(dearpygui.bind_theme)
 def bind_theme(theme: int | str, **kwargs) -> int | str:
     with _GLOBAL_LOCK:
         _set_app_font(theme)
@@ -229,7 +230,7 @@ class Application(interface.Interface):
         anti_aliased_fill: property[bool, bool] = _config_property()
 
     @typing.overload
-    def configure(self, /, **kwargs: typing.Unpack[_AppConfigDict]) -> None: ...  # pyright:ignore [reportInconsistentOverload]
+    def configure(self, /, **kwargs: typing.Unpack[_AppConfigDict]) -> None: ...  # pyright:ignore [reportInconsistentOverload]  # ty:ignore[invalid-overload]
     def configure(
         self,
         /, *,
@@ -268,11 +269,12 @@ class Application(interface.Interface):
         with _GLOBAL_LOCK:
             _set_app_font(None)
 
-    def information(self) -> interface.ItemInfoDict:
-        info = interface.ITEM_INFO_TEMPLATE.copy()
+    def information(self) -> _ItemInfoDict:
+        info = super().information()
         with _GLOBAL_LOCK:
             info["theme"] = _get_app_theme()
             info["font"]  = _get_app_font()
+
         return info
 
     def state(self, /) -> _AppStateDict:
@@ -282,7 +284,7 @@ class Application(interface.Interface):
 
     @property
     def clipboard_text(self) -> str:
-        """[get] Return the current text value of the clipboard."""
+        """[**get**] Return the current text value of the clipboard."""
         return _dearpygui.get_clipboard_text()
     @clipboard_text.setter
     def clipboard_text(self, text: str, /) -> None:

@@ -1,3 +1,5 @@
+""":meta private:"""
+import sys
 import typing
 from typing import Never
 
@@ -9,7 +11,133 @@ if typing.TYPE_CHECKING:
 
 
 
-# [ primitive types ]
+# [ sentinel type ]
+
+if typing.TYPE_CHECKING:
+
+    @typing.final
+    class sentinel[T: typing.LiteralString](type):
+        @property
+        def __name__(self, /) -> str: ...  # type: ignore
+        @property
+        def __qualname__(self, /) -> str: ...  # type: ignore
+        @property
+        def __module__(self, /) -> str: ...  # type: ignore
+        @property
+        def __doc__(self, /) -> str | None: ...  # type: ignore
+        @__doc__.setter
+        def __doc__(self, value: str | None, /) -> None: ...  # type: ignore
+        def __new__(cls, name: T, module: str | None = None, /, doc: str | None = None) -> typing.Self: ...
+        def __call__(self, /) -> typing.Never: ...
+        def __bool__(self, /) -> typing.Never: ...
+        def __delattr__(self, name: str, /) -> typing.Never: ...
+else:
+    def _sentinel__new__(*args):
+        raise TypeError("sentinel cannot be instantiated")
+
+    _sentinel__new__.__name__ = "__new__"
+    _sentinel__new__.__qualname__ = "sentinel.__new__"
+
+    _ALLOWED_SENTINEL_BASES = (object, type, typing.Generic)
+
+    class sentinel[T: typing.LiteralString](type):  # type: ignore
+        __slots__ = ()
+
+        __final__ = True
+
+        def __new__(cls, name: str, module = None, /, doc: str | None = None):
+            if module is None:
+                module = sys._getframemodulename(1) or __name__
+
+            namespace = {
+                "__slots__": (),
+                "__module__": module,
+                "__doc__": doc,
+                "__new__": _sentinel__new__,  # mostly irrelevent due to `__call__()`
+            }
+
+            return type.__new__(cls, name, (), namespace)
+
+        def __call__(self, /) -> typing.Never:
+            raise TypeError("sentinel cannot be instantiated")
+
+        def __repr__(self, /) -> str:
+            return f"<sentinel '{self.__name__}'>"
+
+        def __bool__(self, /):
+            return False
+            #raise TypeError("sentinel does not support boolean operations")
+
+        def __setattr__(self, name: str, value: typing.Any, /):
+            # Sentinels should be frozen (immutable), but the behavior is difficult
+            # to emulate for classes created via Python code since we can't wrap
+            # `__dict__` in a `mappingproxy()` like a built-in. Additionally, the
+            # interpreter may need to set something post-creation like `__parameters__`.
+            # Instead, allow non-callable dunders to be set and block everything else.
+            if name.startswith("__") and name.endswith("__") and not callable(value):
+                return type.__setattr__(self, name, value)
+            raise AttributeError("sentinel type is immutable")
+
+        def __delattr__(self, name: str, /) -> typing.Never:
+            if hasattr(self, name):
+                raise AttributeError("sentinel type is immutable")
+            raise AttributeError(f"sentinel has no attribute {name!r}")
+
+        def __instancecheck__(self, instance: typing.Any, /) -> bool:
+            return self is instance
+
+
+
+# [ primitives ]
+
+MISSING = sentinel("MISSING")
+
+
+class Array[T, S: int = typing.Any](typing.Protocol):
+    __slots__ = ()
+    def __len__(self, /) -> S | typing.Any: ...
+    def __getitem__(self, index: typing.SupportsIndex, /) -> T: ...
+    def __iter__(self, /) -> typing.Iterator[T]: ...
+
+class Function[**P, T](typing.Protocol):
+    __slots__ = ()
+    __name__: str
+    __code__: Code
+    def __call__(self, /, *args: P.args, **kwargs: P.kwargs) -> T: ...
+
+class Descriptor[GT](typing.Protocol):
+    __slots__ = ()
+    @typing.overload
+    def __get__(self, instance: None, owner: type, /) -> typing.Self: ...
+    @typing.overload
+    def __get__(self, instance: typing.Any, owner: typing.Any = ..., /) -> GT: ...
+
+class DataDescriptor[GT, ST = sentinel](Descriptor[GT], typing.Protocol):
+    __slots__ = ()
+    @typing.overload
+    def __set__(self, instance: typing.Any, value: ST, /) -> None: ...
+    @typing.overload
+    def __set__(self: DataDescriptor[GT, sentinel], instance: typing.Any, value: GT, /) -> None: ...
+
+class SupportsKeysAndGetItem[KT, VT](typing.Protocol):
+    __slots__ = ()
+    def __getitem__(self, key: KT, /) -> VT: ...
+    def keys(self) -> typing.Iterable[VT]: ...
+
+class SupportsRichComparison(typing.Protocol):
+    __slots__ = ()
+    def __lt__(self, other: typing.Any, /) -> typing.Any: ...
+    def __le__(self, other: typing.Any, /) -> typing.Any: ...
+    def __ge__(self, other: typing.Any, /) -> typing.Any: ...
+    def __gt__(self, other: typing.Any, /) -> typing.Any: ...
+
+
+type Mappable[KT: typing.Hashable, VT] = SupportsKeysAndGetItem[KT, VT] | typing.Iterable[tuple[KT, VT]]
+
+
+
+
+# [ item-related ]
 
 type Item = int | str
 
@@ -21,22 +149,16 @@ class ItemCommand[**P](typing.Protocol):
     def __call__(self, /, *args: P.args, **kwargs: P.kwargs) -> Item: ...
 
 
-
-
-class _FunctionLike(typing.Protocol):
-    __name__: str
-    __code__: Code
-
-class ItemCallback0(_FunctionLike, typing.Protocol):
+class ItemCallback0(Function, typing.Protocol):
     def __call__(self, /) -> typing.Any: ...
 
-class ItemCallback1[T: Item](_FunctionLike, typing.Protocol):
+class ItemCallback1[T: Item](Function, typing.Protocol):
     def __call__(self, sender: T, /) -> typing.Any: ...
 
-class ItemCallback2[T1: Item, T2](_FunctionLike, typing.Protocol):
+class ItemCallback2[T1: Item, T2](Function, typing.Protocol):
     def __call__(self, sender: T1, app_data: T2, /) -> typing.Any: ...
 
-class ItemCallback3[T1: Item, T2, T3](_FunctionLike, typing.Protocol):
+class ItemCallback3[T1: Item, T2, T3](Function, typing.Protocol):
     def __call__(self, sender: T1, app_data: T2, user_data: T3, /) -> typing.Any: ...
 
 type ItemCallback[T1: Item = Item, T2 = typing.Any, T3 = typing.Any] = (
@@ -46,10 +168,10 @@ type ItemCallback[T1: Item = Item, T2 = typing.Any, T3 = typing.Any] = (
 
 
 
-# [ Dear PyGui buffers ]
+# [ DearPyGui buffers ]
 
 class mvBuffer:
-    """Protocol for Dear PyGui's `mvBuffer`."""
+    """Protocol for DearPyGui's `mvBuffer`."""
     __name__: typing.ClassVar[str]
     def __new__(cls, length: int = 0) -> mvBuffer: ...
     def __str__(self) -> str: ...
@@ -60,11 +182,11 @@ class mvBuffer:
     def get_height(self) -> int: ...
     def clear_value(self, initial_value: float, /) -> None: ...
 
-mvBuffer = typing.cast(type[mvBuffer], _dearpygui.mvBuffer)
+mvBuffer = typing.cast(type[mvBuffer], _dearpygui.mvBuffer)  # ty:ignore[invalid-assignment]
 
 
 class mvVec4:
-    """Protocol for Dear PyGui's `mvVec4`."""
+    """Protocol for DearPyGui's `mvVec4`."""
     __name__: typing.ClassVar[str]
     def __new__(cls, x: float = 0.0, y: float = 0.0, z: float = 0.0, w: float = 0.0) -> mvVec4: ...
     def __str__(self) -> str: ...
@@ -78,15 +200,15 @@ class mvVec4:
     def __mul__(self, other: typing.Self | float, /) -> mvVec4: ...
     def __rmul__(self, other: typing.Self | float, /) -> mvVec4: ...
 
-mvVec4 = typing.cast(type[mvVec4], _dearpygui.mvVec4)
+mvVec4 = typing.cast(type[mvVec4], _dearpygui.mvVec4)  # ty:ignore[invalid-assignment]
 
 
 class mvMat4:
-    """Protocol for Dear PyGui's `mvMat4`."""
+    """Protocol for DearPyGui's `mvMat4`."""
     __name__: typing.ClassVar[str]
     def __new__(cls, m00: float = 0.0, m01: float = 0.0, m02: float = 0.0, m03: float = 0.0, m10: float = 0.0, m11: float = 0.0, m12: float = 0.0, m13: float = 0.0, m20: float = 0.0, m21: float = 0.0, m22: float = 0.0, m23: float = 0.0, m30: float = 0.0, m31: float = 0.0, m32: float = 0.0, m33: float = 0.0) -> mvMat4: ...
-    def __str__(self) -> str: ...
-    def __len__(self) -> typing.Literal[16]: ...
+    def __str__(self, /) -> str: ...
+    def __len__(self, /) -> typing.Literal[16]: ...
     def __getitem__(self, index: typing.SupportsIndex, /) -> float: ...
     def __setitem__(self, index: typing.SupportsIndex, value: float, /) -> None: ...
     def __add__(self, other: typing.Self, /) -> mvMat4: ...
@@ -96,7 +218,7 @@ class mvMat4:
     def __mul__(self, other: typing.Self | float, /) -> mvMat4: ...
     def __rmul__(self, other: typing.Self | float, /) -> mvMat4: ...
 
-mvMat4 = typing.cast(type[mvMat4], _dearpygui.mvMat4)
+mvMat4 = typing.cast(type[mvMat4], _dearpygui.mvMat4)  # ty:ignore[invalid-assignment]
 
 
 
@@ -105,20 +227,6 @@ mvMat4 = typing.cast(type[mvMat4], _dearpygui.mvMat4)
 
 type true = typing.Literal[True]
 type false = typing.Literal[False]
-
-
-class SupportsKeysAndGetItem[KT, VT](typing.Protocol):
-    __slots__ = ()
-    def __getitem__(self, key: KT, /) -> VT: ...
-    def keys(self) -> typing.Iterable[VT]: ...
-
-
-class SupportsRichComparison(typing.Protocol):
-    __slots__ = ()
-    def __lt__(self, other: typing.Any, /) -> typing.Any: ...
-    def __le__(self, other: typing.Any, /) -> typing.Any: ...
-    def __ge__(self, other: typing.Any, /) -> typing.Any: ...
-    def __gt__(self, other: typing.Any, /) -> typing.Any: ...
 
 
 type _FGet[GT] = typing.Callable[[typing.Any], GT]
@@ -168,7 +276,7 @@ class Property[GT: typing.Any = Never, ST: typing.Any = Never, D: bool = false](
     def __delete__(self: Property[typing.Any, typing.Any, true], instance: typing.Any, /) -> None: ...
     @typing.overload
     def __delete__(self: Property[typing.Any, typing.Any, false], instance: typing.Any, /) -> typing.NoReturn: ...
-    def __delete__(self, instance) -> typing.Any: ...
+    def __delete__(self, instance, /) -> typing.Any: ...  # type: ignore
     del __new__, __get__, __set__, __delete__
 
     def getter[_GT](self: Property[typing.Any, ST, D], getter: _FGet[_GT], /) -> Property[_GT, ST, D]:
@@ -179,37 +287,3 @@ class Property[GT: typing.Any = Never, ST: typing.Any = Never, D: bool = false](
 
     def deleter(self: Property[GT, ST, typing.Any], deleter: _FDel, /) -> Property[GT, ST, true]:
         return __class__(self.fget, self.fset, deleter, self.__doc__)
-
-property = Property
-
-
-class Descriptor[T](typing.Protocol):
-    __slots__ = ()
-    @typing.overload
-    def __get__(self, instance: None, owner: type, /) -> typing.Self: ...
-    @typing.overload
-    def __get__(self, instance: typing.Any, owner: type | None = None, /) -> T: ...
-
-
-type Mappable[KT: typing.Hashable, VT] = SupportsKeysAndGetItem[KT, VT] | typing.Iterable[tuple[KT, VT]]
-
-
-class Array[T](typing.Protocol):
-    def __len__(self) -> int: ...
-    def __getitem__(self, index: typing.SupportsIndex, /) -> T: ...
-    def __iter__(self) -> typing.Iterator[T]: ...
-
-
-# XXX: use for inputs, not outputs
-type Array1D[S: int, T: int | float] = typing.Annotated[Array[T], S]
-type Point[T: int | float] = Array1D[typing.Literal[2], T]
-type Vec3[T: int | float] = Array1D[typing.Literal[3], T]
-type Vec4[T: int | float] = Array1D[typing.Literal[4], T]
-type Matrix[S1: int, S2: int, T: int | float] = typing.Annotated[Array[Array[T]], tuple[S1, S2]]
-type Mat4[T: int | float] = Matrix[typing.Literal[4], typing.Any, T]
-
-type SizedList[N: int, T] = typing.Annotated[list[T], N]
-
-# these can be any sequence, but DPG types them as `list | tuple` only
-type RGB[T: int | float] = tuple[T, T, T] | list[T]
-type RGBA[T: int | float] = tuple[T, T, T] | tuple[T, T, T, T] | list[T]
