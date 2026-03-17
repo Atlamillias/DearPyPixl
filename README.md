@@ -305,7 +305,7 @@ with dpx.window():
         log.write("Uh oh. Somebody cut the cake.")
         log.write("The cake is a lie!")
 ```
-Now you need to pass `log` around or pack it into its item's own `user_data` field to ensure they can access it. But then, why subclass `mvChildWindow`? By deriving from `CompositeItem` and using `create()` as the primary constructor, you effectively extend your additional state and API to the item itself — different interface objects created with the same tag become views of the original:
+But now you can't create a new interface without also creating an item. Additionally, each interface object has its own state. This isn't necessarily a bad thing, but it puts them in a weird spot because only some of our state is object-bound, while the rest is stored in Dear PyGui. If this is design is intentional, you're better off not subclassing `mvChildWindow` and managing these two entities seperately. By deriving from `CompositeItem` and using `create()` as the primary constructor, you effectively extend your additional state and API to the item itself — different interface objects created with the same tag become views of the original:
 
 ```python
 with dpx.window():
