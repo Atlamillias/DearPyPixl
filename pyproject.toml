@@ -28,20 +28,21 @@ dependencies = [
 dev = ["build", "setuptools"]
 
 
-# build
+
 
 [build-system]
-requires  = ["setuptools"]
+requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages.find]
 where = ["src"]
+exclude = ["libgen*"]
 
 [tool.setuptools.package-data]
 "*" = ["*.typed", "*.pyi"]
 
 
-# type-checking
+
 
 [tool.ty.src]
 exclude = ["!./src/dearpypixl/lib/**", "./docs"]
@@ -72,6 +73,6 @@ invalid-argument-type = "warn"
 [tool.pyright]
 typeCheckingMode = "off"
 include = ["./src/dearpypixl", "./src/dearpypixl/lib", "./src/libgen", "./scripts"]
-exclude = ["./docs"]
+exclude = ["docs", ".venv", "**/.*", "**/__pycache__", "**/node_modules"]
 extraPaths = ["./src/libgen"]
 openFilesOnly = false
