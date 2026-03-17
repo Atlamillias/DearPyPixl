@@ -26,7 +26,7 @@ Dear PyPixl provides object-oriented interfaces for Dear PyGui items and systems
 - `dearpygui` 2.2 (or newer)
 
 [!NOTE]
-**Dear PyPixl is available on all platforms already supported by Dear PyGui. Availability for 32-bit systems and Raspberry Pi OS is *loosely* supported (at the time of writing), but requires building Dear PyGui from the source. Please visit their [wiki](https://github.com/hoffstadt/DearPyGui/wiki) for more information.*
+Dear PyPixl is available on all platforms already supported by Dear PyGui. Availability for 32-bit systems and Raspberry Pi OS is *loosely* supported (at the time of writing), but requires building Dear PyGui from the source. Please visit their [wiki](https://github.com/hoffstadt/DearPyGui/wiki) for more information.
 
 [!IMPORTANT]
 This project prioritizes supporting the most recent version of Dear PyGui available, but tries to allow for some backwards compatability when possible.
@@ -76,7 +76,7 @@ dpg.show_viewport()
 dpg.start_dearpygui()
 dpg.destroy_context()
 ```
-<p style="text-align:center;font-size:14px;"><i>Example: "First Run" example code from <a href="https://dearpygui.readthedocs.io/en/latest/tutorials/first-steps.html#first-run">Dear PyGui's documentation </a> that imports <b>dearpypixl</b> instead of <b>dearpygui.dearpygui</b></i>.</p>
+<p style="text-align:center;font-size:12px;"><i>Example: "First Run" example code from <a href="https://dearpygui.readthedocs.io/en/latest/tutorials/first-steps.html#first-run">Dear PyGui's documentation </a> that imports <b>dearpypixl</b> instead of <b>dearpygui.dearpygui</b></i>.</p>
 
 ```python
 import dearpypixl as dpx
@@ -98,7 +98,7 @@ exec(source, demo.__dict__)
 demo.show_demo()
 dpx.start_dearpygui()
 ```
-<p style="text-align:center;font-size:14px;"><i>Example: Running Dear PyGui's demo that has been patched to import <b>dearpypixl</b>.</i></p>
+<p style="text-align:center;font-size:12px;"><i>Example: Running Dear PyGui's demo that has been patched to import <b>dearpypixl</b>.</i></p>
 
 
 As such, most of Dear PyGui's [documentation](https://dearpygui.readthedocs.io/en/latest/index.html) applies to Dear PyPixl as well. APIs unique to Dear PyPixl are typed and documented — your type-checker, language server, and other development tools will typically display this information for you.
@@ -129,7 +129,7 @@ with dpx.window(autosize=True) as window:
 dpx.start_dearpygui()
 ```
 [!NOTE]
-*Further code examples may omit the typical Dear PyGui boilerplate code e.g. `create_context()`, `setup_dearpygui()`, etc. However, they probably won't run without it.*
+Further code examples may omit the typical Dear PyGui boilerplate code e.g. `create_context()`, `setup_dearpygui()`, etc. However, they probably won't run without it.
 
 The above code shouldn't be too unfamiliar for those familiar with Dear PyGui. The snippet creates a window item, a text item, and three button items. When a button is clicked, the text item's value is updated to mirror the button's `label`. The part to unpack is the `update_text()` callback function:
 ```python
@@ -150,10 +150,10 @@ Once we have our button interface, we update the target text item's value to mat
 ... is functionally equivelent to `set_value(user_data, get_item_configuration(sender)["label"])`, which would work even though `user_data` is an interface object.
 
 [!NOTE]
-*When creating interfaces by calling the class directly, the **tag** argument optional. If omitted, the constructor will make one using `dearpygui.generate_uuid()`. However, keep in mind that most instance members will raise `SystemError` while an item does not exist with that tag. If you create an item with this tag later, the interface will work properly.*
+When creating interfaces by calling the class directly, the **tag** argument optional. If omitted, the constructor will make one using `dearpygui.generate_uuid()`. However, keep in mind that most instance members will raise `SystemError` while an item does not exist with that tag. If you create an item with this tag later, the interface will work properly.
 
 [!NOTE]
-*At runtime, the most appropriate concrete interface type for an existing item can be obtained using `getattr(dearpypixl, get_item_info(item)["type"].removeprefix("mvAppItemType::"))`, or the Dear PyPixl function `dearpypixl.get_interface_type()`. Alternatively, the `dearpygui.AppItem` class can be used to create basic interfaces for any item.*
+At runtime, the most appropriate concrete interface type for an existing item can be obtained using `getattr(dearpypixl, get_item_info(item)["type"].removeprefix("mvAppItemType::"))`, or the Dear PyPixl function `dearpypixl.get_interface_type()`. Alternatively, the `dearpygui.AppItem` class can be used to create basic interfaces for any item.
 
 <br>
 
@@ -181,7 +181,7 @@ There are a few exceptions:
 
 
 [!NOTE]
-*HTML-friendly docs and API reference coming soon! In the meantime, please refer to the source code definitions and/or type stub symbols for a complete view of available members for each interface class.*
+HTML-friendly docs and API reference coming soon! In the meantime, please refer to the source code definitions and/or type stub symbols for a complete view of available members for each interface class.
 
 <br>
 
@@ -346,6 +346,6 @@ The `components` attribute is special-cased by `CompositeItem.destroy()`. When `
 
 
 [!NOTE]
-*HTML-friendly docs and API reference coming soon! In the meantime, please refer to the source code definitions and/or type stub symbols for a complete view of available members for each interface class.*
+HTML-friendly docs and API reference coming soon! In the meantime, please refer to the source code definitions and/or type stub symbols for a complete view of available members for each interface class.
 
 <br>
