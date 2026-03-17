@@ -635,12 +635,22 @@ class ContextMenu[U = typing.Any, C: ContextMenuItem = ContextMenuItem](appitem.
         get_item_state = _dearpygui.get_item_state
 
         for menu in self[:]:
-            button, group = menu.children(1)
+            try:
+                button, group = menu.children(1)
+            except ValueError:
+                continue
 
             rect_info = get_item_state(group)
-            configure_item(
-                button, pos=rect_info["pos"], height=rect_info["rect_size"][1]
-            )
+            try:
+                height = rect_info["rect_size"][1]
+            except (KeyError, IndexError):
+                continue
+
+            try:
+                configure_item(button, pos=rect_info["pos"], height=height)
+            except SystemError:
+                assert button.information("type") != "mvAppItemType::mvButton"
+                continue
 
     @staticmethod
     def _fix_menu_position(menu_x_size: int, menu_y_size: int, x_pos: int, y_pos: int):
