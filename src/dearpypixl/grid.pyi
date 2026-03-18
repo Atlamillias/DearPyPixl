@@ -479,7 +479,7 @@ class Grid(_GridComponent):
     def configure(self, **kwargs): ...
     def configuration(self, /): ...
     @overload
-    def push(self, item: Item, col: int, row: int, /, *, anchor: str = ..., max_size: _Array[float, Literal[2]] | float | None = ..., padding: _Array[float, Literal[4]] | float | None = ..., rect_setter: _RectSetter | None = ...):
+    def push[T: Item](self, item: T, col: int, row: int, /, *, anchor: str = ..., max_size: _Array[float, Literal[2]] | float | None = ..., padding: _Array[float, Literal[4]] | float | None = ..., rect_setter: _RectSetter | None = ...) -> T:
         """Attach an item to the grid, positioning it within a specific cell.
 
         Awaits internal lock release.
@@ -539,8 +539,10 @@ class Grid(_GridComponent):
         the cell or cellspan is too small when drawing the grid.
         """
     @overload
-    def push(self, item: Item, cell: tuple[int, int], /, *, anchor: str = ..., max_size: _Array[float, Literal[2]] | float | None = ..., padding: _Array[float, Literal[4]] | float | None = ..., rect_setter: _RectSetter | None = ...):
+    def push[T: Item](self, item: T, cell: tuple[int, int], /, *, anchor: str = ..., max_size: _Array[float, Literal[2]] | float | None = ..., padding: _Array[float, Literal[4]] | float | None = ..., rect_setter: _RectSetter | None = ...) -> T:
         """Attach an item to the grid, positioning it within a specific cell.
+
+        Awaits internal lock release.
 
         :type item: `int | str`
         :param item: Item identifier to push. The item must have geometry
@@ -595,8 +597,10 @@ class Grid(_GridComponent):
         the cell or cellspan is too small when drawing the grid.
         """
     @overload
-    def push(self, item: Item, cell_start: tuple[int, int], cell_stop: tuple[int, int], /, *, anchor: str = ..., max_size: _Array[float, Literal[2]] | float | None = ..., padding: _Array[float, Literal[4]] | float | None = ..., rect_setter: _RectSetter | None = ...):
+    def push[T: Item](self, item: T, cell_start: tuple[int, int], cell_stop: tuple[int, int], /, *, anchor: str = ..., max_size: _Array[float, Literal[2]] | float | None = ..., padding: _Array[float, Literal[4]] | float | None = ..., rect_setter: _RectSetter | None = ...) -> T:
         """Attach an item to the grid, positioning it within a range of cells.
+
+        Awaits internal lock release.
 
         :type item: `int | str`
         :param item: Item identifier to push. The item must have geometry

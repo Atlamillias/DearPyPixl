@@ -717,7 +717,7 @@ class Grid(_GridComponent):
             self._item_data.discard(item)  # type: ignore
             self._item_data.add(item_data)
 
-        return item_data
+        return item
 
     def _get_parent_rect_info(self, default=_default_rect_getter):
         return (self.rect_getter or default)(self.parent or 0)
