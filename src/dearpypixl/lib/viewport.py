@@ -203,19 +203,18 @@ _GLOBAL_CONFIG = dict.fromkeys(("primary_window", "callback", "user_data"), None
 def _get_vp_primary_window() -> mvWindowAppItem | None:  # pyright: ignore[reportRedeclaration]
     global _get_vp_primary_window
 
-    def _get_vp_primary_window(
-        *,
-        _item_type=interface.Interface.__item_registry__["mvAppItemType::mvWindowAppItem"]
-    ) -> mvWindowAppItem | None:
-        ...
+    def _get_vp_primary_window(*, _item_type=interface.Interface.__item_registry__["mvAppItemType::mvWindowAppItem"]) -> mvWindowAppItem | None:
         config = _GLOBAL_CONFIG
 
         primary_window = config["primary_window"]
         # check if our "primary_window" state is dirty
-        if primary_window and not _dearpygui.does_item_exist(primary_window):
-            primary_window = config["primary_window"] = None
+        if primary_window:
+            if _dearpygui.does_item_exist(primary_window):
+                primary_window = _item_type(tag=primary_window)
+            else:
+                primary_window = config["primary_window"] = None
         else:
-            primary_window = _item_type(tag=primary_window)
+            primary_window = None
 
         return primary_window
 
