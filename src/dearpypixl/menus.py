@@ -158,6 +158,8 @@ class ContextMenuStack:
                 if self._stack:
                     raise TypeError("owner item required when stack is not empty")
                 entry = (entry, None)
+            else:
+                menu = entry[0]
 
             if not self._stack:
                 self._menus_opened()
