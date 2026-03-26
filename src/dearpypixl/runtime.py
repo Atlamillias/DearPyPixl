@@ -140,9 +140,11 @@ class Runtime[T: typing.Callable]:
         self._is_running = True
 
         try:
-            timer  = time.perf_counter_ns
-            render = self.render
-            update = self.update
+            timer   = time.perf_counter_ns
+            render  = self.render
+            update  = self.update
+            running = _dearpygui.is_dearpygui_running
+
             process_backend_queue = self._dpg_queue_processor
 
             tb_updates = 0
@@ -153,7 +155,7 @@ class Runtime[T: typing.Callable]:
 
             while True:
 
-                while True:
+                while running():
                     try:
                         self._emit_signal()
                     except Signal as e:
@@ -179,7 +181,7 @@ class Runtime[T: typing.Callable]:
                 ts_idle = timer()
                 try:
                     signal(self)
-                except RuntimeExit:
+                except (RuntimeExit, UnboundLocalError):
                     break
                 finally:
                     tb_idle += timer() - ts_idle
