@@ -225,35 +225,69 @@ def _set_vp_primary_window(primary_window: int | str | None, /) -> None:
 
     main_window = config['primary_window']
 
-    # BUG: The process of setting or unsetting a window as primary
-    # makes it lose its "no_scroll_with_mouse" (<=1.10) and
-    # "no_scrollbar" flags. They need to be re-applied after the
-    # change.
+    # BUG/HACK: The window "forgets" several of its settings when
+    # it's set of removed as the primary window. They need to be
+    # re-applied.
 
     # replace current primary window with a new one
     if primary_window:
-        pwndw_config = _dearpygui.get_item_configuration(primary_window)
+        wndw_config = _dearpygui.get_item_configuration(primary_window)
+        dearpygui.add_window()
 
         _dearpygui.set_primary_window(primary_window, True)
         config['primary_window'] = primary_window
 
         _dearpygui.configure_item(
             primary_window,
-            no_scrollbar=pwndw_config["no_scrollbar"],
-            no_scroll_with_mouse=pwndw_config["no_scroll_with_mouse"],
+            menubar=wndw_config["menubar"],
+            collapsed=wndw_config["collapsed"],
+            autosize=wndw_config["autosize"],
+            no_resize=wndw_config["no_resize"],
+            no_title_bar=wndw_config["no_title_bar"],
+            no_move=wndw_config["no_move"],
+            no_scrollbar=wndw_config["no_scrollbar"],
+            no_collapse=wndw_config["no_collapse"],
+            horizontal_scrollbar=wndw_config["horizontal_scrollbar"],
+            no_focus_on_appearing=wndw_config["no_focus_on_appearing"],
+            no_bring_to_front_on_focus=wndw_config["no_bring_to_front_on_focus"],
+            no_close=wndw_config["no_close"],
+            no_background=wndw_config["no_background"],
+            modal=wndw_config["modal"],
+            popup=wndw_config["popup"],
+            no_saved_settings=wndw_config["no_saved_settings"],
+            no_open_over_existing_popup=wndw_config["no_open_over_existing_popup"],
+            no_scroll_with_mouse=wndw_config["no_scroll_with_mouse"],
+            on_close=wndw_config["on_close"],
         )
 
     # unset the primary window
     elif main_window:
-        mwndw_config = _dearpygui.get_item_configuration(main_window)
+        wndw_config = _dearpygui.get_item_configuration(main_window)
 
         _dearpygui.set_primary_window(main_window, False)
         config['primary_window'] = None
 
         _dearpygui.configure_item(
             main_window,
-            no_scrollbar=mwndw_config['no_scrollbar'],
-            no_scroll_with_mouse=mwndw_config['no_scroll_with_mouse'],
+            menubar=wndw_config["menubar"],
+            collapsed=wndw_config["collapsed"],
+            autosize=wndw_config["autosize"],
+            no_resize=wndw_config["no_resize"],
+            no_title_bar=wndw_config["no_title_bar"],
+            no_move=wndw_config["no_move"],
+            no_scrollbar=wndw_config["no_scrollbar"],
+            no_collapse=wndw_config["no_collapse"],
+            horizontal_scrollbar=wndw_config["horizontal_scrollbar"],
+            no_focus_on_appearing=wndw_config["no_focus_on_appearing"],
+            no_bring_to_front_on_focus=wndw_config["no_bring_to_front_on_focus"],
+            no_close=wndw_config["no_close"],
+            no_background=wndw_config["no_background"],
+            modal=wndw_config["modal"],
+            popup=wndw_config["popup"],
+            no_saved_settings=wndw_config["no_saved_settings"],
+            no_open_over_existing_popup=wndw_config["no_open_over_existing_popup"],
+            no_scroll_with_mouse=wndw_config["no_scroll_with_mouse"],
+            on_close=wndw_config["on_close"],
         )
 
 
