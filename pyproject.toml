@@ -1,6 +1,5 @@
 [project]
 name = "dearpypixl"
-version = "2.0.5"
 description = "An object-oriented, lightweight, modular framework and toolkit for Dear PyGui."
 authors = [{name="Anthony Doupe", email="atlamillias@outlook.com"}]
 keywords = ["dearpygui", "gui", "ui", "user-interface"]
@@ -20,6 +19,7 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
 ]
 requires-python = ">=3.14"
+dynamic = ["version"]
 dependencies = [
     "dearpygui >= 2.2, < 3.0",
 ]
@@ -31,7 +31,7 @@ dev = ["build", "setuptools"]
 
 
 [build-system]
-requires = ["setuptools"]
+requires = ["setuptools", "setuptools_scm"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages.find]

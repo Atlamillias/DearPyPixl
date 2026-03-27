@@ -115,6 +115,10 @@ class AppItem[U = typing.Any, V = typing.Any, P = typing.Any, C = typing.Any](in
 
         try:
             value = _dearpygui.get_value(uuid)
+            if hasattr(value, "__getitem__") and hasattr(value, "__len__") and len(value) > 4:
+                value = f"[{value[0]!r}, {value[1]!r}, {value[2]!r}, {value[3]!r}, ...]"
+            else:
+                value = repr(value)
         except SystemError:
             value = "<error>"
 
@@ -126,9 +130,9 @@ class AppItem[U = typing.Any, V = typing.Any, P = typing.Any, C = typing.Any](in
             except SystemError:
                 type = "<error>"
             else:
-                return f"{class_name}({type=}, {uuid=}, {alias=}, {value=})"
+                return f"{class_name}({type=}, {uuid=}, {alias=}, value={value})"
 
-        return f"{class_name}({uuid=}, {alias=}, {value=})"
+        return f"{class_name}({uuid=}, {alias=}, value={value})"
 
     def __int__(self, /):
         return self.real
