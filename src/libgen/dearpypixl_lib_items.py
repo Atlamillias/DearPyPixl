@@ -3,8 +3,10 @@ from typing import *
 from dearpypixl.core.protocols import *
 from dearpypixl.core.appitem import _ElementItem
 
-from dearpygui import _dearpygui
+from dearpygui import _dearpygui, dearpygui
 
+if TYPE_CHECKING:
+    from dearpypixl.lib.items import mvStaticTexture, mvDynamicTexture, mvRawTexture
 
 
 
@@ -14,6 +16,217 @@ class mvThemeColor:
 
 class mvThemeStyle:
     identify = _ElementItem.identify
+
+
+class mvTextureRegistry:
+
+    @staticmethod
+    def load_image(file: str, /, *, gamma: float = 1.0, gamma_scale_factor: float = 1.0, **kwargs) -> tuple[int, int, Literal[1, 2, 3, 4], mvBuffer] | None:
+        """Open and read an image, returning it's width, height, number of
+        channels, and image data (an instance of `mvBuffer`) as a 4-tuple.
+        Returns `None` on failure.
+
+        :type file: `str`
+        :param file: A file path pointing to an image in JPEG, PNG, BMP,
+            PSD, GIF, HDR, PIC, PPM, or PGM format.
+
+        :type gamma: `float` (optional)
+        :param gamma: Luminance correction scalar. A value of `1.0`
+            disables correction. Defaults to `1.0`.
+
+        :type gamma_scale_factor: `float` (optional)
+        :param gamma_scale_factor: *gamma* intensity scalar. Defaults to `1.0`.
+
+        :rtype: `tuple[int, int, Literal[1, 2, 3, 4], mvBuffer]`
+        :return: The width, height, channel count, and data loaded from *file*.
+
+        :raises `SystemError`: DearPyGui-related error.
+        """
+        return dearpygui.load_image(file, gamma=gamma, gamma_scale_factor=gamma_scale_factor, **kwargs)
+
+    @staticmethod
+    def save_image(file: str, width: int, height: int, data: Array[int, Any], /, *, components: Literal[1, 2, 3, 4] = 4, quality: int = 50, **kwargs) -> None:
+        """Dump an image to a file.
+
+        :type file: `str`
+        :param file: Destination file path for the saved image. The file name's
+            suffix/extension determines the resulting image's format. Supported
+            save formats are PNG, JPEG, BMP, TGA, and HDR.
+
+        :type width: `int`
+        :param width: Horizontal size of the image in pixels.
+
+        :type height: `int`
+        :param height: Vertical size of the image in pixels.
+
+        :type data: `Array[int | float, Any]`
+        :param data: A sequence-like buffer containing the image's data to save.
+
+        :type components: `Literal[1, 2, 3, 4]` (optional)
+        :param components: Number of channels per pixel. `1` is monochrome, `2`
+            is monochrome w/alpha, `3` is RGB, and `4` is RGBA. Defaults to `4`.
+
+        :type quality: `int` (optional)
+        :param quality: Image stride as a number of bytes. Only used when the
+            image is saved in JPEG format. Defaults to `50`.
+
+        :raises `SystemError`: DearPyGui-related error.
+        """
+        dearpygui.save_image(file, width, height, data, components=components, quality=quality, **kwargs)
+
+    def add_static_texture(self, width: int, height: int, default_value: Array[int | float, Any], /, *, label: str | None = None, user_data: Any = None, use_internal_label: bool = True, tag: Item = 0, **kwargs) -> mvStaticTexture:
+        """Creates a static texture as a child of this registry."""
+        kwargs["parent"] = self
+        return mvStaticTexture.create(width, height, default_value, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, **kwargs)
+
+    def add_dynamic_texture(self, width: int, height: int, default_value: Array[int | float, Any], /, *, label: str | None = None, user_data: Any = None, use_internal_label: bool = True, tag: Item = 0, **kwargs) -> mvDynamicTexture:
+        """Creates a dynamic texture as a child of this registry."""
+        kwargs["parent"] = self
+        return mvDynamicTexture.create(width, height, default_value, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, **kwargs)
+
+    def add_raw_texture(self, width: int, height: int, default_value: Array[int | float, Any], /, *, format: int = _dearpygui.mvFormat_Float_rgba, label: str | None = None, user_data: Any = None, use_internal_label: bool = True, tag: Item = 0, **kwargs) -> mvRawTexture:
+        """Creates a raw texture as a child of this registry."""
+        kwargs["parent"] = self
+        return mvRawTexture.create(width, height, default_value, format=format, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, **kwargs)
+
+
+class mvStaticTexture:
+    @staticmethod
+    def create_from_file(file: str, /, *, gamma: float = 1.0, gamma_scale_factor: float = 1.0, label: str | None = None, use_internal_label: bool = True, user_data: Any = None, tag: Item = 0, parent: Item = 0, **kwargs) -> mvStaticTexture:
+        """Create a texture from an image file.
+
+        Additional keyword arguments are forwarded to the texture item type's
+        constructor.
+
+        :type file: `str`
+        :param file: A file path pointing to an image in JPEG, PNG, BMP,
+            PSD, GIF, HDR, PIC, PPM, or PGM format.
+
+        :type gamma: `float` (optional)
+        :param gamma: Luminance correction scalar. A value of `1.0`
+            disables correction. Defaults to `1.0`.
+
+        :type gamma_scale_factor: `float` (optional)
+        :param gamma_scale_factor: *gamma* intensity scalar. Defaults to `1.0`.
+
+        :raises `IOError`: Unable to load the file.
+        :raises `SystemError`: DearPyGui-related error.
+        """
+        try:
+            wt, ht, ch, im = dearpygui.load_image(file, gamma=gamma, gamma_scale_factor=gamma_scale_factor)
+        except ValueError:
+            raise IOError(f"failed to load {file!r}") from None
+        return __class__.create(wt, ht, im, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, **kwargs)
+
+    def save(self, file: str, /, *, components: Literal[1, 2, 3, 4] = 4, quality: int = 50, **kwargs) -> None:
+        """Dump the texture as an image file.
+
+        :type file: `str`
+        :param file: Destination file path for the saved image. The file name's
+            suffix/extension determines the resulting image's format. Supported
+            save formats are PNG, JPEG, BMP, TGA, and HDR.
+
+        :type components: `Literal[1, 2, 3, 4]` (optional)
+        :param components: Number of channels per pixel. `1` is monochrome, `2`
+            is monochrome w/alpha, `3` is RGB, and `4` is RGBA. Defaults to `4`.
+
+        :type quality: `int` (optional)
+        :param quality: Image stride as a number of bytes. Only used when the
+            image is saved in JPEG format. Defaults to `50`.
+
+        :raises `SystemError`: DearPyGui-related error.
+        """
+        buffer = _dearpygui.get_value(self)
+        if (b_size := len(buffer)) > 0 and isinstance(buffer[0], float):
+            trunc  = float.__trunc__
+            buffer = [trunc(buffer[i] * 255.0) for i in range(b_size)]
+
+        config = _dearpygui.get_item_configuration(self)
+        dearpygui.save_image(file, config["width"], config["height"], buffer, components=components, quality=quality, **kwargs)
+
+
+class mvDynamicTexture:
+    @staticmethod
+    def create_from_file(file: str, /, *, gamma: float = 1.0, gamma_scale_factor: float = 1.0, label: str | None = None, use_internal_label: bool = True, user_data: Any = None, tag: Item = 0, parent: Item = 0, **kwargs) -> mvDynamicTexture:
+        """Create a texture from an image file.
+
+        Additional keyword arguments are forwarded to the texture item type's
+        constructor.
+
+        :type file: `str`
+        :param file: A file path pointing to an image in JPEG, PNG, BMP,
+            PSD, GIF, HDR, PIC, PPM, or PGM format.
+
+        :type gamma: `float` (optional)
+        :param gamma: Luminance correction scalar. A value of `1.0`
+            disables correction. Defaults to `1.0`.
+
+        :type gamma_scale_factor: `float` (optional)
+        :param gamma_scale_factor: *gamma* intensity scalar. Defaults to `1.0`.
+
+        :raises `IOError`: Unable to load the file.
+        :raises `SystemError`: DearPyGui-related error.
+        """
+        try:
+            wt, ht, ch, im = dearpygui.load_image(file, gamma=gamma, gamma_scale_factor=gamma_scale_factor)
+        except ValueError:
+            raise IOError(f"failed to load {file!r}") from None
+        return __class__.create(wt, ht, im, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, **kwargs)
+
+    def save(self, file: str, /, *, components: Literal[1, 2, 3, 4] = 4, quality: int = 50, **kwargs) -> None:
+        """Dump the texture as an image file.
+
+        :type file: `str`
+        :param file: Destination file path for the saved image. The file name's
+            suffix/extension determines the resulting image's format. Supported
+            save formats are PNG, JPEG, BMP, TGA, and HDR.
+
+        :type components: `Literal[1, 2, 3, 4]` (optional)
+        :param components: Number of channels per pixel. `1` is monochrome, `2`
+            is monochrome w/alpha, `3` is RGB, and `4` is RGBA. Defaults to `4`.
+
+        :type quality: `int` (optional)
+        :param quality: Image stride as a number of bytes. Only used when the
+            image is saved in JPEG format. Defaults to `50`.
+
+        :raises `SystemError`: DearPyGui-related error.
+        """
+        buffer = _dearpygui.get_value(self)
+        if (b_size := len(buffer)) > 0 and isinstance(buffer[0], float):
+            trunc  = float.__trunc__
+            buffer = [trunc(buffer[i] * 255.0) for i in range(b_size)]
+
+        config = _dearpygui.get_item_configuration(self)
+        dearpygui.save_image(file, config["width"], config["height"], buffer, components=components, quality=quality, **kwargs)
+
+
+class mvRawTexture:
+    @staticmethod
+    def create_from_file(file: str, /, *, gamma: float = 1.0, gamma_scale_factor: float = 1.0, format: int = _dearpygui.mvFormat_Float_rgba, label: str | None = None, use_internal_label: bool = True, user_data: Any = None, tag: Item = 0, parent: Item = 0, **kwargs) -> mvRawTexture:
+        """Create a texture from an image file.
+
+        Additional keyword arguments are forwarded to the texture item type's
+        constructor.
+
+        :type file: `str`
+        :param file: A file path pointing to an image in JPEG, PNG, BMP,
+            PSD, GIF, HDR, PIC, PPM, or PGM format.
+
+        :type gamma: `float` (optional)
+        :param gamma: Luminance correction scalar. A value of `1.0`
+            disables correction. Defaults to `1.0`.
+
+        :type gamma_scale_factor: `float` (optional)
+        :param gamma_scale_factor: *gamma* intensity scalar. Defaults to `1.0`.
+
+        :raises `IOError`: Unable to load the file.
+        :raises `SystemError`: DearPyGui-related error.
+        """
+        try:
+            wt, ht, ch, im = dearpygui.load_image(file, gamma=gamma, gamma_scale_factor=gamma_scale_factor)
+        except ValueError:
+            raise IOError(f"failed to load {file!r}") from None
+        return __class__.create(wt, ht, im, format=format, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, **kwargs)
 
 
 class mvDrawLayer:

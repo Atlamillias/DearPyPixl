@@ -3762,6 +3762,45 @@ class mvDynamicTexture[U = Any, V: Array[int, Any] = Any, P: mvStage | mvTemplat
     def configuration(self, /) -> dict[Literal["width", "height", "label", "use_internal_label", "user_data"], Any]: ...
     def configure(self, /, *, label: str | None = ..., use_internal_label: bool = ..., user_data: Any | None = ..., **kwargs) -> None: ...
     def state(self, /) -> dict[Literal["ok", "pos"], Any]: ...
+    @staticmethod
+    def create_from_file(file: str, /, *, gamma: float=1.0, gamma_scale_factor: float=1.0, label: str | None=None, use_internal_label: bool=True, user_data: Any=None, tag: Item=0, parent: Item=0, **kwargs) -> mvDynamicTexture:
+        """Create a texture from an image file.
+    
+            Additional keyword arguments are forwarded to the texture item type's
+            constructor.
+    
+            :type file: `str`
+            :param file: A file path pointing to an image in JPEG, PNG, BMP,
+                PSD, GIF, HDR, PIC, PPM, or PGM format.
+    
+            :type gamma: `float` (optional)
+            :param gamma: Luminance correction scalar. A value of `1.0`
+                disables correction. Defaults to `1.0`.
+    
+            :type gamma_scale_factor: `float` (optional)
+            :param gamma_scale_factor: *gamma* intensity scalar. Defaults to `1.0`.
+    
+            :raises `IOError`: Unable to load the file.
+            :raises `SystemError`: DearPyGui-related error.
+            """
+    def save(self, file: str, /, *, components: Literal[1, 2, 3, 4]=4, quality: int=50, **kwargs) -> None:
+        """Dump the texture as an image file.
+    
+            :type file: `str`
+            :param file: Destination file path for the saved image. The file name's
+                suffix/extension determines the resulting image's format. Supported
+                save formats are PNG, JPEG, BMP, TGA, and HDR.
+    
+            :type components: `Literal[1, 2, 3, 4]` (optional)
+            :param components: Number of channels per pixel. `1` is monochrome, `2`
+                is monochrome w/alpha, `3` is RGB, and `4` is RGBA. Defaults to `4`.
+    
+            :type quality: `int` (optional)
+            :param quality: Image stride as a number of bytes. Only used when the
+                image is saved in JPEG format. Defaults to `50`.
+    
+            :raises `SystemError`: DearPyGui-related error.
+            """
 
 def add_dynamic_texture[U = Any](width: int, height: int, default_value: Array[float, Any], *, parent: Item = _dearpygui.mvReservedUUID_2, label: str | None = None, use_internal_label: bool = True, user_data: Any | None = None, tag: int | str = 0, **kwargs) -> mvDynamicTexture[U]: ...
 
@@ -7342,13 +7381,30 @@ class mvRawTexture[U = Any, P: mvStage | mvTemplateRegistry | mvTextureRegistry 
     def width(self, /) -> int: ...
     @property
     def height(self, /) -> int: ...
-    def configuration(self, /) -> dict[Literal["width", "height", "format", "label", "use_internal_label", "user_data"], Any]: ...
-    @property
-    def format(self, /) -> int: ...
-    @format.setter
-    def format(self, value: int, /) -> None: ...
-    def configure(self, /, *, format: int = ..., label: str | None = ..., use_internal_label: bool = ..., user_data: Any | None = ..., **kwargs) -> None: ...
+    def configuration(self, /) -> dict[Literal["width", "height", "label", "use_internal_label", "user_data"], Any]: ...
+    def configure(self, /, *, label: str | None = ..., use_internal_label: bool = ..., user_data: Any | None = ..., **kwargs) -> None: ...
     def state(self, /) -> dict[Literal["ok", "pos"], Any]: ...
+    @staticmethod
+    def create_from_file(file: str, /, *, gamma: float=1.0, gamma_scale_factor: float=1.0, format: int=_dearpygui.mvFormat_Float_rgba, label: str | None=None, use_internal_label: bool=True, user_data: Any=None, tag: Item=0, parent: Item=0, **kwargs) -> mvRawTexture:
+        """Create a texture from an image file.
+    
+            Additional keyword arguments are forwarded to the texture item type's
+            constructor.
+    
+            :type file: `str`
+            :param file: A file path pointing to an image in JPEG, PNG, BMP,
+                PSD, GIF, HDR, PIC, PPM, or PGM format.
+    
+            :type gamma: `float` (optional)
+            :param gamma: Luminance correction scalar. A value of `1.0`
+                disables correction. Defaults to `1.0`.
+    
+            :type gamma_scale_factor: `float` (optional)
+            :param gamma_scale_factor: *gamma* intensity scalar. Defaults to `1.0`.
+    
+            :raises `IOError`: Unable to load the file.
+            :raises `SystemError`: DearPyGui-related error.
+            """
 
 def add_raw_texture[U = Any](width: int, height: int, default_value: Array[float, Any], *, format: int = _dearpygui.mvFormat_Float_rgba, parent: Item = _dearpygui.mvReservedUUID_2, label: str | None = None, use_internal_label: bool = True, user_data: Any | None = None, tag: int | str = 0, **kwargs) -> mvRawTexture[U]: ...
 
@@ -8636,6 +8692,45 @@ class mvStaticTexture[U = Any, V: Array[int, Any] = Any, P: mvStage | mvTemplate
     def configuration(self, /) -> dict[Literal["width", "height", "label", "use_internal_label", "user_data"], Any]: ...
     def configure(self, /, *, label: str | None = ..., use_internal_label: bool = ..., user_data: Any | None = ..., **kwargs) -> None: ...
     def state(self, /) -> dict[Literal["ok", "pos"], Any]: ...
+    @staticmethod
+    def create_from_file(file: str, /, *, gamma: float=1.0, gamma_scale_factor: float=1.0, label: str | None=None, use_internal_label: bool=True, user_data: Any=None, tag: Item=0, parent: Item=0, **kwargs) -> mvStaticTexture:
+        """Create a texture from an image file.
+    
+            Additional keyword arguments are forwarded to the texture item type's
+            constructor.
+    
+            :type file: `str`
+            :param file: A file path pointing to an image in JPEG, PNG, BMP,
+                PSD, GIF, HDR, PIC, PPM, or PGM format.
+    
+            :type gamma: `float` (optional)
+            :param gamma: Luminance correction scalar. A value of `1.0`
+                disables correction. Defaults to `1.0`.
+    
+            :type gamma_scale_factor: `float` (optional)
+            :param gamma_scale_factor: *gamma* intensity scalar. Defaults to `1.0`.
+    
+            :raises `IOError`: Unable to load the file.
+            :raises `SystemError`: DearPyGui-related error.
+            """
+    def save(self, file: str, /, *, components: Literal[1, 2, 3, 4]=4, quality: int=50, **kwargs) -> None:
+        """Dump the texture as an image file.
+    
+            :type file: `str`
+            :param file: Destination file path for the saved image. The file name's
+                suffix/extension determines the resulting image's format. Supported
+                save formats are PNG, JPEG, BMP, TGA, and HDR.
+    
+            :type components: `Literal[1, 2, 3, 4]` (optional)
+            :param components: Number of channels per pixel. `1` is monochrome, `2`
+                is monochrome w/alpha, `3` is RGB, and `4` is RGBA. Defaults to `4`.
+    
+            :type quality: `int` (optional)
+            :param quality: Image stride as a number of bytes. Only used when the
+                image is saved in JPEG format. Defaults to `50`.
+    
+            :raises `SystemError`: DearPyGui-related error.
+            """
 
 def add_static_texture[U = Any](width: int, height: int, default_value: Array[float, Any], *, parent: Item = _dearpygui.mvReservedUUID_2, label: str | None = None, use_internal_label: bool = True, user_data: Any | None = None, tag: int | str = 0, **kwargs) -> mvStaticTexture[U]: ...
 
@@ -9578,6 +9673,62 @@ class mvTextureRegistry[U = Any, C: ChildItem[Any, Any, mvTextureRegistry, Any] 
     def show(self, value: bool, /) -> None: ...
     def configure(self, /, *, show: bool = ..., label: str | None = ..., use_internal_label: bool = ..., user_data: Any | None = ..., **kwargs) -> None: ...
     def state(self, /) -> dict[Literal["ok", "pos"], Any]: ...
+    @staticmethod
+    def load_image(file: str, /, *, gamma: float=1.0, gamma_scale_factor: float=1.0, **kwargs) -> tuple[int, int, Literal[1, 2, 3, 4], mvBuffer] | None:
+        """Open and read an image, returning it's width, height, number of
+            channels, and image data (an instance of `mvBuffer`) as a 4-tuple.
+            Returns `None` on failure.
+    
+            :type file: `str`
+            :param file: A file path pointing to an image in JPEG, PNG, BMP,
+                PSD, GIF, HDR, PIC, PPM, or PGM format.
+    
+            :type gamma: `float` (optional)
+            :param gamma: Luminance correction scalar. A value of `1.0`
+                disables correction. Defaults to `1.0`.
+    
+            :type gamma_scale_factor: `float` (optional)
+            :param gamma_scale_factor: *gamma* intensity scalar. Defaults to `1.0`.
+    
+            :rtype: `tuple[int, int, Literal[1, 2, 3, 4], mvBuffer]`
+            :return: The width, height, channel count, and data loaded from *file*.
+    
+            :raises `SystemError`: DearPyGui-related error.
+            """
+    @staticmethod
+    def save_image(file: str, width: int, height: int, data: Array[int, Any], /, *, components: Literal[1, 2, 3, 4]=4, quality: int=50, **kwargs) -> None:
+        """Dump an image to a file.
+    
+            :type file: `str`
+            :param file: Destination file path for the saved image. The file name's
+                suffix/extension determines the resulting image's format. Supported
+                save formats are PNG, JPEG, BMP, TGA, and HDR.
+    
+            :type width: `int`
+            :param width: Horizontal size of the image in pixels.
+    
+            :type height: `int`
+            :param height: Vertical size of the image in pixels.
+    
+            :type data: `Array[int | float, Any]`
+            :param data: A sequence-like buffer containing the image's data to save.
+    
+            :type components: `Literal[1, 2, 3, 4]` (optional)
+            :param components: Number of channels per pixel. `1` is monochrome, `2`
+                is monochrome w/alpha, `3` is RGB, and `4` is RGBA. Defaults to `4`.
+    
+            :type quality: `int` (optional)
+            :param quality: Image stride as a number of bytes. Only used when the
+                image is saved in JPEG format. Defaults to `50`.
+    
+            :raises `SystemError`: DearPyGui-related error.
+            """
+    def add_static_texture(self, width: int, height: int, default_value: Array[int | float, Any], /, *, label: str | None=None, user_data: Any=None, use_internal_label: bool=True, tag: Item=0, **kwargs) -> mvStaticTexture:
+        """Creates a static texture as a child of this registry."""
+    def add_dynamic_texture(self, width: int, height: int, default_value: Array[int | float, Any], /, *, label: str | None=None, user_data: Any=None, use_internal_label: bool=True, tag: Item=0, **kwargs) -> mvDynamicTexture:
+        """Creates a dynamic texture as a child of this registry."""
+    def add_raw_texture(self, width: int, height: int, default_value: Array[int | float, Any], /, *, format: int=_dearpygui.mvFormat_Float_rgba, label: str | None=None, user_data: Any=None, use_internal_label: bool=True, tag: Item=0, **kwargs) -> mvRawTexture:
+        """Creates a raw texture as a child of this registry."""
 
 def texture_registry[U = Any](*, show: bool = False, label: str | None = None, use_internal_label: bool = True, user_data: Any | None = None, tag: int | str = 0, **kwargs) -> mvTextureRegistry[U]: ...
 def add_texture_registry[U = Any](*, show: bool = False, label: str | None = None, use_internal_label: bool = True, user_data: Any | None = None, tag: int | str = 0, **kwargs) -> mvTextureRegistry[U]: ...
@@ -9608,8 +9759,8 @@ class mvThemeColor[U = Any, V: Array[int, Literal[3, 4]] = Any, P: mvThemeCompon
         """Return a 4-tuple containing: the item's resolved interface type, the
             element's simplified name, the element's full name, the element category
             name, and element target name. The "simplified" name matches the name of
-            a function in either the :py:module:`~dearpypixl.color` or
-            :py:module:`~dearpypixl.style` modules, while the element's full name,
+            a function in either the :py:module:~`dearpypixl.color` or
+            :py:module:~`dearpypixl.style` modules, while the element's full name,
             category name, and target name match the name of a constant in
             `dearpygui.dearpygui`.
             """
@@ -9648,8 +9799,8 @@ class mvThemeStyle[U = Any, V: Array[float, Literal[4]] = Any, P: mvThemeCompone
         """Return a 4-tuple containing: the item's resolved interface type, the
             element's simplified name, the element's full name, the element category
             name, and element target name. The "simplified" name matches the name of
-            a function in either the :py:module:`~dearpypixl.color` or
-            :py:module:`~dearpypixl.style` modules, while the element's full name,
+            a function in either the :py:module:~`dearpypixl.color` or
+            :py:module:~`dearpypixl.style` modules, while the element's full name,
             category name, and target name match the name of a constant in
             `dearpygui.dearpygui`.
             """
