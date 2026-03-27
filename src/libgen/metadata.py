@@ -740,16 +740,20 @@ def _parse_parameters(source: str, typedef_map: dict[str, ItemTypeInfo], metadat
                     len(p_name) == 1 or (len(p_name) == 2 and p_name[-1].isdigit())
                 ):
                     p_flags |= ParameterFlag.NO_READ | ParameterFlag.NO_WRITE
-                elif p_kind == ParameterKind.POSITIONAL_OR_KEYWORD:
 
+                elif p_kind == ParameterKind.POSITIONAL_OR_KEYWORD:
                     value_type = type_info.value_type or ''
                     if value_type.startswith("Array") and value_type.removeprefix("Array[").startswith(str(p_default)):
                         p_flags |= ParameterFlag.NO_READ
                     # `mvRadioButton`, `mvCombo`, `mvListbox`, etc
                     elif not (p_name == "items" and p_default == "()"):
                         p_flags |= ParameterFlag.NO_WRITE
+
                 elif p_name == "category" and type_name in ("mvThemeColor", "mvThemeStyle"):
                     p_flags |= ParameterFlag.NO_WRITE
+
+                elif p_name == "format" and type_name == "mvRawTexture":
+                    p_flags |= ParameterFlag.NO_READ | ParameterFlag.NO_WRITE
 
                 param = Parameter(name=p_name, kind=p_kind, annotation=p_anno, default=p_default, flags=p_flags)
 
