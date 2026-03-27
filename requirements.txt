@@ -1,5 +1,0 @@
-# `pip` & `build` use the deps listed in `pyproject.toml`,
-# not here. This is for development.
-dearpygui
-typing-extensions ; python_version < "3.12"
-build

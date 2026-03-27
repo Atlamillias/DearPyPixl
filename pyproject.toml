@@ -1,6 +1,5 @@
 [project]
 name = "dearpypixl"
-version = "1.2.13"
 description = "An object-oriented, lightweight, modular framework and toolkit for Dear PyGui."
 authors = [{name="Anthony Doupe", email="atlamillias@outlook.com"}]
 keywords = ["dearpygui", "gui", "ui", "user-interface"]
@@ -9,9 +8,8 @@ readme = "README.md"
 classifiers = [
     "Programming Language :: Python :: Implementation :: CPython",
     "Programming Language :: Python :: 3 :: Only",
-    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.14",
 
-    "Operating System :: Microsoft :: Windows :: Windows 8.1",
     "Operating System :: Microsoft :: Windows :: Windows 10",
     "Operating System :: Microsoft :: Windows :: Windows 11",
     "Operating System :: MacOS",
@@ -20,24 +18,61 @@ classifiers = [
 
     "License :: OSI Approved :: MIT License",
 ]
-requires-python = ">=3.10"
+requires-python = ">=3.14"
+dynamic = ["version"]
 dependencies = [
-    "dearpygui >= 1.9.0",
-    "typing-extensions; python_version < '3.12'",
+    "dearpygui >= 2.2, < 3.0",
 ]
+
+[dependency-groups]
+dev = ["build", "setuptools"]
+
+
 
 
 [build-system]
-requires = ["setuptools ~= 65.0", "wheel"]
+requires = ["setuptools", "setuptools-scm[simple]>=9.2"]
 build-backend = "setuptools.build_meta"
 
-
-[tool.setuptools]
-packages = [
-    "dearpypixl",
-]
-include-package-data = true
+[tool.setuptools.packages.find]
+where = ["src"]
+exclude = ["libgen*"]
 
 [tool.setuptools.package-data]
-dearpypixl = ["*.typed", "*.pyi"]
+"*" = ["*.typed", "*.pyi"]
 
+
+
+
+[tool.ty.src]
+exclude = ["!./src/dearpypixl/lib/**", "./docs"]
+
+[tool.ty.environment]
+python-version = "3.14"
+root = ["./src"]
+
+[tool.ty.rules]
+unused-ignore-comment = "ignore"
+unused-type-ignore-comment = "ignore"
+unresolved-global = "ignore"
+empty-body = "ignore"
+unresolved-reference = "ignore"  # BUG: reports on `__class__` cell reference?
+invalid-legacy-positional-parameter = "ignore"
+
+[[tool.ty.overrides]]
+include = ["./src/**/*.pyi", "**/dearpypixl/lib/items.py"]
+[tool.ty.overrides.rules]
+invalid-type-arguments = "ignore"
+invalid-method-override = "ignore"
+
+[[tool.ty.overrides]]
+include = ["**/libgen/dearpypixl_lib_items.py"]
+[tool.ty.overrides.rules]
+invalid-argument-type = "warn"
+
+[tool.pyright]
+typeCheckingMode = "off"
+include = ["./src/dearpypixl", "./src/dearpypixl/lib", "./src/libgen", "./scripts"]
+exclude = ["docs", ".venv", "**/.*", "**/__pycache__", "**/node_modules"]
+extraPaths = ["./src/libgen"]
+openFilesOnly = false
