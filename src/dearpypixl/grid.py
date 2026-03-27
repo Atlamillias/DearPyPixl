@@ -25,50 +25,19 @@ NaN = float("nan")
 _MISSING = object()
 
 
-class _Array[L: int, T](typing.Protocol):
-    def __len__(self, /) -> L: ...
-    def __iter__(self, /) -> typing.Iterator[T]: ...
-    @typing.overload
-    def __getitem__(self, index: typing.SupportsIndex, /) -> T: ...
-    @typing.overload
-    def __getitem__[C: _ArrayLike](self: C, slice: slice, /) -> C: ...
-    @typing.overload
-    def __setitem__(self, index: typing.SupportsIndex, value: T, /) -> None: ...
-    @typing.overload
-    def __setitem__(self, slice: slice, value: _ArrayLike[L, T], /) -> None: ...
-
-type _ArrayLike[L: int, T] = typing.Annotated[typing.Sequence[T], L]
-
-type _2 = typing.Literal[2]
-type _4 = typing.Literal[4]
-
-type _True = typing.Literal[True]
-type _False = typing.Literal[False]
-
-
 
 
 # [ HELPER FUNCTIONS ]
 
-def _create_context():
-    global _create_context
-    # runs once, then no-op
-    dearpygui.create_context()
-    def _create_context():
-        pass
-
 def _is_nan(v: typing.Any) -> bool:
     return v != v
-
-def _is_nanlike(v: typing.Any) -> bool:
-    return v is None or v != v
 
 def _to_value(value: typing.Any, default: typing.Any):
     if value is None or _is_nan(value):
         return default
     return value
 
-def _to_float_arr(value: _ArrayLike[_2, float] | float | None, length: int, default: float = NaN) -> typing.Any:
+def _to_float_arr(value: typing.Sequence[float] | float | None, length: int, default: float = NaN) -> typing.Any:
     """
     # Non-Sequence value (None | float('nan'))
     >>> arr = _to_float_array(None, 2)
@@ -274,8 +243,6 @@ class Axis(_GridComponent, typing.Iterable[Slot], typing.Sized):
 
     length: DataDescriptor[int, int] = property(lambda self: self.__len__(), lambda self, value: self.resize(value))
 
-    @typing.overload
-    def __init__(self, length: int = ..., *, label: str = ..., spacing: float | None = ..., padding: typing.Sequence[float] | float | None = ..., **kwargs) -> None: ...  # type: ignore
     def __init__(self, length: int = 0, *, _lock=None, **kwargs) -> None:
         self._slots = list[Slot]()
         self._lock  = _lock or threading.Lock()
@@ -515,7 +482,7 @@ class Grid(_GridComponent):
             with self._lock:
                 self._cols.resize(value)
 
-    cols: property[Axis, Axis | int] = cols  # pyright: ignore
+    cols: DataDescriptor[Axis, Axis | int] = cols  # pyright: ignore
 
     @property
     def rows(self, /) -> Axis:  # pyright: ignore[reportRedeclaration]
@@ -540,9 +507,9 @@ class Grid(_GridComponent):
     rect_getter: _RectGetter | None = None
     width: DataDescriptor[int, int | None] = _min_number_property(0, 0)
     height: DataDescriptor[int, int | None] = _min_number_property(0, 0)
-    offsets: DataDescriptor[_Array[_4, float], _ArrayLike[typing.Any, float] | float | None] = _float_arr_property(4, 0.0)
-    padding: DataDescriptor[_Array[_4, float], _ArrayLike[typing.Any, float] | float | None] = _float_arr_property(4, 0.0)
-    spacing: DataDescriptor[_Array[_2, float], _ArrayLike[typing.Any, float] | float | None] = _float_arr_property(2, 0.0)
+    offsets: DataDescriptor[typing.Sequence[float], typing.Sequence[float] | float | None] = _float_arr_property(4, 0.0)
+    padding: DataDescriptor[typing.Sequence[float], typing.Sequence[float] | float | None] = _float_arr_property(4, 0.0)
+    spacing: DataDescriptor[typing.Sequence[float], typing.Sequence[float] | float | None] = _float_arr_property(2, 0.0)
 
     @property
     def show(self, /) -> bool:  # pyright: ignore[reportRedeclaration]
@@ -585,7 +552,7 @@ class Grid(_GridComponent):
 
         self.draw()
 
-    overlay: property[bool, bool] = overlay  # pyright: ignore
+    overlay: DataDescriptor[bool, bool] = overlay  # pyright: ignore
 
     @typing.overload
     def configure(self, *, cols: int = ..., rows: int = ..., parent: Item | None = ..., label: str | None = ..., padding: typing.Sequence[float] | float | None = ..., spacing: typing.Sequence[float] | float | None = ..., width: float | None = ..., height: float | None = ..., offsets: typing.Sequence[float] | float | None = ..., rect_getter: _RectGetter | None = ..., overlay: bool = ..., show: bool = ..., **kwargs) -> None:  ...  # type: ignore
