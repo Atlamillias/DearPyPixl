@@ -1003,6 +1003,10 @@ items_spec = FileSpec("items", 'lib', ItemsCodeGenerator, ItemsStubGenerator).re
 class ConstantsCodeGenerator(FileGenerator):
     module_name = "dearpypixl_lib_constants.py"
 
+    def __init__(self, metadata: DearPyGuiMetadata, /) -> None:
+        super().__init__(metadata)
+        self._exports = []
+
     class _NodeTransformer(ast.NodeTransformer):
         def __init__(self, *args, **kwargs) -> None:
             super().__init__(*args, **kwargs)
@@ -1084,13 +1088,14 @@ class ConstantsCodeGenerator(FileGenerator):
     def _generate_enum(self, enum_name, constants, /):
         buffer = []
 
-        buffer.append(f"class {enum_name}(_enum.IntEnum):")
+        buffer.append(f"class {enum_name}(enum.IntEnum):")
         for (member, const) in constants:
             buffer.append(f"    {member or const} = _dearpygui.{const}")
         buffer.append('')
 
         for (member, const) in constants:
             buffer.append(f"{const} = {enum_name}.{member or const}")
+            self._exports.append(const)
         buffer.append('')
 
         buffer.append('')
@@ -1101,42 +1106,53 @@ class ConstantsCodeGenerator(FileGenerator):
 
         content.extend(self._generate_banner("DearPyPixl Constants Library"))
 
-        content.append('import enum as _enum')
+        content.append('import enum')
         content.append('')
         content.append('from dearpygui import _dearpygui')
-        content.append('')
-        content.append('')
         content.append('')
         content.append('')
 
         namespace_map = self._get_const_namespace_map(self.metadata.constants)
 
-        content.extend(self._generate_enum("DearPyGui", namespace_map.pop('', ())))
+        buffer = []
+
+        buffer.extend(self._generate_enum("DearPyGui", namespace_map.pop('', ())))
 
         source, const_refs = self._get_const_module_info()
 
         for enum_name, member_const_pairs in namespace_map.items():
             member_const_pairs = [p for p in member_const_pairs if p[1] not in const_refs]
             if member_const_pairs:
-                content.extend(self._generate_enum(enum_name, member_const_pairs))
+                buffer.extend(self._generate_enum(enum_name, member_const_pairs))
 
         # apply some basic formatting to the "unparse"d source
         indentation = 0
         for ln in source.splitlines():
             if ln.startswith("class "):
-                content.append("")
+                buffer.append("")
                 indentation = max(0, indentation - 4)
             elif ln:
                 n_spaces = len(ln) - len(ln.lstrip())
                 if not n_spaces:
-                    if indentation: content.append('')
+                    if indentation: buffer.append('')
                     indentation = 0
                 elif n_spaces > indentation:
                     indentation =+ n_spaces
                 elif indentation > n_spaces:
                     indentation -= n_spaces
-                    content.append('')
-            content.append(ln)
+                    buffer.append('')
+            buffer.append(ln)
+
+        content.append('__all__ = (')
+        for name in self._exports:
+            content.append(f'    "{name}",')
+        content.append(')')
+        content.append('')
+        content.append('')
+        content.append('')
+        content.append('')
+
+        content.extend(buffer)
 
         apply_newlines(content)
         return content
@@ -1328,7 +1344,6 @@ if __name__ == "__main__":
     from pathlib import Path
 
     version, archive = metadata.download_dearpygui_release()
-    #version, archive = '2.2.0', r"C:\Users\C69819\Downloads\DearPyGui-2.2.0.zip"
     md = metadata.parse(archive, version)
     dp = Path("./src/dearpypixl")
 
@@ -1339,4 +1354,3 @@ if __name__ == "__main__":
         constants_spec,
     ):
         spec.writefiles(dp, md)
-

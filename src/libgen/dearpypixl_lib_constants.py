@@ -1,8 +1,8 @@
-import enum as _enum
-from dearpygui import dearpygui as _dearpygui
+import enum
+from dearpygui import _dearpygui
 
 
-class mvNodePinShape(_enum.IntEnum):
+class mvNodePinShape(enum.IntEnum):
     CIRCLE = _dearpygui.mvNode_PinShape_Circle
     CIRCLE_FILLED = _dearpygui.mvNode_PinShape_CircleFilled
     QUAD = _dearpygui.mvNode_PinShape_Quad
@@ -18,7 +18,7 @@ mvNode_PinShape_Triangle = mvNodePinShape.TRIANGLE
 mvNode_PinShape_TriangleFilled = mvNodePinShape.TRIANGLE_FILLED
 
 
-class mvNodeAttr(_enum.IntEnum):
+class mvNodeAttr(enum.IntEnum):
     INPUT  = _dearpygui.mvNode_Attr_Input
     OUTPUT = _dearpygui.mvNode_Attr_Output
     STATIC = _dearpygui.mvNode_Attr_Static
@@ -28,7 +28,7 @@ mvNode_Attr_Output = mvNodeAttr.OUTPUT
 mvNode_Attr_Static = mvNodeAttr.STATIC
 
 
-class mvTableSizing(_enum.IntEnum):
+class mvTableSizing(enum.IntEnum):
     FIXED_FIT = _dearpygui.mvTable_SizingFixedFit
     FIXED_SAME = _dearpygui.mvTable_SizingFixedSame
     STRETCH_PROP = _dearpygui.mvTable_SizingStretchProp
@@ -44,7 +44,7 @@ mvTable_SizingStretchSame = mvTableSizing.STRETCH_SAME
 
 # [ input codes ]
 
-class _CodeMapEnumType(_enum.EnumMeta):
+class _CodeMapEnumType(enum.EnumMeta):
     def __getitem__(self, name: str):
         key = name.upper().replace(" ", "_").replace("-", "_")
         try:
@@ -53,7 +53,7 @@ class _CodeMapEnumType(_enum.EnumMeta):
             raise KeyError(name) from None
 
 
-class KeyCode(_enum.IntEnum, metaclass=_CodeMapEnumType):
+class KeyCode(enum.IntEnum, metaclass=_CodeMapEnumType):
     """Contains all possible values for handler and input key arguments."""
     MOD_DISABLED = _dearpygui.mvKey_ModDisabled  # -1
     NONE = ANY = _dearpygui.mvKey_None  # 0  <default value>
@@ -399,7 +399,7 @@ mvKey_ModAlt = mvKey.MOD_ALT
 mvKey_ModSuper = mvKey.MOD_SUPER
 
 
-class PointerCode(_enum.IntEnum, metaclass=_CodeMapEnumType):
+class PointerCode(enum.IntEnum, metaclass=_CodeMapEnumType):
     """Contains all possible values for *button* mouse event
     arguments.
     """
