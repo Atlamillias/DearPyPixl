@@ -6870,6 +6870,50 @@ class mvValueRegistry(ContainerItem, command="add_value_registry", slot=1):
     def create(cls, /, *, label=None, use_internal_label=True, user_data=None, tag=0, __func=_dearpygui.add_value_registry, **kwargs):  # ty: ignore[invalid-method-override]
         return cls(tag=__func(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag))  # ty: ignore[invalid-argument-type]
 
+    def add_bool_value(self, /, default_value=False, *, label=None, use_internal_label=True, user_data=None, tag=0, source=0, **kwargs):
+        kwargs['parent'] = self
+        return mvBoolValue.create(default_value=default_value, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, source=source, **kwargs)
+
+    def add_double_value(self, /, default_value=0.0, *, label=None, use_internal_label=True, user_data=None, tag=0, source=0, **kwargs):
+        kwargs['parent'] = self
+        return mvDoubleValue.create(default_value=default_value, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, source=source, **kwargs)
+
+    def add_double4_value(self, /, default_value=(0.0, 0.0, 0.0, 0.0), *, label=None, use_internal_label=True, user_data=None, tag=0, source=0, **kwargs):
+        kwargs['parent'] = self
+        return mvDouble4Value.create(default_value=default_value, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, source=source, **kwargs)
+
+    def add_color_value(self, /, default_value=(0, 0, 0, 0), *, label=None, use_internal_label=True, user_data=None, tag=0, source=0, **kwargs):
+        kwargs['parent'] = self
+        return mvColorValue.create(default_value=default_value, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, source=source, **kwargs)
+
+    def add_int_value(self, /, default_value=0, *, label=None, use_internal_label=True, user_data=None, tag=0, source=0, **kwargs):
+        kwargs['parent'] = self
+        return mvIntValue.create(default_value=default_value, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, source=source, **kwargs)
+
+    def add_int4_value(self, /, default_value=(0, 0, 0, 0), *, label=None, use_internal_label=True, user_data=None, tag=0, source=0, **kwargs):
+        kwargs['parent'] = self
+        return mvInt4Value.create(default_value=default_value, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, source=source, **kwargs)
+
+    def add_float_value(self, /, default_value=0.0, *, label=None, use_internal_label=True, user_data=None, tag=0, source=0, **kwargs):
+        kwargs['parent'] = self
+        return mvFloatValue.create(default_value=default_value, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, source=source, **kwargs)
+
+    def add_float4_value(self, /, default_value=(0.0, 0.0, 0.0, 0.0), *, label=None, use_internal_label=True, user_data=None, tag=0, source=0, **kwargs):
+        kwargs['parent'] = self
+        return mvFloat4Value.create(default_value=default_value, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, source=source, **kwargs)
+
+    def add_float_vect_value(self, /, default_value=(), *, label=None, use_internal_label=True, user_data=None, tag=0, source=0, **kwargs):
+        kwargs['parent'] = self
+        return mvFloatVectValue.create(default_value=default_value, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, source=source, **kwargs)
+
+    def add_series_value(self, /, default_value=(), *, label=None, use_internal_label=True, user_data=None, tag=0, source=0, **kwargs):
+        kwargs['parent'] = self
+        return mvSeriesValue.create(default_value=default_value, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, source=source, **kwargs)
+
+    def add_string_value(self, /, default_value='', *, label=None, use_internal_label=True, user_data=None, tag=0, source=0, **kwargs):
+        kwargs['parent'] = self
+        return mvStringValue.create(default_value=default_value, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, source=source, **kwargs)
+
 value_registry = add_value_registry = mvValueRegistry.create
 
 

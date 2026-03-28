@@ -10041,6 +10041,28 @@ class mvValueRegistry[U = Any, C: ChildItem[Any, Any, mvValueRegistry, Any] = Ch
     def configuration(self, /) -> dict[Literal["label", "use_internal_label", "user_data"], Any]: ...
     def configure(self, /, *, label: str | None = ..., use_internal_label: bool = ..., user_data: Any | None = ..., **kwargs) -> None: ...
     def state(self, /) -> dict[Literal["ok", "pos"], Any]: ...
+    def add_bool_value(self, /, default_value: bool=False, *, label: str | None=None, use_internal_label: bool=True, user_data: Any | None=None, tag: Item=0, source: Item=0, **kwargs) -> mvBoolValue:
+        """Creates a new boolean value item as a child of this registry."""
+    def add_double_value(self, /, default_value: float=0.0, *, label: str | None=None, use_internal_label: bool=True, user_data: Any | None=None, tag: Item=0, source: Item=0, **kwargs) -> mvDoubleValue:
+        """Creates a new double value item as a child of this registry."""
+    def add_double4_value(self, /, default_value: Array[float, Literal[4]]=(0.0, 0.0, 0.0, 0.0), *, label: str | None=None, use_internal_label: bool=True, user_data: Any | None=None, tag: Item=0, source: Item=0, **kwargs) -> mvDouble4Value:
+        """Creates a new 4-length double value item as a child of this registry."""
+    def add_color_value(self, /, default_value: Array[int, Literal[3, 4]]=(0, 0, 0, 0), *, label: str | None=None, use_internal_label: bool=True, user_data: Any | None=None, tag: Item=0, source: Item=0, **kwargs) -> mvColorValue:
+        """Creates a new color value item as a child of this registry."""
+    def add_int_value(self, /, default_value: int=0, *, label: str | None=None, use_internal_label: bool=True, user_data: Any | None=None, tag: Item=0, source: Item=0, **kwargs) -> mvIntValue:
+        """Creates a new int value item as a child of this registry."""
+    def add_int4_value(self, /, default_value: Array[int, Literal[4]]=(0, 0, 0, 0), *, label: str | None=None, use_internal_label: bool=True, user_data: Any | None=None, tag: Item=0, source: Item=0, **kwargs) -> mvInt4Value:
+        """Creates a new 4-length int value item as a child of this registry."""
+    def add_float_value(self, /, default_value: float=0.0, *, label: str | None=None, use_internal_label: bool=True, user_data: Any | None=None, tag: Item=0, source: Item=0, **kwargs) -> mvFloatValue:
+        """Creates a new float value item as a child of this registry."""
+    def add_float4_value(self, /, default_value: Array[float, Literal[4]]=(0.0, 0.0, 0.0, 0.0), *, label: str | None=None, use_internal_label: bool=True, user_data: Any | None=None, tag: Item=0, source: Item=0, **kwargs) -> mvFloat4Value:
+        """Creates a new 4-length float value item as a child of this registry."""
+    def add_float_vect_value(self, /, default_value: Array[float, Any]=(), *, label: str | None=None, use_internal_label: bool=True, user_data: Any | None=None, tag: Item=0, source: Item=0, **kwargs) -> mvFloatVectValue:
+        """Creates a new float vector value item as a child of this registry."""
+    def add_series_value(self, /, default_value: Array[float, Any]=(), *, label: str | None=None, use_internal_label: bool=True, user_data: Any | None=None, tag: Item=0, source: Item=0, **kwargs) -> mvSeriesValue:
+        """Creates a new series value item as a child of this registry."""
+    def add_string_value(self, /, default_value: str='', *, label: str | None=None, use_internal_label: bool=True, user_data: Any | None=None, tag: Item=0, source: Item=0, **kwargs) -> mvStringValue:
+        """Creates a new string value item as a child of this registry."""
 
 def value_registry[U = Any](*, label: str | None = None, use_internal_label: bool = True, user_data: Any | None = None, tag: int | str = 0, **kwargs) -> mvValueRegistry[U]: ...
 def add_value_registry[U = Any](*, label: str | None = None, use_internal_label: bool = True, user_data: Any | None = None, tag: int | str = 0, **kwargs) -> mvValueRegistry[U]: ...
