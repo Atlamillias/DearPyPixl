@@ -10,7 +10,7 @@ from dearpypixl.core import appitem
 from dearpypixl.core import protocols
 from dearpypixl.core import management
 from dearpypixl import theming
-import dearpypixl.lib as dearpypixl
+from dearpypixl.lib import items as dearpypixl_items
 
 __all__ = (
     "ContextMenuStack",
@@ -95,9 +95,9 @@ class ContextMenuStack:
         return self._stack[index]
 
     def _init_items(self, /):
-        self._handlers = dearpypixl.handler_registry()
-        self._close_handler = dearpypixl.add_mouse_down_handler(parent=self._handlers, callback=self._cb_close_menus)
-        self._open_handler = dearpypixl.add_mouse_release_handler(_dearpygui.mvMouseButton_Right, parent=self._handlers)
+        self._handlers = dearpypixl_items.handler_registry()
+        self._close_handler = dearpypixl_items.add_mouse_down_handler(parent=self._handlers, callback=self._cb_close_menus)
+        self._open_handler = dearpypixl_items.add_mouse_release_handler(_dearpygui.mvMouseButton_Right, parent=self._handlers)
 
     def _menus_opened(self, /) -> None:
         try:
@@ -246,7 +246,7 @@ _CONTEXT_STACK = ContextMenuStack()  # type: ignore
 
 
 
-class ContextMenuColor(dearpypixl.mvThemeComponent):
+class ContextMenuColor(dearpypixl_items.mvThemeComponent):
     __slots__ = ()
 
     button         = theming.color_property((0, 0, 0, 0))
@@ -257,7 +257,7 @@ class ContextMenuColor(dearpypixl.mvThemeComponent):
     header_hovered = theming.color_property((29, 151, 236, 103))
     window_bg      = theming.color_property((37, 37, 38, 255))
 
-class ContextMenuStyle(dearpypixl.mvThemeComponent):
+class ContextMenuStyle(dearpypixl_items.mvThemeComponent):
     __slots__ = ()
 
     item_spacing    = theming.style_property((8, 10))
@@ -269,9 +269,9 @@ class ContextMenuStyle(dearpypixl.mvThemeComponent):
 
 
 
-class ContextMenuItem[U = typing.Any](appitem.CompositeItem, dearpypixl.mvGroup):
-    _name_text: dearpypixl.mvText
-    _tail_text: dearpypixl.mvText
+class ContextMenuItem[U = typing.Any](appitem.CompositeItem, dearpypixl_items.mvGroup):
+    _name_text: dearpypixl_items.mvText
+    _tail_text: dearpypixl_items.mvText
     _child_menu: ContextMenu | None = None  # see `ContextMenu.pop()`
 
     context_stack: ContextMenuStack = _CONTEXT_STACK
@@ -294,17 +294,17 @@ class ContextMenuItem[U = typing.Any](appitem.CompositeItem, dearpypixl.mvGroup)
         if context_stack is not None:
             self.context_stack = context_stack
 
-        with dearpypixl.mvItemHandlerRegistry.create() as handlers:
-            dearpypixl.mvHoverHandler.create(callback=self._on_hover)
+        with dearpypixl_items.mvItemHandlerRegistry.create() as handlers:
+            dearpypixl_items.mvHoverHandler.create(callback=self._on_hover)
         self.handlers = handlers
 
         # This button is this item's clickable element and will
         # span the entire group. It's used over other items for
         # theme element compatibility (e.g. rounded corners, etc).
-        dearpypixl.add_button(width=-1, height=1, callback=self._on_click, parent=self).theme = __class__._get_clickitem_theme()
+        dearpypixl_items.add_button(width=-1, height=1, callback=self._on_click, parent=self).theme = __class__._get_clickitem_theme()
 
-        with dearpypixl.table(
-            parent=dearpypixl.add_group(label="[1] layout", parent=self),  # needed for rect size & positioning
+        with dearpypixl_items.table(
+            parent=dearpypixl_items.add_group(label="[1] layout", parent=self),  # needed for rect size & positioning
             header_row=False,
             no_host_extendX=True,
             no_keep_columns_visible=True,
@@ -316,26 +316,26 @@ class ContextMenuItem[U = typing.Any](appitem.CompositeItem, dearpypixl.mvGroup)
             scrollX=False,
             no_clip=True,
         ):
-            row = dearpypixl.add_table_row()
+            row = dearpypixl_items.add_table_row()
 
             # padding (affected by theme padding)
-            dearpypixl.add_table_column(label='[0] padding', width_fixed=True, no_clip=True, no_reorder=True, no_sort=True)
-            dearpypixl.add_spacer(parent=row)
+            dearpypixl_items.add_table_column(label='[0] padding', width_fixed=True, no_clip=True, no_reorder=True, no_sort=True)
+            dearpypixl_items.add_spacer(parent=row)
             # text (name)
-            dearpypixl.add_table_column(label='[1] text (name)', width_fixed=True, no_clip=True, no_reorder=True, no_sort=True)
-            self._name_text = dearpypixl.add_text(parent=row)
+            dearpypixl_items.add_table_column(label='[1] text (name)', width_fixed=True, no_clip=True, no_reorder=True, no_sort=True)
+            self._name_text = dearpypixl_items.add_text(parent=row)
             # spacing (affected by theme spacing)
             # XXX: This "spacer" is needed so the parent group can
             # report an accurate rect size. An empty, stretchy column
             # is not enough — it needs content to consume the space.
-            dearpypixl.add_table_column(label='[2] spacing', no_reorder=True, no_sort=True, width_stretch=True, indent_disable=True, indent_enable=False)
-            dearpypixl.add_button(parent=row, width=-1, height=1).theme = __class__._get_dummyitem_theme()
+            dearpypixl_items.add_table_column(label='[2] spacing', no_reorder=True, no_sort=True, width_stretch=True, indent_disable=True, indent_enable=False)
+            dearpypixl_items.add_button(parent=row, width=-1, height=1).theme = __class__._get_dummyitem_theme()
             # text (tail)
-            dearpypixl.add_table_column(label='[3] text (tail)', width_fixed=True, no_reorder=True, no_sort=True)
-            self._tail_text = dearpypixl.add_text(parent=row)
+            dearpypixl_items.add_table_column(label='[3] text (tail)', width_fixed=True, no_reorder=True, no_sort=True)
+            self._tail_text = dearpypixl_items.add_text(parent=row)
             # padding (affected by theme padding)
-            dearpypixl.add_table_column(label='[4] padding', width_fixed=True, no_clip=True, no_reorder=True, no_sort=True)
-            dearpypixl.add_spacer(parent=row)
+            dearpypixl_items.add_table_column(label='[4] padding', width_fixed=True, no_clip=True, no_reorder=True, no_sort=True)
+            dearpypixl_items.add_spacer(parent=row)
 
         self.label = label
         self.callback = callback
@@ -379,10 +379,10 @@ class ContextMenuItem[U = typing.Any](appitem.CompositeItem, dearpypixl.mvGroup)
     def _get_clickitem_theme():
         alias = f"{__name__}.{__class__.__name__}.<internal-0>"
         if _dearpygui.does_item_exist(alias):
-            return dearpypixl.mvTheme(tag=alias)
+            return dearpypixl_items.mvTheme(tag=alias)
 
-        with dearpypixl.mvTheme.create(tag=alias) as theme:
-            with dearpypixl.mvThemeComponent.create():
+        with dearpypixl_items.mvTheme.create(tag=alias) as theme:
+            with dearpypixl_items.mvThemeComponent.create():
                 theming.color.button(0, 0, 0, 0)
 
         return theme
@@ -391,10 +391,10 @@ class ContextMenuItem[U = typing.Any](appitem.CompositeItem, dearpypixl.mvGroup)
     def _get_dummyitem_theme():
         alias = f"{__name__}.{__class__.__name__}.<internal-1>"
         if _dearpygui.does_item_exist(alias):
-            return dearpypixl.mvTheme(tag=alias)
+            return dearpypixl_items.mvTheme(tag=alias)
 
-        with dearpypixl.mvTheme.create(tag=alias) as theme:
-            with dearpypixl.mvThemeComponent.create():
+        with dearpypixl_items.mvTheme.create(tag=alias) as theme:
+            with dearpypixl_items.mvThemeComponent.create():
                 theming.color.button(0, 0, 0, 0)
                 theming.color.button_active(0, 0, 0, 0)
                 theming.color.button_hovered(0, 0, 0, 0)
@@ -520,17 +520,17 @@ class _ContextMenuItemCommand[T: ContextMenuItem = ContextMenuItem](typing.Proto
     def __call__(self, *, label: str, parent: int | str, tag: int | str = ..., context_stack: ContextMenuStack = ...) -> T: ...
 
 
-class ContextMenu[U = typing.Any, C: ContextMenuItem = ContextMenuItem](appitem.CompositeItem, dearpypixl.mvWindowAppItem[U, C]):  # ty:ignore[invalid-type-arguments]
+class ContextMenu[U = typing.Any, C: ContextMenuItem = ContextMenuItem](appitem.CompositeItem, dearpypixl_items.mvWindowAppItem[U, C]):  # ty:ignore[invalid-type-arguments]
     __item_index_type__ = ContextMenuItem
     __item_index_slot__ = 1
 
     @staticmethod
-    def get_default_theme() -> dearpypixl.mvTheme:
+    def get_default_theme() -> dearpypixl_items.mvTheme:
         alias = f"{__name__}.{__class__.__name__}.theme<default>"
         if _dearpygui.does_item_exist(alias):
-            return dearpypixl.mvTheme(tag=alias)
+            return dearpypixl_items.mvTheme(tag=alias)
 
-        with dearpypixl.mvTheme.create(tag=alias) as theme:
+        with dearpypixl_items.mvTheme.create(tag=alias) as theme:
             color = ContextMenuColor.create(
                 tag=f"{__name__}.{__class__.__name__}.color<default>"
             )
@@ -612,8 +612,8 @@ class ContextMenu[U = typing.Any, C: ContextMenuItem = ContextMenuItem](appitem.
         if item_factory is not None:
             self.item_factory = item_factory
 
-        handlers = self.handlers = dearpypixl.item_handler_registry()
-        dearpypixl.add_item_resize_handler(callback=self._on_resize, parent=handlers)
+        handlers = self.handlers = dearpypixl_items.item_handler_registry()
+        dearpypixl_items.add_item_resize_handler(callback=self._on_resize, parent=handlers)
 
         self.theme = self.get_default_theme()
 

@@ -13,7 +13,9 @@ from dearpypixl.core import codegen
 from dearpypixl.core import management
 from dearpypixl import color
 from dearpypixl import style
-import dearpypixl.lib as dearpypixl
+import dearpypixl.lib.items as dearpypixl_items
+import dearpypixl.lib.functions as dearpypixl_funcs
+import dearpypixl.lib.constants as dearpypixl_consts
 
 
 __all__ = ("PyRepl", "add_pyrepl")
@@ -99,7 +101,7 @@ class _Event[T: typing.Callable]:
             self._callback = None
 
 
-class LogRegistry[U = typing.Any](appitem.CompositeItem, appitem.SupportsValueArray[str], dearpypixl.mvValueRegistry[U, typing.Any]):
+class LogRegistry[U = typing.Any](appitem.CompositeItem, appitem.SupportsValueArray[str], dearpypixl_items.mvValueRegistry[U, typing.Any]):
     type _AddValueCallback = typing.Callable[[LogRegistry, Item], None]
     type _DelValueCallback = typing.Callable[[LogRegistry, Item], None]
     type _SetValueCallback = typing.Callable[[LogRegistry, Item, str], typing.Any]
@@ -116,7 +118,7 @@ class LogRegistry[U = typing.Any](appitem.CompositeItem, appitem.SupportsValueAr
         default_value: typing.Sequence[str] | str = '',
         max_len: int | None = None,
         *,
-        item_factory = dearpypixl.mvStringValue.create,
+        item_factory = dearpypixl_items.mvStringValue.create,
         user_data = None,
         **kwargs
     ) -> typing.Self:
@@ -165,9 +167,9 @@ class LogRegistry[U = typing.Any](appitem.CompositeItem, appitem.SupportsValueAr
         self.set_value('')
 
     def get_value(self) -> list[str]:
-        return dearpypixl.get_values(dearpypixl.get_item_configuration(self)["children"][1])
+        return dearpypixl_funcs.get_values(dearpypixl_funcs.get_item_configuration(self)["children"][1])
 
-    def set_value(self, value: typing.Sequence[typing.Any], /) -> None:   # type: ignore[override]
+    def set_value(self, value: typing.Sequence[typing.Any], /) -> None:   # type: ignore
         update_child = self._update_child
         delete_child = self._delete_child
 
@@ -194,7 +196,7 @@ class LogRegistry[U = typing.Any](appitem.CompositeItem, appitem.SupportsValueAr
     def __setitem__(self, index: typing.SupportsIndex, value: str, /) -> None: ...
     @typing.overload
     def __setitem__(self, slice: slice, value: list[str], /) -> None: ...
-    def __setitem__(self, index, value, /) -> None:   # type: ignore[override]
+    def __setitem__(self, index, value, /) -> None:   # type: ignore
         items = self._get_children()
         if isinstance(index, slice):
             items = items[index]
@@ -207,7 +209,7 @@ class LogRegistry[U = typing.Any](appitem.CompositeItem, appitem.SupportsValueAr
         else:
             self._update_child(items[index], value)
 
-    def insert(self, index: typing.SupportsIndex, value: typing.Any, /) -> None:  # type: ignore[override]
+    def insert(self, index: typing.SupportsIndex, value: typing.Any, /) -> None:  # type: ignore
         """Insert *value* at *index*, offsetting the position of trailing values by 1.
             >>> f = LogRegistry(["one", "two", "three"])
             >>> f.insert(1, "four")
@@ -260,14 +262,14 @@ class LogRegistry[U = typing.Any](appitem.CompositeItem, appitem.SupportsValueAr
 
     def _delete_child(self, child: Item, /):
         self.on_value_del(self, child)
-        dearpypixl.delete_item(child, children_only=False, slot=-1)
+        dearpypixl_funcs.delete_item(child, children_only=False, slot=-1)
 
     def _update_child(self, child: Item, value: str, /):
-        dearpypixl.set_value(child, value)
+        dearpypixl_funcs.set_value(child, value)
         self.on_value_set(self, child, value)
 
     def _get_children(self, /):
-        return dearpypixl.get_item_configuration(self)["children"][1]
+        return dearpypixl_funcs.get_item_configuration(self)["children"][1]
 
     def _truncate(self):
         if self._max_len is not None:
@@ -283,7 +285,7 @@ def add_log_registry(*args, **kwargs):
 
 
 
-class Console[U = typing.Any, P: appitem.ContainerItem = typing.Any](appitem.CompositeItem, dearpypixl.mvChildWindow[U, bool, P, typing.Any]):
+class Console[U = typing.Any, P: appitem.ContainerItem = typing.Any](appitem.CompositeItem, dearpypixl_items.mvChildWindow[U, bool, P, typing.Any]):
     """Renders an underlying `LogRegistry` item."""
 
     _item_factory: ItemCommand
@@ -307,7 +309,7 @@ class Console[U = typing.Any, P: appitem.ContainerItem = typing.Any](appitem.Com
         log_registry = 0,
         auto_scroll = True,
         wrap_text = True,
-        item_factory = dearpypixl.mvText.create,
+        item_factory = dearpypixl_items.mvText.create,
         tag = 0,
         user_data = None,
         **kwargs
@@ -361,19 +363,19 @@ class Console[U = typing.Any, P: appitem.ContainerItem = typing.Any](appitem.Com
     def _on_value_add(self, log: LogRegistry, item: Item, /):
         text_item = self._item_factory(parent=self, source=item)
 
-        if self.wrap_text and 'wrap' in dearpypixl.get_item_configuration(text_item):
-            dearpypixl.configure_item(text_item, wrap=self.state()["content_region_avail"][0])
+        if self.wrap_text and 'wrap' in dearpypixl_funcs.get_item_configuration(text_item):
+            dearpypixl_funcs.configure_item(text_item, wrap=self.state()["content_region_avail"][0])
 
         # our callback on item delete will receive the registry value item
         # but not out text item, so store a reference so it can find it later
-        dearpypixl.configure_item(item, user_data=text_item)
+        dearpypixl_funcs.configure_item(item, user_data=text_item)
 
         if self.auto_scroll:
             self.y_scroll_pos = -1.0
 
     def _on_value_del(self, log: LogRegistry, item: Item, /):
-        text_item = dearpypixl.get_item_configuration(item)["user_data"]
-        dearpypixl.delete_item(text_item, children_only=False, slot=-1)
+        text_item = dearpypixl_funcs.get_item_configuration(item)["user_data"]
+        dearpypixl_funcs.delete_item(text_item, children_only=False, slot=-1)
 
 
 
@@ -528,16 +530,16 @@ class PyInterpreter:
         self.buffer.clear()
 
 
-class PyRepl[U = typing.Any, P: appitem.ContainerItem[typing.Any, typing.Any, typing.Any, typing.Any] = appitem.ContainerItem](appitem.CompositeItem, dearpypixl.mvChildWindow[U, bool, P, typing.Any]):
+class PyRepl[U = typing.Any, P: appitem.ContainerItem[typing.Any, typing.Any, typing.Any, typing.Any] = appitem.ContainerItem](appitem.CompositeItem, dearpypixl_items.mvChildWindow[U, bool, P, typing.Any]):
     ps1 = ">>>"
     ps2 = "..."
 
     python: PyInterpreter
     console: Console
-    cprompt: dearpypixl.mvText
-    cinput: dearpypixl.mvInputText
+    cprompt: dearpypixl_items.mvText
+    cinput: dearpypixl_items.mvInputText
 
-    cin_frame: dearpypixl.mvChildWindow
+    cin_frame: dearpypixl_items.mvChildWindow
 
     @classmethod
     def create(cls, locals: dict[str, typing.Any] | None = None, *, log_registry: LogRegistry | Item = 0, parent: Item = 0, **kwargs) -> typing.Self:
@@ -548,19 +550,19 @@ class PyRepl[U = typing.Any, P: appitem.ContainerItem[typing.Any, typing.Any, ty
                 locals = {"__name__": "__console__", "__doc__" : None}
 
         self = super().create(
-            parent=parent or dearpypixl.top_container_stack() or cls._create_window_parent(),
+            parent=parent or dearpypixl_funcs.top_container_stack() or cls._create_window_parent(),
             no_scrollbar=True,
             no_scroll_with_mouse=True,
             **kwargs,
         )
 
-        with dearpypixl.handler_registry() as key_handlers:
-            dearpypixl.add_key_press_handler(dearpypixl.mvKey_Up, callback=self.set_history_text_next)
-            dearpypixl.add_key_press_handler(dearpypixl.mvKey_Down, callback=self.set_history_text_prev)
-            dearpypixl.add_key_press_handler(dearpypixl.mvKey_Escape, callback=self.set_history_text_prev)
+        with dearpypixl_items.handler_registry() as key_handlers:
+            dearpypixl_items.add_key_press_handler(dearpypixl_consts.mvKey_Up, callback=self.set_history_text_next)
+            dearpypixl_items.add_key_press_handler(dearpypixl_consts.mvKey_Down, callback=self.set_history_text_prev)
+            dearpypixl_items.add_key_press_handler(dearpypixl_consts.mvKey_Escape, callback=self.set_history_text_prev)
 
-        with dearpypixl.theme() as theme:
-            with dearpypixl.theme_component():
+        with dearpypixl_items.theme() as theme:
+            with dearpypixl_items.theme_component():
                 color.frame_bg(0, 0, 0, 0)
                 color.child_bg(0, 0, 0)
                 style.window_padding(8, 0)
@@ -573,15 +575,15 @@ class PyRepl[U = typing.Any, P: appitem.ContainerItem[typing.Any, typing.Any, ty
             self.console = Console.create(log_registry=log_registry, autosize_x=True, height=10, border=False)
             self.console.log.on_value_set.subscribe(self.on_value_set)
 
-            with dearpypixl.child_window(no_scrollbar=True, border=False, auto_resize_y=True) as self.cin_frame:
-                with dearpypixl.group(horizontal=True, horizontal_spacing=0, indent=0) as group:
+            with dearpypixl_items.child_window(no_scrollbar=True, border=False, auto_resize_y=True) as self.cin_frame:
+                with dearpypixl_items.group(horizontal=True, horizontal_spacing=0, indent=0) as group:
 
-                    with dearpypixl.item_handler_registry() as handlers:
-                        dearpypixl.add_item_visible_handler(callback=self.resize_console)
+                    with dearpypixl_items.item_handler_registry() as handlers:
+                        dearpypixl_items.add_item_visible_handler(callback=self.resize_console)
 
                     group.handlers = handlers
 
-                    self.cprompt = dearpypixl.add_text(self.ps1, indent=4)
+                    self.cprompt = dearpypixl_items.add_text(self.ps1, indent=4)
                     self.cinput = self._create_console_input()
 
         self.python = PyInterpreter(locals, self.console, self.console)
@@ -599,7 +601,7 @@ class PyRepl[U = typing.Any, P: appitem.ContainerItem[typing.Any, typing.Any, ty
     _echo: bool = False
 
     def on_value_set(self, log: LogRegistry, item: Item, value: str):
-        text_item = dearpypixl.get_item_configuration(item)['user_data']
+        text_item = dearpypixl_funcs.get_item_configuration(item)['user_data']
         if self._echo:
             label = "stdin"
             color = 50, 210, 230, 150
@@ -609,7 +611,7 @@ class PyRepl[U = typing.Any, P: appitem.ContainerItem[typing.Any, typing.Any, ty
         else:
             label = "stdout"
             color = 255, 255, 255, 255
-        dearpypixl.configure_item(text_item, label=label, color=color)
+        dearpypixl_funcs.configure_item(text_item, label=label, color=color)
 
     _ihist_offset: int = -1
 
@@ -703,10 +705,10 @@ class PyRepl[U = typing.Any, P: appitem.ContainerItem[typing.Any, typing.Any, ty
 
     @staticmethod
     def _create_window_parent():
-        return dearpypixl.window(width=600, height=400, no_scrollbar=True, no_scroll_with_mouse=True)
+        return dearpypixl_items.window(width=600, height=400, no_scrollbar=True, no_scroll_with_mouse=True)
 
     def _create_console_input(self, default_value='', parent=0, tag=0):
-        return dearpypixl.add_input_text(
+        return dearpypixl_items.add_input_text(
             default_value=default_value,
             parent=parent,
             tag=tag,
