@@ -15,9 +15,9 @@ classifiers = [
     "Operating System :: MacOS",
     "Operating System :: POSIX",
     "Operating System :: Unix",
-
-    "License :: OSI Approved :: MIT License",
 ]
+license = "MIT"
+license-files = ["./LICENSE"]
 requires-python = ">=3.14"
 dynamic = ["version"]
 dependencies = [
