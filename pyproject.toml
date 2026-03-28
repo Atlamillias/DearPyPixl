@@ -29,13 +29,6 @@ dependencies = [
 requires = ["uv_build<=1.0"]
 build-backend = "uv_build"
 
-[tool.setuptools.packages.find]
-where = ["src"]
-exclude = ["libgen*"]
-
-[tool.setuptools.package-data]
-"*" = ["*.typed", "*.pyi"]
-
 
 [tool.ty.src]
 exclude = ["!./src/dearpypixl/lib/**", "./docs"]
@@ -62,6 +55,7 @@ invalid-method-override = "ignore"
 include = ["**/libgen/dearpypixl_lib_items.py"]
 [tool.ty.overrides.rules]
 invalid-argument-type = "warn"
+
 
 [tool.pyright]
 typeCheckingMode = "off"
