@@ -1,5 +1,4 @@
 from typing import *
-import enum
 
 from dearpygui import _dearpygui
 
@@ -182,28 +181,6 @@ __all__ = (
 )
 
 
-
-
-class FeatureFlag(enum.IntFlag):
-    NONE                    = 0
-    ROOT                    = 1 << 0
-    PARENT                  = 1 << 1
-    CHILD                   = 1 << 2
-    ADDRESSABLE             = 1 << 3
-    SUPPORTS_POSITIONING    = 1 << 4
-    SUPPORTS_TOGGLE         = 1 << 5
-    SUPPORTS_HOVER          = 1 << 6
-    SUPPORTS_ACTIVE         = 1 << 7
-    SUPPORTS_ACTIVATION     = 1 << 8
-    SUPPORTS_DEACTIVATIONAE = 1 << 9
-    SUPPORTS_FOCUS          = 1 << 10
-    SUPPORTS_CLICK          = 1 << 11
-    SUPPORTS_VISIBILITY     = 1 << 12
-    SUPPORTS_EDITING        = 1 << 13
-    SUPPORTS_CONTREGION     = 1 << 14
-    SUPPORTS_RECTSIZE       = 1 << 15
-    SUPPORTS_GEOMETRY       = 1 << 16
-    SUPPORTS_SCROLLING      = 1 << 17
 
 
 class mv2dHistogramSeries[U = Any, V: Array[Array[float, Any], Literal[5]] = Any, P: mvPlotAxis | mvTemplateRegistry = Any](SupportsValueArray[Array[float, Any]], ChildItem[U, V, P, None]):

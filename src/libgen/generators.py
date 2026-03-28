@@ -190,7 +190,6 @@ class _ItemsGenerator(FileGenerator):
         "scroll_max"            : "Array[float, Literal[2]]",
     })
     _SKIPPED_ASSIGNMENTS = ("label", "use_internal_label", "user_data")
-    _FEATUREFLAG_ENUM_SOURCE = inspect.getsource(FeatureFlag)
 
     def __init__(self, metadata: DearPyGuiMetadata, /) -> None:
         super().__init__(metadata)
@@ -496,8 +495,6 @@ class ItemsCodeGenerator(_ItemsGenerator):
         content.extend(self._generate_banner("DearPyPixl Type Definitions Library"))
 
 
-        content.append("import enum")
-        content.append("")
         content.append("from dearpypixl.core.appitem import *")
         content.append("")
         content.append("from dearpygui import dearpygui, _dearpygui")
@@ -962,7 +959,6 @@ class ItemsStubGenerator(_ItemsGenerator):
 
         content.extend((
             "from typing import *",
-            "import enum",
             "",
             "from dearpygui import _dearpygui",
             "",
@@ -981,10 +977,6 @@ class ItemsStubGenerator(_ItemsGenerator):
             symbols = (type_info.name, *self._get_command_names(type_info))
             content.append("    " + ', '.join(f'"{s}"' for s in symbols) + ",")
         content.extend((")","","","",""))
-
-        content.extend(self._FEATUREFLAG_ENUM_SOURCE.splitlines())
-        content.append('')
-        content.append('')
 
         content.extend(buffer)
 
