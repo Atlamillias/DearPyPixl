@@ -481,6 +481,9 @@ class ItemsCodeGenerator(_ItemsGenerator):
                         self._late_assignments[type_name]["__item_index_type__"] = s.partition("=")[-1].strip()
                         continue
 
+                elif isinstance(node, ast.FunctionDef) and any(getattr(n, "id", None) == "overload" for n in node.decorator_list):
+                    continue
+
                 for ln in s.splitlines():
                     buffer.append(f"    {ln}")
                 buffer.append('')
@@ -907,6 +910,8 @@ class ItemsStubGenerator(_ItemsGenerator):
             for node in class_node.body:
                 s = ast.unparse(node)
 
+                docstring = None
+
                 if isinstance(node, ast.Assign):
                     assert len(node.targets) == 1
                     name = node.targets[0].id
@@ -918,6 +923,7 @@ class ItemsStubGenerator(_ItemsGenerator):
 
                     if callable(value):
                         assert not isinstance(value, type)
+                        docstring = value.__doc__
 
                         source2 = inspect.getsource(value)
                         try:
@@ -928,14 +934,24 @@ class ItemsStubGenerator(_ItemsGenerator):
                         node = self._NodeTransformer().visit(node)
 
                         s = ast.unparse(node)
-                else:
-                    assert isinstance(node, ast.FunctionDef)
+                elif isinstance(node, ast.FunctionDef):
                     value = getattr(proto_type, node.name)
 
-                if getattr(value, "__doc__", None) is None:
-                    s = s.rpartition("    ...")[0].rstrip() + " ..."
-                else:
+                    docstring = value.__doc__
+
+                    # does this func have overloads and is it the "real" one?
+                    if callable(value) and typing.get_overloads(value):
+                        if all(getattr(n, "id", None) != "overload" for n in node.decorator_list):
+                            # skip the actual implementation for funcs with overloads
+                            continue
+
+                        if docstring and not isinstance(node.body[0].value.value, str):
+                            s = s.rstrip("... \n") + f'\n    """{docstring}"""'
+
+                if docstring:
                     s = s.rstrip().removesuffix("...").rstrip()
+                else:
+                    s = s.rpartition("    ...")[0].rstrip() + " ..."
 
                 for ln in s.splitlines():
                     buffer.append(f"    {ln}")
@@ -964,6 +980,15 @@ class ItemsStubGenerator(_ItemsGenerator):
             "",
             "from dearpypixl.core.protocols import *",
             "from dearpypixl.core.appitem import *",
+            "",
+            "if TYPE_CHECKING:",
+            "    from dearpypixl.lib.constants import mvThemeCat",
+            "    from dearpypixl.lib.constants import mvThemeCol",
+            "    from dearpypixl.lib.constants import mvPlotCol",
+            "    from dearpypixl.lib.constants import mvNodeCol",
+            "    from dearpypixl.lib.constants import mvStyleVar",
+            "    from dearpypixl.lib.constants import mvPlotStyleVar",
+            "    from dearpypixl.lib.constants import mvNodeStyleVar",
             "",
             "",
         ))

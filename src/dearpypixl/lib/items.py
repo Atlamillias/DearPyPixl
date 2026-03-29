@@ -6696,6 +6696,10 @@ class mvTheme(ContainerItem, command="add_theme", slot=1):
     def create(cls, /, *, label=None, use_internal_label=True, user_data=None, tag=0, __func=_dearpygui.add_theme, **kwargs):  # ty: ignore[invalid-method-override]
         return cls(tag=__func(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag))  # ty: ignore[invalid-argument-type]
 
+    def add_theme_component[T](self, item_type=0, /, *, label=None, user_data=None, use_internal_label=True, tag=0, before=0, enabled_state=True, **kwargs):
+        kwargs['parent'] = self
+        return mvThemeComponent.create(int(item_type), label=label, user_data=user_data, use_internal_label=use_internal_label, tag=tag, before=before, enabled_state=enabled_state, **kwargs)
+
 theme = add_theme = mvTheme.create
 
 
@@ -6733,6 +6737,18 @@ class mvThemeComponent(ContainerItem, ChildItem, command="add_theme_component", 
         return __func(self)["item_type"]
     
     enabled_state = _property__enabled_state
+
+    def add_theme_color(self, target, obj=(0, 0, 0, 255), g=-1, b=-1, a=255, /, **kwargs):
+        kwargs['parent'] = self
+        return mvThemeColor.create(target, obj if g == -1 else (obj, g, b, a), **kwargs)
+
+    def add_theme_style(self, target, obj=None, y=-1.0, /, **kwargs):
+        if obj is None:
+            x = 1.0
+        elif hasattr(obj, '__iter__'):
+            x, y = obj
+        kwargs['parent'] = self
+        return mvThemeStyle.create(target, x, y, **kwargs)
 
 theme_component = add_theme_component = mvThemeComponent.create
 
@@ -6870,47 +6886,47 @@ class mvValueRegistry(ContainerItem, command="add_value_registry", slot=1):
     def create(cls, /, *, label=None, use_internal_label=True, user_data=None, tag=0, __func=_dearpygui.add_value_registry, **kwargs):  # ty: ignore[invalid-method-override]
         return cls(tag=__func(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag))  # ty: ignore[invalid-argument-type]
 
-    def add_bool_value(self, /, default_value=False, *, label=None, use_internal_label=True, user_data=None, tag=0, source=0, **kwargs):
+    def add_bool_value[T](self, /, default_value=False, *, label=None, use_internal_label=True, user_data=None, tag=0, source=0, **kwargs):
         kwargs['parent'] = self
         return mvBoolValue.create(default_value=default_value, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, source=source, **kwargs)
 
-    def add_double_value(self, /, default_value=0.0, *, label=None, use_internal_label=True, user_data=None, tag=0, source=0, **kwargs):
+    def add_double_value[T](self, /, default_value=0.0, *, label=None, use_internal_label=True, user_data=None, tag=0, source=0, **kwargs):
         kwargs['parent'] = self
         return mvDoubleValue.create(default_value=default_value, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, source=source, **kwargs)
 
-    def add_double4_value(self, /, default_value=(0.0, 0.0, 0.0, 0.0), *, label=None, use_internal_label=True, user_data=None, tag=0, source=0, **kwargs):
+    def add_double4_value[T](self, /, default_value=(0.0, 0.0, 0.0, 0.0), *, label=None, use_internal_label=True, user_data=None, tag=0, source=0, **kwargs):
         kwargs['parent'] = self
         return mvDouble4Value.create(default_value=default_value, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, source=source, **kwargs)
 
-    def add_color_value(self, /, default_value=(0, 0, 0, 0), *, label=None, use_internal_label=True, user_data=None, tag=0, source=0, **kwargs):
+    def add_color_value[T](self, /, default_value=(0, 0, 0, 0), *, label=None, use_internal_label=True, user_data=None, tag=0, source=0, **kwargs):
         kwargs['parent'] = self
         return mvColorValue.create(default_value=default_value, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, source=source, **kwargs)
 
-    def add_int_value(self, /, default_value=0, *, label=None, use_internal_label=True, user_data=None, tag=0, source=0, **kwargs):
+    def add_int_value[T](self, /, default_value=0, *, label=None, use_internal_label=True, user_data=None, tag=0, source=0, **kwargs):
         kwargs['parent'] = self
         return mvIntValue.create(default_value=default_value, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, source=source, **kwargs)
 
-    def add_int4_value(self, /, default_value=(0, 0, 0, 0), *, label=None, use_internal_label=True, user_data=None, tag=0, source=0, **kwargs):
+    def add_int4_value[T](self, /, default_value=(0, 0, 0, 0), *, label=None, use_internal_label=True, user_data=None, tag=0, source=0, **kwargs):
         kwargs['parent'] = self
         return mvInt4Value.create(default_value=default_value, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, source=source, **kwargs)
 
-    def add_float_value(self, /, default_value=0.0, *, label=None, use_internal_label=True, user_data=None, tag=0, source=0, **kwargs):
+    def add_float_value[T](self, /, default_value=0.0, *, label=None, use_internal_label=True, user_data=None, tag=0, source=0, **kwargs):
         kwargs['parent'] = self
         return mvFloatValue.create(default_value=default_value, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, source=source, **kwargs)
 
-    def add_float4_value(self, /, default_value=(0.0, 0.0, 0.0, 0.0), *, label=None, use_internal_label=True, user_data=None, tag=0, source=0, **kwargs):
+    def add_float4_value[T](self, /, default_value=(0.0, 0.0, 0.0, 0.0), *, label=None, use_internal_label=True, user_data=None, tag=0, source=0, **kwargs):
         kwargs['parent'] = self
         return mvFloat4Value.create(default_value=default_value, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, source=source, **kwargs)
 
-    def add_float_vect_value(self, /, default_value=(), *, label=None, use_internal_label=True, user_data=None, tag=0, source=0, **kwargs):
+    def add_float_vect_value[T](self, /, default_value=(), *, label=None, use_internal_label=True, user_data=None, tag=0, source=0, **kwargs):
         kwargs['parent'] = self
         return mvFloatVectValue.create(default_value=default_value, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, source=source, **kwargs)
 
-    def add_series_value(self, /, default_value=(), *, label=None, use_internal_label=True, user_data=None, tag=0, source=0, **kwargs):
+    def add_series_value[T](self, /, default_value=(), *, label=None, use_internal_label=True, user_data=None, tag=0, source=0, **kwargs):
         kwargs['parent'] = self
         return mvSeriesValue.create(default_value=default_value, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, source=source, **kwargs)
 
-    def add_string_value(self, /, default_value='', *, label=None, use_internal_label=True, user_data=None, tag=0, source=0, **kwargs):
+    def add_string_value[T](self, /, default_value='', *, label=None, use_internal_label=True, user_data=None, tag=0, source=0, **kwargs):
         kwargs['parent'] = self
         return mvStringValue.create(default_value=default_value, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, source=source, **kwargs)
 
@@ -7017,6 +7033,8 @@ window = add_window = mvWindowAppItem.create
 
 mvPlot.__item_index_type__ = mvPlotAxis  # type: ignore
 mvTable.__item_index_type__ = mvTableRow  # type: ignore
+mvTheme.__item_index_type__ = mvThemeComponent  # type: ignore
+mvThemeComponent.__item_index_type__ = _ElementItem  # type: ignore
 
 _COMMON_PARENTS = (mvChildWindow, mvClipper, mvCollapsingHeader, mvCustomSeries, mvDragPayload, mvFileDialog, mvFilterSet, mvGroup, mvMenu, mvMenuBar, mvNodeAttribute, mvPlotAxis, mvPlotLegend, mvStage, mvSyncedTables, mvTab, mvTableCell, mvTableRow, mvTemplateRegistry, mvTooltip, mvTreeNode, mvViewportMenuBar, mvWindowAppItem)
 mv2dHistogramSeries.__itemtype_parents__ = (mvPlotAxis, mvTemplateRegistry,)  # type: ignore
