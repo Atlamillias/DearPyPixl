@@ -22,6 +22,27 @@ if TYPE_CHECKING:
         mvFloatVectValue,
         mvSeriesValue,
         mvStringValue,
+        mvPlotLegend,
+        mvAnnotation,
+        mv2dHistogramSeries,
+        mvAreaSeries,
+        mvBarGroupSeries,
+        mvBarSeries,
+        mvCandleSeries,
+        mvCustomSeries,
+        mvDigitalSeries,
+        mvErrorSeries,
+        mvHeatSeries,
+        mvHistogramSeries,
+        mvImageSeries,
+        mvInfLineSeries,
+        mvLabelSeries,
+        mvLineSeries,
+        mvPieSeries,
+        mvScatterSeries,
+        mvShadeSeries,
+        mvStairSeries,
+        mvStemSeries,
     )
     from dearpypixl.lib.constants import (
         mvThemeCat,
@@ -46,16 +67,16 @@ class mvThemeComponent:
     @overload
     def add_theme_color[T](self, target: mvThemeCol | mvPlotCol | mvNodeCol | int, value: Array[int, Literal[3, 4]] = (0, 0, 0, 255), /, *, category: mvThemeCat | int = _dearpygui.mvThemeCat_Core, label: str | None = None, use_internal_label: bool = True, user_data: T = ..., tag: Item = 0, **kwargs) -> mvThemeColor[T]: ...
     @overload
-    def add_theme_color[T](self, target: mvThemeCol | mvPlotCol | mvNodeCol | int, r: int, g: int, b: int, a: int = 255, /, *, category: mvThemeCat | int = _dearpygui.mvThemeCat_Core, label: str | None = None, use_internal_label: bool = True, user_data: Any | None = None, tag: Item = 0, **kwargs) -> mvThemeColor[T]: ...
+    def add_theme_color[T](self, target: mvThemeCol | mvPlotCol | mvNodeCol | int, r: int, g: int, b: int, a: int = 255, /, *, category: mvThemeCat | int = _dearpygui.mvThemeCat_Core, label: str | None = None, use_internal_label: bool = True, user_data: T = None, tag: Item = 0, **kwargs) -> mvThemeColor[T]: ...
     def add_theme_color(self, target, obj = (0, 0, 0, 255), g = -1, b = -1, a = 255, /, **kwargs) -> mvThemeColor:
         """Create a new theme color item as a child of this theme component."""
         kwargs["parent"] = self
         return mvThemeColor.create(target, obj if g == -1 else (obj, g, b, a), **kwargs)  # ty:ignore[unresolved-attribute]
 
     @overload
-    def add_theme_style[T](self, target: mvStyleVar | mvPlotStyleVar | mvNodeStyleVar | int, value: Array[int | float, Literal[2]] = (1.0, -1.0), /, *, category: mvThemeCat | int = _dearpygui.mvThemeCat_Core, label: str | None = None, use_internal_label: bool = True, user_data: Any | None = None, tag: Item = 0, **kwargs) -> mvThemeStyle[T]: ...
+    def add_theme_style[T](self, target: mvStyleVar | mvPlotStyleVar | mvNodeStyleVar | int, value: Array[int | float, Literal[2]] = (1.0, -1.0), /, *, category: mvThemeCat | int = _dearpygui.mvThemeCat_Core, label: str | None = None, use_internal_label: bool = True, user_data: T = None, tag: Item = 0, **kwargs) -> mvThemeStyle[T]: ...
     @overload
-    def add_theme_style[T](self, target: mvStyleVar | mvPlotStyleVar | mvNodeStyleVar | int, x: float, y: float = -1.0, /, *, category: mvThemeCat | int = _dearpygui.mvThemeCat_Core, label: str | None = None, use_internal_label: bool = True, user_data: Any | None = None, tag: Item = 0, **kwargs) -> mvThemeStyle[T]: ...
+    def add_theme_style[T](self, target: mvStyleVar | mvPlotStyleVar | mvNodeStyleVar | int, x: float, y: float = -1.0, /, *, category: mvThemeCat | int = _dearpygui.mvThemeCat_Core, label: str | None = None, use_internal_label: bool = True, user_data: T = None, tag: Item = 0, **kwargs) -> mvThemeStyle[T]: ...
     def add_theme_style(self, target, obj = None, y = -1.0, /, **kwargs) -> mvThemeStyle:
         """Create a new theme style item as a child of this theme component."""
         if obj is None:
@@ -69,7 +90,7 @@ class mvThemeComponent:
 class mvTheme:
     __item_index_type__ = mvThemeComponent
 
-    def add_theme_component[T](self, item_type: type[AppItem] | int = 0, /, *, label: str | None = None, user_data: T = None, use_internal_label: bool = True, tag: Item = 0, before: Item = 0, enabled_state: bool = True, **kwargs) -> mvThemeComponent[T]:  # ty: ignore
+    def add_theme_component[T](self, item_type: type[AppItem] | int = 0, /, *, label: str | None = None, user_data: T = None, use_internal_label: bool = True, tag: Item = 0, before: Item = 0, enabled_state: bool = True, **kwargs) -> mvThemeComponent[T]:
         """Create a new theme component item as a child of this theme."""
         kwargs["parent"] = self
         return mvThemeComponent.create(int(item_type), label=label, user_data=user_data, use_internal_label=use_internal_label, tag=tag, before=before, enabled_state=enabled_state, **kwargs)  # ty:ignore[unresolved-attribute]
@@ -130,7 +151,6 @@ class mvValueRegistry:
         """Creates a new string value item as a child of this registry."""
         kwargs["parent"] = self
         return mvStringValue.create(default_value=default_value, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, source=source, **kwargs)
-
 
 
 class mvTextureRegistry:
@@ -434,6 +454,101 @@ class mvNodeEditor:
 
 
 class mvPlotAxis:
+    def add_2dhistogram_series[T](self, x: Array[float, Any], y: Array[float, Any], /, *, xbins: int = -1, ybins: int = -1, xmin_range: float = 0, xmax_range: float = 0, ymin_range: float = 0, ymax_range: float = 0, density: bool = False, outliers: bool = False, col_major: bool = False, label: str | None = None, use_internal_label: bool = True, user_data: T = None, tag: Item = 0, before: Item = 0, source: Item = 0, show: bool = True, **kwargs) -> mv2dHistogramSeries[T]:  # ty: ignore
+        """Create a new 2dhistogram series item to this plot axis."""
+        kwargs["parent"] = self
+        mv2dHistogramSeries.create(x, y, xbins=xbins, ybins=ybins, xmin_range=xmin_range, xmax_range=xmax_range, ymin_range=ymin_range, ymax_range=ymax_range, density=density, outliers=outliers, col_major=col_major, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, source=source, show=show, **kwargs)
+
+    def add_area_series[T](self, x: Array[float, Any], y: Array[float, Any], *, fill: Array[int, Literal[3, 4]] = (0, 0, 0, -255), contribute_to_bounds: bool = True, label: str | None = None, use_internal_label: bool = True, user_data: T = None, tag: Item = 0, parent: int | str = 0, before: Item = 0, source: Item = 0, show: bool = True, **kwargs) -> mvAreaSeries[T]:
+        """Create a new area series item to this plot axis."""
+        kwargs["parent"] = self
+        return mvAreaSeries.create(x, y, fill=fill, contribute_to_bounds=contribute_to_bounds, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, source=source, show=show, **kwargs)
+
+    def add_bargroup_series[T](self, values: Array[float, Any], label_ids: Array[str, Any], group_size: int, *, group_width: float = 0.67, shift: int = 0, horizontal: bool = False, stacked: bool = False, label: str | None = None, use_internal_label: bool = True, user_data: T = None, tag: Item = 0, parent: int | str = 0, before: Item = 0, source: Item = 0, show: bool = True, **kwargs) -> mvBarGroupSeries[T]:
+        """Create a new bargroup series item to this plot axis."""
+        kwargs["parent"] = self
+        return mvBarGroupSeries.create(values, label_ids, group_size, group_width=group_width, shift=shift, horizontal=horizontal, stacked=stacked, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, source=source, show=show, **kwargs)
+
+    def add_bar_series[T](self, x: Array[float, Any], y: Array[float, Any], *, weight: float = 1, horizontal: bool = False, label: str | None = None, use_internal_label: bool = True, user_data: T = None, tag: Item = 0, parent: int | str = 0, before: Item = 0, source: Item = 0, show: bool = True, **kwargs) -> mvBarSeries[T]:
+        """Create a new bar series item to this plot axis."""
+        kwargs["parent"] = self
+        return mvBarSeries.create(x, y, weight=weight, horizontal=horizontal, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, source=source, show=show, **kwargs)
+
+    def add_candle_series[T](self, dates: Array[float, Any], opens: Array[float, Any], closes: Array[float, Any], lows: Array[float, Any], highs: Array[float, Any], *, bull_color: Array[int, Literal[3, 4]] = (0, 255, 113, 255), bear_color: Array[int, Literal[3, 4]] = (218, 13, 79, 255), weight: float = 0.25, tooltip: bool = True, time_unit: int = 5, label: str | None = None, use_internal_label: bool = True, user_data: T = None, tag: Item = 0, before: Item = 0, source: Item = 0, show: bool = True, **kwargs) -> mvCandleSeries[T]:
+        """Create a new candle series item to this plot axis."""
+        kwargs["parent"] = self
+        return mvCandleSeries.create(dates, opens, closes, lows, highs, bull_color=bull_color, bear_color=bear_color, weight=weight, tooltip=tooltip, time_unit=time_unit, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, source=source, show=show, **kwargs)
+
+    def add_custom_series[T](self, x: Array[float, Any], y: Array[float, Any], channel_count: int, *, y1: Array[float, Any] = (), y2: Array[float, Any] = (), y3: Array[float, Any] = (), tooltip: bool = True, no_fit: bool = False, label: str | None = None, use_internal_label: bool = True, user_data: T = None, tag: Item = 0, before: Item = 0, source: Item = 0, callback: Callable | None = None, show: bool = True, **kwargs) -> mvCustomSeries[T]:  # ty: ignore
+        """Create a new custom series item to this plot axis."""
+        kwargs["parent"] = self
+        return mvCustomSeries.create(x, y, channel_count, y1=y1, y2=y2, y3=y3, tooltip=tooltip, no_fit=no_fit, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, source=source, callback=callback, show=show, **kwargs)
+
+    def add_digital_series[T](self, x: Array[float, Any], y: Array[float, Any], *, label: str | None = None, use_internal_label: bool = True, user_data: T = None, tag: Item = 0, before: Item = 0, source: Item = 0, show: bool = True, **kwargs) -> mvDigitalSeries[T]:
+        """Create a new digital series item to this plot axis."""
+        kwargs["parent"] = self
+        return mvDigitalSeries.create(x, y, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, source=source, show=show, **kwargs)
+
+    def add_error_series[T](self, x: Array[float, Any], y: Array[float, Any], negative: Array[float, Any], positive: Array[float, Any], *, contribute_to_bounds: bool = True, horizontal: bool = False, label: str | None = None, use_internal_label: bool = True, user_data: T = None, tag: Item = 0, before: Item = 0, source: Item = 0, show: bool = True, **kwargs) -> mvErrorSeries[T]:
+        """Create a new error series item to this plot axis."""
+        kwargs["parent"] = self
+        return mvErrorSeries.create(x, y, negative, positive, contribute_to_bounds=contribute_to_bounds, horizontal=horizontal, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, source=source, show=show, **kwargs)
+
+    def add_heat_series[T](self, x: Array[float, Any], rows: int, cols: int, *, scale_min: float = 0, scale_max: float = 1, bounds_min: Array[float, Any] = (0, 0), bounds_max: Array[float, Any] = (1, 1), format: str = '%0.1f', contribute_to_bounds: bool = True, col_major: bool = False, label: str | None = None, use_internal_label: bool = True, user_data: T = None, tag: Item = 0, before: Item = 0, source: Item = 0, show: bool = True, **kwargs) -> mvHeatSeries[T]:
+        """Create a new heat series item to this plot axis."""
+        kwargs["parent"] = self
+        return mvHeatSeries.create(x, rows, cols, scale_min=scale_min, scale_max=scale_max, bounds_min=bounds_min, bounds_max=bounds_max, format=format, contribute_to_bounds=contribute_to_bounds, col_major=col_major, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, source=source, show=show, **kwargs)
+
+    def add_histogram_series[T](self, x: Array[float, Any], *, bins: int = -1, bar_scale: float = 1, min_range: float = 0, max_range: float = 0, cumulative: bool = False, density: bool = False, outliers: bool = True, horizontal: bool = False, contribute_to_bounds: bool = True, label: str | None = None, use_internal_label: bool = True, user_data: T = None, tag: Item = 0, before: Item = 0, source: Item = 0, show: bool = True, **kwargs) -> mvHistogramSeries[T]:
+        """Create a new histogram series item to this plot axis."""
+        kwargs["parent"] = self
+        return mvHistogramSeries.create(x, bins=bins, bar_scale=bar_scale, min_range=min_range, max_range=max_range, cumulative=cumulative, density=density, outliers=outliers, horizontal=horizontal, contribute_to_bounds=contribute_to_bounds, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, source=source, show=show, **kwargs)
+
+    def add_image_series[T](self, texture_tag: Item, bounds_min: Array[float, Any], bounds_max: Array[float, Any], *, uv_min: Array[float, Any] = (0, 0), uv_max: Array[float, Any] = (1, 1), tint_color: Array[int, Literal[3, 4]] = (255, 255, 255, 255), label: str | None = None, use_internal_label: bool = True, user_data: T = None, tag: Item = 0, before: Item = 0, source: Item = 0, show: bool = True, **kwargs) -> mvImageSeries[T]:
+        """Create a new image series item to this plot axis."""
+        kwargs["parent"] = self
+        return mvImageSeries.create(texture_tag, bounds_min, bounds_max, uv_min=uv_min, uv_max=uv_max, tint_color=tint_color, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, source=source, show=show, **kwargs)
+
+    def add_infline_series[T](self, x: Array[float, Any], *, horizontal: bool = False, label: str | None = None, use_internal_label: bool = True, user_data: T = None, tag: Item = 0, before: Item = 0, source: Item = 0, show: bool = True, **kwargs) -> mvInfLineSeries[T]:
+        """Create a new infline series item to this plot axis."""
+        kwargs["parent"] = self
+        return mvInfLineSeries.create(x, horizontal=horizontal, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, source=source, show=show, **kwargs)
+
+    def add_label_series[T](self, x: float, y: float, *, offset: Array[float, Any] = (0, 0), vertical: bool = False, label: str | None = None, use_internal_label: bool = True, user_data: T = None, tag: Item = 0, before: Item = 0, source: Item = 0, show: bool = True, **kwargs) -> mvLabelSeries[T]:
+        """Create a new label series item to this plot axis."""
+        kwargs["parent"] = self
+        return mvLabelSeries.create(x, y, offset=offset, vertical=vertical, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, source=source, show=show, **kwargs)
+
+    def add_line_series[T](self, x: Array[float, Any], y: Array[float, Any], *, segments: bool = False, loop: bool = False, skip_nan: bool = False, no_clip: bool = False, shaded: bool = False, label: str | None = None, use_internal_label: bool = True, user_data: T = None, tag: Item = 0, before: Item = 0, source: Item = 0, show: bool = True, **kwargs) -> mvLineSeries[T]:
+        """Create a new line series item to this plot axis."""
+        kwargs["parent"] = self
+        return mvLineSeries.create(x, y, segments=segments, loop=loop, skip_nan=skip_nan, no_clip=no_clip, shaded=shaded, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, source=source, show=show, **kwargs)
+
+    def add_pie_series[T](self, x: float, y: float, radius: float, values: Array[float, Any], labels: Array[str, Any], *, format: str = '%0.2f', angle: float = 90, normalize: bool = False, ignore_hidden: bool = False, label: str | None = None, use_internal_label: bool = True, user_data: T = None, tag: Item = 0, before: Item = 0, source: Item = 0, show: bool = True, **kwargs) -> mvPieSeries[T]:
+        """Create a new pie series item to this plot axis."""
+        kwargs["parent"] = self
+        return mvPieSeries.create(x, y, radius, values, labels, format=format, angle=angle, normalize=normalize, ignore_hidden=ignore_hidden, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, source=source, show=show, **kwargs)
+
+    def add_scatter_series[T](self, x: Array[float, Any], y: Array[float, Any], *, no_clip: bool = False, label: str | None = None, use_internal_label: bool = True, user_data: T = None, tag: Item = 0, before: Item = 0, source: Item = 0, show: bool = True, **kwargs) -> mvScatterSeries[T]:
+        """Create a new scatter series item to this plot axis."""
+        kwargs["parent"] = self
+        return mvScatterSeries.create(x, y, no_clip=no_clip, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, source=source, show=show, **kwargs)
+
+    def add_shade_series[T](self, x: Array[float, Any], y1: Array[float, Any], *, y2: Array[float, Any] = (), label: str | None = None, use_internal_label: bool = True, user_data: T = None, tag: Item = 0, before: Item = 0, source: Item = 0, show: bool = True, **kwargs) -> mvShadeSeries[T]:
+        """Create a new shade series item to this plot axis."""
+        kwargs["parent"] = self
+        return mvShadeSeries.create(x, y1, y2=y2, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, source=source, show=show, **kwargs)
+
+    def add_stair_series[T](self, x: Array[float, Any], y: Array[float, Any], *, pre_step: bool = False, shaded: bool = False, label: str | None = None, use_internal_label: bool = True, user_data: T = None, tag: Item = 0, before: Item = 0, source: Item = 0, show: bool = True, **kwargs) -> mvStairSeries[T]:
+        """Create a new stair series item to this plot axis."""
+        kwargs["parent"] = self
+        return mvStairSeries.create(x, y, pre_step=pre_step, shaded=shaded, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, source=source, show=show, **kwargs)
+
+    def add_stem_series[T](self, x: Array[float, Any], y: Array[float, Any], *, horizontal: bool = False, label: str | None = None, use_internal_label: bool = True, user_data: T = None, tag: Item = 0, indent: int = -1, parent: int | str = 0, before: Item = 0, source: Item = 0, show: bool = True, **kwargs) -> mvStemSeries[T]:
+        """Create a new stem series item to this plot axis."""
+        kwargs["parent"] = self
+        return mvStemSeries.create(x, y, horizontal=horizontal, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, indent=indent, parent=parent, before=before, source=source, show=show, **kwargs)
+
     @property
     def limits(self, /) -> list[float]:
         return _dearpygui.get_axis_limits(self)  # type: ignore
@@ -486,6 +601,20 @@ class mvPlotAxis:
 class mvPlot:
     __item_index_type__ = mvPlotAxis
 
+    def add_plot_axis[T](self, axis: int, /, *, label: str | None = None, use_internal_label: bool = True, user_data: T = None, tag: Item = 0, payload_type: str = '$$DPG_PAYLOAD', drop_callback: Callable | None = None, show: bool = True, no_label: bool = False, no_gridlines: bool = False, no_tick_marks: bool = False, no_tick_labels: bool = False, no_initial_fit: bool = False, no_menus: bool = False, no_side_switch: bool = False, no_highlight: bool = False, opposite: bool = False, foreground_grid: bool = False, tick_format: str = '', scale: int = _dearpygui.mvPlotScale_Linear, invert: bool = False, auto_fit: bool = False, range_fit: bool = False, pan_stretch: bool = False, lock_min: bool = False, lock_max: bool = False, **kwargs) -> mvPlotAxis[T]:
+        """Create a new axis item as a child of this plot."""
+        kwargs["parent"] = self
+        return mvPlotAxis.create(axis, label=label, user_data=user_data, use_internal_label=use_internal_label, tag=tag, payload_type=payload_type, drop_callback=drop_callback, show=show, no_label=no_label, no_gridlines=no_gridlines, no_tick_marks=no_tick_marks, no_tick_labels=no_tick_labels, no_initial_fit=no_initial_fit, no_menus=no_menus, no_side_switch=no_side_switch, no_highlight=no_highlight, opposite=opposite, foreground_grid=foreground_grid, tick_format=tick_format, scale=scale, invert=invert, auto_fit=auto_fit, range_fit=range_fit, pan_stretch=pan_stretch, lock_min=lock_min, lock_max=lock_max, **kwargs)  # ty:ignore[unresolved-attribute]
+
+    def add_plot_annotation[T](self, /, *, label: str | None = None, use_internal_label: bool = True, user_data: T = None, tag: Item = 0, before: Item = 0, source: Item = 0, show: bool = True, default_value: Any = (0, 0), offset: Array[float, Literal[2]] = (0.0, 0.0), color: Array[int, Literal[3, 4]] = (0, 0, 0, 255), clamped: bool = True, **kwargs) -> mvAnnotation[T]:
+        """Create a new annotation item as a child of this plot."""
+        kwargs["parent"] = self
+        return mvAnnotation.create(label=label, user_data=user_data, use_internal_label=use_internal_label, tag=tag, before=before, source=source, show=show, default_value=default_value, offset=offset, color=color, clamped=clamped, **kwargs)
+
+    def add_plot_legend[T](self, /, *, label: str | None = None, use_internal_label: bool = True, user_data: T = None, tag: Item = 0, payload_type: str = '$$DPG_PAYLOAD', drop_callback: Callable | None = None, show: bool = True, location: int = _dearpygui.mvPlot_Location_East, horizontal: bool = False, sort: bool = False, outside: bool = False, no_highlight_item: bool = False, no_highlight_axis: bool = False, no_menus: bool = False, no_buttons: bool = False, **kwargs) -> mvPlotLegend[T]:  # ty: ignore
+        """Create a new legend item as a child of this plot."""
+        kwargs["parent"] = self
+        return mvPlotLegend.create(location=location, horizontal=horizontal, sort=sort, outside=outside, no_highlight_item=no_highlight_item, no_highlight_axis=no_highlight_axis, no_menus=no_menus, no_buttons=no_buttons, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, drop_callback=drop_callback, payload_type=payload_type, show=show, **kwargs)
     @property
     def query_rects(self) -> list[list[float]]:
         return _dearpygui.get_plot_query_rects(self)

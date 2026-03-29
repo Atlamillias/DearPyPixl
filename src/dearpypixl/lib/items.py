@@ -5513,6 +5513,18 @@ class mvPlot(ContainerItem, ChildItem, command="add_plot", slot=1):
     rect_min = _property__rect_min
     rect_max = _property__rect_max
 
+    def add_plot_axis[T](self, axis, /, *, label=None, use_internal_label=True, user_data=None, tag=0, payload_type='$$DPG_PAYLOAD', drop_callback=None, show=True, no_label=False, no_gridlines=False, no_tick_marks=False, no_tick_labels=False, no_initial_fit=False, no_menus=False, no_side_switch=False, no_highlight=False, opposite=False, foreground_grid=False, tick_format='', scale=_dearpygui.mvPlotScale_Linear, invert=False, auto_fit=False, range_fit=False, pan_stretch=False, lock_min=False, lock_max=False, **kwargs):
+        kwargs['parent'] = self
+        return mvPlotAxis.create(axis, label=label, user_data=user_data, use_internal_label=use_internal_label, tag=tag, payload_type=payload_type, drop_callback=drop_callback, show=show, no_label=no_label, no_gridlines=no_gridlines, no_tick_marks=no_tick_marks, no_tick_labels=no_tick_labels, no_initial_fit=no_initial_fit, no_menus=no_menus, no_side_switch=no_side_switch, no_highlight=no_highlight, opposite=opposite, foreground_grid=foreground_grid, tick_format=tick_format, scale=scale, invert=invert, auto_fit=auto_fit, range_fit=range_fit, pan_stretch=pan_stretch, lock_min=lock_min, lock_max=lock_max, **kwargs)
+
+    def add_plot_annotation[T](self, /, *, label=None, use_internal_label=True, user_data=None, tag=0, before=0, source=0, show=True, default_value=(0, 0), offset=(0.0, 0.0), color=(0, 0, 0, 255), clamped=True, **kwargs):
+        kwargs['parent'] = self
+        return mvAnnotation.create(label=label, user_data=user_data, use_internal_label=use_internal_label, tag=tag, before=before, source=source, show=show, default_value=default_value, offset=offset, color=color, clamped=clamped, **kwargs)
+
+    def add_plot_legend[T](self, /, *, label=None, use_internal_label=True, user_data=None, tag=0, payload_type='$$DPG_PAYLOAD', drop_callback=None, show=True, location=_dearpygui.mvPlot_Location_East, horizontal=False, sort=False, outside=False, no_highlight_item=False, no_highlight_axis=False, no_menus=False, no_buttons=False, **kwargs):
+        kwargs['parent'] = self
+        return mvPlotLegend.create(location=location, horizontal=horizontal, sort=sort, outside=outside, no_highlight_item=no_highlight_item, no_highlight_axis=no_highlight_axis, no_menus=no_menus, no_buttons=no_buttons, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, drop_callback=drop_callback, payload_type=payload_type, show=show, **kwargs)
+
     @property
     def query_rects(self):
         return _dearpygui.get_plot_query_rects(self)
@@ -5573,6 +5585,82 @@ class mvPlotAxis(ContainerItem, ChildItem, command="add_plot_axis", slot=1):
     drop_callback = _property__drop_callback
     payload_type = _property__payload_type
     show = _property__show
+
+    def add_2dhistogram_series[T](self, x, y, /, *, xbins=-1, ybins=-1, xmin_range=0, xmax_range=0, ymin_range=0, ymax_range=0, density=False, outliers=False, col_major=False, label=None, use_internal_label=True, user_data=None, tag=0, before=0, source=0, show=True, **kwargs):
+        kwargs['parent'] = self
+        mv2dHistogramSeries.create(x, y, xbins=xbins, ybins=ybins, xmin_range=xmin_range, xmax_range=xmax_range, ymin_range=ymin_range, ymax_range=ymax_range, density=density, outliers=outliers, col_major=col_major, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, source=source, show=show, **kwargs)
+
+    def add_area_series[T](self, x, y, *, fill=(0, 0, 0, -255), contribute_to_bounds=True, label=None, use_internal_label=True, user_data=None, tag=0, parent=0, before=0, source=0, show=True, **kwargs):
+        kwargs['parent'] = self
+        return mvAreaSeries.create(x, y, fill=fill, contribute_to_bounds=contribute_to_bounds, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, source=source, show=show, **kwargs)
+
+    def add_bargroup_series[T](self, values, label_ids, group_size, *, group_width=0.67, shift=0, horizontal=False, stacked=False, label=None, use_internal_label=True, user_data=None, tag=0, parent=0, before=0, source=0, show=True, **kwargs):
+        kwargs['parent'] = self
+        return mvBarGroupSeries.create(values, label_ids, group_size, group_width=group_width, shift=shift, horizontal=horizontal, stacked=stacked, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, source=source, show=show, **kwargs)
+
+    def add_bar_series[T](self, x, y, *, weight=1, horizontal=False, label=None, use_internal_label=True, user_data=None, tag=0, parent=0, before=0, source=0, show=True, **kwargs):
+        kwargs['parent'] = self
+        return mvBarSeries.create(x, y, weight=weight, horizontal=horizontal, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, source=source, show=show, **kwargs)
+
+    def add_candle_series[T](self, dates, opens, closes, lows, highs, *, bull_color=(0, 255, 113, 255), bear_color=(218, 13, 79, 255), weight=0.25, tooltip=True, time_unit=5, label=None, use_internal_label=True, user_data=None, tag=0, before=0, source=0, show=True, **kwargs):
+        kwargs['parent'] = self
+        return mvCandleSeries.create(dates, opens, closes, lows, highs, bull_color=bull_color, bear_color=bear_color, weight=weight, tooltip=tooltip, time_unit=time_unit, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, source=source, show=show, **kwargs)
+
+    def add_custom_series[T](self, x, y, channel_count, *, y1=(), y2=(), y3=(), tooltip=True, no_fit=False, label=None, use_internal_label=True, user_data=None, tag=0, before=0, source=0, callback=None, show=True, **kwargs):
+        kwargs['parent'] = self
+        return mvCustomSeries.create(x, y, channel_count, y1=y1, y2=y2, y3=y3, tooltip=tooltip, no_fit=no_fit, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, source=source, callback=callback, show=show, **kwargs)
+
+    def add_digital_series[T](self, x, y, *, label=None, use_internal_label=True, user_data=None, tag=0, before=0, source=0, show=True, **kwargs):
+        kwargs['parent'] = self
+        return mvDigitalSeries.create(x, y, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, source=source, show=show, **kwargs)
+
+    def add_error_series[T](self, x, y, negative, positive, *, contribute_to_bounds=True, horizontal=False, label=None, use_internal_label=True, user_data=None, tag=0, before=0, source=0, show=True, **kwargs):
+        kwargs['parent'] = self
+        return mvErrorSeries.create(x, y, negative, positive, contribute_to_bounds=contribute_to_bounds, horizontal=horizontal, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, source=source, show=show, **kwargs)
+
+    def add_heat_series[T](self, x, rows, cols, *, scale_min=0, scale_max=1, bounds_min=(0, 0), bounds_max=(1, 1), format='%0.1f', contribute_to_bounds=True, col_major=False, label=None, use_internal_label=True, user_data=None, tag=0, before=0, source=0, show=True, **kwargs):
+        kwargs['parent'] = self
+        return mvHeatSeries.create(x, rows, cols, scale_min=scale_min, scale_max=scale_max, bounds_min=bounds_min, bounds_max=bounds_max, format=format, contribute_to_bounds=contribute_to_bounds, col_major=col_major, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, source=source, show=show, **kwargs)
+
+    def add_histogram_series[T](self, x, *, bins=-1, bar_scale=1, min_range=0, max_range=0, cumulative=False, density=False, outliers=True, horizontal=False, contribute_to_bounds=True, label=None, use_internal_label=True, user_data=None, tag=0, before=0, source=0, show=True, **kwargs):
+        kwargs['parent'] = self
+        return mvHistogramSeries.create(x, bins=bins, bar_scale=bar_scale, min_range=min_range, max_range=max_range, cumulative=cumulative, density=density, outliers=outliers, horizontal=horizontal, contribute_to_bounds=contribute_to_bounds, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, source=source, show=show, **kwargs)
+
+    def add_image_series[T](self, texture_tag, bounds_min, bounds_max, *, uv_min=(0, 0), uv_max=(1, 1), tint_color=(255, 255, 255, 255), label=None, use_internal_label=True, user_data=None, tag=0, before=0, source=0, show=True, **kwargs):
+        kwargs['parent'] = self
+        return mvImageSeries.create(texture_tag, bounds_min, bounds_max, uv_min=uv_min, uv_max=uv_max, tint_color=tint_color, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, source=source, show=show, **kwargs)
+
+    def add_infline_series[T](self, x, *, horizontal=False, label=None, use_internal_label=True, user_data=None, tag=0, before=0, source=0, show=True, **kwargs):
+        kwargs['parent'] = self
+        return mvInfLineSeries.create(x, horizontal=horizontal, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, source=source, show=show, **kwargs)
+
+    def add_label_series[T](self, x, y, *, offset=(0, 0), vertical=False, label=None, use_internal_label=True, user_data=None, tag=0, before=0, source=0, show=True, **kwargs):
+        kwargs['parent'] = self
+        return mvLabelSeries.create(x, y, offset=offset, vertical=vertical, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, source=source, show=show, **kwargs)
+
+    def add_line_series[T](self, x, y, *, segments=False, loop=False, skip_nan=False, no_clip=False, shaded=False, label=None, use_internal_label=True, user_data=None, tag=0, before=0, source=0, show=True, **kwargs):
+        kwargs['parent'] = self
+        return mvLineSeries.create(x, y, segments=segments, loop=loop, skip_nan=skip_nan, no_clip=no_clip, shaded=shaded, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, source=source, show=show, **kwargs)
+
+    def add_pie_series[T](self, x, y, radius, values, labels, *, format='%0.2f', angle=90, normalize=False, ignore_hidden=False, label=None, use_internal_label=True, user_data=None, tag=0, before=0, source=0, show=True, **kwargs):
+        kwargs['parent'] = self
+        return mvPieSeries.create(x, y, radius, values, labels, format=format, angle=angle, normalize=normalize, ignore_hidden=ignore_hidden, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, source=source, show=show, **kwargs)
+
+    def add_scatter_series[T](self, x, y, *, no_clip=False, label=None, use_internal_label=True, user_data=None, tag=0, before=0, source=0, show=True, **kwargs):
+        kwargs['parent'] = self
+        return mvScatterSeries.create(x, y, no_clip=no_clip, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, source=source, show=show, **kwargs)
+
+    def add_shade_series[T](self, x, y1, *, y2=(), label=None, use_internal_label=True, user_data=None, tag=0, before=0, source=0, show=True, **kwargs):
+        kwargs['parent'] = self
+        return mvShadeSeries.create(x, y1, y2=y2, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, source=source, show=show, **kwargs)
+
+    def add_stair_series[T](self, x, y, *, pre_step=False, shaded=False, label=None, use_internal_label=True, user_data=None, tag=0, before=0, source=0, show=True, **kwargs):
+        kwargs['parent'] = self
+        return mvStairSeries.create(x, y, pre_step=pre_step, shaded=shaded, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, source=source, show=show, **kwargs)
+
+    def add_stem_series[T](self, x, y, *, horizontal=False, label=None, use_internal_label=True, user_data=None, tag=0, indent=-1, parent=0, before=0, source=0, show=True, **kwargs):
+        kwargs['parent'] = self
+        return mvStemSeries.create(x, y, horizontal=horizontal, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, indent=indent, parent=parent, before=before, source=source, show=show, **kwargs)
 
     @property
     def limits(self, /):

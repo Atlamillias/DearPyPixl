@@ -50,12 +50,13 @@ include = ["./src/**/*.pyi", "**/dearpypixl/lib/items.py"]
 [tool.ty.overrides.rules]
 invalid-type-arguments = "ignore"
 invalid-method-override = "ignore"
-invalid-parameter-default = "warn"
+invalid-parameter-default = "ignore"
 
 [[tool.ty.overrides]]
 include = ["**/libgen/dearpypixl_lib_items.py"]
 [tool.ty.overrides.rules]
 invalid-argument-type = "warn"
+invalid-parameter-default = "ignore"
 
 
 [tool.pyright]
