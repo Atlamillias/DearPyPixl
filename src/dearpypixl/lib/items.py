@@ -4236,6 +4236,22 @@ class mvFont(ContainerItem, ChildItem, command="add_font", slot=1):
     
     pixel_snapH = _property__pixel_snapH
 
+    def add_char_remap[T](self, source, target, /, *, label=None, use_internal_label=True, user_data=None, tag=0, **kwargs):
+        kwargs['parent'] = self
+        return mvCharRemap.create(source, target, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, **kwargs)
+
+    def add_font_chars[T](self, chars, /, *, label=None, use_internal_label=True, user_data=None, tag=0, **kwargs):
+        kwargs['parent'] = self
+        return mvFontChars.create(chars, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, **kwargs)
+
+    def add_font_range[T](self, first_char, last_char, /, *, label=None, use_internal_label=True, user_data=None, tag=0, **kwargs):
+        kwargs['parent'] = self
+        return mvFontRange.create(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, **kwargs)
+
+    def add_font_range_hint[T](self, hint, /, *, label=None, use_internal_label=True, user_data=None, tag=0, **kwargs):
+        kwargs['parent'] = self
+        return mvFontRangeHint.create(hint, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, **kwargs)
+
     def get_text_size(self, text, /, *, wrap_width=-1):
         return _dearpygui.get_text_size(text, wrap_width=wrap_width, font=self)
 
@@ -4296,6 +4312,10 @@ class mvFontRegistry(ContainerItem, command="add_font_registry", slot=1):
         return cls(tag=__func(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, show=show))  # ty: ignore[invalid-argument-type]
 
     show = _property__show
+
+    def add_font[T](self, file, size, /, *, pixel_snapH=False, label=None, use_internal_label=True, user_data=None, tag=0, **kwargs):
+        kwargs['parent'] = self
+        return mvFont.create(file, size, label=label, pixel_snapH=pixel_snapH, use_internal_label=use_internal_label, user_data=user_data, tag=tag, **kwargs)
 
 font_registry = add_font_registry = mvFontRegistry.create
 
@@ -7215,6 +7235,7 @@ window = add_window = mvWindowAppItem.create
 
 # late assignments
 
+mvFontRegistry.__item_index_type__ = mvFont  # type: ignore
 mvHandlerRegistry.__item_index_type__ = _HandlerItem  # type: ignore
 mvItemHandlerRegistry.__item_index_type__ = _HandlerItem  # type: ignore
 mvPlot.__item_index_type__ = mvPlotAxis  # type: ignore

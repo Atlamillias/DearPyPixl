@@ -66,6 +66,10 @@ if TYPE_CHECKING:
         mvScrollHandler,
         mvToggledOpenHandler,
         mvVisibleHandler,
+        mvCharRemap,
+        mvFontChars,
+        mvFontRange,
+        mvFontRangeHint,
     )
     from dearpypixl.lib.constants import (
         mvKey, mvMouseButton,
@@ -76,6 +80,68 @@ if TYPE_CHECKING:
     )
 
 
+
+
+class mvFont:
+    def add_char_remap[T](self, source: int, target: int, /, *, label: str | None = None, use_internal_label: bool = True, user_data: T = None, tag: Item = 0, **kwargs) -> mvCharRemap[T]:
+        """Create a new char remap item as a child of this font.
+
+        :raises `SystemError`: DearPyGui-related error.
+        """
+        kwargs["parent"] = self
+        return mvCharRemap.create(source, target, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, **kwargs)
+
+    def add_font_chars[T](self, chars: Array[int, Any], /, *, label: str | None = None, use_internal_label: bool = True, user_data: T = None, tag: Item = 0, **kwargs) -> mvFontChars[T]:
+        """Create a new font chars item as a child of this font.
+
+        :raises `SystemError`: DearPyGui-related error.
+        """
+        kwargs["parent"] = self
+        return mvFontChars.create(chars, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, **kwargs)
+
+    def add_font_range[T](self, first_char: int, last_char: int, /, *, label: str | None = None, use_internal_label: bool = True, user_data: T = None, tag: Item = 0, **kwargs) -> mvFontRange[T]:
+        """Create a new font range item as a child of this font.
+
+        :raises `SystemError`: DearPyGui-related error.
+        """
+        kwargs["parent"] = self
+        return mvFontRange.create(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, **kwargs)
+
+    def add_font_range_hint[T](self, hint: int, /, *, label: str | None = None, use_internal_label: bool = True, user_data: T = None, tag: Item = 0, **kwargs) -> mvFontRangeHint[T]:
+        """Create a new font range hint item as a child of this font.
+
+        :raises `SystemError`: DearPyGui-related error.
+        """
+        kwargs["parent"] = self
+        return mvFontRangeHint.create(hint, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, **kwargs)
+
+    def get_text_size(self, text: str, /, *, wrap_width: int = -1) -> list[float]:
+        """Return the width and height of *text* rendered with this font.
+        Note that if called before rendering the first frame, the width
+        and height returned will be zero.
+
+        :type text: `str`
+        :param text: Text to measure.
+
+        :type wrap_width: `int` (optional)
+        :param wrap_width: The maximum horizontal size of a single line of
+            rendered text in pixels. Defaults to `-1`.
+
+        :raises `SystemError`: DearPyGui-related error.
+        """
+        return _dearpygui.get_text_size(text, wrap_width=wrap_width, font=self)  # type: ignore
+
+
+class mvFontRegistry:
+    __item_index_type__ = mvFont
+
+    def add_font[T](self, file: str, size: int, /, *, pixel_snapH: bool = False, label: str | None = None, use_internal_label: bool = True, user_data: T = None, tag: Item = 0, **kwargs) -> mvFont[T]:
+        """Create a new font item as a child of this registry.
+
+        :raises `SystemError`: DearPyGui-related error.
+        """
+        kwargs["parent"] = self
+        return mvFont.create(file, size, label=label, pixel_snapH=pixel_snapH, use_internal_label=use_internal_label, user_data=user_data, tag=tag, **kwargs)  # ty:ignore[unresolved-attribute]
 
 
 class mvHandlerRegistry:
@@ -671,24 +737,6 @@ class mvDrawNode:
             transformation.
         """
         _dearpygui.apply_transform(self, transform)
-
-
-class mvFont:
-    def get_text_size(self, text: str, /, *, wrap_width: int = -1) -> list[float]:
-        """Return the width and height of *text* rendered with this font.
-        Note that if called before rendering the first frame, the width
-        and height returned will be zero.
-
-        :type text: `str`
-        :param text: Text to measure.
-
-        :type wrap_width: `int` (optional)
-        :param wrap_width: The maximum horizontal size of a single line of
-            rendered text in pixels. Defaults to `-1`.
-
-        :raises `SystemError`: DearPyGui-related error.
-        """
-        return _dearpygui.get_text_size(text, wrap_width=wrap_width, font=self)  # type: ignore
 
 
 class mvNodeEditor:
