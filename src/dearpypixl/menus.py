@@ -157,6 +157,8 @@ class ContextMenuStack:
             if not isinstance(entry, tuple):
                 if self._stack:
                     raise TypeError("owner item required when stack is not empty")
+
+                menu  = entry
                 entry = (entry, None)
             else:
                 menu = entry[0]
@@ -165,7 +167,7 @@ class ContextMenuStack:
                 self._menus_opened()
 
             self._stack.appendleft(entry)
-            entry[0].configure(**config)
+            menu.configure(**config)
 
     _POP_KWARGS: typing.Any = {"show": False, "no_bring_to_front_on_focus": False}
 
