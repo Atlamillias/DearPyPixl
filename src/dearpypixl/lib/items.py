@@ -4355,6 +4355,46 @@ class mvHandlerRegistry(ContainerItem, command="add_handler_registry", slot=1):
 
     show = _property__show
 
+    def add_key_down_handler[T](self, key=_dearpygui.mvKey_None, *, label=None, use_internal_label=True, user_data=None, tag=0, callback=None, show=True, **kwargs):
+        kwargs['parent'] = self
+        return mvKeyDownHandler.create(key, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, callback=callback, show=show, **kwargs)
+
+    def add_key_press_handler[T](self, key=_dearpygui.mvKey_None, *, label=None, use_internal_label=True, user_data=None, tag=0, callback=None, show=True, **kwargs):
+        kwargs['parent'] = self
+        return mvKeyPressHandler.create(key, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, callback=callback, show=show, **kwargs)
+
+    def add_key_release_handler[T](self, key=_dearpygui.mvKey_None, *, label=None, use_internal_label=True, user_data=None, tag=0, callback=None, show=True, **kwargs):
+        kwargs['parent'] = self
+        return mvKeyReleaseHandler.create(key, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, callback=callback, show=show, **kwargs)
+
+    def add_mouse_click_handler[T](self, button=-1, *, label=None, use_internal_label=True, user_data=None, tag=0, callback=None, show=True, **kwargs):
+        kwargs['parent'] = self
+        return mvMouseClickHandler.create(button, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, callback=callback, show=show, **kwargs)
+
+    def add_mouse_double_click_handler[T](self, button=-1, *, label=None, use_internal_label=True, user_data=None, tag=0, callback=None, show=True, **kwargs):
+        kwargs['parent'] = self
+        return mvMouseDoubleClickHandler.create(button, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, callback=callback, show=show, **kwargs)
+
+    def add_mouse_down_handler[T](self, button=-1, *, label=None, use_internal_label=True, user_data=None, tag=0, callback=None, show=True, **kwargs):
+        kwargs['parent'] = self
+        return mvMouseDownHandler.create(button, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, callback=callback, show=show, **kwargs)
+
+    def add_mouse_drag_handler[T](self, button=-1, threshold=10.0, *, label=None, use_internal_label=True, user_data=None, tag=0, callback=None, show=True, **kwargs):
+        kwargs['parent'] = self
+        return mvMouseDragHandler.create(button, threshold, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, callback=callback, show=show, **kwargs)
+
+    def add_mouse_move_handler[T](self, *, label=None, use_internal_label=True, user_data=None, tag=0, callback=None, show=True, **kwargs):
+        kwargs['parent'] = self
+        return mvMouseMoveHandler.create(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, callback=callback, show=show, **kwargs)
+
+    def add_mouse_release_handler[T](self, button=-1, *, label=None, use_internal_label=True, user_data=None, tag=0, callback=None, show=True, **kwargs):
+        kwargs['parent'] = self
+        return mvMouseReleaseHandler.create(button, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, callback=callback, show=show, **kwargs)
+
+    def add_mouse_wheel_handler[T](self, *, label=None, use_internal_label=True, user_data=None, tag=0, callback=None, show=True, **kwargs):
+        kwargs['parent'] = self
+        return mvMouseWheelHandler.create(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, callback=callback, show=show, **kwargs)
+
 handler_registry = add_handler_registry = mvHandlerRegistry.create
 
 
@@ -4927,6 +4967,58 @@ class mvItemHandlerRegistry(ContainerItem, command="add_item_handler_registry", 
         return cls(tag=__func(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, show=show))  # ty: ignore[invalid-argument-type]
 
     show = _property__show
+
+    def add_item_activated_handler[T](self, *, label=None, use_internal_label=True, user_data=None, tag=0, callback=None, show=True, **kwargs):
+        kwargs['parent'] = self
+        return mvActivatedHandler.create(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, callback=callback, show=show, **kwargs)
+
+    def add_item_active_handler[T](self, *, label=None, use_internal_label=True, user_data=None, tag=0, callback=None, show=True, **kwargs):
+        kwargs['parent'] = self
+        return mvActiveHandler.create(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, callback=callback, show=show, **kwargs)
+
+    def add_item_clicked_handler[T](self, button=-1, *, label=None, use_internal_label=True, user_data=None, tag=0, callback=None, show=True, **kwargs):
+        kwargs['parent'] = self
+        return mvClickedHandler.create(button, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, callback=callback, show=show, **kwargs)
+
+    def add_item_deactivated_after_edit_handler[T](self, *, label=None, use_internal_label=True, user_data=None, tag=0, callback=None, show=True, **kwargs):
+        kwargs['parent'] = self
+        return mvDeactivatedAfterEditHandler.create(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, callback=callback, show=show, **kwargs)
+
+    def add_item_deactivated_handler[T](self, *, label=None, use_internal_label=True, user_data=None, tag=0, callback=None, show=True, **kwargs):
+        kwargs['parent'] = self
+        return mvDeactivatedHandler.create(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, callback=callback, show=show, **kwargs)
+
+    def add_item_double_clicked_handler[T](self, button=-1, *, label=None, use_internal_label=True, user_data=None, tag=0, callback=None, show=True, **kwargs):
+        kwargs['parent'] = self
+        return mvDoubleClickedHandler.create(button, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, callback=callback, show=show, **kwargs)
+
+    def add_item_edited_handler[T](self, *, label=None, use_internal_label=True, user_data=None, tag=0, callback=None, show=True, **kwargs):
+        kwargs['parent'] = self
+        return mvEditedHandler.create(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, callback=callback, show=show, **kwargs)
+
+    def add_item_focus_handler[T](self, *, event_type=_dearpygui.mvEventType_On, label=None, use_internal_label=True, user_data=None, tag=0, callback=None, show=True, **kwargs):
+        kwargs['parent'] = self
+        return mvFocusHandler.create(event_type=event_type, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, callback=callback, show=show, **kwargs)
+
+    def add_item_hover_handler[T](self, *, event_type=_dearpygui.mvEventType_On, label=None, use_internal_label=True, user_data=None, tag=0, callback=None, show=True, **kwargs):
+        kwargs['parent'] = self
+        return mvHoverHandler.create(event_type=event_type, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, callback=callback, show=show, **kwargs)
+
+    def add_item_resize_handler[T](self, *, label=None, use_internal_label=True, user_data=None, tag=0, callback=None, show=True, **kwargs):
+        kwargs['parent'] = self
+        return mvResizeHandler.create(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, callback=callback, show=show, **kwargs)
+
+    def add_item_scroll_handler[T](self, *, label=None, use_internal_label=True, user_data=None, tag=0, callback=None, show=True, **kwargs):
+        kwargs['parent'] = self
+        return mvScrollHandler.create(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, callback=callback, show=show, **kwargs)
+
+    def add_item_toggled_open_handler[T](self, *, label=None, use_internal_label=True, user_data=None, tag=0, callback=None, show=True, **kwargs):
+        kwargs['parent'] = self
+        return mvToggledOpenHandler.create(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, callback=callback, show=show, **kwargs)
+
+    def add_item_visible_handler[T](self, *, label=None, use_internal_label=True, user_data=None, tag=0, callback=None, show=True, **kwargs):
+        kwargs['parent'] = self
+        return mvVisibleHandler.create(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, callback=callback, show=show, **kwargs)
 
 item_handler_registry = add_item_handler_registry = mvItemHandlerRegistry.create
 
@@ -7119,6 +7211,8 @@ window = add_window = mvWindowAppItem.create
 
 # late assignments
 
+mvHandlerRegistry.__item_index_type__ = _HandlerItem  # type: ignore
+mvItemHandlerRegistry.__item_index_type__ = _HandlerItem  # type: ignore
 mvPlot.__item_index_type__ = mvPlotAxis  # type: ignore
 mvTable.__item_index_type__ = mvTableRow  # type: ignore
 mvTheme.__item_index_type__ = mvThemeComponent  # type: ignore

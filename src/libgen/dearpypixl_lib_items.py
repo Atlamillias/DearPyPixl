@@ -1,7 +1,7 @@
 from typing import *
 
 from dearpypixl.core.protocols import *
-from dearpypixl.core.appitem import _ElementItem
+from dearpypixl.core.appitem import _ElementItem, _HandlerItem
 
 from dearpygui import _dearpygui, dearpygui
 
@@ -43,14 +43,231 @@ if TYPE_CHECKING:
         mvShadeSeries,
         mvStairSeries,
         mvStemSeries,
+        mvKeyDownHandler,
+        mvKeyPressHandler,
+        mvKeyReleaseHandler,
+        mvMouseClickHandler,
+        mvMouseDoubleClickHandler,
+        mvMouseDownHandler,
+        mvMouseDragHandler,
+        mvMouseMoveHandler,
+        mvMouseReleaseHandler,
+        mvMouseWheelHandler,
+        mvActivatedHandler,
+        mvActiveHandler,
+        mvClickedHandler,
+        mvDeactivatedAfterEditHandler,
+        mvDeactivatedHandler,
+        mvDoubleClickedHandler,
+        mvEditedHandler,
+        mvFocusHandler,
+        mvHoverHandler,
+        mvResizeHandler,
+        mvScrollHandler,
+        mvToggledOpenHandler,
+        mvVisibleHandler,
     )
     from dearpypixl.lib.constants import (
+        mvKey, mvMouseButton,
+        mvEventType,
         mvThemeCat,
         mvThemeCol, mvPlotCol, mvNodeCol,
         mvStyleVar, mvPlotStyleVar, mvNodeStyleVar,
     )
 
 
+
+
+class mvHandlerRegistry:
+    __item_index_type__ = _HandlerItem
+
+    def add_key_down_handler[T](self, key: mvKey | int = _dearpygui.mvKey_None, *, label: str | None = None, use_internal_label: bool = True, user_data: Any | None = None, tag: int | str = 0, callback: Callable | None = None, show: bool = True, **kwargs) -> mvKeyDownHandler[T]:
+        """Create a new key down handler item as a child of this registry.
+
+        :raises `SystemError`: DearPyGui-related error.
+        """
+        kwargs["parent"] = self
+        return mvKeyDownHandler.create(key, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, callback=callback, show=show, **kwargs)
+
+    def add_key_press_handler[T](self, key: mvKey | int = _dearpygui.mvKey_None, *, label: str | None = None, use_internal_label: bool = True, user_data: Any | None = None, tag: int | str = 0, callback: Callable | None = None, show: bool = True, **kwargs) -> mvKeyPressHandler[T]:
+        """Create a new key pressed handler item as a child of this registry.
+
+        :raises `SystemError`: DearPyGui-related error.
+        """
+        kwargs["parent"] = self
+        return mvKeyPressHandler.create(key, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, callback=callback, show=show, **kwargs)
+
+    def add_key_release_handler[T](self, key: mvKey | int = _dearpygui.mvKey_None, *, label: str | None = None, use_internal_label: bool = True, user_data: Any | None = None, tag: int | str = 0, callback: Callable | None = None, show: bool = True, **kwargs) -> mvKeyReleaseHandler[T]:
+        """Create a new key released handler item as a child of this registry.
+
+        :raises `SystemError`: DearPyGui-related error.
+        """
+        kwargs["parent"] = self
+        return mvKeyReleaseHandler.create(key, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, callback=callback, show=show, **kwargs)
+
+    def add_mouse_click_handler[T](self, button: mvMouseButton | int = -1, *, label: str | None = None, use_internal_label: bool = True, user_data: Any | None = None, tag: int | str = 0, callback: Callable | None = None, show: bool = True, **kwargs) -> mvMouseClickHandler[T]:
+        """Create a new mouse clicked handler item as a child of this registry.
+
+        :raises `SystemError`: DearPyGui-related error.
+        """
+        kwargs["parent"] = self
+        return mvMouseClickHandler.create(button, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, callback=callback, show=show, **kwargs)
+
+    def add_mouse_double_click_handler[T](self, button: mvMouseButton | int = -1, *, label: str | None = None, use_internal_label: bool = True, user_data: Any | None = None, tag: int | str = 0, callback: Callable | None = None, show: bool = True, **kwargs) -> mvMouseDoubleClickHandler[T]:
+        """Create a new mouse double clicked handler item as a child of this registry.
+
+        :raises `SystemError`: DearPyGui-related error.
+        """
+        kwargs["parent"] = self
+        return mvMouseDoubleClickHandler.create(button, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, callback=callback, show=show, **kwargs)
+
+    def add_mouse_down_handler[T](self, button: mvMouseButton | int = -1, *, label: str | None = None, use_internal_label: bool = True, user_data: Any | None = None, tag: int | str = 0, callback: Callable | None = None, show: bool = True, **kwargs) -> mvMouseDownHandler[T]:
+        """Create a new mouse down handler item as a child of this registry.
+
+        :raises `SystemError`: DearPyGui-related error.
+        """
+        kwargs["parent"] = self
+        return mvMouseDownHandler.create(button, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, callback=callback, show=show, **kwargs)
+
+    def add_mouse_drag_handler[T](self, button: mvMouseButton | int = -1, threshold: float = 10.0, *, label: str | None = None, use_internal_label: bool = True, user_data: Any | None = None, tag: int | str = 0, callback: Callable | None = None, show: bool = True, **kwargs) -> mvMouseDragHandler[T]:
+        """Create a new mouse drag handler item as a child of this registry.
+
+        :raises `SystemError`: DearPyGui-related error.
+        """
+        kwargs["parent"] = self
+        return mvMouseDragHandler.create(button, threshold, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, callback=callback, show=show, **kwargs)
+
+    def add_mouse_move_handler[T](self, *, label: str | None = None, use_internal_label: bool = True, user_data: Any | None = None, tag: int | str = 0, callback: Callable | None = None, show: bool = True, **kwargs) -> mvMouseMoveHandler[T]:
+        """Create a new mouse move handler item as a child of this registry.
+
+        :raises `SystemError`: DearPyGui-related error.
+        """
+        kwargs["parent"] = self
+        return mvMouseMoveHandler.create(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, callback=callback, show=show, **kwargs)
+
+    def add_mouse_release_handler[T](self, button: mvMouseButton | int = -1, *, label: str | None = None, use_internal_label: bool = True, user_data: Any | None = None, tag: int | str = 0, callback: Callable | None = None, show: bool = True, **kwargs) -> mvMouseReleaseHandler[T]:
+        """Create a new mouse released handler item as a child of this registry.
+
+        :raises `SystemError`: DearPyGui-related error.
+        """
+        kwargs["parent"] = self
+        return mvMouseReleaseHandler.create(button, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, callback=callback, show=show, **kwargs)
+
+    def add_mouse_wheel_handler[T](self, *, label: str | None = None, use_internal_label: bool = True, user_data: Any | None = None, tag: int | str = 0, callback: Callable | None = None, show: bool = True, **kwargs) -> mvMouseWheelHandler[T]:
+        """Create a new mouse wheel handler item as a child of this registry.
+
+        :raises `SystemError`: DearPyGui-related error.
+        """
+        kwargs["parent"] = self
+        return mvMouseWheelHandler.create(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, callback=callback, show=show, **kwargs)
+
+
+class mvItemHandlerRegistry:
+    __item_index_type__ = _HandlerItem
+
+    def add_item_activated_handler[T](self, *, label: str | None = None, use_internal_label: bool = True, user_data: Any | None = None, tag: int | str = 0, callback: Callable | None = None, show: bool = True, **kwargs) -> mvActivatedHandler[T]:
+        """Create a new activated handler item as a child of this registry.
+
+        :raises `SystemError`: DearPyGui-related error.
+        """
+        kwargs["parent"] = self
+        return mvActivatedHandler.create(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, callback=callback, show=show, **kwargs)
+
+    def add_item_active_handler[T](self, *, label: str | None = None, use_internal_label: bool = True, user_data: Any | None = None, tag: int | str = 0, callback: Callable | None = None, show: bool = True, **kwargs) -> mvActiveHandler[T]:
+        """Create a new active handler item as a child of this registry.
+
+        :raises `SystemError`: DearPyGui-related error.
+        """
+        kwargs["parent"] = self
+        return mvActiveHandler.create(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, callback=callback, show=show, **kwargs)
+
+    def add_item_clicked_handler[T](self, button: mvMouseButton | int = -1, *, label: str | None = None, use_internal_label: bool = True, user_data: Any | None = None, tag: int | str = 0, callback: Callable | None = None, show: bool = True, **kwargs) -> mvClickedHandler[T]:
+        """Create a new clicked handler item as a child of this registry.
+
+        :raises `SystemError`: DearPyGui-related error.
+        """
+        kwargs["parent"] = self
+        return mvClickedHandler.create(button, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, callback=callback, show=show, **kwargs)
+
+    def add_item_deactivated_after_edit_handler[T](self, *, label: str | None = None, use_internal_label: bool = True, user_data: Any | None = None, tag: int | str = 0, callback: Callable | None = None, show: bool = True, **kwargs) -> mvDeactivatedAfterEditHandler[T]:
+        """Create a new deactivated after edit handler item as a child of this registry.
+
+        :raises `SystemError`: DearPyGui-related error.
+        """
+        kwargs["parent"] = self
+        return mvDeactivatedAfterEditHandler.create(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, callback=callback, show=show, **kwargs)
+
+    def add_item_deactivated_handler[T](self, *, label: str | None = None, use_internal_label: bool = True, user_data: Any | None = None, tag: int | str = 0, callback: Callable | None = None, show: bool = True, **kwargs) -> mvDeactivatedHandler[T]:
+        """Create a new deactivated handler item as a child of this registry.
+
+        :raises `SystemError`: DearPyGui-related error.
+        """
+        kwargs["parent"] = self
+        return mvDeactivatedHandler.create(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, callback=callback, show=show, **kwargs)
+
+    def add_item_double_clicked_handler[T](self, button: mvMouseButton | int = -1, *, label: str | None = None, use_internal_label: bool = True, user_data: Any | None = None, tag: int | str = 0, callback: Callable | None = None, show: bool = True, **kwargs) -> mvDoubleClickedHandler[T]:
+        """Create a new double clicked handler item as a child of this registry.
+
+        :raises `SystemError`: DearPyGui-related error.
+        """
+        kwargs["parent"] = self
+        return mvDoubleClickedHandler.create(button, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, callback=callback, show=show, **kwargs)
+
+    def add_item_edited_handler[T](self, *, label: str | None = None, use_internal_label: bool = True, user_data: Any | None = None, tag: int | str = 0, callback: Callable | None = None, show: bool = True, **kwargs) -> mvEditedHandler[T]:
+        """Create a new edited handler item as a child of this registry.
+
+        :raises `SystemError`: DearPyGui-related error.
+        """
+        kwargs["parent"] = self
+        return mvEditedHandler.create(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, callback=callback, show=show, **kwargs)
+
+    def add_item_focus_handler[T](self, *, event_type: mvEventType | int | None = _dearpygui.mvEventType_On, label: str | None = None, use_internal_label: bool = True, user_data: Any | None = None, tag: int | str = 0, callback: Callable | None = None, show: bool = True, **kwargs) -> mvFocusHandler[T]:
+        """Create a new focus handler item as a child of this registry.
+
+        :raises `SystemError`: DearPyGui-related error.
+        """
+        kwargs["parent"] = self
+        return mvFocusHandler.create(event_type=event_type, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, callback=callback, show=show, **kwargs)
+
+    def add_item_hover_handler[T](self, *, event_type: mvEventType | int | None = _dearpygui.mvEventType_On, label: str | None = None, use_internal_label: bool = True, user_data: Any | None = None, tag: int | str = 0, callback: Callable | None = None, show: bool = True, **kwargs) -> mvHoverHandler[T]:
+        """Create a new hover handler item as a child of this registry.
+
+        :raises `SystemError`: DearPyGui-related error.
+        """
+        kwargs["parent"] = self
+        return mvHoverHandler.create(event_type=event_type, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, callback=callback, show=show, **kwargs)
+
+    def add_item_resize_handler[T](self, *, label: str | None = None, use_internal_label: bool = True, user_data: Any | None = None, tag: int | str = 0, callback: Callable | None = None, show: bool = True, **kwargs) -> mvResizeHandler[T]:
+        """Create a new resize handler item as a child of this registry.
+
+        :raises `SystemError`: DearPyGui-related error.
+        """
+        kwargs["parent"] = self
+        return mvResizeHandler.create(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, callback=callback, show=show, **kwargs)
+
+    def add_item_scroll_handler[T](self, *, label: str | None = None, use_internal_label: bool = True, user_data: Any | None = None, tag: int | str = 0, callback: Callable | None = None, show: bool = True, **kwargs) -> mvScrollHandler[T]:
+        """Create a new scroll handler item as a child of this registry.
+
+        :raises `SystemError`: DearPyGui-related error.
+        """
+        kwargs["parent"] = self
+        return mvScrollHandler.create(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, callback=callback, show=show, **kwargs)
+
+    def add_item_toggled_open_handler[T](self, *, label: str | None = None, use_internal_label: bool = True, user_data: Any | None = None, tag: int | str = 0, callback: Callable | None = None, show: bool = True, **kwargs) -> mvToggledOpenHandler[T]:
+        """Create a new toggled open handler item as a child of this registry.
+
+        :raises `SystemError`: DearPyGui-related error.
+        """
+        kwargs["parent"] = self
+        return mvToggledOpenHandler.create(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, callback=callback, show=show, **kwargs)
+
+    def add_item_visible_handler[T](self, *, label: str | None = None, use_internal_label: bool = True, user_data: Any | None = None, tag: int | str = 0, callback: Callable | None = None, show: bool = True, **kwargs) -> mvVisibleHandler[T]:
+        """Create a new visible handler item as a child of this registry.
+
+        :raises `SystemError`: DearPyGui-related error.
+        """
+        kwargs["parent"] = self
+        return mvVisibleHandler.create(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, callback=callback, show=show, **kwargs)
 
 
 class mvThemeColor:
