@@ -668,15 +668,43 @@ class mvPlotAxis:
         _dearpygui.set_axis_limits_auto(self)
 
     def set_pan_limits(self, vmin: float, vmax: float, /) -> None:
+        """Apply pan constraints.
+
+        :type vmin: `float`
+        :param vmin:
+
+        :type vmax: `float`
+        :param vmax:
+
+        :raises `SystemError`: DearPyGui-related error.
+        """
         _dearpygui.set_axis_limits_constraints(self, vmin, vmax)
 
     def reset_pan_limits(self, /) -> None:
+        """Remove the axis' pan limit constraints.
+
+        :raises `SystemError`: DearPyGui-related error.
+        """
         _dearpygui.reset_axis_limits_constraints(self)
 
     def set_zoom_limits(self, vmin: float, vmax: float, /) -> None:
+        """Apply zoom constraints.
+
+        :type vmin: `float`
+        :param vmin:
+
+        :type vmax: `float`
+        :param vmax:
+
+        :raises `SystemError`: DearPyGui-related error.
+        """
         _dearpygui.set_axis_zoom_constraints(self, vmin, vmax)
 
     def reset_zoom_limits(self, /) -> None:
+        """Remove the axis' zoom constraints.
+
+        :raises `SystemError`: DearPyGui-related error.
+        """
         _dearpygui.reset_axis_zoom_constraints(self)
 
     def set_ticks(self, label_pairs: Sequence[tuple[str, int | str]], /):

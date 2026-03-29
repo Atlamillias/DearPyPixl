@@ -7198,10 +7198,38 @@ class mvPlotAxis[U = Any, P: mvStage | mvTemplateRegistry | mvPlot = Any, C: Chi
     def limits(self, value: Sequence[float] | tuple[float, float], /) -> None: ...
     @limits.deleter
     def limits(self, /) -> None: ...
-    def set_pan_limits(self, vmin: float, vmax: float, /) -> None: ...
-    def reset_pan_limits(self, /) -> None: ...
-    def set_zoom_limits(self, vmin: float, vmax: float, /) -> None: ...
-    def reset_zoom_limits(self, /) -> None: ...
+    def set_pan_limits(self, vmin: float, vmax: float, /) -> None:
+        """Apply pan constraints.
+    
+            :type vmin: `float`
+            :param vmin:
+    
+            :type vmax: `float`
+            :param vmax:
+    
+            :raises `SystemError`: DearPyGui-related error.
+            """
+    def reset_pan_limits(self, /) -> None:
+        """Remove the axis' pan limit constraints.
+    
+            :raises `SystemError`: DearPyGui-related error.
+            """
+    def set_zoom_limits(self, vmin: float, vmax: float, /) -> None:
+        """Apply zoom constraints.
+    
+            :type vmin: `float`
+            :param vmin:
+    
+            :type vmax: `float`
+            :param vmax:
+    
+            :raises `SystemError`: DearPyGui-related error.
+            """
+    def reset_zoom_limits(self, /) -> None:
+        """Remove the axis' zoom constraints.
+    
+            :raises `SystemError`: DearPyGui-related error.
+            """
     def set_ticks(self, label_pairs: Sequence[tuple[str, int | str]], /):
         """Update the axis' tick labels and values.
     
