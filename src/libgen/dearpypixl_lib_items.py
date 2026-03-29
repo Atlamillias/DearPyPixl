@@ -82,6 +82,8 @@ if TYPE_CHECKING:
 
 
 
+# [ font system ]
+
 class mvFont:
     def add_char_remap[T](self, source: int, target: int, /, *, label: str | None = None, use_internal_label: bool = True, user_data: T = None, tag: Item = 0, **kwargs) -> mvCharRemap[T]:
         """Create a new char remap item as a child of this font.
@@ -143,6 +145,10 @@ class mvFontRegistry:
         kwargs["parent"] = self
         return mvFont.create(file, size, label=label, pixel_snapH=pixel_snapH, use_internal_label=use_internal_label, user_data=user_data, tag=tag, **kwargs)  # ty:ignore[unresolved-attribute]
 
+
+
+
+# [ event handler system ]
 
 class mvHandlerRegistry:
     __item_index_type__ = _HandlerItem
@@ -336,6 +342,9 @@ class mvItemHandlerRegistry:
         return mvVisibleHandler.create(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, callback=callback, show=show, **kwargs)
 
 
+
+# [ theme system ]
+
 class mvThemeColor:
     identify = _ElementItem.identify
 
@@ -387,6 +396,10 @@ class mvTheme:
         kwargs["parent"] = self
         return mvThemeComponent.create(int(item_type), label=label, user_data=user_data, use_internal_label=use_internal_label, tag=tag, before=before, enabled_state=enabled_state, **kwargs)  # ty:ignore[unresolved-attribute]
 
+
+
+
+# [ value system ]
 
 class mvValueRegistry:
     def add_bool_value[T](self, /, default_value: bool = False, *, label: str | None = None, use_internal_label: bool = True, user_data: T = None, tag: Item = 0, source: Item = 0, **kwargs) -> mvBoolValue[T]:  # ty:ignore[invalid-parameter-default]
@@ -477,6 +490,10 @@ class mvValueRegistry:
         kwargs["parent"] = self
         return mvStringValue.create(default_value=default_value, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, source=source, **kwargs)
 
+
+
+
+# [ texture system ]
 
 class mvTextureRegistry:
 
@@ -698,6 +715,10 @@ class mvRawTexture:
         return __class__.create(wt, ht, im, format=format, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, **kwargs)
 
 
+
+
+# [ drawing system ]
+
 class mvDrawLayer:
     def set_clip_space(self, top_left_x: float, top_left_y: float, width: float, height: float, min_depth: float, max_depth: float, /) -> None:
         """Set the point clipping area for the drawing layer. Only enabled when
@@ -739,6 +760,10 @@ class mvDrawNode:
         _dearpygui.apply_transform(self, transform)
 
 
+
+
+# [ node system ]
+
 class mvNodeEditor:
     def selected_nodes(self, /) -> list[Item]:
         """Return the editor's selected nodes.
@@ -768,6 +793,10 @@ class mvNodeEditor:
         """
         _dearpygui.clear_selected_links(self)
 
+
+
+
+# [ plotting system ]
 
 class mvPlotAxis:
     def add_2dhistogram_series[T](self, x: Array[float, Any], y: Array[float, Any], /, *, xbins: int = -1, ybins: int = -1, xmin_range: float = 0, xmax_range: float = 0, ymin_range: float = 0, ymax_range: float = 0, density: bool = False, outliers: bool = False, col_major: bool = False, label: str | None = None, use_internal_label: bool = True, user_data: T = None, tag: Item = 0, before: Item = 0, source: Item = 0, show: bool = True, **kwargs) -> mv2dHistogramSeries[T]:  # ty: ignore
@@ -1115,6 +1144,10 @@ class mvPlot:
         """
         return _dearpygui.reset_axis_ticks(self._axis_from_index(iaxis))
 
+
+
+
+# [ table system ]
 
 class mvTableRow:
     pass
