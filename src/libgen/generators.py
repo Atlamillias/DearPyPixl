@@ -384,15 +384,7 @@ class ItemsCodeGenerator(_ItemsGenerator):
         buffer.append("    __slots__ = ()")
         buffer.append('')
         members_seen.add("__slots__")
-
-        with apply_linebreak(buffer):
-            if type_name.endswith("HandlerRegistry"):
-                buffer.append("    __item_index_type__ = _HandlerItem")
-            elif type_name.endswith("ThemeComponent"):
-                buffer.append("    __item_index_type__ = _ElementItem")
-            if "mvDraw" in type_name and type_info.flags & FeatureFlag.PARENT:
-                buffer.append("    __item_index_slot__ = 2")
-
+        
 
         # constructor
 

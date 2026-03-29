@@ -3838,8 +3838,6 @@ draw_image_quad = mvDrawImageQuad.create
 class mvDrawLayer(ContainerItem, ChildItem, command="add_draw_layer", slot=2):
     __slots__ = ()
 
-    __item_index_slot__ = 2
-
     @classmethod
     def create(cls, /, *, perspective_divide=False, depth_clipping=False, cull_mode=0, label=None, use_internal_label=True, user_data=None, tag=0, parent=0, before=0, show=True, __func=_dearpygui.add_draw_layer, **kwargs):  # ty: ignore[invalid-method-override]
         return cls(tag=__func(perspective_divide=perspective_divide, depth_clipping=depth_clipping, cull_mode=cull_mode, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, before=before, show=show))  # ty: ignore[invalid-argument-type]
@@ -3873,8 +3871,6 @@ draw_line = mvDrawLine.create
 
 class mvDrawNode(ContainerItem, ChildItem, command="add_draw_node", slot=2):
     __slots__ = ()
-
-    __item_index_slot__ = 2
 
     @classmethod
     def create(cls, /, *, label=None, use_internal_label=True, user_data=None, tag=0, parent=0, before=0, show=True, __func=_dearpygui.add_draw_node, **kwargs):  # ty: ignore[invalid-method-override]
@@ -4008,8 +4004,6 @@ draw_triangle = mvDrawTriangle.create
 
 class mvDrawlist(ContainerItem, ChildItem, command="add_drawlist", slot=1):
     __slots__ = ()
-
-    __item_index_slot__ = 2
 
     @classmethod
     def create(cls, /, width, height, *, label=None, use_internal_label=True, user_data=None, tag=0, parent=0, before=0, callback=None, show=True, filter_key="", tracked=False, track_offset=0.5, pos=(), __func=_dearpygui.add_drawlist, **kwargs):  # ty: ignore[invalid-method-override]
@@ -4372,8 +4366,6 @@ group = add_group = mvGroup.create
 
 class mvHandlerRegistry(ContainerItem, command="add_handler_registry", slot=1):
     __slots__ = ()
-
-    __item_index_type__ = _HandlerItem
 
     @classmethod
     def create(cls, /, *, label=None, use_internal_label=True, user_data=None, tag=0, show=True, __func=_dearpygui.add_handler_registry, **kwargs):  # ty: ignore[invalid-method-override]
@@ -4987,8 +4979,6 @@ add_int_value = mvIntValue.create
 
 class mvItemHandlerRegistry(ContainerItem, command="add_item_handler_registry", slot=1):
     __slots__ = ()
-
-    __item_index_type__ = _HandlerItem
 
     @classmethod
     def create(cls, /, *, label=None, use_internal_label=True, user_data=None, tag=0, show=True, __func=_dearpygui.add_item_handler_registry, **kwargs):  # ty: ignore[invalid-method-override]
@@ -6939,8 +6929,6 @@ add_theme_color = mvThemeColor.create
 
 class mvThemeComponent(ContainerItem, ChildItem, command="add_theme_component", slot=1):
     __slots__ = ()
-
-    __item_index_type__ = _ElementItem
 
     @classmethod
     def create(cls, /, item_type=0, *, enabled_state=True, label=None, use_internal_label=True, user_data=None, tag=0, parent=0, before=0, __func=_dearpygui.add_theme_component, **kwargs):  # ty: ignore[invalid-method-override]
