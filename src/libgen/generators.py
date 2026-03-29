@@ -608,7 +608,7 @@ class ItemsCodeGenerator(_ItemsGenerator):
             content.append(f"{global_name} = ({global_value})")
 
             for type_info in self.metadata.typedef:
-                assignment_name = f"{type_info.name}.__itemtype_{var.lower()}__"
+                assignment_name = f"{type_info.name}.__item_{var.lower()}__"
                 if filter_mthd(type_info):
                     assignment_value = global_name
                 elif type_info.flags & filter_flag:
