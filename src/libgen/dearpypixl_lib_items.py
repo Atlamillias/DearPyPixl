@@ -723,7 +723,7 @@ class mvNodeEditor:
 
 class mvPlotAxis:
     def add_2dhistogram_series[T](self, x: Array[float, Any], y: Array[float, Any], /, *, xbins: int = -1, ybins: int = -1, xmin_range: float = 0, xmax_range: float = 0, ymin_range: float = 0, ymax_range: float = 0, density: bool = False, outliers: bool = False, col_major: bool = False, label: str | None = None, use_internal_label: bool = True, user_data: T = None, tag: Item = 0, before: Item = 0, source: Item = 0, show: bool = True, **kwargs) -> mv2dHistogramSeries[T]:  # ty: ignore
-        """Create a new 2dhistogram series item to this plot axis
+        """Create a new 2dhistogram series item to this plot axis.
 
         :raises `SystemError`: DearPyGui-related error.
         """
@@ -731,7 +731,7 @@ class mvPlotAxis:
         mv2dHistogramSeries.create(x, y, xbins=xbins, ybins=ybins, xmin_range=xmin_range, xmax_range=xmax_range, ymin_range=ymin_range, ymax_range=ymax_range, density=density, outliers=outliers, col_major=col_major, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, source=source, show=show, **kwargs)
 
     def add_area_series[T](self, x: Array[float, Any], y: Array[float, Any], /, *, fill: Array[int, Literal[3, 4]] = (0, 0, 0, -255), contribute_to_bounds: bool = True, label: str | None = None, use_internal_label: bool = True, user_data: T = None, tag: Item = 0, parent: int | str = 0, before: Item = 0, source: Item = 0, show: bool = True, **kwargs) -> mvAreaSeries[T]:
-        """Create a new area series item to this plot axis
+        """Create a new area series item to this plot axis.
 
         :raises `SystemError`: DearPyGui-related error.
         """
@@ -739,7 +739,7 @@ class mvPlotAxis:
         return mvAreaSeries.create(x, y, fill=fill, contribute_to_bounds=contribute_to_bounds, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, source=source, show=show, **kwargs)
 
     def add_bargroup_series[T](self, values: Array[float, Any], label_ids: Array[str, Any], group_size: int, /, *, group_width: float = 0.67, shift: int = 0, horizontal: bool = False, stacked: bool = False, label: str | None = None, use_internal_label: bool = True, user_data: T = None, tag: Item = 0, parent: int | str = 0, before: Item = 0, source: Item = 0, show: bool = True, **kwargs) -> mvBarGroupSeries[T]:
-        """Create a new bargroup series item to this plot axis
+        """Create a new bargroup series item to this plot axis.
 
         :raises `SystemError`: DearPyGui-related error.
         """
@@ -747,7 +747,7 @@ class mvPlotAxis:
         return mvBarGroupSeries.create(values, label_ids, group_size, group_width=group_width, shift=shift, horizontal=horizontal, stacked=stacked, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, source=source, show=show, **kwargs)
 
     def add_bar_series[T](self, x: Array[float, Any], y: Array[float, Any], /, *, weight: float = 1, horizontal: bool = False, label: str | None = None, use_internal_label: bool = True, user_data: T = None, tag: Item = 0, parent: int | str = 0, before: Item = 0, source: Item = 0, show: bool = True, **kwargs) -> mvBarSeries[T]:
-        """Create a new bar series item to this plot axis
+        """Create a new bar series item to this plot axis.
 
         :raises `SystemError`: DearPyGui-related error.
         """
@@ -755,7 +755,7 @@ class mvPlotAxis:
         return mvBarSeries.create(x, y, weight=weight, horizontal=horizontal, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, source=source, show=show, **kwargs)
 
     def add_candle_series[T](self, dates: Array[float, Any], opens: Array[float, Any], closes: Array[float, Any], lows: Array[float, Any], highs: Array[float, Any], /, *, bull_color: Array[int, Literal[3, 4]] = (0, 255, 113, 255), bear_color: Array[int, Literal[3, 4]] = (218, 13, 79, 255), weight: float = 0.25, tooltip: bool = True, time_unit: int = 5, label: str | None = None, use_internal_label: bool = True, user_data: T = None, tag: Item = 0, before: Item = 0, source: Item = 0, show: bool = True, **kwargs) -> mvCandleSeries[T]:
-        """Create a new candle series item to this plot axis
+        """Create a new candle series item to this plot axis.
 
         :raises `SystemError`: DearPyGui-related error.
         """
@@ -763,7 +763,7 @@ class mvPlotAxis:
         return mvCandleSeries.create(dates, opens, closes, lows, highs, bull_color=bull_color, bear_color=bear_color, weight=weight, tooltip=tooltip, time_unit=time_unit, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, source=source, show=show, **kwargs)
 
     def add_custom_series[T](self, x: Array[float, Any], y: Array[float, Any], channel_count: int, /, *, y1: Array[float, Any] = (), y2: Array[float, Any] = (), y3: Array[float, Any] = (), tooltip: bool = True, no_fit: bool = False, label: str | None = None, use_internal_label: bool = True, user_data: T = None, tag: Item = 0, before: Item = 0, source: Item = 0, callback: Callable | None = None, show: bool = True, **kwargs) -> mvCustomSeries[T]:  # ty: ignore
-        """Create a new custom series item to this plot axis
+        """Create a new custom series item to this plot axis.
 
         :raises `SystemError`: DearPyGui-related error.
         """
@@ -771,7 +771,7 @@ class mvPlotAxis:
         return mvCustomSeries.create(x, y, channel_count, y1=y1, y2=y2, y3=y3, tooltip=tooltip, no_fit=no_fit, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, source=source, callback=callback, show=show, **kwargs)
 
     def add_digital_series[T](self, x: Array[float, Any], y: Array[float, Any], /, *, label: str | None = None, use_internal_label: bool = True, user_data: T = None, tag: Item = 0, before: Item = 0, source: Item = 0, show: bool = True, **kwargs) -> mvDigitalSeries[T]:
-        """Create a new digital series item to this plot axis
+        """Create a new digital series item to this plot axis.
 
         :raises `SystemError`: DearPyGui-related error.
         """
@@ -779,7 +779,7 @@ class mvPlotAxis:
         return mvDigitalSeries.create(x, y, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, source=source, show=show, **kwargs)
 
     def add_error_series[T](self, x: Array[float, Any], y: Array[float, Any], negative: Array[float, Any], positive: Array[float, Any], /, *, contribute_to_bounds: bool = True, horizontal: bool = False, label: str | None = None, use_internal_label: bool = True, user_data: T = None, tag: Item = 0, before: Item = 0, source: Item = 0, show: bool = True, **kwargs) -> mvErrorSeries[T]:
-        """Create a new error series item to this plot axis
+        """Create a new error series item to this plot axis.
 
         :raises `SystemError`: DearPyGui-related error.
         """
@@ -787,7 +787,7 @@ class mvPlotAxis:
         return mvErrorSeries.create(x, y, negative, positive, contribute_to_bounds=contribute_to_bounds, horizontal=horizontal, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, source=source, show=show, **kwargs)
 
     def add_heat_series[T](self, x: Array[float, Any], rows: int, cols: int, /, *, scale_min: float = 0, scale_max: float = 1, bounds_min: Array[float, Any] = (0, 0), bounds_max: Array[float, Any] = (1, 1), format: str = '%0.1f', contribute_to_bounds: bool = True, col_major: bool = False, label: str | None = None, use_internal_label: bool = True, user_data: T = None, tag: Item = 0, before: Item = 0, source: Item = 0, show: bool = True, **kwargs) -> mvHeatSeries[T]:
-        """Create a new heat series item to this plot axis
+        """Create a new heat series item to this plot axis.
 
         :raises `SystemError`: DearPyGui-related error.
         """
@@ -795,7 +795,7 @@ class mvPlotAxis:
         return mvHeatSeries.create(x, rows, cols, scale_min=scale_min, scale_max=scale_max, bounds_min=bounds_min, bounds_max=bounds_max, format=format, contribute_to_bounds=contribute_to_bounds, col_major=col_major, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, source=source, show=show, **kwargs)
 
     def add_histogram_series[T](self, x: Array[float, Any], /, *, bins: int = -1, bar_scale: float = 1, min_range: float = 0, max_range: float = 0, cumulative: bool = False, density: bool = False, outliers: bool = True, horizontal: bool = False, contribute_to_bounds: bool = True, label: str | None = None, use_internal_label: bool = True, user_data: T = None, tag: Item = 0, before: Item = 0, source: Item = 0, show: bool = True, **kwargs) -> mvHistogramSeries[T]:
-        """Create a new histogram series item to this plot axis
+        """Create a new histogram series item to this plot axis.
 
         :raises `SystemError`: DearPyGui-related error.
         """
@@ -803,7 +803,7 @@ class mvPlotAxis:
         return mvHistogramSeries.create(x, bins=bins, bar_scale=bar_scale, min_range=min_range, max_range=max_range, cumulative=cumulative, density=density, outliers=outliers, horizontal=horizontal, contribute_to_bounds=contribute_to_bounds, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, source=source, show=show, **kwargs)
 
     def add_image_series[T](self, texture_tag: Item, bounds_min: Array[float, Any], bounds_max: Array[float, Any], /, *, uv_min: Array[float, Any] = (0, 0), uv_max: Array[float, Any] = (1, 1), tint_color: Array[int, Literal[3, 4]] = (255, 255, 255, 255), label: str | None = None, use_internal_label: bool = True, user_data: T = None, tag: Item = 0, before: Item = 0, source: Item = 0, show: bool = True, **kwargs) -> mvImageSeries[T]:
-        """Create a new image series item to this plot axis
+        """Create a new image series item to this plot axis.
 
         :raises `SystemError`: DearPyGui-related error.
         """
@@ -811,15 +811,27 @@ class mvPlotAxis:
         return mvImageSeries.create(texture_tag, bounds_min, bounds_max, uv_min=uv_min, uv_max=uv_max, tint_color=tint_color, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, source=source, show=show, **kwargs)
 
     def add_infline_series[T](self, x: Array[float, Any], /, *, horizontal: bool = False, label: str | None = None, use_internal_label: bool = True, user_data: T = None, tag: Item = 0, before: Item = 0, source: Item = 0, show: bool = True, **kwargs) -> mvInfLineSeries[T]:
-        """Create a new infline series item to this plot axis
+        """Create a new infline series item to this plot axis.
 
         :raises `SystemError`: DearPyGui-related error.
         """
         kwargs["parent"] = self
         return mvInfLineSeries.create(x, horizontal=horizontal, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, source=source, show=show, **kwargs)
 
+    def add_text_point[T](self, x: float, y: float, /, *, offset: Array[float, Any] = (0, 0), vertical: bool = False, label: str | None = None, use_internal_label: bool = True, user_data: T = None, tag: Item = 0, before: Item = 0, source: Item = 0, show: bool = True, **kwargs) -> mvLabelSeries[T]:
+        """Create a new label series item to this plot axis.
+
+        **NOTE**: The `add_text_point()` and `add_label_series()` methods are functionally identical.
+
+        :raises `SystemError`: DearPyGui-related error.
+        """
+        kwargs["parent"] = self
+        return mvLabelSeries.create(x, y, offset=offset, vertical=vertical, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, source=source, show=show, **kwargs)
+
     def add_label_series[T](self, x: float, y: float, /, *, offset: Array[float, Any] = (0, 0), vertical: bool = False, label: str | None = None, use_internal_label: bool = True, user_data: T = None, tag: Item = 0, before: Item = 0, source: Item = 0, show: bool = True, **kwargs) -> mvLabelSeries[T]:
-        """Create a new label series item to this plot axis
+        """Create a new label series item to this plot axis.
+
+        **NOTE**: The `add_text_point()` and `add_label_series()` methods are functionally identical.
 
         :raises `SystemError`: DearPyGui-related error.
         """
@@ -827,7 +839,7 @@ class mvPlotAxis:
         return mvLabelSeries.create(x, y, offset=offset, vertical=vertical, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, source=source, show=show, **kwargs)
 
     def add_line_series[T](self, x: Array[float, Any], y: Array[float, Any], /, *, segments: bool = False, loop: bool = False, skip_nan: bool = False, no_clip: bool = False, shaded: bool = False, label: str | None = None, use_internal_label: bool = True, user_data: T = None, tag: Item = 0, before: Item = 0, source: Item = 0, show: bool = True, **kwargs) -> mvLineSeries[T]:
-        """Create a new line series item to this plot axis
+        """Create a new line series item to this plot axis.
 
         :raises `SystemError`: DearPyGui-related error.
         """
@@ -835,7 +847,7 @@ class mvPlotAxis:
         return mvLineSeries.create(x, y, segments=segments, loop=loop, skip_nan=skip_nan, no_clip=no_clip, shaded=shaded, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, source=source, show=show, **kwargs)
 
     def add_pie_series[T](self, x: float, y: float, radius: float, values: Array[float, Any], labels: Array[str, Any], /, *, format: str = '%0.2f', angle: float = 90, normalize: bool = False, ignore_hidden: bool = False, label: str | None = None, use_internal_label: bool = True, user_data: T = None, tag: Item = 0, before: Item = 0, source: Item = 0, show: bool = True, **kwargs) -> mvPieSeries[T]:
-        """Create a new pie series item to this plot axis
+        """Create a new pie series item to this plot axis.
 
         :raises `SystemError`: DearPyGui-related error.
         """
@@ -843,7 +855,7 @@ class mvPlotAxis:
         return mvPieSeries.create(x, y, radius, values, labels, format=format, angle=angle, normalize=normalize, ignore_hidden=ignore_hidden, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, source=source, show=show, **kwargs)
 
     def add_scatter_series[T](self, x: Array[float, Any], y: Array[float, Any], /, *, no_clip: bool = False, label: str | None = None, use_internal_label: bool = True, user_data: T = None, tag: Item = 0, before: Item = 0, source: Item = 0, show: bool = True, **kwargs) -> mvScatterSeries[T]:
-        """Create a new scatter series item to this plot axis
+        """Create a new scatter series item to this plot axis.
 
         :raises `SystemError`: DearPyGui-related error.
         """
@@ -851,7 +863,7 @@ class mvPlotAxis:
         return mvScatterSeries.create(x, y, no_clip=no_clip, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, source=source, show=show, **kwargs)
 
     def add_shade_series[T](self, x: Array[float, Any], y: Array[float, Any], /, *, y2: Array[float, Any] = (), label: str | None = None, use_internal_label: bool = True, user_data: T = None, tag: Item = 0, before: Item = 0, source: Item = 0, show: bool = True, **kwargs) -> mvShadeSeries[T]:
-        """Create a new shade series item to this plot axis
+        """Create a new shade series item to this plot axis.
 
         :raises `SystemError`: DearPyGui-related error.
         """
@@ -859,7 +871,7 @@ class mvPlotAxis:
         return mvShadeSeries.create(x, y, y2=y2, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, source=source, show=show, **kwargs)
 
     def add_stair_series[T](self, x: Array[float, Any], y: Array[float, Any], /, *, pre_step: bool = False, shaded: bool = False, label: str | None = None, use_internal_label: bool = True, user_data: T = None, tag: Item = 0, before: Item = 0, source: Item = 0, show: bool = True, **kwargs) -> mvStairSeries[T]:
-        """Create a new stair series item to this plot axis
+        """Create a new stair series item to this plot axis.
 
         :raises `SystemError`: DearPyGui-related error.
         """
@@ -867,7 +879,7 @@ class mvPlotAxis:
         return mvStairSeries.create(x, y, pre_step=pre_step, shaded=shaded, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, source=source, show=show, **kwargs)
 
     def add_stem_series[T](self, x: Array[float, Any], y: Array[float, Any], /, *, horizontal: bool = False, label: str | None = None, use_internal_label: bool = True, user_data: T = None, tag: Item = 0, indent: int = -1, parent: int | str = 0, before: Item = 0, source: Item = 0, show: bool = True, **kwargs) -> mvStemSeries[T]:
-        """Create a new stem series item to this plot axis
+        """Create a new stem series item to this plot axis.
 
         :raises `SystemError`: DearPyGui-related error.
         """

@@ -5726,6 +5726,10 @@ class mvPlotAxis(ContainerItem, ChildItem, command="add_plot_axis", slot=1):
         kwargs['parent'] = self
         return mvInfLineSeries.create(x, horizontal=horizontal, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, source=source, show=show, **kwargs)
 
+    def add_text_point[T](self, x, y, /, *, offset=(0, 0), vertical=False, label=None, use_internal_label=True, user_data=None, tag=0, before=0, source=0, show=True, **kwargs):
+        kwargs['parent'] = self
+        return mvLabelSeries.create(x, y, offset=offset, vertical=vertical, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, source=source, show=show, **kwargs)
+
     def add_label_series[T](self, x, y, /, *, offset=(0, 0), vertical=False, label=None, use_internal_label=True, user_data=None, tag=0, before=0, source=0, show=True, **kwargs):
         kwargs['parent'] = self
         return mvLabelSeries.create(x, y, offset=offset, vertical=vertical, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, source=source, show=show, **kwargs)
