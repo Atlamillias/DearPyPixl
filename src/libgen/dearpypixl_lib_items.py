@@ -70,6 +70,22 @@ if TYPE_CHECKING:
         mvFontChars,
         mvFontRange,
         mvFontRangeHint,
+        mvDrawArrow,
+        mvDrawBezierCubic,
+        mvDrawBezierQuadratic,
+        mvDrawCircle,
+        mvDrawEllipse,
+        mvDrawImage,
+        mvDrawImageQuad,
+        mvDrawLine,
+        mvDrawNode,
+        mvDrawPolygon,
+        mvDrawPolyline,
+        mvDrawQuad,
+        mvDrawRect,
+        mvDrawText,
+        mvDrawTriangle,
+        mvDrawLayer,
     )
     from dearpypixl.lib.constants import (
         mvKey, mvMouseButton,
@@ -719,7 +735,160 @@ class mvRawTexture:
 
 # [ drawing system ]
 
+class mvViewportDrawlist:
+    def add_draw_layer[T](self, /, *, perspective_divide: bool = False, depth_clipping: bool = False, cull_mode: int = 0, label: str | None = None, use_internal_label: bool = True, user_data: T = None, tag: Item = 0, before: Item = 0, show: bool = True, **kwargs) -> mvDrawLayer[T]:  # ty: ignore
+        """Create a new add_draw_layer item as a child of this canvas.
+
+        :raises `SystemError`: DearPyGui-related error."""
+        kwargs["parent"] = self
+        return mvDrawLayer.create(perspective_divide=perspective_divide, depth_clipping=depth_clipping, cull_mode=cull_mode, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, show=show, **kwargs)  # ty: ignore
+
+    def add_draw_node[T](self, /, *, label: str | None = None, use_internal_label: bool = True, user_data: T = None, tag: Item = 0, before: Item = 0, show: bool = True, **kwargs) -> mvDrawNode[T]:  # ty:ignore[invalid-type-arguments]
+        """Create a new drawing node item as a child of this container.
+
+        :raises `SystemError`: DearPyGui-related error."""
+        kwargs["parent"] = self
+        return mvDrawNode.create(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, show=show, **kwargs)  # ty:ignore[unresolved-attribute]
+
+    def draw_arrow[T](self, p1: Array[float, Literal[2]], p2: Array[float, Literal[2]], /, *, color: Array[int, Literal[3, 4]] = (255, 255, 255, 255), thickness: float = 1.0, size: int = 4, label: str | None = None, use_internal_label: bool = True, user_data: T = None, tag: Item = 0, before: Item = 0, show: bool = True, **kwargs) -> mvDrawArrow[T]:
+        """Create a new arrow item as a child of this container.
+
+        :raises `SystemError`: DearPyGui-related error."""
+        kwargs["parent"] = self
+        return mvDrawArrow.create(p1, p2, color=color, thickness=thickness, size=size, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, show=show, **kwargs)
+
+    def draw_bezier_cubic[T](self, p1: Array[float, Literal[2]], p2: Array[float, Literal[2]], p3: Array[float, Literal[2]], p4: Array[float, Literal[2]], /, *, color: Array[int, Literal[3, 4]] = (255, 255, 255, 255), thickness: float = 1.0, segments: int = 0, label: str | None = None, use_internal_label: bool = True, user_data: T = None, tag: Item = 0, before: Item = 0, show: bool = True, **kwargs) -> mvDrawBezierCubic[T]:
+        """Create a new bezier cubic item as a child of this container.
+
+        :raises `SystemError`: DearPyGui-related error."""
+        kwargs["parent"] = self
+        return mvDrawBezierCubic.create(p1, p2, p3, p4, color=color, thickness=thickness, segments=segments, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, show=show, **kwargs)
+
+    def draw_bezier_quadratic[T](self, p1: Array[float, Literal[2]], p2: Array[float, Literal[2]], p3: Array[float, Literal[2]], /, *, color: Array[int, Literal[3, 4]] = (255, 255, 255, 255), thickness: float = 1.0, segments: int = 0, label: str | None = None, use_internal_label: bool = True, user_data: T = None, tag: Item = 0, before: Item = 0, show: bool = True, **kwargs) -> mvDrawBezierQuadratic[T]:
+        """Create a new bezier quadratic item as a child of this container.
+
+        :raises `SystemError`: DearPyGui-related error."""
+        kwargs["parent"] = self
+        return mvDrawBezierQuadratic.create(p1, p2, p3, color=color, thickness=thickness, segments=segments, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, show=show, **kwargs)
+
+    def draw_circle[T](self, center: Array[float, Literal[2]], radius: float, /, *, color: Array[int, Literal[3, 4]] = (255, 255, 255, 255), fill: Array[int, Literal[3, 4]] = (0, 0, 0, -255), thickness: float = 1.0, segments: int = 0, label: str | None = None, use_internal_label: bool = True, user_data: T = None, tag: Item = 0, before: Item = 0, show: bool = True, **kwargs) -> mvDrawCircle[T]:
+        """Create a new circle item as a child of this container.
+
+        :raises `SystemError`: DearPyGui-related error."""
+        kwargs["parent"] = self
+        return mvDrawCircle.create(center, radius, color=color, fill=fill, thickness=thickness, segments=segments, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, show=show, **kwargs)
+
+    def draw_ellipse[T](self, pmin: Array[float, Literal[2]], pmax: Array[float, Literal[2]], /, *, color: Array[int, Literal[3, 4]] = (255, 255, 255, 255), fill: Array[int, Literal[3, 4]] = (0, 0, 0, -255), thickness: float = 1.0, segments: int = 32, label: str | None = None, use_internal_label: bool = True, user_data: T = None, tag: Item = 0, before: Item = 0, show: bool = True, **kwargs) -> mvDrawEllipse[T]:
+        """Create a new ellipse item as a child of this container.
+
+        :raises `SystemError`: DearPyGui-related error."""
+        kwargs["parent"] = self
+        return mvDrawEllipse.create(pmin, pmax, color=color, fill=fill, thickness=thickness, segments=segments, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, show=show, **kwargs)
+
+    def draw_image[T](self, texture_tag: Item, pmin: Array[float, Literal[2]], pmax: Array[float, Literal[2]], /, *, uv_min: List[float] | Tuple[float, ...] = (0.0, 0.0), uv_max: List[float] | Tuple[float, ...] = (1.0, 1.0), color: Array[int, Literal[3, 4]] = (255, 255, 255, 255), label: str | None = None, use_internal_label: bool = True, user_data: T = None, tag: Item = 0, before: Item = 0, show: bool = True, **kwargs) -> mvDrawImage[T]:
+        """Create a new image item as a child of this container.
+
+        :raises `SystemError`: DearPyGui-related error."""
+        kwargs["parent"] = self
+        return mvDrawImage.create(texture_tag, pmin, pmax, uv_min=uv_min, uv_max=uv_max, color=color, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, show=show, **kwargs)
+
+    def draw_image_quad[T](self, texture_tag: Item, p1: Array[float, Literal[2]], p2: Array[float, Literal[2]], p3: Array[float, Literal[2]], p4: Array[float, Literal[2]], /, *, uv1: List[float] | Tuple[float, ...] = (0.0, 0.0), uv2: List[float] | Tuple[float, ...] = (1.0, 0.0), uv3: List[float] | Tuple[float, ...] = (1.0, 1.0), uv4: List[float] | Tuple[float, ...] = (0.0, 1.0), color: Array[int, Literal[3, 4]] = (255, 255, 255, 255), label: str | None = None, use_internal_label: bool = True, user_data: T = None, tag: Item = 0, before: Item = 0, show: bool = True, **kwargs) -> mvDrawImageQuad[T]:
+        """Create a new image quad item as a child of this container.
+
+        :raises `SystemError`: DearPyGui-related error."""
+        kwargs["parent"] = self
+        return mvDrawImageQuad.create(texture_tag, p1, p2, p3, p4, uv1=uv1, uv2=uv2, uv3=uv3, uv4=uv4, color=color, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, show=show, **kwargs)
+
+    def draw_line[T](self, p1: Array[float, Literal[2]], p2: Array[float, Literal[2]], /, *, color: Array[int, Literal[3, 4]] = (255, 255, 255, 255), thickness: float = 1.0, label: str | None = None, use_internal_label: bool = True, user_data: T = None, tag: Item = 0, before: Item = 0, show: bool = True, **kwargs) -> mvDrawLine[T]:
+        """Create a new line item as a child of this container.
+
+        :raises `SystemError`: DearPyGui-related error."""
+        kwargs["parent"] = self
+        return mvDrawLine.create(p1, p2, color=color, thickness=thickness, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, show=show, **kwargs)
+
+    def draw_polygon[T](self, points: Array[Array[float, Literal[2]], Any], /, *, color: Array[int, Literal[3, 4]] = (255, 255, 255, 255), fill: Array[int, Literal[3, 4]] = (0, 0, 0, -255), thickness: float = 1.0, label: str | None = None, use_internal_label: bool = True, user_data: T = None, tag: Item = 0, before: Item = 0, show: bool = True, **kwargs) -> mvDrawPolygon[T]:
+        """Create a new polygon item as a child of this container.
+
+        :raises `SystemError`: DearPyGui-related error."""
+        kwargs["parent"] = self
+        return mvDrawPolygon.create(points, color=color, fill=fill, thickness=thickness, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, show=show, **kwargs)
+
+    def draw_polyline[T](self, points: Array[Array[float, Literal[2]], Any], /, *, closed: bool = False, color: Array[int, Literal[3, 4]] = (255, 255, 255, 255), thickness: float = 1.0, label: str | None = None, use_internal_label: bool = True, user_data: T = None, tag: Item = 0, before: Item = 0, show: bool = True, **kwargs) -> mvDrawPolyline[T]:
+        """Create a new polyline item as a child of this container.
+
+        :raises `SystemError`: DearPyGui-related error."""
+        kwargs["parent"] = self
+        return mvDrawPolyline.create(points, closed=closed, color=color, thickness=thickness, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, show=show, **kwargs)
+
+    def draw_quad[T](self, p1: Array[float, Literal[2]], p2: Array[float, Literal[2]], p3: Array[float, Literal[2]], p4: Array[float, Literal[2]], /, *, color: Array[int, Literal[3, 4]] = (255, 255, 255, 255), fill: Array[int, Literal[3, 4]] = (0, 0, 0, -255), thickness: float = 1.0, label: str | None = None, use_internal_label: bool = True, user_data: T = None, tag: Item = 0, before: Item = 0, show: bool = True, **kwargs) -> mvDrawQuad[T]:
+        """Create a new quad item as a child of this container.
+
+        :raises `SystemError`: DearPyGui-related error."""
+        kwargs["parent"] = self
+        return mvDrawQuad.create(p1, p2, p3, p4, color=color, fill=fill, thickness=thickness, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, show=show, **kwargs)
+
+    def draw_rectangle[T](self, pmin: Array[float, Literal[2]], pmax: Array[float, Literal[2]], /, *, color: Array[int, Literal[3, 4]] = (255, 255, 255, 255), fill: Array[int, Literal[3, 4]] = (0, 0, 0, -255), multicolor: bool = False, rounding: float = 0.0, thickness: float = 1.0, corner_colors: Any = None, label: str | None = None, use_internal_label: bool = True, user_data: T = None, tag: Item = 0, before: Item = 0, show: bool = True, **kwargs) -> mvDrawRect[T]:
+        """Create a new rectangle item as a child of this container.
+
+        :raises `SystemError`: DearPyGui-related error."""
+        kwargs["parent"] = self
+        return mvDrawRect.create(pmin, pmax, color=color, fill=fill, multicolor=multicolor, rounding=rounding, thickness=thickness, corner_colors=corner_colors, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, show=show, **kwargs)
+
+    def draw_text[T](self, pos: Array[float, Literal[2]], text: str, /, *, color: Array[int, Literal[3, 4]] = (255, 255, 255, 255), size: float = 10.0, label: str | None = None, use_internal_label: bool = True, user_data: T = None, tag: Item = 0, before: Item = 0, show: bool = True, **kwargs) -> mvDrawText[T]:
+        """Create a new text item as a child of this container.
+
+        :raises `SystemError`: DearPyGui-related error."""
+        kwargs["parent"] = self
+        return mvDrawText.create(pos, text, color=color, size=size, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, show=show, **kwargs)
+
+    def draw_triangle[T](self, p1: Array[float, Literal[2]], p2: Array[float, Literal[2]], p3: Array[float, Literal[2]], /, *, color: Array[int, Literal[3, 4]] = (255, 255, 255, 255), fill: Array[int, Literal[3, 4]] = (0, 0, 0, -255), thickness: float = 1.0, label: str | None = None, use_internal_label: bool = True, user_data: T = None, tag: Item = 0, before: Item = 0, show: bool = True, **kwargs) -> mvDrawTriangle[T]:
+        """Create a new triangle item as a child of this container.
+
+        :raises `SystemError`: DearPyGui-related error."""
+        kwargs["parent"] = self
+        return mvDrawTriangle.create(p1, p2, p3, color=color, fill=fill, thickness=thickness, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, show=show, **kwargs)
+
+
+class mvDrawlist:
+    __item_index_slot__ = 2
+
+    add_draw_layer = mvViewportDrawlist.add_draw_layer
+    add_draw_node = mvViewportDrawlist.add_draw_node
+    draw_arrow = mvViewportDrawlist.draw_arrow
+    draw_bezier_cubic = mvViewportDrawlist.draw_bezier_cubic
+    draw_bezier_quadratic = mvViewportDrawlist.draw_bezier_quadratic
+    draw_circle = mvViewportDrawlist.draw_circle
+    draw_ellipse = mvViewportDrawlist.draw_ellipse
+    draw_image = mvViewportDrawlist.draw_image
+    draw_image_quad = mvViewportDrawlist.draw_image_quad
+    draw_line = mvViewportDrawlist.draw_line
+    draw_polygon = mvViewportDrawlist.draw_polygon
+    draw_polyline = mvViewportDrawlist.draw_polyline
+    draw_quad = mvViewportDrawlist.draw_quad
+    draw_rectangle = mvViewportDrawlist.draw_rectangle
+    draw_text = mvViewportDrawlist.draw_text
+    draw_triangle = mvViewportDrawlist.draw_triangle
+
+
 class mvDrawLayer:
+    __item_index_slot__ = 2
+
+    add_draw_node = mvViewportDrawlist.add_draw_node
+    draw_arrow = mvViewportDrawlist.draw_arrow
+    draw_bezier_cubic = mvViewportDrawlist.draw_bezier_cubic
+    draw_bezier_quadratic = mvViewportDrawlist.draw_bezier_quadratic
+    draw_circle = mvViewportDrawlist.draw_circle
+    draw_ellipse = mvViewportDrawlist.draw_ellipse
+    draw_image = mvViewportDrawlist.draw_image
+    draw_image_quad = mvViewportDrawlist.draw_image_quad
+    draw_line = mvViewportDrawlist.draw_line
+    draw_polygon = mvViewportDrawlist.draw_polygon
+    draw_polyline = mvViewportDrawlist.draw_polyline
+    draw_quad = mvViewportDrawlist.draw_quad
+    draw_rectangle = mvViewportDrawlist.draw_rectangle
+    draw_text = mvViewportDrawlist.draw_text
+    draw_triangle = mvViewportDrawlist.draw_triangle
+
     def set_clip_space(self, top_left_x: float, top_left_y: float, width: float, height: float, min_depth: float, max_depth: float, /) -> None:
         """Set the point clipping area for the drawing layer. Only enabled when
         the layer's `depth_clipping` setting is `True`.
@@ -748,6 +917,24 @@ class mvDrawLayer:
 
 
 class mvDrawNode:
+    __item_index_slot__ = 2
+
+    add_draw_node = mvViewportDrawlist.add_draw_node
+    draw_arrow = mvViewportDrawlist.draw_arrow
+    draw_bezier_cubic = mvViewportDrawlist.draw_bezier_cubic
+    draw_bezier_quadratic = mvViewportDrawlist.draw_bezier_quadratic
+    draw_circle = mvViewportDrawlist.draw_circle
+    draw_ellipse = mvViewportDrawlist.draw_ellipse
+    draw_image = mvViewportDrawlist.draw_image
+    draw_image_quad = mvViewportDrawlist.draw_image_quad
+    draw_line = mvViewportDrawlist.draw_line
+    draw_polygon = mvViewportDrawlist.draw_polygon
+    draw_polyline = mvViewportDrawlist.draw_polyline
+    draw_quad = mvViewportDrawlist.draw_quad
+    draw_rectangle = mvViewportDrawlist.draw_rectangle
+    draw_text = mvViewportDrawlist.draw_text
+    draw_triangle = mvViewportDrawlist.draw_triangle
+
     def apply_transform(self, transform: Array[float, Literal[4]], /) -> None:
         """Apply a transformation to the drawing node. The transform
         is used to used to multiply the points of the node's children.

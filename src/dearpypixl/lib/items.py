@@ -3849,6 +3849,8 @@ class mvDrawLayer(ContainerItem, ChildItem, command="add_draw_layer", slot=2):
     cull_mode = _property__cull_mode
     show = _property__show
 
+    __item_index_slot__ = 2
+
     def set_clip_space(self, top_left_x, top_left_y, width, height, min_depth, max_depth, /):
         _dearpygui.set_clip_space(self, top_left_x, top_left_y, width, height, min_depth, max_depth)
 
@@ -3879,6 +3881,8 @@ class mvDrawNode(ContainerItem, ChildItem, command="add_draw_node", slot=2):
         return cls(tag=__func(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, before=before, show=show))  # ty: ignore[invalid-argument-type]
 
     show = _property__show
+
+    __item_index_slot__ = 2
 
     def apply_transform(self, transform, /):
         _dearpygui.apply_transform(self, transform)
@@ -4041,6 +4045,8 @@ class mvDrawlist(ContainerItem, ChildItem, command="add_drawlist", slot=1):
     resized = _property__resized
     rect_min = _property__rect_min
     rect_max = _property__rect_max
+
+    __item_index_slot__ = 2
 
 drawlist = add_drawlist = mvDrawlist.create
 
@@ -4374,6 +4380,8 @@ class mvHandlerRegistry(ContainerItem, command="add_handler_registry", slot=1):
         return cls(tag=__func(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, show=show))  # ty: ignore[invalid-argument-type]
 
     show = _property__show
+
+    __item_index_type__ = _HandlerItem
 
     def add_key_down_handler[T](self, key=_dearpygui.mvKey_None, *, label=None, use_internal_label=True, user_data=None, tag=0, callback=None, show=True, **kwargs):
         kwargs['parent'] = self
@@ -4987,6 +4995,8 @@ class mvItemHandlerRegistry(ContainerItem, command="add_item_handler_registry", 
         return cls(tag=__func(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, show=show))  # ty: ignore[invalid-argument-type]
 
     show = _property__show
+
+    __item_index_type__ = _HandlerItem
 
     def add_item_activated_handler[T](self, *, label=None, use_internal_label=True, user_data=None, tag=0, callback=None, show=True, **kwargs):
         kwargs['parent'] = self
@@ -6942,6 +6952,8 @@ class mvThemeComponent(ContainerItem, ChildItem, command="add_theme_component", 
     
     enabled_state = _property__enabled_state
 
+    __item_index_type__ = _ElementItem
+
     def add_theme_color(self, target, obj=(0, 0, 0, 255), g=-1, b=-1, a=255, /, **kwargs):
         kwargs['parent'] = self
         return mvThemeColor.create(target, obj if g == -1 else (obj, g, b, a), **kwargs)
@@ -7148,6 +7160,70 @@ class mvViewportDrawlist(ContainerItem, command="add_viewport_drawlist", slot=1)
     filter_key = _property__filter_key
     show = _property__show
 
+    def add_draw_layer[T](self, /, *, perspective_divide=False, depth_clipping=False, cull_mode=0, label=None, use_internal_label=True, user_data=None, tag=0, before=0, show=True, **kwargs):
+        kwargs['parent'] = self
+        return mvDrawLayer.create(perspective_divide=perspective_divide, depth_clipping=depth_clipping, cull_mode=cull_mode, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, show=show, **kwargs)
+
+    def add_draw_node[T](self, /, *, label=None, use_internal_label=True, user_data=None, tag=0, before=0, show=True, **kwargs):
+        kwargs['parent'] = self
+        return mvDrawNode.create(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, show=show, **kwargs)
+
+    def draw_arrow[T](self, p1, p2, /, *, color=(255, 255, 255, 255), thickness=1.0, size=4, label=None, use_internal_label=True, user_data=None, tag=0, before=0, show=True, **kwargs):
+        kwargs['parent'] = self
+        return mvDrawArrow.create(p1, p2, color=color, thickness=thickness, size=size, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, show=show, **kwargs)
+
+    def draw_bezier_cubic[T](self, p1, p2, p3, p4, /, *, color=(255, 255, 255, 255), thickness=1.0, segments=0, label=None, use_internal_label=True, user_data=None, tag=0, before=0, show=True, **kwargs):
+        kwargs['parent'] = self
+        return mvDrawBezierCubic.create(p1, p2, p3, p4, color=color, thickness=thickness, segments=segments, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, show=show, **kwargs)
+
+    def draw_bezier_quadratic[T](self, p1, p2, p3, /, *, color=(255, 255, 255, 255), thickness=1.0, segments=0, label=None, use_internal_label=True, user_data=None, tag=0, before=0, show=True, **kwargs):
+        kwargs['parent'] = self
+        return mvDrawBezierQuadratic.create(p1, p2, p3, color=color, thickness=thickness, segments=segments, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, show=show, **kwargs)
+
+    def draw_circle[T](self, center, radius, /, *, color=(255, 255, 255, 255), fill=(0, 0, 0, -255), thickness=1.0, segments=0, label=None, use_internal_label=True, user_data=None, tag=0, before=0, show=True, **kwargs):
+        kwargs['parent'] = self
+        return mvDrawCircle.create(center, radius, color=color, fill=fill, thickness=thickness, segments=segments, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, show=show, **kwargs)
+
+    def draw_ellipse[T](self, pmin, pmax, /, *, color=(255, 255, 255, 255), fill=(0, 0, 0, -255), thickness=1.0, segments=32, label=None, use_internal_label=True, user_data=None, tag=0, before=0, show=True, **kwargs):
+        kwargs['parent'] = self
+        return mvDrawEllipse.create(pmin, pmax, color=color, fill=fill, thickness=thickness, segments=segments, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, show=show, **kwargs)
+
+    def draw_image[T](self, texture_tag, pmin, pmax, /, *, uv_min=(0.0, 0.0), uv_max=(1.0, 1.0), color=(255, 255, 255, 255), label=None, use_internal_label=True, user_data=None, tag=0, before=0, show=True, **kwargs):
+        kwargs['parent'] = self
+        return mvDrawImage.create(texture_tag, pmin, pmax, uv_min=uv_min, uv_max=uv_max, color=color, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, show=show, **kwargs)
+
+    def draw_image_quad[T](self, texture_tag, p1, p2, p3, p4, /, *, uv1=(0.0, 0.0), uv2=(1.0, 0.0), uv3=(1.0, 1.0), uv4=(0.0, 1.0), color=(255, 255, 255, 255), label=None, use_internal_label=True, user_data=None, tag=0, before=0, show=True, **kwargs):
+        kwargs['parent'] = self
+        return mvDrawImageQuad.create(texture_tag, p1, p2, p3, p4, uv1=uv1, uv2=uv2, uv3=uv3, uv4=uv4, color=color, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, show=show, **kwargs)
+
+    def draw_line[T](self, p1, p2, /, *, color=(255, 255, 255, 255), thickness=1.0, label=None, use_internal_label=True, user_data=None, tag=0, before=0, show=True, **kwargs):
+        kwargs['parent'] = self
+        return mvDrawLine.create(p1, p2, color=color, thickness=thickness, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, show=show, **kwargs)
+
+    def draw_polygon[T](self, points, /, *, color=(255, 255, 255, 255), fill=(0, 0, 0, -255), thickness=1.0, label=None, use_internal_label=True, user_data=None, tag=0, before=0, show=True, **kwargs):
+        kwargs['parent'] = self
+        return mvDrawPolygon.create(points, color=color, fill=fill, thickness=thickness, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, show=show, **kwargs)
+
+    def draw_polyline[T](self, points, /, *, closed=False, color=(255, 255, 255, 255), thickness=1.0, label=None, use_internal_label=True, user_data=None, tag=0, before=0, show=True, **kwargs):
+        kwargs['parent'] = self
+        return mvDrawPolyline.create(points, closed=closed, color=color, thickness=thickness, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, show=show, **kwargs)
+
+    def draw_quad[T](self, p1, p2, p3, p4, /, *, color=(255, 255, 255, 255), fill=(0, 0, 0, -255), thickness=1.0, label=None, use_internal_label=True, user_data=None, tag=0, before=0, show=True, **kwargs):
+        kwargs['parent'] = self
+        return mvDrawQuad.create(p1, p2, p3, p4, color=color, fill=fill, thickness=thickness, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, show=show, **kwargs)
+
+    def draw_rectangle[T](self, pmin, pmax, /, *, color=(255, 255, 255, 255), fill=(0, 0, 0, -255), multicolor=False, rounding=0.0, thickness=1.0, corner_colors=None, label=None, use_internal_label=True, user_data=None, tag=0, before=0, show=True, **kwargs):
+        kwargs['parent'] = self
+        return mvDrawRect.create(pmin, pmax, color=color, fill=fill, multicolor=multicolor, rounding=rounding, thickness=thickness, corner_colors=corner_colors, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, show=show, **kwargs)
+
+    def draw_text[T](self, pos, text, /, *, color=(255, 255, 255, 255), size=10.0, label=None, use_internal_label=True, user_data=None, tag=0, before=0, show=True, **kwargs):
+        kwargs['parent'] = self
+        return mvDrawText.create(pos, text, color=color, size=size, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, show=show, **kwargs)
+
+    def draw_triangle[T](self, p1, p2, p3, /, *, color=(255, 255, 255, 255), fill=(0, 0, 0, -255), thickness=1.0, label=None, use_internal_label=True, user_data=None, tag=0, before=0, show=True, **kwargs):
+        kwargs['parent'] = self
+        return mvDrawTriangle.create(p1, p2, p3, color=color, fill=fill, thickness=thickness, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, show=show, **kwargs)
+
 viewport_drawlist = add_viewport_drawlist = mvViewportDrawlist.create
 
 
@@ -7235,13 +7311,56 @@ window = add_window = mvWindowAppItem.create
 
 # late assignments
 
+mvDrawLayer.add_draw_node = mvViewportDrawlist.add_draw_node  # type: ignore
+mvDrawLayer.draw_arrow = mvViewportDrawlist.draw_arrow  # type: ignore
+mvDrawLayer.draw_bezier_cubic = mvViewportDrawlist.draw_bezier_cubic  # type: ignore
+mvDrawLayer.draw_bezier_quadratic = mvViewportDrawlist.draw_bezier_quadratic  # type: ignore
+mvDrawLayer.draw_circle = mvViewportDrawlist.draw_circle  # type: ignore
+mvDrawLayer.draw_ellipse = mvViewportDrawlist.draw_ellipse  # type: ignore
+mvDrawLayer.draw_image = mvViewportDrawlist.draw_image  # type: ignore
+mvDrawLayer.draw_image_quad = mvViewportDrawlist.draw_image_quad  # type: ignore
+mvDrawLayer.draw_line = mvViewportDrawlist.draw_line  # type: ignore
+mvDrawLayer.draw_polygon = mvViewportDrawlist.draw_polygon  # type: ignore
+mvDrawLayer.draw_polyline = mvViewportDrawlist.draw_polyline  # type: ignore
+mvDrawLayer.draw_quad = mvViewportDrawlist.draw_quad  # type: ignore
+mvDrawLayer.draw_rectangle = mvViewportDrawlist.draw_rectangle  # type: ignore
+mvDrawLayer.draw_text = mvViewportDrawlist.draw_text  # type: ignore
+mvDrawLayer.draw_triangle = mvViewportDrawlist.draw_triangle  # type: ignore
+mvDrawNode.add_draw_node = mvViewportDrawlist.add_draw_node  # type: ignore
+mvDrawNode.draw_arrow = mvViewportDrawlist.draw_arrow  # type: ignore
+mvDrawNode.draw_bezier_cubic = mvViewportDrawlist.draw_bezier_cubic  # type: ignore
+mvDrawNode.draw_bezier_quadratic = mvViewportDrawlist.draw_bezier_quadratic  # type: ignore
+mvDrawNode.draw_circle = mvViewportDrawlist.draw_circle  # type: ignore
+mvDrawNode.draw_ellipse = mvViewportDrawlist.draw_ellipse  # type: ignore
+mvDrawNode.draw_image = mvViewportDrawlist.draw_image  # type: ignore
+mvDrawNode.draw_image_quad = mvViewportDrawlist.draw_image_quad  # type: ignore
+mvDrawNode.draw_line = mvViewportDrawlist.draw_line  # type: ignore
+mvDrawNode.draw_polygon = mvViewportDrawlist.draw_polygon  # type: ignore
+mvDrawNode.draw_polyline = mvViewportDrawlist.draw_polyline  # type: ignore
+mvDrawNode.draw_quad = mvViewportDrawlist.draw_quad  # type: ignore
+mvDrawNode.draw_rectangle = mvViewportDrawlist.draw_rectangle  # type: ignore
+mvDrawNode.draw_text = mvViewportDrawlist.draw_text  # type: ignore
+mvDrawNode.draw_triangle = mvViewportDrawlist.draw_triangle  # type: ignore
+mvDrawlist.add_draw_layer = mvViewportDrawlist.add_draw_layer  # type: ignore
+mvDrawlist.add_draw_node = mvViewportDrawlist.add_draw_node  # type: ignore
+mvDrawlist.draw_arrow = mvViewportDrawlist.draw_arrow  # type: ignore
+mvDrawlist.draw_bezier_cubic = mvViewportDrawlist.draw_bezier_cubic  # type: ignore
+mvDrawlist.draw_bezier_quadratic = mvViewportDrawlist.draw_bezier_quadratic  # type: ignore
+mvDrawlist.draw_circle = mvViewportDrawlist.draw_circle  # type: ignore
+mvDrawlist.draw_ellipse = mvViewportDrawlist.draw_ellipse  # type: ignore
+mvDrawlist.draw_image = mvViewportDrawlist.draw_image  # type: ignore
+mvDrawlist.draw_image_quad = mvViewportDrawlist.draw_image_quad  # type: ignore
+mvDrawlist.draw_line = mvViewportDrawlist.draw_line  # type: ignore
+mvDrawlist.draw_polygon = mvViewportDrawlist.draw_polygon  # type: ignore
+mvDrawlist.draw_polyline = mvViewportDrawlist.draw_polyline  # type: ignore
+mvDrawlist.draw_quad = mvViewportDrawlist.draw_quad  # type: ignore
+mvDrawlist.draw_rectangle = mvViewportDrawlist.draw_rectangle  # type: ignore
+mvDrawlist.draw_text = mvViewportDrawlist.draw_text  # type: ignore
+mvDrawlist.draw_triangle = mvViewportDrawlist.draw_triangle  # type: ignore
 mvFontRegistry.__item_index_type__ = mvFont  # type: ignore
-mvHandlerRegistry.__item_index_type__ = _HandlerItem  # type: ignore
-mvItemHandlerRegistry.__item_index_type__ = _HandlerItem  # type: ignore
 mvPlot.__item_index_type__ = mvPlotAxis  # type: ignore
 mvTable.__item_index_type__ = mvTableRow  # type: ignore
 mvTheme.__item_index_type__ = mvThemeComponent  # type: ignore
-mvThemeComponent.__item_index_type__ = _ElementItem  # type: ignore
 
 _COMMON_PARENTS = (mvChildWindow, mvClipper, mvCollapsingHeader, mvCustomSeries, mvDragPayload, mvFileDialog, mvFilterSet, mvGroup, mvMenu, mvMenuBar, mvNodeAttribute, mvPlotAxis, mvPlotLegend, mvStage, mvSyncedTables, mvTab, mvTableCell, mvTableRow, mvTemplateRegistry, mvTooltip, mvTreeNode, mvViewportMenuBar, mvWindowAppItem)
 mv2dHistogramSeries.__item_parents__ = (mvPlotAxis, mvTemplateRegistry,)  # type: ignore

@@ -3415,28 +3415,88 @@ class mvDrawLayer[U = Any, P: ContainerItem[Any, Any, Any, Any] = ContainerItem,
     def show(self, value: bool, /) -> None: ...
     def configure(self, /, *, perspective_divide: bool = ..., depth_clipping: bool = ..., cull_mode: int = ..., label: str | None = ..., use_internal_label: bool = ..., user_data: Any | None = ..., show: bool = ..., **kwargs) -> None: ...
     def state(self, /) -> dict[Literal["ok", "pos"], Any]: ...
+    def add_draw_node[T](self, /, *, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, before: Item=0, show: bool=True, **kwargs) -> mvDrawNode[T]:
+        """Create a new drawing node item as a child of this container.
+    
+            :raises `SystemError`: DearPyGui-related error."""
+    def draw_arrow[T](self, p1: Array[float, Literal[2]], p2: Array[float, Literal[2]], /, *, color: Array[int, Literal[3, 4]]=(255, 255, 255, 255), thickness: float=1.0, size: int=4, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, before: Item=0, show: bool=True, **kwargs) -> mvDrawArrow[T]:
+        """Create a new arrow item as a child of this container.
+    
+            :raises `SystemError`: DearPyGui-related error."""
+    def draw_bezier_cubic[T](self, p1: Array[float, Literal[2]], p2: Array[float, Literal[2]], p3: Array[float, Literal[2]], p4: Array[float, Literal[2]], /, *, color: Array[int, Literal[3, 4]]=(255, 255, 255, 255), thickness: float=1.0, segments: int=0, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, before: Item=0, show: bool=True, **kwargs) -> mvDrawBezierCubic[T]:
+        """Create a new bezier cubic item as a child of this container.
+    
+            :raises `SystemError`: DearPyGui-related error."""
+    def draw_bezier_quadratic[T](self, p1: Array[float, Literal[2]], p2: Array[float, Literal[2]], p3: Array[float, Literal[2]], /, *, color: Array[int, Literal[3, 4]]=(255, 255, 255, 255), thickness: float=1.0, segments: int=0, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, before: Item=0, show: bool=True, **kwargs) -> mvDrawBezierQuadratic[T]:
+        """Create a new bezier quadratic item as a child of this container.
+    
+            :raises `SystemError`: DearPyGui-related error."""
+    def draw_circle[T](self, center: Array[float, Literal[2]], radius: float, /, *, color: Array[int, Literal[3, 4]]=(255, 255, 255, 255), fill: Array[int, Literal[3, 4]]=(0, 0, 0, -255), thickness: float=1.0, segments: int=0, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, before: Item=0, show: bool=True, **kwargs) -> mvDrawCircle[T]:
+        """Create a new circle item as a child of this container.
+    
+            :raises `SystemError`: DearPyGui-related error."""
+    def draw_ellipse[T](self, pmin: Array[float, Literal[2]], pmax: Array[float, Literal[2]], /, *, color: Array[int, Literal[3, 4]]=(255, 255, 255, 255), fill: Array[int, Literal[3, 4]]=(0, 0, 0, -255), thickness: float=1.0, segments: int=32, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, before: Item=0, show: bool=True, **kwargs) -> mvDrawEllipse[T]:
+        """Create a new ellipse item as a child of this container.
+    
+            :raises `SystemError`: DearPyGui-related error."""
+    def draw_image[T](self, texture_tag: Item, pmin: Array[float, Literal[2]], pmax: Array[float, Literal[2]], /, *, uv_min: List[float] | Tuple[float, ...]=(0.0, 0.0), uv_max: List[float] | Tuple[float, ...]=(1.0, 1.0), color: Array[int, Literal[3, 4]]=(255, 255, 255, 255), label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, before: Item=0, show: bool=True, **kwargs) -> mvDrawImage[T]:
+        """Create a new image item as a child of this container.
+    
+            :raises `SystemError`: DearPyGui-related error."""
+    def draw_image_quad[T](self, texture_tag: Item, p1: Array[float, Literal[2]], p2: Array[float, Literal[2]], p3: Array[float, Literal[2]], p4: Array[float, Literal[2]], /, *, uv1: List[float] | Tuple[float, ...]=(0.0, 0.0), uv2: List[float] | Tuple[float, ...]=(1.0, 0.0), uv3: List[float] | Tuple[float, ...]=(1.0, 1.0), uv4: List[float] | Tuple[float, ...]=(0.0, 1.0), color: Array[int, Literal[3, 4]]=(255, 255, 255, 255), label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, before: Item=0, show: bool=True, **kwargs) -> mvDrawImageQuad[T]:
+        """Create a new image quad item as a child of this container.
+    
+            :raises `SystemError`: DearPyGui-related error."""
+    def draw_line[T](self, p1: Array[float, Literal[2]], p2: Array[float, Literal[2]], /, *, color: Array[int, Literal[3, 4]]=(255, 255, 255, 255), thickness: float=1.0, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, before: Item=0, show: bool=True, **kwargs) -> mvDrawLine[T]:
+        """Create a new line item as a child of this container.
+    
+            :raises `SystemError`: DearPyGui-related error."""
+    def draw_polygon[T](self, points: Array[Array[float, Literal[2]], Any], /, *, color: Array[int, Literal[3, 4]]=(255, 255, 255, 255), fill: Array[int, Literal[3, 4]]=(0, 0, 0, -255), thickness: float=1.0, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, before: Item=0, show: bool=True, **kwargs) -> mvDrawPolygon[T]:
+        """Create a new polygon item as a child of this container.
+    
+            :raises `SystemError`: DearPyGui-related error."""
+    def draw_polyline[T](self, points: Array[Array[float, Literal[2]], Any], /, *, closed: bool=False, color: Array[int, Literal[3, 4]]=(255, 255, 255, 255), thickness: float=1.0, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, before: Item=0, show: bool=True, **kwargs) -> mvDrawPolyline[T]:
+        """Create a new polyline item as a child of this container.
+    
+            :raises `SystemError`: DearPyGui-related error."""
+    def draw_quad[T](self, p1: Array[float, Literal[2]], p2: Array[float, Literal[2]], p3: Array[float, Literal[2]], p4: Array[float, Literal[2]], /, *, color: Array[int, Literal[3, 4]]=(255, 255, 255, 255), fill: Array[int, Literal[3, 4]]=(0, 0, 0, -255), thickness: float=1.0, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, before: Item=0, show: bool=True, **kwargs) -> mvDrawQuad[T]:
+        """Create a new quad item as a child of this container.
+    
+            :raises `SystemError`: DearPyGui-related error."""
+    def draw_rectangle[T](self, pmin: Array[float, Literal[2]], pmax: Array[float, Literal[2]], /, *, color: Array[int, Literal[3, 4]]=(255, 255, 255, 255), fill: Array[int, Literal[3, 4]]=(0, 0, 0, -255), multicolor: bool=False, rounding: float=0.0, thickness: float=1.0, corner_colors: Any=None, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, before: Item=0, show: bool=True, **kwargs) -> mvDrawRect[T]:
+        """Create a new rectangle item as a child of this container.
+    
+            :raises `SystemError`: DearPyGui-related error."""
+    def draw_text[T](self, pos: Array[float, Literal[2]], text: str, /, *, color: Array[int, Literal[3, 4]]=(255, 255, 255, 255), size: float=10.0, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, before: Item=0, show: bool=True, **kwargs) -> mvDrawText[T]:
+        """Create a new text item as a child of this container.
+    
+            :raises `SystemError`: DearPyGui-related error."""
+    def draw_triangle[T](self, p1: Array[float, Literal[2]], p2: Array[float, Literal[2]], p3: Array[float, Literal[2]], /, *, color: Array[int, Literal[3, 4]]=(255, 255, 255, 255), fill: Array[int, Literal[3, 4]]=(0, 0, 0, -255), thickness: float=1.0, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, before: Item=0, show: bool=True, **kwargs) -> mvDrawTriangle[T]:
+        """Create a new triangle item as a child of this container.
+    
+            :raises `SystemError`: DearPyGui-related error."""
     def set_clip_space(self, top_left_x: float, top_left_y: float, width: float, height: float, min_depth: float, max_depth: float, /) -> None:
         """Set the point clipping area for the drawing layer. Only enabled when
             the layer's `depth_clipping` setting is `True`.
-
+    
             :type top_left_x: `float`
             :param top_left_x: Pixel position of the clip region's top-left corner.
-
+    
             :type top_left_y: `float`
             :param top_left_y: Pixel position of the clip region's top-right corner.
-
+    
             :type width: `float`
             :param width: The clip region's horizontal size in pixels.
-
+    
             :type height: `float`
             :param height: The clip region's vertical size in pixels.
-
+    
             :type min_depth: `float`
             :param min_depth: Lower-bound depth clamp.
-
+    
             :type max_depth: `float`
             :param max_depth: Upper-bound depth clamp.
-
+    
             :raises `SystemError`: DearPyGui-related error.
             """
 
@@ -3476,11 +3536,71 @@ class mvDrawNode[U = Any, P: ContainerItem[Any, Any, Any, Any] = ContainerItem, 
     def show(self, value: bool, /) -> None: ...
     def configure(self, /, *, label: str | None = ..., use_internal_label: bool = ..., user_data: Any | None = ..., show: bool = ..., **kwargs) -> None: ...
     def state(self, /) -> dict[Literal["ok", "pos"], Any]: ...
+    def add_draw_node[T](self, /, *, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, before: Item=0, show: bool=True, **kwargs) -> mvDrawNode[T]:
+        """Create a new drawing node item as a child of this container.
+    
+            :raises `SystemError`: DearPyGui-related error."""
+    def draw_arrow[T](self, p1: Array[float, Literal[2]], p2: Array[float, Literal[2]], /, *, color: Array[int, Literal[3, 4]]=(255, 255, 255, 255), thickness: float=1.0, size: int=4, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, before: Item=0, show: bool=True, **kwargs) -> mvDrawArrow[T]:
+        """Create a new arrow item as a child of this container.
+    
+            :raises `SystemError`: DearPyGui-related error."""
+    def draw_bezier_cubic[T](self, p1: Array[float, Literal[2]], p2: Array[float, Literal[2]], p3: Array[float, Literal[2]], p4: Array[float, Literal[2]], /, *, color: Array[int, Literal[3, 4]]=(255, 255, 255, 255), thickness: float=1.0, segments: int=0, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, before: Item=0, show: bool=True, **kwargs) -> mvDrawBezierCubic[T]:
+        """Create a new bezier cubic item as a child of this container.
+    
+            :raises `SystemError`: DearPyGui-related error."""
+    def draw_bezier_quadratic[T](self, p1: Array[float, Literal[2]], p2: Array[float, Literal[2]], p3: Array[float, Literal[2]], /, *, color: Array[int, Literal[3, 4]]=(255, 255, 255, 255), thickness: float=1.0, segments: int=0, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, before: Item=0, show: bool=True, **kwargs) -> mvDrawBezierQuadratic[T]:
+        """Create a new bezier quadratic item as a child of this container.
+    
+            :raises `SystemError`: DearPyGui-related error."""
+    def draw_circle[T](self, center: Array[float, Literal[2]], radius: float, /, *, color: Array[int, Literal[3, 4]]=(255, 255, 255, 255), fill: Array[int, Literal[3, 4]]=(0, 0, 0, -255), thickness: float=1.0, segments: int=0, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, before: Item=0, show: bool=True, **kwargs) -> mvDrawCircle[T]:
+        """Create a new circle item as a child of this container.
+    
+            :raises `SystemError`: DearPyGui-related error."""
+    def draw_ellipse[T](self, pmin: Array[float, Literal[2]], pmax: Array[float, Literal[2]], /, *, color: Array[int, Literal[3, 4]]=(255, 255, 255, 255), fill: Array[int, Literal[3, 4]]=(0, 0, 0, -255), thickness: float=1.0, segments: int=32, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, before: Item=0, show: bool=True, **kwargs) -> mvDrawEllipse[T]:
+        """Create a new ellipse item as a child of this container.
+    
+            :raises `SystemError`: DearPyGui-related error."""
+    def draw_image[T](self, texture_tag: Item, pmin: Array[float, Literal[2]], pmax: Array[float, Literal[2]], /, *, uv_min: List[float] | Tuple[float, ...]=(0.0, 0.0), uv_max: List[float] | Tuple[float, ...]=(1.0, 1.0), color: Array[int, Literal[3, 4]]=(255, 255, 255, 255), label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, before: Item=0, show: bool=True, **kwargs) -> mvDrawImage[T]:
+        """Create a new image item as a child of this container.
+    
+            :raises `SystemError`: DearPyGui-related error."""
+    def draw_image_quad[T](self, texture_tag: Item, p1: Array[float, Literal[2]], p2: Array[float, Literal[2]], p3: Array[float, Literal[2]], p4: Array[float, Literal[2]], /, *, uv1: List[float] | Tuple[float, ...]=(0.0, 0.0), uv2: List[float] | Tuple[float, ...]=(1.0, 0.0), uv3: List[float] | Tuple[float, ...]=(1.0, 1.0), uv4: List[float] | Tuple[float, ...]=(0.0, 1.0), color: Array[int, Literal[3, 4]]=(255, 255, 255, 255), label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, before: Item=0, show: bool=True, **kwargs) -> mvDrawImageQuad[T]:
+        """Create a new image quad item as a child of this container.
+    
+            :raises `SystemError`: DearPyGui-related error."""
+    def draw_line[T](self, p1: Array[float, Literal[2]], p2: Array[float, Literal[2]], /, *, color: Array[int, Literal[3, 4]]=(255, 255, 255, 255), thickness: float=1.0, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, before: Item=0, show: bool=True, **kwargs) -> mvDrawLine[T]:
+        """Create a new line item as a child of this container.
+    
+            :raises `SystemError`: DearPyGui-related error."""
+    def draw_polygon[T](self, points: Array[Array[float, Literal[2]], Any], /, *, color: Array[int, Literal[3, 4]]=(255, 255, 255, 255), fill: Array[int, Literal[3, 4]]=(0, 0, 0, -255), thickness: float=1.0, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, before: Item=0, show: bool=True, **kwargs) -> mvDrawPolygon[T]:
+        """Create a new polygon item as a child of this container.
+    
+            :raises `SystemError`: DearPyGui-related error."""
+    def draw_polyline[T](self, points: Array[Array[float, Literal[2]], Any], /, *, closed: bool=False, color: Array[int, Literal[3, 4]]=(255, 255, 255, 255), thickness: float=1.0, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, before: Item=0, show: bool=True, **kwargs) -> mvDrawPolyline[T]:
+        """Create a new polyline item as a child of this container.
+    
+            :raises `SystemError`: DearPyGui-related error."""
+    def draw_quad[T](self, p1: Array[float, Literal[2]], p2: Array[float, Literal[2]], p3: Array[float, Literal[2]], p4: Array[float, Literal[2]], /, *, color: Array[int, Literal[3, 4]]=(255, 255, 255, 255), fill: Array[int, Literal[3, 4]]=(0, 0, 0, -255), thickness: float=1.0, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, before: Item=0, show: bool=True, **kwargs) -> mvDrawQuad[T]:
+        """Create a new quad item as a child of this container.
+    
+            :raises `SystemError`: DearPyGui-related error."""
+    def draw_rectangle[T](self, pmin: Array[float, Literal[2]], pmax: Array[float, Literal[2]], /, *, color: Array[int, Literal[3, 4]]=(255, 255, 255, 255), fill: Array[int, Literal[3, 4]]=(0, 0, 0, -255), multicolor: bool=False, rounding: float=0.0, thickness: float=1.0, corner_colors: Any=None, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, before: Item=0, show: bool=True, **kwargs) -> mvDrawRect[T]:
+        """Create a new rectangle item as a child of this container.
+    
+            :raises `SystemError`: DearPyGui-related error."""
+    def draw_text[T](self, pos: Array[float, Literal[2]], text: str, /, *, color: Array[int, Literal[3, 4]]=(255, 255, 255, 255), size: float=10.0, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, before: Item=0, show: bool=True, **kwargs) -> mvDrawText[T]:
+        """Create a new text item as a child of this container.
+    
+            :raises `SystemError`: DearPyGui-related error."""
+    def draw_triangle[T](self, p1: Array[float, Literal[2]], p2: Array[float, Literal[2]], p3: Array[float, Literal[2]], /, *, color: Array[int, Literal[3, 4]]=(255, 255, 255, 255), fill: Array[int, Literal[3, 4]]=(0, 0, 0, -255), thickness: float=1.0, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, before: Item=0, show: bool=True, **kwargs) -> mvDrawTriangle[T]:
+        """Create a new triangle item as a child of this container.
+    
+            :raises `SystemError`: DearPyGui-related error."""
     def apply_transform(self, transform: Array[float, Literal[4]], /) -> None:
         """Apply a transformation to the drawing node. The transform
             is used to used to multiply the points of the node's children.
             If a child is another node, the matricies will concatenate.
-
+    
             :type transform: `Array[float, Literal[4]]`
             :param transform: A flat 4x4 matrix that will be used in the
                 transformation.
@@ -3736,6 +3856,70 @@ class mvDrawlist[U = Any, P: ContainerItem[Any, Any, Any, Any] = ContainerItem, 
     @property
     def rect_max(self, /) -> Array[int, Literal[2]]: ...
     def state(self, /) -> dict[Literal["ok", "pos", "hovered", "active", "activated", "deactivated", "focused", "clicked", "left_clicked", "right_clicked", "middle_clicked", "visible", "content_region_avail", "rect_size", "resized", "rect_min", "rect_max"], Any]: ...
+    def add_draw_layer[T](self, /, *, perspective_divide: bool=False, depth_clipping: bool=False, cull_mode: int=0, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, before: Item=0, show: bool=True, **kwargs) -> mvDrawLayer[T]:
+        """Create a new add_draw_layer item as a child of this canvas.
+    
+            :raises `SystemError`: DearPyGui-related error."""
+    def add_draw_node[T](self, /, *, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, before: Item=0, show: bool=True, **kwargs) -> mvDrawNode[T]:
+        """Create a new drawing node item as a child of this container.
+    
+            :raises `SystemError`: DearPyGui-related error."""
+    def draw_arrow[T](self, p1: Array[float, Literal[2]], p2: Array[float, Literal[2]], /, *, color: Array[int, Literal[3, 4]]=(255, 255, 255, 255), thickness: float=1.0, size: int=4, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, before: Item=0, show: bool=True, **kwargs) -> mvDrawArrow[T]:
+        """Create a new arrow item as a child of this container.
+    
+            :raises `SystemError`: DearPyGui-related error."""
+    def draw_bezier_cubic[T](self, p1: Array[float, Literal[2]], p2: Array[float, Literal[2]], p3: Array[float, Literal[2]], p4: Array[float, Literal[2]], /, *, color: Array[int, Literal[3, 4]]=(255, 255, 255, 255), thickness: float=1.0, segments: int=0, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, before: Item=0, show: bool=True, **kwargs) -> mvDrawBezierCubic[T]:
+        """Create a new bezier cubic item as a child of this container.
+    
+            :raises `SystemError`: DearPyGui-related error."""
+    def draw_bezier_quadratic[T](self, p1: Array[float, Literal[2]], p2: Array[float, Literal[2]], p3: Array[float, Literal[2]], /, *, color: Array[int, Literal[3, 4]]=(255, 255, 255, 255), thickness: float=1.0, segments: int=0, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, before: Item=0, show: bool=True, **kwargs) -> mvDrawBezierQuadratic[T]:
+        """Create a new bezier quadratic item as a child of this container.
+    
+            :raises `SystemError`: DearPyGui-related error."""
+    def draw_circle[T](self, center: Array[float, Literal[2]], radius: float, /, *, color: Array[int, Literal[3, 4]]=(255, 255, 255, 255), fill: Array[int, Literal[3, 4]]=(0, 0, 0, -255), thickness: float=1.0, segments: int=0, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, before: Item=0, show: bool=True, **kwargs) -> mvDrawCircle[T]:
+        """Create a new circle item as a child of this container.
+    
+            :raises `SystemError`: DearPyGui-related error."""
+    def draw_ellipse[T](self, pmin: Array[float, Literal[2]], pmax: Array[float, Literal[2]], /, *, color: Array[int, Literal[3, 4]]=(255, 255, 255, 255), fill: Array[int, Literal[3, 4]]=(0, 0, 0, -255), thickness: float=1.0, segments: int=32, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, before: Item=0, show: bool=True, **kwargs) -> mvDrawEllipse[T]:
+        """Create a new ellipse item as a child of this container.
+    
+            :raises `SystemError`: DearPyGui-related error."""
+    def draw_image[T](self, texture_tag: Item, pmin: Array[float, Literal[2]], pmax: Array[float, Literal[2]], /, *, uv_min: List[float] | Tuple[float, ...]=(0.0, 0.0), uv_max: List[float] | Tuple[float, ...]=(1.0, 1.0), color: Array[int, Literal[3, 4]]=(255, 255, 255, 255), label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, before: Item=0, show: bool=True, **kwargs) -> mvDrawImage[T]:
+        """Create a new image item as a child of this container.
+    
+            :raises `SystemError`: DearPyGui-related error."""
+    def draw_image_quad[T](self, texture_tag: Item, p1: Array[float, Literal[2]], p2: Array[float, Literal[2]], p3: Array[float, Literal[2]], p4: Array[float, Literal[2]], /, *, uv1: List[float] | Tuple[float, ...]=(0.0, 0.0), uv2: List[float] | Tuple[float, ...]=(1.0, 0.0), uv3: List[float] | Tuple[float, ...]=(1.0, 1.0), uv4: List[float] | Tuple[float, ...]=(0.0, 1.0), color: Array[int, Literal[3, 4]]=(255, 255, 255, 255), label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, before: Item=0, show: bool=True, **kwargs) -> mvDrawImageQuad[T]:
+        """Create a new image quad item as a child of this container.
+    
+            :raises `SystemError`: DearPyGui-related error."""
+    def draw_line[T](self, p1: Array[float, Literal[2]], p2: Array[float, Literal[2]], /, *, color: Array[int, Literal[3, 4]]=(255, 255, 255, 255), thickness: float=1.0, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, before: Item=0, show: bool=True, **kwargs) -> mvDrawLine[T]:
+        """Create a new line item as a child of this container.
+    
+            :raises `SystemError`: DearPyGui-related error."""
+    def draw_polygon[T](self, points: Array[Array[float, Literal[2]], Any], /, *, color: Array[int, Literal[3, 4]]=(255, 255, 255, 255), fill: Array[int, Literal[3, 4]]=(0, 0, 0, -255), thickness: float=1.0, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, before: Item=0, show: bool=True, **kwargs) -> mvDrawPolygon[T]:
+        """Create a new polygon item as a child of this container.
+    
+            :raises `SystemError`: DearPyGui-related error."""
+    def draw_polyline[T](self, points: Array[Array[float, Literal[2]], Any], /, *, closed: bool=False, color: Array[int, Literal[3, 4]]=(255, 255, 255, 255), thickness: float=1.0, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, before: Item=0, show: bool=True, **kwargs) -> mvDrawPolyline[T]:
+        """Create a new polyline item as a child of this container.
+    
+            :raises `SystemError`: DearPyGui-related error."""
+    def draw_quad[T](self, p1: Array[float, Literal[2]], p2: Array[float, Literal[2]], p3: Array[float, Literal[2]], p4: Array[float, Literal[2]], /, *, color: Array[int, Literal[3, 4]]=(255, 255, 255, 255), fill: Array[int, Literal[3, 4]]=(0, 0, 0, -255), thickness: float=1.0, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, before: Item=0, show: bool=True, **kwargs) -> mvDrawQuad[T]:
+        """Create a new quad item as a child of this container.
+    
+            :raises `SystemError`: DearPyGui-related error."""
+    def draw_rectangle[T](self, pmin: Array[float, Literal[2]], pmax: Array[float, Literal[2]], /, *, color: Array[int, Literal[3, 4]]=(255, 255, 255, 255), fill: Array[int, Literal[3, 4]]=(0, 0, 0, -255), multicolor: bool=False, rounding: float=0.0, thickness: float=1.0, corner_colors: Any=None, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, before: Item=0, show: bool=True, **kwargs) -> mvDrawRect[T]:
+        """Create a new rectangle item as a child of this container.
+    
+            :raises `SystemError`: DearPyGui-related error."""
+    def draw_text[T](self, pos: Array[float, Literal[2]], text: str, /, *, color: Array[int, Literal[3, 4]]=(255, 255, 255, 255), size: float=10.0, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, before: Item=0, show: bool=True, **kwargs) -> mvDrawText[T]:
+        """Create a new text item as a child of this container.
+    
+            :raises `SystemError`: DearPyGui-related error."""
+    def draw_triangle[T](self, p1: Array[float, Literal[2]], p2: Array[float, Literal[2]], p3: Array[float, Literal[2]], /, *, color: Array[int, Literal[3, 4]]=(255, 255, 255, 255), fill: Array[int, Literal[3, 4]]=(0, 0, 0, -255), thickness: float=1.0, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, before: Item=0, show: bool=True, **kwargs) -> mvDrawTriangle[T]:
+        """Create a new triangle item as a child of this container.
+    
+            :raises `SystemError`: DearPyGui-related error."""
 
 def drawlist[U = Any](width: int, height: int, *, label: str | None = None, use_internal_label: bool = True, user_data: Any | None = None, tag: int | str = 0, parent: int | str = 0, before: int | str = 0, callback: Callable | None = None, show: bool = True, filter_key: str = "", tracked: bool = False, track_offset: float = 0.5, pos: Array[int, Literal[0, 2]] = (), **kwargs) -> mvDrawlist[U]: ...
 def add_drawlist[U = Any](width: int, height: int, *, label: str | None = None, use_internal_label: bool = True, user_data: Any | None = None, tag: int | str = 0, parent: int | str = 0, before: int | str = 0, callback: Callable | None = None, show: bool = True, filter_key: str = "", tracked: bool = False, track_offset: float = 0.5, pos: Array[int, Literal[0, 2]] = (), **kwargs) -> mvDrawlist[U]: ...
@@ -3754,40 +3938,40 @@ class mvDynamicTexture[U = Any, V: Array[int, Any] = Any, P: mvStage | mvTemplat
     @staticmethod
     def create_from_file[T](file: str, /, *, gamma: float=1.0, gamma_scale_factor: float=1.0, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, parent: Item=0, **kwargs) -> mvDynamicTexture[T]:
         """Create a texture from an image file.
-
+    
             Additional keyword arguments are forwarded to the texture item type's
             constructor.
-
+    
             :type file: `str`
             :param file: A file path pointing to an image in JPEG, PNG, BMP,
                 PSD, GIF, HDR, PIC, PPM, or PGM format.
-
+    
             :type gamma: `float` (optional)
             :param gamma: Luminance correction scalar. A value of `1.0`
                 disables correction. Defaults to `1.0`.
-
+    
             :type gamma_scale_factor: `float` (optional)
             :param gamma_scale_factor: *gamma* intensity scalar. Defaults to `1.0`.
-
+    
             :raises `IOError`: Unable to load the file.
             :raises `SystemError`: DearPyGui-related error.
             """
     def save(self, file: str, /, *, components: Literal[1, 2, 3, 4]=4, quality: int=50, **kwargs) -> None:
         """Dump the texture as an image file.
-
+    
             :type file: `str`
             :param file: Destination file path for the saved image. The file name's
                 suffix/extension determines the resulting image's format. Supported
                 save formats are PNG, JPEG, BMP, TGA, and HDR.
-
+    
             :type components: `Literal[1, 2, 3, 4]` (optional)
             :param components: Number of channels per pixel. `1` is monochrome, `2`
                 is monochrome w/alpha, `3` is RGB, and `4` is RGBA. Defaults to `4`.
-
+    
             :type quality: `int` (optional)
             :param quality: Image stride as a number of bytes. Only used when the
                 image is saved in JPEG format. Defaults to `50`.
-
+    
             :raises `SystemError`: DearPyGui-related error.
             """
 
@@ -4044,36 +4228,36 @@ class mvFont[U = Any, P: mvFontRegistry = Any, C: ChildItem[Any, Any, mvFont, An
     def state(self, /) -> dict[Literal["ok", "pos"], Any]: ...
     def add_char_remap[T](self, source: int, target: int, /, *, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, **kwargs) -> mvCharRemap[T]:
         """Create a new char remap item as a child of this font.
-
+    
             :raises `SystemError`: DearPyGui-related error.
             """
     def add_font_chars[T](self, chars: Array[int, Any], /, *, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, **kwargs) -> mvFontChars[T]:
         """Create a new font chars item as a child of this font.
-
+    
             :raises `SystemError`: DearPyGui-related error.
             """
     def add_font_range[T](self, first_char: int, last_char: int, /, *, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, **kwargs) -> mvFontRange[T]:
         """Create a new font range item as a child of this font.
-
+    
             :raises `SystemError`: DearPyGui-related error.
             """
     def add_font_range_hint[T](self, hint: int, /, *, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, **kwargs) -> mvFontRangeHint[T]:
         """Create a new font range hint item as a child of this font.
-
+    
             :raises `SystemError`: DearPyGui-related error.
             """
     def get_text_size(self, text: str, /, *, wrap_width: int=-1) -> list[float]:
         """Return the width and height of *text* rendered with this font.
             Note that if called before rendering the first frame, the width
             and height returned will be zero.
-
+    
             :type text: `str`
             :param text: Text to measure.
-
+    
             :type wrap_width: `int` (optional)
             :param wrap_width: The maximum horizontal size of a single line of
                 rendered text in pixels. Defaults to `-1`.
-
+    
             :raises `SystemError`: DearPyGui-related error.
             """
 
@@ -4131,7 +4315,7 @@ class mvFontRegistry[U = Any, C: ChildItem[Any, Any, mvFontRegistry, Any] = Chil
     def state(self, /) -> dict[Literal["ok", "pos"], Any]: ...
     def add_font[T](self, file: str, size: int, /, *, pixel_snapH: bool=False, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, **kwargs) -> mvFont[T]:
         """Create a new font item as a child of this registry.
-
+    
             :raises `SystemError`: DearPyGui-related error.
             """
 
@@ -4264,52 +4448,52 @@ class mvHandlerRegistry[U = Any, C: _HandlerItem[Any, mvHandlerRegistry] = _Hand
     def state(self, /) -> dict[Literal["ok", "pos"], Any]: ...
     def add_key_down_handler[T](self, key: mvKey | int=_dearpygui.mvKey_None, *, label: str | None=None, use_internal_label: bool=True, user_data: Any | None=None, tag: int | str=0, callback: Callable | None=None, show: bool=True, **kwargs) -> mvKeyDownHandler[T]:
         """Create a new key down handler item as a child of this registry.
-
+    
             :raises `SystemError`: DearPyGui-related error.
             """
     def add_key_press_handler[T](self, key: mvKey | int=_dearpygui.mvKey_None, *, label: str | None=None, use_internal_label: bool=True, user_data: Any | None=None, tag: int | str=0, callback: Callable | None=None, show: bool=True, **kwargs) -> mvKeyPressHandler[T]:
         """Create a new key pressed handler item as a child of this registry.
-
+    
             :raises `SystemError`: DearPyGui-related error.
             """
     def add_key_release_handler[T](self, key: mvKey | int=_dearpygui.mvKey_None, *, label: str | None=None, use_internal_label: bool=True, user_data: Any | None=None, tag: int | str=0, callback: Callable | None=None, show: bool=True, **kwargs) -> mvKeyReleaseHandler[T]:
         """Create a new key released handler item as a child of this registry.
-
+    
             :raises `SystemError`: DearPyGui-related error.
             """
     def add_mouse_click_handler[T](self, button: mvMouseButton | int=-1, *, label: str | None=None, use_internal_label: bool=True, user_data: Any | None=None, tag: int | str=0, callback: Callable | None=None, show: bool=True, **kwargs) -> mvMouseClickHandler[T]:
         """Create a new mouse clicked handler item as a child of this registry.
-
+    
             :raises `SystemError`: DearPyGui-related error.
             """
     def add_mouse_double_click_handler[T](self, button: mvMouseButton | int=-1, *, label: str | None=None, use_internal_label: bool=True, user_data: Any | None=None, tag: int | str=0, callback: Callable | None=None, show: bool=True, **kwargs) -> mvMouseDoubleClickHandler[T]:
         """Create a new mouse double clicked handler item as a child of this registry.
-
+    
             :raises `SystemError`: DearPyGui-related error.
             """
     def add_mouse_down_handler[T](self, button: mvMouseButton | int=-1, *, label: str | None=None, use_internal_label: bool=True, user_data: Any | None=None, tag: int | str=0, callback: Callable | None=None, show: bool=True, **kwargs) -> mvMouseDownHandler[T]:
         """Create a new mouse down handler item as a child of this registry.
-
+    
             :raises `SystemError`: DearPyGui-related error.
             """
     def add_mouse_drag_handler[T](self, button: mvMouseButton | int=-1, threshold: float=10.0, *, label: str | None=None, use_internal_label: bool=True, user_data: Any | None=None, tag: int | str=0, callback: Callable | None=None, show: bool=True, **kwargs) -> mvMouseDragHandler[T]:
         """Create a new mouse drag handler item as a child of this registry.
-
+    
             :raises `SystemError`: DearPyGui-related error.
             """
     def add_mouse_move_handler[T](self, *, label: str | None=None, use_internal_label: bool=True, user_data: Any | None=None, tag: int | str=0, callback: Callable | None=None, show: bool=True, **kwargs) -> mvMouseMoveHandler[T]:
         """Create a new mouse move handler item as a child of this registry.
-
+    
             :raises `SystemError`: DearPyGui-related error.
             """
     def add_mouse_release_handler[T](self, button: mvMouseButton | int=-1, *, label: str | None=None, use_internal_label: bool=True, user_data: Any | None=None, tag: int | str=0, callback: Callable | None=None, show: bool=True, **kwargs) -> mvMouseReleaseHandler[T]:
         """Create a new mouse released handler item as a child of this registry.
-
+    
             :raises `SystemError`: DearPyGui-related error.
             """
     def add_mouse_wheel_handler[T](self, *, label: str | None=None, use_internal_label: bool=True, user_data: Any | None=None, tag: int | str=0, callback: Callable | None=None, show: bool=True, **kwargs) -> mvMouseWheelHandler[T]:
         """Create a new mouse wheel handler item as a child of this registry.
-
+    
             :raises `SystemError`: DearPyGui-related error.
             """
 
@@ -5763,67 +5947,67 @@ class mvItemHandlerRegistry[U = Any, C: _HandlerItem[Any, mvItemHandlerRegistry]
     def state(self, /) -> dict[Literal["ok", "pos"], Any]: ...
     def add_item_activated_handler[T](self, *, label: str | None=None, use_internal_label: bool=True, user_data: Any | None=None, tag: int | str=0, callback: Callable | None=None, show: bool=True, **kwargs) -> mvActivatedHandler[T]:
         """Create a new activated handler item as a child of this registry.
-
+    
             :raises `SystemError`: DearPyGui-related error.
             """
     def add_item_active_handler[T](self, *, label: str | None=None, use_internal_label: bool=True, user_data: Any | None=None, tag: int | str=0, callback: Callable | None=None, show: bool=True, **kwargs) -> mvActiveHandler[T]:
         """Create a new active handler item as a child of this registry.
-
+    
             :raises `SystemError`: DearPyGui-related error.
             """
     def add_item_clicked_handler[T](self, button: mvMouseButton | int=-1, *, label: str | None=None, use_internal_label: bool=True, user_data: Any | None=None, tag: int | str=0, callback: Callable | None=None, show: bool=True, **kwargs) -> mvClickedHandler[T]:
         """Create a new clicked handler item as a child of this registry.
-
+    
             :raises `SystemError`: DearPyGui-related error.
             """
     def add_item_deactivated_after_edit_handler[T](self, *, label: str | None=None, use_internal_label: bool=True, user_data: Any | None=None, tag: int | str=0, callback: Callable | None=None, show: bool=True, **kwargs) -> mvDeactivatedAfterEditHandler[T]:
         """Create a new deactivated after edit handler item as a child of this registry.
-
+    
             :raises `SystemError`: DearPyGui-related error.
             """
     def add_item_deactivated_handler[T](self, *, label: str | None=None, use_internal_label: bool=True, user_data: Any | None=None, tag: int | str=0, callback: Callable | None=None, show: bool=True, **kwargs) -> mvDeactivatedHandler[T]:
         """Create a new deactivated handler item as a child of this registry.
-
+    
             :raises `SystemError`: DearPyGui-related error.
             """
     def add_item_double_clicked_handler[T](self, button: mvMouseButton | int=-1, *, label: str | None=None, use_internal_label: bool=True, user_data: Any | None=None, tag: int | str=0, callback: Callable | None=None, show: bool=True, **kwargs) -> mvDoubleClickedHandler[T]:
         """Create a new double clicked handler item as a child of this registry.
-
+    
             :raises `SystemError`: DearPyGui-related error.
             """
     def add_item_edited_handler[T](self, *, label: str | None=None, use_internal_label: bool=True, user_data: Any | None=None, tag: int | str=0, callback: Callable | None=None, show: bool=True, **kwargs) -> mvEditedHandler[T]:
         """Create a new edited handler item as a child of this registry.
-
+    
             :raises `SystemError`: DearPyGui-related error.
             """
     def add_item_focus_handler[T](self, *, event_type: mvEventType | int | None=_dearpygui.mvEventType_On, label: str | None=None, use_internal_label: bool=True, user_data: Any | None=None, tag: int | str=0, callback: Callable | None=None, show: bool=True, **kwargs) -> mvFocusHandler[T]:
         """Create a new focus handler item as a child of this registry.
-
+    
             :raises `SystemError`: DearPyGui-related error.
             """
     def add_item_hover_handler[T](self, *, event_type: mvEventType | int | None=_dearpygui.mvEventType_On, label: str | None=None, use_internal_label: bool=True, user_data: Any | None=None, tag: int | str=0, callback: Callable | None=None, show: bool=True, **kwargs) -> mvHoverHandler[T]:
         """Create a new hover handler item as a child of this registry.
-
+    
             :raises `SystemError`: DearPyGui-related error.
             """
     def add_item_resize_handler[T](self, *, label: str | None=None, use_internal_label: bool=True, user_data: Any | None=None, tag: int | str=0, callback: Callable | None=None, show: bool=True, **kwargs) -> mvResizeHandler[T]:
         """Create a new resize handler item as a child of this registry.
-
+    
             :raises `SystemError`: DearPyGui-related error.
             """
     def add_item_scroll_handler[T](self, *, label: str | None=None, use_internal_label: bool=True, user_data: Any | None=None, tag: int | str=0, callback: Callable | None=None, show: bool=True, **kwargs) -> mvScrollHandler[T]:
         """Create a new scroll handler item as a child of this registry.
-
+    
             :raises `SystemError`: DearPyGui-related error.
             """
     def add_item_toggled_open_handler[T](self, *, label: str | None=None, use_internal_label: bool=True, user_data: Any | None=None, tag: int | str=0, callback: Callable | None=None, show: bool=True, **kwargs) -> mvToggledOpenHandler[T]:
         """Create a new toggled open handler item as a child of this registry.
-
+    
             :raises `SystemError`: DearPyGui-related error.
             """
     def add_item_visible_handler[T](self, *, label: str | None=None, use_internal_label: bool=True, user_data: Any | None=None, tag: int | str=0, callback: Callable | None=None, show: bool=True, **kwargs) -> mvVisibleHandler[T]:
         """Create a new visible handler item as a child of this registry.
-
+    
             :raises `SystemError`: DearPyGui-related error.
             """
 
@@ -6785,22 +6969,22 @@ class mvNodeEditor[U = Any, P: ContainerItem[Any, Any, Any, Any] = ContainerItem
     def state(self, /) -> dict[Literal["ok", "pos", "hovered", "visible", "rect_size", "resized", "rect_min", "rect_max"], Any]: ...
     def selected_nodes(self, /) -> list[Item]:
         """Return the editor's selected nodes.
-
+    
             :raises `SystemError`: DearPyGui-related error.
             """
     def selected_links(self, /) -> list[Item]:
         """Return the editor's selected links.
-
+    
             :raises `SystemError`: DearPyGui-related error.
             """
     def clear_selected_nodes(self, /) -> None:
         """Clear the editor's selected nodes.
-
+    
             :raises `SystemError`: DearPyGui-related error.
             """
     def clear_selected_links(self, /) -> None:
         """Clear the editor's selected links.
-
+    
             :raises `SystemError`: DearPyGui-related error.
             """
 
@@ -7064,17 +7248,17 @@ class mvPlot[U = Any, P: ContainerItem[Any, Any, Any, Any] = ContainerItem, C: C
     def state(self, /) -> dict[Literal["ok", "pos", "hovered", "active", "activated", "deactivated", "focused", "clicked", "left_clicked", "right_clicked", "middle_clicked", "visible", "content_region_avail", "rect_size", "resized", "rect_min", "rect_max"], Any]: ...
     def add_plot_axis[T](self, axis: int, /, *, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, payload_type: str='$$DPG_PAYLOAD', drop_callback: Callable | None=None, show: bool=True, no_label: bool=False, no_gridlines: bool=False, no_tick_marks: bool=False, no_tick_labels: bool=False, no_initial_fit: bool=False, no_menus: bool=False, no_side_switch: bool=False, no_highlight: bool=False, opposite: bool=False, foreground_grid: bool=False, tick_format: str='', scale: int=_dearpygui.mvPlotScale_Linear, invert: bool=False, auto_fit: bool=False, range_fit: bool=False, pan_stretch: bool=False, lock_min: bool=False, lock_max: bool=False, **kwargs) -> mvPlotAxis[T]:
         """Create a new axis item as a child of this plot
-
+    
             :raises `SystemError`: DearPyGui-related error.
             """
     def add_plot_annotation[T](self, /, *, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, before: Item=0, source: Item=0, show: bool=True, default_value: Any=(0, 0), offset: Array[float, Literal[2]]=(0.0, 0.0), color: Array[int, Literal[3, 4]]=(0, 0, 0, 255), clamped: bool=True, **kwargs) -> mvAnnotation[T]:
         """Create a new annotation item as a child of this plot
-
+    
             :raises `SystemError`: DearPyGui-related error.
             """
     def add_plot_legend[T](self, /, *, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, payload_type: str='$$DPG_PAYLOAD', drop_callback: Callable | None=None, show: bool=True, location: int=_dearpygui.mvPlot_Location_East, horizontal: bool=False, sort: bool=False, outside: bool=False, no_highlight_item: bool=False, no_highlight_axis: bool=False, no_menus: bool=False, no_buttons: bool=False, **kwargs) -> mvPlotLegend[T]:
         """Create a new legend item as a child of this plot
-
+    
             :raises `SystemError`: DearPyGui-related error.
             """
     @property
@@ -7083,60 +7267,60 @@ class mvPlot[U = Any, P: ContainerItem[Any, Any, Any, Any] = ContainerItem, C: C
     def auto_fit_data(self, iaxis: SupportsIndex, /) -> None:
         """Set the viewing area of the plot to the boundries of
             an axis' visibly plotted data.
-
+    
             :type iaxis: `SupportsIndex`
             :param iaxis: Position of target plot axis in child slot 1.
-
+    
             :raises `SystemError`: DearPyGui-related error.
             """
     def get_axis_limits(self, iaxis: SupportsIndex, /) -> list[float]:
         """Return the lower and upper limits of the axis.
-
+    
             :type iaxis: `SupportsIndex`
             :param iaxis: Position of target plot axis in child slot 1.
-
+    
             :raises `SystemError`: DearPyGui-related error.
             """
     def set_axis_limits(self, iaxis: SupportsIndex, ymin: float, ymax: float, /):
         """Set the axis' lower and upper limits.
-
+    
             :type iaxis: `SupportsIndex`
             :param iaxis: Position of target plot axis in child slot 1.
-
+    
             :type ymin: `float`
             :param ymin: Lower-bound axis limit.
-
+    
             :type ymax: `float`
             :param ymax: Upper-bound axis limit.
-
+    
             :raises `SystemError`: DearPyGui-related error.
             """
     def reset_axis_limits(self, iaxis: SupportsIndex, /):
         """Clear any set lower and upper limits.
-
+    
             :type iaxis: `SupportsIndex`
             :param iaxis: Position of target plot axis in child slot 1.
-
+    
             :raises `SystemError`: DearPyGui-related error.
             """
     def set_axis_ticks(self, iaxis: SupportsIndex, label_pairs: Sequence[tuple[str, int | str]], /):
         """Update the axis' tick labels and values.
-
+    
             :type iaxis: `SupportsIndex`
             :param iaxis: Position of target plot axis in child slot 1.
-
+    
             :type label_pairs: `Sequence[tuple[str, int | float | str]]`
             :param label_pairs: A Sequence of pairs, where each pair contains
                 the tick label to use and the value of that tick.
-
+    
             :raises `SystemError`: DearPyGui-related error.
             """
     def reset_axis_ticks(self, iaxis: SupportsIndex, /):
         """Clear custom tick labels and values.
-
+    
             :type iaxis: `SupportsIndex`
             :param iaxis: Position of target plot axis in child slot 1.
-
+    
             :raises `SystemError`: DearPyGui-related error.
             """
 
@@ -7242,106 +7426,106 @@ class mvPlotAxis[U = Any, P: mvStage | mvTemplateRegistry | mvPlot = Any, C: Chi
     def state(self, /) -> dict[Literal["ok", "pos"], Any]: ...
     def add_2dhistogram_series[T](self, x: Array[float, Any], y: Array[float, Any], /, *, xbins: int=-1, ybins: int=-1, xmin_range: float=0, xmax_range: float=0, ymin_range: float=0, ymax_range: float=0, density: bool=False, outliers: bool=False, col_major: bool=False, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, before: Item=0, source: Item=0, show: bool=True, **kwargs) -> mv2dHistogramSeries[T]:
         """Create a new 2dhistogram series item to this plot axis.
-
+    
             :raises `SystemError`: DearPyGui-related error.
             """
     def add_area_series[T](self, x: Array[float, Any], y: Array[float, Any], /, *, fill: Array[int, Literal[3, 4]]=(0, 0, 0, -255), contribute_to_bounds: bool=True, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, parent: int | str=0, before: Item=0, source: Item=0, show: bool=True, **kwargs) -> mvAreaSeries[T]:
         """Create a new area series item to this plot axis.
-
+    
             :raises `SystemError`: DearPyGui-related error.
             """
     def add_bargroup_series[T](self, values: Array[float, Any], label_ids: Array[str, Any], group_size: int, /, *, group_width: float=0.67, shift: int=0, horizontal: bool=False, stacked: bool=False, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, parent: int | str=0, before: Item=0, source: Item=0, show: bool=True, **kwargs) -> mvBarGroupSeries[T]:
         """Create a new bargroup series item to this plot axis.
-
+    
             :raises `SystemError`: DearPyGui-related error.
             """
     def add_bar_series[T](self, x: Array[float, Any], y: Array[float, Any], /, *, weight: float=1, horizontal: bool=False, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, parent: int | str=0, before: Item=0, source: Item=0, show: bool=True, **kwargs) -> mvBarSeries[T]:
         """Create a new bar series item to this plot axis.
-
+    
             :raises `SystemError`: DearPyGui-related error.
             """
     def add_candle_series[T](self, dates: Array[float, Any], opens: Array[float, Any], closes: Array[float, Any], lows: Array[float, Any], highs: Array[float, Any], /, *, bull_color: Array[int, Literal[3, 4]]=(0, 255, 113, 255), bear_color: Array[int, Literal[3, 4]]=(218, 13, 79, 255), weight: float=0.25, tooltip: bool=True, time_unit: int=5, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, before: Item=0, source: Item=0, show: bool=True, **kwargs) -> mvCandleSeries[T]:
         """Create a new candle series item to this plot axis.
-
+    
             :raises `SystemError`: DearPyGui-related error.
             """
     def add_custom_series[T](self, x: Array[float, Any], y: Array[float, Any], channel_count: int, /, *, y1: Array[float, Any]=(), y2: Array[float, Any]=(), y3: Array[float, Any]=(), tooltip: bool=True, no_fit: bool=False, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, before: Item=0, source: Item=0, callback: Callable | None=None, show: bool=True, **kwargs) -> mvCustomSeries[T]:
         """Create a new custom series item to this plot axis.
-
+    
             :raises `SystemError`: DearPyGui-related error.
             """
     def add_digital_series[T](self, x: Array[float, Any], y: Array[float, Any], /, *, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, before: Item=0, source: Item=0, show: bool=True, **kwargs) -> mvDigitalSeries[T]:
         """Create a new digital series item to this plot axis.
-
+    
             :raises `SystemError`: DearPyGui-related error.
             """
     def add_error_series[T](self, x: Array[float, Any], y: Array[float, Any], negative: Array[float, Any], positive: Array[float, Any], /, *, contribute_to_bounds: bool=True, horizontal: bool=False, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, before: Item=0, source: Item=0, show: bool=True, **kwargs) -> mvErrorSeries[T]:
         """Create a new error series item to this plot axis.
-
+    
             :raises `SystemError`: DearPyGui-related error.
             """
     def add_heat_series[T](self, x: Array[float, Any], rows: int, cols: int, /, *, scale_min: float=0, scale_max: float=1, bounds_min: Array[float, Any]=(0, 0), bounds_max: Array[float, Any]=(1, 1), format: str='%0.1f', contribute_to_bounds: bool=True, col_major: bool=False, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, before: Item=0, source: Item=0, show: bool=True, **kwargs) -> mvHeatSeries[T]:
         """Create a new heat series item to this plot axis.
-
+    
             :raises `SystemError`: DearPyGui-related error.
             """
     def add_histogram_series[T](self, x: Array[float, Any], /, *, bins: int=-1, bar_scale: float=1, min_range: float=0, max_range: float=0, cumulative: bool=False, density: bool=False, outliers: bool=True, horizontal: bool=False, contribute_to_bounds: bool=True, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, before: Item=0, source: Item=0, show: bool=True, **kwargs) -> mvHistogramSeries[T]:
         """Create a new histogram series item to this plot axis.
-
+    
             :raises `SystemError`: DearPyGui-related error.
             """
     def add_image_series[T](self, texture_tag: Item, bounds_min: Array[float, Any], bounds_max: Array[float, Any], /, *, uv_min: Array[float, Any]=(0, 0), uv_max: Array[float, Any]=(1, 1), tint_color: Array[int, Literal[3, 4]]=(255, 255, 255, 255), label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, before: Item=0, source: Item=0, show: bool=True, **kwargs) -> mvImageSeries[T]:
         """Create a new image series item to this plot axis.
-
+    
             :raises `SystemError`: DearPyGui-related error.
             """
     def add_infline_series[T](self, x: Array[float, Any], /, *, horizontal: bool=False, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, before: Item=0, source: Item=0, show: bool=True, **kwargs) -> mvInfLineSeries[T]:
         """Create a new infline series item to this plot axis.
-
+    
             :raises `SystemError`: DearPyGui-related error.
             """
     def add_text_point[T](self, x: float, y: float, /, *, offset: Array[float, Any]=(0, 0), vertical: bool=False, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, before: Item=0, source: Item=0, show: bool=True, **kwargs) -> mvLabelSeries[T]:
         """Create a new label series item to this plot axis.
-
+    
             **NOTE**: The `add_text_point()` and `add_label_series()` methods are functionally identical.
-
+    
             :raises `SystemError`: DearPyGui-related error.
             """
     def add_label_series[T](self, x: float, y: float, /, *, offset: Array[float, Any]=(0, 0), vertical: bool=False, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, before: Item=0, source: Item=0, show: bool=True, **kwargs) -> mvLabelSeries[T]:
         """Create a new label series item to this plot axis.
-
+    
             **NOTE**: The `add_text_point()` and `add_label_series()` methods are functionally identical.
-
+    
             :raises `SystemError`: DearPyGui-related error.
             """
     def add_line_series[T](self, x: Array[float, Any], y: Array[float, Any], /, *, segments: bool=False, loop: bool=False, skip_nan: bool=False, no_clip: bool=False, shaded: bool=False, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, before: Item=0, source: Item=0, show: bool=True, **kwargs) -> mvLineSeries[T]:
         """Create a new line series item to this plot axis.
-
+    
             :raises `SystemError`: DearPyGui-related error.
             """
     def add_pie_series[T](self, x: float, y: float, radius: float, values: Array[float, Any], labels: Array[str, Any], /, *, format: str='%0.2f', angle: float=90, normalize: bool=False, ignore_hidden: bool=False, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, before: Item=0, source: Item=0, show: bool=True, **kwargs) -> mvPieSeries[T]:
         """Create a new pie series item to this plot axis.
-
+    
             :raises `SystemError`: DearPyGui-related error.
             """
     def add_scatter_series[T](self, x: Array[float, Any], y: Array[float, Any], /, *, no_clip: bool=False, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, before: Item=0, source: Item=0, show: bool=True, **kwargs) -> mvScatterSeries[T]:
         """Create a new scatter series item to this plot axis.
-
+    
             :raises `SystemError`: DearPyGui-related error.
             """
     def add_shade_series[T](self, x: Array[float, Any], y: Array[float, Any], /, *, y2: Array[float, Any]=(), label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, before: Item=0, source: Item=0, show: bool=True, **kwargs) -> mvShadeSeries[T]:
         """Create a new shade series item to this plot axis.
-
+    
             :raises `SystemError`: DearPyGui-related error.
             """
     def add_stair_series[T](self, x: Array[float, Any], y: Array[float, Any], /, *, pre_step: bool=False, shaded: bool=False, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, before: Item=0, source: Item=0, show: bool=True, **kwargs) -> mvStairSeries[T]:
         """Create a new stair series item to this plot axis.
-
+    
             :raises `SystemError`: DearPyGui-related error.
             """
     def add_stem_series[T](self, x: Array[float, Any], y: Array[float, Any], /, *, horizontal: bool=False, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, indent: int=-1, parent: int | str=0, before: Item=0, source: Item=0, show: bool=True, **kwargs) -> mvStemSeries[T]:
         """Create a new stem series item to this plot axis.
-
+    
             :raises `SystemError`: DearPyGui-related error.
             """
     @property
@@ -7352,54 +7536,54 @@ class mvPlotAxis[U = Any, P: mvStage | mvTemplateRegistry | mvPlot = Any, C: Chi
     def limits(self, /) -> None: ...
     def set_pan_limits(self, vmin: float, vmax: float, /) -> None:
         """Apply pan constraints.
-
+    
             :type vmin: `float`
             :param vmin:
-
+    
             :type vmax: `float`
             :param vmax:
-
+    
             :raises `SystemError`: DearPyGui-related error.
             """
     def reset_pan_limits(self, /) -> None:
         """Remove the axis' pan limit constraints.
-
+    
             :raises `SystemError`: DearPyGui-related error.
             """
     def set_zoom_limits(self, vmin: float, vmax: float, /) -> None:
         """Apply zoom constraints.
-
+    
             :type vmin: `float`
             :param vmin:
-
+    
             :type vmax: `float`
             :param vmax:
-
+    
             :raises `SystemError`: DearPyGui-related error.
             """
     def reset_zoom_limits(self, /) -> None:
         """Remove the axis' zoom constraints.
-
+    
             :raises `SystemError`: DearPyGui-related error.
             """
     def set_ticks(self, label_pairs: Sequence[tuple[str, int | str]], /):
         """Update the axis' tick labels and values.
-
+    
             :type label_pairs: `Sequence[tuple[str, int | str]]`
             :param label_pairs:  A sequence of pairs, where each pair contains
                 the tick label to use and the value of that tick.
-
+    
             :raises `SystemError`: DearPyGui-related error.
             """
     def reset_ticks(self, /) -> None:
         """Clear explicitly set tick labels and values.
-
+    
             :raises `SystemError`: DearPyGui-related error.
             """
     def auto_fit_data(self, /) -> None:
         """Set the viewing area of the plot to the boundries of
             the visible plotted data.
-
+    
             :raises `SystemError`: DearPyGui-related error.
             """
 
@@ -7663,21 +7847,21 @@ class mvRawTexture[U = Any, P: mvStage | mvTemplateRegistry | mvTextureRegistry 
     @staticmethod
     def create_from_file[T](file: str, /, *, gamma: float=1.0, gamma_scale_factor: float=1.0, format: int=_dearpygui.mvFormat_Float_rgba, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, parent: Item=0, **kwargs) -> mvRawTexture[T]:
         """Create a texture from an image file.
-
+    
             Additional keyword arguments are forwarded to the texture item type's
             constructor.
-
+    
             :type file: `str`
             :param file: A file path pointing to an image in JPEG, PNG, BMP,
                 PSD, GIF, HDR, PIC, PPM, or PGM format.
-
+    
             :type gamma: `float` (optional)
             :param gamma: Luminance correction scalar. A value of `1.0`
                 disables correction. Defaults to `1.0`.
-
+    
             :type gamma_scale_factor: `float` (optional)
             :param gamma_scale_factor: *gamma* intensity scalar. Defaults to `1.0`.
-
+    
             :raises `IOError`: Unable to load the file.
             :raises `SystemError`: DearPyGui-related error.
             """
@@ -8971,40 +9155,40 @@ class mvStaticTexture[U = Any, V: Array[int, Any] = Any, P: mvStage | mvTemplate
     @staticmethod
     def create_from_file[T](file: str, /, *, gamma: float=1.0, gamma_scale_factor: float=1.0, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, parent: Item=0, **kwargs) -> mvStaticTexture[T]:
         """Create a texture from an image file.
-
+    
             Additional keyword arguments are forwarded to the texture item type's
             constructor.
-
+    
             :type file: `str`
             :param file: A file path pointing to an image in JPEG, PNG, BMP,
                 PSD, GIF, HDR, PIC, PPM, or PGM format.
-
+    
             :type gamma: `float` (optional)
             :param gamma: Luminance correction scalar. A value of `1.0`
                 disables correction. Defaults to `1.0`.
-
+    
             :type gamma_scale_factor: `float` (optional)
             :param gamma_scale_factor: *gamma* intensity scalar. Defaults to `1.0`.
-
+    
             :raises `IOError`: Unable to load the file.
             :raises `SystemError`: DearPyGui-related error.
             """
     def save(self, file: str, /, *, components: Literal[1, 2, 3, 4]=4, quality: int=50, **kwargs) -> None:
         """Dump the texture as an image file.
-
+    
             :type file: `str`
             :param file: Destination file path for the saved image. The file name's
                 suffix/extension determines the resulting image's format. Supported
                 save formats are PNG, JPEG, BMP, TGA, and HDR.
-
+    
             :type components: `Literal[1, 2, 3, 4]` (optional)
             :param components: Number of channels per pixel. `1` is monochrome, `2`
                 is monochrome w/alpha, `3` is RGB, and `4` is RGBA. Defaults to `4`.
-
+    
             :type quality: `int` (optional)
             :param quality: Image stride as a number of bytes. Only used when the
                 image is saved in JPEG format. Defaults to `50`.
-
+    
             :raises `SystemError`: DearPyGui-related error.
             """
 
@@ -9579,94 +9763,94 @@ class mvTable[U = Any, P: ContainerItem[Any, Any, Any, Any] = ContainerItem, C: 
     def state(self, /) -> dict[Literal["ok", "pos", "visible", "scrolled", "is_scrolling", "scroll_pos", "scroll_max"], Any]: ...
     def index(self, item: Item, /) -> int:
         """Get the position of a table row or column in the table.
-
+    
             :type item: `Item`
             :param item: Identifier of a table row or column.
-
+    
             :raises `ValueError`: *item* is not not parented by this container,
                 or is not in the specified child slot.
-
+    
             :raises `SystemError`: DearPyGui-related error.
             """
     def is_cell_highlighted(self, irow: int, icol: int, /) -> bool:
         """Return True if a specific cell is highlighted.
-
+    
             :type irow: `int`
             :param irow: The index of the cell's row.
-
+    
             :type icol: `int`
             :param icol: The index of the cell's column.
-
+    
             :raises `SystemError`: DearPyGui-related error.
             """
     def is_column_highlighted(self, icol: int, /) -> bool:
         """Return True if a specific column is highlighted.
-
+    
             :type icol: `int`
             :param icol: The index of the column to query.
-
+    
             :raises `SystemError`: DearPyGui-related error.
             """
     def is_row_highlighted(self, irow: int, /) -> bool:
         """Return True if a specific row is highlighted.
-
+    
             :type irow: `int`
             :param irow: The index of the row to query.
-
+    
             :raises `SystemError`: DearPyGui-related error.
             """
     def set_cell_highlight(self, irow: int, icol: int, color: Array[int, Literal[3, 4]] | None, /) -> None:
         """Highlight or remove the highlight of a specific cell in
             the table.
-
+    
             :type irow: `int`
             :param irow: The index of the cell's row.
-
+    
             :type icol: `int`
             :param icol: The index of the cell's column.
-
+    
             :type color: `Array[int, Literal[3, 4]] | None`
             :param color: RGB[A] value to use for the highlight. A value of `None`
                 clears the current color.
-
+    
             :raises `SystemError`: DearPyGui-related error.
             """
     def set_column_highlight(self, icol: int, color: Array[int, Literal[3, 4]] | None, /) -> None:
         """Highlight or remove the highlight of a specific column in
             the table.
-
+    
             :type icol: `int`
             :param icol: The index of the column.
-
+    
             :type color: `Array[int, Literal[3, 4]] | None`
             :param color: RGB[A] value to use for the highlight. A value of `None`
                 clears the current color.
-
+    
             :raises `SystemError`: DearPyGui-related error.
             """
     def set_row_highlight(self, irow: int, color: Array[int, Literal[3, 4]] | None, /) -> None:
         """Highlight or remove the highlight of a specific row in
             the table.
-
+    
             :type irow: `int`
             :param irow: The index of the row.
-
+    
             :type color: `Array[int, Literal[3, 4]] | None`
             :param color: RGB[A] value to use for the highlight. A value of `None`
                 clears the current color.
-
+    
             :raises `SystemError`: DearPyGui-related error.
             """
     def set_row_color(self, irow: int, color: Array[int, Literal[3, 4]] | None, /) -> None:
         """Update the background color of a row in the table.
-
+    
             :type irow: `int`
             :param irow: The index of the row.
-
+    
             :type color: `Array[int, Literal[3, 4]] | None`
             :param color: RGB[A] value to use for the highlight. A value of `None`
                 clears the current color.
-
+    
             :raises `SystemError`: DearPyGui-related error.
             """
 
@@ -9954,64 +10138,64 @@ class mvTextureRegistry[U = Any, C: ChildItem[Any, Any, mvTextureRegistry, Any] 
         """Open and read an image, returning it's width, height, number of
             channels, and image data (an instance of `mvBuffer`) as a 4-tuple.
             Returns `None` on failure.
-
+    
             :type file: `str`
             :param file: A file path pointing to an image in JPEG, PNG, BMP,
                 PSD, GIF, HDR, PIC, PPM, or PGM format.
-
+    
             :type gamma: `float` (optional)
             :param gamma: Luminance correction scalar. A value of `1.0`
                 disables correction. Defaults to `1.0`.
-
+    
             :type gamma_scale_factor: `float` (optional)
             :param gamma_scale_factor: *gamma* intensity scalar. Defaults to `1.0`.
-
+    
             :rtype: `tuple[int, int, Literal[1, 2, 3, 4], mvBuffer]`
             :return: The width, height, channel count, and data loaded from *file*.
-
+    
             :raises `SystemError`: DearPyGui-related error.
             """
     @staticmethod
     def save_image(file: str, width: int, height: int, data: Array[int, Any], /, *, components: Literal[1, 2, 3, 4]=4, quality: int=50, **kwargs) -> None:
         """Dump an image to a file.
-
+    
             :type file: `str`
             :param file: Destination file path for the saved image. The file name's
                 suffix/extension determines the resulting image's format. Supported
                 save formats are PNG, JPEG, BMP, TGA, and HDR.
-
+    
             :type width: `int`
             :param width: Horizontal size of the image in pixels.
-
+    
             :type height: `int`
             :param height: Vertical size of the image in pixels.
-
+    
             :type data: `Array[int | float, Any]`
             :param data: A sequence-like buffer containing the image's data to save.
-
+    
             :type components: `Literal[1, 2, 3, 4]` (optional)
             :param components: Number of channels per pixel. `1` is monochrome, `2`
                 is monochrome w/alpha, `3` is RGB, and `4` is RGBA. Defaults to `4`.
-
+    
             :type quality: `int` (optional)
             :param quality: Image stride as a number of bytes. Only used when the
                 image is saved in JPEG format. Defaults to `50`.
-
+    
             :raises `SystemError`: DearPyGui-related error.
             """
     def add_static_texture[T](self, width: int, height: int, default_value: Array[int | float, Any], /, *, label: str | None=None, user_data: T=None, use_internal_label: bool=True, tag: Item=0, **kwargs) -> mvStaticTexture[T]:
         """Creates a static texture as a child of this registry
-
+    
             :raises `SystemError`: DearPyGui-related error.
             """
     def add_dynamic_texture[T](self, width: int, height: int, default_value: Array[int | float, Any], /, *, label: str | None=None, user_data: T=None, use_internal_label: bool=True, tag: Item=0, **kwargs) -> mvDynamicTexture[T]:
         """Creates a dynamic texture as a child of this registry
-
+    
             :raises `SystemError`: DearPyGui-related error.
             """
     def add_raw_texture[T](self, width: int, height: int, default_value: Array[int | float, Any], /, *, format: int=_dearpygui.mvFormat_Float_rgba, label: str | None=None, user_data: T=None, use_internal_label: bool=True, tag: Item=0, **kwargs) -> mvRawTexture[T]:
         """Creates a raw texture as a child of this registry
-
+    
             :raises `SystemError`: DearPyGui-related error.
             """
 
@@ -10027,7 +10211,7 @@ class mvTheme[U = Any, C: ChildItem[Any, Any, mvTheme, Any] = ChildItem](Contain
     def state(self, /) -> dict[Literal["ok", "pos"], Any]: ...
     def add_theme_component[T](self, item_type: type[AppItem] | int=0, /, *, label: str | None=None, user_data: T=None, use_internal_label: bool=True, tag: Item=0, before: Item=0, enabled_state: bool=True, **kwargs) -> mvThemeComponent[T]:
         """Create a new theme component item as a child of this theme
-
+    
             :raises `SystemError`: DearPyGui-related error.
             """
 
@@ -10073,25 +10257,25 @@ class mvThemeComponent[U = Any, P: mvTheme | mvTemplateRegistry = Any, C: _Eleme
     @overload
     def add_theme_color[T](self, target: mvThemeCol | mvPlotCol | mvNodeCol | int, value: Array[int, Literal[3, 4]]=(0, 0, 0, 255), /, *, category: mvThemeCat | int=_dearpygui.mvThemeCat_Core, label: str | None=None, use_internal_label: bool=True, user_data: T=..., tag: Item=0, **kwargs) -> mvThemeColor[T]:
         """Create a new theme color item as a child of this theme component
-
+    
     :raises `SystemError`: DearPyGui-related error.
     """
     @overload
     def add_theme_color[T](self, target: mvThemeCol | mvPlotCol | mvNodeCol | int, r: int, g: int, b: int, a: int=255, /, *, category: mvThemeCat | int=_dearpygui.mvThemeCat_Core, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, **kwargs) -> mvThemeColor[T]:
         """Create a new theme color item as a child of this theme component
-
+    
     :raises `SystemError`: DearPyGui-related error.
     """
     @overload
     def add_theme_style[T](self, target: mvStyleVar | mvPlotStyleVar | mvNodeStyleVar | int, value: Array[int | float, Literal[2]]=(1.0, -1.0), /, *, category: mvThemeCat | int=_dearpygui.mvThemeCat_Core, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, **kwargs) -> mvThemeStyle[T]:
         """Create a new theme style item as a child of this theme component
-
+    
     :raises `SystemError`: DearPyGui-related error.
     """
     @overload
     def add_theme_style[T](self, target: mvStyleVar | mvPlotStyleVar | mvNodeStyleVar | int, x: float, y: float=-1.0, /, *, category: mvThemeCat | int=_dearpygui.mvThemeCat_Core, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, **kwargs) -> mvThemeStyle[T]:
         """Create a new theme style item as a child of this theme component
-
+    
     :raises `SystemError`: DearPyGui-related error.
     """
 
@@ -10380,57 +10564,57 @@ class mvValueRegistry[U = Any, C: ChildItem[Any, Any, mvValueRegistry, Any] = Ch
     def state(self, /) -> dict[Literal["ok", "pos"], Any]: ...
     def add_bool_value[T](self, /, default_value: bool=False, *, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, source: Item=0, **kwargs) -> mvBoolValue[T]:
         """Creates a new boolean value item as a child of this registry
-
+    
             :raises `SystemError`: DearPyGui-related error.
             """
     def add_double_value[T](self, /, default_value: float=0.0, *, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, source: Item=0, **kwargs) -> mvDoubleValue[T]:
         """Creates a new double value item as a child of this registry
-
+    
             :raises `SystemError`: DearPyGui-related error.
             """
     def add_double4_value[T](self, /, default_value: Array[float, Literal[4]]=(0.0, 0.0, 0.0, 0.0), *, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, source: Item=0, **kwargs) -> mvDouble4Value[T]:
         """Creates a new 4-length double value item as a child of this registry
-
+    
             :raises `SystemError`: DearPyGui-related error.
             """
     def add_color_value[T](self, /, default_value: Array[int, Literal[3, 4]]=(0, 0, 0, 0), *, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, source: Item=0, **kwargs) -> mvColorValue[T]:
         """Creates a new color value item as a child of this registry
-
+    
             :raises `SystemError`: DearPyGui-related error.
             """
     def add_int_value[T](self, /, default_value: int=0, *, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, source: Item=0, **kwargs) -> mvIntValue[T]:
         """Creates a new int value item as a child of this registry
-
+    
             :raises `SystemError`: DearPyGui-related error.
             """
     def add_int4_value[T](self, /, default_value: Array[int, Literal[4]]=(0, 0, 0, 0), *, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, source: Item=0, **kwargs) -> mvInt4Value[T]:
         """Creates a new 4-length int value item as a child of this registry
-
+    
             :raises `SystemError`: DearPyGui-related error.
             """
     def add_float_value[T](self, /, default_value: float=0.0, *, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, source: Item=0, **kwargs) -> mvFloatValue[T]:
         """Creates a new float value item as a child of this registry
-
+    
             :raises `SystemError`: DearPyGui-related error.
             """
     def add_float4_value[T](self, /, default_value: Array[float, Literal[4]]=(0.0, 0.0, 0.0, 0.0), *, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, source: Item=0, **kwargs) -> mvFloat4Value[T]:
         """Creates a new 4-length float value item as a child of this registry
-
+    
             :raises `SystemError`: DearPyGui-related error.
             """
     def add_float_vect_value[T](self, /, default_value: Array[float, Any]=(), *, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, source: Item=0, **kwargs) -> mvFloatVectValue[T]:
         """Creates a new float vector value item as a child of this registry
-
+    
             :raises `SystemError`: DearPyGui-related error.
             """
     def add_series_value[T](self, /, default_value: Array[float, Any]=(), *, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, source: Item=0, **kwargs) -> mvSeriesValue[T]:
         """Creates a new series value item as a child of this registry
-
+    
             :raises `SystemError`: DearPyGui-related error.
             """
     def add_string_value[T](self, /, default_value: str='', *, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, source: Item=0, **kwargs) -> mvStringValue[T]:
         """Creates a new string value item as a child of this registry
-
+    
             :raises `SystemError`: DearPyGui-related error.
             """
 
@@ -10458,6 +10642,70 @@ class mvViewportDrawlist[U = Any, C: ChildItem[Any, Any, mvViewportDrawlist, Any
     def show(self, value: bool, /) -> None: ...
     def configure(self, /, *, front: bool = ..., label: str | None = ..., use_internal_label: bool = ..., user_data: Any | None = ..., filter_key: str = ..., show: bool = ..., **kwargs) -> None: ...
     def state(self, /) -> dict[Literal["ok", "pos"], Any]: ...
+    def add_draw_layer[T](self, /, *, perspective_divide: bool=False, depth_clipping: bool=False, cull_mode: int=0, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, before: Item=0, show: bool=True, **kwargs) -> mvDrawLayer[T]:
+        """Create a new add_draw_layer item as a child of this canvas.
+    
+            :raises `SystemError`: DearPyGui-related error."""
+    def add_draw_node[T](self, /, *, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, before: Item=0, show: bool=True, **kwargs) -> mvDrawNode[T]:
+        """Create a new drawing node item as a child of this container.
+    
+            :raises `SystemError`: DearPyGui-related error."""
+    def draw_arrow[T](self, p1: Array[float, Literal[2]], p2: Array[float, Literal[2]], /, *, color: Array[int, Literal[3, 4]]=(255, 255, 255, 255), thickness: float=1.0, size: int=4, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, before: Item=0, show: bool=True, **kwargs) -> mvDrawArrow[T]:
+        """Create a new arrow item as a child of this container.
+    
+            :raises `SystemError`: DearPyGui-related error."""
+    def draw_bezier_cubic[T](self, p1: Array[float, Literal[2]], p2: Array[float, Literal[2]], p3: Array[float, Literal[2]], p4: Array[float, Literal[2]], /, *, color: Array[int, Literal[3, 4]]=(255, 255, 255, 255), thickness: float=1.0, segments: int=0, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, before: Item=0, show: bool=True, **kwargs) -> mvDrawBezierCubic[T]:
+        """Create a new bezier cubic item as a child of this container.
+    
+            :raises `SystemError`: DearPyGui-related error."""
+    def draw_bezier_quadratic[T](self, p1: Array[float, Literal[2]], p2: Array[float, Literal[2]], p3: Array[float, Literal[2]], /, *, color: Array[int, Literal[3, 4]]=(255, 255, 255, 255), thickness: float=1.0, segments: int=0, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, before: Item=0, show: bool=True, **kwargs) -> mvDrawBezierQuadratic[T]:
+        """Create a new bezier quadratic item as a child of this container.
+    
+            :raises `SystemError`: DearPyGui-related error."""
+    def draw_circle[T](self, center: Array[float, Literal[2]], radius: float, /, *, color: Array[int, Literal[3, 4]]=(255, 255, 255, 255), fill: Array[int, Literal[3, 4]]=(0, 0, 0, -255), thickness: float=1.0, segments: int=0, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, before: Item=0, show: bool=True, **kwargs) -> mvDrawCircle[T]:
+        """Create a new circle item as a child of this container.
+    
+            :raises `SystemError`: DearPyGui-related error."""
+    def draw_ellipse[T](self, pmin: Array[float, Literal[2]], pmax: Array[float, Literal[2]], /, *, color: Array[int, Literal[3, 4]]=(255, 255, 255, 255), fill: Array[int, Literal[3, 4]]=(0, 0, 0, -255), thickness: float=1.0, segments: int=32, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, before: Item=0, show: bool=True, **kwargs) -> mvDrawEllipse[T]:
+        """Create a new ellipse item as a child of this container.
+    
+            :raises `SystemError`: DearPyGui-related error."""
+    def draw_image[T](self, texture_tag: Item, pmin: Array[float, Literal[2]], pmax: Array[float, Literal[2]], /, *, uv_min: List[float] | Tuple[float, ...]=(0.0, 0.0), uv_max: List[float] | Tuple[float, ...]=(1.0, 1.0), color: Array[int, Literal[3, 4]]=(255, 255, 255, 255), label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, before: Item=0, show: bool=True, **kwargs) -> mvDrawImage[T]:
+        """Create a new image item as a child of this container.
+    
+            :raises `SystemError`: DearPyGui-related error."""
+    def draw_image_quad[T](self, texture_tag: Item, p1: Array[float, Literal[2]], p2: Array[float, Literal[2]], p3: Array[float, Literal[2]], p4: Array[float, Literal[2]], /, *, uv1: List[float] | Tuple[float, ...]=(0.0, 0.0), uv2: List[float] | Tuple[float, ...]=(1.0, 0.0), uv3: List[float] | Tuple[float, ...]=(1.0, 1.0), uv4: List[float] | Tuple[float, ...]=(0.0, 1.0), color: Array[int, Literal[3, 4]]=(255, 255, 255, 255), label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, before: Item=0, show: bool=True, **kwargs) -> mvDrawImageQuad[T]:
+        """Create a new image quad item as a child of this container.
+    
+            :raises `SystemError`: DearPyGui-related error."""
+    def draw_line[T](self, p1: Array[float, Literal[2]], p2: Array[float, Literal[2]], /, *, color: Array[int, Literal[3, 4]]=(255, 255, 255, 255), thickness: float=1.0, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, before: Item=0, show: bool=True, **kwargs) -> mvDrawLine[T]:
+        """Create a new line item as a child of this container.
+    
+            :raises `SystemError`: DearPyGui-related error."""
+    def draw_polygon[T](self, points: Array[Array[float, Literal[2]], Any], /, *, color: Array[int, Literal[3, 4]]=(255, 255, 255, 255), fill: Array[int, Literal[3, 4]]=(0, 0, 0, -255), thickness: float=1.0, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, before: Item=0, show: bool=True, **kwargs) -> mvDrawPolygon[T]:
+        """Create a new polygon item as a child of this container.
+    
+            :raises `SystemError`: DearPyGui-related error."""
+    def draw_polyline[T](self, points: Array[Array[float, Literal[2]], Any], /, *, closed: bool=False, color: Array[int, Literal[3, 4]]=(255, 255, 255, 255), thickness: float=1.0, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, before: Item=0, show: bool=True, **kwargs) -> mvDrawPolyline[T]:
+        """Create a new polyline item as a child of this container.
+    
+            :raises `SystemError`: DearPyGui-related error."""
+    def draw_quad[T](self, p1: Array[float, Literal[2]], p2: Array[float, Literal[2]], p3: Array[float, Literal[2]], p4: Array[float, Literal[2]], /, *, color: Array[int, Literal[3, 4]]=(255, 255, 255, 255), fill: Array[int, Literal[3, 4]]=(0, 0, 0, -255), thickness: float=1.0, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, before: Item=0, show: bool=True, **kwargs) -> mvDrawQuad[T]:
+        """Create a new quad item as a child of this container.
+    
+            :raises `SystemError`: DearPyGui-related error."""
+    def draw_rectangle[T](self, pmin: Array[float, Literal[2]], pmax: Array[float, Literal[2]], /, *, color: Array[int, Literal[3, 4]]=(255, 255, 255, 255), fill: Array[int, Literal[3, 4]]=(0, 0, 0, -255), multicolor: bool=False, rounding: float=0.0, thickness: float=1.0, corner_colors: Any=None, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, before: Item=0, show: bool=True, **kwargs) -> mvDrawRect[T]:
+        """Create a new rectangle item as a child of this container.
+    
+            :raises `SystemError`: DearPyGui-related error."""
+    def draw_text[T](self, pos: Array[float, Literal[2]], text: str, /, *, color: Array[int, Literal[3, 4]]=(255, 255, 255, 255), size: float=10.0, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, before: Item=0, show: bool=True, **kwargs) -> mvDrawText[T]:
+        """Create a new text item as a child of this container.
+    
+            :raises `SystemError`: DearPyGui-related error."""
+    def draw_triangle[T](self, p1: Array[float, Literal[2]], p2: Array[float, Literal[2]], p3: Array[float, Literal[2]], /, *, color: Array[int, Literal[3, 4]]=(255, 255, 255, 255), fill: Array[int, Literal[3, 4]]=(0, 0, 0, -255), thickness: float=1.0, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, before: Item=0, show: bool=True, **kwargs) -> mvDrawTriangle[T]:
+        """Create a new triangle item as a child of this container.
+    
+            :raises `SystemError`: DearPyGui-related error."""
 
 def viewport_drawlist[U = Any](*, front: bool = True, label: str | None = None, use_internal_label: bool = True, user_data: Any | None = None, tag: int | str = 0, filter_key: str = "", show: bool = True, **kwargs) -> mvViewportDrawlist[U]: ...
 def add_viewport_drawlist[U = Any](*, front: bool = True, label: str | None = None, use_internal_label: bool = True, user_data: Any | None = None, tag: int | str = 0, filter_key: str = "", show: bool = True, **kwargs) -> mvViewportDrawlist[U]: ...

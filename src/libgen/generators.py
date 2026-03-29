@@ -477,8 +477,14 @@ class ItemsCodeGenerator(_ItemsGenerator):
                 s = ast.unparse(node)
 
                 if isinstance(node, ast.Assign):
-                    if s.startswith("__item_index_type__"):
-                        self._late_assignments[type_name]["__item_index_type__"] = s.partition("=")[-1].strip()
+                    child_node = node.value
+                    name_node  = getattr(child_node, "value", None)
+                    if isinstance(child_node, ast.Attribute) and isinstance(name_node, ast.Name) and name_node.id.startswith("mv"):
+                        self._late_assignments[type_name][child_node.attr] = s.partition("=")[-1].strip()
+                        continue
+                    elif isinstance(child_node, ast.Name) and child_node.id.startswith("mv"):
+                        for name_node in node.targets:
+                            self._late_assignments[type_name][name_node.id] = s.partition("=")[-1].strip()
                         continue
 
                 elif isinstance(node, ast.FunctionDef) and any(getattr(n, "id", None) == "overload" for n in node.decorator_list):
