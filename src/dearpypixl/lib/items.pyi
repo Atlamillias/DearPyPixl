@@ -3749,7 +3749,7 @@ class mvDynamicTexture[U = Any, V: Array[int, Any] = Any, P: mvStage | mvTemplat
     def configure(self, /, *, label: str | None = ..., use_internal_label: bool = ..., user_data: Any | None = ..., **kwargs) -> None: ...
     def state(self, /) -> dict[Literal["ok", "pos"], Any]: ...
     @staticmethod
-    def create_from_file(file: str, /, *, gamma: float=1.0, gamma_scale_factor: float=1.0, label: str | None=None, use_internal_label: bool=True, user_data: Any=None, tag: Item=0, parent: Item=0, **kwargs) -> mvDynamicTexture:
+    def create_from_file[T](file: str, /, *, gamma: float=1.0, gamma_scale_factor: float=1.0, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, parent: Item=0, **kwargs) -> mvDynamicTexture[T]:
         """Create a texture from an image file.
     
             Additional keyword arguments are forwarded to the texture item type's
@@ -7371,7 +7371,7 @@ class mvRawTexture[U = Any, P: mvStage | mvTemplateRegistry | mvTextureRegistry 
     def configure(self, /, *, label: str | None = ..., use_internal_label: bool = ..., user_data: Any | None = ..., **kwargs) -> None: ...
     def state(self, /) -> dict[Literal["ok", "pos"], Any]: ...
     @staticmethod
-    def create_from_file(file: str, /, *, gamma: float=1.0, gamma_scale_factor: float=1.0, format: int=_dearpygui.mvFormat_Float_rgba, label: str | None=None, use_internal_label: bool=True, user_data: Any=None, tag: Item=0, parent: Item=0, **kwargs) -> mvRawTexture:
+    def create_from_file[T](file: str, /, *, gamma: float=1.0, gamma_scale_factor: float=1.0, format: int=_dearpygui.mvFormat_Float_rgba, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, parent: Item=0, **kwargs) -> mvRawTexture[T]:
         """Create a texture from an image file.
     
             Additional keyword arguments are forwarded to the texture item type's
@@ -8679,7 +8679,7 @@ class mvStaticTexture[U = Any, V: Array[int, Any] = Any, P: mvStage | mvTemplate
     def configure(self, /, *, label: str | None = ..., use_internal_label: bool = ..., user_data: Any | None = ..., **kwargs) -> None: ...
     def state(self, /) -> dict[Literal["ok", "pos"], Any]: ...
     @staticmethod
-    def create_from_file(file: str, /, *, gamma: float=1.0, gamma_scale_factor: float=1.0, label: str | None=None, use_internal_label: bool=True, user_data: Any=None, tag: Item=0, parent: Item=0, **kwargs) -> mvStaticTexture:
+    def create_from_file[T](file: str, /, *, gamma: float=1.0, gamma_scale_factor: float=1.0, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, parent: Item=0, **kwargs) -> mvStaticTexture[T]:
         """Create a texture from an image file.
     
             Additional keyword arguments are forwarded to the texture item type's
@@ -9709,11 +9709,11 @@ class mvTextureRegistry[U = Any, C: ChildItem[Any, Any, mvTextureRegistry, Any] 
     
             :raises `SystemError`: DearPyGui-related error.
             """
-    def add_static_texture(self, width: int, height: int, default_value: Array[int | float, Any], /, *, label: str | None=None, user_data: Any=None, use_internal_label: bool=True, tag: Item=0, **kwargs) -> mvStaticTexture:
+    def add_static_texture[T](self, width: int, height: int, default_value: Array[int | float, Any], /, *, label: str | None=None, user_data: T=None, use_internal_label: bool=True, tag: Item=0, **kwargs) -> mvStaticTexture[T]:
         """Creates a static texture as a child of this registry."""
-    def add_dynamic_texture(self, width: int, height: int, default_value: Array[int | float, Any], /, *, label: str | None=None, user_data: Any=None, use_internal_label: bool=True, tag: Item=0, **kwargs) -> mvDynamicTexture:
+    def add_dynamic_texture[T](self, width: int, height: int, default_value: Array[int | float, Any], /, *, label: str | None=None, user_data: T=None, use_internal_label: bool=True, tag: Item=0, **kwargs) -> mvDynamicTexture[T]:
         """Creates a dynamic texture as a child of this registry."""
-    def add_raw_texture(self, width: int, height: int, default_value: Array[int | float, Any], /, *, format: int=_dearpygui.mvFormat_Float_rgba, label: str | None=None, user_data: Any=None, use_internal_label: bool=True, tag: Item=0, **kwargs) -> mvRawTexture:
+    def add_raw_texture[T](self, width: int, height: int, default_value: Array[int | float, Any], /, *, format: int=_dearpygui.mvFormat_Float_rgba, label: str | None=None, user_data: T=None, use_internal_label: bool=True, tag: Item=0, **kwargs) -> mvRawTexture[T]:
         """Creates a raw texture as a child of this registry."""
 
 def texture_registry[U = Any](*, show: bool = False, label: str | None = None, use_internal_label: bool = True, user_data: Any | None = None, tag: int | str = 0, **kwargs) -> mvTextureRegistry[U]: ...

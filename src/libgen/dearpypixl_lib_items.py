@@ -50,7 +50,7 @@ class mvThemeComponent:
     def add_theme_color(self, target, obj = (0, 0, 0, 255), g = -1, b = -1, a = 255, /, **kwargs) -> mvThemeColor:
         """Create a new theme color item as a child of this theme component."""
         kwargs["parent"] = self
-        return mvThemeColor.create(target, obj if g == -1 else (obj, g, b, a), **kwargs)
+        return mvThemeColor.create(target, obj if g == -1 else (obj, g, b, a), **kwargs)  # ty:ignore[unresolved-attribute]
 
     @overload
     def add_theme_style[T](self, target: mvStyleVar | mvPlotStyleVar | mvNodeStyleVar | int, value: Array[int | float, Literal[2]] = (1.0, -1.0), /, *, category: mvThemeCat | int = _dearpygui.mvThemeCat_Core, label: str | None = None, use_internal_label: bool = True, user_data: Any | None = None, tag: Item = 0, **kwargs) -> mvThemeStyle[T]: ...
@@ -63,7 +63,7 @@ class mvThemeComponent:
         elif hasattr(obj, "__iter__"):
             x, y = obj
         kwargs["parent"] = self
-        return mvThemeStyle.create(target, x, y, **kwargs)
+        return mvThemeStyle.create(target, x, y, **kwargs)  # ty:ignore[unresolved-attribute]
 
 
 class mvTheme:
@@ -72,7 +72,7 @@ class mvTheme:
     def add_theme_component[T](self, item_type: type[AppItem] | int = 0, /, *, label: str | None = None, user_data: T = None, use_internal_label: bool = True, tag: Item = 0, before: Item = 0, enabled_state: bool = True, **kwargs) -> mvThemeComponent[T]:  # ty: ignore
         """Create a new theme component item as a child of this theme."""
         kwargs["parent"] = self
-        return mvThemeComponent.create(int(item_type), label=label, user_data=user_data, use_internal_label=use_internal_label, tag=tag, before=before, enabled_state=enabled_state, **kwargs)
+        return mvThemeComponent.create(int(item_type), label=label, user_data=user_data, use_internal_label=use_internal_label, tag=tag, before=before, enabled_state=enabled_state, **kwargs)  # ty:ignore[unresolved-attribute]
 
 
 class mvValueRegistry:
@@ -189,25 +189,25 @@ class mvTextureRegistry:
         """
         dearpygui.save_image(file, width, height, data, components=components, quality=quality, **kwargs)
 
-    def add_static_texture(self, width: int, height: int, default_value: Array[int | float, Any], /, *, label: str | None = None, user_data: Any = None, use_internal_label: bool = True, tag: Item = 0, **kwargs) -> mvStaticTexture:
+    def add_static_texture[T](self, width: int, height: int, default_value: Array[int | float, Any], /, *, label: str | None = None, user_data: T = None, use_internal_label: bool = True, tag: Item = 0, **kwargs) -> mvStaticTexture[T]:  # ty:ignore[invalid-parameter-default]
         """Creates a static texture as a child of this registry."""
         kwargs["parent"] = self
-        return mvStaticTexture.create(width, height, default_value, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, **kwargs)
+        return mvStaticTexture.create(width, height, default_value, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, **kwargs)  # ty:ignore[unresolved-attribute]
 
-    def add_dynamic_texture(self, width: int, height: int, default_value: Array[int | float, Any], /, *, label: str | None = None, user_data: Any = None, use_internal_label: bool = True, tag: Item = 0, **kwargs) -> mvDynamicTexture:
+    def add_dynamic_texture[T](self, width: int, height: int, default_value: Array[int | float, Any], /, *, label: str | None = None, user_data: T = None, use_internal_label: bool = True, tag: Item = 0, **kwargs) -> mvDynamicTexture[T]:  # ty:ignore[invalid-parameter-default]
         """Creates a dynamic texture as a child of this registry."""
         kwargs["parent"] = self
-        return mvDynamicTexture.create(width, height, default_value, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, **kwargs)
+        return mvDynamicTexture.create(width, height, default_value, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, **kwargs)  # ty:ignore[unresolved-attribute]
 
-    def add_raw_texture(self, width: int, height: int, default_value: Array[int | float, Any], /, *, format: int = _dearpygui.mvFormat_Float_rgba, label: str | None = None, user_data: Any = None, use_internal_label: bool = True, tag: Item = 0, **kwargs) -> mvRawTexture:
+    def add_raw_texture[T](self, width: int, height: int, default_value: Array[int | float, Any], /, *, format: int = _dearpygui.mvFormat_Float_rgba, label: str | None = None, user_data: T = None, use_internal_label: bool = True, tag: Item = 0, **kwargs) -> mvRawTexture[T]:  # ty:ignore[invalid-parameter-default]
         """Creates a raw texture as a child of this registry."""
         kwargs["parent"] = self
-        return mvRawTexture.create(width, height, default_value, format=format, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, **kwargs)
+        return mvRawTexture.create(width, height, default_value, format=format, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, **kwargs)  # ty:ignore[unresolved-attribute]
 
 
 class mvStaticTexture:
     @staticmethod
-    def create_from_file(file: str, /, *, gamma: float = 1.0, gamma_scale_factor: float = 1.0, label: str | None = None, use_internal_label: bool = True, user_data: Any = None, tag: Item = 0, parent: Item = 0, **kwargs) -> mvStaticTexture:
+    def create_from_file[T](file: str, /, *, gamma: float = 1.0, gamma_scale_factor: float = 1.0, label: str | None = None, use_internal_label: bool = True, user_data: T = None, tag: Item = 0, parent: Item = 0, **kwargs) -> mvStaticTexture[T]:  # ty:ignore[invalid-parameter-default]
         """Create a texture from an image file.
 
         Additional keyword arguments are forwarded to the texture item type's
@@ -262,7 +262,7 @@ class mvStaticTexture:
 
 class mvDynamicTexture:
     @staticmethod
-    def create_from_file(file: str, /, *, gamma: float = 1.0, gamma_scale_factor: float = 1.0, label: str | None = None, use_internal_label: bool = True, user_data: Any = None, tag: Item = 0, parent: Item = 0, **kwargs) -> mvDynamicTexture:
+    def create_from_file[T](file: str, /, *, gamma: float = 1.0, gamma_scale_factor: float = 1.0, label: str | None = None, use_internal_label: bool = True, user_data: T = None, tag: Item = 0, parent: Item = 0, **kwargs) -> mvDynamicTexture[T]:  # ty:ignore[invalid-parameter-default]
         """Create a texture from an image file.
 
         Additional keyword arguments are forwarded to the texture item type's
@@ -317,7 +317,7 @@ class mvDynamicTexture:
 
 class mvRawTexture:
     @staticmethod
-    def create_from_file(file: str, /, *, gamma: float = 1.0, gamma_scale_factor: float = 1.0, format: int = _dearpygui.mvFormat_Float_rgba, label: str | None = None, use_internal_label: bool = True, user_data: Any = None, tag: Item = 0, parent: Item = 0, **kwargs) -> mvRawTexture:
+    def create_from_file[T](file: str, /, *, gamma: float = 1.0, gamma_scale_factor: float = 1.0, format: int = _dearpygui.mvFormat_Float_rgba, label: str | None = None, use_internal_label: bool = True, user_data: T = None, tag: Item = 0, parent: Item = 0, **kwargs) -> mvRawTexture[T]:  # ty:ignore[invalid-parameter-default]
         """Create a texture from an image file.
 
         Additional keyword arguments are forwarded to the texture item type's

@@ -4061,7 +4061,7 @@ class mvDynamicTexture(SupportsValueArray, ChildItem, command="add_dynamic_textu
         return __func(self)["height"]
     
     @staticmethod
-    def create_from_file(file, /, *, gamma=1.0, gamma_scale_factor=1.0, label=None, use_internal_label=True, user_data=None, tag=0, parent=0, **kwargs):
+    def create_from_file[T](file, /, *, gamma=1.0, gamma_scale_factor=1.0, label=None, use_internal_label=True, user_data=None, tag=0, parent=0, **kwargs):
         try:
             wt, ht, ch, im = dearpygui.load_image(file, gamma=gamma, gamma_scale_factor=gamma_scale_factor)
         except ValueError:
@@ -5715,7 +5715,7 @@ class mvRawTexture(ChildItem, command="add_raw_texture", slot=1):
         return __func(self)["height"]
     
     @staticmethod
-    def create_from_file(file, /, *, gamma=1.0, gamma_scale_factor=1.0, format=_dearpygui.mvFormat_Float_rgba, label=None, use_internal_label=True, user_data=None, tag=0, parent=0, **kwargs):
+    def create_from_file[T](file, /, *, gamma=1.0, gamma_scale_factor=1.0, format=_dearpygui.mvFormat_Float_rgba, label=None, use_internal_label=True, user_data=None, tag=0, parent=0, **kwargs):
         try:
             wt, ht, ch, im = dearpygui.load_image(file, gamma=gamma, gamma_scale_factor=gamma_scale_factor)
         except ValueError:
@@ -6252,7 +6252,7 @@ class mvStaticTexture(SupportsValueArray, ChildItem, command="add_static_texture
         return __func(self)["height"]
     
     @staticmethod
-    def create_from_file(file, /, *, gamma=1.0, gamma_scale_factor=1.0, label=None, use_internal_label=True, user_data=None, tag=0, parent=0, **kwargs):
+    def create_from_file[T](file, /, *, gamma=1.0, gamma_scale_factor=1.0, label=None, use_internal_label=True, user_data=None, tag=0, parent=0, **kwargs):
         try:
             wt, ht, ch, im = dearpygui.load_image(file, gamma=gamma, gamma_scale_factor=gamma_scale_factor)
         except ValueError:
@@ -6674,15 +6674,15 @@ class mvTextureRegistry(ContainerItem, command="add_texture_registry", slot=1):
     def save_image(file, width, height, data, /, *, components=4, quality=50, **kwargs):
         dearpygui.save_image(file, width, height, data, components=components, quality=quality, **kwargs)
 
-    def add_static_texture(self, width, height, default_value, /, *, label=None, user_data=None, use_internal_label=True, tag=0, **kwargs):
+    def add_static_texture[T](self, width, height, default_value, /, *, label=None, user_data=None, use_internal_label=True, tag=0, **kwargs):
         kwargs['parent'] = self
         return mvStaticTexture.create(width, height, default_value, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, **kwargs)
 
-    def add_dynamic_texture(self, width, height, default_value, /, *, label=None, user_data=None, use_internal_label=True, tag=0, **kwargs):
+    def add_dynamic_texture[T](self, width, height, default_value, /, *, label=None, user_data=None, use_internal_label=True, tag=0, **kwargs):
         kwargs['parent'] = self
         return mvDynamicTexture.create(width, height, default_value, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, **kwargs)
 
-    def add_raw_texture(self, width, height, default_value, /, *, format=_dearpygui.mvFormat_Float_rgba, label=None, user_data=None, use_internal_label=True, tag=0, **kwargs):
+    def add_raw_texture[T](self, width, height, default_value, /, *, format=_dearpygui.mvFormat_Float_rgba, label=None, user_data=None, use_internal_label=True, tag=0, **kwargs):
         kwargs['parent'] = self
         return mvRawTexture.create(width, height, default_value, format=format, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, **kwargs)
 
