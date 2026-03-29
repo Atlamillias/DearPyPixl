@@ -70,7 +70,7 @@ class AppItemType(type):
 
         cls = self.__item_type__
         if cls is not None:
-            return str(self.__str__) == other or int(self) == other
+            return str(self) == other or int(self) == other
 
         return False
 
