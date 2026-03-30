@@ -3010,7 +3010,7 @@ class mvColorMapRegistry(ContainerItem, command="add_colormap_registry", slot=1)
 
     show = _property__show
 
-    def add_colormap[T](self, colors, qualitative, /, *, label=None, use_internal_label=True, user_data=None, tag=0, show=True, **kwargs):
+    def add_colormap(self, colors, qualitative, /, *, label=None, use_internal_label=True, user_data=None, tag=0, show=True, **kwargs):
         kwargs['parent'] = self
         return mvColorMap.create(colors, qualitative, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, show=show, **kwargs)
 
@@ -4065,7 +4065,7 @@ class mvDynamicTexture(SupportsValueArray, ChildItem, command="add_dynamic_textu
         return __func(self)["height"]
     
     @staticmethod
-    def create_from_file[T](file, /, *, gamma=1.0, gamma_scale_factor=1.0, label=None, use_internal_label=True, user_data=None, tag=0, parent=0, **kwargs):
+    def create_from_file(file, /, *, gamma=1.0, gamma_scale_factor=1.0, label=None, use_internal_label=True, user_data=None, tag=0, parent=0, **kwargs):
         try:
             wt, ht, ch, im = dearpygui.load_image(file, gamma=gamma, gamma_scale_factor=gamma_scale_factor)
         except ValueError:
@@ -4240,19 +4240,19 @@ class mvFont(ContainerItem, ChildItem, command="add_font", slot=1):
     
     pixel_snapH = _property__pixel_snapH
 
-    def add_char_remap[T](self, source, target, /, *, label=None, use_internal_label=True, user_data=None, tag=0, **kwargs):
+    def add_char_remap(self, source, target, /, *, label=None, use_internal_label=True, user_data=None, tag=0, **kwargs):
         kwargs['parent'] = self
         return mvCharRemap.create(source, target, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, **kwargs)
 
-    def add_font_chars[T](self, chars, /, *, label=None, use_internal_label=True, user_data=None, tag=0, **kwargs):
+    def add_font_chars(self, chars, /, *, label=None, use_internal_label=True, user_data=None, tag=0, **kwargs):
         kwargs['parent'] = self
         return mvFontChars.create(chars, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, **kwargs)
 
-    def add_font_range[T](self, first_char, last_char, /, *, label=None, use_internal_label=True, user_data=None, tag=0, **kwargs):
+    def add_font_range(self, first_char, last_char, /, *, label=None, use_internal_label=True, user_data=None, tag=0, **kwargs):
         kwargs['parent'] = self
         return mvFontRange.create(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, **kwargs)
 
-    def add_font_range_hint[T](self, hint, /, *, label=None, use_internal_label=True, user_data=None, tag=0, **kwargs):
+    def add_font_range_hint(self, hint, /, *, label=None, use_internal_label=True, user_data=None, tag=0, **kwargs):
         kwargs['parent'] = self
         return mvFontRangeHint.create(hint, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, **kwargs)
 
@@ -4317,7 +4317,7 @@ class mvFontRegistry(ContainerItem, command="add_font_registry", slot=1):
 
     show = _property__show
 
-    def add_font[T](self, file, size, /, *, pixel_snapH=False, label=None, use_internal_label=True, user_data=None, tag=0, **kwargs):
+    def add_font(self, file, size, /, *, pixel_snapH=False, label=None, use_internal_label=True, user_data=None, tag=0, **kwargs):
         kwargs['parent'] = self
         return mvFont.create(file, size, label=label, pixel_snapH=pixel_snapH, use_internal_label=use_internal_label, user_data=user_data, tag=tag, **kwargs)
 
@@ -4379,43 +4379,43 @@ class mvHandlerRegistry(ContainerItem, command="add_handler_registry", slot=1):
 
     __item_index_type__ = _HandlerItem
 
-    def add_key_down_handler[T](self, key=_dearpygui.mvKey_None, *, label=None, use_internal_label=True, user_data=None, tag=0, callback=None, show=True, **kwargs):
+    def add_key_down_handler(self, key=_dearpygui.mvKey_None, *, label=None, use_internal_label=True, user_data=None, tag=0, callback=None, show=True, **kwargs):
         kwargs['parent'] = self
         return mvKeyDownHandler.create(key, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, callback=callback, show=show, **kwargs)
 
-    def add_key_press_handler[T](self, key=_dearpygui.mvKey_None, *, label=None, use_internal_label=True, user_data=None, tag=0, callback=None, show=True, **kwargs):
+    def add_key_press_handler(self, key=_dearpygui.mvKey_None, *, label=None, use_internal_label=True, user_data=None, tag=0, callback=None, show=True, **kwargs):
         kwargs['parent'] = self
         return mvKeyPressHandler.create(key, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, callback=callback, show=show, **kwargs)
 
-    def add_key_release_handler[T](self, key=_dearpygui.mvKey_None, *, label=None, use_internal_label=True, user_data=None, tag=0, callback=None, show=True, **kwargs):
+    def add_key_release_handler(self, key=_dearpygui.mvKey_None, *, label=None, use_internal_label=True, user_data=None, tag=0, callback=None, show=True, **kwargs):
         kwargs['parent'] = self
         return mvKeyReleaseHandler.create(key, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, callback=callback, show=show, **kwargs)
 
-    def add_mouse_click_handler[T](self, button=-1, *, label=None, use_internal_label=True, user_data=None, tag=0, callback=None, show=True, **kwargs):
+    def add_mouse_click_handler(self, button=-1, *, label=None, use_internal_label=True, user_data=None, tag=0, callback=None, show=True, **kwargs):
         kwargs['parent'] = self
         return mvMouseClickHandler.create(button, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, callback=callback, show=show, **kwargs)
 
-    def add_mouse_double_click_handler[T](self, button=-1, *, label=None, use_internal_label=True, user_data=None, tag=0, callback=None, show=True, **kwargs):
+    def add_mouse_double_click_handler(self, button=-1, *, label=None, use_internal_label=True, user_data=None, tag=0, callback=None, show=True, **kwargs):
         kwargs['parent'] = self
         return mvMouseDoubleClickHandler.create(button, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, callback=callback, show=show, **kwargs)
 
-    def add_mouse_down_handler[T](self, button=-1, *, label=None, use_internal_label=True, user_data=None, tag=0, callback=None, show=True, **kwargs):
+    def add_mouse_down_handler(self, button=-1, *, label=None, use_internal_label=True, user_data=None, tag=0, callback=None, show=True, **kwargs):
         kwargs['parent'] = self
         return mvMouseDownHandler.create(button, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, callback=callback, show=show, **kwargs)
 
-    def add_mouse_drag_handler[T](self, button=-1, threshold=10.0, *, label=None, use_internal_label=True, user_data=None, tag=0, callback=None, show=True, **kwargs):
+    def add_mouse_drag_handler(self, button=-1, threshold=10.0, *, label=None, use_internal_label=True, user_data=None, tag=0, callback=None, show=True, **kwargs):
         kwargs['parent'] = self
         return mvMouseDragHandler.create(button, threshold, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, callback=callback, show=show, **kwargs)
 
-    def add_mouse_move_handler[T](self, *, label=None, use_internal_label=True, user_data=None, tag=0, callback=None, show=True, **kwargs):
+    def add_mouse_move_handler(self, *, label=None, use_internal_label=True, user_data=None, tag=0, callback=None, show=True, **kwargs):
         kwargs['parent'] = self
         return mvMouseMoveHandler.create(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, callback=callback, show=show, **kwargs)
 
-    def add_mouse_release_handler[T](self, button=-1, *, label=None, use_internal_label=True, user_data=None, tag=0, callback=None, show=True, **kwargs):
+    def add_mouse_release_handler(self, button=-1, *, label=None, use_internal_label=True, user_data=None, tag=0, callback=None, show=True, **kwargs):
         kwargs['parent'] = self
         return mvMouseReleaseHandler.create(button, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, callback=callback, show=show, **kwargs)
 
-    def add_mouse_wheel_handler[T](self, *, label=None, use_internal_label=True, user_data=None, tag=0, callback=None, show=True, **kwargs):
+    def add_mouse_wheel_handler(self, *, label=None, use_internal_label=True, user_data=None, tag=0, callback=None, show=True, **kwargs):
         kwargs['parent'] = self
         return mvMouseWheelHandler.create(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, callback=callback, show=show, **kwargs)
 
@@ -4992,55 +4992,55 @@ class mvItemHandlerRegistry(ContainerItem, command="add_item_handler_registry", 
 
     __item_index_type__ = _HandlerItem
 
-    def add_item_activated_handler[T](self, *, label=None, use_internal_label=True, user_data=None, tag=0, callback=None, show=True, **kwargs):
+    def add_item_activated_handler(self, *, label=None, use_internal_label=True, user_data=None, tag=0, callback=None, show=True, **kwargs):
         kwargs['parent'] = self
         return mvActivatedHandler.create(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, callback=callback, show=show, **kwargs)
 
-    def add_item_active_handler[T](self, *, label=None, use_internal_label=True, user_data=None, tag=0, callback=None, show=True, **kwargs):
+    def add_item_active_handler(self, *, label=None, use_internal_label=True, user_data=None, tag=0, callback=None, show=True, **kwargs):
         kwargs['parent'] = self
         return mvActiveHandler.create(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, callback=callback, show=show, **kwargs)
 
-    def add_item_clicked_handler[T](self, button=-1, *, label=None, use_internal_label=True, user_data=None, tag=0, callback=None, show=True, **kwargs):
+    def add_item_clicked_handler(self, button=-1, *, label=None, use_internal_label=True, user_data=None, tag=0, callback=None, show=True, **kwargs):
         kwargs['parent'] = self
         return mvClickedHandler.create(button, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, callback=callback, show=show, **kwargs)
 
-    def add_item_deactivated_after_edit_handler[T](self, *, label=None, use_internal_label=True, user_data=None, tag=0, callback=None, show=True, **kwargs):
+    def add_item_deactivated_after_edit_handler(self, *, label=None, use_internal_label=True, user_data=None, tag=0, callback=None, show=True, **kwargs):
         kwargs['parent'] = self
         return mvDeactivatedAfterEditHandler.create(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, callback=callback, show=show, **kwargs)
 
-    def add_item_deactivated_handler[T](self, *, label=None, use_internal_label=True, user_data=None, tag=0, callback=None, show=True, **kwargs):
+    def add_item_deactivated_handler(self, *, label=None, use_internal_label=True, user_data=None, tag=0, callback=None, show=True, **kwargs):
         kwargs['parent'] = self
         return mvDeactivatedHandler.create(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, callback=callback, show=show, **kwargs)
 
-    def add_item_double_clicked_handler[T](self, button=-1, *, label=None, use_internal_label=True, user_data=None, tag=0, callback=None, show=True, **kwargs):
+    def add_item_double_clicked_handler(self, button=-1, *, label=None, use_internal_label=True, user_data=None, tag=0, callback=None, show=True, **kwargs):
         kwargs['parent'] = self
         return mvDoubleClickedHandler.create(button, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, callback=callback, show=show, **kwargs)
 
-    def add_item_edited_handler[T](self, *, label=None, use_internal_label=True, user_data=None, tag=0, callback=None, show=True, **kwargs):
+    def add_item_edited_handler(self, *, label=None, use_internal_label=True, user_data=None, tag=0, callback=None, show=True, **kwargs):
         kwargs['parent'] = self
         return mvEditedHandler.create(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, callback=callback, show=show, **kwargs)
 
-    def add_item_focus_handler[T](self, *, event_type=_dearpygui.mvEventType_On, label=None, use_internal_label=True, user_data=None, tag=0, callback=None, show=True, **kwargs):
+    def add_item_focus_handler(self, *, event_type=_dearpygui.mvEventType_On, label=None, use_internal_label=True, user_data=None, tag=0, callback=None, show=True, **kwargs):
         kwargs['parent'] = self
         return mvFocusHandler.create(event_type=event_type, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, callback=callback, show=show, **kwargs)
 
-    def add_item_hover_handler[T](self, *, event_type=_dearpygui.mvEventType_On, label=None, use_internal_label=True, user_data=None, tag=0, callback=None, show=True, **kwargs):
+    def add_item_hover_handler(self, *, event_type=_dearpygui.mvEventType_On, label=None, use_internal_label=True, user_data=None, tag=0, callback=None, show=True, **kwargs):
         kwargs['parent'] = self
         return mvHoverHandler.create(event_type=event_type, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, callback=callback, show=show, **kwargs)
 
-    def add_item_resize_handler[T](self, *, label=None, use_internal_label=True, user_data=None, tag=0, callback=None, show=True, **kwargs):
+    def add_item_resize_handler(self, *, label=None, use_internal_label=True, user_data=None, tag=0, callback=None, show=True, **kwargs):
         kwargs['parent'] = self
         return mvResizeHandler.create(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, callback=callback, show=show, **kwargs)
 
-    def add_item_scroll_handler[T](self, *, label=None, use_internal_label=True, user_data=None, tag=0, callback=None, show=True, **kwargs):
+    def add_item_scroll_handler(self, *, label=None, use_internal_label=True, user_data=None, tag=0, callback=None, show=True, **kwargs):
         kwargs['parent'] = self
         return mvScrollHandler.create(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, callback=callback, show=show, **kwargs)
 
-    def add_item_toggled_open_handler[T](self, *, label=None, use_internal_label=True, user_data=None, tag=0, callback=None, show=True, **kwargs):
+    def add_item_toggled_open_handler(self, *, label=None, use_internal_label=True, user_data=None, tag=0, callback=None, show=True, **kwargs):
         kwargs['parent'] = self
         return mvToggledOpenHandler.create(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, callback=callback, show=show, **kwargs)
 
-    def add_item_visible_handler[T](self, *, label=None, use_internal_label=True, user_data=None, tag=0, callback=None, show=True, **kwargs):
+    def add_item_visible_handler(self, *, label=None, use_internal_label=True, user_data=None, tag=0, callback=None, show=True, **kwargs):
         kwargs['parent'] = self
         return mvVisibleHandler.create(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, callback=callback, show=show, **kwargs)
 
@@ -5629,15 +5629,15 @@ class mvPlot(ContainerItem, ChildItem, command="add_plot", slot=1):
     rect_min = _property__rect_min
     rect_max = _property__rect_max
 
-    def add_plot_axis[T](self, axis, /, *, label=None, use_internal_label=True, user_data=None, tag=0, payload_type='$$DPG_PAYLOAD', drop_callback=None, show=True, no_label=False, no_gridlines=False, no_tick_marks=False, no_tick_labels=False, no_initial_fit=False, no_menus=False, no_side_switch=False, no_highlight=False, opposite=False, foreground_grid=False, tick_format='', scale=_dearpygui.mvPlotScale_Linear, invert=False, auto_fit=False, range_fit=False, pan_stretch=False, lock_min=False, lock_max=False, **kwargs):
+    def add_plot_axis(self, axis, /, *, label=None, use_internal_label=True, user_data=None, tag=0, payload_type='$$DPG_PAYLOAD', drop_callback=None, show=True, no_label=False, no_gridlines=False, no_tick_marks=False, no_tick_labels=False, no_initial_fit=False, no_menus=False, no_side_switch=False, no_highlight=False, opposite=False, foreground_grid=False, tick_format='', scale=_dearpygui.mvPlotScale_Linear, invert=False, auto_fit=False, range_fit=False, pan_stretch=False, lock_min=False, lock_max=False, **kwargs):
         kwargs['parent'] = self
         return mvPlotAxis.create(axis, label=label, user_data=user_data, use_internal_label=use_internal_label, tag=tag, payload_type=payload_type, drop_callback=drop_callback, show=show, no_label=no_label, no_gridlines=no_gridlines, no_tick_marks=no_tick_marks, no_tick_labels=no_tick_labels, no_initial_fit=no_initial_fit, no_menus=no_menus, no_side_switch=no_side_switch, no_highlight=no_highlight, opposite=opposite, foreground_grid=foreground_grid, tick_format=tick_format, scale=scale, invert=invert, auto_fit=auto_fit, range_fit=range_fit, pan_stretch=pan_stretch, lock_min=lock_min, lock_max=lock_max, **kwargs)
 
-    def add_plot_annotation[T](self, /, *, label=None, use_internal_label=True, user_data=None, tag=0, before=0, source=0, show=True, default_value=(0, 0), offset=(0.0, 0.0), color=(0, 0, 0, 255), clamped=True, **kwargs):
+    def add_plot_annotation(self, /, *, label=None, use_internal_label=True, user_data=None, tag=0, before=0, source=0, show=True, default_value=(0, 0), offset=(0.0, 0.0), color=(0, 0, 0, 255), clamped=True, **kwargs):
         kwargs['parent'] = self
         return mvAnnotation.create(label=label, user_data=user_data, use_internal_label=use_internal_label, tag=tag, before=before, source=source, show=show, default_value=default_value, offset=offset, color=color, clamped=clamped, **kwargs)
 
-    def add_plot_legend[T](self, /, *, label=None, use_internal_label=True, user_data=None, tag=0, payload_type='$$DPG_PAYLOAD', drop_callback=None, show=True, location=_dearpygui.mvPlot_Location_East, horizontal=False, sort=False, outside=False, no_highlight_item=False, no_highlight_axis=False, no_menus=False, no_buttons=False, **kwargs):
+    def add_plot_legend(self, /, *, label=None, use_internal_label=True, user_data=None, tag=0, payload_type='$$DPG_PAYLOAD', drop_callback=None, show=True, location=_dearpygui.mvPlot_Location_East, horizontal=False, sort=False, outside=False, no_highlight_item=False, no_highlight_axis=False, no_menus=False, no_buttons=False, **kwargs):
         kwargs['parent'] = self
         return mvPlotLegend.create(location=location, horizontal=horizontal, sort=sort, outside=outside, no_highlight_item=no_highlight_item, no_highlight_axis=no_highlight_axis, no_menus=no_menus, no_buttons=no_buttons, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, drop_callback=drop_callback, payload_type=payload_type, show=show, **kwargs)
 
@@ -5705,83 +5705,83 @@ class mvPlotAxis(ContainerItem, ChildItem, command="add_plot_axis", slot=1):
     payload_type = _property__payload_type
     show = _property__show
 
-    def add_2dhistogram_series[T](self, x, y, /, *, xbins=-1, ybins=-1, xmin_range=0, xmax_range=0, ymin_range=0, ymax_range=0, density=False, outliers=False, col_major=False, label=None, use_internal_label=True, user_data=None, tag=0, before=0, source=0, show=True, **kwargs):
+    def add_2dhistogram_series(self, x, y, /, *, xbins=-1, ybins=-1, xmin_range=0, xmax_range=0, ymin_range=0, ymax_range=0, density=False, outliers=False, col_major=False, label=None, use_internal_label=True, user_data=None, tag=0, before=0, source=0, show=True, **kwargs):
         kwargs['parent'] = self
         mv2dHistogramSeries.create(x, y, xbins=xbins, ybins=ybins, xmin_range=xmin_range, xmax_range=xmax_range, ymin_range=ymin_range, ymax_range=ymax_range, density=density, outliers=outliers, col_major=col_major, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, source=source, show=show, **kwargs)
 
-    def add_area_series[T](self, x, y, /, *, fill=(0, 0, 0, -255), contribute_to_bounds=True, label=None, use_internal_label=True, user_data=None, tag=0, parent=0, before=0, source=0, show=True, **kwargs):
+    def add_area_series(self, x, y, /, *, fill=(0, 0, 0, -255), contribute_to_bounds=True, label=None, use_internal_label=True, user_data=None, tag=0, parent=0, before=0, source=0, show=True, **kwargs):
         kwargs['parent'] = self
         return mvAreaSeries.create(x, y, fill=fill, contribute_to_bounds=contribute_to_bounds, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, source=source, show=show, **kwargs)
 
-    def add_bargroup_series[T](self, values, label_ids, group_size, /, *, group_width=0.67, shift=0, horizontal=False, stacked=False, label=None, use_internal_label=True, user_data=None, tag=0, parent=0, before=0, source=0, show=True, **kwargs):
+    def add_bargroup_series(self, values, label_ids, group_size, /, *, group_width=0.67, shift=0, horizontal=False, stacked=False, label=None, use_internal_label=True, user_data=None, tag=0, parent=0, before=0, source=0, show=True, **kwargs):
         kwargs['parent'] = self
         return mvBarGroupSeries.create(values, label_ids, group_size, group_width=group_width, shift=shift, horizontal=horizontal, stacked=stacked, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, source=source, show=show, **kwargs)
 
-    def add_bar_series[T](self, x, y, /, *, weight=1, horizontal=False, label=None, use_internal_label=True, user_data=None, tag=0, parent=0, before=0, source=0, show=True, **kwargs):
+    def add_bar_series(self, x, y, /, *, weight=1, horizontal=False, label=None, use_internal_label=True, user_data=None, tag=0, parent=0, before=0, source=0, show=True, **kwargs):
         kwargs['parent'] = self
         return mvBarSeries.create(x, y, weight=weight, horizontal=horizontal, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, source=source, show=show, **kwargs)
 
-    def add_candle_series[T](self, dates, opens, closes, lows, highs, /, *, bull_color=(0, 255, 113, 255), bear_color=(218, 13, 79, 255), weight=0.25, tooltip=True, time_unit=5, label=None, use_internal_label=True, user_data=None, tag=0, before=0, source=0, show=True, **kwargs):
+    def add_candle_series(self, dates, opens, closes, lows, highs, /, *, bull_color=(0, 255, 113, 255), bear_color=(218, 13, 79, 255), weight=0.25, tooltip=True, time_unit=5, label=None, use_internal_label=True, user_data=None, tag=0, before=0, source=0, show=True, **kwargs):
         kwargs['parent'] = self
         return mvCandleSeries.create(dates, opens, closes, lows, highs, bull_color=bull_color, bear_color=bear_color, weight=weight, tooltip=tooltip, time_unit=time_unit, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, source=source, show=show, **kwargs)
 
-    def add_custom_series[T](self, x, y, channel_count, /, *, y1=(), y2=(), y3=(), tooltip=True, no_fit=False, label=None, use_internal_label=True, user_data=None, tag=0, before=0, source=0, callback=None, show=True, **kwargs):
+    def add_custom_series(self, x, y, channel_count, /, *, y1=(), y2=(), y3=(), tooltip=True, no_fit=False, label=None, use_internal_label=True, user_data=None, tag=0, before=0, source=0, callback=None, show=True, **kwargs):
         kwargs['parent'] = self
         return mvCustomSeries.create(x, y, channel_count, y1=y1, y2=y2, y3=y3, tooltip=tooltip, no_fit=no_fit, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, source=source, callback=callback, show=show, **kwargs)
 
-    def add_digital_series[T](self, x, y, /, *, label=None, use_internal_label=True, user_data=None, tag=0, before=0, source=0, show=True, **kwargs):
+    def add_digital_series(self, x, y, /, *, label=None, use_internal_label=True, user_data=None, tag=0, before=0, source=0, show=True, **kwargs):
         kwargs['parent'] = self
         return mvDigitalSeries.create(x, y, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, source=source, show=show, **kwargs)
 
-    def add_error_series[T](self, x, y, negative, positive, /, *, contribute_to_bounds=True, horizontal=False, label=None, use_internal_label=True, user_data=None, tag=0, before=0, source=0, show=True, **kwargs):
+    def add_error_series(self, x, y, negative, positive, /, *, contribute_to_bounds=True, horizontal=False, label=None, use_internal_label=True, user_data=None, tag=0, before=0, source=0, show=True, **kwargs):
         kwargs['parent'] = self
         return mvErrorSeries.create(x, y, negative, positive, contribute_to_bounds=contribute_to_bounds, horizontal=horizontal, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, source=source, show=show, **kwargs)
 
-    def add_heat_series[T](self, x, rows, cols, /, *, scale_min=0, scale_max=1, bounds_min=(0, 0), bounds_max=(1, 1), format='%0.1f', contribute_to_bounds=True, col_major=False, label=None, use_internal_label=True, user_data=None, tag=0, before=0, source=0, show=True, **kwargs):
+    def add_heat_series(self, x, rows, cols, /, *, scale_min=0, scale_max=1, bounds_min=(0, 0), bounds_max=(1, 1), format='%0.1f', contribute_to_bounds=True, col_major=False, label=None, use_internal_label=True, user_data=None, tag=0, before=0, source=0, show=True, **kwargs):
         kwargs['parent'] = self
         return mvHeatSeries.create(x, rows, cols, scale_min=scale_min, scale_max=scale_max, bounds_min=bounds_min, bounds_max=bounds_max, format=format, contribute_to_bounds=contribute_to_bounds, col_major=col_major, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, source=source, show=show, **kwargs)
 
-    def add_histogram_series[T](self, x, /, *, bins=-1, bar_scale=1, min_range=0, max_range=0, cumulative=False, density=False, outliers=True, horizontal=False, contribute_to_bounds=True, label=None, use_internal_label=True, user_data=None, tag=0, before=0, source=0, show=True, **kwargs):
+    def add_histogram_series(self, x, /, *, bins=-1, bar_scale=1, min_range=0, max_range=0, cumulative=False, density=False, outliers=True, horizontal=False, contribute_to_bounds=True, label=None, use_internal_label=True, user_data=None, tag=0, before=0, source=0, show=True, **kwargs):
         kwargs['parent'] = self
         return mvHistogramSeries.create(x, bins=bins, bar_scale=bar_scale, min_range=min_range, max_range=max_range, cumulative=cumulative, density=density, outliers=outliers, horizontal=horizontal, contribute_to_bounds=contribute_to_bounds, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, source=source, show=show, **kwargs)
 
-    def add_image_series[T](self, texture_tag, bounds_min, bounds_max, /, *, uv_min=(0, 0), uv_max=(1, 1), tint_color=(255, 255, 255, 255), label=None, use_internal_label=True, user_data=None, tag=0, before=0, source=0, show=True, **kwargs):
+    def add_image_series(self, texture_tag, bounds_min, bounds_max, /, *, uv_min=(0, 0), uv_max=(1, 1), tint_color=(255, 255, 255, 255), label=None, use_internal_label=True, user_data=None, tag=0, before=0, source=0, show=True, **kwargs):
         kwargs['parent'] = self
         return mvImageSeries.create(texture_tag, bounds_min, bounds_max, uv_min=uv_min, uv_max=uv_max, tint_color=tint_color, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, source=source, show=show, **kwargs)
 
-    def add_infline_series[T](self, x, /, *, horizontal=False, label=None, use_internal_label=True, user_data=None, tag=0, before=0, source=0, show=True, **kwargs):
+    def add_infline_series(self, x, /, *, horizontal=False, label=None, use_internal_label=True, user_data=None, tag=0, before=0, source=0, show=True, **kwargs):
         kwargs['parent'] = self
         return mvInfLineSeries.create(x, horizontal=horizontal, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, source=source, show=show, **kwargs)
 
-    def add_text_point[T](self, x, y, /, *, offset=(0, 0), vertical=False, label=None, use_internal_label=True, user_data=None, tag=0, before=0, source=0, show=True, **kwargs):
+    def add_text_point(self, x, y, /, *, offset=(0, 0), vertical=False, label=None, use_internal_label=True, user_data=None, tag=0, before=0, source=0, show=True, **kwargs):
         kwargs['parent'] = self
         return mvLabelSeries.create(x, y, offset=offset, vertical=vertical, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, source=source, show=show, **kwargs)
 
-    def add_label_series[T](self, x, y, /, *, offset=(0, 0), vertical=False, label=None, use_internal_label=True, user_data=None, tag=0, before=0, source=0, show=True, **kwargs):
+    def add_label_series(self, x, y, /, *, offset=(0, 0), vertical=False, label=None, use_internal_label=True, user_data=None, tag=0, before=0, source=0, show=True, **kwargs):
         kwargs['parent'] = self
         return mvLabelSeries.create(x, y, offset=offset, vertical=vertical, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, source=source, show=show, **kwargs)
 
-    def add_line_series[T](self, x, y, /, *, segments=False, loop=False, skip_nan=False, no_clip=False, shaded=False, label=None, use_internal_label=True, user_data=None, tag=0, before=0, source=0, show=True, **kwargs):
+    def add_line_series(self, x, y, /, *, segments=False, loop=False, skip_nan=False, no_clip=False, shaded=False, label=None, use_internal_label=True, user_data=None, tag=0, before=0, source=0, show=True, **kwargs):
         kwargs['parent'] = self
         return mvLineSeries.create(x, y, segments=segments, loop=loop, skip_nan=skip_nan, no_clip=no_clip, shaded=shaded, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, source=source, show=show, **kwargs)
 
-    def add_pie_series[T](self, x, y, radius, values, labels, /, *, format='%0.2f', angle=90, normalize=False, ignore_hidden=False, label=None, use_internal_label=True, user_data=None, tag=0, before=0, source=0, show=True, **kwargs):
+    def add_pie_series(self, x, y, radius, values, labels, /, *, format='%0.2f', angle=90, normalize=False, ignore_hidden=False, label=None, use_internal_label=True, user_data=None, tag=0, before=0, source=0, show=True, **kwargs):
         kwargs['parent'] = self
         return mvPieSeries.create(x, y, radius, values, labels, format=format, angle=angle, normalize=normalize, ignore_hidden=ignore_hidden, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, source=source, show=show, **kwargs)
 
-    def add_scatter_series[T](self, x, y, /, *, no_clip=False, label=None, use_internal_label=True, user_data=None, tag=0, before=0, source=0, show=True, **kwargs):
+    def add_scatter_series(self, x, y, /, *, no_clip=False, label=None, use_internal_label=True, user_data=None, tag=0, before=0, source=0, show=True, **kwargs):
         kwargs['parent'] = self
         return mvScatterSeries.create(x, y, no_clip=no_clip, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, source=source, show=show, **kwargs)
 
-    def add_shade_series[T](self, x, y, /, *, y2=(), label=None, use_internal_label=True, user_data=None, tag=0, before=0, source=0, show=True, **kwargs):
+    def add_shade_series(self, x, y, /, *, y2=(), label=None, use_internal_label=True, user_data=None, tag=0, before=0, source=0, show=True, **kwargs):
         kwargs['parent'] = self
         return mvShadeSeries.create(x, y, y2=y2, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, source=source, show=show, **kwargs)
 
-    def add_stair_series[T](self, x, y, /, *, pre_step=False, shaded=False, label=None, use_internal_label=True, user_data=None, tag=0, before=0, source=0, show=True, **kwargs):
+    def add_stair_series(self, x, y, /, *, pre_step=False, shaded=False, label=None, use_internal_label=True, user_data=None, tag=0, before=0, source=0, show=True, **kwargs):
         kwargs['parent'] = self
         return mvStairSeries.create(x, y, pre_step=pre_step, shaded=shaded, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, source=source, show=show, **kwargs)
 
-    def add_stem_series[T](self, x, y, /, *, horizontal=False, label=None, use_internal_label=True, user_data=None, tag=0, indent=-1, parent=0, before=0, source=0, show=True, **kwargs):
+    def add_stem_series(self, x, y, /, *, horizontal=False, label=None, use_internal_label=True, user_data=None, tag=0, indent=-1, parent=0, before=0, source=0, show=True, **kwargs):
         kwargs['parent'] = self
         return mvStemSeries.create(x, y, horizontal=horizontal, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, indent=indent, parent=parent, before=before, source=source, show=show, **kwargs)
 
@@ -5926,7 +5926,7 @@ class mvRawTexture(ChildItem, command="add_raw_texture", slot=1):
         return __func(self)["height"]
     
     @staticmethod
-    def create_from_file[T](file, /, *, gamma=1.0, gamma_scale_factor=1.0, format=_dearpygui.mvFormat_Float_rgba, label=None, use_internal_label=True, user_data=None, tag=0, parent=0, **kwargs):
+    def create_from_file(file, /, *, gamma=1.0, gamma_scale_factor=1.0, format=_dearpygui.mvFormat_Float_rgba, label=None, use_internal_label=True, user_data=None, tag=0, parent=0, **kwargs):
         try:
             wt, ht, ch, im = dearpygui.load_image(file, gamma=gamma, gamma_scale_factor=gamma_scale_factor)
         except ValueError:
@@ -6463,7 +6463,7 @@ class mvStaticTexture(SupportsValueArray, ChildItem, command="add_static_texture
         return __func(self)["height"]
     
     @staticmethod
-    def create_from_file[T](file, /, *, gamma=1.0, gamma_scale_factor=1.0, label=None, use_internal_label=True, user_data=None, tag=0, parent=0, **kwargs):
+    def create_from_file(file, /, *, gamma=1.0, gamma_scale_factor=1.0, label=None, use_internal_label=True, user_data=None, tag=0, parent=0, **kwargs):
         try:
             wt, ht, ch, im = dearpygui.load_image(file, gamma=gamma, gamma_scale_factor=gamma_scale_factor)
         except ValueError:
@@ -6617,11 +6617,11 @@ class mvTabBar(ContainerItem, ChildItem, command="add_tab_bar", slot=1):
 
     visible = _property__visible
 
-    def add_tab[T](self, /, *, closable=False, no_tooltip=False, order_mode=0, label=None, use_internal_label=True, user_data=None, tag=0, indent=-1, before=0, filter_key='', drop_callback=None, payload_type='$$DPG_PAYLOAD', tracked=False, track_offset=0.5, show=True, **kwargs):
+    def add_tab(self, /, *, closable=False, no_tooltip=False, order_mode=0, label=None, use_internal_label=True, user_data=None, tag=0, indent=-1, before=0, filter_key='', drop_callback=None, payload_type='$$DPG_PAYLOAD', tracked=False, track_offset=0.5, show=True, **kwargs):
         kwargs['parent'] = self
         return mvTab.create(closable=closable, no_tooltip=no_tooltip, order_mode=order_mode, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, indent=indent, before=before, filter_key=filter_key, drop_callback=drop_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, show=show, **kwargs)
 
-    def add_tab_button[T](self, /, *, no_reorder=False, leading=False, trailing=False, no_tooltip=False, label=None, use_internal_label=True, user_data=None, tag=0, indent=-1, before=0, callback=None, filter_key='', drop_callback=None, drag_callback=None, payload_type='$$DPG_PAYLOAD', tracked=False, track_offset=0.5, show=True, **kwargs):
+    def add_tab_button(self, /, *, no_reorder=False, leading=False, trailing=False, no_tooltip=False, label=None, use_internal_label=True, user_data=None, tag=0, indent=-1, before=0, callback=None, filter_key='', drop_callback=None, drag_callback=None, payload_type='$$DPG_PAYLOAD', tracked=False, track_offset=0.5, show=True, **kwargs):
         kwargs['parent'] = self
         return mvTabButton.create(no_reorder=no_reorder, leading=leading, trailing=trailing, no_tooltip=no_tooltip, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, indent=indent, before=before, callback=callback, filter_key=filter_key, drop_callback=drop_callback, drag_callback=drag_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, show=show, **kwargs)
 
@@ -6893,15 +6893,15 @@ class mvTextureRegistry(ContainerItem, command="add_texture_registry", slot=1):
     def save_image(file, width, height, data, /, *, components=4, quality=50, **kwargs):
         dearpygui.save_image(file, width, height, data, components=components, quality=quality, **kwargs)
 
-    def add_static_texture[T](self, width, height, default_value, /, *, label=None, user_data=None, use_internal_label=True, tag=0, **kwargs):
+    def add_static_texture(self, width, height, default_value, /, *, label=None, user_data=None, use_internal_label=True, tag=0, **kwargs):
         kwargs['parent'] = self
         return mvStaticTexture.create(width, height, default_value, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, **kwargs)
 
-    def add_dynamic_texture[T](self, width, height, default_value, /, *, label=None, user_data=None, use_internal_label=True, tag=0, **kwargs):
+    def add_dynamic_texture(self, width, height, default_value, /, *, label=None, user_data=None, use_internal_label=True, tag=0, **kwargs):
         kwargs['parent'] = self
         return mvDynamicTexture.create(width, height, default_value, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, **kwargs)
 
-    def add_raw_texture[T](self, width, height, default_value, /, *, format=_dearpygui.mvFormat_Float_rgba, label=None, user_data=None, use_internal_label=True, tag=0, **kwargs):
+    def add_raw_texture(self, width, height, default_value, /, *, format=_dearpygui.mvFormat_Float_rgba, label=None, user_data=None, use_internal_label=True, tag=0, **kwargs):
         kwargs['parent'] = self
         return mvRawTexture.create(width, height, default_value, format=format, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, **kwargs)
 
@@ -6915,7 +6915,7 @@ class mvTheme(ContainerItem, command="add_theme", slot=1):
     def create(cls, /, *, label=None, use_internal_label=True, user_data=None, tag=0, __func=_dearpygui.add_theme, **kwargs):  # ty: ignore[invalid-method-override]
         return cls(tag=__func(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag))  # ty: ignore[invalid-argument-type]
 
-    def add_theme_component[T](self, item_type=0, /, *, label=None, user_data=None, use_internal_label=True, tag=0, before=0, enabled_state=True, **kwargs):
+    def add_theme_component(self, item_type=0, /, *, label=None, user_data=None, use_internal_label=True, tag=0, before=0, enabled_state=True, **kwargs):
         kwargs['parent'] = self
         return mvThemeComponent.create(int(item_type), label=label, user_data=user_data, use_internal_label=use_internal_label, tag=tag, before=before, enabled_state=enabled_state, **kwargs)
 
@@ -7105,47 +7105,47 @@ class mvValueRegistry(ContainerItem, command="add_value_registry", slot=1):
     def create(cls, /, *, label=None, use_internal_label=True, user_data=None, tag=0, __func=_dearpygui.add_value_registry, **kwargs):  # ty: ignore[invalid-method-override]
         return cls(tag=__func(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag))  # ty: ignore[invalid-argument-type]
 
-    def add_bool_value[T](self, /, default_value=False, *, label=None, use_internal_label=True, user_data=None, tag=0, source=0, **kwargs):
+    def add_bool_value(self, /, default_value=False, *, label=None, use_internal_label=True, user_data=None, tag=0, source=0, **kwargs):
         kwargs['parent'] = self
         return mvBoolValue.create(default_value=default_value, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, source=source, **kwargs)
 
-    def add_double_value[T](self, /, default_value=0.0, *, label=None, use_internal_label=True, user_data=None, tag=0, source=0, **kwargs):
+    def add_double_value(self, /, default_value=0.0, *, label=None, use_internal_label=True, user_data=None, tag=0, source=0, **kwargs):
         kwargs['parent'] = self
         return mvDoubleValue.create(default_value=default_value, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, source=source, **kwargs)
 
-    def add_double4_value[T](self, /, default_value=(0.0, 0.0, 0.0, 0.0), *, label=None, use_internal_label=True, user_data=None, tag=0, source=0, **kwargs):
+    def add_double4_value(self, /, default_value=(0.0, 0.0, 0.0, 0.0), *, label=None, use_internal_label=True, user_data=None, tag=0, source=0, **kwargs):
         kwargs['parent'] = self
         return mvDouble4Value.create(default_value=default_value, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, source=source, **kwargs)
 
-    def add_color_value[T](self, /, default_value=(0, 0, 0, 0), *, label=None, use_internal_label=True, user_data=None, tag=0, source=0, **kwargs):
+    def add_color_value(self, /, default_value=(0, 0, 0, 0), *, label=None, use_internal_label=True, user_data=None, tag=0, source=0, **kwargs):
         kwargs['parent'] = self
         return mvColorValue.create(default_value=default_value, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, source=source, **kwargs)
 
-    def add_int_value[T](self, /, default_value=0, *, label=None, use_internal_label=True, user_data=None, tag=0, source=0, **kwargs):
+    def add_int_value(self, /, default_value=0, *, label=None, use_internal_label=True, user_data=None, tag=0, source=0, **kwargs):
         kwargs['parent'] = self
         return mvIntValue.create(default_value=default_value, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, source=source, **kwargs)
 
-    def add_int4_value[T](self, /, default_value=(0, 0, 0, 0), *, label=None, use_internal_label=True, user_data=None, tag=0, source=0, **kwargs):
+    def add_int4_value(self, /, default_value=(0, 0, 0, 0), *, label=None, use_internal_label=True, user_data=None, tag=0, source=0, **kwargs):
         kwargs['parent'] = self
         return mvInt4Value.create(default_value=default_value, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, source=source, **kwargs)
 
-    def add_float_value[T](self, /, default_value=0.0, *, label=None, use_internal_label=True, user_data=None, tag=0, source=0, **kwargs):
+    def add_float_value(self, /, default_value=0.0, *, label=None, use_internal_label=True, user_data=None, tag=0, source=0, **kwargs):
         kwargs['parent'] = self
         return mvFloatValue.create(default_value=default_value, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, source=source, **kwargs)
 
-    def add_float4_value[T](self, /, default_value=(0.0, 0.0, 0.0, 0.0), *, label=None, use_internal_label=True, user_data=None, tag=0, source=0, **kwargs):
+    def add_float4_value(self, /, default_value=(0.0, 0.0, 0.0, 0.0), *, label=None, use_internal_label=True, user_data=None, tag=0, source=0, **kwargs):
         kwargs['parent'] = self
         return mvFloat4Value.create(default_value=default_value, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, source=source, **kwargs)
 
-    def add_float_vect_value[T](self, /, default_value=(), *, label=None, use_internal_label=True, user_data=None, tag=0, source=0, **kwargs):
+    def add_float_vect_value(self, /, default_value=(), *, label=None, use_internal_label=True, user_data=None, tag=0, source=0, **kwargs):
         kwargs['parent'] = self
         return mvFloatVectValue.create(default_value=default_value, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, source=source, **kwargs)
 
-    def add_series_value[T](self, /, default_value=(), *, label=None, use_internal_label=True, user_data=None, tag=0, source=0, **kwargs):
+    def add_series_value(self, /, default_value=(), *, label=None, use_internal_label=True, user_data=None, tag=0, source=0, **kwargs):
         kwargs['parent'] = self
         return mvSeriesValue.create(default_value=default_value, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, source=source, **kwargs)
 
-    def add_string_value[T](self, /, default_value='', *, label=None, use_internal_label=True, user_data=None, tag=0, source=0, **kwargs):
+    def add_string_value(self, /, default_value='', *, label=None, use_internal_label=True, user_data=None, tag=0, source=0, **kwargs):
         kwargs['parent'] = self
         return mvStringValue.create(default_value=default_value, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, source=source, **kwargs)
 
@@ -7163,67 +7163,67 @@ class mvViewportDrawlist(ContainerItem, command="add_viewport_drawlist", slot=1)
     filter_key = _property__filter_key
     show = _property__show
 
-    def add_draw_layer[T](self, /, *, perspective_divide=False, depth_clipping=False, cull_mode=0, label=None, use_internal_label=True, user_data=None, tag=0, before=0, show=True, **kwargs):
+    def add_draw_layer(self, /, *, perspective_divide=False, depth_clipping=False, cull_mode=0, label=None, use_internal_label=True, user_data=None, tag=0, before=0, show=True, **kwargs):
         kwargs['parent'] = self
         return mvDrawLayer.create(perspective_divide=perspective_divide, depth_clipping=depth_clipping, cull_mode=cull_mode, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, show=show, **kwargs)
 
-    def add_draw_node[T](self, /, *, label=None, use_internal_label=True, user_data=None, tag=0, before=0, show=True, **kwargs):
+    def add_draw_node(self, /, *, label=None, use_internal_label=True, user_data=None, tag=0, before=0, show=True, **kwargs):
         kwargs['parent'] = self
         return mvDrawNode.create(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, show=show, **kwargs)
 
-    def draw_arrow[T](self, p1, p2, /, *, color=(255, 255, 255, 255), thickness=1.0, size=4, label=None, use_internal_label=True, user_data=None, tag=0, before=0, show=True, **kwargs):
+    def draw_arrow(self, p1, p2, /, *, color=(255, 255, 255, 255), thickness=1.0, size=4, label=None, use_internal_label=True, user_data=None, tag=0, before=0, show=True, **kwargs):
         kwargs['parent'] = self
         return mvDrawArrow.create(p1, p2, color=color, thickness=thickness, size=size, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, show=show, **kwargs)
 
-    def draw_bezier_cubic[T](self, p1, p2, p3, p4, /, *, color=(255, 255, 255, 255), thickness=1.0, segments=0, label=None, use_internal_label=True, user_data=None, tag=0, before=0, show=True, **kwargs):
+    def draw_bezier_cubic(self, p1, p2, p3, p4, /, *, color=(255, 255, 255, 255), thickness=1.0, segments=0, label=None, use_internal_label=True, user_data=None, tag=0, before=0, show=True, **kwargs):
         kwargs['parent'] = self
         return mvDrawBezierCubic.create(p1, p2, p3, p4, color=color, thickness=thickness, segments=segments, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, show=show, **kwargs)
 
-    def draw_bezier_quadratic[T](self, p1, p2, p3, /, *, color=(255, 255, 255, 255), thickness=1.0, segments=0, label=None, use_internal_label=True, user_data=None, tag=0, before=0, show=True, **kwargs):
+    def draw_bezier_quadratic(self, p1, p2, p3, /, *, color=(255, 255, 255, 255), thickness=1.0, segments=0, label=None, use_internal_label=True, user_data=None, tag=0, before=0, show=True, **kwargs):
         kwargs['parent'] = self
         return mvDrawBezierQuadratic.create(p1, p2, p3, color=color, thickness=thickness, segments=segments, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, show=show, **kwargs)
 
-    def draw_circle[T](self, center, radius, /, *, color=(255, 255, 255, 255), fill=(0, 0, 0, -255), thickness=1.0, segments=0, label=None, use_internal_label=True, user_data=None, tag=0, before=0, show=True, **kwargs):
+    def draw_circle(self, center, radius, /, *, color=(255, 255, 255, 255), fill=(0, 0, 0, -255), thickness=1.0, segments=0, label=None, use_internal_label=True, user_data=None, tag=0, before=0, show=True, **kwargs):
         kwargs['parent'] = self
         return mvDrawCircle.create(center, radius, color=color, fill=fill, thickness=thickness, segments=segments, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, show=show, **kwargs)
 
-    def draw_ellipse[T](self, pmin, pmax, /, *, color=(255, 255, 255, 255), fill=(0, 0, 0, -255), thickness=1.0, segments=32, label=None, use_internal_label=True, user_data=None, tag=0, before=0, show=True, **kwargs):
+    def draw_ellipse(self, pmin, pmax, /, *, color=(255, 255, 255, 255), fill=(0, 0, 0, -255), thickness=1.0, segments=32, label=None, use_internal_label=True, user_data=None, tag=0, before=0, show=True, **kwargs):
         kwargs['parent'] = self
         return mvDrawEllipse.create(pmin, pmax, color=color, fill=fill, thickness=thickness, segments=segments, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, show=show, **kwargs)
 
-    def draw_image[T](self, texture_tag, pmin, pmax, /, *, uv_min=(0.0, 0.0), uv_max=(1.0, 1.0), color=(255, 255, 255, 255), label=None, use_internal_label=True, user_data=None, tag=0, before=0, show=True, **kwargs):
+    def draw_image(self, texture_tag, pmin, pmax, /, *, uv_min=(0.0, 0.0), uv_max=(1.0, 1.0), color=(255, 255, 255, 255), label=None, use_internal_label=True, user_data=None, tag=0, before=0, show=True, **kwargs):
         kwargs['parent'] = self
         return mvDrawImage.create(texture_tag, pmin, pmax, uv_min=uv_min, uv_max=uv_max, color=color, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, show=show, **kwargs)
 
-    def draw_image_quad[T](self, texture_tag, p1, p2, p3, p4, /, *, uv1=(0.0, 0.0), uv2=(1.0, 0.0), uv3=(1.0, 1.0), uv4=(0.0, 1.0), color=(255, 255, 255, 255), label=None, use_internal_label=True, user_data=None, tag=0, before=0, show=True, **kwargs):
+    def draw_image_quad(self, texture_tag, p1, p2, p3, p4, /, *, uv1=(0.0, 0.0), uv2=(1.0, 0.0), uv3=(1.0, 1.0), uv4=(0.0, 1.0), color=(255, 255, 255, 255), label=None, use_internal_label=True, user_data=None, tag=0, before=0, show=True, **kwargs):
         kwargs['parent'] = self
         return mvDrawImageQuad.create(texture_tag, p1, p2, p3, p4, uv1=uv1, uv2=uv2, uv3=uv3, uv4=uv4, color=color, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, show=show, **kwargs)
 
-    def draw_line[T](self, p1, p2, /, *, color=(255, 255, 255, 255), thickness=1.0, label=None, use_internal_label=True, user_data=None, tag=0, before=0, show=True, **kwargs):
+    def draw_line(self, p1, p2, /, *, color=(255, 255, 255, 255), thickness=1.0, label=None, use_internal_label=True, user_data=None, tag=0, before=0, show=True, **kwargs):
         kwargs['parent'] = self
         return mvDrawLine.create(p1, p2, color=color, thickness=thickness, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, show=show, **kwargs)
 
-    def draw_polygon[T](self, points, /, *, color=(255, 255, 255, 255), fill=(0, 0, 0, -255), thickness=1.0, label=None, use_internal_label=True, user_data=None, tag=0, before=0, show=True, **kwargs):
+    def draw_polygon(self, points, /, *, color=(255, 255, 255, 255), fill=(0, 0, 0, -255), thickness=1.0, label=None, use_internal_label=True, user_data=None, tag=0, before=0, show=True, **kwargs):
         kwargs['parent'] = self
         return mvDrawPolygon.create(points, color=color, fill=fill, thickness=thickness, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, show=show, **kwargs)
 
-    def draw_polyline[T](self, points, /, *, closed=False, color=(255, 255, 255, 255), thickness=1.0, label=None, use_internal_label=True, user_data=None, tag=0, before=0, show=True, **kwargs):
+    def draw_polyline(self, points, /, *, closed=False, color=(255, 255, 255, 255), thickness=1.0, label=None, use_internal_label=True, user_data=None, tag=0, before=0, show=True, **kwargs):
         kwargs['parent'] = self
         return mvDrawPolyline.create(points, closed=closed, color=color, thickness=thickness, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, show=show, **kwargs)
 
-    def draw_quad[T](self, p1, p2, p3, p4, /, *, color=(255, 255, 255, 255), fill=(0, 0, 0, -255), thickness=1.0, label=None, use_internal_label=True, user_data=None, tag=0, before=0, show=True, **kwargs):
+    def draw_quad(self, p1, p2, p3, p4, /, *, color=(255, 255, 255, 255), fill=(0, 0, 0, -255), thickness=1.0, label=None, use_internal_label=True, user_data=None, tag=0, before=0, show=True, **kwargs):
         kwargs['parent'] = self
         return mvDrawQuad.create(p1, p2, p3, p4, color=color, fill=fill, thickness=thickness, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, show=show, **kwargs)
 
-    def draw_rectangle[T](self, pmin, pmax, /, *, color=(255, 255, 255, 255), fill=(0, 0, 0, -255), multicolor=False, rounding=0.0, thickness=1.0, corner_colors=None, label=None, use_internal_label=True, user_data=None, tag=0, before=0, show=True, **kwargs):
+    def draw_rectangle(self, pmin, pmax, /, *, color=(255, 255, 255, 255), fill=(0, 0, 0, -255), multicolor=False, rounding=0.0, thickness=1.0, corner_colors=None, label=None, use_internal_label=True, user_data=None, tag=0, before=0, show=True, **kwargs):
         kwargs['parent'] = self
         return mvDrawRect.create(pmin, pmax, color=color, fill=fill, multicolor=multicolor, rounding=rounding, thickness=thickness, corner_colors=corner_colors, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, show=show, **kwargs)
 
-    def draw_text[T](self, pos, text, /, *, color=(255, 255, 255, 255), size=10.0, label=None, use_internal_label=True, user_data=None, tag=0, before=0, show=True, **kwargs):
+    def draw_text(self, pos, text, /, *, color=(255, 255, 255, 255), size=10.0, label=None, use_internal_label=True, user_data=None, tag=0, before=0, show=True, **kwargs):
         kwargs['parent'] = self
         return mvDrawText.create(pos, text, color=color, size=size, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, show=show, **kwargs)
 
-    def draw_triangle[T](self, p1, p2, p3, /, *, color=(255, 255, 255, 255), fill=(0, 0, 0, -255), thickness=1.0, label=None, use_internal_label=True, user_data=None, tag=0, before=0, show=True, **kwargs):
+    def draw_triangle(self, p1, p2, p3, /, *, color=(255, 255, 255, 255), fill=(0, 0, 0, -255), thickness=1.0, label=None, use_internal_label=True, user_data=None, tag=0, before=0, show=True, **kwargs):
         kwargs['parent'] = self
         return mvDrawTriangle.create(p1, p2, p3, color=color, fill=fill, thickness=thickness, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, show=show, **kwargs)
 
@@ -7240,11 +7240,11 @@ class mvViewportMenuBar(ContainerItem, command="add_viewport_menu_bar", slot=1):
     indent = _property__indent
     show = _property__show
 
-    def add_menu[T](self, /, *, label=None, use_internal_label=True, user_data=None, tag=0, indent=-1, before=0, show=True, filter_key='', drop_callback=None, payload_type='$$DPG_PAYLOAD', tracked=False, track_offset=0.5, enabled=True, **kwargs):
+    def add_menu(self, /, *, label=None, use_internal_label=True, user_data=None, tag=0, indent=-1, before=0, show=True, filter_key='', drop_callback=None, payload_type='$$DPG_PAYLOAD', tracked=False, track_offset=0.5, enabled=True, **kwargs):
         kwargs['parent'] = self
         return mvMenu.create(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, indent=indent, before=before, show=show, filter_key=filter_key, drop_callback=drop_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, enabled=enabled, **kwargs)
 
-    def add_menu_item[T](self, /, *, default_value=False, shortcut='', check=False, label=None, use_internal_label=True, user_data=None, tag=0, indent=-1, before=0, callback=None, show=True, filter_key='', drop_callback=None, payload_type='$$DPG_PAYLOAD', tracked=False, track_offset=0.5, enabled=True, **kwargs):
+    def add_menu_item(self, /, *, default_value=False, shortcut='', check=False, label=None, use_internal_label=True, user_data=None, tag=0, indent=-1, before=0, callback=None, show=True, filter_key='', drop_callback=None, payload_type='$$DPG_PAYLOAD', tracked=False, track_offset=0.5, enabled=True, **kwargs):
         kwargs['parent'] = self
         return mvMenuItem.create(default_value=default_value, shortcut=shortcut, check=check, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, indent=indent, before=before, callback=callback, show=show, filter_key=filter_key, drop_callback=drop_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, enabled=enabled, **kwargs)
 

@@ -384,7 +384,7 @@ class ItemsCodeGenerator(_ItemsGenerator):
         buffer.append("    __slots__ = ()")
         buffer.append('')
         members_seen.add("__slots__")
-        
+
 
         # constructor
 
@@ -479,8 +479,11 @@ class ItemsCodeGenerator(_ItemsGenerator):
                             self._late_assignments[type_name][name_node.id] = s.partition("=")[-1].strip()
                         continue
 
-                elif isinstance(node, ast.FunctionDef) and any(getattr(n, "id", None) == "overload" for n in node.decorator_list):
-                    continue
+                elif isinstance(node, ast.FunctionDef):
+                    if any(getattr(n, "id", None) == "overload" for n in node.decorator_list):
+                        continue
+                    node.type_params.clear()
+                    s = ast.unparse(node)
 
                 for ln in s.splitlines():
                     buffer.append(f"    {ln}")
