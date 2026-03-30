@@ -1258,6 +1258,23 @@ class mvPlot:
         """
         kwargs["parent"] = self
         return mvPlotLegend.create(location=location, horizontal=horizontal, sort=sort, outside=outside, no_highlight_item=no_highlight_item, no_highlight_axis=no_highlight_axis, no_menus=no_menus, no_buttons=no_buttons, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, drop_callback=drop_callback, payload_type=payload_type, show=show, **kwargs)
+
+    # XXX: Dear PyGui currently does not have a way for us to retrieve an item's
+    # colormap. Otherwise, this would be a `colormap` property instead to keep it
+    # consistent with other bound items like `theme`, `font`, etc.
+    def bind_colormap(self, colormap: mvColorMap | int | None, /) -> None:
+        """Assign a colormap to this item.
+
+        :type colormap: `mvColorMap | int | None`
+        :param colormap: Colormap item to bind. Any null value will remove the
+            colormap currently bound (if any).
+
+        :rtype: `None`
+
+        :raises `SystemError`: DearPyGui-related error.
+        """
+        _dearpygui.bind_colormap(self, colormap or 0)
+
     @property
     def query_rects(self) -> list[list[float]]:
         return _dearpygui.get_plot_query_rects(self)
@@ -1542,3 +1559,32 @@ class mvTabBar:
         kwargs["parent"] = self
         return mvTabButton.create(no_reorder=no_reorder, leading=leading, trailing=trailing, no_tooltip=no_tooltip, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, indent=indent, before=before, callback=callback, filter_key=filter_key, drop_callback=drop_callback, drag_callback=drag_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, show=show, **kwargs)
 
+
+
+# [ colormap system ]
+
+class mvColorMapButton:
+    bind_colormap = mvPlot.bind_colormap
+
+
+class mvColorMapScale:
+    bind_colormap = mvPlot.bind_colormap
+
+
+class mvColorMapSlider:
+    bind_colormap = mvPlot.bind_colormap
+
+
+class mvColorMap:
+    pass
+
+
+class mvColorMapRegistry:
+    __item_index_type__ = mvColorMap
+
+    def add_colormap[T](self, colors, qualitative, /, *, label: str | None = None, use_internal_label: bool = True, user_data: T = None, tag: Item = 0, show: bool = True, **kwargs) -> mvColorMap[T]:
+        """Create a new colormap item as a child of this container.
+
+        :raises `SystemError`: DearPyGui-related error."""
+        kwargs["parent"] = self
+        return mvColorMap.create(colors, qualitative, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, show=show, **kwargs)  # ty:ignore[unresolved-attribute]

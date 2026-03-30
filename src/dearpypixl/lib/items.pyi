@@ -1464,6 +1464,17 @@ class mvColorMapButton[U = Any, P: ContainerItem[Any, Any, Any, Any] = Container
     @property
     def rect_max(self, /) -> Array[int, Literal[2]]: ...
     def state(self, /) -> dict[Literal["ok", "pos", "hovered", "active", "activated", "deactivated", "focused", "clicked", "left_clicked", "right_clicked", "middle_clicked", "visible", "content_region_avail", "rect_size", "resized", "rect_min", "rect_max"], Any]: ...
+    def bind_colormap(self, colormap: mvColorMap | int | None, /) -> None:
+        """Assign a colormap to this item.
+    
+            :type colormap: `mvColorMap | int | None`
+            :param colormap: Colormap item to bind. Any null value will remove the
+                colormap currently bound (if any).
+    
+            :rtype: `None`
+    
+            :raises `SystemError`: DearPyGui-related error.
+            """
 
 def add_colormap_button[U = Any](default_value: Array[int, Literal[3, 4]] = (0, 0, 0, 255), *, label: str | None = None, use_internal_label: bool = True, user_data: Any | None = None, tag: int | str = 0, width: int = 0, height: int = 0, indent: int = -1, parent: int | str = 0, before: int | str = 0, callback: Callable | None = None, show: bool = True, enabled: bool = True, filter_key: str = "", drop_callback: Callable | None = None, drag_callback: Callable | None = None, payload_type: str = "$$DPG_PAYLOAD", tracked: bool = False, track_offset: float = 0.5, pos: Array[int, Literal[0, 2]] = (), **kwargs) -> mvColorMapButton[U]: ...
 
@@ -1478,6 +1489,10 @@ class mvColorMapRegistry[U = Any, C: ChildItem[Any, Any, mvColorMapRegistry, Any
     def show(self, value: bool, /) -> None: ...
     def configure(self, /, *, show: bool = ..., label: str | None = ..., use_internal_label: bool = ..., user_data: Any | None = ..., **kwargs) -> None: ...
     def state(self, /) -> dict[Literal["ok", "pos"], Any]: ...
+    def add_colormap[T](self, colors, qualitative, /, *, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, show: bool=True, **kwargs) -> mvColorMap[T]:
+        """Create a new colormap item as a child of this container.
+    
+            :raises `SystemError`: DearPyGui-related error."""
 
 def colormap_registry[U = Any](*, show: bool = False, label: str | None = None, use_internal_label: bool = True, user_data: Any | None = None, tag: int | str = 0, **kwargs) -> mvColorMapRegistry[U]: ...
 def add_colormap_registry[U = Any](*, show: bool = False, label: str | None = None, use_internal_label: bool = True, user_data: Any | None = None, tag: int | str = 0, **kwargs) -> mvColorMapRegistry[U]: ...
@@ -1569,6 +1584,17 @@ class mvColorMapScale[U = Any, P: ContainerItem[Any, Any, Any, Any] = ContainerI
     @property
     def rect_max(self, /) -> Array[int, Literal[2]]: ...
     def state(self, /) -> dict[Literal["ok", "pos", "hovered", "clicked", "left_clicked", "right_clicked", "middle_clicked", "visible", "content_region_avail", "rect_size", "resized", "rect_min", "rect_max"], Any]: ...
+    def bind_colormap(self, colormap: mvColorMap | int | None, /) -> None:
+        """Assign a colormap to this item.
+    
+            :type colormap: `mvColorMap | int | None`
+            :param colormap: Colormap item to bind. Any null value will remove the
+                colormap currently bound (if any).
+    
+            :rtype: `None`
+    
+            :raises `SystemError`: DearPyGui-related error.
+            """
 
 def add_colormap_scale[U = Any](*, colormap: Item = 0, min_scale: float = 0.0, max_scale: float = 1.0, format: str = '%g', reverse_dir: bool = False, mirror: bool = False, label: str | None = None, use_internal_label: bool = True, user_data: Any | None = None, tag: int | str = 0, width: int = 0, height: int = 0, indent: int = -1, parent: int | str = 0, before: int | str = 0, source: int | str = 0, show: bool = True, drop_callback: Callable | None = None, payload_type: str = "$$DPG_PAYLOAD", pos: Array[int, Literal[0, 2]] = (), **kwargs) -> mvColorMapScale[U]: ...
 
@@ -1665,6 +1691,17 @@ class mvColorMapSlider[U = Any, V: float = Any, P: ContainerItem[Any, Any, Any, 
     @property
     def rect_max(self, /) -> Array[int, Literal[2]]: ...
     def state(self, /) -> dict[Literal["ok", "pos", "hovered", "active", "activated", "deactivated", "deactivated_after_edit", "focused", "clicked", "left_clicked", "right_clicked", "middle_clicked", "visible", "edited", "content_region_avail", "rect_size", "resized", "rect_min", "rect_max"], Any]: ...
+    def bind_colormap(self, colormap: mvColorMap | int | None, /) -> None:
+        """Assign a colormap to this item.
+    
+            :type colormap: `mvColorMap | int | None`
+            :param colormap: Colormap item to bind. Any null value will remove the
+                colormap currently bound (if any).
+    
+            :rtype: `None`
+    
+            :raises `SystemError`: DearPyGui-related error.
+            """
 
 def add_colormap_slider[U = Any](*, default_value: float = 0.0, label: str | None = None, use_internal_label: bool = True, user_data: Any | None = None, tag: int | str = 0, width: int = 0, height: int = 0, indent: int = -1, parent: int | str = 0, before: int | str = 0, callback: Callable | None = None, show: bool = True, filter_key: str = "", drop_callback: Callable | None = None, payload_type: str = "$$DPG_PAYLOAD", tracked: bool = False, track_offset: float = 0.5, pos: Array[int, Literal[0, 2]] = (), **kwargs) -> mvColorMapSlider[U]: ...
 
@@ -7276,6 +7313,17 @@ class mvPlot[U = Any, P: ContainerItem[Any, Any, Any, Any] = ContainerItem, C: C
             """
     def add_plot_legend[T](self, /, *, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, payload_type: str='$$DPG_PAYLOAD', drop_callback: Callable | None=None, show: bool=True, location: int=_dearpygui.mvPlot_Location_East, horizontal: bool=False, sort: bool=False, outside: bool=False, no_highlight_item: bool=False, no_highlight_axis: bool=False, no_menus: bool=False, no_buttons: bool=False, **kwargs) -> mvPlotLegend[T]:
         """Create a new legend item as a child of this plot
+    
+            :raises `SystemError`: DearPyGui-related error.
+            """
+    def bind_colormap(self, colormap: mvColorMap | int | None, /) -> None:
+        """Assign a colormap to this item.
+    
+            :type colormap: `mvColorMap | int | None`
+            :param colormap: Colormap item to bind. Any null value will remove the
+                colormap currently bound (if any).
+    
+            :rtype: `None`
     
             :raises `SystemError`: DearPyGui-related error.
             """

@@ -3010,6 +3010,10 @@ class mvColorMapRegistry(ContainerItem, command="add_colormap_registry", slot=1)
 
     show = _property__show
 
+    def add_colormap[T](self, colors, qualitative, /, *, label=None, use_internal_label=True, user_data=None, tag=0, show=True, **kwargs):
+        kwargs['parent'] = self
+        return mvColorMap.create(colors, qualitative, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, show=show, **kwargs)
+
 colormap_registry = add_colormap_registry = mvColorMapRegistry.create
 
 
@@ -5637,6 +5641,9 @@ class mvPlot(ContainerItem, ChildItem, command="add_plot", slot=1):
         kwargs['parent'] = self
         return mvPlotLegend.create(location=location, horizontal=horizontal, sort=sort, outside=outside, no_highlight_item=no_highlight_item, no_highlight_axis=no_highlight_axis, no_menus=no_menus, no_buttons=no_buttons, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, drop_callback=drop_callback, payload_type=payload_type, show=show, **kwargs)
 
+    def bind_colormap(self, colormap, /):
+        _dearpygui.bind_colormap(self, colormap or 0)
+
     @property
     def query_rects(self):
         return _dearpygui.get_plot_query_rects(self)
@@ -7315,6 +7322,10 @@ window = add_window = mvWindowAppItem.create
 
 # late assignments
 
+mvColorMapButton.bind_colormap = mvPlot.bind_colormap  # type: ignore
+mvColorMapRegistry.__item_index_type__ = mvColorMap  # type: ignore
+mvColorMapScale.bind_colormap = mvPlot.bind_colormap  # type: ignore
+mvColorMapSlider.bind_colormap = mvPlot.bind_colormap  # type: ignore
 mvDrawLayer.add_draw_node = mvViewportDrawlist.add_draw_node  # type: ignore
 mvDrawLayer.draw_arrow = mvViewportDrawlist.draw_arrow  # type: ignore
 mvDrawLayer.draw_bezier_cubic = mvViewportDrawlist.draw_bezier_cubic  # type: ignore
