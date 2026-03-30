@@ -166,6 +166,13 @@ class DearPyGuiMetadata:
         self.functions = [*functions]
         self.typedef   = [*typedef]
 
+    @property
+    def semver(self, /) -> tuple[int, ...]:
+        version = self.version.lower().strip("abcdefghijklmnopqrstuvwxyz.-_ ")
+        return tuple(int(d) for d in version.split() if d)
+
+
+
 
 # [ codecs ]
 
@@ -740,6 +747,9 @@ def _parse_parameters(source: str, typedef_map: dict[str, ItemTypeInfo], metadat
                     len(p_name) == 1 or (len(p_name) == 2 and p_name[-1].isdigit())
                 ):
                     p_flags |= ParameterFlag.NO_READ | ParameterFlag.NO_WRITE
+
+                elif p_name == "size" and type_name == "mvFont" and metadata.semver >= (2, 3):
+                    p_flags |= ParameterFlag.NONE
 
                 elif p_kind == ParameterKind.POSITIONAL_OR_KEYWORD:
                     value_type = type_info.value_type or ''
