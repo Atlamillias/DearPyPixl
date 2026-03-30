@@ -7225,6 +7225,14 @@ class mvViewportMenuBar(ContainerItem, command="add_viewport_menu_bar", slot=1):
     indent = _property__indent
     show = _property__show
 
+    def add_menu[T](self, /, *, label=None, use_internal_label=True, user_data=None, tag=0, indent=-1, before=0, show=True, filter_key='', drop_callback=None, payload_type='$$DPG_PAYLOAD', tracked=False, track_offset=0.5, enabled=True, **kwargs):
+        kwargs['parent'] = self
+        return mvMenu.create(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, indent=indent, before=before, show=show, filter_key=filter_key, drop_callback=drop_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, enabled=enabled, **kwargs)
+
+    def add_menu_item[T](self, /, *, default_value=False, shortcut='', check=False, label=None, use_internal_label=True, user_data=None, tag=0, indent=-1, before=0, callback=None, show=True, filter_key='', drop_callback=None, payload_type='$$DPG_PAYLOAD', tracked=False, track_offset=0.5, enabled=True, **kwargs):
+        kwargs['parent'] = self
+        return mvMenuItem.create(default_value=default_value, shortcut=shortcut, check=check, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, indent=indent, before=before, callback=callback, show=show, filter_key=filter_key, drop_callback=drop_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, enabled=enabled, **kwargs)
+
 viewport_menu_bar = add_viewport_menu_bar = mvViewportMenuBar.create
 
 
@@ -7346,6 +7354,10 @@ mvDrawlist.draw_rectangle = mvViewportDrawlist.draw_rectangle  # type: ignore
 mvDrawlist.draw_text = mvViewportDrawlist.draw_text  # type: ignore
 mvDrawlist.draw_triangle = mvViewportDrawlist.draw_triangle  # type: ignore
 mvFontRegistry.__item_index_type__ = mvFont  # type: ignore
+mvMenu.add_menu = mvViewportMenuBar.add_menu  # type: ignore
+mvMenu.add_menu_item = mvViewportMenuBar.add_menu_item  # type: ignore
+mvMenuBar.add_menu = mvViewportMenuBar.add_menu  # type: ignore
+mvMenuBar.add_menu_item = mvViewportMenuBar.add_menu_item  # type: ignore
 mvPlot.__item_index_type__ = mvPlotAxis  # type: ignore
 mvTable.__item_index_type__ = mvTableRow  # type: ignore
 mvTheme.__item_index_type__ = mvThemeComponent  # type: ignore

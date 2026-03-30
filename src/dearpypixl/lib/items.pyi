@@ -6539,6 +6539,14 @@ class mvMenu[U = Any, V: bool = Any, P: ContainerItem[Any, Any, Any, Any] = Cont
         ***NOTE**: This is not a supported state by default, so `rect_max`
         will not be included in the return value of :py:meth:`state()`.*"""
     def state(self, /) -> dict[Literal["ok", "pos", "hovered", "active", "activated", "deactivated", "focused", "rect_size", "resized"], Any]: ...
+    def add_menu[T](self, /, *, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, indent: int=-1, before: Item=0, show: bool=True, filter_key: str='', drop_callback: Callable=None, payload_type: str='$$DPG_PAYLOAD', tracked: bool=False, track_offset: float=0.5, enabled: bool=True, **kwargs) -> mvMenu[T]:
+        """Create a new menu as a child of this container.
+    
+            :raises `SystemError`: DearPyGui-related error."""
+    def add_menu_item[T](self, /, *, default_value: bool=False, shortcut: str='', check: bool=False, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, indent: int=-1, before: Item=0, callback: Callable=None, show: bool=True, filter_key: str='', drop_callback: Callable=None, payload_type: str='$$DPG_PAYLOAD', tracked: bool=False, track_offset: float=0.5, enabled: bool=True, **kwargs) -> mvMenuItem[T]:
+        """Create a new menu item as a child of this container.
+    
+            :raises `SystemError`: DearPyGui-related error."""
 
 def menu[U = Any](*, label: str | None = None, use_internal_label: bool = True, user_data: Any | None = None, tag: int | str = 0, indent: int = -1, parent: int | str = 0, before: int | str = 0, show: bool = True, filter_key: str = "", drop_callback: Callable | None = None, payload_type: str = "$$DPG_PAYLOAD", tracked: bool = False, track_offset: float = 0.5, enabled: bool = True, **kwargs) -> mvMenu[U]: ...
 def add_menu[U = Any](*, label: str | None = None, use_internal_label: bool = True, user_data: Any | None = None, tag: int | str = 0, indent: int = -1, parent: int | str = 0, before: int | str = 0, show: bool = True, filter_key: str = "", drop_callback: Callable | None = None, payload_type: str = "$$DPG_PAYLOAD", tracked: bool = False, track_offset: float = 0.5, enabled: bool = True, **kwargs) -> mvMenu[U]: ...
@@ -6560,6 +6568,14 @@ class mvMenuBar[U = Any, V: bool = Any, P: ContainerItem[Any, Any, Any, Any] = C
     @property
     def visible(self, /) -> bool: ...
     def state(self, /) -> dict[Literal["ok", "pos", "visible"], Any]: ...
+    def add_menu[T](self, /, *, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, indent: int=-1, before: Item=0, show: bool=True, filter_key: str='', drop_callback: Callable=None, payload_type: str='$$DPG_PAYLOAD', tracked: bool=False, track_offset: float=0.5, enabled: bool=True, **kwargs) -> mvMenu[T]:
+        """Create a new menu as a child of this container.
+    
+            :raises `SystemError`: DearPyGui-related error."""
+    def add_menu_item[T](self, /, *, default_value: bool=False, shortcut: str='', check: bool=False, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, indent: int=-1, before: Item=0, callback: Callable=None, show: bool=True, filter_key: str='', drop_callback: Callable=None, payload_type: str='$$DPG_PAYLOAD', tracked: bool=False, track_offset: float=0.5, enabled: bool=True, **kwargs) -> mvMenuItem[T]:
+        """Create a new menu item as a child of this container.
+    
+            :raises `SystemError`: DearPyGui-related error."""
 
 def menu_bar[U = Any](*, label: str | None = None, use_internal_label: bool = True, user_data: Any | None = None, tag: int | str = 0, indent: int = -1, parent: int | str = 0, show: bool = True, **kwargs) -> mvMenuBar[U]: ...
 def add_menu_bar[U = Any](*, label: str | None = None, use_internal_label: bool = True, user_data: Any | None = None, tag: int | str = 0, indent: int = -1, parent: int | str = 0, show: bool = True, **kwargs) -> mvMenuBar[U]: ...
@@ -10727,6 +10743,14 @@ class mvViewportMenuBar[U = Any, C: ChildItem[Any, Any, mvViewportMenuBar, Any] 
     def show(self, value: bool, /) -> None: ...
     def configure(self, /, *, label: str | None = ..., use_internal_label: bool = ..., user_data: Any | None = ..., indent: int = ..., show: bool = ..., **kwargs) -> None: ...
     def state(self, /) -> dict[Literal["ok", "pos"], Any]: ...
+    def add_menu[T](self, /, *, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, indent: int=-1, before: Item=0, show: bool=True, filter_key: str='', drop_callback: Callable=None, payload_type: str='$$DPG_PAYLOAD', tracked: bool=False, track_offset: float=0.5, enabled: bool=True, **kwargs) -> mvMenu[T]:
+        """Create a new menu as a child of this container.
+    
+            :raises `SystemError`: DearPyGui-related error."""
+    def add_menu_item[T](self, /, *, default_value: bool=False, shortcut: str='', check: bool=False, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, indent: int=-1, before: Item=0, callback: Callable=None, show: bool=True, filter_key: str='', drop_callback: Callable=None, payload_type: str='$$DPG_PAYLOAD', tracked: bool=False, track_offset: float=0.5, enabled: bool=True, **kwargs) -> mvMenuItem[T]:
+        """Create a new menu item as a child of this container.
+    
+            :raises `SystemError`: DearPyGui-related error."""
 
 def viewport_menu_bar[U = Any](*, label: str | None = None, use_internal_label: bool = True, user_data: Any | None = None, tag: int | str = 0, indent: int = -1, parent: int | str = 0, show: bool = True, **kwargs) -> mvViewportMenuBar[U]: ...
 def add_viewport_menu_bar[U = Any](*, label: str | None = None, use_internal_label: bool = True, user_data: Any | None = None, tag: int | str = 0, indent: int = -1, parent: int | str = 0, show: bool = True, **kwargs) -> mvViewportMenuBar[U]: ...

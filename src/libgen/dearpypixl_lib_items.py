@@ -86,6 +86,7 @@ if TYPE_CHECKING:
         mvDrawText,
         mvDrawTriangle,
         mvDrawLayer,
+        mvMenuItem,
     )
     from dearpypixl.lib.constants import (
         mvKey, mvMouseButton,
@@ -1488,3 +1489,33 @@ class mvTable:
             _dearpygui.unset_table_row_color(self, irow)
         else:
             _dearpygui.set_table_row_color(self, irow, color)  # type: ignore
+
+
+
+
+# [ menu system ]
+
+class mvViewportMenuBar:
+    def add_menu[T](self, /, *, label: str | None = None, use_internal_label: bool = True, user_data: T = None, tag: Item = 0, indent: int = -1, before: Item = 0, show: bool = True, filter_key: str = '', drop_callback: Callable = None, payload_type: str = '$$DPG_PAYLOAD', tracked: bool = False, track_offset: float = 0.5, enabled: bool = True, **kwargs) -> mvMenu[T]:
+        """Create a new menu as a child of this container.
+
+        :raises `SystemError`: DearPyGui-related error."""
+        kwargs["parent"] = self
+        return mvMenu.create(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, indent=indent, before=before, show=show, filter_key=filter_key, drop_callback=drop_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, enabled=enabled, **kwargs)  # ty:ignore[unresolved-attribute]
+
+    def add_menu_item[T](self, /, *, default_value: bool = False, shortcut: str = '', check: bool = False, label: str | None = None, use_internal_label: bool = True, user_data: T = None, tag: Item = 0, indent: int = -1, before: Item = 0, callback: Callable = None, show: bool = True, filter_key: str = '', drop_callback: Callable = None, payload_type: str = '$$DPG_PAYLOAD', tracked: bool = False, track_offset: float = 0.5, enabled: bool = True, **kwargs) -> mvMenuItem[T]:
+        """Create a new menu item as a child of this container.
+
+        :raises `SystemError`: DearPyGui-related error."""
+        kwargs["parent"] = self
+        return mvMenuItem.create(default_value=default_value, shortcut=shortcut, check=check, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, indent=indent, before=before, callback=callback, show=show, filter_key=filter_key, drop_callback=drop_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, enabled=enabled, **kwargs)
+
+
+class mvMenuBar:
+    add_menu = mvViewportMenuBar.add_menu
+    add_menu_item = mvViewportMenuBar.add_menu_item
+
+
+class mvMenu:
+    add_menu = mvViewportMenuBar.add_menu
+    add_menu_item = mvViewportMenuBar.add_menu_item
