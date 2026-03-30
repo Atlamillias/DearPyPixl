@@ -1146,6 +1146,8 @@ class ConstantsCodeGenerator(FileGenerator):
             if member_const_pairs:
                 buffer.extend(self._generate_enum(enum_name, member_const_pairs))
 
+        self._exports.extend(const_refs)
+
         # apply some basic formatting to the "unparse"d source
         indentation = 0
         for ln in source.splitlines():
