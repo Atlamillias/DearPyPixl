@@ -4232,9 +4232,11 @@ class mvFont[U = Any, P: mvFontRegistry = Any, C: ChildItem[Any, Any, mvFont, An
             :raises `SystemError`: DearPyGui-related error.
             """
     def add_font_chars[T](self, chars: Array[int, Any], /, *, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, **kwargs) -> mvFontChars[T]:
-        """Create a new font chars item as a child of this font.
+        """Create a new font characters item as a child of this font.
     
             :raises `SystemError`: DearPyGui-related error.
+    
+            **NOTE**: The `mvFontChars` item type and associated callables are deprecated as of Dear PyGui v2.3.
             """
     def add_font_range[T](self, first_char: int, last_char: int, /, *, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, **kwargs) -> mvFontRange[T]:
         """Create a new font range item as a child of this font.

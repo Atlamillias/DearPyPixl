@@ -110,9 +110,11 @@ class mvFont:
         return mvCharRemap.create(source, target, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, **kwargs)
 
     def add_font_chars[T](self, chars: Array[int, Any], /, *, label: str | None = None, use_internal_label: bool = True, user_data: T = None, tag: Item = 0, **kwargs) -> mvFontChars[T]:
-        """Create a new font chars item as a child of this font.
+        """Create a new font characters item as a child of this font.
 
         :raises `SystemError`: DearPyGui-related error.
+
+        **NOTE**: The `mvFontChars` item type and associated callables are deprecated as of Dear PyGui v2.3.
         """
         kwargs["parent"] = self
         return mvFontChars.create(chars, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, **kwargs)
