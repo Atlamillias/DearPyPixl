@@ -87,6 +87,8 @@ if TYPE_CHECKING:
         mvDrawTriangle,
         mvDrawLayer,
         mvMenuItem,
+        mvTab,
+        mvTabButton,
     )
     from dearpypixl.lib.constants import (
         mvKey, mvMouseButton,
@@ -1519,3 +1521,24 @@ class mvMenuBar:
 class mvMenu:
     add_menu = mvViewportMenuBar.add_menu
     add_menu_item = mvViewportMenuBar.add_menu_item
+
+
+
+
+# [ tab item system ]
+
+class mvTabBar:
+    def add_tab[T](self, /, *, closable: bool = False, no_tooltip: bool = False, order_mode: int = 0, label: str | None = None, use_internal_label: bool = True, user_data: T = None, tag: Item = 0, indent: int = -1, before: Item = 0, filter_key: str = '', drop_callback: Callable = None, payload_type: str = '$$DPG_PAYLOAD', tracked: bool = False, track_offset: float = 0.5, show: bool = True, **kwargs) -> mvTab[T]:  # ty: ignore
+        """Create a new tab item as a child of this container.
+
+        :raises `SystemError`: DearPyGui-related error."""
+        kwargs["parent"] = self
+        return mvTab.create(closable=closable, no_tooltip=no_tooltip, order_mode=order_mode, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, indent=indent, before=before, filter_key=filter_key, drop_callback=drop_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, show=show, **kwargs)
+
+    def add_tab_button[T](self, /, *, no_reorder: bool = False, leading: bool = False, trailing: bool = False, no_tooltip: bool = False, label: str | None = None, use_internal_label: bool = True, user_data: T = None, tag: Item = 0, indent: int = -1, before: Item = 0, callback: Callable = None, filter_key: str = '', drop_callback: Callable = None, drag_callback: Callable = None, payload_type: str = '$$DPG_PAYLOAD', tracked: bool = False, track_offset: float = 0.5, show: bool = True, **kwargs) -> mvTabButton[T]:
+        """Create a new tab button item as a child of this container.
+
+        :raises `SystemError`: DearPyGui-related error."""
+        kwargs["parent"] = self
+        return mvTabButton.create(no_reorder=no_reorder, leading=leading, trailing=trailing, no_tooltip=no_tooltip, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, indent=indent, before=before, callback=callback, filter_key=filter_key, drop_callback=drop_callback, drag_callback=drag_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, show=show, **kwargs)
+

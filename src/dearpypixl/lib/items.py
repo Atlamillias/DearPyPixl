@@ -6610,6 +6610,14 @@ class mvTabBar(ContainerItem, ChildItem, command="add_tab_bar", slot=1):
 
     visible = _property__visible
 
+    def add_tab[T](self, /, *, closable=False, no_tooltip=False, order_mode=0, label=None, use_internal_label=True, user_data=None, tag=0, indent=-1, before=0, filter_key='', drop_callback=None, payload_type='$$DPG_PAYLOAD', tracked=False, track_offset=0.5, show=True, **kwargs):
+        kwargs['parent'] = self
+        return mvTab.create(closable=closable, no_tooltip=no_tooltip, order_mode=order_mode, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, indent=indent, before=before, filter_key=filter_key, drop_callback=drop_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, show=show, **kwargs)
+
+    def add_tab_button[T](self, /, *, no_reorder=False, leading=False, trailing=False, no_tooltip=False, label=None, use_internal_label=True, user_data=None, tag=0, indent=-1, before=0, callback=None, filter_key='', drop_callback=None, drag_callback=None, payload_type='$$DPG_PAYLOAD', tracked=False, track_offset=0.5, show=True, **kwargs):
+        kwargs['parent'] = self
+        return mvTabButton.create(no_reorder=no_reorder, leading=leading, trailing=trailing, no_tooltip=no_tooltip, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, indent=indent, before=before, callback=callback, filter_key=filter_key, drop_callback=drop_callback, drag_callback=drag_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, show=show, **kwargs)
+
 tab_bar = add_tab_bar = mvTabBar.create
 
 

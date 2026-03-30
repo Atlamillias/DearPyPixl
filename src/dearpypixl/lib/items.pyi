@@ -9512,6 +9512,14 @@ class mvTabBar[U = Any, V: Item = Any, P: ContainerItem[Any, Any, Any, Any] = Co
     @property
     def visible(self, /) -> bool: ...
     def state(self, /) -> dict[Literal["ok", "pos", "visible"], Any]: ...
+    def add_tab[T](self, /, *, closable: bool=False, no_tooltip: bool=False, order_mode: int=0, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, indent: int=-1, before: Item=0, filter_key: str='', drop_callback: Callable=None, payload_type: str='$$DPG_PAYLOAD', tracked: bool=False, track_offset: float=0.5, show: bool=True, **kwargs) -> mvTab[T]:
+        """Create a new tab item as a child of this container.
+    
+            :raises `SystemError`: DearPyGui-related error."""
+    def add_tab_button[T](self, /, *, no_reorder: bool=False, leading: bool=False, trailing: bool=False, no_tooltip: bool=False, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, indent: int=-1, before: Item=0, callback: Callable=None, filter_key: str='', drop_callback: Callable=None, drag_callback: Callable=None, payload_type: str='$$DPG_PAYLOAD', tracked: bool=False, track_offset: float=0.5, show: bool=True, **kwargs) -> mvTabButton[T]:
+        """Create a new tab button item as a child of this container.
+    
+            :raises `SystemError`: DearPyGui-related error."""
 
 def tab_bar[U = Any](*, reorderable: bool = False, label: str | None = None, use_internal_label: bool = True, user_data: Any | None = None, tag: int | str = 0, indent: int = -1, parent: int | str = 0, before: int | str = 0, callback: Callable | None = None, show: bool = True, filter_key: str = "", tracked: bool = False, track_offset: float = 0.5, pos: Array[int, Literal[0, 2]] = (), **kwargs) -> mvTabBar[U]: ...
 def add_tab_bar[U = Any](*, reorderable: bool = False, label: str | None = None, use_internal_label: bool = True, user_data: Any | None = None, tag: int | str = 0, indent: int = -1, parent: int | str = 0, before: int | str = 0, callback: Callable | None = None, show: bool = True, filter_key: str = "", tracked: bool = False, track_offset: float = 0.5, pos: Array[int, Literal[0, 2]] = (), **kwargs) -> mvTabBar[U]: ...
