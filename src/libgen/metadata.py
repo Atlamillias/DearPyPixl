@@ -169,7 +169,7 @@ class DearPyGuiMetadata:
     @property
     def semver(self, /) -> tuple[int, ...]:
         version = self.version.lower().strip("abcdefghijklmnopqrstuvwxyz.-_ ")
-        return tuple(int(d) for d in version.split() if d)
+        return tuple(int(d) for d in version.split('.') if d)
 
 
 
