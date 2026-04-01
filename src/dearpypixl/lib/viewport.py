@@ -232,7 +232,6 @@ def _set_vp_primary_window(primary_window: int | str | None, /) -> None:
     # replace current primary window with a new one
     if primary_window:
         wndw_config = _dearpygui.get_item_configuration(primary_window)
-        dearpygui.add_window()
 
         _dearpygui.set_primary_window(primary_window, True)
         config['primary_window'] = primary_window
