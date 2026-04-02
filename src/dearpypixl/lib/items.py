@@ -6834,6 +6834,14 @@ class mvTableRow(ContainerItem, ChildItem, command="add_table_row", slot=1):
 
     visible = _property__visible
 
+    def add_table_cell(self, /, *, label=None, use_internal_label=True, user_data=None, tag=0, before=0, height=0, filter_key='', show=True, **kwargs):
+        kwargs['parent'] = self
+        return mvTableCell.create(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, height=height, filter_key=filter_key, show=show, **kwargs)
+
+    def add_spacer(self, /, *, label=None, use_internal_label=True, user_data=None, tag=0, width=-1, height=0, indent=-1, before=0, show=True, pos=(), **kwargs):
+        kwargs['parent'] = self
+        return mvSpacer.create(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, width=width, height=height, indent=indent, before=before, show=show, pos=pos, **kwargs)
+
 table_row = add_table_row = mvTableRow.create
 
 
