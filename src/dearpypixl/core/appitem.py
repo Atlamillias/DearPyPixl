@@ -397,7 +397,7 @@ class ContainerItem[U = typing.Any, V = typing.Any, P = typing.Any, C = typing.A
         return __new(self.__item_index_type__, children)
 
     def __delitem__(self, index, /, *, __func=_dearpygui.delete_item):
-        children = _dearpygui.get_item_info(self)["children"][1][index]
+        children = _dearpygui.get_item_info(self)["children"][self.__item_index_slot__][index]
         if hasattr(children, '__iter__'):
             for child in children:
                 __func(child, children_only=False, slot=-1)
