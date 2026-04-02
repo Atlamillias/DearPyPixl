@@ -435,25 +435,33 @@ class ContainerItem[U = Any, V = Any, P: ContainerItem[Any, Any, Any, Any] | Non
 
     Containers are supported by the `with` statement — pushing the
     associated item into DearPyGui's container stack and popping
-    the stack as the statement exits.
+    the stack as the statement exits. Additionally, containers are
+    subscriptable similar to sequences and operate on a specific
+    child slot (see :py:attr:`ContainerItem.__item_index_type__` and
+    :py:attr:`ContainerItem.__item_index_type__`).
 
     :vartype __item_index_slot__: `ClassVar[Literal[0, 1, 2, 3]]`
-    :var __item_index_slot__: The child slot index affected by
-        the `__getitem__` and `__setitem__` methods. This is `1` for
-        most containers and `2` for drawing containers.
+    :var __item_index_slot__: The index of the child slot that
+        indexer methods :py:meth:`ContainerItem.__getitem__()`
+        and `ContainerItem.__delitem__()` operate on. This is `1`
+        for most containers by default, but more concrete types
+        may target a different slot.
 
-        Can be changed via subclassing to have `__getitem__` and
-        `__setitem__` target a different slot.
+        Can be assigned to a different value via subclassing.
 
     :vartype __item_index_type__: `ClassVar[type[ChildItem]]`
     :var __item_index_type__: The item interface type used to
-        wrap children returned by `__getitem__`. This is
-        :py:class:`ChildItem` by default, but containers with limited
-        pools of children (like handler registries) may use a more
-        applicable interface type.
+        wrap children returned by :py:meth:`ContainerItem.__getitem__()`.
+        This is :py:class:`ChildItem` by default, but containers with
+        limited pools of child types such as handler registries use a
+        more concrete type.
 
         Can be set to a different value via subclassing.
 
+        **NOTE**: Due to internal optimizations, instances of
+        :py:class:`CompositeItem` subclasses will not behave properly
+        using this hook. In this case, you should re-implement the
+        indexer methods instead.
     """
     def __enter__(self, /) -> Self: ...
     @overload
@@ -572,7 +580,7 @@ class CompositeItem:
     Lingering interface references may prevent Python from deallocating the state
     dictionary in a timely manner, and resources like database connections may
     remain alive longer than desired if not explicitly closed. The interface
-    destructor method :py:meth:~`CompositeItem.destroy()` facilitates this clean up
+    destructor method :py:meth:`CompositeItem.destroy()` facilitates this clean up
     by:
     - calling the `destroy()` method (if applicable, otherwise `dearpygui.delete_item(item)`)
     on every object in the :py:attr:`components` collection
