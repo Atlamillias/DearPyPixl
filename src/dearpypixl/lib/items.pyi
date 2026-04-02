@@ -9835,6 +9835,14 @@ class mvTable[U = Any, P: ContainerItem[Any, Any, Any, Any] = ContainerItem, C: 
     @y_scroll_pos.setter
     def y_scroll_pos(self, value: float, /) -> None: ...
     def state(self, /) -> dict[Literal["ok", "pos", "visible", "scrolled", "is_scrolling", "scroll_pos", "scroll_max"], Any]: ...
+    def add_table_column[T](self, /, *, init_width_or_weight: float=0.0, default_hide: bool=False, default_sort: bool=False, width_stretch: bool=False, width_fixed: bool=False, no_resize: bool=False, no_reorder: bool=False, no_hide: bool=False, no_clip: bool=False, no_sort: bool=False, no_sort_ascending: bool=False, no_sort_descending: bool=False, no_header_width: bool=False, prefer_sort_ascending: bool=True, prefer_sort_descending: bool=False, indent_enable: bool=False, indent_disable: bool=False, angled_header: bool=False, no_header_label: bool=False, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, width: int=0, before: Item=0, enabled: bool=True, show: bool=True, **kwargs) -> mvTableColumn[T]:
+        """Create a new table column item as a child of this table.
+    
+            :raises `SystemError`: DearPyGui-related error."""
+    def add_table_row[T](self, /, *, label: str | None=None, use_internal_label: bool=True, user_data: T=None, tag: Item=0, before: Item=0, height: int=0, filter_key: str='', show: bool=True, **kwargs) -> mvTableRow[T]:
+        """Create a new table row item as a child of this table.
+    
+            :raises `SystemError`: DearPyGui-related error."""
     def index(self, item: Item, /) -> int:
         """Get the position of a table row or column in the table.
     

@@ -6707,6 +6707,14 @@ class mvTable(ContainerItem, ChildItem, command="add_table", slot=1):
     y_scroll_max = _property__y_scroll_max
     y_scroll_pos = _property__y_scroll_pos
 
+    def add_table_column(self, /, *, init_width_or_weight=0.0, default_hide=False, default_sort=False, width_stretch=False, width_fixed=False, no_resize=False, no_reorder=False, no_hide=False, no_clip=False, no_sort=False, no_sort_ascending=False, no_sort_descending=False, no_header_width=False, prefer_sort_ascending=True, prefer_sort_descending=False, indent_enable=False, indent_disable=False, angled_header=False, no_header_label=False, label=None, use_internal_label=True, user_data=None, tag=0, width=0, before=0, enabled=True, show=True, **kwargs):
+        kwargs['parent'] = self
+        return mvTableColumn.create(init_width_or_weight=init_width_or_weight, default_hide=default_hide, default_sort=default_sort, width_stretch=width_stretch, width_fixed=width_fixed, no_resize=no_resize, no_reorder=no_reorder, no_hide=no_hide, no_clip=no_clip, no_sort=no_sort, no_sort_ascending=no_sort_ascending, no_sort_descending=no_sort_descending, no_header_width=no_header_width, prefer_sort_ascending=prefer_sort_ascending, prefer_sort_descending=prefer_sort_descending, indent_enable=indent_enable, indent_disable=indent_disable, angled_header=angled_header, no_header_label=no_header_label, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, width=width, before=before, enabled=enabled, show=show, **kwargs)
+
+    def add_table_row(self, /, *, label=None, use_internal_label=True, user_data=None, tag=0, before=0, height=0, filter_key='', show=True, **kwargs):
+        kwargs['parent'] = self
+        return mvTableRow.create(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, height=height, filter_key=filter_key, show=show, **kwargs)
+
     def index(self, item, /):
         if isinstance(item, str):
             tag = _dearpygui.get_alias_id(item)

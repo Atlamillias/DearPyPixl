@@ -89,6 +89,7 @@ if TYPE_CHECKING:
         mvMenuItem,
         mvTab,
         mvTabButton,
+        mvTableColumn,
     )
     from dearpypixl.lib.constants import (
         mvKey, mvMouseButton,
@@ -1364,6 +1365,20 @@ class mvTableRow:
 
 class mvTable:
     __item_index_type__ = mvTableRow
+
+    def add_table_column[T](self, /, *, init_width_or_weight: float = 0.0, default_hide: bool = False, default_sort: bool = False, width_stretch: bool = False, width_fixed: bool = False, no_resize: bool = False, no_reorder: bool = False, no_hide: bool = False, no_clip: bool = False, no_sort: bool = False, no_sort_ascending: bool = False, no_sort_descending: bool = False, no_header_width: bool = False, prefer_sort_ascending: bool = True, prefer_sort_descending: bool = False, indent_enable: bool = False, indent_disable: bool = False, angled_header: bool = False, no_header_label: bool = False, label: str | None = None, use_internal_label: bool = True, user_data: T = None, tag: Item = 0, width: int = 0, before: Item = 0, enabled: bool = True, show: bool = True, **kwargs) -> mvTableColumn[T]:
+        """Create a new table column item as a child of this table.
+
+        :raises `SystemError`: DearPyGui-related error."""
+        kwargs["parent"] = self
+        return mvTableColumn.create(init_width_or_weight=init_width_or_weight, default_hide=default_hide, default_sort=default_sort, width_stretch=width_stretch, width_fixed=width_fixed, no_resize=no_resize, no_reorder=no_reorder, no_hide=no_hide, no_clip=no_clip, no_sort=no_sort, no_sort_ascending=no_sort_ascending, no_sort_descending=no_sort_descending, no_header_width=no_header_width, prefer_sort_ascending=prefer_sort_ascending, prefer_sort_descending=prefer_sort_descending, indent_enable=indent_enable, indent_disable=indent_disable, angled_header=angled_header, no_header_label=no_header_label, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, width=width, before=before, enabled=enabled, show=show, **kwargs)
+
+    def add_table_row[T](self, /, *, label: str | None = None, use_internal_label: bool = True, user_data: T = None, tag: Item = 0, before: Item = 0, height: int = 0, filter_key: str = '', show: bool = True, **kwargs) -> mvTableRow[T]:
+        """Create a new table row item as a child of this table.
+
+        :raises `SystemError`: DearPyGui-related error."""
+        kwargs["parent"] = self
+        return mvTableRow.create(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, height=height, filter_key=filter_key, show=show, **kwargs)  # ty: ignore
 
     def index(self, item: Item, /) -> int:    # type: ignore
         """Get the position of a table row or column in the table.
