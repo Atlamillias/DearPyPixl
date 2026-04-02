@@ -12,13 +12,13 @@ if "dearpygui" in _sys.modules:
 del _sys
 
 
-from dearpypixl.core.protocols import mvBuffer
-from dearpypixl.core.protocols import mvVec4
-from dearpypixl.core.protocols import mvMat4
-from dearpypixl.core.appitem import AppItem
-from dearpypixl.core.appitem import ContainerItem
-from dearpypixl.core.appitem import ChildItem
-from dearpypixl.core.appitem import CompositeItem
+from dearpypixl.core.protocols import mvBuffer as mvBuffer
+from dearpypixl.core.protocols import mvVec4 as mvVec4
+from dearpypixl.core.protocols import mvMat4 as mvMat4
+from dearpypixl.core.appitem import AppItem as AppItem
+from dearpypixl.core.appitem import ContainerItem as ContainerItem
+from dearpypixl.core.appitem import ChildItem as ChildItem
+from dearpypixl.core.appitem import CompositeItem as CompositeItem
 
 from dearpypixl.lib.application import *
 from dearpypixl.lib.viewport import *
