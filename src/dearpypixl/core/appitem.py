@@ -389,16 +389,19 @@ class ContainerItem[U = typing.Any, V = typing.Any, P = typing.Any, C = typing.A
     __item_index_slot__ = 1
     __item_index_type__ = ChildItem
 
-    def __getitem__(self, index, /, *, __new=int.__new__, __func=_dearpygui.get_item_info):
+    def __getitem__(self, index, /, *, __func=_dearpygui.get_item_info, __new=int.__new__, __list=list):
         children = __func(self)["children"][self.__item_index_slot__][index]
-        if hasattr(children, '__iter__'):
+
+        if children.__class__ is __list:
             item_type = self.__item_index_type__
             return [__new(item_type, child) for child in children]
+
         return __new(self.__item_index_type__, children)
 
-    def __delitem__(self, index, /, *, __func=_dearpygui.delete_item):
+    def __delitem__(self, index, /, *, __func=_dearpygui.delete_item, __list=list):
         children = _dearpygui.get_item_info(self)["children"][self.__item_index_slot__][index]
-        if hasattr(children, '__iter__'):
+
+        if children.__class__ is __list:
             for child in children:
                 __func(child, children_only=False, slot=-1)
         else:
