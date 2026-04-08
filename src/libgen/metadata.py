@@ -959,13 +959,3 @@ def download_dearpygui_release(tag: str = "latest", /, **kwargs) -> tuple[str, z
     url = release["zipball_url"]
 
     return tag, download_zipfile(url)
-
-
-
-
-if __name__ == "__main__":
-    # version, archive = _download_release()
-    version, archive = "2.2.0", r"C:\Users\C69819\Downloads\DearPyGui-2.2.0.zip"
-    md  = parse(archive, version)
-    md2 = deserialize(serialize(md))
-    assert md == md2
