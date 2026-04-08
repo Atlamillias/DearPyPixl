@@ -800,7 +800,7 @@ def _parse_constants(source: str, typedef_map: dict[str, ItemTypeInfo], metadata
     match = re.search(r"(?s)GetModuleConstants\(.+?\{(?P<content>.+?)return\s+\w+Constants;\s*\}", source)
     assert match is not None
 
-    content = match.group("content")
+    content = "\n".join(ln for ln in match.group("content").splitlines() if not ln.strip().startswith("//"))
     pattern = re.compile(r'push_back\s*\(\s*\{\s*"(?P<variable>mv.+?)"\s*,.*?\}\s*\)\s*;')
 
     constants = [m.group("variable") for m in pattern.finditer(content)]
