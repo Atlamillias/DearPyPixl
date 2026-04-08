@@ -146,7 +146,7 @@ class FileSpec[T1: type[FileGenerator], T2: type[FileGenerator]]:
         for filegen, ext, skip in ((self.codegen, "py", no_code), (self.stubgen, "pyi", no_stub)):
             if skip:
                 continue
-            
+
             source = filegen(metadata).generate()
             if source:
 
@@ -1366,7 +1366,10 @@ style_spec = FileSpec("style", '', StyleCodeGenerator, StyleStubGenerator)
 
 
 if __name__ == "__main__":
+    import os
     from pathlib import Path
+
+    os.environ["_DPX_NO_INIT"] = "1"
 
     version, archive = metadata.download_dearpygui_release()
     md = metadata.parse(archive, version)
