@@ -27,13 +27,20 @@ __all__ = (
     "cell_padding",
     "scrollbar_size",
     "scrollbar_rounding",
+    "scrollbar_padding",
     "grab_min_size",
     "grab_rounding",
+    "image_border_size",
     "tab_rounding",
     "tab_border_size",
+    "tab_min_width_base",
+    "tab_min_width_shrink",
     "tab_bar_border_size",
+    "tab_bar_overline_size",
     "table_angled_headers_angle",
     "table_angled_headers_text_align",
+    "tree_lines_size",
+    "tree_lines_rounding",
     "button_text_align",
     "selectable_text_align",
     "separator_text_border_size",
@@ -187,6 +194,11 @@ def scrollbar_rounding(x = 1, y = -1, /, *, __dearpygui=_dearpygui, __itemtype=m
     return __itemtype.create(__dearpygui.mvStyleVar_ScrollbarRounding, x, y, category=__dearpygui.mvThemeCat_Core, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent)
 
 
+def scrollbar_padding(x = 1, y = -1, /, *, __dearpygui=_dearpygui, __itemtype=mvThemeStyle, label = None, use_internal_label = True, user_data = None, tag = 0, parent = 0):
+    if hasattr(x, "__iter__"): x, y = x  # type: ignore
+    return __itemtype.create(__dearpygui.mvStyleVar_ScrollbarPadding, x, y, category=__dearpygui.mvThemeCat_Core, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent)
+
+
 def grab_min_size(x = 1, y = -1, /, *, __dearpygui=_dearpygui, __itemtype=mvThemeStyle, label = None, use_internal_label = True, user_data = None, tag = 0, parent = 0):
     if hasattr(x, "__iter__"): x, y = x  # type: ignore
     return __itemtype.create(__dearpygui.mvStyleVar_GrabMinSize, x, y, category=__dearpygui.mvThemeCat_Core, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent)
@@ -195,6 +207,11 @@ def grab_min_size(x = 1, y = -1, /, *, __dearpygui=_dearpygui, __itemtype=mvThem
 def grab_rounding(x = 1, y = -1, /, *, __dearpygui=_dearpygui, __itemtype=mvThemeStyle, label = None, use_internal_label = True, user_data = None, tag = 0, parent = 0):
     if hasattr(x, "__iter__"): x, y = x  # type: ignore
     return __itemtype.create(__dearpygui.mvStyleVar_GrabRounding, x, y, category=__dearpygui.mvThemeCat_Core, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent)
+
+
+def image_border_size(x = 1, y = -1, /, *, __dearpygui=_dearpygui, __itemtype=mvThemeStyle, label = None, use_internal_label = True, user_data = None, tag = 0, parent = 0):
+    if hasattr(x, "__iter__"): x, y = x  # type: ignore
+    return __itemtype.create(__dearpygui.mvStyleVar_ImageBorderSize, x, y, category=__dearpygui.mvThemeCat_Core, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent)
 
 
 def tab_rounding(x = 1, y = -1, /, *, __dearpygui=_dearpygui, __itemtype=mvThemeStyle, label = None, use_internal_label = True, user_data = None, tag = 0, parent = 0):
@@ -207,9 +224,24 @@ def tab_border_size(x = 1, y = -1, /, *, __dearpygui=_dearpygui, __itemtype=mvTh
     return __itemtype.create(__dearpygui.mvStyleVar_TabBorderSize, x, y, category=__dearpygui.mvThemeCat_Core, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent)
 
 
+def tab_min_width_base(x = 1, y = -1, /, *, __dearpygui=_dearpygui, __itemtype=mvThemeStyle, label = None, use_internal_label = True, user_data = None, tag = 0, parent = 0):
+    if hasattr(x, "__iter__"): x, y = x  # type: ignore
+    return __itemtype.create(__dearpygui.mvStyleVar_TabMinWidthBase, x, y, category=__dearpygui.mvThemeCat_Core, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent)
+
+
+def tab_min_width_shrink(x = 1, y = -1, /, *, __dearpygui=_dearpygui, __itemtype=mvThemeStyle, label = None, use_internal_label = True, user_data = None, tag = 0, parent = 0):
+    if hasattr(x, "__iter__"): x, y = x  # type: ignore
+    return __itemtype.create(__dearpygui.mvStyleVar_TabMinWidthShrink, x, y, category=__dearpygui.mvThemeCat_Core, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent)
+
+
 def tab_bar_border_size(x = 1, y = -1, /, *, __dearpygui=_dearpygui, __itemtype=mvThemeStyle, label = None, use_internal_label = True, user_data = None, tag = 0, parent = 0):
     if hasattr(x, "__iter__"): x, y = x  # type: ignore
     return __itemtype.create(__dearpygui.mvStyleVar_TabBarBorderSize, x, y, category=__dearpygui.mvThemeCat_Core, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent)
+
+
+def tab_bar_overline_size(x = 1, y = -1, /, *, __dearpygui=_dearpygui, __itemtype=mvThemeStyle, label = None, use_internal_label = True, user_data = None, tag = 0, parent = 0):
+    if hasattr(x, "__iter__"): x, y = x  # type: ignore
+    return __itemtype.create(__dearpygui.mvStyleVar_TabBarOverlineSize, x, y, category=__dearpygui.mvThemeCat_Core, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent)
 
 
 def table_angled_headers_angle(x = 1, y = -1, /, *, __dearpygui=_dearpygui, __itemtype=mvThemeStyle, label = None, use_internal_label = True, user_data = None, tag = 0, parent = 0):
@@ -220,6 +252,16 @@ def table_angled_headers_angle(x = 1, y = -1, /, *, __dearpygui=_dearpygui, __it
 def table_angled_headers_text_align(x = 1, y = -1, /, *, __dearpygui=_dearpygui, __itemtype=mvThemeStyle, label = None, use_internal_label = True, user_data = None, tag = 0, parent = 0):
     if hasattr(x, "__iter__"): x, y = x  # type: ignore
     return __itemtype.create(__dearpygui.mvStyleVar_TableAngledHeadersTextAlign, x, y, category=__dearpygui.mvThemeCat_Core, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent)
+
+
+def tree_lines_size(x = 1, y = -1, /, *, __dearpygui=_dearpygui, __itemtype=mvThemeStyle, label = None, use_internal_label = True, user_data = None, tag = 0, parent = 0):
+    if hasattr(x, "__iter__"): x, y = x  # type: ignore
+    return __itemtype.create(__dearpygui.mvStyleVar_TreeLinesSize, x, y, category=__dearpygui.mvThemeCat_Core, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent)
+
+
+def tree_lines_rounding(x = 1, y = -1, /, *, __dearpygui=_dearpygui, __itemtype=mvThemeStyle, label = None, use_internal_label = True, user_data = None, tag = 0, parent = 0):
+    if hasattr(x, "__iter__"): x, y = x  # type: ignore
+    return __itemtype.create(__dearpygui.mvStyleVar_TreeLinesRounding, x, y, category=__dearpygui.mvThemeCat_Core, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent)
 
 
 def button_text_align(x = 1, y = -1, /, *, __dearpygui=_dearpygui, __itemtype=mvThemeStyle, label = None, use_internal_label = True, user_data = None, tag = 0, parent = 0):

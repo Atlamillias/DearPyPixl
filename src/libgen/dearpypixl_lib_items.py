@@ -67,9 +67,6 @@ if TYPE_CHECKING:
         mvToggledOpenHandler,
         mvVisibleHandler,
         mvCharRemap,
-        mvFontChars,
-        mvFontRange,
-        mvFontRangeHint,
         mvDrawArrow,
         mvDrawBezierCubic,
         mvDrawBezierQuadratic,
@@ -114,32 +111,6 @@ class mvFont:
         """
         kwargs["parent"] = self
         return mvCharRemap.create(source, target, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, **kwargs)
-
-    def add_font_chars[T](self, chars: Array[int, Any], /, *, label: str | None = None, use_internal_label: bool = True, user_data: T = None, tag: Item = 0, **kwargs) -> mvFontChars[T]:
-        """Create a new font characters item as a child of this font.
-
-        :raises `SystemError`: DearPyGui-related error.
-
-        **NOTE**: The `mvFontChars` item type and associated callables are deprecated as of Dear PyGui v2.3.
-        """
-        kwargs["parent"] = self
-        return mvFontChars.create(chars, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, **kwargs)
-
-    def add_font_range[T](self, first_char: int, last_char: int, /, *, label: str | None = None, use_internal_label: bool = True, user_data: T = None, tag: Item = 0, **kwargs) -> mvFontRange[T]:
-        """Create a new font range item as a child of this font.
-
-        :raises `SystemError`: DearPyGui-related error.
-        """
-        kwargs["parent"] = self
-        return mvFontRange.create(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, **kwargs)
-
-    def add_font_range_hint[T](self, hint: int, /, *, label: str | None = None, use_internal_label: bool = True, user_data: T = None, tag: Item = 0, **kwargs) -> mvFontRangeHint[T]:
-        """Create a new font range hint item as a child of this font.
-
-        :raises `SystemError`: DearPyGui-related error.
-        """
-        kwargs["parent"] = self
-        return mvFontRangeHint.create(hint, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, **kwargs)
 
     def get_text_size(self, text: str, /, *, wrap_width: int = -1) -> list[float]:
         """Return the width and height of *text* rendered with this font.

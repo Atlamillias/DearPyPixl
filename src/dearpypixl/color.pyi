@@ -13,8 +13,8 @@ __all__ = (
     "text_disabled",
     "window_bg",
     "child_bg",
-    "border",
     "popup_bg",
+    "border",
     "border_shadow",
     "frame_bg",
     "frame_bg_hovered",
@@ -42,11 +42,14 @@ __all__ = (
     "resize_grip",
     "resize_grip_hovered",
     "resize_grip_active",
-    "tab",
+    "input_text_cursor",
     "tab_hovered",
-    "tab_active",
-    "tab_unfocused",
-    "tab_unfocused_active",
+    "tab",
+    "tab_selected",
+    "tab_selected_overline",
+    "tab_dimmed",
+    "tab_dimmed_selected",
+    "tab_dimmed_selected_overline",
     "docking_preview",
     "docking_empty_bg",
     "plot_lines",
@@ -59,11 +62,18 @@ __all__ = (
     "table_row_bg",
     "table_row_bg_alt",
     "text_selected_bg",
+    "tree_lines",
     "drag_drop_target",
-    "nav_highlight",
+    "drag_drop_target_bg",
+    "unsaved_marker",
+    "nav_cursor",
     "nav_windowing_highlight",
     "nav_windowing_dim_bg",
     "modal_window_dim_bg",
+    "tab_active",
+    "tab_unfocused",
+    "tab_unfocused_active",
+    "nav_highlight",
     "plot_line",
     "plot_fill",
     "plot_marker_outline",
@@ -77,11 +87,12 @@ __all__ = (
     "plot_legend_text",
     "plot_title_text",
     "plot_inlay_text",
-    "plot_axis_bg",
-    "plot_axis_bg_active",
-    "plot_axis_bg_hovered",
-    "plot_axis_grid",
     "plot_axis_text",
+    "plot_axis_grid",
+    "plot_axis_tick",
+    "plot_axis_bg",
+    "plot_axis_bg_hovered",
+    "plot_axis_bg_active",
     "plot_selection",
     "plot_crosshairs",
     "node_bg",
@@ -143,15 +154,15 @@ def child_bg[T = Any](r: int, g: int, b: int, a: int = 255, /, *, label: str | N
 
 
 @overload
-def border[T = Any](value: Array[int, Literal[3, 4]], /, *, label: str | None = None, user_data: T = ..., use_internal_label: bool = True, tag: Item = 0, parent: Item = 0) -> mvThemeColor[T]: ...
-@overload
-def border[T = Any](r: int, g: int, b: int, a: int = 255, /, *, label: str | None = None, user_data: T = ..., use_internal_label: bool = True, tag: Item = 0, parent: Item = 0) -> mvThemeColor[T]: ...
-
-
-@overload
 def popup_bg[T = Any](value: Array[int, Literal[3, 4]], /, *, label: str | None = None, user_data: T = ..., use_internal_label: bool = True, tag: Item = 0, parent: Item = 0) -> mvThemeColor[T]: ...
 @overload
 def popup_bg[T = Any](r: int, g: int, b: int, a: int = 255, /, *, label: str | None = None, user_data: T = ..., use_internal_label: bool = True, tag: Item = 0, parent: Item = 0) -> mvThemeColor[T]: ...
+
+
+@overload
+def border[T = Any](value: Array[int, Literal[3, 4]], /, *, label: str | None = None, user_data: T = ..., use_internal_label: bool = True, tag: Item = 0, parent: Item = 0) -> mvThemeColor[T]: ...
+@overload
+def border[T = Any](r: int, g: int, b: int, a: int = 255, /, *, label: str | None = None, user_data: T = ..., use_internal_label: bool = True, tag: Item = 0, parent: Item = 0) -> mvThemeColor[T]: ...
 
 
 @overload
@@ -317,9 +328,9 @@ def resize_grip_active[T = Any](r: int, g: int, b: int, a: int = 255, /, *, labe
 
 
 @overload
-def tab[T = Any](value: Array[int, Literal[3, 4]], /, *, label: str | None = None, user_data: T = ..., use_internal_label: bool = True, tag: Item = 0, parent: Item = 0) -> mvThemeColor[T]: ...
+def input_text_cursor[T = Any](value: Array[int, Literal[3, 4]], /, *, label: str | None = None, user_data: T = ..., use_internal_label: bool = True, tag: Item = 0, parent: Item = 0) -> mvThemeColor[T]: ...
 @overload
-def tab[T = Any](r: int, g: int, b: int, a: int = 255, /, *, label: str | None = None, user_data: T = ..., use_internal_label: bool = True, tag: Item = 0, parent: Item = 0) -> mvThemeColor[T]: ...
+def input_text_cursor[T = Any](r: int, g: int, b: int, a: int = 255, /, *, label: str | None = None, user_data: T = ..., use_internal_label: bool = True, tag: Item = 0, parent: Item = 0) -> mvThemeColor[T]: ...
 
 
 @overload
@@ -329,21 +340,39 @@ def tab_hovered[T = Any](r: int, g: int, b: int, a: int = 255, /, *, label: str 
 
 
 @overload
-def tab_active[T = Any](value: Array[int, Literal[3, 4]], /, *, label: str | None = None, user_data: T = ..., use_internal_label: bool = True, tag: Item = 0, parent: Item = 0) -> mvThemeColor[T]: ...
+def tab[T = Any](value: Array[int, Literal[3, 4]], /, *, label: str | None = None, user_data: T = ..., use_internal_label: bool = True, tag: Item = 0, parent: Item = 0) -> mvThemeColor[T]: ...
 @overload
-def tab_active[T = Any](r: int, g: int, b: int, a: int = 255, /, *, label: str | None = None, user_data: T = ..., use_internal_label: bool = True, tag: Item = 0, parent: Item = 0) -> mvThemeColor[T]: ...
+def tab[T = Any](r: int, g: int, b: int, a: int = 255, /, *, label: str | None = None, user_data: T = ..., use_internal_label: bool = True, tag: Item = 0, parent: Item = 0) -> mvThemeColor[T]: ...
 
 
 @overload
-def tab_unfocused[T = Any](value: Array[int, Literal[3, 4]], /, *, label: str | None = None, user_data: T = ..., use_internal_label: bool = True, tag: Item = 0, parent: Item = 0) -> mvThemeColor[T]: ...
+def tab_selected[T = Any](value: Array[int, Literal[3, 4]], /, *, label: str | None = None, user_data: T = ..., use_internal_label: bool = True, tag: Item = 0, parent: Item = 0) -> mvThemeColor[T]: ...
 @overload
-def tab_unfocused[T = Any](r: int, g: int, b: int, a: int = 255, /, *, label: str | None = None, user_data: T = ..., use_internal_label: bool = True, tag: Item = 0, parent: Item = 0) -> mvThemeColor[T]: ...
+def tab_selected[T = Any](r: int, g: int, b: int, a: int = 255, /, *, label: str | None = None, user_data: T = ..., use_internal_label: bool = True, tag: Item = 0, parent: Item = 0) -> mvThemeColor[T]: ...
 
 
 @overload
-def tab_unfocused_active[T = Any](value: Array[int, Literal[3, 4]], /, *, label: str | None = None, user_data: T = ..., use_internal_label: bool = True, tag: Item = 0, parent: Item = 0) -> mvThemeColor[T]: ...
+def tab_selected_overline[T = Any](value: Array[int, Literal[3, 4]], /, *, label: str | None = None, user_data: T = ..., use_internal_label: bool = True, tag: Item = 0, parent: Item = 0) -> mvThemeColor[T]: ...
 @overload
-def tab_unfocused_active[T = Any](r: int, g: int, b: int, a: int = 255, /, *, label: str | None = None, user_data: T = ..., use_internal_label: bool = True, tag: Item = 0, parent: Item = 0) -> mvThemeColor[T]: ...
+def tab_selected_overline[T = Any](r: int, g: int, b: int, a: int = 255, /, *, label: str | None = None, user_data: T = ..., use_internal_label: bool = True, tag: Item = 0, parent: Item = 0) -> mvThemeColor[T]: ...
+
+
+@overload
+def tab_dimmed[T = Any](value: Array[int, Literal[3, 4]], /, *, label: str | None = None, user_data: T = ..., use_internal_label: bool = True, tag: Item = 0, parent: Item = 0) -> mvThemeColor[T]: ...
+@overload
+def tab_dimmed[T = Any](r: int, g: int, b: int, a: int = 255, /, *, label: str | None = None, user_data: T = ..., use_internal_label: bool = True, tag: Item = 0, parent: Item = 0) -> mvThemeColor[T]: ...
+
+
+@overload
+def tab_dimmed_selected[T = Any](value: Array[int, Literal[3, 4]], /, *, label: str | None = None, user_data: T = ..., use_internal_label: bool = True, tag: Item = 0, parent: Item = 0) -> mvThemeColor[T]: ...
+@overload
+def tab_dimmed_selected[T = Any](r: int, g: int, b: int, a: int = 255, /, *, label: str | None = None, user_data: T = ..., use_internal_label: bool = True, tag: Item = 0, parent: Item = 0) -> mvThemeColor[T]: ...
+
+
+@overload
+def tab_dimmed_selected_overline[T = Any](value: Array[int, Literal[3, 4]], /, *, label: str | None = None, user_data: T = ..., use_internal_label: bool = True, tag: Item = 0, parent: Item = 0) -> mvThemeColor[T]: ...
+@overload
+def tab_dimmed_selected_overline[T = Any](r: int, g: int, b: int, a: int = 255, /, *, label: str | None = None, user_data: T = ..., use_internal_label: bool = True, tag: Item = 0, parent: Item = 0) -> mvThemeColor[T]: ...
 
 
 @overload
@@ -419,15 +448,33 @@ def text_selected_bg[T = Any](r: int, g: int, b: int, a: int = 255, /, *, label:
 
 
 @overload
+def tree_lines[T = Any](value: Array[int, Literal[3, 4]], /, *, label: str | None = None, user_data: T = ..., use_internal_label: bool = True, tag: Item = 0, parent: Item = 0) -> mvThemeColor[T]: ...
+@overload
+def tree_lines[T = Any](r: int, g: int, b: int, a: int = 255, /, *, label: str | None = None, user_data: T = ..., use_internal_label: bool = True, tag: Item = 0, parent: Item = 0) -> mvThemeColor[T]: ...
+
+
+@overload
 def drag_drop_target[T = Any](value: Array[int, Literal[3, 4]], /, *, label: str | None = None, user_data: T = ..., use_internal_label: bool = True, tag: Item = 0, parent: Item = 0) -> mvThemeColor[T]: ...
 @overload
 def drag_drop_target[T = Any](r: int, g: int, b: int, a: int = 255, /, *, label: str | None = None, user_data: T = ..., use_internal_label: bool = True, tag: Item = 0, parent: Item = 0) -> mvThemeColor[T]: ...
 
 
 @overload
-def nav_highlight[T = Any](value: Array[int, Literal[3, 4]], /, *, label: str | None = None, user_data: T = ..., use_internal_label: bool = True, tag: Item = 0, parent: Item = 0) -> mvThemeColor[T]: ...
+def drag_drop_target_bg[T = Any](value: Array[int, Literal[3, 4]], /, *, label: str | None = None, user_data: T = ..., use_internal_label: bool = True, tag: Item = 0, parent: Item = 0) -> mvThemeColor[T]: ...
 @overload
-def nav_highlight[T = Any](r: int, g: int, b: int, a: int = 255, /, *, label: str | None = None, user_data: T = ..., use_internal_label: bool = True, tag: Item = 0, parent: Item = 0) -> mvThemeColor[T]: ...
+def drag_drop_target_bg[T = Any](r: int, g: int, b: int, a: int = 255, /, *, label: str | None = None, user_data: T = ..., use_internal_label: bool = True, tag: Item = 0, parent: Item = 0) -> mvThemeColor[T]: ...
+
+
+@overload
+def unsaved_marker[T = Any](value: Array[int, Literal[3, 4]], /, *, label: str | None = None, user_data: T = ..., use_internal_label: bool = True, tag: Item = 0, parent: Item = 0) -> mvThemeColor[T]: ...
+@overload
+def unsaved_marker[T = Any](r: int, g: int, b: int, a: int = 255, /, *, label: str | None = None, user_data: T = ..., use_internal_label: bool = True, tag: Item = 0, parent: Item = 0) -> mvThemeColor[T]: ...
+
+
+@overload
+def nav_cursor[T = Any](value: Array[int, Literal[3, 4]], /, *, label: str | None = None, user_data: T = ..., use_internal_label: bool = True, tag: Item = 0, parent: Item = 0) -> mvThemeColor[T]: ...
+@overload
+def nav_cursor[T = Any](r: int, g: int, b: int, a: int = 255, /, *, label: str | None = None, user_data: T = ..., use_internal_label: bool = True, tag: Item = 0, parent: Item = 0) -> mvThemeColor[T]: ...
 
 
 @overload
@@ -446,6 +493,30 @@ def nav_windowing_dim_bg[T = Any](r: int, g: int, b: int, a: int = 255, /, *, la
 def modal_window_dim_bg[T = Any](value: Array[int, Literal[3, 4]], /, *, label: str | None = None, user_data: T = ..., use_internal_label: bool = True, tag: Item = 0, parent: Item = 0) -> mvThemeColor[T]: ...
 @overload
 def modal_window_dim_bg[T = Any](r: int, g: int, b: int, a: int = 255, /, *, label: str | None = None, user_data: T = ..., use_internal_label: bool = True, tag: Item = 0, parent: Item = 0) -> mvThemeColor[T]: ...
+
+
+@overload
+def tab_active[T = Any](value: Array[int, Literal[3, 4]], /, *, label: str | None = None, user_data: T = ..., use_internal_label: bool = True, tag: Item = 0, parent: Item = 0) -> mvThemeColor[T]: ...
+@overload
+def tab_active[T = Any](r: int, g: int, b: int, a: int = 255, /, *, label: str | None = None, user_data: T = ..., use_internal_label: bool = True, tag: Item = 0, parent: Item = 0) -> mvThemeColor[T]: ...
+
+
+@overload
+def tab_unfocused[T = Any](value: Array[int, Literal[3, 4]], /, *, label: str | None = None, user_data: T = ..., use_internal_label: bool = True, tag: Item = 0, parent: Item = 0) -> mvThemeColor[T]: ...
+@overload
+def tab_unfocused[T = Any](r: int, g: int, b: int, a: int = 255, /, *, label: str | None = None, user_data: T = ..., use_internal_label: bool = True, tag: Item = 0, parent: Item = 0) -> mvThemeColor[T]: ...
+
+
+@overload
+def tab_unfocused_active[T = Any](value: Array[int, Literal[3, 4]], /, *, label: str | None = None, user_data: T = ..., use_internal_label: bool = True, tag: Item = 0, parent: Item = 0) -> mvThemeColor[T]: ...
+@overload
+def tab_unfocused_active[T = Any](r: int, g: int, b: int, a: int = 255, /, *, label: str | None = None, user_data: T = ..., use_internal_label: bool = True, tag: Item = 0, parent: Item = 0) -> mvThemeColor[T]: ...
+
+
+@overload
+def nav_highlight[T = Any](value: Array[int, Literal[3, 4]], /, *, label: str | None = None, user_data: T = ..., use_internal_label: bool = True, tag: Item = 0, parent: Item = 0) -> mvThemeColor[T]: ...
+@overload
+def nav_highlight[T = Any](r: int, g: int, b: int, a: int = 255, /, *, label: str | None = None, user_data: T = ..., use_internal_label: bool = True, tag: Item = 0, parent: Item = 0) -> mvThemeColor[T]: ...
 
 
 @overload
@@ -527,21 +598,9 @@ def plot_inlay_text[T = Any](r: int, g: int, b: int, a: int = 255, /, *, label: 
 
 
 @overload
-def plot_axis_bg[T = Any](value: Array[int, Literal[3, 4]], /, *, label: str | None = None, user_data: T = ..., use_internal_label: bool = True, tag: Item = 0, parent: Item = 0) -> mvThemeColor[T]: ...
+def plot_axis_text[T = Any](value: Array[int, Literal[3, 4]], /, *, label: str | None = None, user_data: T = ..., use_internal_label: bool = True, tag: Item = 0, parent: Item = 0) -> mvThemeColor[T]: ...
 @overload
-def plot_axis_bg[T = Any](r: int, g: int, b: int, a: int = 255, /, *, label: str | None = None, user_data: T = ..., use_internal_label: bool = True, tag: Item = 0, parent: Item = 0) -> mvThemeColor[T]: ...
-
-
-@overload
-def plot_axis_bg_active[T = Any](value: Array[int, Literal[3, 4]], /, *, label: str | None = None, user_data: T = ..., use_internal_label: bool = True, tag: Item = 0, parent: Item = 0) -> mvThemeColor[T]: ...
-@overload
-def plot_axis_bg_active[T = Any](r: int, g: int, b: int, a: int = 255, /, *, label: str | None = None, user_data: T = ..., use_internal_label: bool = True, tag: Item = 0, parent: Item = 0) -> mvThemeColor[T]: ...
-
-
-@overload
-def plot_axis_bg_hovered[T = Any](value: Array[int, Literal[3, 4]], /, *, label: str | None = None, user_data: T = ..., use_internal_label: bool = True, tag: Item = 0, parent: Item = 0) -> mvThemeColor[T]: ...
-@overload
-def plot_axis_bg_hovered[T = Any](r: int, g: int, b: int, a: int = 255, /, *, label: str | None = None, user_data: T = ..., use_internal_label: bool = True, tag: Item = 0, parent: Item = 0) -> mvThemeColor[T]: ...
+def plot_axis_text[T = Any](r: int, g: int, b: int, a: int = 255, /, *, label: str | None = None, user_data: T = ..., use_internal_label: bool = True, tag: Item = 0, parent: Item = 0) -> mvThemeColor[T]: ...
 
 
 @overload
@@ -551,9 +610,27 @@ def plot_axis_grid[T = Any](r: int, g: int, b: int, a: int = 255, /, *, label: s
 
 
 @overload
-def plot_axis_text[T = Any](value: Array[int, Literal[3, 4]], /, *, label: str | None = None, user_data: T = ..., use_internal_label: bool = True, tag: Item = 0, parent: Item = 0) -> mvThemeColor[T]: ...
+def plot_axis_tick[T = Any](value: Array[int, Literal[3, 4]], /, *, label: str | None = None, user_data: T = ..., use_internal_label: bool = True, tag: Item = 0, parent: Item = 0) -> mvThemeColor[T]: ...
 @overload
-def plot_axis_text[T = Any](r: int, g: int, b: int, a: int = 255, /, *, label: str | None = None, user_data: T = ..., use_internal_label: bool = True, tag: Item = 0, parent: Item = 0) -> mvThemeColor[T]: ...
+def plot_axis_tick[T = Any](r: int, g: int, b: int, a: int = 255, /, *, label: str | None = None, user_data: T = ..., use_internal_label: bool = True, tag: Item = 0, parent: Item = 0) -> mvThemeColor[T]: ...
+
+
+@overload
+def plot_axis_bg[T = Any](value: Array[int, Literal[3, 4]], /, *, label: str | None = None, user_data: T = ..., use_internal_label: bool = True, tag: Item = 0, parent: Item = 0) -> mvThemeColor[T]: ...
+@overload
+def plot_axis_bg[T = Any](r: int, g: int, b: int, a: int = 255, /, *, label: str | None = None, user_data: T = ..., use_internal_label: bool = True, tag: Item = 0, parent: Item = 0) -> mvThemeColor[T]: ...
+
+
+@overload
+def plot_axis_bg_hovered[T = Any](value: Array[int, Literal[3, 4]], /, *, label: str | None = None, user_data: T = ..., use_internal_label: bool = True, tag: Item = 0, parent: Item = 0) -> mvThemeColor[T]: ...
+@overload
+def plot_axis_bg_hovered[T = Any](r: int, g: int, b: int, a: int = 255, /, *, label: str | None = None, user_data: T = ..., use_internal_label: bool = True, tag: Item = 0, parent: Item = 0) -> mvThemeColor[T]: ...
+
+
+@overload
+def plot_axis_bg_active[T = Any](value: Array[int, Literal[3, 4]], /, *, label: str | None = None, user_data: T = ..., use_internal_label: bool = True, tag: Item = 0, parent: Item = 0) -> mvThemeColor[T]: ...
+@overload
+def plot_axis_bg_active[T = Any](r: int, g: int, b: int, a: int = 255, /, *, label: str | None = None, user_data: T = ..., use_internal_label: bool = True, tag: Item = 0, parent: Item = 0) -> mvThemeColor[T]: ...
 
 
 @overload
