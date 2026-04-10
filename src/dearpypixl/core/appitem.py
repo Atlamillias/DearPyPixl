@@ -504,12 +504,17 @@ class CompositeItem:
     def user_data(self, /):
         self.__dict__["user_data"] = None
 
+    @classmethod
+    def create(cls, /, user_data=None, **kwargs):
+        return super().create(user_data={"user_data": user_data}, **kwargs)  # ty:ignore[unresolved-attribute]
+
     def __init__(self: typing.Any, /, tag=0):
         user_data = _dearpygui.get_item_configuration(self)["user_data"]
-        if user_data is None:
-            _dearpygui.configure_item(self, user_data=self.__dict__)
-        else:
+        try:
             self.__dict__ = user_data
+        except TypeError:
+            self.__dict__["user_data"] = user_data
+            _dearpygui.configure_item(self, user_data=self.__dict__)
 
     def destroy(self, /, *, __func=_dearpygui.delete_item):
         for item in self.components:
