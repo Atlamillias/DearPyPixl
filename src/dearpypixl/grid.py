@@ -11,7 +11,6 @@ from dearpygui._dearpygui import (
 )
 
 from dearpypixl.core import management
-from dearpypixl.core.protocols import Item, DataDescriptor
 from dearpypixl.core import codegen
 
 
@@ -19,6 +18,8 @@ __all__ = ("ItemData", "Slot", "Axis", "Grid")
 
 
 
+
+type Item = int | str  # mirrors `protocols.Item`
 
 NaN = float("nan")
 
@@ -212,11 +213,9 @@ class _GridSlotState:
 class Slot(_GridComponent):
     __slots__ = ('_state', '_size', '_weight')
 
-    weight: DataDescriptor[float, float | None] = _min_number_property("weight", 0.1, 1.0)
-    size: DataDescriptor[int, int | None] = _min_number_property("size", 0, 0)
+    weight: float = _min_number_property("weight", 0.1, 1.0)
+    size: int = _min_number_property("size", 0, 0)
 
-    @typing.overload
-    def __init__(self, *, label: str = ..., spacing: float | None = ..., padding: typing.Sequence[float] | float | None = ..., weight: float | None = ..., size: int | None = ...) -> None: ...  # type: ignore
     def __init__(self, *, weight: typing.Any = 1.0, size: typing.Any = 0, **kwargs) -> None:
         self._state = _GridSlotState()  # managed by the parenting `Grid` during a draw event
         super().__init__(weight=weight, size=size, **kwargs)
@@ -226,7 +225,7 @@ class Slot(_GridComponent):
 class Axis(_GridComponent, typing.Iterable[Slot], typing.Sized):
     __slots__ = ('_slots', '_lock')
 
-    length: DataDescriptor[int, int] = property(lambda self: self.__len__(), lambda self, value: self.resize(value))
+    length: int = property(lambda self: self.__len__(), lambda self, value: self.resize(value))  # type: ignore
 
     def __init__(self, length: int = 0, *, _lock=None, **kwargs) -> None:
         self._slots = list[Slot]()
@@ -421,11 +420,11 @@ class Grid(_GridComponent):
         parent: Item | None = 0,
         *,
         label: str = "",
-        padding: typing.Sequence[float] | float | None = None,
-        spacing: typing.Sequence[float] | float | None = None,
-        width: int | None = None,
-        height: int | None = None,
-        offsets: typing.Sequence[float] | float | None = None,
+        padding: typing.Any = None,
+        spacing: typing.Any = None,
+        width: typing.Any = None,
+        height: typing.Any = None,
+        offsets: typing.Any = None,
         rect_getter: _RectGetter | None = None,
         overlay: bool = False,
         show: bool = True,
@@ -467,7 +466,7 @@ class Grid(_GridComponent):
             with self._lock:
                 self._cols.resize(value)
 
-    cols: DataDescriptor[Axis, Axis | int] = cols  # pyright: ignore
+    cols: Axis = cols  # type: ignore
 
     @property
     def rows(self, /) -> Axis:  # pyright: ignore[reportRedeclaration]
@@ -485,16 +484,16 @@ class Grid(_GridComponent):
             with self._lock:
                 self._rows.resize(value)
 
-    rows: DataDescriptor[Axis, Axis | int] = rows  # pyright: ignore
+    rows: Axis = rows  # type: ignore
 
     label: str = ''
     parent: Item | None = None
     rect_getter: _RectGetter | None = None
-    width: DataDescriptor[int, int | None] = _min_number_property("width", 0, 0)
-    height: DataDescriptor[int, int | None] = _min_number_property("height", 0, 0)
-    offsets: DataDescriptor[typing.Sequence[float], typing.Sequence[float] | float | None] = _float_arr_property("offsets", 4, 0.0)
-    padding: DataDescriptor[typing.Sequence[float], typing.Sequence[float] | float | None] = _float_arr_property("padding", 4, 0.0)
-    spacing: DataDescriptor[typing.Sequence[float], typing.Sequence[float] | float | None] = _float_arr_property("spacing", 2, 0.0)
+    width: int = _min_number_property("width", 0, 0)
+    height: int = _min_number_property("height", 0, 0)
+    offsets: typing.MutableSequence[float] = _float_arr_property("offsets", 4, 0.0)
+    padding: typing.MutableSequence[float] = _float_arr_property("padding", 4, 0.0)
+    spacing: typing.MutableSequence[float] = _float_arr_property("spacing", 2, 0.0)
 
     @property
     def show(self, /) -> bool:  # pyright: ignore[reportRedeclaration]
@@ -520,7 +519,7 @@ class Grid(_GridComponent):
 
         self.draw()
 
-    show: DataDescriptor[bool, bool] = show  # pyright: ignore
+    show: bool = show  # type: ignore
 
     @property
     def overlay(self, /) -> bool:  # pyright: ignore[reportRedeclaration]
@@ -537,7 +536,7 @@ class Grid(_GridComponent):
 
         self.draw()
 
-    overlay: DataDescriptor[bool, bool] = overlay  # pyright: ignore
+    overlay: bool = overlay  # type: ignore
 
     @typing.overload
     def configure(self, *, cols: int = ..., rows: int = ..., parent: Item | None = ..., label: str | None = ..., padding: typing.Sequence[float] | float | None = ..., spacing: typing.Sequence[float] | float | None = ..., width: float | None = ..., height: float | None = ..., offsets: typing.Sequence[float] | float | None = ..., rect_getter: _RectGetter | None = ..., overlay: bool = ..., show: bool = ..., **kwargs) -> None:  ...  # type: ignore
@@ -1149,7 +1148,7 @@ if __name__ == '__main__':
             dpg.add_button(label=f"button {i}",width=-1, height=80)
 
         def cb_left_view_resize(sender, app_data, user_data):
-            grid.cols[0].size = dpg.get_item_width(user_data)
+            grid.cols[0].size = dpg.get_item_configuration(user_data)["width"]
             grid()
 
         with dpg.item_handler_registry() as left_view_hr:
