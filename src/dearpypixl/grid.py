@@ -230,12 +230,6 @@ class Slot(_GridComponent):
         self._state = _GridSlotState()  # managed by the parenting `Grid` during a draw event
         super().__init__(weight=weight, size=size, **kwargs)
 
-    def configure(self, *, label: str = ..., spacing: float | None = ..., padding: typing.Sequence[float] | float | None = ..., weight: float | None = ..., size: int | None = ...) -> None: ... # type: ignore
-    del locals()["configure"]
-
-    def configuration(self) -> dict[typing.Literal['label', 'spacing', 'padding', 'weight', 'size'], typing.Any]: ...  # type: ignore
-    del locals()["configuration"]
-
 
 @dataclasses.dataclass(init=False)
 class Axis(_GridComponent, typing.Iterable[Slot], typing.Sized):
