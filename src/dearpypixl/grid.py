@@ -4,11 +4,6 @@ import dataclasses
 from array import array
 
 from dearpygui import dearpygui, _dearpygui
-from dearpygui._dearpygui import (
-    get_item_configuration as _item_get_config,
-    get_item_state as _item_get_state,
-    configure_item as _item_set_config,
-)
 
 from dearpypixl.core import management
 from dearpypixl.core import codegen
@@ -131,26 +126,8 @@ def _min_number_property(name: str, floor: int | float = 0.0, default = None) ->
 
 # [ minor components ]
 
-class _RectGetter(typing.Protocol):
-    def __call__(self, item: Item, /) -> tuple[int, int, int, int, bool]: ...
-
-def _default_rect_getter(item: Item, /, *, _config_getter=_dearpygui.get_item_configuration, _state_getter=_dearpygui.get_item_state) -> tuple[int, int, int, int, bool]:
-    state = _state_getter(item)
-
-    visible = state.get("visible")
-    if visible is None:
-        visible = _config_getter(item)["show"]
-
-    return *state['rect_size'], *state['pos'], visible
-
-
-class _RectSetter(typing.Protocol):
-    def __call__(self, item: Item, x_pos: int, y_pos: int, width: int, height: int, show: bool, /) -> typing.Any: ...
-
-def _default_rect_setter(item: Item, x_pos: int, y_pos: int, width: int, height: int, show: bool, /, *, _config_setter=_dearpygui.configure_item):
-    _config_setter(item, width=width, height=height, pos=(x_pos, y_pos), show=show)
-
-
+type _RectGetter = typing.Callable[[Item], tuple[int, int, int, int, bool]]
+type _RectSetter = typing.Callable[[Item, int, int, int, int, bool], typing.Any]
 
 
 @dataclasses.dataclass(slots=True)
@@ -503,14 +480,14 @@ class Grid(_GridComponent):
             show = self._show = True
             return show
     @show.setter
-    def show(self, value: bool, /) -> None:  # pyright: ignore[reportRedeclaration]
+    def show(self, value: bool, /, *, __CONFIG_SETTER=_dearpygui.configure_item) -> None:  # pyright: ignore[reportRedeclaration]
         with self._lock:
             show = self._show = value
             self._overlay.show = show and self.overlay
 
             for item_data in self._item_data:
                 try:
-                    _item_set_config(item_data.item, show=show)
+                    __CONFIG_SETTER(item_data.item, show=show)
                 except SystemError:
                     if not dearpygui.does_item_exist(item_data.item):
                         self._data_to_del.add(item_data)
@@ -538,8 +515,6 @@ class Grid(_GridComponent):
 
     overlay: bool = overlay  # type: ignore
 
-    @typing.overload
-    def configure(self, *, cols: int = ..., rows: int = ..., parent: Item | None = ..., label: str | None = ..., padding: typing.Sequence[float] | float | None = ..., spacing: typing.Sequence[float] | float | None = ..., width: float | None = ..., height: float | None = ..., offsets: typing.Sequence[float] | float | None = ..., rect_getter: _RectGetter | None = ..., overlay: bool = ..., show: bool = ..., **kwargs) -> None:  ...  # type: ignore
     def configure(self, **kwargs):
         missing = _MISSING
         super().configure(**{k:v for k,v in kwargs.items() if v is not missing})
@@ -558,11 +533,11 @@ class Grid(_GridComponent):
             self._data_to_del.discard(item)  # type: ignore
             self._item_data.discard(item)  # type: ignore
 
-    def clear(self):
+    def clear(self, /, *, __CONFIG_SETTER=_dearpygui.configure_item):
         with self._lock:
             for item_data in self._item_data:
                 try:
-                    _item_set_config(item_data.item, pos=())
+                    __CONFIG_SETTER(item_data.item, pos=())
                 except SystemError:
                     pass
             self._data_to_del.update(self._item_data)
@@ -579,7 +554,8 @@ class Grid(_GridComponent):
     ANCHORS["w"]  = ANCHORS["west"]      = (0.0, 0.5)
     ANCHORS["nw"] = ANCHORS["northwest"] = (0.0, 0.0)
 
-    def push(self, item, cell_start: typing.Any, cell_stop: typing.Any = None, /, *, anchor='c', rect_setter=_default_rect_setter, max_size=None, padding=None):
+    def push(self, item, cell_start, cell_stop: typing.Any = None, /, *, anchor='c', rect_setter=None, max_size=None, padding=None):
+
         # item
         if isinstance(item, str):
             uuid = dearpygui.get_alias_id(item)
@@ -660,7 +636,7 @@ class Grid(_GridComponent):
             max_size=max_size,
             padding=padding,
             pos_coef=pos_coef,
-            rect_setter=rect_setter or _default_rect_setter,
+            rect_setter=rect_setter or self._set_item_rect,
         )
 
         with self._lock:
@@ -670,8 +646,24 @@ class Grid(_GridComponent):
 
         return item
 
-    def _get_parent_rect_info(self, default=_default_rect_getter):
-        return (self.rect_getter or default)(self.parent or 0)
+    @staticmethod
+    def _set_item_rect(item: Item, x_pos: int, y_pos: int, width: int, height: int, show: bool, /, *, __SETTER=_dearpygui.configure_item):
+        __SETTER(item, width=width, height=height, pos=(x_pos, y_pos), show=show)
+
+    def _get_parent_rect(self, /, *, __CONFIG_GETTER=_dearpygui.get_item_configuration, __STATE_GETTER=_dearpygui.get_item_state) -> tuple[int, int, int, int, bool]:
+        parent = self.parent or 0
+
+        rect_getter = self.rect_getter
+        if rect_getter is not None:
+            return rect_getter(parent)
+
+        # default `rect_getter` impl.
+        state = __STATE_GETTER(parent)
+        visible = state.get("visible")
+        if visible is None:
+            visible = __CONFIG_GETTER(parent)["show"]
+
+        return *state['rect_size'], *state['pos'], visible
 
     def _gc_item_data(self):
         # currently called before or after:
@@ -685,7 +677,7 @@ class Grid(_GridComponent):
         with self._lock:
             self._gc_item_data()
 
-            _area_width, _area_height, area_x_pos, area_y_pos, area_visible = self._get_parent_rect_info()
+            _area_width, _area_height, area_x_pos, area_y_pos, area_visible = self._get_parent_rect()
 
             if self._show and area_visible:
                 area_width = self.width or _area_width
@@ -928,15 +920,11 @@ class Overlay:
 
     _drawlayer = 0
 
-    @typing.overload
-    def draw(self, /) -> None: ...
-    @typing.overload
-    def draw(self, x_min: int, y_min: int, x_max: int, y_max: int, /) -> None: ...
-    def draw(self, /, *args) -> None:
+    def draw(self, /, *args, __CONFIG_SETTER=_dearpygui.configure_item) -> None:
         if args:
             x_min, y_min, x_max, y_max = args
         else:
-            width, height, x_min, y_min, *_ = self.grid._get_parent_rect_info()
+            width, height, x_min, y_min, *_ = self.grid._get_parent_rect()
             x_max = (self.grid.width or width) + x_min
             y_max = (self.grid.height or height) + y_min
 
@@ -949,7 +937,7 @@ class Overlay:
             layer = self._drawlayer
             if layer:
                 try:
-                    _item_set_config(layer, show=False)
+                    __CONFIG_SETTER(layer, show=False)
                 except SystemError:
                     if dearpygui.does_item_exist(layer):
                         raise
