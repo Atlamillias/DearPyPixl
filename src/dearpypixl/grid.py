@@ -29,22 +29,14 @@ _MISSING = object()
 
 # [ HELPER FUNCTIONS ]
 
-def _is_nan(v: typing.Any) -> bool:
-    return v != v
-
-def _to_value(value: typing.Any, default: typing.Any):
-    if value is None or _is_nan(value):
-        return default
-    return value
-
 def _to_float_arr(value: typing.Sequence[float] | float | None, length: int, default: float = NaN) -> typing.Any:
     """
     # Non-Sequence value (None | float('nan'))
     >>> arr = _to_float_array(None, 2)
-    >>> len(arr) == 2 and all(_is_nan(v) for v in arr)
+    >>> len(arr) == 2 and all(v != v for v in arr)
     True
     >>> arr = _to_float_array(float("nan"), 2)
-    >>> len(arr) == 2 and all(_is_nan(v) for v in arr)
+    >>> len(arr) == 2 and all(v != v for v in arr)
     True
 
     # Non-Sequence value (number)
@@ -63,7 +55,7 @@ def _to_float_arr(value: typing.Sequence[float] | float | None, length: int, def
     True
 
     """
-    if value is None or _is_nan(value):
+    if value is None or value != value:
         return array('f', (default,) * length)  # pyright: ignore
     if isinstance(value, (float, int)):
         return array('f', (value,) * length)  # pyright: ignore
@@ -71,60 +63,41 @@ def _to_float_arr(value: typing.Sequence[float] | float | None, length: int, def
     arr = array('f', (default,) * length)
     try:
         for i in range(length):
-            arr[i] = _to_value(value[i], default)
+            v = value[i]
+            if v is None or v != v:
+                v = default
+            arr[i] = v
     except IndexError:
         pass
     return arr  # pyright: ignore
 
-def _float_arr_property(length: int, default: float | None = None) -> typing.Any:
-    def _create_property(name):
-        return codegen.create_property(
-            (
-                f"try:",
-                f"  return self._{name}",
-                f"except AttributeError:",
-                f"  {name} = self._{name} = _to_float_arr(None, {length}, {default})",
-                f"  return {name}",
-            ),
-            (
-                f"{name} = self.{name}",
-                f"if _is_nan(value) or value is None:",
-                f"  {' = '.join(f'{name}[{i}]' for i in range(length))} = {default}",
-                f"else:",
-                f"  {name}[:] = _to_float_arr(value, {length}, {default})",
-            ),
-            (
-                f"{' = '.join(f'{name}[{i}]' for i in range(length))} = {default}",
-            ),
-            module=__name__,
-            globals=globals(),
-        )
-
+def _float_arr_property(name: str, length: int, default: float | None = None) -> typing.Any:
     if default is None:
         default = "NaN"  # type: ignore
 
-    return codegen.DescriptorDelegate(_create_property)
+    return codegen.create_property(
+        (
+            f"try:",
+            f"  return self._{name}",
+            f"except AttributeError:",
+            f"  {name} = self._{name} = _to_float_arr(None, {length}, {default})",
+            f"  return {name}",
+        ),
+        (
+            f"{name} = self.{name}",
+            f"if value != value or value is None:",
+            f"  {' = '.join(f'{name}[{i}]' for i in range(length))} = {default}",
+            f"else:",
+            f"  {name}[:] = _to_float_arr(value, {length}, {default})",
+        ),
+        (
+            f"{' = '.join(f'{name}[{i}]' for i in range(length))} = {default}",
+        ),
+        module=__name__,
+        globals=globals(),
+    )
 
-def _min_number_property(floor: int | float = 0.0, default = None) -> typing.Any:
-    def _create_property(name):
-        return codegen.create_property(
-            (
-                f"return self._{name}",
-            ),
-            (
-                f"if _is_nan(value) or value is None:",
-                f"  self._{name} = {default}",
-                f"else:",
-                f"  self._{name} = max({floor}, type_(value))",
-            ),
-            (
-                f"self._{name} = {default}",
-            ),
-            module=__name__,
-            globals=globals(),
-            locals={"type_": type_}
-        )
-
+def _min_number_property(name: str, floor: int | float = 0.0, default = None) -> typing.Any:
     type_ = type(floor)
 
     if default is None:
@@ -133,7 +106,25 @@ def _min_number_property(floor: int | float = 0.0, default = None) -> typing.Any
         else:
             default = 0
 
-    return codegen.DescriptorDelegate(_create_property)
+    return codegen.create_property(
+        (
+            f"return self._{name}",
+        ),
+        (
+            f"if value != value or value is None:",
+            f"  self._{name} = {default}",
+            f"elif value <= {floor}:",
+            f"  self._{name} = {floor}",
+            f"else:",
+            f"  self._{name} = type_(value)",
+        ),
+        (
+            f"self._{name} = {default}",
+        ),
+        module=__name__,
+        globals=globals(),
+        locals={"type_": type_}
+    )
 
 
 
@@ -194,8 +185,8 @@ class _GridComponent:
     __slots__ = ('label', '_spacing', '_padding')
 
     label: str
-    spacing: float = _min_number_property(0.0)
-    padding: typing.MutableSequence[float] = _float_arr_property(2)
+    spacing: float = _min_number_property("spacing", 0.0)
+    padding: typing.MutableSequence[float] = _float_arr_property("padding", 2)
 
     def __init__(self, *, label: str = '', spacing: float = NaN, padding: typing.Sequence[float] | float | None = None, **kwargs):
         self.configure(label=label, spacing=spacing, padding=padding, **kwargs)
@@ -221,8 +212,8 @@ class _GridSlotState:
 class Slot(_GridComponent):
     __slots__ = ('_state', '_size', '_weight')
 
-    weight: DataDescriptor[float, float | None] = _min_number_property(0.1, 1.0)
-    size: DataDescriptor[int, int | None] = _min_number_property(0, 0)
+    weight: DataDescriptor[float, float | None] = _min_number_property("weight", 0.1, 1.0)
+    size: DataDescriptor[int, int | None] = _min_number_property("size", 0, 0)
 
     @typing.overload
     def __init__(self, *, label: str = ..., spacing: float | None = ..., padding: typing.Sequence[float] | float | None = ..., weight: float | None = ..., size: int | None = ...) -> None: ...  # type: ignore
@@ -499,11 +490,11 @@ class Grid(_GridComponent):
     label: str = ''
     parent: Item | None = None
     rect_getter: _RectGetter | None = None
-    width: DataDescriptor[int, int | None] = _min_number_property(0, 0)
-    height: DataDescriptor[int, int | None] = _min_number_property(0, 0)
-    offsets: DataDescriptor[typing.Sequence[float], typing.Sequence[float] | float | None] = _float_arr_property(4, 0.0)
-    padding: DataDescriptor[typing.Sequence[float], typing.Sequence[float] | float | None] = _float_arr_property(4, 0.0)
-    spacing: DataDescriptor[typing.Sequence[float], typing.Sequence[float] | float | None] = _float_arr_property(2, 0.0)
+    width: DataDescriptor[int, int | None] = _min_number_property("width", 0, 0)
+    height: DataDescriptor[int, int | None] = _min_number_property("height", 0, 0)
+    offsets: DataDescriptor[typing.Sequence[float], typing.Sequence[float] | float | None] = _float_arr_property("offsets", 4, 0.0)
+    padding: DataDescriptor[typing.Sequence[float], typing.Sequence[float] | float | None] = _float_arr_property("padding", 4, 0.0)
+    spacing: DataDescriptor[typing.Sequence[float], typing.Sequence[float] | float | None] = _float_arr_property("spacing", 2, 0.0)
 
     @property
     def show(self, /) -> bool:  # pyright: ignore[reportRedeclaration]
