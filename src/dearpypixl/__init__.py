@@ -1,12 +1,14 @@
 import sys as _sys
-from dearpypixl.core import management as _management
 
 if "dearpygui" in _sys.modules:
+    from dearpypixl.core import management as _management
     _management.warn(
         "`dearpypixl` should be imported before `dearpygui` — "
         "references to objects in `dearpygui` may be invalidated",
         stacklevel=2
     )
+else:
+    from dearpypixl.core import management as _management
 
 from dearpypixl.core.protocols import mvBuffer as mvBuffer
 from dearpypixl.core.protocols import mvVec4 as mvVec4
