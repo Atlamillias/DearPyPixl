@@ -10343,14 +10343,19 @@ class mvThemeColor[U = Any, V: Array[int, Literal[3, 4]] = Any, P: mvThemeCompon
     def configuration(self, /) -> dict[Literal["target", "category", "label", "use_internal_label", "user_data"], Any]: ...
     def configure(self, /, *, label: str | None = ..., use_internal_label: bool = ..., user_data: Any | None = ..., **kwargs) -> None: ...
     def state(self, /) -> dict[Literal["ok", "pos"], Any]: ...
-    def identify(self, /) -> 'tuple[type[mvThemeColor | mvThemeStyle], str, str, str, str]':
-        """Return a 4-tuple containing: the item's resolved interface type, the
-            element's simplified name, the element's full name, the element category
-            name, and element target name. The "simplified" name matches the name of
-            a function in either the :py:module:~`dearpypixl.color` or
-            :py:module:~`dearpypixl.style` modules, while the element's full name,
-            category name, and target name match the name of a constant in
-            `dearpygui.dearpygui`.
+    def identify(self, /) -> '_ElementInfo':
+        """Return a `_ElementInfo` object -- a tuple-like object with information
+            regarding this theme element's identity.
+    
+            The returned `_ElementInfo` object has five read-only attributes:
+            - `type`: The element's concrete class in Dear PyPixl (:py:class:`mvThemeColor`
+            or :py:class:`mvThemeStyle`).
+            - `name`: The name of the theme element. Matches the name of a function in
+            the :py:module:`dearpypixl.color` or :py:module:`dearpypixl.style` namespaces.
+            - `fullname`: The name of the theme element. Matches the name of a constant in
+            the `dearpygui.dearpygui` and `dearpypixl` namespaces.
+            - `category`: The value returned via `get_item_configuration(element)["category"]`.
+            - `target`: The value returned via `get_item_configuration(element)["target"]`.
             """
 
 def add_theme_color[U = Any](target: int = 0, value: Array[int, Literal[3, 4]] = (0, 0, 0, 255), *, category: int = 0, label: str | None = None, use_internal_label: bool = True, user_data: Any | None = None, tag: int | str = 0, parent: int | str = 0, **kwargs) -> mvThemeColor[U]: ...
@@ -10407,14 +10412,19 @@ class mvThemeStyle[U = Any, V: Array[float, Literal[4]] = Any, P: mvThemeCompone
     def configuration(self, /) -> dict[Literal["target", "category", "label", "use_internal_label", "user_data"], Any]: ...
     def configure(self, /, *, label: str | None = ..., use_internal_label: bool = ..., user_data: Any | None = ..., **kwargs) -> None: ...
     def state(self, /) -> dict[Literal["ok", "pos"], Any]: ...
-    def identify(self, /) -> 'tuple[type[mvThemeColor | mvThemeStyle], str, str, str, str]':
-        """Return a 4-tuple containing: the item's resolved interface type, the
-            element's simplified name, the element's full name, the element category
-            name, and element target name. The "simplified" name matches the name of
-            a function in either the :py:module:~`dearpypixl.color` or
-            :py:module:~`dearpypixl.style` modules, while the element's full name,
-            category name, and target name match the name of a constant in
-            `dearpygui.dearpygui`.
+    def identify(self, /) -> '_ElementInfo':
+        """Return a `_ElementInfo` object -- a tuple-like object with information
+            regarding this theme element's identity.
+    
+            The returned `_ElementInfo` object has five read-only attributes:
+            - `type`: The element's concrete class in Dear PyPixl (:py:class:`mvThemeColor`
+            or :py:class:`mvThemeStyle`).
+            - `name`: The name of the theme element. Matches the name of a function in
+            the :py:module:`dearpypixl.color` or :py:module:`dearpypixl.style` namespaces.
+            - `fullname`: The name of the theme element. Matches the name of a constant in
+            the `dearpygui.dearpygui` and `dearpypixl` namespaces.
+            - `category`: The value returned via `get_item_configuration(element)["category"]`.
+            - `target`: The value returned via `get_item_configuration(element)["target"]`.
             """
 
 def add_theme_style[U = Any](target: int = 0, x: float = 1.0, y: float = -1.0, *, category: int = 0, label: str | None = None, use_internal_label: bool = True, user_data: Any | None = None, tag: int | str = 0, parent: int | str = 0, **kwargs) -> mvThemeStyle[U]: ...

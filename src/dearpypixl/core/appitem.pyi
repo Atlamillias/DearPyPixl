@@ -24,6 +24,7 @@ __all__ = (
     "SupportsValueArray",
     "_HandlerItem",
     "_ElementItem",
+    "_ElementInfo",
 )
 
 
@@ -630,6 +631,21 @@ class SupportsValueArray[T]:
     def set_value(self: Any, value: Array[T], /) -> None: ...
 
 
+
+# NOTE: not actually a subtype of `tuple`, but it is the most accurate for autocompletion
+@final
+class _ElementInfo[T: mvThemeColor[Any, Any] | mvThemeStyle[Any, Any]](tuple[T, str, str, int, int]):
+    @property
+    def type(self, /) -> T: ...
+    @property
+    def name(self, /) -> str: ...
+    @property
+    def fullname(self, /) -> str: ...
+    @property
+    def category(self, /) -> int: ...
+    @property
+    def target(self, /) -> int: ...
+
 @final
 class _ElementItem[U = Any, V: int | float = Any, P: mvThemeComponent | mvTemplateRegistry = mvThemeComponent](SupportsValueArray[V], ChildItem[U, list[V], P, None]):
     @property
@@ -643,14 +659,19 @@ class _ElementItem[U = Any, V: int | float = Any, P: mvThemeComponent | mvTempla
         """[**get**] the theme color's or style's category ID, e.g.
         `dearpygui.dearpygui.get_item_configuration(self)["category"]`.
         """
-    def identify(self, /) -> tuple[type[mvThemeColor | mvThemeStyle], str, str, str, str]:
-        """Return a 4-tuple containing: the item's resolved interface type, the
-        element's simplified name, the element's full name, the element category
-        name, and element target name. The "simplified" name matches the name of
-        a function in either the :py:module:~`dearpypixl.color` or
-        :py:module:~`dearpypixl.style` modules, while the element's full name,
-        category name, and target name match the name of a constant in
-        `dearpygui.dearpygui`.
+    def identify(self, /) -> '_ElementInfo':
+        """Return a `_ElementInfo` object — a tuple-like object with information
+        regarding this theme element's identity.
+
+        The returned `_ElementInfo` object has five read-only attributes:
+        - `type`: The element's concrete class in Dear PyPixl (:py:class:`mvThemeColor`
+        or :py:class:`mvThemeStyle`).
+        - `name`: The name of the theme element. Matches the name of a function in
+        the :py:module:`dearpypixl.color` or :py:module:`dearpypixl.style` namespaces.
+        - `fullname`: The name of the theme element. Matches the name of a constant in
+        the `dearpygui.dearpygui` and `dearpypixl` namespaces.
+        - `category`: The value returned via `get_item_configuration(element)["category"]`.
+        - `target`: The value returned via `get_item_configuration(element)["target"]`.
         """
 
 @final

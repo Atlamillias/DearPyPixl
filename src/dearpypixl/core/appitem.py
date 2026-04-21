@@ -14,6 +14,7 @@ __all__ = (
     "SupportsValueArray",
     "_HandlerItem",
     "_ElementItem",
+    "_ElementInfo",
 )
 
 
@@ -586,6 +587,58 @@ class SupportsValueArray[T]:
             return False
 
 
+class _ElementInfo:
+    __slots__ = ("type", "name", "fullname", "category", "target")
+
+    def __astuple(self, /):
+        return (self.type, self.name, self.fullname, self.category, self.target)
+
+    def __init__(self, type, function, constant, category, target, /):
+        self.type = type
+        self.name = function
+        self.fullname = constant
+        self.category = category
+        self.target = target
+
+    def __repr__(self, /):
+        type = self.type
+        name = self.name
+        fullname = self.fullname
+        category = self.category
+        target = self.target
+        return f"_ElementInfo({type=}, {name=}, {fullname=}, {category=}, {target=})"
+
+    def __hash__(self, /):
+        return hash(self.__astuple())
+
+    def __add__(self, x, /):
+        return self.__astuple() + x
+
+    __iadd__ = __add__
+
+    def __radd__(self, other, /):
+        return other + self.__astuple()
+
+    def __iter__(self, /):
+        yield self.type
+        yield self.name
+        yield self.fullname
+        yield self.category
+        yield self.target
+
+    def __getitem__(self, index, /):
+        match index:
+            case 0 | -5: return self.type
+            case 1 | -4: return self.name
+            case 2 | -3: return self.fullname
+            case 3 | -2: return self.category
+            case 4 | -1: return self.target
+
+        return self.__astuple()[index]
+
+    def index(self, /, *args):
+        return self.__astuple().index(*args)
+
 class _ElementItem[U = typing.Any, P = typing.Any](SupportsValueArray, ChildItem):
     __slots__ = ()
 
@@ -599,55 +652,95 @@ class _ElementItem[U = typing.Any, P = typing.Any](SupportsValueArray, ChildItem
     def target(self, /) -> int:
         return _dearpygui.get_item_configuration(self)["target"]
 
-    def identify(self, /) -> 'tuple[type[mvThemeColor | mvThemeStyle], str, str, str, str]':  # type: ignore
-        """Return a 4-tuple containing: the item's resolved interface type, the
-        element's simplified name, the element's full name, the element category
-        name, and element target name. The "simplified" name matches the name of
-        a function in either the :py:module:~`dearpypixl.color` or
-        :py:module:~`dearpypixl.style` modules, while the element's full name,
-        category name, and target name match the name of a constant in
-        `dearpygui.dearpygui`.
+    def identify(self, /) -> '_ElementInfo':
+        """Return a `_ElementInfo` object -- a tuple-like object with information
+        regarding this theme element's identity.
+
+        The returned `_ElementInfo` object has five read-only attributes:
+        - `type`: The element's concrete class in Dear PyPixl (:py:class:`mvThemeColor`
+        or :py:class:`mvThemeStyle`).
+        - `name`: The name of the theme element. Matches the name of a function in
+        the :py:module:`dearpypixl.color` or :py:module:`dearpypixl.style` namespaces.
+        - `fullname`: The name of the theme element. Matches the name of a constant in
+        the `dearpygui.dearpygui` and `dearpypixl` namespaces.
+        - `category`: The value returned via `get_item_configuration(element)["category"]`.
+        - `target`: The value returned via `get_item_configuration(element)["target"]`.
         """
         try:
             registry = __class__._ELEMENT_REGISTRY
+            name_map = __class__._ELEMENT_NAME_MAP
         except AttributeError:
+            import re
+
             registry = {}
+            name_map = {}
+
+            pattern = re.compile(r"[A-Z][a-z0-9]*")
+            buffer  = []
+
             for symbol, value in _dearpygui.__dict__.items():
-                prefix = symbol.partition('_')[0]
+                prefix, _, suffix = symbol.partition('_')
                 match prefix:
                     case "mvThemeCol":
                         type_name = "mvAppItemType::mvThemeColor"
+                        prefix    = ''
                         category  = _dearpygui.mvThemeCat_Core
                     case "mvPlotCol":
                         type_name = "mvAppItemType::mvThemeColor"
+                        prefix    = 'plot'
                         category  = _dearpygui.mvThemeCat_Plots
                     case "mvNodeCol" | "mvNodesCol":
                         type_name = "mvAppItemType::mvThemeColor"
+                        prefix    = 'node'
                         category  = _dearpygui.mvThemeCat_Nodes
                     case "mvStyleVar":
                         type_name = "mvAppItemType::mvThemeStyle"
+                        prefix    = ''
                         category  = _dearpygui.mvThemeCat_Core
                     case "mvPlotStyleVar":
                         type_name = "mvAppItemType::mvThemeStyle"
+                        prefix    = 'plot'
                         category  = _dearpygui.mvThemeCat_Plots
                     case "mvNodeStyleVar" | "mvNodesStyleVar":
                         type_name = "mvAppItemType::mvThemeStyle"
+                        prefix    = 'node'
                         category  = _dearpygui.mvThemeCat_Nodes
                     case _:
                         continue
 
+                if prefix:
+                    buffer.append(prefix)
+
+                for substring in suffix.split("_"):
+                    for word in pattern.findall(substring):
+                        word = word.lower()
+                        if word == prefix:
+                            continue
+                        buffer.append(word)
+
+                name = '_'.join(buffer).replace("background", "bg").replace("foreground", "fg")
+
                 registry[(type_name, category, value)] = symbol
+                name_map[symbol] = name
+                buffer.clear()
 
             __class__._ELEMENT_REGISTRY = registry
+            __class__._ELEMENT_NAME_MAP = name_map
 
         info   = _dearpygui.get_item_info(self)
         config = _dearpygui.get_item_configuration(self)
 
-        key = (info["type"], config["category"], config["target"])
+        e_type     = info["type"]
+        e_category = config["category"]
+        e_target   = config["target"]
         try:
-            return __class__._ELEMENT_REGISTRY[key]
+            e_fullname = registry[(e_type, e_category, e_target)]
         except KeyError:
             raise TypeError(f"{self!r} is not a theme color or style")
+        e_name = name_map[e_fullname]
+        e_type = __class__.__item_registry__[e_type]
+
+        return _ElementInfo(e_type, e_name, e_fullname, e_category, e_target)
 
 
 class _HandlerItem[U = typing.Any, P = typing.Any](ChildItem):
