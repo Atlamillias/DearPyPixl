@@ -21,7 +21,7 @@ license = "MIT"
 license-files = ["LICEN[CS]E*"]
 requires-python = ">=3.14"
 dependencies = [
-    "dearpygui >= 2.2, < 3.0",
+    "dearpygui >= 2.3",
 ]
 
 
