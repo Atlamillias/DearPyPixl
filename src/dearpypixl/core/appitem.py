@@ -574,7 +574,7 @@ class SupportsValueArray[T]:
     def __setitem__(self, index, value, /) -> None:
         item_value = self.get_value()
         item_value[index] = value
-        self.set_value(value)
+        self.set_value(item_value)
 
     def __eq__(self, other, /) -> bool:
         value = self.get_value()
