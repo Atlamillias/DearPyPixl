@@ -5,11 +5,14 @@ import sys
 import ast
 import pathlib
 import inspect
+import textwrap
 import contextlib
 import collections
 import dataclasses
 import importlib.util
 import importlib.metadata
+
+from dearpygui import dearpygui
 
 import metadata
 from metadata import FeatureFlag, ParameterFlag, DearPyGuiMetadata, ItemTypeInfo
@@ -697,6 +700,8 @@ class ItemsStubGenerator(_ItemsGenerator):
 
         return buffer
 
+    _RE_DOCPARAM = re.compile(r"(?P<name>[a-zA-Z][a-zA-Z0-9_]*)\s*(\(.+\))?:(?P<desc>.*)\n")
+
     def _generate_class_entry(self, type_info: ItemTypeInfo, /, *, level: int = 0):
         buffer = []
 
@@ -762,21 +767,55 @@ class ItemsStubGenerator(_ItemsGenerator):
         del buffer[:-1], bases, V, P, C
 
 
-        members_seen = {"ok", "pos"}
+        # docstring
+        param_doc_map = {}
 
+        doc: str | None = getattr(dearpygui, type_info.command).__doc__
+        if doc:
+            head, _, tail = doc.rpartition("Returns:\n")
+            if not head:
+                head = tail
+
+            head, _, tail = head.partition("Args:\n")
+
+            docstring_desc = textwrap.wrap(' '.join(head.split()).strip(), initial_indent="    ", subsequent_indent="    ")
+            if docstring_desc:  # class-level docstring
+                buffer.append('    """')
+                buffer.extend(docstring_desc)
+                buffer.append('    """')
+
+            for m in self._RE_DOCPARAM.finditer(tail):
+                p_name = m.group('name')
+                p_desc = ' '.join(m.group('desc').split()).strip().rstrip(' \n.')
+                if p_desc: p_desc += '.'
+                param_doc_map[p_name] = p_desc
+        else:
+            docstring_desc = ()
+        del doc
+
+
+        MEMBERS_SEEN = {"ok", "pos"}  # not a constant — capped so it stands out
 
         # constructor
 
+        docstring_params = []
         parameters = []
 
         for p in type_info.parameters:
             anno = p.annotation
             if anno is not p.empty and p.default == 'None' and not anno.endswith('None'):
-                p = p.replace(annotation=f"{anno} | None")
+                anno = f"{anno} | None"
+                p = p.replace(annotation=anno)
 
             parameters.append(p)
-        # HACK: make the `item_type` argument of `mvThemeComponent.create()` compatible
-        # with item type classes
+
+            name = p.name
+
+            docstring_params.append(f"    :type {name}: `{anno}`{' *(optional)*' if anno is not p.empty else ''}")
+            docstring_params.extend(textwrap.wrap(f"    :param {name}: {param_doc_map.get(name, '')}", subsequent_indent="        "))
+            docstring_params.append('')
+
+        # HACK: make the `item_type` argument of `mvThemeComponent.create()` compatible with item type classes
         if type_name == "mvThemeComponent":
             try:
                 i, p = next((i, p) for i, p in enumerate(parameters) if p.name == "item_type")
@@ -790,19 +829,23 @@ class ItemsStubGenerator(_ItemsGenerator):
             .replace("user_data: Any = None", "user_data: U = ...")
 
         buffer.append(f"    @classmethod")
-        buffer.append(f"    def create(cls, {signature}, **kwargs) -> Self: ...  # ty: ignore[invalid-method-override]")
-        members_seen.add("create")
-        del parameters  # keep `signature` because we re-use it for the functional API
+        buffer.append(f"    def create(cls, {signature}, **kwargs) -> Self:  # ty: ignore[invalid-method-override]")
+        buffer.append(f"        \"\"\"")
+        buffer.extend("    " + ln for ln in docstring_params)
+        buffer.append(f"        \"\"\"")
+
+        MEMBERS_SEEN.add("create")
+        del parameters, param_doc_map  # keep `signature` because we re-use it for the functional API
 
 
         # read-only configuration
 
         for p in self._iter_readonly_config(type_info):
             name = p.name
-            if name in members_seen:
+            if name in MEMBERS_SEEN:
                 continue
 
-            members_seen.add(name)
+            MEMBERS_SEEN.add(name)
 
             anno = p.annotation
             if anno is p.empty:
@@ -816,7 +859,7 @@ class ItemsStubGenerator(_ItemsGenerator):
         keys = (f'"{p.name}"' for p in self._iter_readable_config(type_info))
 
         buffer.append(f"    def configuration(self, /) -> dict[Literal[{', '.join(keys)}], Any]: ...")
-        members_seen.add("configuration")
+        MEMBERS_SEEN.add("configuration")
         del keys
 
 
@@ -839,10 +882,10 @@ class ItemsStubGenerator(_ItemsGenerator):
             parameters.append(p)
 
             name = p.name
-            if name in members_seen or name in self._SKIPPED_ASSIGNMENTS:
+            if name in MEMBERS_SEEN or name in self._SKIPPED_ASSIGNMENTS:
                 continue
 
-            members_seen.add(name)
+            MEMBERS_SEEN.add(name)
             buffer.extend(self._generate_dataproperty(p, null_value, level=1))
 
         if type_info.flags & FeatureFlag.SUPPORTS_POSITIONING:
@@ -859,7 +902,7 @@ class ItemsStubGenerator(_ItemsGenerator):
             .replace("user_data: Any = ...", "user_data: U | None = ...")
 
         buffer.append(f"    def configure(self, /, {signature2}, **kwargs) -> None: ...")
-        members_seen.add("configure")
+        MEMBERS_SEEN.add("configure")
         del parameters, signature2
 
 
@@ -868,9 +911,9 @@ class ItemsStubGenerator(_ItemsGenerator):
         keys = ["ok", "pos"]
 
         for state in self._iter_states(type_info):
-            if state not in members_seen:
+            if state not in MEMBERS_SEEN:
                 keys.append(state)
-                members_seen.add(state)
+                MEMBERS_SEEN.add(state)
                 buffer.append(f"    @property")
                 buffer.append(f"    def {state}(self, /) -> {self._STATE_TYPE_MAP[state]}: ...")
 
@@ -887,9 +930,9 @@ class ItemsStubGenerator(_ItemsGenerator):
                 buffer.append(f'    @{s}_scroll_pos.setter')
                 buffer.append(f'    def {s}_scroll_pos(self, value: float, /) -> None: ...')
 
-        if "rect_size" in members_seen:
+        if "rect_size" in MEMBERS_SEEN:
             for state in ("rect_min", "rect_max"):
-                if state not in members_seen:
+                if state not in MEMBERS_SEEN:
                     buffer.append(f'    @property')
                     buffer.append(f'    def {state}(self, /) -> Array[int, Literal[2]]:')
                     buffer.append(f'        """[**get**] the item\'s calculated `{state}`.')
@@ -897,7 +940,7 @@ class ItemsStubGenerator(_ItemsGenerator):
                     buffer.append(f'        will not be included in the return value of :py:meth:`state()`.*"""')
 
         buffer.append(f"    def state(self, /) -> dict[Literal[{', '.join(f'"{s}"' for s in keys)}], Any]: ...")
-        members_seen.add("state")
+        MEMBERS_SEEN.add("state")
         del keys
 
 
@@ -913,7 +956,7 @@ class ItemsStubGenerator(_ItemsGenerator):
             for node in class_node.body:
                 s = ast.unparse(node)
 
-                docstring = None
+                doc_params = None
 
                 if isinstance(node, ast.Assign):
                     assert len(node.targets) == 1
@@ -926,7 +969,7 @@ class ItemsStubGenerator(_ItemsGenerator):
 
                     if callable(value):
                         assert not isinstance(value, type)
-                        docstring = value.__doc__
+                        doc_params = value.__doc__
 
                         source2 = inspect.getsource(value)
                         try:
@@ -940,7 +983,7 @@ class ItemsStubGenerator(_ItemsGenerator):
                 elif isinstance(node, ast.FunctionDef):
                     value = getattr(proto_type, node.name)
 
-                    docstring = value.__doc__
+                    doc_params = value.__doc__
 
                     # does this func have overloads and is it the "real" one?
                     if callable(value) and typing.get_overloads(value):
@@ -948,10 +991,10 @@ class ItemsStubGenerator(_ItemsGenerator):
                             # skip the actual implementation for funcs with overloads
                             continue
 
-                        if docstring and not isinstance(node.body[0].value.value, str):
-                            s = s.rstrip("... \n") + f'\n    """{docstring}"""'
+                        if doc_params and not isinstance(node.body[0].value.value, str):
+                            s = s.rstrip("... \n") + f'\n    """{doc_params}"""'
 
-                if docstring:
+                if doc_params:
                     s = s.rstrip().removesuffix("...").rstrip()
                 else:
                     s = s.rpartition("    ...")[0].rstrip() + " ..."
@@ -964,12 +1007,18 @@ class ItemsStubGenerator(_ItemsGenerator):
 
         # functional API
 
+        docstring = ['    """', *docstring_desc, '', *docstring_params, ''] if docstring_desc else ['    """', *docstring_params, '']
+        docstring.append('    :raises `SystemError`: DearPyGui-related error.')
+        docstring.append('    """')
+
         for func in self._get_command_names(type_info):
-            buffer.append(f"def {func}[U = Any]({signature}, **kwargs) -> {type_name}[U]: ...")
-
+            buffer.append(f"def {func}[U = Any]({signature}, **kwargs) -> {type_name}[U]:")
+            buffer.extend(docstring)
 
         buffer.append("")
         buffer.append("")
+
+
         apply_indents(buffer, level)
         return buffer
 
