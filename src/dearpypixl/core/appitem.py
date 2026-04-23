@@ -43,6 +43,7 @@ class AppItemType(type):
             self.__item_type__ = self
             self.__item_slot__ = slot
             self.__item_command__ = command
+            self.__hash__ = AppItem.__hash__  # type: ignore
 
             registry = __class__.__item_registry__
             registry[f"mvAppItemType::{name}"] = registry[getattr(_dearpygui, name)] = self
@@ -131,10 +132,13 @@ class AppItem[U = typing.Any, V = typing.Any, P = typing.Any, C = typing.Any](in
     def __int__(self, /):
         return self.real
 
-    # XXX: does it makes sense to have `__str__()` return the item alias?
-    # what if it's empty?
-    #def __str__(self, /, *, __func=_dearpygui.get_item_alias):
-    #    return __func(self) or ""
+    __hash__ = __int__
+
+    def __eq__(self, other, /, *, __func=_dearpygui.get_item_alias):
+        return (
+            (self.real == other) or
+            (alias == other if (alias:=__func(self.real)) else False)
+        )
 
     @classmethod
     def create(cls, /, *args, **kwargs):
@@ -355,6 +359,8 @@ class ChildItem[U = typing.Any, V = typing.Any, P = typing.Any, C = typing.Any](
 
     __item_type__ = _MISSING
 
+    __hash__ = AppItem.__hash__
+
     def move(self, *, parent=0, before=0, __func=_dearpygui.move_item):
         __func(self, parent=parent, before=before)
 
@@ -372,6 +378,8 @@ class ContainerItem[U = typing.Any, V = typing.Any, P = typing.Any, C = typing.A
     __slots__ = ()
 
     __item_type__ = _MISSING
+
+    __hash__ = AppItem.__hash__
 
     def __enter__(self, /, *, __func=_dearpygui.push_container_stack):
         __func(self)
@@ -652,6 +660,8 @@ class _ElementItem[U = typing.Any, P = typing.Any](SupportsValueArray, ChildItem
 
     __item_type__ = _MISSING
 
+    __hash__ = AppItem.__hash__
+
     @property
     def category(self, /) -> int:
         return _dearpygui.get_item_configuration(self)["category"]
@@ -755,6 +765,8 @@ class _HandlerItem[U = typing.Any, P = typing.Any](ChildItem):
     __slots__  = ()
 
     __item_type__ = _MISSING
+
+    __hash__ = AppItem.__hash__
 
     @property
     def callback(self, /, *, __func=_dearpygui.get_item_configuration):
