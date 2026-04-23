@@ -107,21 +107,15 @@ class AppItem[U = typing.Any, V = typing.Any, P = typing.Any, C = typing.Any](in
         return __int_new(cls, uuid)
 
     def __repr__(self, /):
-        uuid  = self.real
-
+        uuid = self.real
         try:
             alias = _dearpygui.get_item_alias(uuid)
         except SystemError:
-            alias = "<error>"
-
+            alias = ''
         try:
-            value = _dearpygui.get_value(uuid)
-            if hasattr(value, "__getitem__") and hasattr(value, "__len__") and len(value) > 4:
-                value = f"[{value[0]!r}, {value[1]!r}, {value[2]!r}, {value[3]!r}, ...]"
-            else:
-                value = repr(value)
+            label = _dearpygui.get_item_configuration(self)["label"]
         except SystemError:
-            value = "<error>"
+            label = ''
 
         class_name = self.__class__.__name__
 
@@ -129,11 +123,10 @@ class AppItem[U = typing.Any, V = typing.Any, P = typing.Any, C = typing.Any](in
             try:
                 type = _dearpygui.get_item_info(self)["type"]
             except SystemError:
-                type = "<error>"
-            else:
-                return f"{class_name}({type=}, {uuid=}, {alias=}, value={value})"
+                type = ''
+            return f"{class_name}({type=}, {uuid=}, {alias=}, {label=})"
 
-        return f"{class_name}({uuid=}, {alias=}, value={value})"
+        return f"{class_name}({uuid=}, {alias=}, {label=})"
 
     def __int__(self, /):
         return self.real
@@ -516,6 +509,21 @@ class CompositeItem:
         except TypeError:
             self.__dict__["user_data"] = user_data
             _dearpygui.configure_item(self, user_data=self.__dict__)
+
+    def __repr__(self: typing.Any, /):
+        # uses the concrete class name, whereas `AppItem.__repr__()` always
+        # uses the item type's name
+        uuid = self.real
+        try:
+            alias = _dearpygui.get_item_alias(uuid)
+        except SystemError:
+            alias = ''
+        try:
+            label = _dearpygui.get_item_configuration(self)["label"]
+        except SystemError:
+            label = ''
+
+        return f"{self.__class__.__name__}({uuid=}, {alias=}, {label=})"
 
     def destroy(self, /, *, __func=_dearpygui.delete_item):
         for item in self.components:
