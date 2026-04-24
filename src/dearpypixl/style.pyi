@@ -29,13 +29,20 @@ __all__ = (
     "cell_padding",
     "scrollbar_size",
     "scrollbar_rounding",
+    "scrollbar_padding",
     "grab_min_size",
     "grab_rounding",
+    "image_border_size",
     "tab_rounding",
     "tab_border_size",
+    "tab_min_width_base",
+    "tab_min_width_shrink",
     "tab_bar_border_size",
+    "tab_bar_overline_size",
     "table_angled_headers_angle",
     "table_angled_headers_text_align",
+    "tree_lines_size",
+    "tree_lines_rounding",
     "button_text_align",
     "selectable_text_align",
     "separator_text_border_size",
@@ -210,6 +217,12 @@ def scrollbar_rounding[T = Any](x: int | float = 1.0, y: int | float = -1.0, /, 
 
 
 @overload
+def scrollbar_padding[T = Any](value: Array[int | float, Literal[2]], /, *, label: str | None = None, user_data: T = ..., use_internal_label: bool = True, tag: Item = 0, parent: Item = 0) -> mvThemeStyle[T]: ...
+@overload
+def scrollbar_padding[T = Any](x: int | float = 1.0, y: int | float = -1.0, /, *, label: str | None = None, user_data: T = ..., use_internal_label: bool = True, tag: Item = 0, parent: Item = 0) -> mvThemeStyle[T]: ...
+
+
+@overload
 def grab_min_size[T = Any](value: Array[int | float, Literal[2]], /, *, label: str | None = None, user_data: T = ..., use_internal_label: bool = True, tag: Item = 0, parent: Item = 0) -> mvThemeStyle[T]: ...
 @overload
 def grab_min_size[T = Any](x: int | float = 1.0, y: int | float = -1.0, /, *, label: str | None = None, user_data: T = ..., use_internal_label: bool = True, tag: Item = 0, parent: Item = 0) -> mvThemeStyle[T]: ...
@@ -219,6 +232,12 @@ def grab_min_size[T = Any](x: int | float = 1.0, y: int | float = -1.0, /, *, la
 def grab_rounding[T = Any](value: Array[int | float, Literal[2]], /, *, label: str | None = None, user_data: T = ..., use_internal_label: bool = True, tag: Item = 0, parent: Item = 0) -> mvThemeStyle[T]: ...
 @overload
 def grab_rounding[T = Any](x: int | float = 1.0, y: int | float = -1.0, /, *, label: str | None = None, user_data: T = ..., use_internal_label: bool = True, tag: Item = 0, parent: Item = 0) -> mvThemeStyle[T]: ...
+
+
+@overload
+def image_border_size[T = Any](value: Array[int | float, Literal[2]], /, *, label: str | None = None, user_data: T = ..., use_internal_label: bool = True, tag: Item = 0, parent: Item = 0) -> mvThemeStyle[T]: ...
+@overload
+def image_border_size[T = Any](x: int | float = 1.0, y: int | float = -1.0, /, *, label: str | None = None, user_data: T = ..., use_internal_label: bool = True, tag: Item = 0, parent: Item = 0) -> mvThemeStyle[T]: ...
 
 
 @overload
@@ -234,9 +253,27 @@ def tab_border_size[T = Any](x: int | float = 1.0, y: int | float = -1.0, /, *, 
 
 
 @overload
+def tab_min_width_base[T = Any](value: Array[int | float, Literal[2]], /, *, label: str | None = None, user_data: T = ..., use_internal_label: bool = True, tag: Item = 0, parent: Item = 0) -> mvThemeStyle[T]: ...
+@overload
+def tab_min_width_base[T = Any](x: int | float = 1.0, y: int | float = -1.0, /, *, label: str | None = None, user_data: T = ..., use_internal_label: bool = True, tag: Item = 0, parent: Item = 0) -> mvThemeStyle[T]: ...
+
+
+@overload
+def tab_min_width_shrink[T = Any](value: Array[int | float, Literal[2]], /, *, label: str | None = None, user_data: T = ..., use_internal_label: bool = True, tag: Item = 0, parent: Item = 0) -> mvThemeStyle[T]: ...
+@overload
+def tab_min_width_shrink[T = Any](x: int | float = 1.0, y: int | float = -1.0, /, *, label: str | None = None, user_data: T = ..., use_internal_label: bool = True, tag: Item = 0, parent: Item = 0) -> mvThemeStyle[T]: ...
+
+
+@overload
 def tab_bar_border_size[T = Any](value: Array[int | float, Literal[2]], /, *, label: str | None = None, user_data: T = ..., use_internal_label: bool = True, tag: Item = 0, parent: Item = 0) -> mvThemeStyle[T]: ...
 @overload
 def tab_bar_border_size[T = Any](x: int | float = 1.0, y: int | float = -1.0, /, *, label: str | None = None, user_data: T = ..., use_internal_label: bool = True, tag: Item = 0, parent: Item = 0) -> mvThemeStyle[T]: ...
+
+
+@overload
+def tab_bar_overline_size[T = Any](value: Array[int | float, Literal[2]], /, *, label: str | None = None, user_data: T = ..., use_internal_label: bool = True, tag: Item = 0, parent: Item = 0) -> mvThemeStyle[T]: ...
+@overload
+def tab_bar_overline_size[T = Any](x: int | float = 1.0, y: int | float = -1.0, /, *, label: str | None = None, user_data: T = ..., use_internal_label: bool = True, tag: Item = 0, parent: Item = 0) -> mvThemeStyle[T]: ...
 
 
 @overload
@@ -249,6 +286,18 @@ def table_angled_headers_angle[T = Any](x: int | float = 1.0, y: int | float = -
 def table_angled_headers_text_align[T = Any](value: Array[int | float, Literal[2]], /, *, label: str | None = None, user_data: T = ..., use_internal_label: bool = True, tag: Item = 0, parent: Item = 0) -> mvThemeStyle[T]: ...
 @overload
 def table_angled_headers_text_align[T = Any](x: int | float = 1.0, y: int | float = -1.0, /, *, label: str | None = None, user_data: T = ..., use_internal_label: bool = True, tag: Item = 0, parent: Item = 0) -> mvThemeStyle[T]: ...
+
+
+@overload
+def tree_lines_size[T = Any](value: Array[int | float, Literal[2]], /, *, label: str | None = None, user_data: T = ..., use_internal_label: bool = True, tag: Item = 0, parent: Item = 0) -> mvThemeStyle[T]: ...
+@overload
+def tree_lines_size[T = Any](x: int | float = 1.0, y: int | float = -1.0, /, *, label: str | None = None, user_data: T = ..., use_internal_label: bool = True, tag: Item = 0, parent: Item = 0) -> mvThemeStyle[T]: ...
+
+
+@overload
+def tree_lines_rounding[T = Any](value: Array[int | float, Literal[2]], /, *, label: str | None = None, user_data: T = ..., use_internal_label: bool = True, tag: Item = 0, parent: Item = 0) -> mvThemeStyle[T]: ...
+@overload
+def tree_lines_rounding[T = Any](x: int | float = 1.0, y: int | float = -1.0, /, *, label: str | None = None, user_data: T = ..., use_internal_label: bool = True, tag: Item = 0, parent: Item = 0) -> mvThemeStyle[T]: ...
 
 
 @overload

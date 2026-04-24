@@ -4,14 +4,8 @@ import dataclasses
 from array import array
 
 from dearpygui import dearpygui, _dearpygui
-from dearpygui._dearpygui import (
-    get_item_configuration as _item_get_config,
-    get_item_state as _item_get_state,
-    configure_item as _item_set_config,
-)
 
 from dearpypixl.core import management
-from dearpypixl.core.protocols import Item, DataDescriptor
 from dearpypixl.core import codegen
 
 
@@ -19,6 +13,8 @@ __all__ = ("ItemData", "Slot", "Axis", "Grid")
 
 
 
+
+type Item = int | str  # mirrors `protocols.Item`
 
 NaN = float("nan")
 
@@ -29,22 +25,14 @@ _MISSING = object()
 
 # [ HELPER FUNCTIONS ]
 
-def _is_nan(v: typing.Any) -> bool:
-    return v != v
-
-def _to_value(value: typing.Any, default: typing.Any):
-    if value is None or _is_nan(value):
-        return default
-    return value
-
 def _to_float_arr(value: typing.Sequence[float] | float | None, length: int, default: float = NaN) -> typing.Any:
     """
     # Non-Sequence value (None | float('nan'))
     >>> arr = _to_float_array(None, 2)
-    >>> len(arr) == 2 and all(_is_nan(v) for v in arr)
+    >>> len(arr) == 2 and all(v != v for v in arr)
     True
     >>> arr = _to_float_array(float("nan"), 2)
-    >>> len(arr) == 2 and all(_is_nan(v) for v in arr)
+    >>> len(arr) == 2 and all(v != v for v in arr)
     True
 
     # Non-Sequence value (number)
@@ -63,7 +51,7 @@ def _to_float_arr(value: typing.Sequence[float] | float | None, length: int, def
     True
 
     """
-    if value is None or _is_nan(value):
+    if value is None or value != value:
         return array('f', (default,) * length)  # pyright: ignore
     if isinstance(value, (float, int)):
         return array('f', (value,) * length)  # pyright: ignore
@@ -71,60 +59,41 @@ def _to_float_arr(value: typing.Sequence[float] | float | None, length: int, def
     arr = array('f', (default,) * length)
     try:
         for i in range(length):
-            arr[i] = _to_value(value[i], default)
+            v = value[i]
+            if v is None or v != v:
+                v = default
+            arr[i] = v
     except IndexError:
         pass
     return arr  # pyright: ignore
 
-def _float_arr_property(length: int, default: float | None = None) -> typing.Any:
-    def _create_property(name):
-        return codegen.create_property(
-            (
-                f"try:",
-                f"  return self._{name}",
-                f"except AttributeError:",
-                f"  {name} = self._{name} = _to_float_arr(None, {length}, {default})",
-                f"  return {name}",
-            ),
-            (
-                f"{name} = self.{name}",
-                f"if _is_nan(value) or value is None:",
-                f"  {' = '.join(f'{name}[{i}]' for i in range(length))} = {default}",
-                f"else:",
-                f"  {name}[:] = _to_float_arr(value, {length}, {default})",
-            ),
-            (
-                f"{' = '.join(f'{name}[{i}]' for i in range(length))} = {default}",
-            ),
-            module=__name__,
-            globals=globals(),
-        )
-
+def _float_arr_property(name: str, length: int, default: float | None = None) -> typing.Any:
     if default is None:
         default = "NaN"  # type: ignore
 
-    return codegen.DescriptorDelegate(_create_property)
+    return codegen.create_property(
+        (
+            f"try:",
+            f"  return self._{name}",
+            f"except AttributeError:",
+            f"  {name} = self._{name} = _to_float_arr(None, {length}, {default})",
+            f"  return {name}",
+        ),
+        (
+            f"{name} = self.{name}",
+            f"if value != value or value is None:",
+            f"  {' = '.join(f'{name}[{i}]' for i in range(length))} = {default}",
+            f"else:",
+            f"  {name}[:] = _to_float_arr(value, {length}, {default})",
+        ),
+        (
+            f"{' = '.join(f'{name}[{i}]' for i in range(length))} = {default}",
+        ),
+        module=__name__,
+        globals=globals(),
+    )
 
-def _min_number_property(floor: int | float = 0.0, default = None) -> typing.Any:
-    def _create_property(name):
-        return codegen.create_property(
-            (
-                f"return self._{name}",
-            ),
-            (
-                f"if _is_nan(value) or value is None:",
-                f"  self._{name} = {default}",
-                f"else:",
-                f"  self._{name} = max({floor}, type_(value))",
-            ),
-            (
-                f"self._{name} = {default}",
-            ),
-            module=__name__,
-            globals=globals(),
-            locals={"type_": type_}
-        )
-
+def _min_number_property(name: str, floor: int | float = 0.0, default = None) -> typing.Any:
     type_ = type(floor)
 
     if default is None:
@@ -133,32 +102,32 @@ def _min_number_property(floor: int | float = 0.0, default = None) -> typing.Any
         else:
             default = 0
 
-    return codegen.DescriptorDelegate(_create_property)
+    return codegen.create_property(
+        (
+            f"return self._{name}",
+        ),
+        (
+            f"if value != value or value is None:",
+            f"  self._{name} = {default}",
+            f"elif value <= {floor}:",
+            f"  self._{name} = {floor}",
+            f"else:",
+            f"  self._{name} = type_(value)",
+        ),
+        (
+            f"self._{name} = {default}",
+        ),
+        module=__name__,
+        globals=globals(),
+        locals={"type_": type_}
+    )
 
 
 
 # [ minor components ]
 
-class _RectGetter(typing.Protocol):
-    def __call__(self, item: Item, /) -> tuple[int, int, int, int, bool]: ...
-
-def _default_rect_getter(item: Item, /, *, _config_getter=_dearpygui.get_item_configuration, _state_getter=_dearpygui.get_item_state) -> tuple[int, int, int, int, bool]:
-    state = _state_getter(item)
-
-    visible = state.get("visible")
-    if visible is None:
-        visible = _config_getter(item)["show"]
-
-    return *state['rect_size'], *state['pos'], visible
-
-
-class _RectSetter(typing.Protocol):
-    def __call__(self, item: Item, x_pos: int, y_pos: int, width: int, height: int, show: bool, /) -> typing.Any: ...
-
-def _default_rect_setter(item: Item, x_pos: int, y_pos: int, width: int, height: int, show: bool, /, *, _config_setter=_dearpygui.configure_item):
-    _config_setter(item, width=width, height=height, pos=(x_pos, y_pos), show=show)
-
-
+type _RectGetter = typing.Callable[[Item], tuple[int, int, int, int, bool]]
+type _RectSetter = typing.Callable[[Item, int, int, int, int, bool], typing.Any]
 
 
 @dataclasses.dataclass(slots=True)
@@ -194,8 +163,8 @@ class _GridComponent:
     __slots__ = ('label', '_spacing', '_padding')
 
     label: str
-    spacing: float = _min_number_property(0.0)
-    padding: typing.MutableSequence[float] = _float_arr_property(2)
+    spacing: float = _min_number_property("spacing", 0.0)
+    padding: typing.MutableSequence[float] = _float_arr_property("padding", 2)
 
     def __init__(self, *, label: str = '', spacing: float = NaN, padding: typing.Sequence[float] | float | None = None, **kwargs):
         self.configure(label=label, spacing=spacing, padding=padding, **kwargs)
@@ -221,27 +190,19 @@ class _GridSlotState:
 class Slot(_GridComponent):
     __slots__ = ('_state', '_size', '_weight')
 
-    weight: DataDescriptor[float, float | None] = _min_number_property(0.1, 1.0)
-    size: DataDescriptor[int, int | None] = _min_number_property(0, 0)
+    weight: float = _min_number_property("weight", 0.1, 1.0)
+    size: int = _min_number_property("size", 0, 0)
 
-    @typing.overload
-    def __init__(self, *, label: str = ..., spacing: float | None = ..., padding: typing.Sequence[float] | float | None = ..., weight: float | None = ..., size: int | None = ...) -> None: ...  # type: ignore
     def __init__(self, *, weight: typing.Any = 1.0, size: typing.Any = 0, **kwargs) -> None:
         self._state = _GridSlotState()  # managed by the parenting `Grid` during a draw event
         super().__init__(weight=weight, size=size, **kwargs)
-
-    def configure(self, *, label: str = ..., spacing: float | None = ..., padding: typing.Sequence[float] | float | None = ..., weight: float | None = ..., size: int | None = ...) -> None: ... # type: ignore
-    del locals()["configure"]
-
-    def configuration(self) -> dict[typing.Literal['label', 'spacing', 'padding', 'weight', 'size'], typing.Any]: ...  # type: ignore
-    del locals()["configuration"]
 
 
 @dataclasses.dataclass(init=False)
 class Axis(_GridComponent, typing.Iterable[Slot], typing.Sized):
     __slots__ = ('_slots', '_lock')
 
-    length: DataDescriptor[int, int] = property(lambda self: self.__len__(), lambda self, value: self.resize(value))
+    length: int = property(lambda self: self.__len__(), lambda self, value: self.resize(value))  # type: ignore
 
     def __init__(self, length: int = 0, *, _lock=None, **kwargs) -> None:
         self._slots = list[Slot]()
@@ -436,11 +397,11 @@ class Grid(_GridComponent):
         parent: Item | None = 0,
         *,
         label: str = "",
-        padding: typing.Sequence[float] | float | None = None,
-        spacing: typing.Sequence[float] | float | None = None,
-        width: int | None = None,
-        height: int | None = None,
-        offsets: typing.Sequence[float] | float | None = None,
+        padding: typing.Any = None,
+        spacing: typing.Any = None,
+        width: typing.Any = None,
+        height: typing.Any = None,
+        offsets: typing.Any = None,
         rect_getter: _RectGetter | None = None,
         overlay: bool = False,
         show: bool = True,
@@ -482,7 +443,7 @@ class Grid(_GridComponent):
             with self._lock:
                 self._cols.resize(value)
 
-    cols: DataDescriptor[Axis, Axis | int] = cols  # pyright: ignore
+    cols: Axis = cols  # type: ignore
 
     @property
     def rows(self, /) -> Axis:  # pyright: ignore[reportRedeclaration]
@@ -500,16 +461,16 @@ class Grid(_GridComponent):
             with self._lock:
                 self._rows.resize(value)
 
-    rows: DataDescriptor[Axis, Axis | int] = rows  # pyright: ignore
+    rows: Axis = rows  # type: ignore
 
     label: str = ''
     parent: Item | None = None
     rect_getter: _RectGetter | None = None
-    width: DataDescriptor[int, int | None] = _min_number_property(0, 0)
-    height: DataDescriptor[int, int | None] = _min_number_property(0, 0)
-    offsets: DataDescriptor[typing.Sequence[float], typing.Sequence[float] | float | None] = _float_arr_property(4, 0.0)
-    padding: DataDescriptor[typing.Sequence[float], typing.Sequence[float] | float | None] = _float_arr_property(4, 0.0)
-    spacing: DataDescriptor[typing.Sequence[float], typing.Sequence[float] | float | None] = _float_arr_property(2, 0.0)
+    width: int = _min_number_property("width", 0, 0)
+    height: int = _min_number_property("height", 0, 0)
+    offsets: typing.MutableSequence[float] = _float_arr_property("offsets", 4, 0.0)
+    padding: typing.MutableSequence[float] = _float_arr_property("padding", 4, 0.0)
+    spacing: typing.MutableSequence[float] = _float_arr_property("spacing", 2, 0.0)
 
     @property
     def show(self, /) -> bool:  # pyright: ignore[reportRedeclaration]
@@ -519,14 +480,14 @@ class Grid(_GridComponent):
             show = self._show = True
             return show
     @show.setter
-    def show(self, value: bool, /) -> None:  # pyright: ignore[reportRedeclaration]
+    def show(self, value: bool, /, *, __CONFIG_SETTER=_dearpygui.configure_item) -> None:  # pyright: ignore[reportRedeclaration]
         with self._lock:
             show = self._show = value
             self._overlay.show = show and self.overlay
 
             for item_data in self._item_data:
                 try:
-                    _item_set_config(item_data.item, show=show)
+                    __CONFIG_SETTER(item_data.item, show=show)
                 except SystemError:
                     if not dearpygui.does_item_exist(item_data.item):
                         self._data_to_del.add(item_data)
@@ -535,7 +496,7 @@ class Grid(_GridComponent):
 
         self.draw()
 
-    show: DataDescriptor[bool, bool] = show  # pyright: ignore
+    show: bool = show  # type: ignore
 
     @property
     def overlay(self, /) -> bool:  # pyright: ignore[reportRedeclaration]
@@ -552,10 +513,8 @@ class Grid(_GridComponent):
 
         self.draw()
 
-    overlay: DataDescriptor[bool, bool] = overlay  # pyright: ignore
+    overlay: bool = overlay  # type: ignore
 
-    @typing.overload
-    def configure(self, *, cols: int = ..., rows: int = ..., parent: Item | None = ..., label: str | None = ..., padding: typing.Sequence[float] | float | None = ..., spacing: typing.Sequence[float] | float | None = ..., width: float | None = ..., height: float | None = ..., offsets: typing.Sequence[float] | float | None = ..., rect_getter: _RectGetter | None = ..., overlay: bool = ..., show: bool = ..., **kwargs) -> None:  ...  # type: ignore
     def configure(self, **kwargs):
         missing = _MISSING
         super().configure(**{k:v for k,v in kwargs.items() if v is not missing})
@@ -574,11 +533,11 @@ class Grid(_GridComponent):
             self._data_to_del.discard(item)  # type: ignore
             self._item_data.discard(item)  # type: ignore
 
-    def clear(self):
+    def clear(self, /, *, __CONFIG_SETTER=_dearpygui.configure_item):
         with self._lock:
             for item_data in self._item_data:
                 try:
-                    _item_set_config(item_data.item, pos=())
+                    __CONFIG_SETTER(item_data.item, pos=())
                 except SystemError:
                     pass
             self._data_to_del.update(self._item_data)
@@ -595,7 +554,8 @@ class Grid(_GridComponent):
     ANCHORS["w"]  = ANCHORS["west"]      = (0.0, 0.5)
     ANCHORS["nw"] = ANCHORS["northwest"] = (0.0, 0.0)
 
-    def push(self, item, cell_start: typing.Any, cell_stop: typing.Any = None, /, *, anchor='c', rect_setter=_default_rect_setter, max_size=None, padding=None):
+    def push(self, item, cell_start, cell_stop: typing.Any = None, /, *, anchor='c', rect_setter=None, max_size=None, padding=None):
+
         # item
         if isinstance(item, str):
             uuid = dearpygui.get_alias_id(item)
@@ -676,7 +636,7 @@ class Grid(_GridComponent):
             max_size=max_size,
             padding=padding,
             pos_coef=pos_coef,
-            rect_setter=rect_setter or _default_rect_setter,
+            rect_setter=rect_setter or self._set_item_rect,
         )
 
         with self._lock:
@@ -686,8 +646,24 @@ class Grid(_GridComponent):
 
         return item
 
-    def _get_parent_rect_info(self, default=_default_rect_getter):
-        return (self.rect_getter or default)(self.parent or 0)
+    @staticmethod
+    def _set_item_rect(item: Item, x_pos: int, y_pos: int, width: int, height: int, show: bool, /, *, __SETTER=_dearpygui.configure_item):
+        __SETTER(item, width=width, height=height, pos=(x_pos, y_pos), show=show)
+
+    def _get_parent_rect(self, /, *, __CONFIG_GETTER=_dearpygui.get_item_configuration, __STATE_GETTER=_dearpygui.get_item_state) -> tuple[int, int, int, int, bool]:
+        parent = self.parent or 0
+
+        rect_getter = self.rect_getter
+        if rect_getter is not None:
+            return rect_getter(parent)
+
+        # default `rect_getter` impl.
+        state = __STATE_GETTER(parent)
+        visible = state.get("visible")
+        if visible is None:
+            visible = __CONFIG_GETTER(parent)["show"]
+
+        return *state['rect_size'], *state['pos'], visible
 
     def _gc_item_data(self):
         # currently called before or after:
@@ -701,7 +677,7 @@ class Grid(_GridComponent):
         with self._lock:
             self._gc_item_data()
 
-            _area_width, _area_height, area_x_pos, area_y_pos, area_visible = self._get_parent_rect_info()
+            _area_width, _area_height, area_x_pos, area_y_pos, area_visible = self._get_parent_rect()
 
             if self._show and area_visible:
                 area_width = self.width or _area_width
@@ -944,15 +920,11 @@ class Overlay:
 
     _drawlayer = 0
 
-    @typing.overload
-    def draw(self, /) -> None: ...
-    @typing.overload
-    def draw(self, x_min: int, y_min: int, x_max: int, y_max: int, /) -> None: ...
-    def draw(self, /, *args) -> None:
+    def draw(self, /, *args, __CONFIG_SETTER=_dearpygui.configure_item) -> None:
         if args:
             x_min, y_min, x_max, y_max = args
         else:
-            width, height, x_min, y_min, *_ = self.grid._get_parent_rect_info()
+            width, height, x_min, y_min, *_ = self.grid._get_parent_rect()
             x_max = (self.grid.width or width) + x_min
             y_max = (self.grid.height or height) + y_min
 
@@ -965,7 +937,7 @@ class Overlay:
             layer = self._drawlayer
             if layer:
                 try:
-                    _item_set_config(layer, show=False)
+                    __CONFIG_SETTER(layer, show=False)
                 except SystemError:
                     if dearpygui.does_item_exist(layer):
                         raise
@@ -1164,7 +1136,7 @@ if __name__ == '__main__':
             dpg.add_button(label=f"button {i}",width=-1, height=80)
 
         def cb_left_view_resize(sender, app_data, user_data):
-            grid.cols[0].size = dpg.get_item_width(user_data)
+            grid.cols[0].size = dpg.get_item_configuration(user_data)["width"]
             grid()
 
         with dpg.item_handler_registry() as left_view_hr:

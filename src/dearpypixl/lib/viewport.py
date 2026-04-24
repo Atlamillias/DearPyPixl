@@ -8,24 +8,12 @@ from dearpypixl.core import management
 from dearpypixl.core import interface
 from dearpypixl.core import codegen
 from dearpypixl.core import management
-from dearpypixl.core import protocols
-from dearpypixl.core.protocols import Property as property, ItemCallback, Array
-
-if typing.TYPE_CHECKING:
-    from dearpypixl.lib.items import mvWindowAppItem
+from dearpypixl.core.protocols import ItemCallback
 
 
 __all__ = ("Viewport",)
 
 
-
-
-type _ViewportCallback = (
-    protocols.ItemCallback[int | str, tuple[int, int, int, int], typing.Any]
-)
-type _FrameBufferCallback = (
-    protocols.ItemCallback[int | str, protocols.mvBuffer, typing.Any]
-)
 
 
 _MISSING = object()
@@ -42,6 +30,7 @@ class _FrameCallbackMap(typing.Mapping[int, tuple[ItemCallback, typing.Any]]):
         _set_exit_callback=_dearpygui.set_exit_callback,
         _set_frame_callback=_dearpygui.set_frame_callback,
     ) -> None:
+
         if frame < 0:
             frame = -1
             _set_exit_callback(callback, user_data=user_data)  # ty:ignore[invalid-argument-type]
@@ -55,6 +44,7 @@ class _FrameCallbackMap(typing.Mapping[int, tuple[ItemCallback, typing.Any]]):
         _set_exit_callback=_dearpygui.set_exit_callback,
         _set_frame_callback=_dearpygui.set_frame_callback,
     ) -> None:
+
         if frame < 0:
             del self._mapping[-1]
             _set_exit_callback(None, user_data=None)  # ty:ignore[invalid-argument-type]
@@ -197,13 +187,13 @@ assert _VIEWPORT_DEFAULTS is not None
 _GLOBAL_LOCK = threading.Lock()
 
 
-_GLOBAL_CONFIG = dict.fromkeys(("primary_window", "callback", "user_data"), None)
+_GLOBAL_CONFIG = dict.fromkeys(("primary_window", "_primary_window_config", "callback", "user_data"), None)
 
 
-def _get_vp_primary_window() -> mvWindowAppItem | None:  # pyright: ignore[reportRedeclaration]
+def _get_vp_primary_window():  # pyright: ignore[reportRedeclaration]
     global _get_vp_primary_window
 
-    def _get_vp_primary_window(*, _item_type=interface.Interface.__item_registry__["mvAppItemType::mvWindowAppItem"]) -> mvWindowAppItem | None:
+    def _get_vp_primary_window(*, _item_type=interface.Interface.__item_registry__["mvAppItemType::mvWindowAppItem"]):
         config = _GLOBAL_CONFIG
 
         primary_window = config["primary_window"]
@@ -220,76 +210,70 @@ def _get_vp_primary_window() -> mvWindowAppItem | None:  # pyright: ignore[repor
 
     return _get_vp_primary_window()
 
-def _set_vp_primary_window(primary_window: int | str | None, /) -> None:
-    config = _GLOBAL_CONFIG
+def _set_vp_primary_window(new_window: int | str | None, /) -> None:
+    # BUG/HACK: DearPyGui changes several settings of any a window
+    # used as the primary window. Most are sensical changes e.g.
+    # `no_move`, `no_resize`, `no_collapse`. Amongst these are scroll
+    # flags which we want to reflect the current setting, so we'll re-apply
+    # those. However, by updating the item we also fully commit the
+    # other changes made by DPG, making it behave strangely if it is
+    # no longer the primary window.
+    # We cache the window state when set as primary and restore the
+    # problematic settings if/when it is no longer the primary
+    # window. It's not a great solution, but there aren't many viable
+    # options available.
 
-    main_window = config['primary_window']
+    if new_window:
+        new_config = _dearpygui.get_item_configuration(new_window)
+        new_config["pos"] = _dearpygui.get_item_state(new_window)["pos"]
 
-    # BUG/HACK: The window "forgets" several of its settings when
-    # it's set of removed as the primary window. They need to be
-    # re-applied.
-
-    # replace current primary window with a new one
-    if primary_window:
-        wndw_config = _dearpygui.get_item_configuration(primary_window)
-        dearpygui.add_window()
-
-        _dearpygui.set_primary_window(primary_window, True)
-        config['primary_window'] = primary_window
-
+        _dearpygui.set_primary_window(new_window, True)
         _dearpygui.configure_item(
-            primary_window,
-            menubar=wndw_config["menubar"],
-            collapsed=wndw_config["collapsed"],
-            autosize=wndw_config["autosize"],
-            no_resize=wndw_config["no_resize"],
-            no_title_bar=wndw_config["no_title_bar"],
-            no_move=wndw_config["no_move"],
-            no_scrollbar=wndw_config["no_scrollbar"],
-            no_collapse=wndw_config["no_collapse"],
-            horizontal_scrollbar=wndw_config["horizontal_scrollbar"],
-            no_focus_on_appearing=wndw_config["no_focus_on_appearing"],
-            no_bring_to_front_on_focus=wndw_config["no_bring_to_front_on_focus"],
-            no_close=wndw_config["no_close"],
-            no_background=wndw_config["no_background"],
-            modal=wndw_config["modal"],
-            popup=wndw_config["popup"],
-            no_saved_settings=wndw_config["no_saved_settings"],
-            no_open_over_existing_popup=wndw_config["no_open_over_existing_popup"],
-            no_scroll_with_mouse=wndw_config["no_scroll_with_mouse"],
-            on_close=wndw_config["on_close"],
+            new_window,
+            no_scrollbar=new_config["no_scrollbar"],
+            no_scroll_with_mouse=new_config["no_scroll_with_mouse"],
+            horizontal_scrollbar=new_config["horizontal_scrollbar"],
         )
 
-    # unset the primary window
-    elif main_window:
-        wndw_config = _dearpygui.get_item_configuration(main_window)
+        _GLOBAL_CONFIG["primary_window"]         = new_window
+        _GLOBAL_CONFIG["_primary_window_config"] = new_config
 
-        _dearpygui.set_primary_window(main_window, False)
-        config['primary_window'] = None
+        return
 
-        _dearpygui.configure_item(
-            main_window,
-            menubar=wndw_config["menubar"],
-            collapsed=wndw_config["collapsed"],
-            autosize=wndw_config["autosize"],
-            no_resize=wndw_config["no_resize"],
-            no_title_bar=wndw_config["no_title_bar"],
-            no_move=wndw_config["no_move"],
-            no_scrollbar=wndw_config["no_scrollbar"],
-            no_collapse=wndw_config["no_collapse"],
-            horizontal_scrollbar=wndw_config["horizontal_scrollbar"],
-            no_focus_on_appearing=wndw_config["no_focus_on_appearing"],
-            no_bring_to_front_on_focus=wndw_config["no_bring_to_front_on_focus"],
-            no_close=wndw_config["no_close"],
-            no_background=wndw_config["no_background"],
-            modal=wndw_config["modal"],
-            popup=wndw_config["popup"],
-            no_saved_settings=wndw_config["no_saved_settings"],
-            no_open_over_existing_popup=wndw_config["no_open_over_existing_popup"],
-            no_scroll_with_mouse=wndw_config["no_scroll_with_mouse"],
-            on_close=wndw_config["on_close"],
-        )
-
+    old_window = _GLOBAL_CONFIG['primary_window']
+    old_config = _GLOBAL_CONFIG["_primary_window_config"]
+    if old_window:
+        assert old_config is not None
+        try:
+            _dearpygui.set_primary_window(old_window, False)
+            _dearpygui.configure_item(
+                old_window,
+                width=old_config["width"],
+                height=old_config["height"],
+                menubar=old_config["menubar"],
+                collapsed=old_config["collapsed"],
+                autosize=old_config["autosize"],
+                no_resize=old_config["no_resize"],
+                no_title_bar=old_config["no_title_bar"],
+                no_move=old_config["no_move"],
+                no_scrollbar=old_config["no_scrollbar"],
+                no_collapse=old_config["no_collapse"],
+                horizontal_scrollbar=old_config["horizontal_scrollbar"],
+                no_focus_on_appearing=old_config["no_focus_on_appearing"],
+                no_bring_to_front_on_focus=old_config["no_bring_to_front_on_focus"],
+                no_close=old_config["no_close"],
+                no_background=old_config["no_background"],
+                modal=old_config["modal"],
+                popup=old_config["popup"],
+                pos=old_config["pos"],
+                no_open_over_existing_popup=old_config["no_open_over_existing_popup"],
+                no_scroll_with_mouse=old_config["no_scroll_with_mouse"],
+            )
+        except SystemError:
+            if _dearpygui.does_item_exist(old_window):
+                raise
+        finally:
+            _GLOBAL_CONFIG["primary_window"] = _GLOBAL_CONFIG["_primary_window_config"] = None
 
 def _get_vp_callback() -> tuple[typing.Any, typing.Any]:
     return _GLOBAL_CONFIG["callback"], _GLOBAL_CONFIG["user_data"]
@@ -371,7 +355,7 @@ def _set_vp_minimize():
 # [ API patches ]
 
 @management.patch(dearpygui.create_viewport)
-def create_viewport(**kwargs: typing.Unpack[_ViewportBaseConfigDict]) -> None:
+def create_viewport(**kwargs) -> None:
     with _GLOBAL_LOCK:
         _set_vp_ok(True)
         _dearpygui.configure_viewport(_VIEWPORT_UUID, **kwargs)
@@ -406,7 +390,7 @@ def stop_dearpygui(**kwargs) -> None:
 
 
 @management.patch(dearpygui.set_viewport_resize_callback)
-def set_viewport_resize_callback(callback: _ViewportCallback | None = None, *, user_data: typing.Any = None, **kwargs) -> None:
+def set_viewport_resize_callback(callback: typing.Callable | None = None, *, user_data: typing.Any = None, **kwargs) -> None:
     with _GLOBAL_LOCK:
         _set_vp_callback(callback=callback, user_data=user_data)
 
@@ -523,48 +507,15 @@ def _config_property() -> typing.Any:
     return codegen.DescriptorDelegate(_create_config_property)
 
 
-class _ViewportBaseConfigDict(typing.TypedDict, total=False):
-    title        : str
-    small_icon   : str
-    large_icon   : str
-    width        : int
-    height       : int
-    x_pos        : int
-    y_pos        : int
-    min_width    : int
-    max_width    : int
-    min_height   : int
-    max_height   : int
-    resizable    : bool
-    vsync        : bool
-    always_on_top: bool
-    decorated    : bool
-    clear_color  : protocols.Array[float, typing.Literal[3, 4]]
-    disable_close: bool
-
-class _ViewportConfigDict(_ViewportBaseConfigDict, total=False):
-    primary_window: protocols.Item | None
-    callback      : _ViewportCallback | None
-    user_data     : typing.Any
-
-class _ViewportStateDict(typing.TypedDict, total=True):
-    ok: bool
-    pos: list[int]
-    rect_size: list[int]
-    fullscreen: bool
-
-
 class Viewport(interface.Interface):
     __slots__ = ()
 
-    __itemtype_identity__ = (0, "Viewport")
-
     @property
-    def tag(self, /) -> int | str:
+    def tag(self, /):
         return _VIEWPORT_UUID
 
     @classmethod
-    def create(cls, **configuration: typing.Unpack[_ViewportConfigDict]) -> typing.Self:
+    def create(cls, **configuration):
         with _GLOBAL_LOCK:
             _set_vp_ok(True)
 
@@ -572,81 +523,79 @@ class Viewport(interface.Interface):
         self.configure(**configuration)
         return self
 
-    def destroy(self) -> None:
+    def destroy(self):
         with _GLOBAL_LOCK:
             if _get_vp_ok():
                 _set_vp_ok(False)
 
     @property
-    def client_width(self) -> int:
+    def client_width(self):
         return _dearpygui.get_viewport_configuration(_VIEWPORT_UUID)['client_width']
 
     @property
-    def client_height(self) -> int:
+    def client_height(self):
         return _dearpygui.get_viewport_configuration(_VIEWPORT_UUID)['client_height']
 
-    title: property[str, str] = _config_property()
-    small_icon: property[str, str] = _config_property()
-    large_icon: property[str, str] = _config_property()
-    width: property[int, int] = _config_property()
-    height: property[int, int] = _config_property()
-    x_pos: property[int, int] = _config_property()
-    y_pos: property[int, int] = _config_property()
-    min_width: property[int, int] = _config_property()
-    max_width: property[int, int] = _config_property()
-    min_height: property[int, int] = _config_property()
-    max_height: property[int, int] = _config_property()
-    resizable: property[bool, bool] = _config_property()
-    vsync: property[bool, bool] = _config_property()
-    always_on_top: property[bool, bool] = _config_property()
-    decorated: property[bool, bool] = _config_property()
-    clear_color: property[Array[int | float, typing.Literal[3, 4]], Array[int | float, typing.Literal[3, 4]]] = _config_property()
-    disable_close: property[bool, bool] = _config_property()
+    title = _config_property()
+    small_icon = _config_property()
+    large_icon = _config_property()
+    width = _config_property()
+    height = _config_property()
+    x_pos = _config_property()
+    y_pos = _config_property()
+    min_width = _config_property()
+    max_width = _config_property()
+    min_height = _config_property()
+    max_height = _config_property()
+    resizable = _config_property()
+    vsync = _config_property()
+    always_on_top = _config_property()
+    decorated = _config_property()
+    clear_color = _config_property()
+    disable_close = _config_property()
 
     @property
-    def primary_window(self, /) -> mvWindowAppItem | None:
+    def primary_window(self, /):
         with _GLOBAL_LOCK:
             primary_window = _get_vp_primary_window()
         return primary_window
     @primary_window.setter
-    def primary_window(self, value: int | str | None, /):
+    def primary_window(self, value, /):
         with _GLOBAL_LOCK:
             _set_vp_primary_window(value)
     @primary_window.deleter
-    def primary_window(self, /) -> None:
+    def primary_window(self, /):
         with _GLOBAL_LOCK:
             _set_vp_primary_window(None)
 
     @property
-    def callback(self, /) -> _ViewportCallback | None:
+    def callback(self, /):
         with _GLOBAL_LOCK:
             value = _get_vp_callback()
         return value[0]
     @callback.setter
-    def callback(self, value: _ViewportCallback | None, /) -> None:
+    def callback(self, value, /):
         with _GLOBAL_LOCK:
             _set_vp_callback(value)
     @callback.deleter
-    def callback(self, /) -> None:
+    def callback(self, /):
         with _GLOBAL_LOCK:
             _set_vp_callback(None)
 
     @property
-    def user_data(self, /) -> _ViewportCallback | None:
+    def user_data(self, /):
         with _GLOBAL_LOCK:
             value = _get_vp_callback()
         return value[1]
     @user_data.setter
-    def user_data(self, value: _ViewportCallback | None, /) -> None:
+    def user_data(self, value, /):
         with _GLOBAL_LOCK:
             _set_vp_callback(user_data=value)
     @user_data.deleter
-    def user_data(self, /) -> None:
+    def user_data(self, /):
         with _GLOBAL_LOCK:
             _set_vp_callback(user_data=None)
 
-    @typing.overload
-    def configure(self, /, **kwargs: typing.Unpack[_ViewportConfigDict]) -> None: ...  # pyright: ignore[reportInconsistentOverload]  # ty:ignore[invalid-overload]
     def configure(
         self,
         /, *,
@@ -655,25 +604,30 @@ class Viewport(interface.Interface):
         callback: typing.Any = _MISSING,
         user_data: typing.Any = _MISSING,
         **kwargs
-    ) -> None:
+    ):
         with _GLOBAL_LOCK:
             if primary_window is not _MISSING:
                 _set_vp_primary_window(primary_window)
             _set_vp_callback(callback, user_data)
             _dearpygui.configure_viewport(_VIEWPORT_UUID, **kwargs)
 
-    def configuration(self) -> _ViewportConfigDict:
+    def configuration(self):
+        global_config = _GLOBAL_CONFIG
+
         config = _dearpygui.get_viewport_configuration(_VIEWPORT_UUID)
         with _GLOBAL_LOCK:
-            config.update(_GLOBAL_CONFIG)
+            config["primary_window"] = global_config["primary_window"]
+            config["callback"]       = global_config["callback"]
+            config["user_data"]      = global_config["user_data"]
+
         return config  # type: ignore
 
     @property
-    def pos(self, /) -> list[int]:
+    def pos(self, /):
         config = _dearpygui.get_viewport_configuration(_VIEWPORT_UUID)
         return [config["x_pos"], config["y_pos"]]
     @pos.setter
-    def pos(self, value: typing.Sequence[int], /) -> None:
+    def pos(self, value, /):
         x, y, *_ = value
         _dearpygui.configure_viewport(_VIEWPORT_UUID, x_pos=x, y_pos=y)
 
@@ -682,11 +636,7 @@ class Viewport(interface.Interface):
         with _GLOBAL_LOCK:
             return _get_vp_visible()
 
-    @typing.overload
-    def show(self, *, minimized: bool = ...) -> None: ...
-    @typing.overload
-    def show(self, *, maximized: bool = ...) -> None: ...
-    def show(self, *, minimized: bool = False, maximized: bool = False) -> None:
+    def show(self, *, minimized = False, maximized = False):
         with _GLOBAL_LOCK:
             _set_vp_visible()
             if minimized:
@@ -699,7 +649,7 @@ class Viewport(interface.Interface):
         with _GLOBAL_LOCK:
             return _get_vp_fullscreen()
 
-    def fullscreen(self, value: bool | None = None, /) -> None:
+    def fullscreen(self, value: bool | None = None, /):
         with _GLOBAL_LOCK:
             _set_vp_fullscreen(value)
 
@@ -708,7 +658,7 @@ class Viewport(interface.Interface):
         config = _dearpygui.get_viewport_configuration(_VIEWPORT_UUID)
         return [config["client_width"], config["client_height"]]
 
-    def state(self) -> _ViewportStateDict:
+    def state(self):
         state = {}
 
         config = _dearpygui.get_viewport_configuration(_VIEWPORT_UUID)
@@ -720,11 +670,11 @@ class Viewport(interface.Interface):
 
         return state  # type: ignore
 
-    def minimize(self, /) -> None:
+    def minimize(self, /):
         with _GLOBAL_LOCK:
             _set_vp_minimize()
 
-    def maximize(self, /) -> None:
+    def maximize(self, /):
         with _GLOBAL_LOCK:
             _set_vp_maximize()
 
@@ -732,47 +682,22 @@ class Viewport(interface.Interface):
     def frame_callbacks(self, /) -> _FrameCallbackMap:
         return _FRAME_CALLBACKS
 
-    def get_active_window(self) -> protocols.Item | None:
-        """Returns the identifier of the foreground root window item."""
+    def get_active_window(self):
         return _dearpygui.get_active_window()
 
-    def get_mouse_pos(self, /, *, local: bool = True) -> Array[float, typing.Literal[2]]:
+    def get_mouse_pos(self, /, *, local: bool = True):
         return _dearpygui.get_mouse_pos(local=local)  # type: ignore
 
-    def get_mouse_drag_delta(self, /) -> float:
-        """Return the distance the mouse cursor has traveled since
-        the last update.
-        """
+    def get_mouse_drag_delta(self, /):
         return _dearpygui.get_mouse_drag_delta()
 
-    def get_mouse_plot_pos(self, /) -> Array[float, typing.Literal[2]]:
-        """Return the position of the mouse cursor relative to the
-        active `mvPlot` item.
-        """
+    def get_mouse_plot_pos(self, /):
         return _dearpygui.get_plot_mouse_pos()  # type: ignore
 
-    def get_mouse_drawing_pos(self, /) -> Array[float, typing.Literal[2]]:
-        """Return the position of the mouse cursor relative to the
-        active `mvDrawlist` or  `mvViewportDrawlist` item."""
+    def get_mouse_drawing_pos(self, /):
         return _dearpygui.get_drawing_mouse_pos()  # type: ignore
 
-    def output_frame_buffer(
-        self,
-        file: str = "",
-        *,
-        callback: _FrameBufferCallback | None = None
-    ) -> None:
-        """Take a screenshot of the viewport's content. Can only be called
-        if at least one frame has been rendered. Unavailable on MacOS.
-
-        Args:
-            * file: A filename for the screenshot, saved in `.png` format.
-
-            * callback: A DearPyGui-callable callback. If specified, Dear
-            PyGui will call it next frame; passing it a `mvBuffer` object
-            as the callback's second positional argument. The buffer will
-            contain the raw image data.
-        """
+    def output_frame_buffer(self, file = "", *, callback = None):
         dearpygui.output_frame_buffer(file, callback=callback)  # type: ignore
 
 Viewport.create = management.initializer(Viewport.create)  # ty:ignore[invalid-assignment]

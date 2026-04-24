@@ -157,6 +157,8 @@ class ContextMenuStack:
             if not isinstance(entry, tuple):
                 if self._stack:
                     raise TypeError("owner item required when stack is not empty")
+
+                menu  = entry
                 entry = (entry, None)
             else:
                 menu = entry[0]
@@ -165,7 +167,7 @@ class ContextMenuStack:
                 self._menus_opened()
 
             self._stack.appendleft(entry)
-            entry[0].configure(**config)
+            menu.configure(**config)
 
     _POP_KWARGS: typing.Any = {"show": False, "no_bring_to_front_on_focus": False}
 
@@ -547,11 +549,9 @@ class ContextMenu[U = typing.Any, C: ContextMenuItem = ContextMenuItem](appitem.
             )
             style.item_spacing = (8, 10)
             style.window_rounding = (0, -1)
-            style.window_rounding = (0, -1)
             style.window_padding = (24, 8)
             style.popup_rounding = (0, -1)
             style.frame_rounding = (0, -1)
-            style.frame_padding = (4, 3)
             style.frame_padding = (4, 3)
 
         return theme

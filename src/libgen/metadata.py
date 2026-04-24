@@ -166,6 +166,13 @@ class DearPyGuiMetadata:
         self.functions = [*functions]
         self.typedef   = [*typedef]
 
+    @property
+    def semver(self, /) -> tuple[int, ...]:
+        version = self.version.lower().strip("abcdefghijklmnopqrstuvwxyz.-_ ")
+        return tuple(int(d) for d in version.split('.') if d)
+
+
+
 
 # [ codecs ]
 
@@ -741,6 +748,9 @@ def _parse_parameters(source: str, typedef_map: dict[str, ItemTypeInfo], metadat
                 ):
                     p_flags |= ParameterFlag.NO_READ | ParameterFlag.NO_WRITE
 
+                elif p_name == "size" and type_name == "mvFont" and metadata.semver >= (2, 3):
+                    p_flags |= ParameterFlag.NONE
+
                 elif p_kind == ParameterKind.POSITIONAL_OR_KEYWORD:
                     value_type = type_info.value_type or ''
                     if value_type.startswith("Array") and value_type.removeprefix("Array[").startswith(str(p_default)):
@@ -790,7 +800,7 @@ def _parse_constants(source: str, typedef_map: dict[str, ItemTypeInfo], metadata
     match = re.search(r"(?s)GetModuleConstants\(.+?\{(?P<content>.+?)return\s+\w+Constants;\s*\}", source)
     assert match is not None
 
-    content = match.group("content")
+    content = "\n".join(ln for ln in match.group("content").splitlines() if not ln.strip().startswith("//"))
     pattern = re.compile(r'push_back\s*\(\s*\{\s*"(?P<variable>mv.+?)"\s*,.*?\}\s*\)\s*;')
 
     constants = [m.group("variable") for m in pattern.finditer(content)]
@@ -949,13 +959,3 @@ def download_dearpygui_release(tag: str = "latest", /, **kwargs) -> tuple[str, z
     url = release["zipball_url"]
 
     return tag, download_zipfile(url)
-
-
-
-
-if __name__ == "__main__":
-    # version, archive = _download_release()
-    version, archive = "2.2.0", r"C:\Users\C69819\Downloads\DearPyGui-2.2.0.zip"
-    md  = parse(archive, version)
-    md2 = deserialize(serialize(md))
-    assert md == md2

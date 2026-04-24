@@ -11,8 +11,8 @@ __all__ = (
     "text_disabled",
     "window_bg",
     "child_bg",
-    "border",
     "popup_bg",
+    "border",
     "border_shadow",
     "frame_bg",
     "frame_bg_hovered",
@@ -40,11 +40,14 @@ __all__ = (
     "resize_grip",
     "resize_grip_hovered",
     "resize_grip_active",
-    "tab",
+    "input_text_cursor",
     "tab_hovered",
-    "tab_active",
-    "tab_unfocused",
-    "tab_unfocused_active",
+    "tab",
+    "tab_selected",
+    "tab_selected_overline",
+    "tab_dimmed",
+    "tab_dimmed_selected",
+    "tab_dimmed_selected_overline",
     "docking_preview",
     "docking_empty_bg",
     "plot_lines",
@@ -57,11 +60,18 @@ __all__ = (
     "table_row_bg",
     "table_row_bg_alt",
     "text_selected_bg",
+    "tree_lines",
     "drag_drop_target",
-    "nav_highlight",
+    "drag_drop_target_bg",
+    "unsaved_marker",
+    "nav_cursor",
     "nav_windowing_highlight",
     "nav_windowing_dim_bg",
     "modal_window_dim_bg",
+    "tab_active",
+    "tab_unfocused",
+    "tab_unfocused_active",
+    "nav_highlight",
     "plot_line",
     "plot_fill",
     "plot_marker_outline",
@@ -75,11 +85,12 @@ __all__ = (
     "plot_legend_text",
     "plot_title_text",
     "plot_inlay_text",
-    "plot_axis_bg",
-    "plot_axis_bg_active",
-    "plot_axis_bg_hovered",
-    "plot_axis_grid",
     "plot_axis_text",
+    "plot_axis_grid",
+    "plot_axis_tick",
+    "plot_axis_bg",
+    "plot_axis_bg_hovered",
+    "plot_axis_bg_active",
     "plot_selection",
     "plot_crosshairs",
     "node_bg",
@@ -132,12 +143,12 @@ def child_bg(obj, g = -1, b = -1, a = 255, /, *, __dearpygui=_dearpygui, __itemt
     return __itemtype.create(__dearpygui.mvThemeCol_ChildBg, obj if g == -1 else (obj, g, b, a), category=__dearpygui.mvThemeCat_Core, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent)
 
 
-def border(obj, g = -1, b = -1, a = 255, /, *, __dearpygui=_dearpygui, __itemtype=mvThemeColor, label = None, use_internal_label = True, user_data = None, tag = 0, parent = 0):
-    return __itemtype.create(__dearpygui.mvThemeCol_Border, obj if g == -1 else (obj, g, b, a), category=__dearpygui.mvThemeCat_Core, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent)
-
-
 def popup_bg(obj, g = -1, b = -1, a = 255, /, *, __dearpygui=_dearpygui, __itemtype=mvThemeColor, label = None, use_internal_label = True, user_data = None, tag = 0, parent = 0):
     return __itemtype.create(__dearpygui.mvThemeCol_PopupBg, obj if g == -1 else (obj, g, b, a), category=__dearpygui.mvThemeCat_Core, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent)
+
+
+def border(obj, g = -1, b = -1, a = 255, /, *, __dearpygui=_dearpygui, __itemtype=mvThemeColor, label = None, use_internal_label = True, user_data = None, tag = 0, parent = 0):
+    return __itemtype.create(__dearpygui.mvThemeCol_Border, obj if g == -1 else (obj, g, b, a), category=__dearpygui.mvThemeCat_Core, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent)
 
 
 def border_shadow(obj, g = -1, b = -1, a = 255, /, *, __dearpygui=_dearpygui, __itemtype=mvThemeColor, label = None, use_internal_label = True, user_data = None, tag = 0, parent = 0):
@@ -248,24 +259,36 @@ def resize_grip_active(obj, g = -1, b = -1, a = 255, /, *, __dearpygui=_dearpygu
     return __itemtype.create(__dearpygui.mvThemeCol_ResizeGripActive, obj if g == -1 else (obj, g, b, a), category=__dearpygui.mvThemeCat_Core, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent)
 
 
-def tab(obj, g = -1, b = -1, a = 255, /, *, __dearpygui=_dearpygui, __itemtype=mvThemeColor, label = None, use_internal_label = True, user_data = None, tag = 0, parent = 0):
-    return __itemtype.create(__dearpygui.mvThemeCol_Tab, obj if g == -1 else (obj, g, b, a), category=__dearpygui.mvThemeCat_Core, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent)
+def input_text_cursor(obj, g = -1, b = -1, a = 255, /, *, __dearpygui=_dearpygui, __itemtype=mvThemeColor, label = None, use_internal_label = True, user_data = None, tag = 0, parent = 0):
+    return __itemtype.create(__dearpygui.mvThemeCol_InputTextCursor, obj if g == -1 else (obj, g, b, a), category=__dearpygui.mvThemeCat_Core, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent)
 
 
 def tab_hovered(obj, g = -1, b = -1, a = 255, /, *, __dearpygui=_dearpygui, __itemtype=mvThemeColor, label = None, use_internal_label = True, user_data = None, tag = 0, parent = 0):
     return __itemtype.create(__dearpygui.mvThemeCol_TabHovered, obj if g == -1 else (obj, g, b, a), category=__dearpygui.mvThemeCat_Core, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent)
 
 
-def tab_active(obj, g = -1, b = -1, a = 255, /, *, __dearpygui=_dearpygui, __itemtype=mvThemeColor, label = None, use_internal_label = True, user_data = None, tag = 0, parent = 0):
-    return __itemtype.create(__dearpygui.mvThemeCol_TabActive, obj if g == -1 else (obj, g, b, a), category=__dearpygui.mvThemeCat_Core, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent)
+def tab(obj, g = -1, b = -1, a = 255, /, *, __dearpygui=_dearpygui, __itemtype=mvThemeColor, label = None, use_internal_label = True, user_data = None, tag = 0, parent = 0):
+    return __itemtype.create(__dearpygui.mvThemeCol_Tab, obj if g == -1 else (obj, g, b, a), category=__dearpygui.mvThemeCat_Core, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent)
 
 
-def tab_unfocused(obj, g = -1, b = -1, a = 255, /, *, __dearpygui=_dearpygui, __itemtype=mvThemeColor, label = None, use_internal_label = True, user_data = None, tag = 0, parent = 0):
-    return __itemtype.create(__dearpygui.mvThemeCol_TabUnfocused, obj if g == -1 else (obj, g, b, a), category=__dearpygui.mvThemeCat_Core, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent)
+def tab_selected(obj, g = -1, b = -1, a = 255, /, *, __dearpygui=_dearpygui, __itemtype=mvThemeColor, label = None, use_internal_label = True, user_data = None, tag = 0, parent = 0):
+    return __itemtype.create(__dearpygui.mvThemeCol_TabSelected, obj if g == -1 else (obj, g, b, a), category=__dearpygui.mvThemeCat_Core, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent)
 
 
-def tab_unfocused_active(obj, g = -1, b = -1, a = 255, /, *, __dearpygui=_dearpygui, __itemtype=mvThemeColor, label = None, use_internal_label = True, user_data = None, tag = 0, parent = 0):
-    return __itemtype.create(__dearpygui.mvThemeCol_TabUnfocusedActive, obj if g == -1 else (obj, g, b, a), category=__dearpygui.mvThemeCat_Core, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent)
+def tab_selected_overline(obj, g = -1, b = -1, a = 255, /, *, __dearpygui=_dearpygui, __itemtype=mvThemeColor, label = None, use_internal_label = True, user_data = None, tag = 0, parent = 0):
+    return __itemtype.create(__dearpygui.mvThemeCol_TabSelectedOverline, obj if g == -1 else (obj, g, b, a), category=__dearpygui.mvThemeCat_Core, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent)
+
+
+def tab_dimmed(obj, g = -1, b = -1, a = 255, /, *, __dearpygui=_dearpygui, __itemtype=mvThemeColor, label = None, use_internal_label = True, user_data = None, tag = 0, parent = 0):
+    return __itemtype.create(__dearpygui.mvThemeCol_TabDimmed, obj if g == -1 else (obj, g, b, a), category=__dearpygui.mvThemeCat_Core, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent)
+
+
+def tab_dimmed_selected(obj, g = -1, b = -1, a = 255, /, *, __dearpygui=_dearpygui, __itemtype=mvThemeColor, label = None, use_internal_label = True, user_data = None, tag = 0, parent = 0):
+    return __itemtype.create(__dearpygui.mvThemeCol_TabDimmedSelected, obj if g == -1 else (obj, g, b, a), category=__dearpygui.mvThemeCat_Core, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent)
+
+
+def tab_dimmed_selected_overline(obj, g = -1, b = -1, a = 255, /, *, __dearpygui=_dearpygui, __itemtype=mvThemeColor, label = None, use_internal_label = True, user_data = None, tag = 0, parent = 0):
+    return __itemtype.create(__dearpygui.mvThemeCol_TabDimmedSelectedOverline, obj if g == -1 else (obj, g, b, a), category=__dearpygui.mvThemeCat_Core, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent)
 
 
 def docking_preview(obj, g = -1, b = -1, a = 255, /, *, __dearpygui=_dearpygui, __itemtype=mvThemeColor, label = None, use_internal_label = True, user_data = None, tag = 0, parent = 0):
@@ -316,12 +339,24 @@ def text_selected_bg(obj, g = -1, b = -1, a = 255, /, *, __dearpygui=_dearpygui,
     return __itemtype.create(__dearpygui.mvThemeCol_TextSelectedBg, obj if g == -1 else (obj, g, b, a), category=__dearpygui.mvThemeCat_Core, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent)
 
 
+def tree_lines(obj, g = -1, b = -1, a = 255, /, *, __dearpygui=_dearpygui, __itemtype=mvThemeColor, label = None, use_internal_label = True, user_data = None, tag = 0, parent = 0):
+    return __itemtype.create(__dearpygui.mvThemeCol_TreeLines, obj if g == -1 else (obj, g, b, a), category=__dearpygui.mvThemeCat_Core, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent)
+
+
 def drag_drop_target(obj, g = -1, b = -1, a = 255, /, *, __dearpygui=_dearpygui, __itemtype=mvThemeColor, label = None, use_internal_label = True, user_data = None, tag = 0, parent = 0):
     return __itemtype.create(__dearpygui.mvThemeCol_DragDropTarget, obj if g == -1 else (obj, g, b, a), category=__dearpygui.mvThemeCat_Core, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent)
 
 
-def nav_highlight(obj, g = -1, b = -1, a = 255, /, *, __dearpygui=_dearpygui, __itemtype=mvThemeColor, label = None, use_internal_label = True, user_data = None, tag = 0, parent = 0):
-    return __itemtype.create(__dearpygui.mvThemeCol_NavHighlight, obj if g == -1 else (obj, g, b, a), category=__dearpygui.mvThemeCat_Core, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent)
+def drag_drop_target_bg(obj, g = -1, b = -1, a = 255, /, *, __dearpygui=_dearpygui, __itemtype=mvThemeColor, label = None, use_internal_label = True, user_data = None, tag = 0, parent = 0):
+    return __itemtype.create(__dearpygui.mvThemeCol_DragDropTargetBg, obj if g == -1 else (obj, g, b, a), category=__dearpygui.mvThemeCat_Core, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent)
+
+
+def unsaved_marker(obj, g = -1, b = -1, a = 255, /, *, __dearpygui=_dearpygui, __itemtype=mvThemeColor, label = None, use_internal_label = True, user_data = None, tag = 0, parent = 0):
+    return __itemtype.create(__dearpygui.mvThemeCol_UnsavedMarker, obj if g == -1 else (obj, g, b, a), category=__dearpygui.mvThemeCat_Core, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent)
+
+
+def nav_cursor(obj, g = -1, b = -1, a = 255, /, *, __dearpygui=_dearpygui, __itemtype=mvThemeColor, label = None, use_internal_label = True, user_data = None, tag = 0, parent = 0):
+    return __itemtype.create(__dearpygui.mvThemeCol_NavCursor, obj if g == -1 else (obj, g, b, a), category=__dearpygui.mvThemeCat_Core, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent)
 
 
 def nav_windowing_highlight(obj, g = -1, b = -1, a = 255, /, *, __dearpygui=_dearpygui, __itemtype=mvThemeColor, label = None, use_internal_label = True, user_data = None, tag = 0, parent = 0):
@@ -334,6 +369,22 @@ def nav_windowing_dim_bg(obj, g = -1, b = -1, a = 255, /, *, __dearpygui=_dearpy
 
 def modal_window_dim_bg(obj, g = -1, b = -1, a = 255, /, *, __dearpygui=_dearpygui, __itemtype=mvThemeColor, label = None, use_internal_label = True, user_data = None, tag = 0, parent = 0):
     return __itemtype.create(__dearpygui.mvThemeCol_ModalWindowDimBg, obj if g == -1 else (obj, g, b, a), category=__dearpygui.mvThemeCat_Core, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent)
+
+
+def tab_active(obj, g = -1, b = -1, a = 255, /, *, __dearpygui=_dearpygui, __itemtype=mvThemeColor, label = None, use_internal_label = True, user_data = None, tag = 0, parent = 0):
+    return __itemtype.create(__dearpygui.mvThemeCol_TabActive, obj if g == -1 else (obj, g, b, a), category=__dearpygui.mvThemeCat_Core, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent)
+
+
+def tab_unfocused(obj, g = -1, b = -1, a = 255, /, *, __dearpygui=_dearpygui, __itemtype=mvThemeColor, label = None, use_internal_label = True, user_data = None, tag = 0, parent = 0):
+    return __itemtype.create(__dearpygui.mvThemeCol_TabUnfocused, obj if g == -1 else (obj, g, b, a), category=__dearpygui.mvThemeCat_Core, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent)
+
+
+def tab_unfocused_active(obj, g = -1, b = -1, a = 255, /, *, __dearpygui=_dearpygui, __itemtype=mvThemeColor, label = None, use_internal_label = True, user_data = None, tag = 0, parent = 0):
+    return __itemtype.create(__dearpygui.mvThemeCol_TabUnfocusedActive, obj if g == -1 else (obj, g, b, a), category=__dearpygui.mvThemeCat_Core, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent)
+
+
+def nav_highlight(obj, g = -1, b = -1, a = 255, /, *, __dearpygui=_dearpygui, __itemtype=mvThemeColor, label = None, use_internal_label = True, user_data = None, tag = 0, parent = 0):
+    return __itemtype.create(__dearpygui.mvThemeCol_NavHighlight, obj if g == -1 else (obj, g, b, a), category=__dearpygui.mvThemeCat_Core, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent)
 
 
 def plot_line(obj, g = -1, b = -1, a = 255, /, *, __dearpygui=_dearpygui, __itemtype=mvThemeColor, label = None, use_internal_label = True, user_data = None, tag = 0, parent = 0):
@@ -388,24 +439,28 @@ def plot_inlay_text(obj, g = -1, b = -1, a = 255, /, *, __dearpygui=_dearpygui, 
     return __itemtype.create(__dearpygui.mvPlotCol_InlayText, obj if g == -1 else (obj, g, b, a), category=__dearpygui.mvThemeCat_Plots, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent)
 
 
-def plot_axis_bg(obj, g = -1, b = -1, a = 255, /, *, __dearpygui=_dearpygui, __itemtype=mvThemeColor, label = None, use_internal_label = True, user_data = None, tag = 0, parent = 0):
-    return __itemtype.create(__dearpygui.mvPlotCol_AxisBg, obj if g == -1 else (obj, g, b, a), category=__dearpygui.mvThemeCat_Plots, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent)
-
-
-def plot_axis_bg_active(obj, g = -1, b = -1, a = 255, /, *, __dearpygui=_dearpygui, __itemtype=mvThemeColor, label = None, use_internal_label = True, user_data = None, tag = 0, parent = 0):
-    return __itemtype.create(__dearpygui.mvPlotCol_AxisBgActive, obj if g == -1 else (obj, g, b, a), category=__dearpygui.mvThemeCat_Plots, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent)
-
-
-def plot_axis_bg_hovered(obj, g = -1, b = -1, a = 255, /, *, __dearpygui=_dearpygui, __itemtype=mvThemeColor, label = None, use_internal_label = True, user_data = None, tag = 0, parent = 0):
-    return __itemtype.create(__dearpygui.mvPlotCol_AxisBgHovered, obj if g == -1 else (obj, g, b, a), category=__dearpygui.mvThemeCat_Plots, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent)
+def plot_axis_text(obj, g = -1, b = -1, a = 255, /, *, __dearpygui=_dearpygui, __itemtype=mvThemeColor, label = None, use_internal_label = True, user_data = None, tag = 0, parent = 0):
+    return __itemtype.create(__dearpygui.mvPlotCol_AxisText, obj if g == -1 else (obj, g, b, a), category=__dearpygui.mvThemeCat_Plots, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent)
 
 
 def plot_axis_grid(obj, g = -1, b = -1, a = 255, /, *, __dearpygui=_dearpygui, __itemtype=mvThemeColor, label = None, use_internal_label = True, user_data = None, tag = 0, parent = 0):
     return __itemtype.create(__dearpygui.mvPlotCol_AxisGrid, obj if g == -1 else (obj, g, b, a), category=__dearpygui.mvThemeCat_Plots, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent)
 
 
-def plot_axis_text(obj, g = -1, b = -1, a = 255, /, *, __dearpygui=_dearpygui, __itemtype=mvThemeColor, label = None, use_internal_label = True, user_data = None, tag = 0, parent = 0):
-    return __itemtype.create(__dearpygui.mvPlotCol_AxisText, obj if g == -1 else (obj, g, b, a), category=__dearpygui.mvThemeCat_Plots, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent)
+def plot_axis_tick(obj, g = -1, b = -1, a = 255, /, *, __dearpygui=_dearpygui, __itemtype=mvThemeColor, label = None, use_internal_label = True, user_data = None, tag = 0, parent = 0):
+    return __itemtype.create(__dearpygui.mvPlotCol_AxisTick, obj if g == -1 else (obj, g, b, a), category=__dearpygui.mvThemeCat_Plots, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent)
+
+
+def plot_axis_bg(obj, g = -1, b = -1, a = 255, /, *, __dearpygui=_dearpygui, __itemtype=mvThemeColor, label = None, use_internal_label = True, user_data = None, tag = 0, parent = 0):
+    return __itemtype.create(__dearpygui.mvPlotCol_AxisBg, obj if g == -1 else (obj, g, b, a), category=__dearpygui.mvThemeCat_Plots, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent)
+
+
+def plot_axis_bg_hovered(obj, g = -1, b = -1, a = 255, /, *, __dearpygui=_dearpygui, __itemtype=mvThemeColor, label = None, use_internal_label = True, user_data = None, tag = 0, parent = 0):
+    return __itemtype.create(__dearpygui.mvPlotCol_AxisBgHovered, obj if g == -1 else (obj, g, b, a), category=__dearpygui.mvThemeCat_Plots, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent)
+
+
+def plot_axis_bg_active(obj, g = -1, b = -1, a = 255, /, *, __dearpygui=_dearpygui, __itemtype=mvThemeColor, label = None, use_internal_label = True, user_data = None, tag = 0, parent = 0):
+    return __itemtype.create(__dearpygui.mvPlotCol_AxisBgActive, obj if g == -1 else (obj, g, b, a), category=__dearpygui.mvThemeCat_Plots, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent)
 
 
 def plot_selection(obj, g = -1, b = -1, a = 255, /, *, __dearpygui=_dearpygui, __itemtype=mvThemeColor, label = None, use_internal_label = True, user_data = None, tag = 0, parent = 0):

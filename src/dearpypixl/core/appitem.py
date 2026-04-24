@@ -14,6 +14,7 @@ __all__ = (
     "SupportsValueArray",
     "_HandlerItem",
     "_ElementItem",
+    "_ElementInfo",
 )
 
 
@@ -42,6 +43,7 @@ class AppItemType(type):
             self.__item_type__ = self
             self.__item_slot__ = slot
             self.__item_command__ = command
+            self.__hash__ = AppItem.__hash__  # type: ignore
 
             registry = __class__.__item_registry__
             registry[f"mvAppItemType::{name}"] = registry[getattr(_dearpygui, name)] = self
@@ -70,7 +72,7 @@ class AppItemType(type):
 
         cls = self.__item_type__
         if cls is not None:
-            return str(self.__str__) == other or int(self) == other
+            return str(self) == other or int(self) == other
 
         return False
 
@@ -106,21 +108,15 @@ class AppItem[U = typing.Any, V = typing.Any, P = typing.Any, C = typing.Any](in
         return __int_new(cls, uuid)
 
     def __repr__(self, /):
-        uuid  = self.real
-
+        uuid = self.real
         try:
             alias = _dearpygui.get_item_alias(uuid)
         except SystemError:
-            alias = "<error>"
-
+            alias = ''
         try:
-            value = _dearpygui.get_value(uuid)
-            if hasattr(value, "__getitem__") and hasattr(value, "__len__") and len(value) > 4:
-                value = f"[{value[0]!r}, {value[1]!r}, {value[2]!r}, {value[3]!r}, ...]"
-            else:
-                value = repr(value)
+            label = _dearpygui.get_item_configuration(self)["label"]
         except SystemError:
-            value = "<error>"
+            label = ''
 
         class_name = self.__class__.__name__
 
@@ -128,19 +124,21 @@ class AppItem[U = typing.Any, V = typing.Any, P = typing.Any, C = typing.Any](in
             try:
                 type = _dearpygui.get_item_info(self)["type"]
             except SystemError:
-                type = "<error>"
-            else:
-                return f"{class_name}({type=}, {uuid=}, {alias=}, value={value})"
+                type = ''
+            return f"{class_name}({type=}, {uuid=}, {alias=}, {label=})"
 
-        return f"{class_name}({uuid=}, {alias=}, value={value})"
+        return f"{class_name}({uuid=}, {alias=}, {label=})"
 
     def __int__(self, /):
         return self.real
 
-    # XXX: does it makes sense to have `__str__()` return the item alias?
-    # what if it's empty?
-    #def __str__(self, /, *, __func=_dearpygui.get_item_alias):
-    #    return __func(self) or ""
+    __hash__ = __int__
+
+    def __eq__(self, other, /, *, __func=_dearpygui.get_item_alias):
+        return (
+            (self.real == other) or
+            (alias == other if (alias:=__func(self.real)) else False)
+        )
 
     @classmethod
     def create(cls, /, *args, **kwargs):
@@ -361,6 +359,8 @@ class ChildItem[U = typing.Any, V = typing.Any, P = typing.Any, C = typing.Any](
 
     __item_type__ = _MISSING
 
+    __hash__ = AppItem.__hash__
+
     def move(self, *, parent=0, before=0, __func=_dearpygui.move_item):
         __func(self, parent=parent, before=before)
 
@@ -379,6 +379,8 @@ class ContainerItem[U = typing.Any, V = typing.Any, P = typing.Any, C = typing.A
 
     __item_type__ = _MISSING
 
+    __hash__ = AppItem.__hash__
+
     def __enter__(self, /, *, __func=_dearpygui.push_container_stack):
         __func(self)
         return self
@@ -389,16 +391,19 @@ class ContainerItem[U = typing.Any, V = typing.Any, P = typing.Any, C = typing.A
     __item_index_slot__ = 1
     __item_index_type__ = ChildItem
 
-    def __getitem__(self, index, /, *, __new=int.__new__, __func=_dearpygui.get_item_info):
+    def __getitem__(self, index, /, *, __func=_dearpygui.get_item_info, __new=int.__new__, __list=list):
         children = __func(self)["children"][self.__item_index_slot__][index]
-        if hasattr(children, '__iter__'):
+
+        if children.__class__ is __list:
             item_type = self.__item_index_type__
             return [__new(item_type, child) for child in children]
+
         return __new(self.__item_index_type__, children)
 
-    def __delitem__(self, index, /, *, __func=_dearpygui.delete_item):
-        children = _dearpygui.get_item_info(self)["children"][1][index]
-        if hasattr(children, '__iter__'):
+    def __delitem__(self, index, /, *, __func=_dearpygui.delete_item, __list=list):
+        children = _dearpygui.get_item_info(self)["children"][self.__item_index_slot__][index]
+
+        if children.__class__ is __list:
             for child in children:
                 __func(child, children_only=False, slot=-1)
         else:
@@ -501,12 +506,32 @@ class CompositeItem:
     def user_data(self, /):
         self.__dict__["user_data"] = None
 
+    @classmethod
+    def create(cls, /, user_data=None, **kwargs):
+        return super().create(user_data={"user_data": user_data}, **kwargs)  # ty:ignore[unresolved-attribute]
+
     def __init__(self: typing.Any, /, tag=0):
         user_data = _dearpygui.get_item_configuration(self)["user_data"]
-        if user_data is None:
-            _dearpygui.configure_item(self, user_data=self.__dict__)
-        else:
+        try:
             self.__dict__ = user_data
+        except TypeError:
+            self.__dict__["user_data"] = user_data
+            _dearpygui.configure_item(self, user_data=self.__dict__)
+
+    def __repr__(self: typing.Any, /):
+        # uses the concrete class name, whereas `AppItem.__repr__()` always
+        # uses the item type's name
+        uuid = self.real
+        try:
+            alias = _dearpygui.get_item_alias(uuid)
+        except SystemError:
+            alias = ''
+        try:
+            label = _dearpygui.get_item_configuration(self)["label"]
+        except SystemError:
+            label = ''
+
+        return f"{self.__class__.__name__}({uuid=}, {alias=}, {label=})"
 
     def destroy(self, /, *, __func=_dearpygui.delete_item):
         for item in self.components:
@@ -565,7 +590,7 @@ class SupportsValueArray[T]:
     def __setitem__(self, index, value, /) -> None:
         item_value = self.get_value()
         item_value[index] = value
-        self.set_value(value)
+        self.set_value(item_value)
 
     def __eq__(self, other, /) -> bool:
         value = self.get_value()
@@ -578,10 +603,64 @@ class SupportsValueArray[T]:
             return False
 
 
+class _ElementInfo:
+    __slots__ = ("type", "name", "fullname", "category", "target")
+
+    def __astuple(self, /):
+        return (self.type, self.name, self.fullname, self.category, self.target)
+
+    def __init__(self, type, function, constant, category, target, /):
+        self.type = type
+        self.name = function
+        self.fullname = constant
+        self.category = category
+        self.target = target
+
+    def __repr__(self, /):
+        type = self.type
+        name = self.name
+        fullname = self.fullname
+        category = self.category
+        target = self.target
+        return f"_ElementInfo({type=}, {name=}, {fullname=}, {category=}, {target=})"
+
+    def __hash__(self, /):
+        return hash(self.__astuple())
+
+    def __add__(self, x, /):
+        return self.__astuple() + x
+
+    __iadd__ = __add__
+
+    def __radd__(self, other, /):
+        return other + self.__astuple()
+
+    def __iter__(self, /):
+        yield self.type
+        yield self.name
+        yield self.fullname
+        yield self.category
+        yield self.target
+
+    def __getitem__(self, index, /):
+        match index:
+            case 0 | -5: return self.type
+            case 1 | -4: return self.name
+            case 2 | -3: return self.fullname
+            case 3 | -2: return self.category
+            case 4 | -1: return self.target
+
+        return self.__astuple()[index]
+
+    def index(self, /, *args):
+        return self.__astuple().index(*args)
+
 class _ElementItem[U = typing.Any, P = typing.Any](SupportsValueArray, ChildItem):
     __slots__ = ()
 
     __item_type__ = _MISSING
+
+    __hash__ = AppItem.__hash__
 
     @property
     def category(self, /) -> int:
@@ -591,61 +670,103 @@ class _ElementItem[U = typing.Any, P = typing.Any](SupportsValueArray, ChildItem
     def target(self, /) -> int:
         return _dearpygui.get_item_configuration(self)["target"]
 
-    def identify(self, /) -> 'tuple[type[mvThemeColor | mvThemeStyle], str, str, str, str]':  # type: ignore
-        """Return a 4-tuple containing: the item's resolved interface type, the
-        element's simplified name, the element's full name, the element category
-        name, and element target name. The "simplified" name matches the name of
-        a function in either the :py:module:~`dearpypixl.color` or
-        :py:module:~`dearpypixl.style` modules, while the element's full name,
-        category name, and target name match the name of a constant in
-        `dearpygui.dearpygui`.
+    def identify(self, /) -> '_ElementInfo':
+        """Return a `_ElementInfo` object -- a tuple-like object with information
+        regarding this theme element's identity.
+
+        The returned `_ElementInfo` object has five read-only attributes:
+        - `type`: The element's concrete class in Dear PyPixl (:py:class:`mvThemeColor`
+        or :py:class:`mvThemeStyle`).
+        - `name`: The name of the theme element. Matches the name of a function in
+        the :py:module:`dearpypixl.color` or :py:module:`dearpypixl.style` namespaces.
+        - `fullname`: The name of the theme element. Matches the name of a constant in
+        the `dearpygui.dearpygui` and `dearpypixl` namespaces.
+        - `category`: The value returned via `get_item_configuration(element)["category"]`.
+        - `target`: The value returned via `get_item_configuration(element)["target"]`.
         """
         try:
             registry = __class__._ELEMENT_REGISTRY
+            name_map = __class__._ELEMENT_NAME_MAP
         except AttributeError:
+            import re
+
             registry = {}
+            name_map = {}
+
+            pattern = re.compile(r"[A-Z][a-z0-9]*")
+            buffer  = []
+
             for symbol, value in _dearpygui.__dict__.items():
-                prefix = symbol.partition('_')[0]
+                prefix, _, suffix = symbol.partition('_')
                 match prefix:
                     case "mvThemeCol":
                         type_name = "mvAppItemType::mvThemeColor"
+                        prefix    = ''
                         category  = _dearpygui.mvThemeCat_Core
                     case "mvPlotCol":
                         type_name = "mvAppItemType::mvThemeColor"
+                        prefix    = 'plot'
                         category  = _dearpygui.mvThemeCat_Plots
                     case "mvNodeCol" | "mvNodesCol":
                         type_name = "mvAppItemType::mvThemeColor"
+                        prefix    = 'node'
                         category  = _dearpygui.mvThemeCat_Nodes
                     case "mvStyleVar":
                         type_name = "mvAppItemType::mvThemeStyle"
+                        prefix    = ''
                         category  = _dearpygui.mvThemeCat_Core
                     case "mvPlotStyleVar":
                         type_name = "mvAppItemType::mvThemeStyle"
+                        prefix    = 'plot'
                         category  = _dearpygui.mvThemeCat_Plots
                     case "mvNodeStyleVar" | "mvNodesStyleVar":
                         type_name = "mvAppItemType::mvThemeStyle"
+                        prefix    = 'node'
                         category  = _dearpygui.mvThemeCat_Nodes
                     case _:
                         continue
 
+                if prefix:
+                    buffer.append(prefix)
+
+                for substring in suffix.split("_"):
+                    for word in pattern.findall(substring):
+                        word = word.lower()
+                        if word == prefix:
+                            continue
+                        buffer.append(word)
+
+                name = '_'.join(buffer).replace("background", "bg").replace("foreground", "fg")
+
                 registry[(type_name, category, value)] = symbol
+                name_map[symbol] = name
+                buffer.clear()
 
             __class__._ELEMENT_REGISTRY = registry
+            __class__._ELEMENT_NAME_MAP = name_map
 
         info   = _dearpygui.get_item_info(self)
         config = _dearpygui.get_item_configuration(self)
 
-        key = (info["type"], config["category"], config["target"])
+        e_type     = info["type"]
+        e_category = config["category"]
+        e_target   = config["target"]
         try:
-            return __class__._ELEMENT_REGISTRY[key]
+            e_fullname = registry[(e_type, e_category, e_target)]
         except KeyError:
             raise TypeError(f"{self!r} is not a theme color or style")
+        e_name = name_map[e_fullname]
+        e_type = __class__.__item_registry__[e_type]
+
+        return _ElementInfo(e_type, e_name, e_fullname, e_category, e_target)
 
 
 class _HandlerItem[U = typing.Any, P = typing.Any](ChildItem):
     __slots__  = ()
 
     __item_type__ = _MISSING
+
+    __hash__ = AppItem.__hash__
 
     @property
     def callback(self, /, *, __func=_dearpygui.get_item_configuration):

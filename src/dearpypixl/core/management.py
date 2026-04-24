@@ -64,6 +64,19 @@ def register_environ(env, doc=None, /, valtype=bool, default=None, *, __defaults
 
 
 
+_DPX_NO_INIT = typing.cast(
+    typing.Literal[False],
+    register_environ(
+        "_DPX_NO_INIT",
+        "When set, DearPyPixl's basic libraries are not loaded on import (internal only).",
+        bool,
+        False
+    )
+)
+
+
+
+
 _DPX_NO_WARNINGS = register_environ(
     "DPX_NO_WARNINGS",
     "When set, most warnings issued by DearPyPixl are disabled.",
