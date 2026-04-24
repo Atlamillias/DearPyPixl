@@ -592,16 +592,6 @@ class SupportsValueArray[T]:
         item_value[index] = value
         self.set_value(item_value)
 
-    def __eq__(self, other, /) -> bool:
-        value = self.get_value()
-        size = len(value)
-        try:
-            if len(other) != size:
-                return False
-            return all(value[i] == other[i] for i in range(size))
-        except TypeError:
-            return False
-
 
 class _ElementInfo:
     __slots__ = ("type", "name", "fullname", "category", "target")
