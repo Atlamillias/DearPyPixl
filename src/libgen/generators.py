@@ -778,11 +778,14 @@ class ItemsStubGenerator(_ItemsGenerator):
 
             head, _, tail = head.partition("Args:\n")
 
-            docstring_desc = textwrap.wrap(' '.join(head.split()).strip(), initial_indent="    ", subsequent_indent="    ")
+            docstring_desc = textwrap.wrap(' '.join(head.split()).strip(), subsequent_indent="    ")
             if docstring_desc:  # class-level docstring
-                buffer.append('    """')
-                buffer.extend(docstring_desc)
-                buffer.append('    """')
+                if len(docstring_desc) == 1:
+                    buffer.append(f'    """{docstring_desc[0]}"""')
+                else:
+                    buffer.append(f'    """{docstring_desc[0]}')
+                    buffer.extend(docstring_desc[1:])
+                    buffer.append(f'    """')
 
             for m in self._RE_DOCPARAM.finditer(tail):
                 p_name = m.group('name')
@@ -813,7 +816,6 @@ class ItemsStubGenerator(_ItemsGenerator):
 
             docstring_params.append(f"    :type {name}: `{anno}`{' *(optional)*' if anno is not p.empty else ''}")
             docstring_params.extend(textwrap.wrap(f"    :param {name}: {param_doc_map.get(name, '')}", subsequent_indent="        "))
-            docstring_params.append('')
 
         # HACK: make the `item_type` argument of `mvThemeComponent.create()` compatible with item type classes
         if type_name == "mvThemeComponent":
@@ -1007,7 +1009,11 @@ class ItemsStubGenerator(_ItemsGenerator):
 
         # functional API
 
-        docstring = ['    """', *docstring_desc, '', *docstring_params, ''] if docstring_desc else ['    """', *docstring_params, '']
+        if docstring_desc:
+            docstring = [f'    """{docstring_desc[0]}', *docstring_desc[1:], '', *docstring_params]
+        else:
+            docstring = ['    """', *docstring_params]
+
         docstring.append('    :raises `SystemError`: DearPyGui-related error.')
         docstring.append('    """')
 
