@@ -333,7 +333,10 @@ class ItemsCodeGenerator(_ItemsGenerator):
         buffer = [
             f"@property",
             f"def {identifier}(self, /, *, __func=_dearpygui.{getter}):",
-            f"    return __func(self)[\"{name}\"]",
+            f"    try:",
+            f"        return __func(self)[\"{name}\"]",
+            f"    except KeyError:",
+            f"        raise AttributeError(f\"'{name}' not in dict returned from '{getter}({{self.tag}})'`\")",
         ]
 
         if setter is not None:
@@ -578,6 +581,8 @@ class ItemsCodeGenerator(_ItemsGenerator):
 
         content.extend(("# configuration properties", ""))
         for name in sorted(self._shared_properties):
+            if name == "pos":
+                continue
             param = self._shared_properties[name]
             null  = self._get_configuration_null_value(param)
 

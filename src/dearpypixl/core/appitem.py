@@ -240,7 +240,10 @@ class AppItem[U = typing.Any, V = typing.Any, P = typing.Any, C = typing.Any](in
     def _create_bound_info_property(type_key: int | str, field_key: str, setter, /) -> property:
 
         def fget(self, /, __type_key=type_key, __field_key=field_key, __func=_dearpygui.get_item_info, __int_new=int.__new__, __registry=_ITEM_REGISTRY):
-            item = __func(self)[__field_key]
+            try:
+                item = __func(self)[__field_key]
+            except KeyError:
+                raise AttributeError(f"{__field_key!r} not in dict returned from 'get_item_info({self.tag})'")
             if not item:
                 return None
             return __int_new(__registry[__type_key], item)

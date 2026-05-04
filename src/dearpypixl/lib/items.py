@@ -20,55 +20,94 @@ from dearpygui import dearpygui, _dearpygui
 
 @property
 def _property__activated(self, /, *, __func=_dearpygui.get_item_state):
-    return __func(self)["activated"]
+    try:
+        return __func(self)["activated"]
+    except KeyError:
+        raise AttributeError(f"'activated' not in dict returned from 'get_item_state({self.tag})'`")
 
 @property
 def _property__active(self, /, *, __func=_dearpygui.get_item_state):
-    return __func(self)["active"]
+    try:
+        return __func(self)["active"]
+    except KeyError:
+        raise AttributeError(f"'active' not in dict returned from 'get_item_state({self.tag})'`")
 
 @property
 def _property__clicked(self, /, *, __func=_dearpygui.get_item_state):
-    return __func(self)["clicked"]
+    try:
+        return __func(self)["clicked"]
+    except KeyError:
+        raise AttributeError(f"'clicked' not in dict returned from 'get_item_state({self.tag})'`")
 
 @property
 def _property__content_region_avail(self, /, *, __func=_dearpygui.get_item_state):
-    return __func(self)["content_region_avail"]
+    try:
+        return __func(self)["content_region_avail"]
+    except KeyError:
+        raise AttributeError(f"'content_region_avail' not in dict returned from 'get_item_state({self.tag})'`")
 
 @property
 def _property__deactivated(self, /, *, __func=_dearpygui.get_item_state):
-    return __func(self)["deactivated"]
+    try:
+        return __func(self)["deactivated"]
+    except KeyError:
+        raise AttributeError(f"'deactivated' not in dict returned from 'get_item_state({self.tag})'`")
 
 @property
 def _property__deactivated_after_edit(self, /, *, __func=_dearpygui.get_item_state):
-    return __func(self)["deactivated_after_edit"]
+    try:
+        return __func(self)["deactivated_after_edit"]
+    except KeyError:
+        raise AttributeError(f"'deactivated_after_edit' not in dict returned from 'get_item_state({self.tag})'`")
 
 @property
 def _property__edited(self, /, *, __func=_dearpygui.get_item_state):
-    return __func(self)["edited"]
+    try:
+        return __func(self)["edited"]
+    except KeyError:
+        raise AttributeError(f"'edited' not in dict returned from 'get_item_state({self.tag})'`")
 
 @property
 def _property__focused(self, /, *, __func=_dearpygui.get_item_state):
-    return __func(self)["focused"]
+    try:
+        return __func(self)["focused"]
+    except KeyError:
+        raise AttributeError(f"'focused' not in dict returned from 'get_item_state({self.tag})'`")
 
 @property
 def _property__hovered(self, /, *, __func=_dearpygui.get_item_state):
-    return __func(self)["hovered"]
+    try:
+        return __func(self)["hovered"]
+    except KeyError:
+        raise AttributeError(f"'hovered' not in dict returned from 'get_item_state({self.tag})'`")
 
 @property
 def _property__is_scrolling(self, /, *, __func=_dearpygui.get_item_state):
-    return __func(self)["is_scrolling"]
+    try:
+        return __func(self)["is_scrolling"]
+    except KeyError:
+        raise AttributeError(f"'is_scrolling' not in dict returned from 'get_item_state({self.tag})'`")
 
 @property
 def _property__left_clicked(self, /, *, __func=_dearpygui.get_item_state):
-    return __func(self)["left_clicked"]
+    try:
+        return __func(self)["left_clicked"]
+    except KeyError:
+        raise AttributeError(f"'left_clicked' not in dict returned from 'get_item_state({self.tag})'`")
 
 @property
 def _property__middle_clicked(self, /, *, __func=_dearpygui.get_item_state):
-    return __func(self)["middle_clicked"]
+    try:
+        return __func(self)["middle_clicked"]
+    except KeyError:
+        raise AttributeError(f"'middle_clicked' not in dict returned from 'get_item_state({self.tag})'`")
 
 @property
 def _property__pos(self, /, *, __func=_dearpygui.get_item_state):
-    return __func(self)["pos"]
+    try:
+        return __func(self)["pos"]
+    except KeyError:
+        raise AttributeError(f"'pos' not in dict returned from 'get_item_state({self.tag})'`")
 @_property__pos.setter
 def _property__pos(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, pos=value)
@@ -78,43 +117,73 @@ def _property__pos(self, /, *, __func=_dearpygui.configure_item):
 
 @property
 def _property__rect_max(self, /, *, __func=_dearpygui.get_item_state):
-    return __func(self)["rect_max"]
+    try:
+        return __func(self)["rect_max"]
+    except KeyError:
+        raise AttributeError(f"'rect_max' not in dict returned from 'get_item_state({self.tag})'`")
 
 @property
 def _property__rect_min(self, /, *, __func=_dearpygui.get_item_state):
-    return __func(self)["rect_min"]
+    try:
+        return __func(self)["rect_min"]
+    except KeyError:
+        raise AttributeError(f"'rect_min' not in dict returned from 'get_item_state({self.tag})'`")
 
 @property
 def _property__rect_size(self, /, *, __func=_dearpygui.get_item_state):
-    return __func(self)["rect_size"]
+    try:
+        return __func(self)["rect_size"]
+    except KeyError:
+        raise AttributeError(f"'rect_size' not in dict returned from 'get_item_state({self.tag})'`")
 
 @property
 def _property__resized(self, /, *, __func=_dearpygui.get_item_state):
-    return __func(self)["resized"]
+    try:
+        return __func(self)["resized"]
+    except KeyError:
+        raise AttributeError(f"'resized' not in dict returned from 'get_item_state({self.tag})'`")
 
 @property
 def _property__right_clicked(self, /, *, __func=_dearpygui.get_item_state):
-    return __func(self)["right_clicked"]
+    try:
+        return __func(self)["right_clicked"]
+    except KeyError:
+        raise AttributeError(f"'right_clicked' not in dict returned from 'get_item_state({self.tag})'`")
 
 @property
 def _property__scroll_max(self, /, *, __func=_dearpygui.get_item_state):
-    return __func(self)["scroll_max"]
+    try:
+        return __func(self)["scroll_max"]
+    except KeyError:
+        raise AttributeError(f"'scroll_max' not in dict returned from 'get_item_state({self.tag})'`")
 
 @property
 def _property__scroll_pos(self, /, *, __func=_dearpygui.get_item_state):
-    return __func(self)["scroll_pos"]
+    try:
+        return __func(self)["scroll_pos"]
+    except KeyError:
+        raise AttributeError(f"'scroll_pos' not in dict returned from 'get_item_state({self.tag})'`")
 
 @property
 def _property__scrolled(self, /, *, __func=_dearpygui.get_item_state):
-    return __func(self)["scrolled"]
+    try:
+        return __func(self)["scrolled"]
+    except KeyError:
+        raise AttributeError(f"'scrolled' not in dict returned from 'get_item_state({self.tag})'`")
 
 @property
 def _property__toggled_open(self, /, *, __func=_dearpygui.get_item_state):
-    return __func(self)["toggled_open"]
+    try:
+        return __func(self)["toggled_open"]
+    except KeyError:
+        raise AttributeError(f"'toggled_open' not in dict returned from 'get_item_state({self.tag})'`")
 
 @property
 def _property__visible(self, /, *, __func=_dearpygui.get_item_state):
-    return __func(self)["visible"]
+    try:
+        return __func(self)["visible"]
+    except KeyError:
+        raise AttributeError(f"'visible' not in dict returned from 'get_item_state({self.tag})'`")
 
 @property
 def _property__rect_min2(self, /, *, __func=_dearpygui.get_item_state):
@@ -157,252 +226,360 @@ def _property__y_scroll_pos(self, value, /, *, __func=dearpygui.set_y_scroll) ->
 
 @property
 def _property__accept_empty_input(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["accept_empty_input"]
+    try:
+        return __func(self)["accept_empty_input"]
+    except KeyError:
+        raise AttributeError(f"'accept_empty_input' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__accept_empty_input.setter
 def _property__accept_empty_input(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, accept_empty_input=value)
 
 @property
 def _property__alpha_bar(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["alpha_bar"]
+    try:
+        return __func(self)["alpha_bar"]
+    except KeyError:
+        raise AttributeError(f"'alpha_bar' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__alpha_bar.setter
 def _property__alpha_bar(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, alpha_bar=value)
 
 @property
 def _property__alpha_preview(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["alpha_preview"]
+    try:
+        return __func(self)["alpha_preview"]
+    except KeyError:
+        raise AttributeError(f"'alpha_preview' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__alpha_preview.setter
 def _property__alpha_preview(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, alpha_preview=value)
 
 @property
 def _property__always_auto_resize(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["always_auto_resize"]
+    try:
+        return __func(self)["always_auto_resize"]
+    except KeyError:
+        raise AttributeError(f"'always_auto_resize' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__always_auto_resize.setter
 def _property__always_auto_resize(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, always_auto_resize=value)
 
 @property
 def _property__always_overwrite(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["always_overwrite"]
+    try:
+        return __func(self)["always_overwrite"]
+    except KeyError:
+        raise AttributeError(f"'always_overwrite' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__always_overwrite.setter
 def _property__always_overwrite(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, always_overwrite=value)
 
 @property
 def _property__always_use_window_padding(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["always_use_window_padding"]
+    try:
+        return __func(self)["always_use_window_padding"]
+    except KeyError:
+        raise AttributeError(f"'always_use_window_padding' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__always_use_window_padding.setter
 def _property__always_use_window_padding(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, always_use_window_padding=value)
 
 @property
 def _property__angle(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["angle"]
+    try:
+        return __func(self)["angle"]
+    except KeyError:
+        raise AttributeError(f"'angle' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__angle.setter
 def _property__angle(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, angle=value)
 
 @property
 def _property__angled_header(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["angled_header"]
+    try:
+        return __func(self)["angled_header"]
+    except KeyError:
+        raise AttributeError(f"'angled_header' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__angled_header.setter
 def _property__angled_header(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, angled_header=value)
 
 @property
 def _property__arrow(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["arrow"]
+    try:
+        return __func(self)["arrow"]
+    except KeyError:
+        raise AttributeError(f"'arrow' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__arrow.setter
 def _property__arrow(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, arrow=value)
 
 @property
 def _property__attribute_type(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["attribute_type"]
+    try:
+        return __func(self)["attribute_type"]
+    except KeyError:
+        raise AttributeError(f"'attribute_type' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__attribute_type.setter
 def _property__attribute_type(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, attribute_type=value)
 
 @property
 def _property__auto_fit(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["auto_fit"]
+    try:
+        return __func(self)["auto_fit"]
+    except KeyError:
+        raise AttributeError(f"'auto_fit' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__auto_fit.setter
 def _property__auto_fit(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, auto_fit=value)
 
 @property
 def _property__auto_resize_x(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["auto_resize_x"]
+    try:
+        return __func(self)["auto_resize_x"]
+    except KeyError:
+        raise AttributeError(f"'auto_resize_x' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__auto_resize_x.setter
 def _property__auto_resize_x(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, auto_resize_x=value)
 
 @property
 def _property__auto_resize_y(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["auto_resize_y"]
+    try:
+        return __func(self)["auto_resize_y"]
+    except KeyError:
+        raise AttributeError(f"'auto_resize_y' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__auto_resize_y.setter
 def _property__auto_resize_y(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, auto_resize_y=value)
 
 @property
 def _property__auto_rounding(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["auto_rounding"]
+    try:
+        return __func(self)["auto_rounding"]
+    except KeyError:
+        raise AttributeError(f"'auto_rounding' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__auto_rounding.setter
 def _property__auto_rounding(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, auto_rounding=value)
 
 @property
 def _property__auto_select_all(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["auto_select_all"]
+    try:
+        return __func(self)["auto_select_all"]
+    except KeyError:
+        raise AttributeError(f"'auto_select_all' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__auto_select_all.setter
 def _property__auto_select_all(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, auto_select_all=value)
 
 @property
 def _property__autosize(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["autosize"]
+    try:
+        return __func(self)["autosize"]
+    except KeyError:
+        raise AttributeError(f"'autosize' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__autosize.setter
 def _property__autosize(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, autosize=value)
 
 @property
 def _property__autosize_x(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["autosize_x"]
+    try:
+        return __func(self)["autosize_x"]
+    except KeyError:
+        raise AttributeError(f"'autosize_x' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__autosize_x.setter
 def _property__autosize_x(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, autosize_x=value)
 
 @property
 def _property__autosize_y(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["autosize_y"]
+    try:
+        return __func(self)["autosize_y"]
+    except KeyError:
+        raise AttributeError(f"'autosize_y' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__autosize_y.setter
 def _property__autosize_y(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, autosize_y=value)
 
 @property
 def _property__background_color(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["background_color"]
+    try:
+        return __func(self)["background_color"]
+    except KeyError:
+        raise AttributeError(f"'background_color' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__background_color.setter
 def _property__background_color(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, background_color=value)
 
 @property
 def _property__bar_scale(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["bar_scale"]
+    try:
+        return __func(self)["bar_scale"]
+    except KeyError:
+        raise AttributeError(f"'bar_scale' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__bar_scale.setter
 def _property__bar_scale(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, bar_scale=value)
 
 @property
 def _property__bear_color(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["bear_color"]
+    try:
+        return __func(self)["bear_color"]
+    except KeyError:
+        raise AttributeError(f"'bear_color' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__bear_color.setter
 def _property__bear_color(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, bear_color=value)
 
 @property
 def _property__bins(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["bins"]
+    try:
+        return __func(self)["bins"]
+    except KeyError:
+        raise AttributeError(f"'bins' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__bins.setter
 def _property__bins(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, bins=value)
 
 @property
 def _property__border(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["border"]
+    try:
+        return __func(self)["border"]
+    except KeyError:
+        raise AttributeError(f"'border' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__border.setter
 def _property__border(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, border=value)
 
 @property
 def _property__border_color(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["border_color"]
+    try:
+        return __func(self)["border_color"]
+    except KeyError:
+        raise AttributeError(f"'border_color' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__border_color.setter
 def _property__border_color(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, border_color=value)
 
 @property
 def _property__borders_innerH(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["borders_innerH"]
+    try:
+        return __func(self)["borders_innerH"]
+    except KeyError:
+        raise AttributeError(f"'borders_innerH' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__borders_innerH.setter
 def _property__borders_innerH(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, borders_innerH=value)
 
 @property
 def _property__borders_innerV(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["borders_innerV"]
+    try:
+        return __func(self)["borders_innerV"]
+    except KeyError:
+        raise AttributeError(f"'borders_innerV' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__borders_innerV.setter
 def _property__borders_innerV(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, borders_innerV=value)
 
 @property
 def _property__borders_outerH(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["borders_outerH"]
+    try:
+        return __func(self)["borders_outerH"]
+    except KeyError:
+        raise AttributeError(f"'borders_outerH' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__borders_outerH.setter
 def _property__borders_outerH(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, borders_outerH=value)
 
 @property
 def _property__borders_outerV(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["borders_outerV"]
+    try:
+        return __func(self)["borders_outerV"]
+    except KeyError:
+        raise AttributeError(f"'borders_outerV' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__borders_outerV.setter
 def _property__borders_outerV(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, borders_outerV=value)
 
 @property
 def _property__bounds_max(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["bounds_max"]
+    try:
+        return __func(self)["bounds_max"]
+    except KeyError:
+        raise AttributeError(f"'bounds_max' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__bounds_max.setter
 def _property__bounds_max(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, bounds_max=value)
 
 @property
 def _property__bounds_min(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["bounds_min"]
+    try:
+        return __func(self)["bounds_min"]
+    except KeyError:
+        raise AttributeError(f"'bounds_min' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__bounds_min.setter
 def _property__bounds_min(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, bounds_min=value)
 
 @property
 def _property__box_select_button(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["box_select_button"]
+    try:
+        return __func(self)["box_select_button"]
+    except KeyError:
+        raise AttributeError(f"'box_select_button' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__box_select_button.setter
 def _property__box_select_button(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, box_select_button=value)
 
 @property
 def _property__box_select_cancel_button(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["box_select_cancel_button"]
+    try:
+        return __func(self)["box_select_cancel_button"]
+    except KeyError:
+        raise AttributeError(f"'box_select_cancel_button' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__box_select_cancel_button.setter
 def _property__box_select_cancel_button(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, box_select_cancel_button=value)
 
 @property
 def _property__box_select_mod(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["box_select_mod"]
+    try:
+        return __func(self)["box_select_mod"]
+    except KeyError:
+        raise AttributeError(f"'box_select_mod' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__box_select_mod.setter
 def _property__box_select_mod(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, box_select_mod=value)
 
 @property
 def _property__bull_color(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["bull_color"]
+    try:
+        return __func(self)["bull_color"]
+    except KeyError:
+        raise AttributeError(f"'bull_color' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__bull_color.setter
 def _property__bull_color(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, bull_color=value)
 
 @property
 def _property__bullet(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["bullet"]
+    try:
+        return __func(self)["bullet"]
+    except KeyError:
+        raise AttributeError(f"'bullet' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__bullet.setter
 def _property__bullet(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, bullet=value)
 
 @property
 def _property__callback(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["callback"]
+    try:
+        return __func(self)["callback"]
+    except KeyError:
+        raise AttributeError(f"'callback' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__callback.setter
 def _property__callback(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, callback=value)
@@ -412,7 +589,10 @@ def _property__callback(self, /, *, __func=_dearpygui.configure_item):
 
 @property
 def _property__cancel_callback(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["cancel_callback"]
+    try:
+        return __func(self)["cancel_callback"]
+    except KeyError:
+        raise AttributeError(f"'cancel_callback' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__cancel_callback.setter
 def _property__cancel_callback(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, cancel_callback=value)
@@ -422,161 +602,230 @@ def _property__cancel_callback(self, /, *, __func=_dearpygui.configure_item):
 
 @property
 def _property__catch_nav_left(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["catch_nav_left"]
+    try:
+        return __func(self)["catch_nav_left"]
+    except KeyError:
+        raise AttributeError(f"'catch_nav_left' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__catch_nav_left.setter
 def _property__catch_nav_left(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, catch_nav_left=value)
 
 @property
 def _property__category(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["category"]
+    try:
+        return __func(self)["category"]
+    except KeyError:
+        raise AttributeError(f"'category' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__category.setter
 def _property__category(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, category=value)
 
 @property
 def _property__check(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["check"]
+    try:
+        return __func(self)["check"]
+    except KeyError:
+        raise AttributeError(f"'check' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__check.setter
 def _property__check(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, check=value)
 
 @property
 def _property__circle_count(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["circle_count"]
+    try:
+        return __func(self)["circle_count"]
+    except KeyError:
+        raise AttributeError(f"'circle_count' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__circle_count.setter
 def _property__circle_count(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, circle_count=value)
 
 @property
 def _property__clamped(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["clamped"]
+    try:
+        return __func(self)["clamped"]
+    except KeyError:
+        raise AttributeError(f"'clamped' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__clamped.setter
 def _property__clamped(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, clamped=value)
 
 @property
 def _property__clipper(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["clipper"]
+    try:
+        return __func(self)["clipper"]
+    except KeyError:
+        raise AttributeError(f"'clipper' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__clipper.setter
 def _property__clipper(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, clipper=value)
 
 @property
 def _property__closable(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["closable"]
+    try:
+        return __func(self)["closable"]
+    except KeyError:
+        raise AttributeError(f"'closable' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__closable.setter
 def _property__closable(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, closable=value)
 
 @property
 def _property__closed(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["closed"]
+    try:
+        return __func(self)["closed"]
+    except KeyError:
+        raise AttributeError(f"'closed' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__closed.setter
 def _property__closed(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, closed=value)
 
 @property
 def _property__col_major(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["col_major"]
+    try:
+        return __func(self)["col_major"]
+    except KeyError:
+        raise AttributeError(f"'col_major' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__col_major.setter
 def _property__col_major(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, col_major=value)
 
 @property
 def _property__collapsed(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["collapsed"]
+    try:
+        return __func(self)["collapsed"]
+    except KeyError:
+        raise AttributeError(f"'collapsed' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__collapsed.setter
 def _property__collapsed(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, collapsed=value)
 
 @property
 def _property__color(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["color"]
+    try:
+        return __func(self)["color"]
+    except KeyError:
+        raise AttributeError(f"'color' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__color.setter
 def _property__color(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, color=value)
 
 @property
 def _property__column_major(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["column_major"]
+    try:
+        return __func(self)["column_major"]
+    except KeyError:
+        raise AttributeError(f"'column_major' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__column_major.setter
 def _property__column_major(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, column_major=value)
 
 @property
 def _property__column_ratios(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["column_ratios"]
+    try:
+        return __func(self)["column_ratios"]
+    except KeyError:
+        raise AttributeError(f"'column_ratios' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__column_ratios.setter
 def _property__column_ratios(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, column_ratios=value)
 
 @property
 def _property__context_menu_button(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["context_menu_button"]
+    try:
+        return __func(self)["context_menu_button"]
+    except KeyError:
+        raise AttributeError(f"'context_menu_button' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__context_menu_button.setter
 def _property__context_menu_button(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, context_menu_button=value)
 
 @property
 def _property__context_menu_in_body(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["context_menu_in_body"]
+    try:
+        return __func(self)["context_menu_in_body"]
+    except KeyError:
+        raise AttributeError(f"'context_menu_in_body' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__context_menu_in_body.setter
 def _property__context_menu_in_body(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, context_menu_in_body=value)
 
 @property
 def _property__contribute_to_bounds(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["contribute_to_bounds"]
+    try:
+        return __func(self)["contribute_to_bounds"]
+    except KeyError:
+        raise AttributeError(f"'contribute_to_bounds' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__contribute_to_bounds.setter
 def _property__contribute_to_bounds(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, contribute_to_bounds=value)
 
 @property
 def _property__copy_contents_shortcut(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["copy_contents_shortcut"]
+    try:
+        return __func(self)["copy_contents_shortcut"]
+    except KeyError:
+        raise AttributeError(f"'copy_contents_shortcut' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__copy_contents_shortcut.setter
 def _property__copy_contents_shortcut(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, copy_contents_shortcut=value)
 
 @property
 def _property__corner_colors(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["corner_colors"]
+    try:
+        return __func(self)["corner_colors"]
+    except KeyError:
+        raise AttributeError(f"'corner_colors' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__corner_colors.setter
 def _property__corner_colors(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, corner_colors=value)
 
 @property
 def _property__crosshairs(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["crosshairs"]
+    try:
+        return __func(self)["crosshairs"]
+    except KeyError:
+        raise AttributeError(f"'crosshairs' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__crosshairs.setter
 def _property__crosshairs(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, crosshairs=value)
 
 @property
 def _property__ctrl_enter_for_new_line(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["ctrl_enter_for_new_line"]
+    try:
+        return __func(self)["ctrl_enter_for_new_line"]
+    except KeyError:
+        raise AttributeError(f"'ctrl_enter_for_new_line' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__ctrl_enter_for_new_line.setter
 def _property__ctrl_enter_for_new_line(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, ctrl_enter_for_new_line=value)
 
 @property
 def _property__cull_mode(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["cull_mode"]
+    try:
+        return __func(self)["cull_mode"]
+    except KeyError:
+        raise AttributeError(f"'cull_mode' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__cull_mode.setter
 def _property__cull_mode(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, cull_mode=value)
 
 @property
 def _property__cumulative(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["cumulative"]
+    try:
+        return __func(self)["cumulative"]
+    except KeyError:
+        raise AttributeError(f"'cumulative' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__cumulative.setter
 def _property__cumulative(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, cumulative=value)
 
 @property
 def _property__custom_text(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["custom_text"]
+    try:
+        return __func(self)["custom_text"]
+    except KeyError:
+        raise AttributeError(f"'custom_text' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__custom_text.setter
 def _property__custom_text(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, custom_text=value)
@@ -586,28 +835,40 @@ def _property__custom_text(self, /, *, __func=_dearpygui.configure_item):
 
 @property
 def _property__decimal(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["decimal"]
+    try:
+        return __func(self)["decimal"]
+    except KeyError:
+        raise AttributeError(f"'decimal' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__decimal.setter
 def _property__decimal(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, decimal=value)
 
 @property
 def _property__delay(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["delay"]
+    try:
+        return __func(self)["delay"]
+    except KeyError:
+        raise AttributeError(f"'delay' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__delay.setter
 def _property__delay(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, delay=value)
 
 @property
 def _property__delayed(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["delayed"]
+    try:
+        return __func(self)["delayed"]
+    except KeyError:
+        raise AttributeError(f"'delayed' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__delayed.setter
 def _property__delayed(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, delayed=value)
 
 @property
 def _property__delink_callback(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["delink_callback"]
+    try:
+        return __func(self)["delink_callback"]
+    except KeyError:
+        raise AttributeError(f"'delink_callback' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__delink_callback.setter
 def _property__delink_callback(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, delink_callback=value)
@@ -617,77 +878,110 @@ def _property__delink_callback(self, /, *, __func=_dearpygui.configure_item):
 
 @property
 def _property__density(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["density"]
+    try:
+        return __func(self)["density"]
+    except KeyError:
+        raise AttributeError(f"'density' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__density.setter
 def _property__density(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, density=value)
 
 @property
 def _property__depth_clipping(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["depth_clipping"]
+    try:
+        return __func(self)["depth_clipping"]
+    except KeyError:
+        raise AttributeError(f"'depth_clipping' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__depth_clipping.setter
 def _property__depth_clipping(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, depth_clipping=value)
 
 @property
 def _property__direction(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["direction"]
+    try:
+        return __func(self)["direction"]
+    except KeyError:
+        raise AttributeError(f"'direction' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__direction.setter
 def _property__direction(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, direction=value)
 
 @property
 def _property__directory_selector(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["directory_selector"]
+    try:
+        return __func(self)["directory_selector"]
+    except KeyError:
+        raise AttributeError(f"'directory_selector' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__directory_selector.setter
 def _property__directory_selector(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, directory_selector=value)
 
 @property
 def _property__disable_popup_close(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["disable_popup_close"]
+    try:
+        return __func(self)["disable_popup_close"]
+    except KeyError:
+        raise AttributeError(f"'disable_popup_close' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__disable_popup_close.setter
 def _property__disable_popup_close(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, disable_popup_close=value)
 
 @property
 def _property__display_hex(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["display_hex"]
+    try:
+        return __func(self)["display_hex"]
+    except KeyError:
+        raise AttributeError(f"'display_hex' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__display_hex.setter
 def _property__display_hex(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, display_hex=value)
 
 @property
 def _property__display_hsv(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["display_hsv"]
+    try:
+        return __func(self)["display_hsv"]
+    except KeyError:
+        raise AttributeError(f"'display_hsv' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__display_hsv.setter
 def _property__display_hsv(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, display_hsv=value)
 
 @property
 def _property__display_mode(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["display_mode"]
+    try:
+        return __func(self)["display_mode"]
+    except KeyError:
+        raise AttributeError(f"'display_mode' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__display_mode.setter
 def _property__display_mode(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, display_mode=value)
 
 @property
 def _property__display_rgb(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["display_rgb"]
+    try:
+        return __func(self)["display_rgb"]
+    except KeyError:
+        raise AttributeError(f"'display_rgb' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__display_rgb.setter
 def _property__display_rgb(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, display_rgb=value)
 
 @property
 def _property__display_type(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["display_type"]
+    try:
+        return __func(self)["display_type"]
+    except KeyError:
+        raise AttributeError(f"'display_type' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__display_type.setter
 def _property__display_type(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, display_type=value)
 
 @property
 def _property__drag_callback(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["drag_callback"]
+    try:
+        return __func(self)["drag_callback"]
+    except KeyError:
+        raise AttributeError(f"'drag_callback' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__drag_callback.setter
 def _property__drag_callback(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, drag_callback=value)
@@ -697,28 +991,40 @@ def _property__drag_callback(self, /, *, __func=_dearpygui.configure_item):
 
 @property
 def _property__drag_data(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["drag_data"]
+    try:
+        return __func(self)["drag_data"]
+    except KeyError:
+        raise AttributeError(f"'drag_data' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__drag_data.setter
 def _property__drag_data(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, drag_data=value)
 
 @property
 def _property__draggable(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["draggable"]
+    try:
+        return __func(self)["draggable"]
+    except KeyError:
+        raise AttributeError(f"'draggable' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__draggable.setter
 def _property__draggable(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, draggable=value)
 
 @property
 def _property__draw_selected_overline(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["draw_selected_overline"]
+    try:
+        return __func(self)["draw_selected_overline"]
+    except KeyError:
+        raise AttributeError(f"'draw_selected_overline' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__draw_selected_overline.setter
 def _property__draw_selected_overline(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, draw_selected_overline=value)
 
 @property
 def _property__drop_callback(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["drop_callback"]
+    try:
+        return __func(self)["drop_callback"]
+    except KeyError:
+        raise AttributeError(f"'drop_callback' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__drop_callback.setter
 def _property__drop_callback(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, drop_callback=value)
@@ -728,70 +1034,100 @@ def _property__drop_callback(self, /, *, __func=_dearpygui.configure_item):
 
 @property
 def _property__drop_data(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["drop_data"]
+    try:
+        return __func(self)["drop_data"]
+    except KeyError:
+        raise AttributeError(f"'drop_data' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__drop_data.setter
 def _property__drop_data(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, drop_data=value)
 
 @property
 def _property__elide_left(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["elide_left"]
+    try:
+        return __func(self)["elide_left"]
+    except KeyError:
+        raise AttributeError(f"'elide_left' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__elide_left.setter
 def _property__elide_left(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, elide_left=value)
 
 @property
 def _property__enabled(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["enabled"]
+    try:
+        return __func(self)["enabled"]
+    except KeyError:
+        raise AttributeError(f"'enabled' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__enabled.setter
 def _property__enabled(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, enabled=value)
 
 @property
 def _property__enabled_state(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["enabled_state"]
+    try:
+        return __func(self)["enabled_state"]
+    except KeyError:
+        raise AttributeError(f"'enabled_state' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__enabled_state.setter
 def _property__enabled_state(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, enabled_state=value)
 
 @property
 def _property__equal_aspects(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["equal_aspects"]
+    try:
+        return __func(self)["equal_aspects"]
+    except KeyError:
+        raise AttributeError(f"'equal_aspects' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__equal_aspects.setter
 def _property__equal_aspects(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, equal_aspects=value)
 
 @property
 def _property__escape_clears_all(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["escape_clears_all"]
+    try:
+        return __func(self)["escape_clears_all"]
+    except KeyError:
+        raise AttributeError(f"'escape_clears_all' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__escape_clears_all.setter
 def _property__escape_clears_all(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, escape_clears_all=value)
 
 @property
 def _property__event_type(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["event_type"]
+    try:
+        return __func(self)["event_type"]
+    except KeyError:
+        raise AttributeError(f"'event_type' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__event_type.setter
 def _property__event_type(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, event_type=value)
 
 @property
 def _property__file_count(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["file_count"]
+    try:
+        return __func(self)["file_count"]
+    except KeyError:
+        raise AttributeError(f"'file_count' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__file_count.setter
 def _property__file_count(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, file_count=value)
 
 @property
 def _property__fill(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["fill"]
+    try:
+        return __func(self)["fill"]
+    except KeyError:
+        raise AttributeError(f"'fill' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__fill.setter
 def _property__fill(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, fill=value)
 
 @property
 def _property__filter_key(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["filter_key"]
+    try:
+        return __func(self)["filter_key"]
+    except KeyError:
+        raise AttributeError(f"'filter_key' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__filter_key.setter
 def _property__filter_key(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, filter_key=value)
@@ -801,119 +1137,170 @@ def _property__filter_key(self, /, *, __func=_dearpygui.configure_item):
 
 @property
 def _property__fit_button(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["fit_button"]
+    try:
+        return __func(self)["fit_button"]
+    except KeyError:
+        raise AttributeError(f"'fit_button' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__fit_button.setter
 def _property__fit_button(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, fit_button=value)
 
 @property
 def _property__fit_width(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["fit_width"]
+    try:
+        return __func(self)["fit_width"]
+    except KeyError:
+        raise AttributeError(f"'fit_width' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__fit_width.setter
 def _property__fit_width(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, fit_width=value)
 
 @property
 def _property__flattened_navigation(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["flattened_navigation"]
+    try:
+        return __func(self)["flattened_navigation"]
+    except KeyError:
+        raise AttributeError(f"'flattened_navigation' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__flattened_navigation.setter
 def _property__flattened_navigation(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, flattened_navigation=value)
 
 @property
 def _property__foreground_grid(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["foreground_grid"]
+    try:
+        return __func(self)["foreground_grid"]
+    except KeyError:
+        raise AttributeError(f"'foreground_grid' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__foreground_grid.setter
 def _property__foreground_grid(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, foreground_grid=value)
 
 @property
 def _property__format(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["format"]
+    try:
+        return __func(self)["format"]
+    except KeyError:
+        raise AttributeError(f"'format' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__format.setter
 def _property__format(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, format=value)
 
 @property
 def _property__frame_style(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["frame_style"]
+    try:
+        return __func(self)["frame_style"]
+    except KeyError:
+        raise AttributeError(f"'frame_style' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__frame_style.setter
 def _property__frame_style(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, frame_style=value)
 
 @property
 def _property__freeze_columns(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["freeze_columns"]
+    try:
+        return __func(self)["freeze_columns"]
+    except KeyError:
+        raise AttributeError(f"'freeze_columns' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__freeze_columns.setter
 def _property__freeze_columns(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, freeze_columns=value)
 
 @property
 def _property__freeze_rows(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["freeze_rows"]
+    try:
+        return __func(self)["freeze_rows"]
+    except KeyError:
+        raise AttributeError(f"'freeze_rows' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__freeze_rows.setter
 def _property__freeze_rows(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, freeze_rows=value)
 
 @property
 def _property__front(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["front"]
+    try:
+        return __func(self)["front"]
+    except KeyError:
+        raise AttributeError(f"'front' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__front.setter
 def _property__front(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, front=value)
 
 @property
 def _property__group_width(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["group_width"]
+    try:
+        return __func(self)["group_width"]
+    except KeyError:
+        raise AttributeError(f"'group_width' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__group_width.setter
 def _property__group_width(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, group_width=value)
 
 @property
 def _property__header_row(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["header_row"]
+    try:
+        return __func(self)["header_row"]
+    except KeyError:
+        raise AttributeError(f"'header_row' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__header_row.setter
 def _property__header_row(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, header_row=value)
 
 @property
 def _property__height(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["height"]
+    try:
+        return __func(self)["height"]
+    except KeyError:
+        raise AttributeError(f"'height' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__height.setter
 def _property__height(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, height=value)
 
 @property
 def _property__height_mode(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["height_mode"]
+    try:
+        return __func(self)["height_mode"]
+    except KeyError:
+        raise AttributeError(f"'height_mode' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__height_mode.setter
 def _property__height_mode(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, height_mode=value)
 
 @property
 def _property__hexadecimal(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["hexadecimal"]
+    try:
+        return __func(self)["hexadecimal"]
+    except KeyError:
+        raise AttributeError(f"'hexadecimal' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__hexadecimal.setter
 def _property__hexadecimal(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, hexadecimal=value)
 
 @property
 def _property__hide_on_activity(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["hide_on_activity"]
+    try:
+        return __func(self)["hide_on_activity"]
+    except KeyError:
+        raise AttributeError(f"'hide_on_activity' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__hide_on_activity.setter
 def _property__hide_on_activity(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, hide_on_activity=value)
 
 @property
 def _property__hideable(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["hideable"]
+    try:
+        return __func(self)["hideable"]
+    except KeyError:
+        raise AttributeError(f"'hideable' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__hideable.setter
 def _property__hideable(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, hideable=value)
 
 @property
 def _property__hint(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["hint"]
+    try:
+        return __func(self)["hint"]
+    except KeyError:
+        raise AttributeError(f"'hint' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__hint.setter
 def _property__hint(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, hint=value)
@@ -923,791 +1310,1130 @@ def _property__hint(self, /, *, __func=_dearpygui.configure_item):
 
 @property
 def _property__histogram(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["histogram"]
+    try:
+        return __func(self)["histogram"]
+    except KeyError:
+        raise AttributeError(f"'histogram' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__histogram.setter
 def _property__histogram(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, histogram=value)
 
 @property
 def _property__horizontal(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["horizontal"]
+    try:
+        return __func(self)["horizontal"]
+    except KeyError:
+        raise AttributeError(f"'horizontal' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__horizontal.setter
 def _property__horizontal(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, horizontal=value)
 
 @property
 def _property__horizontal_mod(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["horizontal_mod"]
+    try:
+        return __func(self)["horizontal_mod"]
+    except KeyError:
+        raise AttributeError(f"'horizontal_mod' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__horizontal_mod.setter
 def _property__horizontal_mod(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, horizontal_mod=value)
 
 @property
 def _property__horizontal_scrollbar(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["horizontal_scrollbar"]
+    try:
+        return __func(self)["horizontal_scrollbar"]
+    except KeyError:
+        raise AttributeError(f"'horizontal_scrollbar' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__horizontal_scrollbar.setter
 def _property__horizontal_scrollbar(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, horizontal_scrollbar=value)
 
 @property
 def _property__horizontal_spacing(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["horizontal_spacing"]
+    try:
+        return __func(self)["horizontal_spacing"]
+    except KeyError:
+        raise AttributeError(f"'horizontal_spacing' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__horizontal_spacing.setter
 def _property__horizontal_spacing(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, horizontal_spacing=value)
 
 @property
 def _property__hour24(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["hour24"]
+    try:
+        return __func(self)["hour24"]
+    except KeyError:
+        raise AttributeError(f"'hour24' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__hour24.setter
 def _property__hour24(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, hour24=value)
 
 @property
 def _property__ignore_hidden(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["ignore_hidden"]
+    try:
+        return __func(self)["ignore_hidden"]
+    except KeyError:
+        raise AttributeError(f"'ignore_hidden' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__ignore_hidden.setter
 def _property__ignore_hidden(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, ignore_hidden=value)
 
 @property
 def _property__indent(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["indent"]
+    try:
+        return __func(self)["indent"]
+    except KeyError:
+        raise AttributeError(f"'indent' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__indent.setter
 def _property__indent(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, indent=value)
 
 @property
 def _property__indent_disable(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["indent_disable"]
+    try:
+        return __func(self)["indent_disable"]
+    except KeyError:
+        raise AttributeError(f"'indent_disable' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__indent_disable.setter
 def _property__indent_disable(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, indent_disable=value)
 
 @property
 def _property__indent_enable(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["indent_enable"]
+    try:
+        return __func(self)["indent_enable"]
+    except KeyError:
+        raise AttributeError(f"'indent_enable' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__indent_enable.setter
 def _property__indent_enable(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, indent_enable=value)
 
 @property
 def _property__inner_width(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["inner_width"]
+    try:
+        return __func(self)["inner_width"]
+    except KeyError:
+        raise AttributeError(f"'inner_width' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__inner_width.setter
 def _property__inner_width(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, inner_width=value)
 
 @property
 def _property__input_mode(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["input_mode"]
+    try:
+        return __func(self)["input_mode"]
+    except KeyError:
+        raise AttributeError(f"'input_mode' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__input_mode.setter
 def _property__input_mode(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, input_mode=value)
 
 @property
 def _property__invert(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["invert"]
+    try:
+        return __func(self)["invert"]
+    except KeyError:
+        raise AttributeError(f"'invert' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__invert.setter
 def _property__invert(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, invert=value)
 
 @property
 def _property__items(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["items"]
+    try:
+        return __func(self)["items"]
+    except KeyError:
+        raise AttributeError(f"'items' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__items.setter
 def _property__items(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, items=value)
 
 @property
 def _property__leading(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["leading"]
+    try:
+        return __func(self)["leading"]
+    except KeyError:
+        raise AttributeError(f"'leading' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__leading.setter
 def _property__leading(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, leading=value)
 
 @property
 def _property__leaf(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["leaf"]
+    try:
+        return __func(self)["leaf"]
+    except KeyError:
+        raise AttributeError(f"'leaf' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__leaf.setter
 def _property__leaf(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, leaf=value)
 
 @property
 def _property__level(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["level"]
+    try:
+        return __func(self)["level"]
+    except KeyError:
+        raise AttributeError(f"'level' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__level.setter
 def _property__level(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, level=value)
 
 @property
 def _property__lines(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["lines"]
+    try:
+        return __func(self)["lines"]
+    except KeyError:
+        raise AttributeError(f"'lines' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__lines.setter
 def _property__lines(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, lines=value)
 
 @property
 def _property__link_all_x(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["link_all_x"]
+    try:
+        return __func(self)["link_all_x"]
+    except KeyError:
+        raise AttributeError(f"'link_all_x' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__link_all_x.setter
 def _property__link_all_x(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, link_all_x=value)
 
 @property
 def _property__link_all_y(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["link_all_y"]
+    try:
+        return __func(self)["link_all_y"]
+    except KeyError:
+        raise AttributeError(f"'link_all_y' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__link_all_y.setter
 def _property__link_all_y(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, link_all_y=value)
 
 @property
 def _property__link_columns(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["link_columns"]
+    try:
+        return __func(self)["link_columns"]
+    except KeyError:
+        raise AttributeError(f"'link_columns' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__link_columns.setter
 def _property__link_columns(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, link_columns=value)
 
 @property
 def _property__link_rows(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["link_rows"]
+    try:
+        return __func(self)["link_rows"]
+    except KeyError:
+        raise AttributeError(f"'link_rows' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__link_rows.setter
 def _property__link_rows(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, link_rows=value)
 
 @property
 def _property__location(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["location"]
+    try:
+        return __func(self)["location"]
+    except KeyError:
+        raise AttributeError(f"'location' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__location.setter
 def _property__location(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, location=value)
 
 @property
 def _property__lock_max(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["lock_max"]
+    try:
+        return __func(self)["lock_max"]
+    except KeyError:
+        raise AttributeError(f"'lock_max' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__lock_max.setter
 def _property__lock_max(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, lock_max=value)
 
 @property
 def _property__lock_min(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["lock_min"]
+    try:
+        return __func(self)["lock_min"]
+    except KeyError:
+        raise AttributeError(f"'lock_min' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__lock_min.setter
 def _property__lock_min(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, lock_min=value)
 
 @property
 def _property__loop(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["loop"]
+    try:
+        return __func(self)["loop"]
+    except KeyError:
+        raise AttributeError(f"'loop' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__loop.setter
 def _property__loop(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, loop=value)
 
 @property
 def _property__max_clamped(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["max_clamped"]
+    try:
+        return __func(self)["max_clamped"]
+    except KeyError:
+        raise AttributeError(f"'max_clamped' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__max_clamped.setter
 def _property__max_clamped(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, max_clamped=value)
 
 @property
 def _property__max_query_rects(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["max_query_rects"]
+    try:
+        return __func(self)["max_query_rects"]
+    except KeyError:
+        raise AttributeError(f"'max_query_rects' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__max_query_rects.setter
 def _property__max_query_rects(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, max_query_rects=value)
 
 @property
 def _property__max_range(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["max_range"]
+    try:
+        return __func(self)["max_range"]
+    except KeyError:
+        raise AttributeError(f"'max_range' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__max_range.setter
 def _property__max_range(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, max_range=value)
 
 @property
 def _property__max_scale(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["max_scale"]
+    try:
+        return __func(self)["max_scale"]
+    except KeyError:
+        raise AttributeError(f"'max_scale' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__max_scale.setter
 def _property__max_scale(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, max_scale=value)
 
 @property
 def _property__max_size(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["max_size"]
+    try:
+        return __func(self)["max_size"]
+    except KeyError:
+        raise AttributeError(f"'max_size' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__max_size.setter
 def _property__max_size(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, max_size=value)
 
 @property
 def _property__max_x(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["max_x"]
+    try:
+        return __func(self)["max_x"]
+    except KeyError:
+        raise AttributeError(f"'max_x' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__max_x.setter
 def _property__max_x(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, max_x=value)
 
 @property
 def _property__max_y(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["max_y"]
+    try:
+        return __func(self)["max_y"]
+    except KeyError:
+        raise AttributeError(f"'max_y' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__max_y.setter
 def _property__max_y(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, max_y=value)
 
 @property
 def _property__max_z(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["max_z"]
+    try:
+        return __func(self)["max_z"]
+    except KeyError:
+        raise AttributeError(f"'max_z' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__max_z.setter
 def _property__max_z(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, max_z=value)
 
 @property
 def _property__menubar(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["menubar"]
+    try:
+        return __func(self)["menubar"]
+    except KeyError:
+        raise AttributeError(f"'menubar' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__menubar.setter
 def _property__menubar(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, menubar=value)
 
 @property
 def _property__min_clamped(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["min_clamped"]
+    try:
+        return __func(self)["min_clamped"]
+    except KeyError:
+        raise AttributeError(f"'min_clamped' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__min_clamped.setter
 def _property__min_clamped(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, min_clamped=value)
 
 @property
 def _property__min_query_rects(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["min_query_rects"]
+    try:
+        return __func(self)["min_query_rects"]
+    except KeyError:
+        raise AttributeError(f"'min_query_rects' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__min_query_rects.setter
 def _property__min_query_rects(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, min_query_rects=value)
 
 @property
 def _property__min_range(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["min_range"]
+    try:
+        return __func(self)["min_range"]
+    except KeyError:
+        raise AttributeError(f"'min_range' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__min_range.setter
 def _property__min_range(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, min_range=value)
 
 @property
 def _property__min_scale(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["min_scale"]
+    try:
+        return __func(self)["min_scale"]
+    except KeyError:
+        raise AttributeError(f"'min_scale' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__min_scale.setter
 def _property__min_scale(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, min_scale=value)
 
 @property
 def _property__min_size(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["min_size"]
+    try:
+        return __func(self)["min_size"]
+    except KeyError:
+        raise AttributeError(f"'min_size' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__min_size.setter
 def _property__min_size(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, min_size=value)
 
 @property
 def _property__min_x(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["min_x"]
+    try:
+        return __func(self)["min_x"]
+    except KeyError:
+        raise AttributeError(f"'min_x' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__min_x.setter
 def _property__min_x(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, min_x=value)
 
 @property
 def _property__min_y(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["min_y"]
+    try:
+        return __func(self)["min_y"]
+    except KeyError:
+        raise AttributeError(f"'min_y' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__min_y.setter
 def _property__min_y(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, min_y=value)
 
 @property
 def _property__min_z(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["min_z"]
+    try:
+        return __func(self)["min_z"]
+    except KeyError:
+        raise AttributeError(f"'min_z' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__min_z.setter
 def _property__min_z(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, min_z=value)
 
 @property
 def _property__minimap(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["minimap"]
+    try:
+        return __func(self)["minimap"]
+    except KeyError:
+        raise AttributeError(f"'minimap' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__minimap.setter
 def _property__minimap(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, minimap=value)
 
 @property
 def _property__minimap_location(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["minimap_location"]
+    try:
+        return __func(self)["minimap_location"]
+    except KeyError:
+        raise AttributeError(f"'minimap_location' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__minimap_location.setter
 def _property__minimap_location(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, minimap_location=value)
 
 @property
 def _property__mirror(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["mirror"]
+    try:
+        return __func(self)["mirror"]
+    except KeyError:
+        raise AttributeError(f"'mirror' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__mirror.setter
 def _property__mirror(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, mirror=value)
 
 @property
 def _property__modal(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["modal"]
+    try:
+        return __func(self)["modal"]
+    except KeyError:
+        raise AttributeError(f"'modal' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__modal.setter
 def _property__modal(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, modal=value)
 
 @property
 def _property__multicolor(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["multicolor"]
+    try:
+        return __func(self)["multicolor"]
+    except KeyError:
+        raise AttributeError(f"'multicolor' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__multicolor.setter
 def _property__multicolor(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, multicolor=value)
 
 @property
 def _property__multiline(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["multiline"]
+    try:
+        return __func(self)["multiline"]
+    except KeyError:
+        raise AttributeError(f"'multiline' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__multiline.setter
 def _property__multiline(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, multiline=value)
 
 @property
 def _property__no_align(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["no_align"]
+    try:
+        return __func(self)["no_align"]
+    except KeyError:
+        raise AttributeError(f"'no_align' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__no_align.setter
 def _property__no_align(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, no_align=value)
 
 @property
 def _property__no_alpha(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["no_alpha"]
+    try:
+        return __func(self)["no_alpha"]
+    except KeyError:
+        raise AttributeError(f"'no_alpha' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__no_alpha.setter
 def _property__no_alpha(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, no_alpha=value)
 
 @property
 def _property__no_arrow_button(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["no_arrow_button"]
+    try:
+        return __func(self)["no_arrow_button"]
+    except KeyError:
+        raise AttributeError(f"'no_arrow_button' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__no_arrow_button.setter
 def _property__no_arrow_button(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, no_arrow_button=value)
 
 @property
 def _property__no_background(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["no_background"]
+    try:
+        return __func(self)["no_background"]
+    except KeyError:
+        raise AttributeError(f"'no_background' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__no_background.setter
 def _property__no_background(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, no_background=value)
 
 @property
 def _property__no_border(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["no_border"]
+    try:
+        return __func(self)["no_border"]
+    except KeyError:
+        raise AttributeError(f"'no_border' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__no_border.setter
 def _property__no_border(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, no_border=value)
 
 @property
 def _property__no_box_select(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["no_box_select"]
+    try:
+        return __func(self)["no_box_select"]
+    except KeyError:
+        raise AttributeError(f"'no_box_select' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__no_box_select.setter
 def _property__no_box_select(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, no_box_select=value)
 
 @property
 def _property__no_bring_to_front_on_focus(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["no_bring_to_front_on_focus"]
+    try:
+        return __func(self)["no_bring_to_front_on_focus"]
+    except KeyError:
+        raise AttributeError(f"'no_bring_to_front_on_focus' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__no_bring_to_front_on_focus.setter
 def _property__no_bring_to_front_on_focus(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, no_bring_to_front_on_focus=value)
 
 @property
 def _property__no_buttons(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["no_buttons"]
+    try:
+        return __func(self)["no_buttons"]
+    except KeyError:
+        raise AttributeError(f"'no_buttons' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__no_buttons.setter
 def _property__no_buttons(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, no_buttons=value)
 
 @property
 def _property__no_clip(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["no_clip"]
+    try:
+        return __func(self)["no_clip"]
+    except KeyError:
+        raise AttributeError(f"'no_clip' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__no_clip.setter
 def _property__no_clip(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, no_clip=value)
 
 @property
 def _property__no_close(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["no_close"]
+    try:
+        return __func(self)["no_close"]
+    except KeyError:
+        raise AttributeError(f"'no_close' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__no_close.setter
 def _property__no_close(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, no_close=value)
 
 @property
 def _property__no_close_with_middle_click(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["no_close_with_middle_click"]
+    try:
+        return __func(self)["no_close_with_middle_click"]
+    except KeyError:
+        raise AttributeError(f"'no_close_with_middle_click' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__no_close_with_middle_click.setter
 def _property__no_close_with_middle_click(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, no_close_with_middle_click=value)
 
 @property
 def _property__no_collapse(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["no_collapse"]
+    try:
+        return __func(self)["no_collapse"]
+    except KeyError:
+        raise AttributeError(f"'no_collapse' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__no_collapse.setter
 def _property__no_collapse(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, no_collapse=value)
 
 @property
 def _property__no_cursor(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["no_cursor"]
+    try:
+        return __func(self)["no_cursor"]
+    except KeyError:
+        raise AttributeError(f"'no_cursor' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__no_cursor.setter
 def _property__no_cursor(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, no_cursor=value)
 
 @property
 def _property__no_docking(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["no_docking"]
+    try:
+        return __func(self)["no_docking"]
+    except KeyError:
+        raise AttributeError(f"'no_docking' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__no_docking.setter
 def _property__no_docking(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, no_docking=value)
 
 @property
 def _property__no_drag_drop(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["no_drag_drop"]
+    try:
+        return __func(self)["no_drag_drop"]
+    except KeyError:
+        raise AttributeError(f"'no_drag_drop' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__no_drag_drop.setter
 def _property__no_drag_drop(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, no_drag_drop=value)
 
 @property
 def _property__no_fit(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["no_fit"]
+    try:
+        return __func(self)["no_fit"]
+    except KeyError:
+        raise AttributeError(f"'no_fit' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__no_fit.setter
 def _property__no_fit(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, no_fit=value)
 
 @property
 def _property__no_focus_on_appearing(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["no_focus_on_appearing"]
+    try:
+        return __func(self)["no_focus_on_appearing"]
+    except KeyError:
+        raise AttributeError(f"'no_focus_on_appearing' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__no_focus_on_appearing.setter
 def _property__no_focus_on_appearing(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, no_focus_on_appearing=value)
 
 @property
 def _property__no_frame(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["no_frame"]
+    try:
+        return __func(self)["no_frame"]
+    except KeyError:
+        raise AttributeError(f"'no_frame' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__no_frame.setter
 def _property__no_frame(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, no_frame=value)
 
 @property
 def _property__no_gridlines(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["no_gridlines"]
+    try:
+        return __func(self)["no_gridlines"]
+    except KeyError:
+        raise AttributeError(f"'no_gridlines' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__no_gridlines.setter
 def _property__no_gridlines(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, no_gridlines=value)
 
 @property
 def _property__no_header_label(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["no_header_label"]
+    try:
+        return __func(self)["no_header_label"]
+    except KeyError:
+        raise AttributeError(f"'no_header_label' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__no_header_label.setter
 def _property__no_header_label(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, no_header_label=value)
 
 @property
 def _property__no_header_width(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["no_header_width"]
+    try:
+        return __func(self)["no_header_width"]
+    except KeyError:
+        raise AttributeError(f"'no_header_width' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__no_header_width.setter
 def _property__no_header_width(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, no_header_width=value)
 
 @property
 def _property__no_hide(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["no_hide"]
+    try:
+        return __func(self)["no_hide"]
+    except KeyError:
+        raise AttributeError(f"'no_hide' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__no_hide.setter
 def _property__no_hide(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, no_hide=value)
 
 @property
 def _property__no_highlight(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["no_highlight"]
+    try:
+        return __func(self)["no_highlight"]
+    except KeyError:
+        raise AttributeError(f"'no_highlight' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__no_highlight.setter
 def _property__no_highlight(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, no_highlight=value)
 
 @property
 def _property__no_highlight_axis(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["no_highlight_axis"]
+    try:
+        return __func(self)["no_highlight_axis"]
+    except KeyError:
+        raise AttributeError(f"'no_highlight_axis' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__no_highlight_axis.setter
 def _property__no_highlight_axis(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, no_highlight_axis=value)
 
 @property
 def _property__no_highlight_item(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["no_highlight_item"]
+    try:
+        return __func(self)["no_highlight_item"]
+    except KeyError:
+        raise AttributeError(f"'no_highlight_item' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__no_highlight_item.setter
 def _property__no_highlight_item(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, no_highlight_item=value)
 
 @property
 def _property__no_horizontal_scroll(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["no_horizontal_scroll"]
+    try:
+        return __func(self)["no_horizontal_scroll"]
+    except KeyError:
+        raise AttributeError(f"'no_horizontal_scroll' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__no_horizontal_scroll.setter
 def _property__no_horizontal_scroll(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, no_horizontal_scroll=value)
 
 @property
 def _property__no_host_extendX(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["no_host_extendX"]
+    try:
+        return __func(self)["no_host_extendX"]
+    except KeyError:
+        raise AttributeError(f"'no_host_extendX' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__no_host_extendX.setter
 def _property__no_host_extendX(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, no_host_extendX=value)
 
 @property
 def _property__no_host_extendY(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["no_host_extendY"]
+    try:
+        return __func(self)["no_host_extendY"]
+    except KeyError:
+        raise AttributeError(f"'no_host_extendY' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__no_host_extendY.setter
 def _property__no_host_extendY(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, no_host_extendY=value)
 
 @property
 def _property__no_initial_fit(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["no_initial_fit"]
+    try:
+        return __func(self)["no_initial_fit"]
+    except KeyError:
+        raise AttributeError(f"'no_initial_fit' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__no_initial_fit.setter
 def _property__no_initial_fit(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, no_initial_fit=value)
 
 @property
 def _property__no_input(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["no_input"]
+    try:
+        return __func(self)["no_input"]
+    except KeyError:
+        raise AttributeError(f"'no_input' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__no_input.setter
 def _property__no_input(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, no_input=value)
 
 @property
 def _property__no_inputs(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["no_inputs"]
+    try:
+        return __func(self)["no_inputs"]
+    except KeyError:
+        raise AttributeError(f"'no_inputs' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__no_inputs.setter
 def _property__no_inputs(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, no_inputs=value)
 
 @property
 def _property__no_keep_columns_visible(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["no_keep_columns_visible"]
+    try:
+        return __func(self)["no_keep_columns_visible"]
+    except KeyError:
+        raise AttributeError(f"'no_keep_columns_visible' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__no_keep_columns_visible.setter
 def _property__no_keep_columns_visible(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, no_keep_columns_visible=value)
 
 @property
 def _property__no_label(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["no_label"]
+    try:
+        return __func(self)["no_label"]
+    except KeyError:
+        raise AttributeError(f"'no_label' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__no_label.setter
 def _property__no_label(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, no_label=value)
 
 @property
 def _property__no_menus(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["no_menus"]
+    try:
+        return __func(self)["no_menus"]
+    except KeyError:
+        raise AttributeError(f"'no_menus' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__no_menus.setter
 def _property__no_menus(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, no_menus=value)
 
 @property
 def _property__no_mouse_pos(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["no_mouse_pos"]
+    try:
+        return __func(self)["no_mouse_pos"]
+    except KeyError:
+        raise AttributeError(f"'no_mouse_pos' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__no_mouse_pos.setter
 def _property__no_mouse_pos(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, no_mouse_pos=value)
 
 @property
 def _property__no_move(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["no_move"]
+    try:
+        return __func(self)["no_move"]
+    except KeyError:
+        raise AttributeError(f"'no_move' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__no_move.setter
 def _property__no_move(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, no_move=value)
 
 @property
 def _property__no_open_over_existing_popup(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["no_open_over_existing_popup"]
+    try:
+        return __func(self)["no_open_over_existing_popup"]
+    except KeyError:
+        raise AttributeError(f"'no_open_over_existing_popup' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__no_open_over_existing_popup.setter
 def _property__no_open_over_existing_popup(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, no_open_over_existing_popup=value)
 
 @property
 def _property__no_options(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["no_options"]
+    try:
+        return __func(self)["no_options"]
+    except KeyError:
+        raise AttributeError(f"'no_options' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__no_options.setter
 def _property__no_options(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, no_options=value)
 
 @property
 def _property__no_pad_innerX(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["no_pad_innerX"]
+    try:
+        return __func(self)["no_pad_innerX"]
+    except KeyError:
+        raise AttributeError(f"'no_pad_innerX' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__no_pad_innerX.setter
 def _property__no_pad_innerX(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, no_pad_innerX=value)
 
 @property
 def _property__no_pad_outerX(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["no_pad_outerX"]
+    try:
+        return __func(self)["no_pad_outerX"]
+    except KeyError:
+        raise AttributeError(f"'no_pad_outerX' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__no_pad_outerX.setter
 def _property__no_pad_outerX(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, no_pad_outerX=value)
 
 @property
 def _property__no_picker(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["no_picker"]
+    try:
+        return __func(self)["no_picker"]
+    except KeyError:
+        raise AttributeError(f"'no_picker' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__no_picker.setter
 def _property__no_picker(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, no_picker=value)
 
 @property
 def _property__no_preview(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["no_preview"]
+    try:
+        return __func(self)["no_preview"]
+    except KeyError:
+        raise AttributeError(f"'no_preview' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__no_preview.setter
 def _property__no_preview(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, no_preview=value)
 
 @property
 def _property__no_reorder(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["no_reorder"]
+    try:
+        return __func(self)["no_reorder"]
+    except KeyError:
+        raise AttributeError(f"'no_reorder' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__no_reorder.setter
 def _property__no_reorder(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, no_reorder=value)
 
 @property
 def _property__no_resize(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["no_resize"]
+    try:
+        return __func(self)["no_resize"]
+    except KeyError:
+        raise AttributeError(f"'no_resize' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__no_resize.setter
 def _property__no_resize(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, no_resize=value)
 
 @property
 def _property__no_saved_settings(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["no_saved_settings"]
+    try:
+        return __func(self)["no_saved_settings"]
+    except KeyError:
+        raise AttributeError(f"'no_saved_settings' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__no_saved_settings.setter
 def _property__no_saved_settings(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, no_saved_settings=value)
 
 @property
 def _property__no_scroll_with_mouse(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["no_scroll_with_mouse"]
+    try:
+        return __func(self)["no_scroll_with_mouse"]
+    except KeyError:
+        raise AttributeError(f"'no_scroll_with_mouse' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__no_scroll_with_mouse.setter
 def _property__no_scroll_with_mouse(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, no_scroll_with_mouse=value)
 
 @property
 def _property__no_scrollbar(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["no_scrollbar"]
+    try:
+        return __func(self)["no_scrollbar"]
+    except KeyError:
+        raise AttributeError(f"'no_scrollbar' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__no_scrollbar.setter
 def _property__no_scrollbar(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, no_scrollbar=value)
 
 @property
 def _property__no_scrolling_buttons(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["no_scrolling_buttons"]
+    try:
+        return __func(self)["no_scrolling_buttons"]
+    except KeyError:
+        raise AttributeError(f"'no_scrolling_buttons' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__no_scrolling_buttons.setter
 def _property__no_scrolling_buttons(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, no_scrolling_buttons=value)
 
 @property
 def _property__no_side_preview(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["no_side_preview"]
+    try:
+        return __func(self)["no_side_preview"]
+    except KeyError:
+        raise AttributeError(f"'no_side_preview' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__no_side_preview.setter
 def _property__no_side_preview(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, no_side_preview=value)
 
 @property
 def _property__no_side_switch(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["no_side_switch"]
+    try:
+        return __func(self)["no_side_switch"]
+    except KeyError:
+        raise AttributeError(f"'no_side_switch' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__no_side_switch.setter
 def _property__no_side_switch(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, no_side_switch=value)
 
 @property
 def _property__no_small_preview(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["no_small_preview"]
+    try:
+        return __func(self)["no_small_preview"]
+    except KeyError:
+        raise AttributeError(f"'no_small_preview' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__no_small_preview.setter
 def _property__no_small_preview(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, no_small_preview=value)
 
 @property
 def _property__no_sort(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["no_sort"]
+    try:
+        return __func(self)["no_sort"]
+    except KeyError:
+        raise AttributeError(f"'no_sort' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__no_sort.setter
 def _property__no_sort(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, no_sort=value)
 
 @property
 def _property__no_sort_ascending(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["no_sort_ascending"]
+    try:
+        return __func(self)["no_sort_ascending"]
+    except KeyError:
+        raise AttributeError(f"'no_sort_ascending' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__no_sort_ascending.setter
 def _property__no_sort_ascending(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, no_sort_ascending=value)
 
 @property
 def _property__no_sort_descending(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["no_sort_descending"]
+    try:
+        return __func(self)["no_sort_descending"]
+    except KeyError:
+        raise AttributeError(f"'no_sort_descending' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__no_sort_descending.setter
 def _property__no_sort_descending(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, no_sort_descending=value)
 
 @property
 def _property__no_spaces(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["no_spaces"]
+    try:
+        return __func(self)["no_spaces"]
+    except KeyError:
+        raise AttributeError(f"'no_spaces' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__no_spaces.setter
 def _property__no_spaces(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, no_spaces=value)
 
 @property
 def _property__no_tick_labels(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["no_tick_labels"]
+    try:
+        return __func(self)["no_tick_labels"]
+    except KeyError:
+        raise AttributeError(f"'no_tick_labels' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__no_tick_labels.setter
 def _property__no_tick_labels(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, no_tick_labels=value)
 
 @property
 def _property__no_tick_marks(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["no_tick_marks"]
+    try:
+        return __func(self)["no_tick_marks"]
+    except KeyError:
+        raise AttributeError(f"'no_tick_marks' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__no_tick_marks.setter
 def _property__no_tick_marks(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, no_tick_marks=value)
 
 @property
 def _property__no_title_bar(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["no_title_bar"]
+    try:
+        return __func(self)["no_title_bar"]
+    except KeyError:
+        raise AttributeError(f"'no_title_bar' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__no_title_bar.setter
 def _property__no_title_bar(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, no_title_bar=value)
 
 @property
 def _property__no_tooltip(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["no_tooltip"]
+    try:
+        return __func(self)["no_tooltip"]
+    except KeyError:
+        raise AttributeError(f"'no_tooltip' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__no_tooltip.setter
 def _property__no_tooltip(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, no_tooltip=value)
 
 @property
 def _property__no_undo_redo(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["no_undo_redo"]
+    try:
+        return __func(self)["no_undo_redo"]
+    except KeyError:
+        raise AttributeError(f"'no_undo_redo' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__no_undo_redo.setter
 def _property__no_undo_redo(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, no_undo_redo=value)
 
 @property
 def _property__normalize(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["normalize"]
+    try:
+        return __func(self)["normalize"]
+    except KeyError:
+        raise AttributeError(f"'normalize' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__normalize.setter
 def _property__normalize(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, normalize=value)
 
 @property
 def _property__num_items(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["num_items"]
+    try:
+        return __func(self)["num_items"]
+    except KeyError:
+        raise AttributeError(f"'num_items' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__num_items.setter
 def _property__num_items(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, num_items=value)
 
 @property
 def _property__offset(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["offset"]
+    try:
+        return __func(self)["offset"]
+    except KeyError:
+        raise AttributeError(f"'offset' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__offset.setter
 def _property__offset(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, offset=value)
 
 @property
 def _property__on_close(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["on_close"]
+    try:
+        return __func(self)["on_close"]
+    except KeyError:
+        raise AttributeError(f"'on_close' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__on_close.setter
 def _property__on_close(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, on_close=value)
@@ -1717,56 +2443,80 @@ def _property__on_close(self, /, *, __func=_dearpygui.configure_item):
 
 @property
 def _property__on_enter(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["on_enter"]
+    try:
+        return __func(self)["on_enter"]
+    except KeyError:
+        raise AttributeError(f"'on_enter' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__on_enter.setter
 def _property__on_enter(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, on_enter=value)
 
 @property
 def _property__open_on_arrow(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["open_on_arrow"]
+    try:
+        return __func(self)["open_on_arrow"]
+    except KeyError:
+        raise AttributeError(f"'open_on_arrow' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__open_on_arrow.setter
 def _property__open_on_arrow(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, open_on_arrow=value)
 
 @property
 def _property__open_on_double_click(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["open_on_double_click"]
+    try:
+        return __func(self)["open_on_double_click"]
+    except KeyError:
+        raise AttributeError(f"'open_on_double_click' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__open_on_double_click.setter
 def _property__open_on_double_click(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, open_on_double_click=value)
 
 @property
 def _property__opposite(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["opposite"]
+    try:
+        return __func(self)["opposite"]
+    except KeyError:
+        raise AttributeError(f"'opposite' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__opposite.setter
 def _property__opposite(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, opposite=value)
 
 @property
 def _property__order_mode(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["order_mode"]
+    try:
+        return __func(self)["order_mode"]
+    except KeyError:
+        raise AttributeError(f"'order_mode' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__order_mode.setter
 def _property__order_mode(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, order_mode=value)
 
 @property
 def _property__outliers(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["outliers"]
+    try:
+        return __func(self)["outliers"]
+    except KeyError:
+        raise AttributeError(f"'outliers' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__outliers.setter
 def _property__outliers(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, outliers=value)
 
 @property
 def _property__outside(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["outside"]
+    try:
+        return __func(self)["outside"]
+    except KeyError:
+        raise AttributeError(f"'outside' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__outside.setter
 def _property__outside(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, outside=value)
 
 @property
 def _property__overlay(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["overlay"]
+    try:
+        return __func(self)["overlay"]
+    except KeyError:
+        raise AttributeError(f"'overlay' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__overlay.setter
 def _property__overlay(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, overlay=value)
@@ -1776,336 +2526,470 @@ def _property__overlay(self, /, *, __func=_dearpygui.configure_item):
 
 @property
 def _property__override_mod(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["override_mod"]
+    try:
+        return __func(self)["override_mod"]
+    except KeyError:
+        raise AttributeError(f"'override_mod' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__override_mod.setter
 def _property__override_mod(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, override_mod=value)
 
 @property
 def _property__pad_outerX(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["pad_outerX"]
+    try:
+        return __func(self)["pad_outerX"]
+    except KeyError:
+        raise AttributeError(f"'pad_outerX' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__pad_outerX.setter
 def _property__pad_outerX(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, pad_outerX=value)
 
 @property
 def _property__pan_mod(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["pan_mod"]
+    try:
+        return __func(self)["pan_mod"]
+    except KeyError:
+        raise AttributeError(f"'pan_mod' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__pan_mod.setter
 def _property__pan_mod(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, pan_mod=value)
 
 @property
 def _property__pan_stretch(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["pan_stretch"]
+    try:
+        return __func(self)["pan_stretch"]
+    except KeyError:
+        raise AttributeError(f"'pan_stretch' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__pan_stretch.setter
 def _property__pan_stretch(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, pan_stretch=value)
 
 @property
 def _property__password(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["password"]
+    try:
+        return __func(self)["password"]
+    except KeyError:
+        raise AttributeError(f"'password' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__password.setter
 def _property__password(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, password=value)
 
 @property
 def _property__payload_type(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["payload_type"]
+    try:
+        return __func(self)["payload_type"]
+    except KeyError:
+        raise AttributeError(f"'payload_type' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__payload_type.setter
 def _property__payload_type(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, payload_type=value)
 
 @property
 def _property__perspective_divide(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["perspective_divide"]
+    try:
+        return __func(self)["perspective_divide"]
+    except KeyError:
+        raise AttributeError(f"'perspective_divide' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__perspective_divide.setter
 def _property__perspective_divide(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, perspective_divide=value)
 
 @property
 def _property__picker_mode(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["picker_mode"]
+    try:
+        return __func(self)["picker_mode"]
+    except KeyError:
+        raise AttributeError(f"'picker_mode' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__picker_mode.setter
 def _property__picker_mode(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, picker_mode=value)
 
 @property
 def _property__pixel_snapH(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["pixel_snapH"]
+    try:
+        return __func(self)["pixel_snapH"]
+    except KeyError:
+        raise AttributeError(f"'pixel_snapH' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__pixel_snapH.setter
 def _property__pixel_snapH(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, pixel_snapH=value)
 
 @property
 def _property__pixel_snapV(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["pixel_snapV"]
+    try:
+        return __func(self)["pixel_snapV"]
+    except KeyError:
+        raise AttributeError(f"'pixel_snapV' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__pixel_snapV.setter
 def _property__pixel_snapV(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, pixel_snapV=value)
 
 @property
 def _property__policy(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["policy"]
+    try:
+        return __func(self)["policy"]
+    except KeyError:
+        raise AttributeError(f"'policy' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__policy.setter
 def _property__policy(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, policy=value)
 
 @property
 def _property__popup(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["popup"]
+    try:
+        return __func(self)["popup"]
+    except KeyError:
+        raise AttributeError(f"'popup' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__popup.setter
 def _property__popup(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, popup=value)
 
 @property
 def _property__popup_align_left(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["popup_align_left"]
+    try:
+        return __func(self)["popup_align_left"]
+    except KeyError:
+        raise AttributeError(f"'popup_align_left' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__popup_align_left.setter
 def _property__popup_align_left(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, popup_align_left=value)
 
 @property
-def _property__pos(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["pos"]
-@_property__pos.setter
-def _property__pos(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, pos=value)
-
-@property
 def _property__pre_step(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["pre_step"]
+    try:
+        return __func(self)["pre_step"]
+    except KeyError:
+        raise AttributeError(f"'pre_step' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__pre_step.setter
 def _property__pre_step(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, pre_step=value)
 
 @property
 def _property__precise_widths(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["precise_widths"]
+    try:
+        return __func(self)["precise_widths"]
+    except KeyError:
+        raise AttributeError(f"'precise_widths' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__precise_widths.setter
 def _property__precise_widths(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, precise_widths=value)
 
 @property
 def _property__prefer_sort_ascending(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["prefer_sort_ascending"]
+    try:
+        return __func(self)["prefer_sort_ascending"]
+    except KeyError:
+        raise AttributeError(f"'prefer_sort_ascending' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__prefer_sort_ascending.setter
 def _property__prefer_sort_ascending(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, prefer_sort_ascending=value)
 
 @property
 def _property__prefer_sort_descending(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["prefer_sort_descending"]
+    try:
+        return __func(self)["prefer_sort_descending"]
+    except KeyError:
+        raise AttributeError(f"'prefer_sort_descending' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__prefer_sort_descending.setter
 def _property__prefer_sort_descending(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, prefer_sort_descending=value)
 
 @property
 def _property__query(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["query"]
+    try:
+        return __func(self)["query"]
+    except KeyError:
+        raise AttributeError(f"'query' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__query.setter
 def _property__query(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, query=value)
 
 @property
 def _property__query_color(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["query_color"]
+    try:
+        return __func(self)["query_color"]
+    except KeyError:
+        raise AttributeError(f"'query_color' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__query_color.setter
 def _property__query_color(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, query_color=value)
 
 @property
 def _property__query_toggle_mod(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["query_toggle_mod"]
+    try:
+        return __func(self)["query_toggle_mod"]
+    except KeyError:
+        raise AttributeError(f"'query_toggle_mod' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__query_toggle_mod.setter
 def _property__query_toggle_mod(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, query_toggle_mod=value)
 
 @property
 def _property__radius(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["radius"]
+    try:
+        return __func(self)["radius"]
+    except KeyError:
+        raise AttributeError(f"'radius' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__radius.setter
 def _property__radius(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, radius=value)
 
 @property
 def _property__range_fit(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["range_fit"]
+    try:
+        return __func(self)["range_fit"]
+    except KeyError:
+        raise AttributeError(f"'range_fit' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__range_fit.setter
 def _property__range_fit(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, range_fit=value)
 
 @property
 def _property__readonly(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["readonly"]
+    try:
+        return __func(self)["readonly"]
+    except KeyError:
+        raise AttributeError(f"'readonly' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__readonly.setter
 def _property__readonly(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, readonly=value)
 
 @property
 def _property__reorderable(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["reorderable"]
+    try:
+        return __func(self)["reorderable"]
+    except KeyError:
+        raise AttributeError(f"'reorderable' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__reorderable.setter
 def _property__reorderable(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, reorderable=value)
 
 @property
 def _property__repeat(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["repeat"]
+    try:
+        return __func(self)["repeat"]
+    except KeyError:
+        raise AttributeError(f"'repeat' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__repeat.setter
 def _property__repeat(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, repeat=value)
 
 @property
 def _property__resizable(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["resizable"]
+    try:
+        return __func(self)["resizable"]
+    except KeyError:
+        raise AttributeError(f"'resizable' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__resizable.setter
 def _property__resizable(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, resizable=value)
 
 @property
 def _property__resizable_x(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["resizable_x"]
+    try:
+        return __func(self)["resizable_x"]
+    except KeyError:
+        raise AttributeError(f"'resizable_x' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__resizable_x.setter
 def _property__resizable_x(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, resizable_x=value)
 
 @property
 def _property__resizable_y(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["resizable_y"]
+    try:
+        return __func(self)["resizable_y"]
+    except KeyError:
+        raise AttributeError(f"'resizable_y' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__resizable_y.setter
 def _property__resizable_y(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, resizable_y=value)
 
 @property
 def _property__reverse_dir(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["reverse_dir"]
+    try:
+        return __func(self)["reverse_dir"]
+    except KeyError:
+        raise AttributeError(f"'reverse_dir' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__reverse_dir.setter
 def _property__reverse_dir(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, reverse_dir=value)
 
 @property
 def _property__rounding(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["rounding"]
+    try:
+        return __func(self)["rounding"]
+    except KeyError:
+        raise AttributeError(f"'rounding' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__rounding.setter
 def _property__rounding(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, rounding=value)
 
 @property
 def _property__row_background(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["row_background"]
+    try:
+        return __func(self)["row_background"]
+    except KeyError:
+        raise AttributeError(f"'row_background' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__row_background.setter
 def _property__row_background(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, row_background=value)
 
 @property
 def _property__row_ratios(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["row_ratios"]
+    try:
+        return __func(self)["row_ratios"]
+    except KeyError:
+        raise AttributeError(f"'row_ratios' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__row_ratios.setter
 def _property__row_ratios(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, row_ratios=value)
 
 @property
 def _property__scale(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["scale"]
+    try:
+        return __func(self)["scale"]
+    except KeyError:
+        raise AttributeError(f"'scale' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__scale.setter
 def _property__scale(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, scale=value)
 
 @property
 def _property__scale_max(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["scale_max"]
+    try:
+        return __func(self)["scale_max"]
+    except KeyError:
+        raise AttributeError(f"'scale_max' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__scale_max.setter
 def _property__scale_max(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, scale_max=value)
 
 @property
 def _property__scale_min(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["scale_min"]
+    try:
+        return __func(self)["scale_min"]
+    except KeyError:
+        raise AttributeError(f"'scale_min' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__scale_min.setter
 def _property__scale_min(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, scale_min=value)
 
 @property
 def _property__scientific(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["scientific"]
+    try:
+        return __func(self)["scientific"]
+    except KeyError:
+        raise AttributeError(f"'scientific' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__scientific.setter
 def _property__scientific(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, scientific=value)
 
 @property
 def _property__scrollX(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["scrollX"]
+    try:
+        return __func(self)["scrollX"]
+    except KeyError:
+        raise AttributeError(f"'scrollX' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__scrollX.setter
 def _property__scrollX(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, scrollX=value)
 
 @property
 def _property__scrollY(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["scrollY"]
+    try:
+        return __func(self)["scrollY"]
+    except KeyError:
+        raise AttributeError(f"'scrollY' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__scrollY.setter
 def _property__scrollY(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, scrollY=value)
 
 @property
 def _property__secondary_color(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["secondary_color"]
+    try:
+        return __func(self)["secondary_color"]
+    except KeyError:
+        raise AttributeError(f"'secondary_color' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__secondary_color.setter
 def _property__secondary_color(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, secondary_color=value)
 
 @property
 def _property__segments(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["segments"]
+    try:
+        return __func(self)["segments"]
+    except KeyError:
+        raise AttributeError(f"'segments' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__segments.setter
 def _property__segments(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, segments=value)
 
 @property
 def _property__select_on_nav(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["select_on_nav"]
+    try:
+        return __func(self)["select_on_nav"]
+    except KeyError:
+        raise AttributeError(f"'select_on_nav' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__select_on_nav.setter
 def _property__select_on_nav(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, select_on_nav=value)
 
 @property
 def _property__selectable(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["selectable"]
+    try:
+        return __func(self)["selectable"]
+    except KeyError:
+        raise AttributeError(f"'selectable' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__selectable.setter
 def _property__selectable(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, selectable=value)
 
 @property
 def _property__shaded(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["shaded"]
+    try:
+        return __func(self)["shaded"]
+    except KeyError:
+        raise AttributeError(f"'shaded' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__shaded.setter
 def _property__shaded(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, shaded=value)
 
 @property
 def _property__shape(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["shape"]
+    try:
+        return __func(self)["shape"]
+    except KeyError:
+        raise AttributeError(f"'shape' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__shape.setter
 def _property__shape(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, shape=value)
 
 @property
 def _property__share_series(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["share_series"]
+    try:
+        return __func(self)["share_series"]
+    except KeyError:
+        raise AttributeError(f"'share_series' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__share_series.setter
 def _property__share_series(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, share_series=value)
 
 @property
 def _property__shift(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["shift"]
+    try:
+        return __func(self)["shift"]
+    except KeyError:
+        raise AttributeError(f"'shift' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__shift.setter
 def _property__shift(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, shift=value)
 
 @property
 def _property__shortcut(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["shortcut"]
+    try:
+        return __func(self)["shortcut"]
+    except KeyError:
+        raise AttributeError(f"'shortcut' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__shortcut.setter
 def _property__shortcut(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, shortcut=value)
@@ -2115,70 +2999,100 @@ def _property__shortcut(self, /, *, __func=_dearpygui.configure_item):
 
 @property
 def _property__show(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["show"]
+    try:
+        return __func(self)["show"]
+    except KeyError:
+        raise AttributeError(f"'show' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__show.setter
 def _property__show(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, show=value)
 
 @property
 def _property__show_label(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["show_label"]
+    try:
+        return __func(self)["show_label"]
+    except KeyError:
+        raise AttributeError(f"'show_label' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__show_label.setter
 def _property__show_label(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, show_label=value)
 
 @property
 def _property__size(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["size"]
+    try:
+        return __func(self)["size"]
+    except KeyError:
+        raise AttributeError(f"'size' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__size.setter
 def _property__size(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, size=value)
 
 @property
 def _property__skip_nan(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["skip_nan"]
+    try:
+        return __func(self)["skip_nan"]
+    except KeyError:
+        raise AttributeError(f"'skip_nan' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__skip_nan.setter
 def _property__skip_nan(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, skip_nan=value)
 
 @property
 def _property__small(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["small"]
+    try:
+        return __func(self)["small"]
+    except KeyError:
+        raise AttributeError(f"'small' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__small.setter
 def _property__small(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, small=value)
 
 @property
 def _property__sort(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["sort"]
+    try:
+        return __func(self)["sort"]
+    except KeyError:
+        raise AttributeError(f"'sort' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__sort.setter
 def _property__sort(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, sort=value)
 
 @property
 def _property__sort_multi(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["sort_multi"]
+    try:
+        return __func(self)["sort_multi"]
+    except KeyError:
+        raise AttributeError(f"'sort_multi' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__sort_multi.setter
 def _property__sort_multi(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, sort_multi=value)
 
 @property
 def _property__sort_tristate(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["sort_tristate"]
+    try:
+        return __func(self)["sort_tristate"]
+    except KeyError:
+        raise AttributeError(f"'sort_tristate' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__sort_tristate.setter
 def _property__sort_tristate(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, sort_tristate=value)
 
 @property
 def _property__sortable(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["sortable"]
+    try:
+        return __func(self)["sortable"]
+    except KeyError:
+        raise AttributeError(f"'sortable' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__sortable.setter
 def _property__sortable(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, sortable=value)
 
 @property
 def _property__source(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["source"]
+    try:
+        return __func(self)["source"]
+    except KeyError:
+        raise AttributeError(f"'source' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__source.setter
 def _property__source(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, source=value)
@@ -2188,84 +3102,120 @@ def _property__source(self, /, *, __func=_dearpygui.configure_item):
 
 @property
 def _property__span_columns(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["span_columns"]
+    try:
+        return __func(self)["span_columns"]
+    except KeyError:
+        raise AttributeError(f"'span_columns' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__span_columns.setter
 def _property__span_columns(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, span_columns=value)
 
 @property
 def _property__span_full_width(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["span_full_width"]
+    try:
+        return __func(self)["span_full_width"]
+    except KeyError:
+        raise AttributeError(f"'span_full_width' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__span_full_width.setter
 def _property__span_full_width(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, span_full_width=value)
 
 @property
 def _property__span_text_width(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["span_text_width"]
+    try:
+        return __func(self)["span_text_width"]
+    except KeyError:
+        raise AttributeError(f"'span_text_width' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__span_text_width.setter
 def _property__span_text_width(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, span_text_width=value)
 
 @property
 def _property__speed(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["speed"]
+    try:
+        return __func(self)["speed"]
+    except KeyError:
+        raise AttributeError(f"'speed' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__speed.setter
 def _property__speed(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, speed=value)
 
 @property
 def _property__stacked(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["stacked"]
+    try:
+        return __func(self)["stacked"]
+    except KeyError:
+        raise AttributeError(f"'stacked' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__stacked.setter
 def _property__stacked(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, stacked=value)
 
 @property
 def _property__step(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["step"]
+    try:
+        return __func(self)["step"]
+    except KeyError:
+        raise AttributeError(f"'step' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__step.setter
 def _property__step(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, step=value)
 
 @property
 def _property__step_fast(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["step_fast"]
+    try:
+        return __func(self)["step_fast"]
+    except KeyError:
+        raise AttributeError(f"'step_fast' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__step_fast.setter
 def _property__step_fast(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, step_fast=value)
 
 @property
 def _property__style(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["style"]
+    try:
+        return __func(self)["style"]
+    except KeyError:
+        raise AttributeError(f"'style' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__style.setter
 def _property__style(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, style=value)
 
 @property
 def _property__tab_input(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["tab_input"]
+    try:
+        return __func(self)["tab_input"]
+    except KeyError:
+        raise AttributeError(f"'tab_input' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__tab_input.setter
 def _property__tab_input(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, tab_input=value)
 
 @property
 def _property__tab_list_popup_button(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["tab_list_popup_button"]
+    try:
+        return __func(self)["tab_list_popup_button"]
+    except KeyError:
+        raise AttributeError(f"'tab_list_popup_button' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__tab_list_popup_button.setter
 def _property__tab_list_popup_button(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, tab_list_popup_button=value)
 
 @property
 def _property__thickness(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["thickness"]
+    try:
+        return __func(self)["thickness"]
+    except KeyError:
+        raise AttributeError(f"'thickness' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__thickness.setter
 def _property__thickness(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, thickness=value)
 
 @property
 def _property__tick_format(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["tick_format"]
+    try:
+        return __func(self)["tick_format"]
+    except KeyError:
+        raise AttributeError(f"'tick_format' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__tick_format.setter
 def _property__tick_format(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, tick_format=value)
@@ -2275,238 +3225,340 @@ def _property__tick_format(self, /, *, __func=_dearpygui.configure_item):
 
 @property
 def _property__time_unit(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["time_unit"]
+    try:
+        return __func(self)["time_unit"]
+    except KeyError:
+        raise AttributeError(f"'time_unit' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__time_unit.setter
 def _property__time_unit(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, time_unit=value)
 
 @property
 def _property__tint_color(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["tint_color"]
+    try:
+        return __func(self)["tint_color"]
+    except KeyError:
+        raise AttributeError(f"'tint_color' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__tint_color.setter
 def _property__tint_color(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, tint_color=value)
 
 @property
 def _property__tooltip(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["tooltip"]
+    try:
+        return __func(self)["tooltip"]
+    except KeyError:
+        raise AttributeError(f"'tooltip' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__tooltip.setter
 def _property__tooltip(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, tooltip=value)
 
 @property
 def _property__track_offset(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["track_offset"]
+    try:
+        return __func(self)["track_offset"]
+    except KeyError:
+        raise AttributeError(f"'track_offset' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__track_offset.setter
 def _property__track_offset(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, track_offset=value)
 
 @property
 def _property__tracked(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["tracked"]
+    try:
+        return __func(self)["tracked"]
+    except KeyError:
+        raise AttributeError(f"'tracked' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__tracked.setter
 def _property__tracked(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, tracked=value)
 
 @property
 def _property__trailing(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["trailing"]
+    try:
+        return __func(self)["trailing"]
+    except KeyError:
+        raise AttributeError(f"'trailing' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__trailing.setter
 def _property__trailing(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, trailing=value)
 
 @property
 def _property__two_way(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["two_way"]
+    try:
+        return __func(self)["two_way"]
+    except KeyError:
+        raise AttributeError(f"'two_way' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__two_way.setter
 def _property__two_way(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, two_way=value)
 
 @property
 def _property__unsaved_document(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["unsaved_document"]
+    try:
+        return __func(self)["unsaved_document"]
+    except KeyError:
+        raise AttributeError(f"'unsaved_document' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__unsaved_document.setter
 def _property__unsaved_document(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, unsaved_document=value)
 
 @property
 def _property__uppercase(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["uppercase"]
+    try:
+        return __func(self)["uppercase"]
+    except KeyError:
+        raise AttributeError(f"'uppercase' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__uppercase.setter
 def _property__uppercase(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, uppercase=value)
 
 @property
 def _property__use_24hour_clock(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["use_24hour_clock"]
+    try:
+        return __func(self)["use_24hour_clock"]
+    except KeyError:
+        raise AttributeError(f"'use_24hour_clock' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__use_24hour_clock.setter
 def _property__use_24hour_clock(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, use_24hour_clock=value)
 
 @property
 def _property__use_ISO8601(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["use_ISO8601"]
+    try:
+        return __func(self)["use_ISO8601"]
+    except KeyError:
+        raise AttributeError(f"'use_ISO8601' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__use_ISO8601.setter
 def _property__use_ISO8601(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, use_ISO8601=value)
 
 @property
 def _property__use_local_time(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["use_local_time"]
+    try:
+        return __func(self)["use_local_time"]
+    except KeyError:
+        raise AttributeError(f"'use_local_time' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__use_local_time.setter
 def _property__use_local_time(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, use_local_time=value)
 
 @property
 def _property__uv1(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["uv1"]
+    try:
+        return __func(self)["uv1"]
+    except KeyError:
+        raise AttributeError(f"'uv1' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__uv1.setter
 def _property__uv1(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, uv1=value)
 
 @property
 def _property__uv2(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["uv2"]
+    try:
+        return __func(self)["uv2"]
+    except KeyError:
+        raise AttributeError(f"'uv2' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__uv2.setter
 def _property__uv2(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, uv2=value)
 
 @property
 def _property__uv3(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["uv3"]
+    try:
+        return __func(self)["uv3"]
+    except KeyError:
+        raise AttributeError(f"'uv3' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__uv3.setter
 def _property__uv3(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, uv3=value)
 
 @property
 def _property__uv4(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["uv4"]
+    try:
+        return __func(self)["uv4"]
+    except KeyError:
+        raise AttributeError(f"'uv4' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__uv4.setter
 def _property__uv4(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, uv4=value)
 
 @property
 def _property__uv_max(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["uv_max"]
+    try:
+        return __func(self)["uv_max"]
+    except KeyError:
+        raise AttributeError(f"'uv_max' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__uv_max.setter
 def _property__uv_max(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, uv_max=value)
 
 @property
 def _property__uv_min(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["uv_min"]
+    try:
+        return __func(self)["uv_min"]
+    except KeyError:
+        raise AttributeError(f"'uv_min' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__uv_min.setter
 def _property__uv_min(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, uv_min=value)
 
 @property
 def _property__vertical(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["vertical"]
+    try:
+        return __func(self)["vertical"]
+    except KeyError:
+        raise AttributeError(f"'vertical' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__vertical.setter
 def _property__vertical(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, vertical=value)
 
 @property
 def _property__vertical_mod(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["vertical_mod"]
+    try:
+        return __func(self)["vertical_mod"]
+    except KeyError:
+        raise AttributeError(f"'vertical_mod' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__vertical_mod.setter
 def _property__vertical_mod(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, vertical_mod=value)
 
 @property
 def _property__weight(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["weight"]
+    try:
+        return __func(self)["weight"]
+    except KeyError:
+        raise AttributeError(f"'weight' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__weight.setter
 def _property__weight(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, weight=value)
 
 @property
 def _property__width(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["width"]
+    try:
+        return __func(self)["width"]
+    except KeyError:
+        raise AttributeError(f"'width' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__width.setter
 def _property__width(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, width=value)
 
 @property
 def _property__width_fixed(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["width_fixed"]
+    try:
+        return __func(self)["width_fixed"]
+    except KeyError:
+        raise AttributeError(f"'width_fixed' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__width_fixed.setter
 def _property__width_fixed(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, width_fixed=value)
 
 @property
 def _property__width_stretch(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["width_stretch"]
+    try:
+        return __func(self)["width_stretch"]
+    except KeyError:
+        raise AttributeError(f"'width_stretch' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__width_stretch.setter
 def _property__width_stretch(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, width_stretch=value)
 
 @property
 def _property__wrap(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["wrap"]
+    try:
+        return __func(self)["wrap"]
+    except KeyError:
+        raise AttributeError(f"'wrap' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__wrap.setter
 def _property__wrap(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, wrap=value)
 
 @property
 def _property__xbins(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["xbins"]
+    try:
+        return __func(self)["xbins"]
+    except KeyError:
+        raise AttributeError(f"'xbins' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__xbins.setter
 def _property__xbins(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, xbins=value)
 
 @property
 def _property__xmax_range(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["xmax_range"]
+    try:
+        return __func(self)["xmax_range"]
+    except KeyError:
+        raise AttributeError(f"'xmax_range' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__xmax_range.setter
 def _property__xmax_range(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, xmax_range=value)
 
 @property
 def _property__xmin_range(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["xmin_range"]
+    try:
+        return __func(self)["xmin_range"]
+    except KeyError:
+        raise AttributeError(f"'xmin_range' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__xmin_range.setter
 def _property__xmin_range(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, xmin_range=value)
 
 @property
 def _property__xoffset(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["xoffset"]
+    try:
+        return __func(self)["xoffset"]
+    except KeyError:
+        raise AttributeError(f"'xoffset' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__xoffset.setter
 def _property__xoffset(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, xoffset=value)
 
 @property
 def _property__ybins(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["ybins"]
+    try:
+        return __func(self)["ybins"]
+    except KeyError:
+        raise AttributeError(f"'ybins' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__ybins.setter
 def _property__ybins(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, ybins=value)
 
 @property
 def _property__ymax_range(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["ymax_range"]
+    try:
+        return __func(self)["ymax_range"]
+    except KeyError:
+        raise AttributeError(f"'ymax_range' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__ymax_range.setter
 def _property__ymax_range(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, ymax_range=value)
 
 @property
 def _property__ymin_range(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["ymin_range"]
+    try:
+        return __func(self)["ymin_range"]
+    except KeyError:
+        raise AttributeError(f"'ymin_range' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__ymin_range.setter
 def _property__ymin_range(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, ymin_range=value)
 
 @property
 def _property__zoom_mod(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["zoom_mod"]
+    try:
+        return __func(self)["zoom_mod"]
+    except KeyError:
+        raise AttributeError(f"'zoom_mod' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__zoom_mod.setter
 def _property__zoom_mod(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, zoom_mod=value)
 
 @property
 def _property__zoom_rate(self, /, *, __func=_dearpygui.get_item_configuration):
-    return __func(self)["zoom_rate"]
+    try:
+        return __func(self)["zoom_rate"]
+    except KeyError:
+        raise AttributeError(f"'zoom_rate' not in dict returned from 'get_item_configuration({self.tag})'`")
 @_property__zoom_rate.setter
 def _property__zoom_rate(self, value, /, *, __func=_dearpygui.configure_item):
     __func(self, zoom_rate=value)
@@ -2622,11 +3674,17 @@ class mvBarGroupSeries(SupportsValueArray, ChildItem, command="add_bar_group_ser
 
     @property
     def label_ids(self, /, *, __func=_dearpygui.get_item_configuration):
-        return __func(self)["label_ids"]
+        try:
+            return __func(self)["label_ids"]
+        except KeyError:
+            raise AttributeError(f"'label_ids' not in dict returned from 'get_item_configuration({self.tag})'`")
     
     @property
     def group_size(self, /, *, __func=_dearpygui.get_item_configuration):
-        return __func(self)["group_size"]
+        try:
+            return __func(self)["group_size"]
+        except KeyError:
+            raise AttributeError(f"'group_size' not in dict returned from 'get_item_configuration({self.tag})'`")
     
     group_width = _property__group_width
     shift = _property__shift
@@ -2718,23 +3776,38 @@ class mvCandleSeries(SupportsValueArray, ChildItem, command="add_candle_series",
 
     @property
     def dates(self, /, *, __func=_dearpygui.get_item_configuration):
-        return __func(self)["dates"]
+        try:
+            return __func(self)["dates"]
+        except KeyError:
+            raise AttributeError(f"'dates' not in dict returned from 'get_item_configuration({self.tag})'`")
     
     @property
     def opens(self, /, *, __func=_dearpygui.get_item_configuration):
-        return __func(self)["opens"]
+        try:
+            return __func(self)["opens"]
+        except KeyError:
+            raise AttributeError(f"'opens' not in dict returned from 'get_item_configuration({self.tag})'`")
     
     @property
     def closes(self, /, *, __func=_dearpygui.get_item_configuration):
-        return __func(self)["closes"]
+        try:
+            return __func(self)["closes"]
+        except KeyError:
+            raise AttributeError(f"'closes' not in dict returned from 'get_item_configuration({self.tag})'`")
     
     @property
     def lows(self, /, *, __func=_dearpygui.get_item_configuration):
-        return __func(self)["lows"]
+        try:
+            return __func(self)["lows"]
+        except KeyError:
+            raise AttributeError(f"'lows' not in dict returned from 'get_item_configuration({self.tag})'`")
     
     @property
     def highs(self, /, *, __func=_dearpygui.get_item_configuration):
-        return __func(self)["highs"]
+        try:
+            return __func(self)["highs"]
+        except KeyError:
+            raise AttributeError(f"'highs' not in dict returned from 'get_item_configuration({self.tag})'`")
     
     bull_color = _property__bull_color
     bear_color = _property__bear_color
@@ -2756,11 +3829,17 @@ class mvCharRemap(ChildItem, command="add_char_remap", slot=1):
 
     @property
     def source(self, /, *, __func=_dearpygui.get_item_configuration):
-        return __func(self)["source"]
+        try:
+            return __func(self)["source"]
+        except KeyError:
+            raise AttributeError(f"'source' not in dict returned from 'get_item_configuration({self.tag})'`")
     
     @property
     def target(self, /, *, __func=_dearpygui.get_item_configuration):
-        return __func(self)["target"]
+        try:
+            return __func(self)["target"]
+        except KeyError:
+            raise AttributeError(f"'target' not in dict returned from 'get_item_configuration({self.tag})'`")
     
 add_char_remap = mvCharRemap.create
 
@@ -2869,7 +3948,10 @@ class mvClickedHandler(ChildItem, command="add_item_clicked_handler", slot=1):
 
     @property
     def button(self, /, *, __func=_dearpygui.get_item_configuration):
-        return __func(self)["button"]
+        try:
+            return __func(self)["button"]
+        except KeyError:
+            raise AttributeError(f"'button' not in dict returned from 'get_item_configuration({self.tag})'`")
     
     show = _property__show
     callback = _property__callback
@@ -3043,11 +4125,17 @@ class mvColorMap(ChildItem, command="add_colormap", slot=1):
 
     @property
     def colors(self, /, *, __func=_dearpygui.get_item_configuration):
-        return __func(self)["colors"]
+        try:
+            return __func(self)["colors"]
+        except KeyError:
+            raise AttributeError(f"'colors' not in dict returned from 'get_item_configuration({self.tag})'`")
     
     @property
     def qualitative(self, /, *, __func=_dearpygui.get_item_configuration):
-        return __func(self)["qualitative"]
+        try:
+            return __func(self)["qualitative"]
+        except KeyError:
+            raise AttributeError(f"'qualitative' not in dict returned from 'get_item_configuration({self.tag})'`")
     
     show = _property__show
 
@@ -3312,7 +4400,10 @@ class mvCustomSeries(SupportsValueArray, ContainerItem, ChildItem, command="add_
 
     @property
     def channel_count(self, /, *, __func=_dearpygui.get_item_configuration):
-        return __func(self)["channel_count"]
+        try:
+            return __func(self)["channel_count"]
+        except KeyError:
+            raise AttributeError(f"'channel_count' not in dict returned from 'get_item_configuration({self.tag})'`")
     
     tooltip = _property__tooltip
     no_fit = _property__no_fit
@@ -3421,7 +4512,10 @@ class mvDoubleClickedHandler(ChildItem, command="add_item_double_clicked_handler
 
     @property
     def button(self, /, *, __func=_dearpygui.get_item_configuration):
-        return __func(self)["button"]
+        try:
+            return __func(self)["button"]
+        except KeyError:
+            raise AttributeError(f"'button' not in dict returned from 'get_item_configuration({self.tag})'`")
     
     show = _property__show
     callback = _property__callback
@@ -3853,11 +4947,17 @@ class mvDrawCircle(ChildItem, command="draw_circle", slot=2):
 
     @property
     def center(self, /, *, __func=_dearpygui.get_item_configuration):
-        return __func(self)["center"]
+        try:
+            return __func(self)["center"]
+        except KeyError:
+            raise AttributeError(f"'center' not in dict returned from 'get_item_configuration({self.tag})'`")
     
     @property
     def radius(self, /, *, __func=_dearpygui.get_item_configuration):
-        return __func(self)["radius"]
+        try:
+            return __func(self)["radius"]
+        except KeyError:
+            raise AttributeError(f"'radius' not in dict returned from 'get_item_configuration({self.tag})'`")
     
     color = _property__color
     fill = _property__fill
@@ -3877,11 +4977,17 @@ class mvDrawEllipse(ChildItem, command="draw_ellipse", slot=2):
 
     @property
     def pmin(self, /, *, __func=_dearpygui.get_item_configuration):
-        return __func(self)["pmin"]
+        try:
+            return __func(self)["pmin"]
+        except KeyError:
+            raise AttributeError(f"'pmin' not in dict returned from 'get_item_configuration({self.tag})'`")
     
     @property
     def pmax(self, /, *, __func=_dearpygui.get_item_configuration):
-        return __func(self)["pmax"]
+        try:
+            return __func(self)["pmax"]
+        except KeyError:
+            raise AttributeError(f"'pmax' not in dict returned from 'get_item_configuration({self.tag})'`")
     
     color = _property__color
     fill = _property__fill
@@ -3901,11 +5007,17 @@ class mvDrawImage(ChildItem, command="draw_image", slot=2):
 
     @property
     def pmin(self, /, *, __func=_dearpygui.get_item_configuration):
-        return __func(self)["pmin"]
+        try:
+            return __func(self)["pmin"]
+        except KeyError:
+            raise AttributeError(f"'pmin' not in dict returned from 'get_item_configuration({self.tag})'`")
     
     @property
     def pmax(self, /, *, __func=_dearpygui.get_item_configuration):
-        return __func(self)["pmax"]
+        try:
+            return __func(self)["pmax"]
+        except KeyError:
+            raise AttributeError(f"'pmax' not in dict returned from 'get_item_configuration({self.tag})'`")
     
     uv_min = _property__uv_min
     uv_max = _property__uv_max
@@ -3992,7 +5104,10 @@ class mvDrawPolygon(ChildItem, command="draw_polygon", slot=2):
 
     @property
     def points(self, /, *, __func=_dearpygui.get_item_configuration):
-        return __func(self)["points"]
+        try:
+            return __func(self)["points"]
+        except KeyError:
+            raise AttributeError(f"'points' not in dict returned from 'get_item_configuration({self.tag})'`")
     
     color = _property__color
     fill = _property__fill
@@ -4011,7 +5126,10 @@ class mvDrawPolyline(ChildItem, command="draw_polyline", slot=2):
 
     @property
     def points(self, /, *, __func=_dearpygui.get_item_configuration):
-        return __func(self)["points"]
+        try:
+            return __func(self)["points"]
+        except KeyError:
+            raise AttributeError(f"'points' not in dict returned from 'get_item_configuration({self.tag})'`")
     
     closed = _property__closed
     color = _property__color
@@ -4045,11 +5163,17 @@ class mvDrawRect(ChildItem, command="draw_rectangle", slot=2):
 
     @property
     def pmin(self, /, *, __func=_dearpygui.get_item_configuration):
-        return __func(self)["pmin"]
+        try:
+            return __func(self)["pmin"]
+        except KeyError:
+            raise AttributeError(f"'pmin' not in dict returned from 'get_item_configuration({self.tag})'`")
     
     @property
     def pmax(self, /, *, __func=_dearpygui.get_item_configuration):
-        return __func(self)["pmax"]
+        try:
+            return __func(self)["pmax"]
+        except KeyError:
+            raise AttributeError(f"'pmax' not in dict returned from 'get_item_configuration({self.tag})'`")
     
     color = _property__color
     fill = _property__fill
@@ -4071,11 +5195,17 @@ class mvDrawText(ChildItem, command="draw_text", slot=2):
 
     @property
     def pos(self, /, *, __func=_dearpygui.get_item_configuration):
-        return __func(self)["pos"]
+        try:
+            return __func(self)["pos"]
+        except KeyError:
+            raise AttributeError(f"'pos' not in dict returned from 'get_item_configuration({self.tag})'`")
     
     @property
     def text(self, /, *, __func=_dearpygui.get_item_configuration):
-        return __func(self)["text"]
+        try:
+            return __func(self)["text"]
+        except KeyError:
+            raise AttributeError(f"'text' not in dict returned from 'get_item_configuration({self.tag})'`")
     
     color = _property__color
     size = _property__size
@@ -4108,11 +5238,17 @@ class mvDrawlist(ContainerItem, ChildItem, command="add_drawlist", slot=1):
 
     @property
     def width(self, /, *, __func=_dearpygui.get_item_configuration):
-        return __func(self)["width"]
+        try:
+            return __func(self)["width"]
+        except KeyError:
+            raise AttributeError(f"'width' not in dict returned from 'get_item_configuration({self.tag})'`")
     
     @property
     def height(self, /, *, __func=_dearpygui.get_item_configuration):
-        return __func(self)["height"]
+        try:
+            return __func(self)["height"]
+        except KeyError:
+            raise AttributeError(f"'height' not in dict returned from 'get_item_configuration({self.tag})'`")
     
     callback = _property__callback
     show = _property__show
@@ -4151,11 +5287,17 @@ class mvDynamicTexture(SupportsValueArray, ChildItem, command="add_dynamic_textu
 
     @property
     def width(self, /, *, __func=_dearpygui.get_item_configuration):
-        return __func(self)["width"]
+        try:
+            return __func(self)["width"]
+        except KeyError:
+            raise AttributeError(f"'width' not in dict returned from 'get_item_configuration({self.tag})'`")
     
     @property
     def height(self, /, *, __func=_dearpygui.get_item_configuration):
-        return __func(self)["height"]
+        try:
+            return __func(self)["height"]
+        except KeyError:
+            raise AttributeError(f"'height' not in dict returned from 'get_item_configuration({self.tag})'`")
     
     @staticmethod
     def create_from_file(file, /, *, gamma=1.0, gamma_scale_factor=1.0, label=None, use_internal_label=True, user_data=None, tag=0, parent=0, **kwargs):
@@ -4198,11 +5340,17 @@ class mvErrorSeries(SupportsValueArray, ChildItem, command="add_error_series", s
 
     @property
     def negative(self, /, *, __func=_dearpygui.get_item_configuration):
-        return __func(self)["negative"]
+        try:
+            return __func(self)["negative"]
+        except KeyError:
+            raise AttributeError(f"'negative' not in dict returned from 'get_item_configuration({self.tag})'`")
     
     @property
     def positive(self, /, *, __func=_dearpygui.get_item_configuration):
-        return __func(self)["positive"]
+        try:
+            return __func(self)["positive"]
+        except KeyError:
+            raise AttributeError(f"'positive' not in dict returned from 'get_item_configuration({self.tag})'`")
     
     contribute_to_bounds = _property__contribute_to_bounds
     horizontal = _property__horizontal
@@ -4242,7 +5390,10 @@ class mvFileExtension(ChildItem, command="add_file_extension", slot=0):
 
     @property
     def extension(self, /, *, __func=_dearpygui.get_item_configuration):
-        return __func(self)["extension"]
+        try:
+            return __func(self)["extension"]
+        except KeyError:
+            raise AttributeError(f"'extension' not in dict returned from 'get_item_configuration({self.tag})'`")
     
     custom_text = _property__custom_text
     color = _property__color
@@ -4325,7 +5476,10 @@ class mvFont(ContainerItem, ChildItem, command="add_font", slot=1):
 
     @property
     def file(self, /, *, __func=_dearpygui.get_item_configuration):
-        return __func(self)["file"]
+        try:
+            return __func(self)["file"]
+        except KeyError:
+            raise AttributeError(f"'file' not in dict returned from 'get_item_configuration({self.tag})'`")
     
     size = _property__size
     pixel_snapH = _property__pixel_snapH
@@ -4464,11 +5618,17 @@ class mvHeatSeries(SupportsValueArray, ChildItem, command="add_heat_series", slo
 
     @property
     def rows(self, /, *, __func=_dearpygui.get_item_configuration):
-        return __func(self)["rows"]
+        try:
+            return __func(self)["rows"]
+        except KeyError:
+            raise AttributeError(f"'rows' not in dict returned from 'get_item_configuration({self.tag})'`")
     
     @property
     def cols(self, /, *, __func=_dearpygui.get_item_configuration):
-        return __func(self)["cols"]
+        try:
+            return __func(self)["cols"]
+        except KeyError:
+            raise AttributeError(f"'cols' not in dict returned from 'get_item_configuration({self.tag})'`")
     
     scale_min = _property__scale_min
     scale_max = _property__scale_max
@@ -4612,11 +5772,17 @@ class mvImageSeries(SupportsValueArray, ChildItem, command="add_image_series", s
 
     @property
     def bounds_min(self, /, *, __func=_dearpygui.get_item_configuration):
-        return __func(self)["bounds_min"]
+        try:
+            return __func(self)["bounds_min"]
+        except KeyError:
+            raise AttributeError(f"'bounds_min' not in dict returned from 'get_item_configuration({self.tag})'`")
     
     @property
     def bounds_max(self, /, *, __func=_dearpygui.get_item_configuration):
-        return __func(self)["bounds_max"]
+        try:
+            return __func(self)["bounds_max"]
+        except KeyError:
+            raise AttributeError(f"'bounds_max' not in dict returned from 'get_item_configuration({self.tag})'`")
     
     uv_min = _property__uv_min
     uv_max = _property__uv_max
@@ -5096,7 +6262,10 @@ class mvKeyDownHandler(ChildItem, command="add_key_down_handler", slot=1):
 
     @property
     def key(self, /, *, __func=_dearpygui.get_item_configuration):
-        return __func(self)["key"]
+        try:
+            return __func(self)["key"]
+        except KeyError:
+            raise AttributeError(f"'key' not in dict returned from 'get_item_configuration({self.tag})'`")
     
     callback = _property__callback
     show = _property__show
@@ -5113,7 +6282,10 @@ class mvKeyPressHandler(ChildItem, command="add_key_press_handler", slot=1):
 
     @property
     def key(self, /, *, __func=_dearpygui.get_item_configuration):
-        return __func(self)["key"]
+        try:
+            return __func(self)["key"]
+        except KeyError:
+            raise AttributeError(f"'key' not in dict returned from 'get_item_configuration({self.tag})'`")
     
     callback = _property__callback
     show = _property__show
@@ -5130,7 +6302,10 @@ class mvKeyReleaseHandler(ChildItem, command="add_key_release_handler", slot=1):
 
     @property
     def key(self, /, *, __func=_dearpygui.get_item_configuration):
-        return __func(self)["key"]
+        try:
+            return __func(self)["key"]
+        except KeyError:
+            raise AttributeError(f"'key' not in dict returned from 'get_item_configuration({self.tag})'`")
     
     callback = _property__callback
     show = _property__show
@@ -5369,7 +6544,10 @@ class mvMouseClickHandler(ChildItem, command="add_mouse_click_handler", slot=1):
 
     @property
     def button(self, /, *, __func=_dearpygui.get_item_configuration):
-        return __func(self)["button"]
+        try:
+            return __func(self)["button"]
+        except KeyError:
+            raise AttributeError(f"'button' not in dict returned from 'get_item_configuration({self.tag})'`")
     
     callback = _property__callback
     show = _property__show
@@ -5386,7 +6564,10 @@ class mvMouseDoubleClickHandler(ChildItem, command="add_mouse_double_click_handl
 
     @property
     def button(self, /, *, __func=_dearpygui.get_item_configuration):
-        return __func(self)["button"]
+        try:
+            return __func(self)["button"]
+        except KeyError:
+            raise AttributeError(f"'button' not in dict returned from 'get_item_configuration({self.tag})'`")
     
     callback = _property__callback
     show = _property__show
@@ -5403,7 +6584,10 @@ class mvMouseDownHandler(ChildItem, command="add_mouse_down_handler", slot=1):
 
     @property
     def button(self, /, *, __func=_dearpygui.get_item_configuration):
-        return __func(self)["button"]
+        try:
+            return __func(self)["button"]
+        except KeyError:
+            raise AttributeError(f"'button' not in dict returned from 'get_item_configuration({self.tag})'`")
     
     callback = _property__callback
     show = _property__show
@@ -5420,11 +6604,17 @@ class mvMouseDragHandler(ChildItem, command="add_mouse_drag_handler", slot=1):
 
     @property
     def button(self, /, *, __func=_dearpygui.get_item_configuration):
-        return __func(self)["button"]
+        try:
+            return __func(self)["button"]
+        except KeyError:
+            raise AttributeError(f"'button' not in dict returned from 'get_item_configuration({self.tag})'`")
     
     @property
     def threshold(self, /, *, __func=_dearpygui.get_item_configuration):
-        return __func(self)["threshold"]
+        try:
+            return __func(self)["threshold"]
+        except KeyError:
+            raise AttributeError(f"'threshold' not in dict returned from 'get_item_configuration({self.tag})'`")
     
     callback = _property__callback
     show = _property__show
@@ -5454,7 +6644,10 @@ class mvMouseReleaseHandler(ChildItem, command="add_mouse_release_handler", slot
 
     @property
     def button(self, /, *, __func=_dearpygui.get_item_configuration):
-        return __func(self)["button"]
+        try:
+            return __func(self)["button"]
+        except KeyError:
+            raise AttributeError(f"'button' not in dict returned from 'get_item_configuration({self.tag})'`")
     
     callback = _property__callback
     show = _property__show
@@ -5591,11 +6784,17 @@ class mvPieSeries(SupportsValueArray, ChildItem, command="add_pie_series", slot=
 
     @property
     def radius(self, /, *, __func=_dearpygui.get_item_configuration):
-        return __func(self)["radius"]
+        try:
+            return __func(self)["radius"]
+        except KeyError:
+            raise AttributeError(f"'radius' not in dict returned from 'get_item_configuration({self.tag})'`")
     
     @property
     def labels(self, /, *, __func=_dearpygui.get_item_configuration):
-        return __func(self)["labels"]
+        try:
+            return __func(self)["labels"]
+        except KeyError:
+            raise AttributeError(f"'labels' not in dict returned from 'get_item_configuration({self.tag})'`")
     
     format = _property__format
     angle = _property__angle
@@ -5721,7 +6920,10 @@ class mvPlotAxis(ContainerItem, ChildItem, command="add_plot_axis", slot=1):
 
     @property
     def axis(self, /, *, __func=_dearpygui.get_item_configuration):
-        return __func(self)["axis"]
+        try:
+            return __func(self)["axis"]
+        except KeyError:
+            raise AttributeError(f"'axis' not in dict returned from 'get_item_configuration({self.tag})'`")
     
     no_label = _property__no_label
     no_gridlines = _property__no_gridlines
@@ -5959,11 +7161,17 @@ class mvRawTexture(ChildItem, command="add_raw_texture", slot=1):
 
     @property
     def width(self, /, *, __func=_dearpygui.get_item_configuration):
-        return __func(self)["width"]
+        try:
+            return __func(self)["width"]
+        except KeyError:
+            raise AttributeError(f"'width' not in dict returned from 'get_item_configuration({self.tag})'`")
     
     @property
     def height(self, /, *, __func=_dearpygui.get_item_configuration):
-        return __func(self)["height"]
+        try:
+            return __func(self)["height"]
+        except KeyError:
+            raise AttributeError(f"'height' not in dict returned from 'get_item_configuration({self.tag})'`")
     
     @staticmethod
     def create_from_file(file, /, *, gamma=1.0, gamma_scale_factor=1.0, format=_dearpygui.mvFormat_Float_rgba, label=None, use_internal_label=True, user_data=None, tag=0, parent=0, **kwargs):
@@ -6497,11 +7705,17 @@ class mvStaticTexture(SupportsValueArray, ChildItem, command="add_static_texture
 
     @property
     def width(self, /, *, __func=_dearpygui.get_item_configuration):
-        return __func(self)["width"]
+        try:
+            return __func(self)["width"]
+        except KeyError:
+            raise AttributeError(f"'width' not in dict returned from 'get_item_configuration({self.tag})'`")
     
     @property
     def height(self, /, *, __func=_dearpygui.get_item_configuration):
-        return __func(self)["height"]
+        try:
+            return __func(self)["height"]
+        except KeyError:
+            raise AttributeError(f"'height' not in dict returned from 'get_item_configuration({self.tag})'`")
     
     @staticmethod
     def create_from_file(file, /, *, gamma=1.0, gamma_scale_factor=1.0, label=None, use_internal_label=True, user_data=None, tag=0, parent=0, **kwargs):
@@ -6558,11 +7772,17 @@ class mvSubPlots(ContainerItem, ChildItem, command="add_subplots", slot=1):
 
     @property
     def rows(self, /, *, __func=_dearpygui.get_item_configuration):
-        return __func(self)["rows"]
+        try:
+            return __func(self)["rows"]
+        except KeyError:
+            raise AttributeError(f"'rows' not in dict returned from 'get_item_configuration({self.tag})'`")
     
     @property
     def columns(self, /, *, __func=_dearpygui.get_item_configuration):
-        return __func(self)["columns"]
+        try:
+            return __func(self)["columns"]
+        except KeyError:
+            raise AttributeError(f"'columns' not in dict returned from 'get_item_configuration({self.tag})'`")
     
     row_ratios = _property__row_ratios
     column_ratios = _property__column_ratios
@@ -6997,11 +8217,17 @@ class mvThemeColor(SupportsValueArray, ChildItem, command="add_theme_color", slo
 
     @property
     def target(self, /, *, __func=_dearpygui.get_item_configuration):
-        return __func(self)["target"]
+        try:
+            return __func(self)["target"]
+        except KeyError:
+            raise AttributeError(f"'target' not in dict returned from 'get_item_configuration({self.tag})'`")
     
     @property
     def category(self, /, *, __func=_dearpygui.get_item_configuration):
-        return __func(self)["category"]
+        try:
+            return __func(self)["category"]
+        except KeyError:
+            raise AttributeError(f"'category' not in dict returned from 'get_item_configuration({self.tag})'`")
     
     identify = _ElementItem.identify
 
@@ -7017,7 +8243,10 @@ class mvThemeComponent(ContainerItem, ChildItem, command="add_theme_component", 
 
     @property
     def item_type(self, /, *, __func=_dearpygui.get_item_configuration):
-        return __func(self)["item_type"]
+        try:
+            return __func(self)["item_type"]
+        except KeyError:
+            raise AttributeError(f"'item_type' not in dict returned from 'get_item_configuration({self.tag})'`")
     
     enabled_state = _property__enabled_state
 
@@ -7047,11 +8276,17 @@ class mvThemeStyle(SupportsValueArray, ChildItem, command="add_theme_style", slo
 
     @property
     def target(self, /, *, __func=_dearpygui.get_item_configuration):
-        return __func(self)["target"]
+        try:
+            return __func(self)["target"]
+        except KeyError:
+            raise AttributeError(f"'target' not in dict returned from 'get_item_configuration({self.tag})'`")
     
     @property
     def category(self, /, *, __func=_dearpygui.get_item_configuration):
-        return __func(self)["category"]
+        try:
+            return __func(self)["category"]
+        except KeyError:
+            raise AttributeError(f"'category' not in dict returned from 'get_item_configuration({self.tag})'`")
     
     identify = _ElementItem.identify
 
