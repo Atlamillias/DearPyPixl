@@ -833,6 +833,12 @@ class CompositeItem:
     """
     components: Collection = ()
     def __init__(self: Any, /, tag: Item = ...) -> None: ...
+    def refresh(self, /) -> Any:
+        """Update the item's display if its states are dirty.
+
+        The default implementation of this method is a no-op. It should be
+        overridden as needed.
+        """
 
 
 class SupportsValueArray[T]:

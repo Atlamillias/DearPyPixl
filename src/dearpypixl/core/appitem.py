@@ -564,6 +564,9 @@ class CompositeItem:
         config["user_data"] = self.user_data
         return config
 
+    def refresh(self, /):
+        return
+
 
 class SupportsValueArray[T]:
     __slots__ = ()
