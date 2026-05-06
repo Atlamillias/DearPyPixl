@@ -159,7 +159,12 @@ _PROPERTY_LOCALS = {
 
 def _create_config_property(name):
     fget = codegen.create_function(
-        name, ("self",), (f"return getter()['{name}']",),
+        name, ("self",), (
+            f"try:",
+            f"    return getter()['{name}']",
+            f"except KeyError:",
+            f"    raise AttributeError(f\"{name!r} not in dict returned from 'get_app_configuration()'\")"
+        ),
         module=__name__, globals=globals(), locals=_PROPERTY_LOCALS,
     )
     fset = codegen.create_function(

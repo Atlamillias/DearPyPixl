@@ -494,7 +494,12 @@ _PROPERTY_LOCALS = {
 
 def _create_config_property( name, /):
     fget = codegen.create_function(
-        name, ("self",), (f"return getter(uuid)['{name}']",),
+        name, ("self",), (
+            f"try:",
+            f"    return getter(uuid)['{name}']",
+            f"except KeyError:",
+            f"    raise AttributeError(f\"{name!r} not in dict returned from 'get_viewport_configuration()'\")",
+        ),
         module=__name__, globals=globals(), locals=_PROPERTY_LOCALS,
     )
     fset = codegen.create_function(
