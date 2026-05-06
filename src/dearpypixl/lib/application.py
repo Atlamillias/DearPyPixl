@@ -1,17 +1,11 @@
-import typing
 import threading
-
-from dearpygui import dearpygui, _dearpygui
 
 from dearpypixl.core import management
 from dearpypixl.core import interface
 from dearpypixl.core import codegen
-from dearpypixl.core.protocols import Item, Property as property
 from dearpypixl.core.management import DEARPYGUI_VERSION
 
-if typing.TYPE_CHECKING:
-    from dearpypixl.lib.items import mvTheme, mvFont
-    from dearpypixl.core.appitem import _ItemInfoDict
+from dearpygui import dearpygui, _dearpygui
 
 
 __all__ = ("Application",)
@@ -25,8 +19,8 @@ _GLOBAL_LOCK = threading.Lock()
 
 _GLOBAL_INFO = {"font": None, "theme": None}
 
-def _create_app_info_getter(key, item_type) -> typing.Any:
-    def func(*, _key=key, _item_type=item_type) -> typing.Any:
+def _create_app_info_getter(key, item_type):
+    def func(*, _key=key, _item_type=item_type):
         try:
             item = _GLOBAL_INFO[_key]
         except KeyError:
@@ -47,7 +41,7 @@ def _create_app_info_getter(key, item_type) -> typing.Any:
     del key, item_type
     return func
 
-def _get_app_theme() -> typing.Any:  # pyright: ignore
+def _get_app_theme():  # pyright: ignore
     global _get_app_theme
     _get_app_theme = _create_app_info_getter(
         "theme", interface.Interface.__item_registry__["mvAppItemType::mvTheme"]
@@ -58,7 +52,7 @@ def _set_app_theme(theme, /):
     _dearpygui.bind_theme(theme or 0)
     _GLOBAL_INFO["theme"] = theme or None
 
-def _get_app_font() -> typing.Any:  # pyright: ignore
+def _get_app_font():  # pyright: ignore
     global _get_app_font
     _get_app_font = _create_app_info_getter(
         "font", interface.Interface.__item_registry__["mvAppItemType::mvFont"]
@@ -72,7 +66,7 @@ def _set_app_font(font, /):
 
 _GLOBAL_STATE = {"ok": False}
 
-def _get_app_ok() -> typing.Any:
+def _get_app_ok():
     return _GLOBAL_STATE["ok"]
 
 def _set_app_ok(value = True, /):
@@ -107,13 +101,13 @@ def destroy_context(**kwargs):
         _set_app_ok(False)
 
 @management.patch(dearpygui.bind_font)
-def bind_font(font: int | str, **kwargs) -> int | str:
+def bind_font(font: int | str, **kwargs):
     with _GLOBAL_LOCK:
         _set_app_font(font)
     return font
 
 @management.patch(dearpygui.bind_theme)
-def bind_theme(theme: int | str, **kwargs) -> int | str:
+def bind_theme(theme: int | str, **kwargs):
     with _GLOBAL_LOCK:
         _set_app_font(theme)
     return theme
@@ -139,50 +133,19 @@ def _create_config_property(name):
     )
     return property(fget, fset)
 
-def _config_property() -> typing.Any:
+def _config_property():
     return codegen.DescriptorDelegate(_create_config_property)
-
-
-class _AppConfigDict(typing.TypedDict, total=False):  # pyright: ignore[reportRedeclaration]
-    docking                   : bool
-    docking_space             : bool
-    load_init_file            : str
-    init_file                 : str
-    auto_save_init_file       : bool
-    device                    : int
-    auto_device               : bool
-    allow_alias_overwrites    : bool
-    manual_alias_management   : bool
-    skip_required_args        : bool
-    skip_positional_args      : bool
-    skip_keyword_args         : bool
-    wait_for_input            : bool
-    manual_callback_management: bool
-
-if DEARPYGUI_VERSION >= (2, 0):
-    class _AppConfigDict(_AppConfigDict, total=False):
-        docking_shift_only        : bool
-        keyboard_navigation       : bool
-        anti_aliasing             : bool
-        anti_aliased_lines        : bool
-        anti_aliased_lines_use_tex: bool
-        anti_aliased_fill         : bool
-
-class _AppStateDict(typing.TypedDict, total=True):
-    ok: bool
 
 
 class Application(interface.Interface):
     __slots__ = ()
 
-    __itemtype_identity__ = (0, "Application")
-
     @property
-    def tag(self) -> int | str:
+    def tag(self, /):
         return 0
 
     @classmethod
-    def create(cls, /, **configuration: typing.Unpack[_AppConfigDict]) -> typing.Self:
+    def create(cls, /, **configuration):
         with _GLOBAL_LOCK:
             _set_app_ok(True)
 
@@ -190,86 +153,74 @@ class Application(interface.Interface):
         self.configure(**configuration)
         return self
 
-    def destroy(self, /) -> None:
+    def destroy(self, /):
         with _GLOBAL_LOCK:
             _set_app_ok(False)
 
     @property
-    def version(self) -> tuple[int, ...]:
+    def version(self, /):
         return DEARPYGUI_VERSION
 
     @property
-    def platform(self) -> str:
+    def platform(self, /):
         return _dearpygui.get_app_configuration()["platform"]
 
     @property
-    def device_name(self) -> str:
+    def device_name(self, /):
         return _dearpygui.get_app_configuration()["device_name"]
 
-    docking: property[bool, bool] = _config_property()
-    docking_space: property[bool, bool] = _config_property()
-    load_init_file: property[str, str] = _config_property()
-    init_file: property[str, str] = _config_property()
-    auto_save_init_file: property[bool, bool] = _config_property()
-    device: property[int, int] = _config_property()
-    auto_device: property[bool, bool] = _config_property()
-    allow_alias_overwrites: property[bool, bool] = _config_property()
-    manual_alias_management: property[bool, bool] = _config_property()
-    skip_required_args: property[bool, bool] = _config_property()
-    skip_positional_args: property[bool, bool] = _config_property()
-    skip_keyword_args: property[bool, bool] = _config_property()
-    wait_for_input: property[bool, bool] = _config_property()
-    manual_callback_management: property[bool, bool] = _config_property()
+    docking = _config_property()
+    docking_space = _config_property()
+    load_init_file = _config_property()
+    init_file = _config_property()
+    auto_save_init_file = _config_property()
+    device = _config_property()
+    auto_device = _config_property()
+    allow_alias_overwrites = _config_property()
+    manual_alias_management = _config_property()
+    skip_required_args = _config_property()
+    skip_positional_args = _config_property()
+    skip_keyword_args = _config_property()
+    wait_for_input = _config_property()
+    manual_callback_management = _config_property()
+    docking_shift_only = _config_property()
+    keyboard_navigation = _config_property()
+    anti_aliasing = _config_property()
+    anti_aliased_lines = _config_property()
+    anti_aliased_lines_use_tex = _config_property()
+    anti_aliased_fill = _config_property()
 
-    if DEARPYGUI_VERSION >= (2, 0):
-        docking_shift_only: property[bool, bool] = _config_property()
-        keyboard_navigation: property[bool, bool] = _config_property()
-        anti_aliasing: property[bool, bool] = _config_property()
-        anti_aliased_lines: property[bool, bool] = _config_property()
-        anti_aliased_lines_use_tex: property[bool, bool] = _config_property()
-        anti_aliased_fill: property[bool, bool] = _config_property()
-
-    @typing.overload
-    def configure(self, /, **kwargs: typing.Unpack[_AppConfigDict]) -> None: ...  # pyright:ignore [reportInconsistentOverload]  # ty:ignore[invalid-overload]
-    def configure(
-        self,
-        /, *,
-        # `Application(**application.configuration())`
-        platform = None, version = None, major_version = None, minor_version = None, device_name = None,
-        **kwargs
-    ) -> None:
+    def configure(self, /, *, platform = None, version = None, major_version = None, minor_version = None, device_name = None, **kwargs):
         _dearpygui.configure_app(**kwargs)
 
-    def configuration(self) -> _AppConfigDict:
+    def configuration(self, /):
         return _dearpygui.get_app_configuration()  # type: ignore
 
     @property
-    def theme(self) -> mvTheme | None:
-        """[get, set, del] the application-level theme item."""
+    def theme(self, /):
         return _get_app_theme()
     @theme.setter
-    def theme(self, value: Item | None, /) -> None:
+    def theme(self, value, /):
         with _GLOBAL_LOCK:
             _set_app_theme(value)
     @theme.deleter
-    def theme(self) -> None:
+    def theme(self, /):
         with _GLOBAL_LOCK:
             _set_app_theme(None)
 
     @property
-    def font(self) -> mvFont | None:
-        """[get, set, del] the application-level font item."""
+    def font(self, /):
         return _get_app_font()
     @font.setter
-    def font(self, value: Item | None) -> None:
+    def font(self, value):
         with _GLOBAL_LOCK:
             _set_app_font(value)
     @font.deleter
-    def font(self) -> None:
+    def font(self, /):
         with _GLOBAL_LOCK:
             _set_app_font(None)
 
-    def information(self) -> _ItemInfoDict:
+    def information(self, /):
         info = super().information()
         with _GLOBAL_LOCK:
             info["theme"] = _get_app_theme()
@@ -277,25 +228,17 @@ class Application(interface.Interface):
 
         return info
 
-    def state(self, /) -> _AppStateDict:
+    def state(self, /):
         with _GLOBAL_LOCK:
             state = {"ok": _get_app_ok()}
         return state  # type: ignore
 
     @property
-    def clipboard_text(self) -> str:
-        """[**get**] Return the current text value of the clipboard."""
+    def clipboard_text(self, /):
         return _dearpygui.get_clipboard_text()
     @clipboard_text.setter
-    def clipboard_text(self, text: str, /) -> None:
-        """[set] a text value onto the clipboard."""
+    def clipboard_text(self, text: str, /):
         _dearpygui.set_clipboard_text(text)
 
-    def save_init_file(self, file: str) -> None:
-        """Dump identity, position, and docking information of root
-        windows to a file.
-
-        A window is excluded if its' `no_saved_settings` configuration
-        option is set to True.
-        """
+    def save_init_file(self, file: str):
         return _dearpygui.save_init_file(file)
