@@ -20,10 +20,12 @@ def get_app_theme() -> mvTheme | None:
     """Return the application-level theme item."""
 def get_app_font() -> mvFont | None:
     """Return the application-level font item."""
-def is_app_ok():
+def is_app_ok() -> bool:
     """Return `True` if DearPyGui has been initialized via
-    `create_context()` and `setup_dearpygui()`. Returns `False`
-    otherwise, or if `destroy_context()` has been called.
+    `create_context()` and `setup_dearpygui()` *or* the
+    :py:meth:`Application.create()` method, provided that
+    `destroy_context()` or :py:meth:`Application.destroy()`
+    has not been called.
     """
 def get_app_info() -> _ItemInfoDict: ...
 def get_app_state() -> dict[Literal["ok"], bool]: ...
@@ -55,6 +57,13 @@ class Application(Interface):
     @classmethod
     def create(cls, /, **configuration: Unpack[_AppConfigDict]) -> Self: ...
     def destroy(self, /) -> None: ...
+    def exists(self, /) -> bool:
+        """Return `True` if DearPyGui has been initialized via
+        `create_context()` and `setup_dearpygui()` *or* the
+        :py:meth:`Application.create()` method, provided that
+        `destroy_context()` or :py:meth:`Application.destroy()`
+        has not been called.
+        """
     def configure(self, /, **kwargs: Unpack[_AppConfigDict]) -> None: ...
     def configuration(self, /) -> _AppConfigDict: ...
     def information(self, /) -> _ItemInfoDict: ...

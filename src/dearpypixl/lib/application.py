@@ -175,10 +175,6 @@ def _config_property():
 class Application(interface.Interface):
     __slots__ = ()
 
-    @property
-    def tag(self, /):
-        return 0
-
     @classmethod
     def create(cls, /, **configuration):
         with _GLOBAL_LOCK:
@@ -191,6 +187,24 @@ class Application(interface.Interface):
     def destroy(self, /):
         with _GLOBAL_LOCK:
             _set_app_ok(False)
+
+    exists = is_app_ok
+
+    def configure(self, /, *, platform = None, version = None, major_version = None, minor_version = None, device_name = None, **kwargs):
+        _dearpygui.configure_app(**kwargs)
+
+    def configuration(self, /):
+        return _dearpygui.get_app_configuration()  # type: ignore
+
+    information = get_app_info
+    state = get_app_state
+
+    def save_init_file(self, file: str, /):
+        return _dearpygui.save_init_file(file)
+
+    @property
+    def tag(self, /):
+        return 0
 
     @property
     def version(self, /):
@@ -225,12 +239,6 @@ class Application(interface.Interface):
     anti_aliased_lines_use_tex = _config_property()
     anti_aliased_fill = _config_property()
 
-    def configure(self, /, *, platform = None, version = None, major_version = None, minor_version = None, device_name = None, **kwargs):
-        _dearpygui.configure_app(**kwargs)
-
-    def configuration(self, /):
-        return _dearpygui.get_app_configuration()  # type: ignore
-
     @property
     def theme(self, /):
         return _get_app_theme()
@@ -255,9 +263,6 @@ class Application(interface.Interface):
         with _GLOBAL_LOCK:
             _set_app_font(None)
 
-    information = get_app_info
-    state = get_app_state
-
     @property
     def clipboard_text(self, /):
         return _dearpygui.get_clipboard_text()
@@ -265,5 +270,4 @@ class Application(interface.Interface):
     def clipboard_text(self, text: str, /):
         _dearpygui.set_clipboard_text(text)
 
-    def save_init_file(self, file: str, /):
-        return _dearpygui.save_init_file(file)
+

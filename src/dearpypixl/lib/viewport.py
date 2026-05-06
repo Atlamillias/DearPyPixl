@@ -528,6 +528,11 @@ class Viewport(interface.Interface):
             if _get_vp_ok():
                 _set_vp_ok(False)
 
+    def exists(self, /):
+        with _GLOBAL_LOCK:
+            value = _get_vp_ok()
+        return value
+
     @property
     def client_width(self):
         return _dearpygui.get_viewport_configuration(_VIEWPORT_UUID)['client_width']

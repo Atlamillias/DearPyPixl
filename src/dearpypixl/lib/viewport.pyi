@@ -117,6 +117,14 @@ class Viewport(interface.Interface):
     @classmethod
     def create(cls, **configuration: Unpack[_ViewportConfigDict]) -> Self: ...
     def destroy(self) -> None: ...
+    def exists(self, /) -> bool:
+        """Return `True` if the viewport has been created and
+        still exists.
+
+        ***NOTE**: When this method returns `True`, it is implied that
+        :py:meth:`Application.exists()` will also return `True` as
+        setting up DearPyGui is required before creating the viewport.*
+        """
     @property
     def client_width(self) -> int: ...
     @property
