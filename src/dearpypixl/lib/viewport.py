@@ -708,6 +708,8 @@ class Viewport(interface.Interface):
         return _dearpygui.get_drawing_mouse_pos()  # type: ignore
 
     def output_frame_buffer(self, file = "", *, callback = None):
+        if not isinstance(file, str):
+            file = file.__fspath__()  # type: ignore
         dearpygui.output_frame_buffer(file, callback=callback)  # type: ignore
 
 Viewport.create = management.initializer(Viewport.create)  # ty:ignore[invalid-assignment]
