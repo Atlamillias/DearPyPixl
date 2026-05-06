@@ -11,7 +11,7 @@ from dearpypixl.core import management
 from dearpypixl.core.protocols import ItemCallback
 
 
-__all__ = ("Viewport",)
+__all__ = ("Viewport", "viewport",)
 
 
 
@@ -713,3 +713,16 @@ class Viewport(interface.Interface):
         dearpygui.output_frame_buffer(file, callback=callback)  # type: ignore
 
 Viewport.create = management.initializer(Viewport.create)  # ty:ignore[invalid-assignment]
+
+
+def viewport(*, __inst=Viewport(), **kwargs):
+    # holding the lock for this check is pointless since we *can't*
+    # hold it when calling `create()` as the lock is non-reentrant,
+    # so just catch the potential error caused by a race condition
+    if not _get_vp_ok():
+        try:
+            __inst.create(**kwargs)
+        except SystemError:
+            assert _get_vp_ok()
+
+    return __inst

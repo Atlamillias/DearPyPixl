@@ -9,7 +9,7 @@ if TYPE_CHECKING:
 
 
 __all__ = (
-    "Application",
+    "Application", "application",
     "get_app_theme", "get_app_font", "is_app_ok", "get_app_info", "get_app_state",
 )
 
@@ -182,3 +182,13 @@ class Application(Interface):
         """[***get***, ***set***] the text value on the system's clipboard."""
     @clipboard_text.setter
     def clipboard_text(self, text: str, /) -> None: ...
+
+
+def application(**configuration: Unpack[_AppConfigDict]) -> Application:
+    """Return an application interface, implicitly initializing
+    DearPyGui if necessary.
+
+    :param **kwargs: Initial application settings to apply after
+        initializing DearPyGui. Only used when it is necessary to
+        initialize DearPyGui.
+    """

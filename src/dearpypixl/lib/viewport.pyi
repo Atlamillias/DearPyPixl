@@ -7,7 +7,7 @@ from dearpypixl.core.appitem import *
 from dearpypixl.lib.items import mvWindowAppItem
 
 
-__all__ = ("Viewport",)
+__all__ = ("Viewport", "viewport",)
 
 
 
@@ -409,3 +409,12 @@ class Viewport(interface.Interface):
             image data is passed as the second positional argument. Defaults
             to `None`.
         """
+
+
+def viewport(**configuration: Unpack[_ViewportConfigDict]) -> Viewport:
+    """Return a viewport interface, implicitly initializing DearPyGui
+    if necessary and creating the viewport if it does not exist.
+
+    :param **kwargs: Initial settings to use when creating the viewport.
+        Only used when it is necessary to create the viewport.
+    """

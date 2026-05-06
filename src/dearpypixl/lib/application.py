@@ -9,7 +9,7 @@ from dearpygui import dearpygui, _dearpygui
 
 
 __all__ = (
-    "Application",
+    "Application", "application",
     "get_app_theme", "get_app_font", "is_app_ok", "get_app_info", "get_app_state",
 )
 
@@ -276,3 +276,14 @@ class Application(interface.Interface):
         _dearpygui.set_clipboard_text(text)
 
 
+def application(*, __inst=Application(), **kwargs):
+    # holding the lock for this check is pointless since we *can't*
+    # hold it when calling `create()` as the lock is non-reentrant,
+    # so just catch the potential error caused by a race condition
+    if not _get_app_ok():
+        try:
+            __inst.create(**kwargs)
+        except SystemError:
+            assert _get_app_ok()
+
+    return __inst
