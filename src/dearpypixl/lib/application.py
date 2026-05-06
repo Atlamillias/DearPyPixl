@@ -8,7 +8,10 @@ from dearpypixl.core.management import DEARPYGUI_VERSION
 from dearpygui import dearpygui, _dearpygui
 
 
-__all__ = ("Application",)
+__all__ = (
+    "Application",
+    "get_app_theme", "get_app_font", "is_app_ok", "get_app_info", "get_app_state",
+)
 
 
 
@@ -111,6 +114,38 @@ def bind_theme(theme: int | str, **kwargs):
     with _GLOBAL_LOCK:
         _set_app_font(theme)
     return theme
+
+
+
+
+# [ DPX unique ]
+
+def get_app_theme(obj=None, /):
+    with _GLOBAL_LOCK:
+        value = _get_app_theme()
+    return value
+
+def get_app_font(obj=None, /):
+    with _GLOBAL_LOCK:
+        value = _get_app_font()
+    return value
+
+def is_app_ok(obj=None, /):
+    with _GLOBAL_LOCK:
+        value = _get_app_ok()
+    return value
+
+def get_app_info(obj=None, /):
+    info = interface.Interface.information(0)  # type: ignore
+    with _GLOBAL_LOCK:
+        info["theme"] = _get_app_theme()
+        info["font"]  = _get_app_font()
+    return info
+
+def get_app_state(obj=None, /):
+    with _GLOBAL_LOCK:
+        state = {"ok": _get_app_ok()}
+    return state  # type: ignore
 
 
 
@@ -220,18 +255,8 @@ class Application(interface.Interface):
         with _GLOBAL_LOCK:
             _set_app_font(None)
 
-    def information(self, /):
-        info = super().information()
-        with _GLOBAL_LOCK:
-            info["theme"] = _get_app_theme()
-            info["font"]  = _get_app_font()
-
-        return info
-
-    def state(self, /):
-        with _GLOBAL_LOCK:
-            state = {"ok": _get_app_ok()}
-        return state  # type: ignore
+    information = get_app_info
+    state = get_app_state
 
     @property
     def clipboard_text(self, /):
@@ -240,5 +265,5 @@ class Application(interface.Interface):
     def clipboard_text(self, text: str, /):
         _dearpygui.set_clipboard_text(text)
 
-    def save_init_file(self, file: str):
+    def save_init_file(self, file: str, /):
         return _dearpygui.save_init_file(file)

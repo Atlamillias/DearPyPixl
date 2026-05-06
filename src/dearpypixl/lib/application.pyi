@@ -8,9 +8,25 @@ if TYPE_CHECKING:
     from dearpypixl.core.appitem import _ItemInfoDict
 
 
-__all__ = ("Application",)
+__all__ = (
+    "Application",
+    "get_app_theme", "get_app_font", "is_app_ok", "get_app_info", "get_app_state",
+)
 
 
+
+
+def get_app_theme() -> mvTheme | None:
+    """Return the application-level theme item."""
+def get_app_font() -> mvFont | None:
+    """Return the application-level font item."""
+def is_app_ok():
+    """Return `True` if DearPyGui has been initialized via
+    `create_context()` and `setup_dearpygui()`. Returns `False`
+    otherwise, or if `destroy_context()` has been called.
+    """
+def get_app_info() -> _ItemInfoDict: ...
+def get_app_state() -> dict[Literal["ok"], bool]: ...
 
 
 class _AppConfigDict(TypedDict, total=False):
