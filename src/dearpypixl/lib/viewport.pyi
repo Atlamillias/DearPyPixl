@@ -1,4 +1,5 @@
 from typing import *
+from os import PathLike
 
 from dearpypixl.core import interface
 from dearpypixl.core.protocols import *
@@ -112,11 +113,62 @@ class _ViewportStateDict(TypedDict, total=True):
 
 
 class Viewport(interface.Interface):
+    """An interface for the DearPyGui viewport.
+
+    Like items created using a DearPyPixl interface class, a viewport
+    is created and destroyed via the :py:meth:`Viewport.create()` and
+    :py:meth:`Viewport.destroy()` methods. The state of the viewport
+    is not bound to a specific interface, so multiple interfaces can
+    exist for the same viewport once it has been created\*. DearPyGui
+    must be initialized before creating the viewport.
+
+    ```python
+    import dearpypixl as dpx
+
+    dpx.Application.create()  # OR `create_context(); setup_dearpygui()`
+
+    viewport = dpx.Viewport.create(title="A-Very-Fitting-Title")
+
+    # configure it post-creation via `configure()` or member assignment
+    viewport.width = 800
+    viewport.height = 600
+    viewport.primary_window = dpx.add_window()
+    viewport.callback = lambda sender, rect: print(f"viewport resized: {rect}")
+
+    # register on-frame callbacks
+    viewport.frame_callbacks[10] = lambda: print("called on frame 10")
+    viewport.frame_callbacks[-1] = lambda: print("called on exit/last frame")
+    # as a tuple w/user_data
+    viewport.frame_callbacks[14] = (
+        lambda: sender, user_data: print(f"called on frame 14 with {user_data}"),
+        "some-very-fitting-user-data"
+    )
+    # access returns the callback & user data as a 2-tuple, or `None`
+    assert viewport.frame_callbacks[3] is None
+
+    # show the viewport before entering the main loop
+    viewport.show()
+    dpx.start_dearpygui()
+    ```
+    *\*As of DearPyGui v2.3.1, only one viewport can be created per
+    thread and device context. Even after the viewport has been
+    destroyed, the success of creating a new one is not guaranteed.*
+    """
     @property
     def tag(self, /) -> int | str: ...
     @classmethod
-    def create(cls, **configuration: Unpack[_ViewportConfigDict]) -> Self: ...
-    def destroy(self) -> None: ...
+    def create(cls, **configuration: Unpack[_ViewportConfigDict]) -> Self:
+        """Create the DearPyGui viewport and return an interface for
+        it. Only one viewport can exist globally, but any number of
+        interfaces can exist per viewport.
+
+        **NOTE**: Even once the original viewport has been destroyed,
+        it still may not be possible to create a new one within the
+        same thread and device context.*
+        """
+    def destroy(self) -> None:
+        """Destroy the viewport if it exists.
+        """
     def exists(self, /) -> bool:
         """Return `True` if the viewport has been created and
         still exists.
@@ -126,51 +178,88 @@ class Viewport(interface.Interface):
         setting up DearPyGui is required before creating the viewport.*
         """
     @property
-    def client_width(self) -> int: ...
+    def client_width(self) -> int:
+        """[get] the horizontal size of the viewport in pixels."""
     @property
-    def client_height(self) -> int: ...
+    def client_height(self) -> int:
+        """[get] the vertical size of the viewport in pixels."""
     @property
-    def title(self, /) -> str: ...
+    def title(self, /) -> str:
+        """[get, set] the text displayed in the viewport's decoration."""
     @title.setter
     def title(self, value: str, /) -> None: ...
     @property
-    def small_icon(self, /) -> str: ...
+    def small_icon(self, /) -> str:
+        """[get, set] the filepath of the icon displayed in the viewport's
+        decoration.
+
+        The ICO (`.ico`) image format is supported across all systems.
+        PNG images can be used as icons on non-Windows systems.
+
+        Note that this must be set prior to showing the viewport -- "runtime"
+        updates are ignored.
+        """
     @small_icon.setter
     def small_icon(self, value: str, /) -> None: ...
     @property
-    def large_icon(self, /) -> str: ...
+    def large_icon(self, /) -> str:
+        """[get, set] the filepath of the icon displayed in the system
+        taskbar or application dock.
+
+        The ICO (`.ico`) image format is supported across all systems.
+        PNG images can be used as icons on non-Windows systems.
+
+        Note that this must be set prior to showing the viewport -- "runtime"
+        updates are ignored.
+        """
     @large_icon.setter
     def large_icon(self, value: str, /) -> None: ...
     @property
-    def width(self, /) -> int: ...
+    def width(self, /) -> int:
+        """[get, set] the horizontal size of the viewport's "drawable" space
+        in pixels.
+        """
     @width.setter
     def width(self, value: int, /) -> None: ...
     @property
-    def height(self, /) -> int: ...
+    def height(self, /) -> int:
+        """[get, set] the vertical size of the viewport's "drawable" space
+        in pixels.
+        """
     @height.setter
     def height(self, value: int, /) -> None: ...
     @property
-    def x_pos(self, /) -> int: ...
+    def x_pos(self, /) -> int:
+        """[get, set] the viewport's horizontal position relative to the
+        screen or desktop.
+        """
     @x_pos.setter
     def x_pos(self, value: int, /) -> None: ...
     @property
-    def y_pos(self, /) -> int: ...
+    def y_pos(self, /) -> int:
+        """[get, set] the viewport's vertical position relative to the
+        screen or desktop.
+        """
     @y_pos.setter
     def y_pos(self, value: int, /) -> None: ...
     @property
-    def min_width(self, /) -> int: ...
+    def min_width(self, /) -> int:
+        """[get, set] the lower-bound limit of the viewport's width."""
     @min_width.setter
     def min_width(self, value: int, /) -> None: ...
     @property
-    def max_width(self, /) -> int: ...
+    def max_width(self, /) -> int:
+        """[get, set] the upper-bound limit of the viewport's width."""
     @max_width.setter
     def max_width(self, value: int, /) -> None: ...
     @property
-    def min_height(self, /) -> int: ...
+    def min_height(self, /) -> int:
+        """[get, set] the lower-bound limit of the viewport's height."""
     @min_height.setter
     def min_height(self, value: int, /) -> None: ...
     @property
-    def max_height(self, /) -> int: ...
+    def max_height(self, /) -> int:
+        """[get, set] the upper-bound limit of the viewport's height."""
     @max_height.setter
     def max_height(self, value: int, /) -> None: ...
     @property
@@ -190,7 +279,11 @@ class Viewport(interface.Interface):
     @decorated.setter
     def decorated(self, value: bool, /) -> None: ...
     @property
-    def clear_color(self, /) -> Array[int | float, Literal[3, 4]]: ...
+    def clear_color(self, /) -> Array[int | float, Literal[3, 4]]:
+        """[get, set] the viewport's background color.
+
+        Note that some systems may ignore the alpha channel.
+        """
     @clear_color.setter
     def clear_color(self, value: Array[int | float, Literal[3, 4]], /) -> None: ...
     @property
@@ -198,19 +291,31 @@ class Viewport(interface.Interface):
     @disable_close.setter
     def disable_close(self, value: bool, /) -> None: ...
     @property
-    def primary_window(self, /) -> mvWindowAppItem | None: ...
+    def primary_window(self, /) -> mvWindowAppItem | None:
+        """[***get***, ***set***, ***del***] the `mvWindowAppItem` used as
+        the viewport's primary window. A window set as the primary window
+        fills the space within the viewport."""
     @primary_window.setter
     def primary_window(self, value: int | str | None, /): ...
     @primary_window.deleter
     def primary_window(self, /) -> None: ...
     @property
-    def callback(self, /) -> _ViewportCallback | None: ...
+    def callback(self, /) -> _ViewportCallback | None:
+        """[***get***, ***set***, ***del***] the callback invoked when the
+        viewport is resized via user input.
+
+        If supported by the callback, it will recieve the viewport's position
+        and size (as a 4-tuple) as the second positional argument.
+        """
     @callback.setter
     def callback(self, value: _ViewportCallback | None, /) -> None: ...
     @callback.deleter
     def callback(self, /) -> None: ...
     @property
-    def user_data(self, /) -> Any: ...
+    def user_data(self, /) -> Any:
+        """[***get***, ***set***, ***del***] the payload sent as the third
+        positional argument tot he viewport's on-resize callback.
+        """
     @user_data.setter
     def user_data(self, value: Any, /) -> None: ...
     @user_data.deleter
@@ -218,25 +323,60 @@ class Viewport(interface.Interface):
     def configure(self, /, **kwargs: Unpack[_ViewportConfigDict]) -> None: ...
     def configuration(self) -> _ViewportConfigDict: ...
     @property
-    def pos(self, /) -> list[int]: ...
+    def pos(self, /) -> list[int]:
+        """[get, set] the viewport's position relative to the screen or
+        desktop."""
     @pos.setter
     def pos(self, value: Sequence[int], /) -> None: ...
     @property
-    def is_visible(self, /) -> bool: ...
+    def is_visible(self, /) -> bool:
+        """[***get***] the visibility status of the viewport -- returning
+        `True` if the viewport exists and the :py:meth:`show()` method has
+        been called at least once.
+        """
     @overload
-    def show(self, *, minimized: bool = ...) -> None: ...
+    def show(self, /,) -> None: ...
     @overload
-    def show(self, *, maximized: bool = ...) -> None: ...
+    def show(self, /, *, minimized: bool) -> None: ...
+    @overload
+    def show(self, /, *, maximized: bool) -> None: ...
     @property
-    def is_fullscreen(self, /) -> bool: ...
-    def fullscreen(self, value: bool | None = None, /) -> None: ...
+    def is_fullscreen(self, /) -> bool:
+        """Return `True` if the viewport's display mode is set to
+        borderless/windowed fullscreen."""
+    def fullscreen(self, value: bool | None = None, /) -> None:
+        """Toggles the borderless fullscreen display mode when *value*
+        is omitted, or explicitly enables or disables it otherwise.
+
+        :type value: `bool | None` (*optional*)
+        :param value: A boolean indicating the state of the feature.
+            `True` enables fullscreen (if not already), while and `False`
+            to disable it (if enabled). Defaults to `None`.
+        """
     @property
     def rect_size(self, /) -> list[int]: ...
     def state(self) -> _ViewportStateDict: ...
-    def minimize(self, /) -> None: ...
-    def maximize(self, /) -> None: ...
+    def minimize(self, /) -> None:
+        """Minimize the viewport, hiding it into the taskbar, application
+        dock, etc. Does nothing if the viewport is already minimized.
+
+        Implicitly reverts the viewport's display mode if in
+        borderless fullscreen.
+        """
+    def maximize(self, /) -> None:
+        """Maximize the viewport, enlarging it to fill the screen's
+        available space. Does nothing if the viewport is already maximized.
+
+        Implicitly reverts the viewport's display mode if in
+        borderless fullscreen.
+        """
     @property
-    def frame_callbacks(self, /) -> _FrameCallbackMap: ...
+    def frame_callbacks(self, /) -> _FrameCallbackMap:
+        """[***get***] the registry of on-frame callbacks as a mapping-like
+        object.
+
+        Refer to :py:class:`_FrameCallbackMap` for more information.
+        """
     def get_active_window(self) -> Item | None:
         """Returns the identifier of the foreground root window item."""
     def get_mouse_pos(self, /, *, local: bool = True) -> Array[float, Literal[2]]: ...
@@ -251,15 +391,21 @@ class Viewport(interface.Interface):
     def get_mouse_drawing_pos(self, /) -> Array[float, Literal[2]]:
         """Return the position of the mouse cursor relative to the
         active `mvDrawlist` or  `mvViewportDrawlist` item."""
-    def output_frame_buffer(self, file: str = "", *, callback: _FrameBufferCallback | None = None) -> None:
+
+    @overload
+    def output_frame_buffer(self, file: str | PathLike[str]) -> None: ...
+    @overload
+    def output_frame_buffer(self, *, callback: _FrameBufferCallback) -> None: ...
+    def output_frame_buffer(self, file: str | PathLike[str] = "", *, callback: _FrameBufferCallback | None = None) -> None:
         """Dump the frame buffer as a PNG image. Can only be called if
         at least one frame has been rendered. Unavailable on MacOS.
 
-        Args:
-            * file: A filename for the image.
+        :type file: `str | PathLike[str]` (*optional*)
+        :param file: A filename for the image. Defaults to `''`.
 
-            * callback: A DearPyGui-callable callback. If specified, Dear
-            PyGui will call it next frame; passing it a `mvBuffer` object
-            as the callback's second positional argument. The buffer will
-            contain the raw image data.
+        :type callback: `Callable[[Any, mvBuffer], Any] | None` (*optional*)
+        :param callback: If specified, DearPyGui will call it next frame
+            to process the image data instead of saving it to a file. The
+            image data is passed as the second positional argument. Defaults
+            to `None`.
         """
