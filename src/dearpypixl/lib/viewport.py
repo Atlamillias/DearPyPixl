@@ -6,7 +6,7 @@ from dearpygui import dearpygui, _dearpygui
 
 from dearpypixl.core import management
 from dearpypixl.core import interface
-from dearpypixl.core import codegen
+from dearpypixl.core import metautil
 from dearpypixl.core import management
 from dearpypixl.core.protocols import ItemCallback
 
@@ -493,7 +493,7 @@ _PROPERTY_LOCALS = {
 }
 
 def _create_config_property( name, /):
-    fget = codegen.create_function(
+    fget = metautil.create_function(
         name, ("self",), (
             f"try:",
             f"    return getter(uuid)['{name}']",
@@ -502,14 +502,14 @@ def _create_config_property( name, /):
         ),
         module=__name__, globals=globals(), locals=_PROPERTY_LOCALS,
     )
-    fset = codegen.create_function(
+    fset = metautil.create_function(
         name, ("self", "value"), (f"setter(uuid, {name}=value)",),
         module=__name__, globals=globals(), locals=_PROPERTY_LOCALS,
     )
     return property(fget, fset)
 
 def _config_property() -> typing.Any:
-    return codegen.DescriptorDelegate(_create_config_property)
+    return metautil.DescriptorDelegate(_create_config_property)
 
 
 class Viewport(interface.Interface):
