@@ -170,7 +170,7 @@ class AppItem[U = typing.Any, V = typing.Any, P = typing.Any, C = typing.Any](in
             return False
 
     @property
-    def tag(self):
+    def tag(self):  # pyrefly: ignore [bad-override]
         return self.real
 
     @property
@@ -516,10 +516,14 @@ class CompositeItem:
     def __init__(self: typing.Any, /, tag=0):
         user_data = _dearpygui.get_item_configuration(self)["user_data"]
         try:
-            self.__dict__ = user_data
+            self.__dict__ = user_data  # type: ignore
         except TypeError:
             self.__dict__["user_data"] = user_data
             _dearpygui.configure_item(self, user_data=self.__dict__)
+        except AttributeError:
+            raise RuntimeError(
+                f"cannot assign `__dict__` of composite interface object {type(self).__name__!r}"
+            )
 
     def __repr__(self: typing.Any, /):
         # uses the concrete class name, whereas `AppItem.__repr__()` always
@@ -555,12 +559,12 @@ class CompositeItem:
         super().destroy()  # type: ignore
 
     def configure(self: typing.Any, /, user_data=_MISSING, __missing=_MISSING, **kwargs):
-        super().configure(**kwargs)
+        super().configure(**kwargs)  # type: ignore
         if user_data is not __missing:
             self.user_data = user_data
 
     def configuration(self: typing.Any, /):
-        config = super().configuration()
+        config = super().configuration()  # type: ignore
         config["user_data"] = self.user_data
         return config
 
@@ -681,8 +685,8 @@ class _ElementItem[U = typing.Any, P = typing.Any](SupportsValueArray, ChildItem
         - `target`: The value returned via `get_item_configuration(element)["target"]`.
         """
         try:
-            registry = __class__._ELEMENT_REGISTRY
-            name_map = __class__._ELEMENT_NAME_MAP
+            registry = __class__._ELEMENT_REGISTRY  # type: ignore
+            name_map = __class__._ELEMENT_NAME_MAP  # type: ignore
         except AttributeError:
             import re
 
