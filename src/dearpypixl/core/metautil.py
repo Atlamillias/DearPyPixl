@@ -220,6 +220,26 @@ def get_positional_arity(func: typing.Callable, /) -> int:
     return code.co_argcount - int(hasattr(func, "__self__"))
 
 
+def get_positional_defaults(func: typing.Callable, /) -> tuple:
+    defaults = getattr(func, "__defaults__", _MISSING)
+    if defaults is _MISSING:
+        try:
+            call = func.__call__  # type: ignore
+        except AttributeError:
+            assert not callable(func), "object is callable but has no `__call__` member"
+            raise TypeError(f"{func!r} is not callable") from None
+        try:
+            defaults = call.__defaults__
+        except AttributeError:
+            if func is print:
+                return ()
+            raise ValueError(
+                f"cannot determine positional defaults of {func!r} object"
+            ) from None
+
+    return defaults or ()  # type: ignore
+
+
 class _CallbackDelegate[T: ItemCallback](typing.Protocol):
     __name__: str
     __code__: types.CodeType
@@ -243,20 +263,44 @@ def create_callback_delegate[T: ItemCallback](func: T, /) -> _CallbackDelegate[T
     The original, unwrapped callable can be accessed via the
     wrapper's `__wrapped__` attribute of the wrapper.
     """
-    match get_positional_arity(func):
+    lcls: dict = {"_callback": func}
+
+    match arity := get_positional_arity(func):
         case 0: body = "_callback()"
         case 1: body = "_callback(sender)"
         case 2: body = "_callback(sender, app_data)"
-        case _: body = "_callback(sender, app_data, user_data)"
+        case _:
+            body = "_callback(sender, app_data, user_data)"
+            arity = 3
 
-    wrapper = create_function(
-        "dearpygui_callback_delegate",
-        ("sender", "app_data", "user_data", "/"), body, __name__, locals={"_callback": func}
-    )
+    if arity and (defaults := get_positional_defaults(func)):
+        # Use the callable defaults as our defaults. When the callable's
+        # arity (0-3) differs from the delegate's (always 3), ensure the
+        # delegate's trailing arguments also have defaults.
+        count  = len(defaults)
+        istart = arity - count
+        istop  = istart + count
+
+        tmp = [0, None, None]
+        tmp[istart:istop] = defaults[:]
+        defaults = tmp
+        defaults[istop:] = (0, None, None)[istop:]
+
+        args = ["sender", "app_data", "user_data"]
+        for i in range(istart, 3):
+            var = f"_default{i}"
+
+            lcls[var] = defaults[i]
+            args[i]   = f"{args[i]}={var}"
+
+        args.append('/')
+    else:
+        args = ("sender", "app_data", "user_data", "/")
+
+    wrapper = create_function("callback_delegate", args, body, __name__, locals=lcls)
     wrapper.__wrapped__ = func  # type: ignore
 
     return wrapper  # type: ignore
-
 
 ITEM_CALLBACK_CODE_0 = (lambda: None).__code__
 ITEM_CALLBACK_CODE_1 = (lambda sender=0: None).__code__
