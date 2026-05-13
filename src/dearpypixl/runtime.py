@@ -180,8 +180,13 @@ class Runtime[T: typing.Callable]:
 
                 ts_idle = timer()
                 try:
-                    signal(self)
-                except (RuntimeExit, UnboundLocalError):
+                    try:
+                        signal  # type: ignore
+                    except UnboundLocalError:
+                        break
+                    else:
+                        signal(self)
+                except RuntimeExit:
                     break
                 finally:
                     tb_idle += timer() - ts_idle
