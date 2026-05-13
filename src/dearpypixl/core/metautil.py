@@ -14,8 +14,6 @@ __all__ = ()
 _MISSING = object()
 
 
-
-
 type _SourceStrings = typing.Sequence[str]
 
 _DEFAULT_MODULE = types.ModuleType(f"<module>")
@@ -69,7 +67,7 @@ def create_function(
     scope = {}
     exec(closure, globals, scope)
 
-    fn = scope["__create_function__"](**locals)
+    fn = scope["__create_function__"](**locals)  # pyrefly: ignore[not-callable]
     fn.__module__   = module or _DEFAULT_MODULE.__name__
     fn.__qualname__ = fn.__name__ = name
 
@@ -135,7 +133,6 @@ def create_named_desc_factory(factory: typing.Callable[[str], typing.Any], /) ->
     def descfactory_delegate_factory(name: str = '', /):
         return DescriptorDelegate(factory, name)
     return descfactory_delegate_factory
-
 
 
 
@@ -259,3 +256,9 @@ def create_callback_delegate[T: ItemCallback](func: T, /) -> _CallbackDelegate[T
     wrapper.__wrapped__ = func  # type: ignore
 
     return wrapper  # type: ignore
+
+
+ITEM_CALLBACK_CODE_0 = (lambda: None).__code__
+ITEM_CALLBACK_CODE_1 = (lambda sender=0: None).__code__
+ITEM_CALLBACK_CODE_2 = (lambda sender=0, app_data=None: None).__code__
+ITEM_CALLBACK_CODE_3 = (lambda sender=0, app_data=None, user_data=None: None).__code__
