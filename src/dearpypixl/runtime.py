@@ -74,7 +74,7 @@ class Runtime[T: typing.Callable]:
         if value < 1:
             self._frame_rate_limit = self._render_interval = 0
         else:
-            self._frame_rate_limit, self._render_interval = value, int(1_000_000_000 // value)
+            self._frame_rate_limit, self._render_interval = value, 1_000_000_000 // value
 
     @property
     def update_interval(self, /) -> float:
