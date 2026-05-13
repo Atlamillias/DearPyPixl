@@ -2,7 +2,8 @@ import typing as _typing
 
 from dearpygui import  _dearpygui
 
-from dearpypixl.core import appitem as _appitem
+import dearpypixl.core.appitem as _appitem
+import dearpypixl.core.metautil as _metautil
 
 if _typing.TYPE_CHECKING:
     from dearpypixl.lib.items import mvWindowAppItem
@@ -173,13 +174,18 @@ def cast_sender_as(item_type = _appitem.AppItem, callback = None, /):
     :param callback: A function that will be used as a Dear PyGui callback
         that accepts at least one positional argument. Defaults to `None`.
     """
-    import functools
-
     def wrap_callback(callback, /):
-
-        @functools.wraps(callback)
-        def wrapped(sender, *args, __callback=callback, __item_type=item_type):
-            return __callback(__item_type(tag=sender), *args)
+        match _metautil.get_positional_arity(callback):
+            case 0: return callback
+            case 1:
+                def wrapped(sender, /, *, __callback=callback, __item_type=item_type):
+                    return __callback(__item_type(tag=sender))
+            case 2:
+                def wrapped(sender, app_data=None, /, *, __callback=callback, __item_type=item_type):
+                    return __callback(__item_type(tag=sender), app_data)
+            case _:
+                def wrapped(sender, app_data=None, user_data=None, /, *, __callback=callback, __item_type=item_type):
+                    return __callback(__item_type(tag=sender), app_data, user_data)
 
         return wrapped
 
@@ -187,6 +193,88 @@ def cast_sender_as(item_type = _appitem.AppItem, callback = None, /):
         return wrap_callback
 
     return wrap_callback(callback)
+
+
+def get_root_items() -> list[int]:
+    """Returns the integer IDs all existing top-level items."""
+    return _dearpygui.get_windows()  # type: ignore
+
+
+def get_child_items() -> list[int]:
+    """Returns the integer IDs all existing non-root items."""
+    # XXX: There's a chance the first set of items may be dirty once
+    # we get the second set. We can only minimize the occurence from
+    # our end (e.g. Python land) but not prevent it. However, doing so
+    # comes with large performance hits -- the longer we take, the
+    # more likely BOTH sets are invalidated, so hope for the best?
+    set1, set2 = _dearpygui.get_all_items(), get_root_items()
+
+    items = {*set1}
+    items.difference_update(set2)
+
+    # reuse the larger, pre-allocated list
+    set1.clear(); set1.extend(items); set1.sort()  # type: ignore
+
+    return set1 # type: ignore
+
+
+def create_itemtype_itemgetter[T: Item](itemgetter:  _typing.Callable[[], _typing.Sequence[T]], /, *typenames: str, exclusive: bool = False) ->  _typing.Callable[[], list[T]]:
+    """Create a function for efficiently filtering items based on
+    their type.
+
+    For example, `create_itemtype_itemgetter(get_root_items, "mvTheme")`
+    creates a new items-getter that only returns existing theme items,
+    while `create_itemtype_itemgetter(get_root_items, "mvWindowAppItem",
+    "mvViewportDrawlist, exclusive=True)` creates one that returns all
+    root items except windows and viewport drawlists.
+
+    :type itemgetter: `Callable[[], Sequence[int | str]]`
+    :param itemgetter: A zero-argument callable that returns a sequence
+        of existing item IDs or aliases.
+
+    :type *typenames: `str`
+    :param *typenames: Names of DearPyGui item types to filter in/out.
+        Names do not need to (but may) include the `mvAppItemType::`
+        prefix.
+
+    :type exclusive: `bool`
+    :param exclusive: If `True`, only items whose types are not in
+        *typenames* are included in the return value. Defaults to
+        `False`.
+
+    :rtype: `list[int | str]`
+    :return: The list of filtered items.
+    """
+    if not (typenames or exclusive):
+        def itemtype_itemgetter():
+            return []
+
+    elif len(typenames) == 1:
+        typename = typenames[0].removeprefix("mvAppItemType::") + "mvAppItemType::"
+
+        if exclusive:
+            def itemtype_itemgetter(*, __ITEMGETTER=itemgetter, __TYPENAME=typename, __FUNC=_dearpygui.get_item_info):
+                return [item for item in __ITEMGETTER() if __FUNC(item)["type"] == __TYPENAME]
+        else:
+            def itemtype_itemgetter(*, __ITEMGETTER=itemgetter, __TYPENAME=typename, __FUNC=_dearpygui.get_item_info):
+                return [item for item in __ITEMGETTER() if __FUNC(item)["type"] == __TYPENAME]
+    else:
+        typenames = frozenset(tn.removeprefix("mvAppItemType::") + "mvAppItemType::" for tn in typenames)  # type: ignore
+
+        if exclusive:
+            def itemtype_itemgetter(*, __ITEMGETTER=itemgetter, __TYPENAMES=typenames, __FUNC=_dearpygui.get_item_info):
+                return [item for item in __ITEMGETTER() if __FUNC(item)["type"] not in __TYPENAMES]
+        else:
+            def itemtype_itemgetter(*, __ITEMGETTER=itemgetter, __TYPENAMES=typenames, __FUNC=_dearpygui.get_item_info):
+                return [item for item in __ITEMGETTER() if __FUNC(item)["type"] in __TYPENAMES]
+
+    if exclusive:
+        itemtype_itemgetter.__name__ = 'exclusive_itemtype_itemgetter'
+    else:
+        itemtype_itemgetter.__name__ = 'inclusive_itemtype_itemgetter'
+
+    return itemtype_itemgetter
+
 
 
 
@@ -237,16 +325,18 @@ def popup(parent: int | str, mousebutton: int = _dearpygui.mvMouseButton_Right, 
         _dearpygui.add_item_clicked_handler(mousebutton, parent=handler_registry, callback=lambda: window.configure(show=True))
         _dearpygui.bind_item_handler_registry(parent, handler_registry)
     except:
-        try: _dearpygui.delete_item(handler_registry)
+        try:    _dearpygui.delete_item(handler_registry)  # type: ignore
         except: pass
 
-        try: _dearpygui.delete_item(window)
+        try:    _dearpygui.delete_item(window)
         except: pass
 
         raise
 
     return window  # ty:ignore[invalid-return-type]
 
+
+get_windows = create_itemtype_itemgetter(_dearpygui.get_windows, "mvWindowAppItem")
 
 
 
@@ -418,7 +508,6 @@ from dearpygui.dearpygui import (
     get_value as get_value,
     get_values as get_values,
     get_viewport_configuration as get_viewport_configuration,
-    get_windows as get_windows,
     get_x_scroll as get_x_scroll,
     get_x_scroll_max as get_x_scroll_max,
     get_y_scroll as get_y_scroll,
