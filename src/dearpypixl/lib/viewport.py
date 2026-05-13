@@ -492,7 +492,8 @@ _PROPERTY_LOCALS = {
     "setter": _dearpygui.configure_viewport,
 }
 
-def _create_config_property( name, /):
+@metautil.create_named_desc_factory
+def _config_property( name, /):
     fget = metautil.create_function(
         name, ("self",), (
             f"try:",
@@ -507,10 +508,6 @@ def _create_config_property( name, /):
         module=__name__, globals=globals(), locals=_PROPERTY_LOCALS,
     )
     return property(fget, fset)
-
-def _config_property() -> typing.Any:
-    return metautil.DescriptorDelegate(_create_config_property)
-
 
 class Viewport(interface.Interface):
     __slots__ = ()
