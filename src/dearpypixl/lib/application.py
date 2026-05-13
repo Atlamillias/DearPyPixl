@@ -135,8 +135,30 @@ def is_app_ok(obj=None, /):
         value = _get_app_ok()
     return value
 
+_DEFAULT_APP_CHILDREN = type(int.__dict__)({0: (), 1: (), 2: (), 3: ()})
+
 def get_app_info(obj=None, /):
-    info = interface.Interface.information(0)  # type: ignore
+    info = {
+        "children": _DEFAULT_APP_CHILDREN,
+        "type": '',
+        "target": 1,
+        "parent": None,
+        "theme": None,
+        "handlers": None,
+        "font": None,
+        "container": False,
+        "hover_handler_applicable": False,
+        "active_handler_applicable": False,
+        "focus_handler_applicable": False,
+        "clicked_handler_applicable": False,
+        "visible_handler_applicable": False,
+        "edited_handler_applicable": False,
+        "activated_handler_applicable": False,
+        "deactivated_handler_applicable": False,
+        "deactivatedae_handler_applicable": False,
+        "toggled_open_handler_applicable": False,
+        "resized_handler_applicable": False,
+    }
     with _GLOBAL_LOCK:
         info["theme"] = _get_app_theme()
         info["font"]  = _get_app_font()
@@ -157,7 +179,8 @@ _PROPERTY_LOCALS = {
     "setter": _dearpygui.get_app_configuration
 }
 
-def _create_config_property(name):
+@metautil.create_named_desc_factory
+def _config_property(name):
     fget = metautil.create_function(
         name, ("self",), (
             f"try:",
@@ -172,9 +195,6 @@ def _create_config_property(name):
         module=__name__, globals=globals(), locals=_PROPERTY_LOCALS,
     )
     return property(fget, fset)
-
-def _config_property():
-    return metautil.DescriptorDelegate(_create_config_property)
 
 
 class Application(interface.Interface):
