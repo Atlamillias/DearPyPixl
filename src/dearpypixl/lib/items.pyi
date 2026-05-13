@@ -1633,7 +1633,7 @@ def add_checkbox[U = Any](*, default_value: bool = False, label: str | None = No
     """
 
 
-class mvChildWindow[U = Any, V: bool = Any, P: ContainerItem[Any, Any, Any, Any] = ContainerItem, C: ChildItem[Any, Any, mvChildWindow, Any] = ChildItem](ChildItem[U, V, P, C], ContainerItem, ContainerItem[U, V, P, C]):
+class mvChildWindow[U = Any, V: bool = Any, P: ContainerItem[Any, Any, Any, Any] = ContainerItem, C: ChildItem[Any, Any, mvChildWindow, Any] = ChildItem](ContainerItem[U, V, P, C], ChildItem[U, V, P, C]):
     """Adds an embedded child window. Will show scrollbars when items do not
     fit. About using auto_resize/resizable flags: size measurement for
     a given axis is only performed when the child window is within
@@ -2163,7 +2163,7 @@ def add_item_clicked_handler[U = Any](button: int = -1, *, label: str | None = N
     """
 
 
-class mvClipper[U = Any, P: ContainerItem[Any, Any, Any, Any] = ContainerItem, C: ChildItem[Any, Any, mvClipper, Any] = ChildItem](ChildItem[U, None, P, C], ContainerItem, ContainerItem[U, None, P, C]):
+class mvClipper[U = Any, P: ContainerItem[Any, Any, Any, Any] = ContainerItem, C: ChildItem[Any, Any, mvClipper, Any] = ChildItem](ContainerItem[U, None, P, C], ChildItem[U, None, P, C]):
     """Helper to manually clip large list of items. Increases performance by
     not searching or drawing widgets outside of the clipped region.
     """
@@ -2267,7 +2267,7 @@ def add_clipper[U = Any](*, label: str | None = None, use_internal_label: bool =
     """
 
 
-class mvCollapsingHeader[U = Any, V: bool = Any, P: ContainerItem[Any, Any, Any, Any] = ContainerItem, C: ChildItem[Any, Any, mvCollapsingHeader, Any] = ChildItem](ChildItem[U, V, P, C], ContainerItem, ContainerItem[U, V, P, C]):
+class mvCollapsingHeader[U = Any, V: bool = Any, P: ContainerItem[Any, Any, Any, Any] = ContainerItem, C: ChildItem[Any, Any, mvCollapsingHeader, Any] = ChildItem](ContainerItem[U, V, P, C], ChildItem[U, V, P, C]):
     """Adds a collapsing header to add items to. Must be closed with the end
     command.
     """
@@ -3418,7 +3418,7 @@ def add_colormap_button[U = Any](default_value: Array[int, Literal[3, 4]] = (0, 
     """
 
 
-class mvColorMapRegistry[U = Any, C: ChildItem[Any, Any, mvColorMapRegistry, Any] = ChildItem](ContainerItem, ContainerItem[U, None, None, C]):
+class mvColorMapRegistry[U = Any, C: ChildItem[Any, Any, mvColorMapRegistry, Any] = ChildItem](ContainerItem[U, None, None, C]):
     """Adds a colormap registry."""
     @classmethod
     def create(cls, *, show: bool = False, label: str | None = None, use_internal_label: bool = True, user_data: Any | None = None, tag: int | str = 0, **kwargs) -> Self:  # ty: ignore[invalid-method-override]
@@ -4582,7 +4582,7 @@ def add_combo[U = Any](items: Array[str, Any] = (), *, default_value: str = '', 
     """
 
 
-class mvCustomSeries[U = Any, V: Array[Array[float, Any], Literal[5]] = Any, P: ContainerItem[Any, Any, Any, Any] = ContainerItem, C: ChildItem[Any, Any, mvCustomSeries, Any] = ChildItem](SupportsValueArray[Array[float, Any]], ChildItem[U, V, P, C], ContainerItem, ContainerItem[U, V, P, C]):
+class mvCustomSeries[U = Any, V: Array[Array[float, Any], Literal[5]] = Any, P: ContainerItem[Any, Any, Any, Any] = ContainerItem, C: ChildItem[Any, Any, mvCustomSeries, Any] = ChildItem](SupportsValueArray[Array[float, Any]], ContainerItem[U, V, P, C], ChildItem[U, V, P, C]):
     """Adds a custom series to a plot. New in 1.6."""
     @classmethod
     def create(cls, x: Array[float, Any], y: Array[float, Any], channel_count: int, *, y1: Array[float, Any] = (), y2: Array[float, Any] = (), y3: Array[float, Any] = (), tooltip: bool = True, no_fit: bool = False, label: str | None = None, use_internal_label: bool = True, user_data: Any | None = None, tag: int | str = 0, parent: int | str = 0, before: int | str = 0, source: int | str = 0, callback: Callable | None = None, show: bool = True, **kwargs) -> Self:  # ty: ignore[invalid-method-override]
@@ -7054,7 +7054,7 @@ def add_drag_line[U = Any](*, default_value: float = 0.0, color: Array[int, Lite
     """
 
 
-class mvDragPayload[U = Any, P: ContainerItem[Any, Any, Any, Any] = ContainerItem, C: ChildItem[Any, Any, mvDragPayload, Any] = ChildItem](ChildItem[U, None, P, C], ContainerItem, ContainerItem[U, None, P, C]):
+class mvDragPayload[U = Any, P: ContainerItem[Any, Any, Any, Any] = ContainerItem, C: ChildItem[Any, Any, mvDragPayload, Any] = ChildItem](ContainerItem[U, None, P, C], ChildItem[U, None, P, C]):
     """User data payload for drag and drop operations."""
     @classmethod
     def create(cls, *, drag_data: Any | None = None, drop_data: Any | None = None, payload_type: str = '$$DPG_PAYLOAD', label: str | None = None, use_internal_label: bool = True, user_data: Any | None = None, tag: int | str = 0, parent: int | str = 0, show: bool = True, **kwargs) -> Self:  # ty: ignore[invalid-method-override]
@@ -8127,7 +8127,7 @@ def draw_image_quad[U = Any](texture_tag: Item, p1: Array[float, Any], p2: Array
     """
 
 
-class mvDrawLayer[U = Any, P: ContainerItem[Any, Any, Any, Any] = ContainerItem, C: ChildItem[Any, Any, mvDrawLayer, Any] = ChildItem](ChildItem[U, None, P, C], ContainerItem, ContainerItem[U, None, P, C]):
+class mvDrawLayer[U = Any, P: ContainerItem[Any, Any, Any, Any] = ContainerItem, C: ChildItem[Any, Any, mvDrawLayer, Any] = ChildItem](ContainerItem[U, None, P, C], ChildItem[U, None, P, C]):
     """New in 1.1. Creates a layer useful for grouping drawlist items."""
     @classmethod
     def create(cls, *, perspective_divide: bool = False, depth_clipping: bool = False, cull_mode: int = 0, label: str | None = None, use_internal_label: bool = True, user_data: Any | None = None, tag: int | str = 0, parent: int | str = 0, before: int | str = 0, show: bool = True, **kwargs) -> Self:  # ty: ignore[invalid-method-override]
@@ -8400,7 +8400,7 @@ def draw_line[U = Any](p1: Array[float, Any], p2: Array[float, Any], *, color: A
     """
 
 
-class mvDrawNode[U = Any, P: ContainerItem[Any, Any, Any, Any] = ContainerItem, C: ChildItem[Any, Any, mvDrawNode, Any] = ChildItem](ChildItem[U, None, P, C], ContainerItem, ContainerItem[U, None, P, C]):
+class mvDrawNode[U = Any, P: ContainerItem[Any, Any, Any, Any] = ContainerItem, C: ChildItem[Any, Any, mvDrawNode, Any] = ChildItem](ContainerItem[U, None, P, C], ChildItem[U, None, P, C]):
     """New in 1.1. Creates a drawing node to associate a transformation
     matrix. Child node matricies will concatenate.
     """
@@ -9116,7 +9116,7 @@ def draw_triangle[U = Any](p1: Array[float, Any], p2: Array[float, Any], p3: Arr
     """
 
 
-class mvDrawlist[U = Any, P: ContainerItem[Any, Any, Any, Any] = ContainerItem, C: ChildItem[Any, Any, mvDrawlist, Any] = ChildItem](ChildItem[U, None, P, C], ContainerItem, ContainerItem[U, None, P, C]):
+class mvDrawlist[U = Any, P: ContainerItem[Any, Any, Any, Any] = ContainerItem, C: ChildItem[Any, Any, mvDrawlist, Any] = ChildItem](ContainerItem[U, None, P, C], ChildItem[U, None, P, C]):
     """Adds a drawing canvas."""
     @classmethod
     def create(cls, width: int, height: int, *, label: str | None = None, use_internal_label: bool = True, user_data: Any | None = None, tag: int | str = 0, parent: int | str = 0, before: int | str = 0, callback: Callable | None = None, show: bool = True, filter_key: str = "", tracked: bool = False, track_offset: float = 0.5, pos: Array[int, Literal[0, 2]] = (), **kwargs) -> Self:  # ty: ignore[invalid-method-override]
@@ -9618,7 +9618,7 @@ def add_error_series[U = Any](x: Array[float, Any], y: Array[float, Any], negati
     """
 
 
-class mvFileDialog[U = Any, V: bool = Any, C: ChildItem[Any, Any, mvFileDialog, Any] = ChildItem](ContainerItem, ContainerItem[U, V, None, C]):
+class mvFileDialog[U = Any, V: bool = Any, C: ChildItem[Any, Any, mvFileDialog, Any] = ChildItem](ContainerItem[U, V, None, C]):
     """Displays a file or directory selector depending on keywords. Displays
     a file dialog by default. Callback will be ran when the file or
     directory picker is closed. The app_data arguemnt will be
@@ -9904,7 +9904,7 @@ def add_file_extension[U = Any](extension: str, *, custom_text: str = '', color:
     """
 
 
-class mvFilterSet[U = Any, P: ContainerItem[Any, Any, Any, Any] = ContainerItem, C: ChildItem[Any, Any, mvFilterSet, Any] = ChildItem](ChildItem[U, None, P, C], ContainerItem, ContainerItem[U, None, P, C]):
+class mvFilterSet[U = Any, P: ContainerItem[Any, Any, Any, Any] = ContainerItem, C: ChildItem[Any, Any, mvFilterSet, Any] = ChildItem](ContainerItem[U, None, P, C], ChildItem[U, None, P, C]):
     """Helper to parse and apply text filters (e.g. aaaaa[, bbbbb][, ccccc])"""
     @classmethod
     def create(cls, *, label: str | None = None, use_internal_label: bool = True, user_data: Any | None = None, tag: int | str = 0, width: int = 0, indent: int = -1, parent: int | str = 0, before: int | str = 0, show: bool = True, **kwargs) -> Self:  # ty: ignore[invalid-method-override]
@@ -10244,7 +10244,7 @@ def add_item_focus_handler[U = Any](*, event_type: int | None = None, label: str
     """
 
 
-class mvFont[U = Any, P: mvFontRegistry = Any, C: ChildItem[Any, Any, mvFont, Any] = ChildItem](ChildItem[U, None, P, C], ContainerItem, ContainerItem[U, None, P, C]):
+class mvFont[U = Any, P: mvFontRegistry = Any, C: ChildItem[Any, Any, mvFont, Any] = ChildItem](ContainerItem[U, None, P, C], ChildItem[U, None, P, C]):
     """Adds font to a font registry."""
     @classmethod
     def create(cls, file: str, size: int, *, pixel_snapH: bool = False, pixel_snapV: bool = False, parent: Item = _dearpygui.mvReservedUUID_0, label: str | None = None, use_internal_label: bool = True, user_data: Any | None = None, tag: int | str = 0, **kwargs) -> Self:  # ty: ignore[invalid-method-override]
@@ -10368,7 +10368,7 @@ def add_font[U = Any](file: str, size: int, *, pixel_snapH: bool = False, pixel_
     """
 
 
-class mvFontRegistry[U = Any, C: ChildItem[Any, Any, mvFontRegistry, Any] = ChildItem](ContainerItem, ContainerItem[U, None, None, C]):
+class mvFontRegistry[U = Any, C: ChildItem[Any, Any, mvFontRegistry, Any] = ChildItem](ContainerItem[U, None, None, C]):
     """Adds a font registry."""
     @classmethod
     def create(cls, *, label: str | None = None, use_internal_label: bool = True, user_data: Any | None = None, tag: int | str = 0, show: bool = True, **kwargs) -> Self:  # ty: ignore[invalid-method-override]
@@ -10435,7 +10435,7 @@ def add_font_registry[U = Any](*, label: str | None = None, use_internal_label: 
     """
 
 
-class mvGroup[U = Any, P: ContainerItem[Any, Any, Any, Any] = ContainerItem, C: ChildItem[Any, Any, mvGroup, Any] = ChildItem](ChildItem[U, None, P, C], ContainerItem, ContainerItem[U, None, P, C]):
+class mvGroup[U = Any, P: ContainerItem[Any, Any, Any, Any] = ContainerItem, C: ChildItem[Any, Any, mvGroup, Any] = ChildItem](ContainerItem[U, None, P, C], ChildItem[U, None, P, C]):
     """Creates a group that other widgets can belong to. The group allows
     item commands to be issued for all of its members. Enable property
     acts in a special way enabling/disabling everything inside the
@@ -10725,7 +10725,7 @@ def add_group[U = Any](*, horizontal: bool = False, horizontal_spacing: float = 
     """
 
 
-class mvHandlerRegistry[U = Any, C: _HandlerItem[Any, mvHandlerRegistry] = _HandlerItem](ContainerItem, ContainerItem[U, None, None, C]):
+class mvHandlerRegistry[U = Any, C: _HandlerItem[Any, mvHandlerRegistry] = _HandlerItem](ContainerItem[U, None, None, C]):
     """Adds a handler registry."""
     @classmethod
     def create(cls, *, label: str | None = None, use_internal_label: bool = True, user_data: Any | None = None, tag: int | str = 0, show: bool = True, **kwargs) -> Self:  # ty: ignore[invalid-method-override]
@@ -14183,7 +14183,7 @@ def add_int_value[U = Any](*, default_value: int = 0, parent: Item = _dearpygui.
     """
 
 
-class mvItemHandlerRegistry[U = Any, C: _HandlerItem[Any, mvItemHandlerRegistry] = _HandlerItem](ContainerItem, ContainerItem[U, None, None, C]):
+class mvItemHandlerRegistry[U = Any, C: _HandlerItem[Any, mvItemHandlerRegistry] = _HandlerItem](ContainerItem[U, None, None, C]):
     """Adds an item handler registry."""
     @classmethod
     def create(cls, *, label: str | None = None, use_internal_label: bool = True, user_data: Any | None = None, tag: int | str = 0, show: bool = True, **kwargs) -> Self:  # ty: ignore[invalid-method-override]
@@ -15394,7 +15394,7 @@ def add_loading_indicator[U = Any](*, style: int = 0, circle_count: int = 8, spe
     """
 
 
-class mvMenu[U = Any, V: bool = Any, P: ContainerItem[Any, Any, Any, Any] = ContainerItem, C: ChildItem[Any, Any, mvMenu, Any] = ChildItem](ChildItem[U, V, P, C], ContainerItem, ContainerItem[U, V, P, C]):
+class mvMenu[U = Any, V: bool = Any, P: ContainerItem[Any, Any, Any, Any] = ContainerItem, C: ChildItem[Any, Any, mvMenu, Any] = ChildItem](ContainerItem[U, V, P, C], ChildItem[U, V, P, C]):
     """Adds a menu to an existing menu bar."""
     @classmethod
     def create(cls, *, label: str | None = None, use_internal_label: bool = True, user_data: Any | None = None, tag: int | str = 0, indent: int = -1, parent: int | str = 0, before: int | str = 0, show: bool = True, filter_key: str = "", drop_callback: Callable | None = None, payload_type: str = "$$DPG_PAYLOAD", tracked: bool = False, track_offset: float = 0.5, enabled: bool = True, **kwargs) -> Self:  # ty: ignore[invalid-method-override]
@@ -15586,7 +15586,7 @@ def add_menu[U = Any](*, label: str | None = None, use_internal_label: bool = Tr
     """
 
 
-class mvMenuBar[U = Any, V: bool = Any, P: ContainerItem[Any, Any, Any, Any] = ContainerItem, C: ChildItem[Any, Any, mvMenuBar, Any] = ChildItem](ChildItem[U, V, P, C], ContainerItem, ContainerItem[U, V, P, C]):
+class mvMenuBar[U = Any, V: bool = Any, P: ContainerItem[Any, Any, Any, Any] = ContainerItem, C: ChildItem[Any, Any, mvMenuBar, Any] = ChildItem](ContainerItem[U, V, P, C], ChildItem[U, V, P, C]):
     """Adds a menu bar to a window."""
     @classmethod
     def create(cls, *, label: str | None = None, use_internal_label: bool = True, user_data: Any | None = None, tag: int | str = 0, indent: int = -1, parent: int | str = 0, show: bool = True, **kwargs) -> Self:  # ty: ignore[invalid-method-override]
@@ -16292,7 +16292,7 @@ def add_mouse_wheel_handler[U = Any](*, parent: Item = _dearpygui.mvReservedUUID
     """
 
 
-class mvNode[U = Any, P: mvTemplateRegistry | mvStage | mvNodeEditor = Any, C: ChildItem[Any, Any, mvNode, Any] = ChildItem](ChildItem[U, None, P, C], ContainerItem, ContainerItem[U, None, P, C]):
+class mvNode[U = Any, P: mvTemplateRegistry | mvStage | mvNodeEditor = Any, C: ChildItem[Any, Any, mvNode, Any] = ChildItem](ContainerItem[U, None, P, C], ChildItem[U, None, P, C]):
     """Adds a node to a node editor."""
     @classmethod
     def create(cls, *, draggable: bool = True, label: str | None = None, use_internal_label: bool = True, user_data: Any | None = None, tag: int | str = 0, parent: int | str = 0, before: int | str = 0, filter_key: str = "", pos: Array[int, Literal[0, 2]] = (), drop_callback: Callable | None = None, drag_callback: Callable | None = None, payload_type: str = "$$DPG_PAYLOAD", tracked: bool = False, track_offset: float = 0.5, show: bool = True, **kwargs) -> Self:  # ty: ignore[invalid-method-override]
@@ -16483,7 +16483,7 @@ def add_node[U = Any](*, draggable: bool = True, label: str | None = None, use_i
     """
 
 
-class mvNodeAttribute[U = Any, P: mvTemplateRegistry | mvStage | mvNode = Any, C: ChildItem[Any, Any, mvNodeAttribute, Any] = ChildItem](ChildItem[U, None, P, C], ContainerItem, ContainerItem[U, None, P, C]):
+class mvNodeAttribute[U = Any, P: mvTemplateRegistry | mvStage | mvNode = Any, C: ChildItem[Any, Any, mvNodeAttribute, Any] = ChildItem](ContainerItem[U, None, P, C], ChildItem[U, None, P, C]):
     """Adds a node attribute to a node."""
     @classmethod
     def create(cls, *, attribute_type: int = 0, shape: int = 1, category: str = 'general', label: str | None = None, use_internal_label: bool = True, user_data: Any | None = None, tag: int | str = 0, indent: int = -1, parent: int | str = 0, before: int | str = 0, filter_key: str = "", tracked: bool = False, track_offset: float = 0.5, show: bool = True, **kwargs) -> Self:  # ty: ignore[invalid-method-override]
@@ -16640,7 +16640,7 @@ def add_node_attribute[U = Any](*, attribute_type: int = 0, shape: int = 1, cate
     """
 
 
-class mvNodeEditor[U = Any, P: ContainerItem[Any, Any, Any, Any] = ContainerItem, C: ChildItem[Any, Any, mvNodeEditor, Any] = ChildItem](ChildItem[U, None, P, C], ContainerItem, ContainerItem[U, None, P, C]):
+class mvNodeEditor[U = Any, P: ContainerItem[Any, Any, Any, Any] = ContainerItem, C: ChildItem[Any, Any, mvNodeEditor, Any] = ChildItem](ContainerItem[U, None, P, C], ChildItem[U, None, P, C]):
     """Adds a node editor."""
     @classmethod
     def create(cls, *, delink_callback: ItemCallback | None = None, menubar: bool = False, minimap: bool = False, minimap_location: int = 2, label: str | None = None, use_internal_label: bool = True, user_data: Any | None = None, tag: int | str = 0, parent: int | str = 0, before: int | str = 0, callback: Callable | None = None, filter_key: str = "", width: int = 0, height: int = 0, tracked: bool = False, track_offset: float = 0.5, show: bool = True, **kwargs) -> Self:  # ty: ignore[invalid-method-override]
@@ -17042,7 +17042,7 @@ def add_pie_series[U = Any](x: float, y: float, radius: float, values: Array[flo
     """
 
 
-class mvPlot[U = Any, P: ContainerItem[Any, Any, Any, Any] = ContainerItem, C: ChildItem[Any, Any, mvPlot, Any] = ChildItem](ChildItem[U, None, P, C], ContainerItem, ContainerItem[U, None, P, C]):
+class mvPlot[U = Any, P: ContainerItem[Any, Any, Any, Any] = ContainerItem, C: ChildItem[Any, Any, mvPlot, Any] = ChildItem](ContainerItem[U, None, P, C], ChildItem[U, None, P, C]):
     """Adds a plot which is used to hold series, and can be drawn to with
     draw commands. For all _mod parameters use mvKey_ModX enums, or
     mvKey_ModDisabled to disable the modifier.
@@ -17708,7 +17708,7 @@ def add_plot[U = Any](*, no_menus: bool = False, no_box_select: bool = False, no
     """
 
 
-class mvPlotAxis[U = Any, P: mvStage | mvTemplateRegistry | mvPlot = Any, C: ChildItem[Any, Any, mvPlotAxis, Any] = ChildItem](ChildItem[U, None, P, C], ContainerItem, ContainerItem[U, None, P, C]):
+class mvPlotAxis[U = Any, P: mvStage | mvTemplateRegistry | mvPlot = Any, C: ChildItem[Any, Any, mvPlotAxis, Any] = ChildItem](ContainerItem[U, None, P, C], ChildItem[U, None, P, C]):
     """Adds an axis to a plot."""
     @classmethod
     def create(cls, axis: int, *, no_label: bool = False, no_gridlines: bool = False, no_tick_marks: bool = False, no_tick_labels: bool = False, no_initial_fit: bool = False, no_menus: bool = False, no_side_switch: bool = False, no_highlight: bool = False, opposite: bool = False, foreground_grid: bool = False, tick_format: str = '', scale: int = _dearpygui.mvPlotScale_Linear, invert: bool = False, auto_fit: bool = False, range_fit: bool = False, pan_stretch: bool = False, lock_min: bool = False, lock_max: bool = False, label: str | None = None, use_internal_label: bool = True, user_data: Any | None = None, tag: int | str = 0, parent: int | str = 0, drop_callback: Callable | None = None, payload_type: str = "$$DPG_PAYLOAD", show: bool = True, **kwargs) -> Self:  # ty: ignore[invalid-method-override]
@@ -18189,7 +18189,7 @@ def add_plot_axis[U = Any](axis: int, *, no_label: bool = False, no_gridlines: b
     """
 
 
-class mvPlotLegend[U = Any, P: ContainerItem[Any, Any, Any, Any] = ContainerItem, C: ChildItem[Any, Any, mvPlotLegend, Any] = ChildItem](ChildItem[U, None, P, C], ContainerItem, ContainerItem[U, None, P, C]):
+class mvPlotLegend[U = Any, P: ContainerItem[Any, Any, Any, Any] = ContainerItem, C: ChildItem[Any, Any, mvPlotLegend, Any] = ChildItem](ContainerItem[U, None, P, C], ChildItem[U, None, P, C]):
     """Adds a plot legend to a plot."""
     @classmethod
     def create(cls, *, location: int = 5, horizontal: bool = False, sort: bool = False, outside: bool = False, no_highlight_item: bool = False, no_highlight_axis: bool = False, no_menus: bool = False, no_buttons: bool = False, label: str | None = None, use_internal_label: bool = True, user_data: Any | None = None, tag: int | str = 0, parent: int | str = 0, drop_callback: Callable | None = None, payload_type: str = "$$DPG_PAYLOAD", show: bool = True, **kwargs) -> Self:  # ty: ignore[invalid-method-override]
@@ -21675,7 +21675,7 @@ def add_spacer[U = Any](*, label: str | None = None, use_internal_label: bool = 
     """
 
 
-class mvStage[U = Any, C: ChildItem[Any, Any, mvStage, Any] = ChildItem](ContainerItem, ContainerItem[U, None, None, C]):
+class mvStage[U = Any, C: ChildItem[Any, Any, mvStage, Any] = ChildItem](ContainerItem[U, None, None, C]):
     """Adds a stage."""
     @classmethod
     def create(cls, *, label: str | None = None, use_internal_label: bool = True, user_data: Any | None = None, tag: int | str = 0, **kwargs) -> Self:  # ty: ignore[invalid-method-override]
@@ -22068,7 +22068,7 @@ def add_string_value[U = Any](*, default_value: str = '', parent: Item = _dearpy
     """
 
 
-class mvSubPlots[U = Any, P: ContainerItem[Any, Any, Any, Any] = ContainerItem, C: ChildItem[Any, Any, mvSubPlots, Any] = ChildItem](ChildItem[U, None, P, C], ContainerItem, ContainerItem[U, None, P, C]):
+class mvSubPlots[U = Any, P: ContainerItem[Any, Any, Any, Any] = ContainerItem, C: ChildItem[Any, Any, mvSubPlots, Any] = ChildItem](ContainerItem[U, None, P, C], ChildItem[U, None, P, C]):
     """Adds a collection of plots."""
     @classmethod
     def create(cls, rows: int, columns: int, *, row_ratios: Array[float, Any] = (), column_ratios: Array[float, Any] = (), no_menus: bool = False, no_resize: bool = False, no_align: bool = False, share_series: bool = False, link_rows: bool = False, link_columns: bool = False, link_all_x: bool = False, link_all_y: bool = False, column_major: bool = False, label: str | None = None, use_internal_label: bool = True, user_data: Any | None = None, tag: int | str = 0, width: int = 0, height: int = 0, indent: int = -1, parent: int | str = 0, before: int | str = 0, show: bool = True, callback: Callable | None = None, filter_key: str = "", tracked: bool = False, track_offset: float = 0.5, pos: Array[int, Literal[0, 2]] = (), **kwargs) -> Self:  # ty: ignore[invalid-method-override]
@@ -22399,7 +22399,7 @@ def add_subplots[U = Any](rows: int, columns: int, *, row_ratios: Array[float, A
     """
 
 
-class mvSyncedTables[U = Any, P: ContainerItem[Any, Any, Any, Any] = ContainerItem, C: ChildItem[Any, Any, mvSyncedTables, Any] = ChildItem](ChildItem[U, None, P, C], ContainerItem, ContainerItem[U, None, P, C]):
+class mvSyncedTables[U = Any, P: ContainerItem[Any, Any, Any, Any] = ContainerItem, C: ChildItem[Any, Any, mvSyncedTables, Any] = ChildItem](ContainerItem[U, None, P, C], ChildItem[U, None, P, C]):
     """Links all tables that are immediate children of this container so that
     they share their state (mostly column sizes). Other children are
     rendered as is. This is an experimental feature, use with caution.
@@ -22497,7 +22497,7 @@ def add_synced_tables[U = Any](*, label: str | None = None, use_internal_label: 
     """
 
 
-class mvTab[U = Any, V: bool = Any, P: mvTabBar | mvStage | mvTemplateRegistry = Any, C: ChildItem[Any, Any, mvTab, Any] = ChildItem](ChildItem[U, V, P, C], ContainerItem, ContainerItem[U, V, P, C]):
+class mvTab[U = Any, V: bool = Any, P: mvTabBar | mvStage | mvTemplateRegistry = Any, C: ChildItem[Any, Any, mvTab, Any] = ChildItem](ContainerItem[U, V, P, C], ChildItem[U, V, P, C]):
     """Adds a tab to a tab bar."""
     @classmethod
     def create(cls, *, closable: bool = False, no_tooltip: bool = False, order_mode: int = 0, unsaved_document: bool = False, no_close_with_middle_click: bool = False, no_reorder: bool = False, label: str | None = None, use_internal_label: bool = True, user_data: Any | None = None, tag: int | str = 0, indent: int = -1, parent: int | str = 0, before: int | str = 0, filter_key: str = "", drop_callback: Callable | None = None, payload_type: str = "$$DPG_PAYLOAD", tracked: bool = False, track_offset: float = 0.5, show: bool = True, **kwargs) -> Self:  # ty: ignore[invalid-method-override]
@@ -22752,7 +22752,7 @@ def add_tab[U = Any](*, closable: bool = False, no_tooltip: bool = False, order_
     """
 
 
-class mvTabBar[U = Any, V: Item = Any, P: ContainerItem[Any, Any, Any, Any] = ContainerItem, C: ChildItem[Any, Any, mvTabBar, Any] = ChildItem](ChildItem[U, V, P, C], ContainerItem, ContainerItem[U, V, P, C]):
+class mvTabBar[U = Any, V: Item = Any, P: ContainerItem[Any, Any, Any, Any] = ContainerItem, C: ChildItem[Any, Any, mvTabBar, Any] = ChildItem](ContainerItem[U, V, P, C], ChildItem[U, V, P, C]):
     """Adds a tab bar."""
     @classmethod
     def create(cls, *, reorderable: bool = False, tab_list_popup_button: bool = False, no_close_with_middle_click: bool = False, no_scrolling_buttons: bool = False, no_tooltip: bool = False, draw_selected_overline: bool = False, label: str | None = None, use_internal_label: bool = True, user_data: Any | None = None, tag: int | str = 0, indent: int = -1, parent: int | str = 0, before: int | str = 0, callback: Callable | None = None, show: bool = True, filter_key: str = "", tracked: bool = False, track_offset: float = 0.5, pos: Array[int, Literal[0, 2]] = (), **kwargs) -> Self:  # ty: ignore[invalid-method-override]
@@ -23168,7 +23168,7 @@ def add_tab_button[U = Any](*, no_reorder: bool = False, leading: bool = False, 
     """
 
 
-class mvTable[U = Any, P: ContainerItem[Any, Any, Any, Any] = ContainerItem, C: ChildItem[Any, Any, mvTable, Any] = ChildItem](ChildItem[U, None, P, C], ContainerItem, ContainerItem[U, None, P, C]):
+class mvTable[U = Any, P: ContainerItem[Any, Any, Any, Any] = ContainerItem, C: ChildItem[Any, Any, mvTable, Any] = ChildItem](ContainerItem[U, None, P, C], ChildItem[U, None, P, C]):
     """Adds a table."""
     @classmethod
     def create(cls, *, header_row: bool = True, clipper: bool = False, inner_width: int = 0, policy: int = 0, freeze_rows: int = 0, freeze_columns: int = 0, sort_multi: bool = False, sort_tristate: bool = False, resizable: bool = False, reorderable: bool = False, hideable: bool = False, sortable: bool = False, context_menu_in_body: bool = False, row_background: bool = False, borders_innerH: bool = False, borders_outerH: bool = False, borders_innerV: bool = False, borders_outerV: bool = False, no_host_extendX: bool = False, no_host_extendY: bool = False, no_keep_columns_visible: bool = False, precise_widths: bool = False, no_clip: bool = False, pad_outerX: bool = False, no_pad_outerX: bool = False, no_pad_innerX: bool = False, scrollX: bool = False, scrollY: bool = False, no_saved_settings: bool = False, label: str | None = None, use_internal_label: bool = True, user_data: Any | None = None, tag: int | str = 0, width: int = 0, height: int = 0, indent: int = -1, parent: int | str = 0, before: int | str = 0, source: int | str = 0, callback: Callable | None = None, show: bool = True, filter_key: str = "", pos: Array[int, Literal[0, 2]] = (), **kwargs) -> Self:  # ty: ignore[invalid-method-override]
@@ -23845,7 +23845,7 @@ def add_table[U = Any](*, header_row: bool = True, clipper: bool = False, inner_
     """
 
 
-class mvTableCell[U = Any, P: mvStage | mvTemplateRegistry | mvTableRow = Any, C: ChildItem[Any, Any, mvTableCell, Any] = ChildItem](ChildItem[U, None, P, C], ContainerItem, ContainerItem[U, None, P, C]):
+class mvTableCell[U = Any, P: mvStage | mvTemplateRegistry | mvTableRow = Any, C: ChildItem[Any, Any, mvTableCell, Any] = ChildItem](ContainerItem[U, None, P, C], ChildItem[U, None, P, C]):
     """Adds a table."""
     @classmethod
     def create(cls, *, label: str | None = None, use_internal_label: bool = True, user_data: Any | None = None, tag: int | str = 0, parent: int | str = 0, before: int | str = 0, height: int = 0, filter_key: str = "", show: bool = True, **kwargs) -> Self:  # ty: ignore[invalid-method-override]
@@ -24215,7 +24215,7 @@ def add_table_column[U = Any](*, init_width_or_weight: float = 0.0, default_hide
     """
 
 
-class mvTableRow[U = Any, P: mvStage | mvTemplateRegistry | mvTable = Any, C: ChildItem[Any, Any, mvTableRow, Any] = ChildItem](ChildItem[U, None, P, C], ContainerItem, ContainerItem[U, None, P, C]):
+class mvTableRow[U = Any, P: mvStage | mvTemplateRegistry | mvTable = Any, C: ChildItem[Any, Any, mvTableRow, Any] = ChildItem](ContainerItem[U, None, P, C], ChildItem[U, None, P, C]):
     """Adds a table row."""
     @classmethod
     def create(cls, *, label: str | None = None, use_internal_label: bool = True, user_data: Any | None = None, tag: int | str = 0, parent: int | str = 0, before: int | str = 0, height: int = 0, filter_key: str = "", show: bool = True, **kwargs) -> Self:  # ty: ignore[invalid-method-override]
@@ -24324,7 +24324,7 @@ def add_table_row[U = Any](*, label: str | None = None, use_internal_label: bool
     """
 
 
-class mvTemplateRegistry[U = Any, C: ChildItem[Any, Any, mvTemplateRegistry, Any] = ChildItem](ContainerItem, ContainerItem[U, None, None, C]):
+class mvTemplateRegistry[U = Any, C: ChildItem[Any, Any, mvTemplateRegistry, Any] = ChildItem](ContainerItem[U, None, None, C]):
     """Adds a template registry."""
     @classmethod
     def create(cls, *, label: str | None = None, use_internal_label: bool = True, user_data: Any | None = None, tag: int | str = 0, **kwargs) -> Self:  # ty: ignore[invalid-method-override]
@@ -24582,7 +24582,7 @@ def add_text[U = Any](default_value: str = '', *, wrap: int = -1, bullet: bool =
     """
 
 
-class mvTextureRegistry[U = Any, C: ChildItem[Any, Any, mvTextureRegistry, Any] = ChildItem](ContainerItem, ContainerItem[U, None, None, C]):
+class mvTextureRegistry[U = Any, C: ChildItem[Any, Any, mvTextureRegistry, Any] = ChildItem](ContainerItem[U, None, None, C]):
     """Adds a dynamic texture."""
     @classmethod
     def create(cls, *, show: bool = False, label: str | None = None, use_internal_label: bool = True, user_data: Any | None = None, tag: int | str = 0, **kwargs) -> Self:  # ty: ignore[invalid-method-override]
@@ -24709,7 +24709,7 @@ def add_texture_registry[U = Any](*, show: bool = False, label: str | None = Non
     """
 
 
-class mvTheme[U = Any, C: ChildItem[Any, Any, mvTheme, Any] = ChildItem](ContainerItem, ContainerItem[U, None, None, C]):
+class mvTheme[U = Any, C: ChildItem[Any, Any, mvTheme, Any] = ChildItem](ContainerItem[U, None, None, C]):
     """Adds a theme."""
     @classmethod
     def create(cls, *, label: str | None = None, use_internal_label: bool = True, user_data: Any | None = None, tag: int | str = 0, **kwargs) -> Self:  # ty: ignore[invalid-method-override]
@@ -24839,7 +24839,7 @@ def add_theme_color[U = Any](target: int = 0, value: Array[int, Literal[3, 4]] =
     """
 
 
-class mvThemeComponent[U = Any, P: mvTheme | mvTemplateRegistry = Any, C: _ElementItem[Any, Any, mvThemeComponent] = _ElementItem](ChildItem[U, None, P, C], ContainerItem, ContainerItem[U, None, P, C]):
+class mvThemeComponent[U = Any, P: mvTheme | mvTemplateRegistry = Any, C: _ElementItem[Any, Any, mvThemeComponent] = _ElementItem](ContainerItem[U, None, P, C], ChildItem[U, None, P, C]):
     """Adds a theme component."""
     @classmethod
     def create(cls, item_type: type[AppItem] | int = 0, *, enabled_state: bool = True, label: str | None = None, use_internal_label: bool = True, user_data: Any | None = None, tag: int | str = 0, parent: int | str = 0, before: int | str = 0, **kwargs) -> Self:  # ty: ignore[invalid-method-override]
@@ -25263,7 +25263,7 @@ def add_item_toggled_open_handler[U = Any](*, two_way: bool = False, label: str 
     """
 
 
-class mvTooltip[U = Any, V: bool = Any, P: ContainerItem[Any, Any, Any, Any] = ContainerItem, C: ChildItem[Any, Any, mvTooltip, Any] = ChildItem](ChildItem[U, V, P, C], ContainerItem, ContainerItem[U, V, P, C]):
+class mvTooltip[U = Any, V: bool = Any, P: ContainerItem[Any, Any, Any, Any] = ContainerItem, C: ChildItem[Any, Any, mvTooltip, Any] = ChildItem](ContainerItem[U, V, P, C], ChildItem[U, V, P, C]):
     """Adds a tooltip window."""
     @classmethod
     def create(cls, parent: Item, *, delay: float = 0.0, hide_on_activity: bool = False, label: str | None = None, use_internal_label: bool = True, user_data: Any | None = None, tag: int | str = 0, show: bool = True, **kwargs) -> Self:  # ty: ignore[invalid-method-override]
@@ -25378,7 +25378,7 @@ def add_tooltip[U = Any](parent: Item, *, delay: float = 0.0, hide_on_activity: 
     """
 
 
-class mvTreeNode[U = Any, V: bool = Any, P: ContainerItem[Any, Any, Any, Any] = ContainerItem, C: ChildItem[Any, Any, mvTreeNode, Any] = ChildItem](ChildItem[U, V, P, C], ContainerItem, ContainerItem[U, V, P, C]):
+class mvTreeNode[U = Any, V: bool = Any, P: ContainerItem[Any, Any, Any, Any] = ContainerItem, C: ChildItem[Any, Any, mvTreeNode, Any] = ChildItem](ContainerItem[U, V, P, C], ChildItem[U, V, P, C]):
     """Adds a tree node to add items to."""
     @classmethod
     def create(cls, *, default_open: bool = False, open_on_double_click: bool = False, open_on_arrow: bool = False, leaf: bool = False, bullet: bool = False, selectable: bool = False, span_text_width: bool = False, span_full_width: bool = False, catch_nav_left: bool = False, lines: int = _dearpygui.mvTreeLines_None, label: str | None = None, use_internal_label: bool = True, user_data: Any | None = None, tag: int | str = 0, indent: int = -1, parent: int | str = 0, before: int | str = 0, show: bool = True, filter_key: str = "", drop_callback: Callable | None = None, drag_callback: Callable | None = None, payload_type: str = "$$DPG_PAYLOAD", tracked: bool = False, track_offset: float = 0.5, pos: Array[int, Literal[0, 2]] = (), **kwargs) -> Self:  # ty: ignore[invalid-method-override]
@@ -25707,7 +25707,7 @@ def add_tree_node[U = Any](*, default_open: bool = False, open_on_double_click: 
     """
 
 
-class mvValueRegistry[U = Any, C: ChildItem[Any, Any, mvValueRegistry, Any] = ChildItem](ContainerItem, ContainerItem[U, None, None, C]):
+class mvValueRegistry[U = Any, C: ChildItem[Any, Any, mvValueRegistry, Any] = ChildItem](ContainerItem[U, None, None, C]):
     """Adds a value registry."""
     @classmethod
     def create(cls, *, label: str | None = None, use_internal_label: bool = True, user_data: Any | None = None, tag: int | str = 0, **kwargs) -> Self:  # ty: ignore[invalid-method-override]
@@ -25814,7 +25814,7 @@ def add_value_registry[U = Any](*, label: str | None = None, use_internal_label:
     """
 
 
-class mvViewportDrawlist[U = Any, C: ChildItem[Any, Any, mvViewportDrawlist, Any] = ChildItem](ContainerItem, ContainerItem[U, None, None, C]):
+class mvViewportDrawlist[U = Any, C: ChildItem[Any, Any, mvViewportDrawlist, Any] = ChildItem](ContainerItem[U, None, None, C]):
     """A container that is used to present draw items or layers directly to
     the viewport. By default this will draw to the back of the
     viewport. Layers and draw items should be added to this widget as
@@ -25975,7 +25975,7 @@ def add_viewport_drawlist[U = Any](*, front: bool = True, label: str | None = No
     """
 
 
-class mvViewportMenuBar[U = Any, C: ChildItem[Any, Any, mvViewportMenuBar, Any] = ChildItem](ContainerItem, ContainerItem[U, None, None, C]):
+class mvViewportMenuBar[U = Any, C: ChildItem[Any, Any, mvViewportMenuBar, Any] = ChildItem](ContainerItem[U, None, None, C]):
     """Adds a menubar to the viewport."""
     @classmethod
     def create(cls, *, label: str | None = None, use_internal_label: bool = True, user_data: Any | None = None, tag: int | str = 0, indent: int = -1, parent: int | str = 0, show: bool = True, **kwargs) -> Self:  # ty: ignore[invalid-method-override]
@@ -26123,7 +26123,7 @@ def add_item_visible_handler[U = Any](*, label: str | None = None, use_internal_
     """
 
 
-class mvWindowAppItem[U = Any, C: ChildItem[Any, Any, mvWindowAppItem, Any] = ChildItem](ContainerItem, ContainerItem[U, None, None, C]):
+class mvWindowAppItem[U = Any, C: ChildItem[Any, Any, mvWindowAppItem, Any] = ChildItem](ContainerItem[U, None, None, C]):
     """Creates a new window for following items to be added to."""
     @classmethod
     def create(cls, *, min_size: Array[int, Literal[2]] = (100, 100), max_size: Array[int, Literal[2]] = (30000, 30000), menubar: bool = False, collapsed: bool = False, autosize: bool = False, no_resize: bool = False, unsaved_document: bool = False, no_title_bar: bool = False, no_move: bool = False, no_scrollbar: bool = False, no_collapse: bool = False, horizontal_scrollbar: bool = False, no_focus_on_appearing: bool = False, no_bring_to_front_on_focus: bool = False, no_close: bool = False, no_background: bool = False, modal: bool = False, popup: bool = False, no_saved_settings: bool = False, no_open_over_existing_popup: bool = True, no_scroll_with_mouse: bool = False, no_docking: bool = False, copy_contents_shortcut: bool = False, on_close: ItemCallback | None = None, label: str | None = None, use_internal_label: bool = True, user_data: Any | None = None, tag: int | str = 0, width: int = 0, height: int = 0, indent: int = -1, show: bool = True, pos: Array[int, Literal[0, 2]] = (), **kwargs) -> Self:  # ty: ignore[invalid-method-override]

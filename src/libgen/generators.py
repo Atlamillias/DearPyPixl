@@ -753,7 +753,6 @@ class ItemsStubGenerator(_ItemsGenerator):
 
         if flags & FeatureFlag.PARENT:
             C = ", C"
-            bases.append("ContainerItem")
             buffer.append(", C: ")
             if type_name.endswith("HandlerRegistry"):
                 buffer.append(f"_HandlerItem[Any, {type_name}] = _HandlerItem")
@@ -761,7 +760,12 @@ class ItemsStubGenerator(_ItemsGenerator):
                 buffer.append(f"_ElementItem[Any, Any, {type_name}] = _ElementItem")
             else:
                 buffer.append(f"ChildItem[Any, Any, {type_name}, Any] = ChildItem")
-            bases.append("ContainerItem[U{V}{P}{C}]")
+
+            # list `ContainerItem` before `ChildItem`
+            if "ChildItem[U{V}{P}{C}]" in bases:
+                bases.insert(bases.index("ChildItem[U{V}{P}{C}]"), "ContainerItem[U{V}{P}{C}]")
+            else:
+                bases.append("ContainerItem[U{V}{P}{C}]")
 
         buffer.append(']')
         del flags
