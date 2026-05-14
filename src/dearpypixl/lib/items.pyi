@@ -23494,11 +23494,24 @@ class mvTable[U = Any, P: ContainerItem[Any, Any, Any, Any] = ContainerItem, C: 
         """Create a new row as a child of this table.
     
             :raises `SystemError`: DearPyGui-related error."""
-    def index(self, item: Item, /) -> int:
-        """Get the position of a table row or column in the table.
+    def index(self, item: Item, /, slot: Literal[-4, -3, -2, -1, 0, 1, 2, 3] | None=None) -> int:
+        """Similar to :py:meth:`ContainerItem.index()` except *item* is
+            expected to be a table row or column when *slot* is `None`.
+            Additionally, ensures that the check against slot 0 excludes
+            non-`mvTableColumn` children. When *slot* is not `None`, the
+            default behavior of :py:meth:`ContainerItem.index()` is used
+            instead.
     
             :type item: `Item`
-            :param item: Identifier of a table row or column.
+            :param item: A `mvTableRow` or `mvTableColumn` item identifier
+                when *slot* is `None`, otherwise any child item identifier.
+    
+            :type slot: `Literal[0, 1, 2, 3, -1, -2, -3, -4] | None` (optional)
+            :param slot: Index (positive or negative) of the child slot to check.
+                When `None`, only slot 1 (table rows) and a sequence of table
+                columns in slot 0 are checked.  Defaults to `None`.
+    
+            :raises `IndexError`: *slot* is not a valid child slot index.
     
             :raises `ValueError`: *item* is not not parented by this container,
                 or is not in the specified child slot.

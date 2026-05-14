@@ -479,7 +479,7 @@ class ContainerItem[U = Any, V = Any, P: ContainerItem[Any, Any, Any, Any] | Non
     def __delitem__(self, index: SupportsIndex, /) -> None: ...
     @overload
     def __delitem__(self, slice: slice, /) -> None: ...
-    def index(self, item: Item, /, *, slot: Literal[0, 1, 2, 3, -1, -2, -3, -4] | None = ...) -> int:
+    def index(self, item: Item, /, slot: Literal[0, 1, 2, 3, -1, -2, -3, -4] | None = ...) -> int:
         """Get the position of *item* within the specified child slot.
 
         :type item: `Item`

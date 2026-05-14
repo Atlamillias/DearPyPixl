@@ -1367,17 +1367,33 @@ class mvTable:
         kwargs["parent"] = self
         return mvTableRow.create(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, height=height, filter_key=filter_key, show=show, **kwargs)  # ty: ignore
 
-    def index(self, item: Item, /) -> int:    # type: ignore
-        """Get the position of a table row or column in the table.
+    def index(self, item: Item, /, slot: Literal[-4, -3, -2, -1, 0, 1, 2, 3] | None = None) -> int:    # type: ignore
+        """Similar to :py:meth:`ContainerItem.index()` except *item* is
+        expected to be a table row or column when *slot* is `None`.
+        Additionally, ensures that the check against slot 0 excludes
+        non-`mvTableColumn` children. When *slot* is not `None`, the
+        default behavior of :py:meth:`ContainerItem.index()` is used
+        instead.
 
         :type item: `Item`
-        :param item: Identifier of a table row or column.
+        :param item: A `mvTableRow` or `mvTableColumn` item identifier
+            when *slot* is `None`, otherwise any child item identifier.
+
+        :type slot: `Literal[0, 1, 2, 3, -1, -2, -3, -4] | None` (optional)
+        :param slot: Index (positive or negative) of the child slot to check.
+            When `None`, only slot 1 (table rows) and a sequence of table
+            columns in slot 0 are checked.  Defaults to `None`.
+
+        :raises `IndexError`: *slot* is not a valid child slot index.
 
         :raises `ValueError`: *item* is not not parented by this container,
             or is not in the specified child slot.
 
         :raises `SystemError`: DearPyGui-related error.
         """
+        if slot is not None:
+            super().index(item, slot)
+
         if isinstance(item, str):
             tag = _dearpygui.get_alias_id(item)
         else:
@@ -1385,24 +1401,22 @@ class mvTable:
 
         get_item_info = _dearpygui.get_item_info
 
-        children = get_item_info(self)["children"]
+        child_slots = get_item_info(self)["children"]
 
-        rows = children[1]
-        try:
+        rows = child_slots[1]
+        if tag in rows:
             return rows.index(tag)
-        except ValueError:
-            pass
 
-        cols = [
-            c for c in children[0]
-            if get_item_info(c)["type"] == "myAppItemType::mvTableColumn"
-        ]
+        # check first -- no reason to call the DLL further on failure
+        cols = child_slots[0]
+        if tag not in cols:
+            ValueError(f"{item!r} is not a row or column parented by this table")
+
+        cols = [c for c in cols if get_item_info(c)["type"] == "myAppItemType::mvTableColumn"]
         try:
             return cols.index(tag)
         except ValueError:
-            pass
-
-        raise ValueError(f"{item!r} is not a row or column parented by this table")
+            raise ValueError(f"{item!r} is not a row or column parented by this table") from None
 
     def is_cell_highlighted(self, irow: int, icol: int, /) -> bool:
         """Return True if a specific cell is highlighted.

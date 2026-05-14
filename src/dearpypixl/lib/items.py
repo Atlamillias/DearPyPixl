@@ -7985,24 +7985,26 @@ class mvTable(ContainerItem, ChildItem, command="add_table", slot=1):
         kwargs['parent'] = self
         return mvTableRow.create(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, before=before, height=height, filter_key=filter_key, show=show, **kwargs)
 
-    def index(self, item, /):
+    def index(self, item, /, slot=None):
+        if slot is not None:
+            super().index(item, slot)
         if isinstance(item, str):
             tag = _dearpygui.get_alias_id(item)
         else:
             tag = item
         get_item_info = _dearpygui.get_item_info
-        children = get_item_info(self)['children']
-        rows = children[1]
-        try:
+        child_slots = get_item_info(self)['children']
+        rows = child_slots[1]
+        if tag in rows:
             return rows.index(tag)
-        except ValueError:
-            pass
-        cols = [c for c in children[0] if get_item_info(c)['type'] == 'myAppItemType::mvTableColumn']
+        cols = child_slots[0]
+        if tag not in cols:
+            ValueError(f'{item!r} is not a row or column parented by this table')
+        cols = [c for c in cols if get_item_info(c)['type'] == 'myAppItemType::mvTableColumn']
         try:
             return cols.index(tag)
         except ValueError:
-            pass
-        raise ValueError(f'{item!r} is not a row or column parented by this table')
+            raise ValueError(f'{item!r} is not a row or column parented by this table') from None
 
     def is_cell_highlighted(self, irow, icol, /):
         return _dearpygui.is_table_cell_highlighted(self, irow, icol)
