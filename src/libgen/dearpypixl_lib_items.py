@@ -376,6 +376,8 @@ class mvThemeComponent:
             x = 1.0
         elif hasattr(obj, "__iter__"):
             x, y = obj
+        else:
+            x = obj
         kwargs["parent"] = self
         return mvThemeStyle.create(target, x, y, **kwargs)  # ty:ignore[unresolved-attribute]
 
