@@ -1531,14 +1531,14 @@ class mvTable:
 # [ menu system ]
 
 class mvViewportMenuBar:
-    def add_menu[T](self, /, *, label: str | None = None, use_internal_label: bool = True, user_data: T = None, tag: Item = 0, indent: int = -1, before: Item = 0, show: bool = True, filter_key: str = '', drop_callback: Callable = None, payload_type: str = '$$DPG_PAYLOAD', tracked: bool = False, track_offset: float = 0.5, enabled: bool = True, **kwargs) -> mvMenu[T]:
+    def add_menu[T](self, /, *, label: str | None = None, use_internal_label: bool = True, user_data: T = None, tag: Item = 0, indent: int = -1, before: Item = 0, show: bool = True, filter_key: str = '', drop_callback: Callable | None = None, payload_type: str = '$$DPG_PAYLOAD', tracked: bool = False, track_offset: float = 0.5, enabled: bool = True, **kwargs) -> mvMenu[T]:
         """Create a new menu as a child of this container.
 
         :raises `SystemError`: DearPyGui-related error."""
         kwargs["parent"] = self
         return mvMenu.create(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, indent=indent, before=before, show=show, filter_key=filter_key, drop_callback=drop_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, enabled=enabled, **kwargs)  # ty:ignore[unresolved-attribute]
 
-    def add_menu_item[T](self, /, *, default_value: bool = False, shortcut: str = '', check: bool = False, label: str | None = None, use_internal_label: bool = True, user_data: T = None, tag: Item = 0, indent: int = -1, before: Item = 0, callback: Callable = None, show: bool = True, filter_key: str = '', drop_callback: Callable = None, payload_type: str = '$$DPG_PAYLOAD', tracked: bool = False, track_offset: float = 0.5, enabled: bool = True, **kwargs) -> mvMenuItem[T]:
+    def add_menu_item[T](self, /, *, default_value: bool = False, shortcut: str = '', check: bool = False, label: str | None = None, use_internal_label: bool = True, user_data: T = None, tag: Item = 0, indent: int = -1, before: Item = 0, callback: Callable | None = None, show: bool = True, filter_key: str = '', drop_callback: Callable | None = None, payload_type: str = '$$DPG_PAYLOAD', tracked: bool = False, track_offset: float = 0.5, enabled: bool = True, **kwargs) -> mvMenuItem[T]:
         """Create a new menu item as a child of this container.
 
         :raises `SystemError`: DearPyGui-related error."""
@@ -1561,14 +1561,14 @@ class mvMenu:
 # [ tab item system ]
 
 class mvTabBar:
-    def add_tab[T](self, /, *, closable: bool = False, no_tooltip: bool = False, order_mode: int = 0, label: str | None = None, use_internal_label: bool = True, user_data: T = None, tag: Item = 0, indent: int = -1, before: Item = 0, filter_key: str = '', drop_callback: Callable = None, payload_type: str = '$$DPG_PAYLOAD', tracked: bool = False, track_offset: float = 0.5, show: bool = True, **kwargs) -> mvTab[T]:  # ty: ignore
+    def add_tab[T](self, /, *, closable: bool = False, no_tooltip: bool = False, order_mode: int = 0, label: str | None = None, use_internal_label: bool = True, user_data: T = None, tag: Item = 0, indent: int = -1, before: Item = 0, filter_key: str = '', drop_callback: Callable | None = None, payload_type: str = '$$DPG_PAYLOAD', tracked: bool = False, track_offset: float = 0.5, show: bool = True, **kwargs) -> mvTab[T]:  # ty: ignore
         """Create a new tab item as a child of this container.
 
         :raises `SystemError`: DearPyGui-related error."""
         kwargs["parent"] = self
         return mvTab.create(closable=closable, no_tooltip=no_tooltip, order_mode=order_mode, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, indent=indent, before=before, filter_key=filter_key, drop_callback=drop_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, show=show, **kwargs)
 
-    def add_tab_button[T](self, /, *, no_reorder: bool = False, leading: bool = False, trailing: bool = False, no_tooltip: bool = False, label: str | None = None, use_internal_label: bool = True, user_data: T = None, tag: Item = 0, indent: int = -1, before: Item = 0, callback: Callable = None, filter_key: str = '', drop_callback: Callable = None, drag_callback: Callable = None, payload_type: str = '$$DPG_PAYLOAD', tracked: bool = False, track_offset: float = 0.5, show: bool = True, **kwargs) -> mvTabButton[T]:
+    def add_tab_button[T](self, /, *, no_reorder: bool = False, leading: bool = False, trailing: bool = False, no_tooltip: bool = False, label: str | None = None, use_internal_label: bool = True, user_data: T = None, tag: Item = 0, indent: int = -1, before: Item = 0, callback: Callable | None = None, filter_key: str = '', drop_callback: Callable | None = None, drag_callback: Callable | None = None, payload_type: str = '$$DPG_PAYLOAD', tracked: bool = False, track_offset: float = 0.5, show: bool = True, **kwargs) -> mvTabButton[T]:
         """Create a new tab button item as a child of this container.
 
         :raises `SystemError`: DearPyGui-related error."""

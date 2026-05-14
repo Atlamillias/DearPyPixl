@@ -66,3 +66,8 @@ bad-specialization = false
 bad-function-definition = false
 missing-attribute = false
 bad-argument-type = false
+
+[[tool.pyrefly.sub-config]]
+matches = "./src/dearpypixl/lib/items.pyi"
+[tool.pyrefly.sub-config.errors]
+inconsistent-inheritance = 'warn'

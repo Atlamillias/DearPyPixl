@@ -706,6 +706,7 @@ class ItemsStubGenerator(_ItemsGenerator):
         return buffer
 
     _RE_DOCPARAM = re.compile(r"(?P<name>[a-zA-Z][a-zA-Z0-9_]*)\s*(\(.+\))?:(?P<desc>.*)\n")
+    _RE_ARGVAL_ASSIGN = re.compile(r"(?P<chr1>[^\s])=(?P<chr2>[^\s])")
 
     def _generate_class_entry(self, type_info: ItemTypeInfo, /, *, level: int = 0):
         buffer = []
@@ -1005,17 +1006,36 @@ class ItemsStubGenerator(_ItemsGenerator):
                         if doc_params and not isinstance(node.body[0].value.value, str):
                             s = s.rstrip("... \n") + f'\n    """{doc_params}"""'
 
-                s = s \
-                    .replace("user_data: T=None", 'user_data: T = ...', 1) \
-                    .replace('user_data: T = None', 'user_data: T = ...', 1)
-
                 if doc_params:
                     s = s.rstrip().removesuffix("...").rstrip()
                 else:
                     s = s.rpartition("    ...")[0].rstrip() + " ..."
 
-                for ln in s.splitlines():
-                    buffer.append(f"    {ln}")
+                # do some last-minute formatting
+                lines = []
+
+                sig, _, doc = s.partition('"""')
+
+                sig = sig.rstrip()
+                # `ast.unparse()` doesn't include whitespace in default arg assignments
+                sig = self._RE_ARGVAL_ASSIGN.sub(r"\g<chr1> = \g<chr2>", sig)
+                # quiets the type checker (doesn't like the `None` default)
+                sig = sig.replace('user_data: T = None', 'user_data: T = ...', 1)
+                for ln in sig.splitlines():
+                    lines.append(f"    {ln}")
+
+                # `ast.unparse()` indents all but the first docstring line one additional
+                # level -- remove these (rather, DON'T indent them further)
+                if doc:
+                    doc = '        """' + doc.lstrip()
+
+                    doclines = doc.splitlines()
+                    lines.append(doclines.pop(0))
+
+                    for ln in doclines:
+                        lines.append(ln)
+
+                buffer.extend(lines)
 
         buffer.append("")
 
