@@ -296,7 +296,7 @@ def _set_vp_callback(callback: typing.Any = _MISSING, user_data: typing.Any = _M
 
 
 
-_GLOBAL_STATE = dict.fromkeys(("ok", "visible", "fullscreen"), False)
+_GLOBAL_STATE: dict = dict.fromkeys(("ok", "visible", "fullscreen"), False)
 
 
 def _get_vp_ok():
@@ -513,7 +513,7 @@ class Viewport(interface.Interface):
     __slots__ = ()
 
     @property
-    def tag(self, /):
+    def tag(self, /):  # pyrefly: ignore [bad-override]
         return _VIEWPORT_UUID
 
     @classmethod

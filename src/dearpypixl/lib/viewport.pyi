@@ -155,7 +155,7 @@ class Viewport(interface.Interface):
     destroyed, the success of creating a new one is not guaranteed.*
     """
     @property
-    def tag(self, /) -> int | str: ...
+    def tag(self, /) -> int | str: ...  # pyrefly: ignore [bad-override]
     @classmethod
     def create(cls, **configuration: Unpack[_ViewportConfigDict]) -> Self:
         """Create the DearPyGui viewport and return an interface for

@@ -51,7 +51,7 @@ class _ItemStateDict(TypedDict):
     rect_size: NotRequired[Annotated[list[int], 2]]
     content_region_avail: NotRequired[Annotated[list[int], 2]]
 
-type _ItemStateDict = _ItemStateDict | Any
+type _ItemStateDict = _ItemStateDict | Any  # pyrefly: ignore [redefinition]
 
 class _ItemInfoDict(TypedDict):
     children: Mapping[Literal[0, 1, 2, 3], list[Item]]
@@ -74,7 +74,7 @@ class _ItemInfoDict(TypedDict):
     toggled_open_handler_applicable: bool
     resized_handler_applicable: bool
 
-type _ItemInfoDict = _ItemInfoDict | Any
+type _ItemInfoDict = _ItemInfoDict | Any  # pyrefly: ignore [redefinition]
 
 
 class AppItemType(type):
@@ -155,7 +155,7 @@ class AppItem[U = Any, V = Any, P: ContainerItem[Any, Any, Any, Any] | None = An
         attempt will result in `SystemError`.
         """
     @property
-    def tag(self, /) -> Item:
+    def tag(self, /) -> Item:  # pyrefly: ignore [bad-override]
         """**[*get*]** the associated item's unique integer or string
         identifier (integer by default)."""
     @property

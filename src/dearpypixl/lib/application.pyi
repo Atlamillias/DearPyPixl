@@ -76,7 +76,7 @@ class Application(Interface):
         option is set to True.
         """
     @property
-    def tag(self, /) -> int | str: ...
+    def tag(self, /) -> int | str: ...  # pyrefly: ignore[bad-override]
     @property
     def version(self, /) -> tuple[int, ...]: ...
     @property

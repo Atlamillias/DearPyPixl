@@ -228,7 +228,7 @@ class Application(interface.Interface):
         return _dearpygui.save_init_file(file)
 
     @property
-    def tag(self, /):
+    def tag(self, /):  # pyrefly: ignore[bad-override]
         return 0
 
     @property
