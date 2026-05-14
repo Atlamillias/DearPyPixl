@@ -1005,6 +1005,10 @@ class ItemsStubGenerator(_ItemsGenerator):
                         if doc_params and not isinstance(node.body[0].value.value, str):
                             s = s.rstrip("... \n") + f'\n    """{doc_params}"""'
 
+                s = s \
+                    .replace("user_data: T=None", 'user_data: T = ...', 1) \
+                    .replace('user_data: T = None', 'user_data: T = ...', 1)
+
                 if doc_params:
                     s = s.rstrip().removesuffix("...").rstrip()
                 else:
