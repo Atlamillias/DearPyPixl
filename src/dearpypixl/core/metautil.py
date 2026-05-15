@@ -135,8 +135,6 @@ def create_named_desc_factory(factory: typing.Callable[[str], typing.Any], /) ->
     return descfactory_delegate_factory
 
 
-
-
 def create_compitem_prop_delegate[T: property](child_path: str, source_prop: T, /) -> T:
     """Create a new property that makes a component item property
     available on interfaces of the enclosing item type class.
@@ -170,13 +168,13 @@ def create_compitem_prop_delegate[T: property](child_path: str, source_prop: T, 
         getter = None
 
     if source_prop.fset is not None:
-        def setter(self, value, /, *, __PATH=child_path, __FUNC=source_prop.fget):
+        def setter(self, value, /, *, __PATH=child_path, __FUNC=source_prop.fset):
             __FUNC(f"<{self.tag}>/{__PATH}", value)  # type: ignore
     else:
         setter = None
 
     if source_prop.fdel:
-        def deleter(self, /, *, __PATH=child_path, __FUNC=source_prop.fget):
+        def deleter(self, /, *, __PATH=child_path, __FUNC=source_prop.fdel):
             return __FUNC(f"<{self.tag}>/{__PATH}")  # type: ignore
     else:
         deleter = None
