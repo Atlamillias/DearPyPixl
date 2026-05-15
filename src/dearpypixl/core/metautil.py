@@ -163,19 +163,19 @@ def create_compitem_prop_delegate[T: property](child_path: str, source_prop: T, 
     """
     if source_prop.fget:
         def getter(self, /, *, __PATH=child_path, __FUNC=source_prop.fget):
-            return __FUNC(f"<{self.tag}>/{__PATH}")  # type: ignore
+            return __FUNC(f"{self.tag}/{__PATH}")  # type: ignore
     else:
         getter = None
 
     if source_prop.fset is not None:
         def setter(self, value, /, *, __PATH=child_path, __FUNC=source_prop.fset):
-            __FUNC(f"<{self.tag}>/{__PATH}", value)  # type: ignore
+            __FUNC(f"{self.tag}/{__PATH}", value)  # type: ignore
     else:
         setter = None
 
     if source_prop.fdel:
         def deleter(self, /, *, __PATH=child_path, __FUNC=source_prop.fdel):
-            return __FUNC(f"<{self.tag}>/{__PATH}")  # type: ignore
+            return __FUNC(f"{self.tag}/{__PATH}")  # type: ignore
     else:
         deleter = None
 
