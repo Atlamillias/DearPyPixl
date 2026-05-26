@@ -415,19 +415,6 @@ class ChildItem[U = Any, V = Any, P: ContainerItem[Any, Any, Any, Any] = Any, C:
 
         :raises `SystemError`: DearPyGui-related error.
         """
-    def unstage(self, /) -> None:
-        """Remove this item from its stage parent and move it to the
-        item currently atop the container stack.
-
-        The child's current parent must be a `myAppItemType::mvStage`
-        item. Additionally, the container stack cannot be empty.
-        Finally, the top-most item on the container stack must be a
-        suitable parent for the item.
-
-        Similar to `dearpygui.unstage_item(self)`.
-
-        :raises `SystemError`: DearPyGui-related error.
-        """
 
 
 class ContainerItem[U = Any, V = Any, P: ContainerItem[Any, Any, Any, Any] | None = Any, C: ChildItem[Any, Any, Any, Any] = Any](AppItem[U, V, P, C]):

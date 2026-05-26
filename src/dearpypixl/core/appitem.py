@@ -373,8 +373,7 @@ class ChildItem[U = typing.Any, V = typing.Any, P = typing.Any, C = typing.Any](
     def move_down(self, /, *, __func=_dearpygui.move_item_down):
         __func(self)
 
-    def unstage(self, /, *, __func=_dearpygui.unstage):
-        __func(self)
+    def unstage(self, /): pass
 
 
 class ContainerItem[U = typing.Any, V = typing.Any, P = typing.Any, C = typing.Any](AppItem):
