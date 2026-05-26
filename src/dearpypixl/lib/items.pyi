@@ -21694,6 +21694,18 @@ class mvStage[U = Any, C: ChildItem[Any, Any, mvStage, Any] = ChildItem](Contain
     def configuration(self, /) -> dict[Literal["label", "use_internal_label", "user_data"], Any]: ...
     def configure(self, /, *, label: str | None = ..., use_internal_label: bool = ..., user_data: Any | None = ..., **kwargs) -> None: ...
     def state(self, /) -> dict[Literal["ok", "pos"], Any]: ...
+    def unstage(self, /, parent: Item = 0) -> None:
+        """Unpack the stage's children into *parent* or the item atop
+        the container stack while maintaining their current order, then
+        delete the stage.
+
+        :type parent: `int | str` (optional)
+        :param parent: Container that will adopt the stage's children.
+            When null, the item atop the container stack will be used
+            as the parent. Defaults to `0`.
+
+        :raises `SystemError`: DearPyGui-related error.
+        """
 
 def stage[U = Any](*, label: str | None = None, use_internal_label: bool = True, user_data: Any | None = None, tag: int | str = 0, **kwargs) -> mvStage[U]:
     """Adds a stage.

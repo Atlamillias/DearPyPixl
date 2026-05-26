@@ -1604,3 +1604,31 @@ class mvColorMapRegistry:
         :raises `SystemError`: DearPyGui-related error."""
         kwargs["parent"] = self
         return mvColorMap.create(colors, qualitative, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, show=show, **kwargs)  # ty:ignore[unresolved-attribute]
+
+
+
+
+# [ misc ]
+
+class mvStage:
+    def unstage(self, /, parent: Item = 0) -> None:
+        """Unpack the stage's children into *parent* or the item atop
+        the container stack while maintaining their current order, then
+        delete the stage.
+
+        :type parent: `int | str` (optional)
+        :param parent: Container that will adopt the stage's children.
+            When null, the item atop the container stack will be used
+            as the parent. Defaults to `0`.
+
+        :raises `SystemError`: DearPyGui-related error.
+        """
+        if not parent:
+            _dearpygui.unstage(self)
+            return
+
+        _dearpygui.push_container_stack(parent)
+        try:
+            _dearpygui.unstage(self)
+        finally:
+            _dearpygui.pop_container_stack()

@@ -7678,6 +7678,16 @@ class mvStage(ContainerItem, command="add_stage", slot=1):
     def create(cls, /, *, label=None, use_internal_label=True, user_data=None, tag=0, __func=_dearpygui.add_stage, **kwargs):  # ty: ignore[invalid-method-override]
         return cls(tag=__func(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag))  # ty: ignore[invalid-argument-type]
 
+    def unstage(self, /, parent=0):
+        if not parent:
+            _dearpygui.unstage(self)
+            return
+        _dearpygui.push_container_stack(parent)
+        try:
+            _dearpygui.unstage(self)
+        finally:
+            _dearpygui.pop_container_stack()
+
 stage = add_stage = mvStage.create
 
 
