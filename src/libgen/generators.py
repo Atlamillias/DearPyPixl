@@ -1219,9 +1219,13 @@ class ConstantsCodeGenerator(FileGenerator):
 
         content.append('import enum')
         content.append('')
+        content.append('from dearpypixl.core.errors import mvErrorCode as mvErrorCode')
+        content.append('')
         content.append('from dearpygui import _dearpygui')
         content.append('')
         content.append('')
+
+        self._exports.append("mvErrorCode")
 
         namespace_map = self._get_const_namespace_map(self.metadata.constants)
 

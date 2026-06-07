@@ -9,10 +9,13 @@
 #############################################################
 import enum
 
+from dearpypixl.core.errors import mvErrorCode as mvErrorCode
+
 from dearpygui import _dearpygui
 
 
 __all__ = (
+    "mvErrorCode",
     "mvAll",
     "mvAppUUID",
     "mvFontAtlas",
