@@ -24,7 +24,7 @@ _globals.discard("_globals")
 
 def get_interface_type(item: Item, /) -> type[_appitem.ChildItem | _appitem.ContainerItem]:
     type_name = _dearpygui.get_item_info(item)["type"]
-    return _appitem.AppItem.__item_registry__[type_name]  # ty:ignore[invalid-return-type]
+    return _appitem.AppItem.__item_registry__[type_name]
 
 
 @_typing.overload
