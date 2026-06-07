@@ -141,11 +141,13 @@ type Mappable[KT: typing.Hashable, VT] = SupportsKeysAndGetItem[KT, VT] | typing
 type Item = int | str
 
 
-class ItemCommand[**P](typing.Protocol):
+class ItemCommand[T: Item](typing.Protocol):
     __name__: str
-    __defaults__: tuple
-    __kwdefaults__: dict[str, typing.Any] | None
-    def __call__(self, /, *args: P.args, **kwargs: P.kwargs) -> Item: ...
+    def __call__(self, /, *, tag: Item = ..., **kwargs) -> Item: ...
+
+class ItemChildCommand[T: Item](typing.Protocol):
+    __name__: str
+    def __call__(self, /, *, tag: Item = ..., parent: Item = ..., before: Item = ..., **kwargs) -> T: ...
 
 
 class ItemCallback0(Function, typing.Protocol):
