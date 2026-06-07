@@ -236,8 +236,8 @@ StagingModeOffError = _create_dearpygui_err_type("StagingModeOffError", mvErrorC
 ParentNotDeducedError = _create_dearpygui_err_type("ParentNotDeducedError", mvErrorCode.PARENT_NOT_DEDUCED)
 
 
-new_from_exception = DearPyGuiError.from_exception
-new_from_message   = DearPyGuiError.from_message
+err_from_exception = DearPyGuiError.from_exception
+err_from_message   = DearPyGuiError.from_message
 
 
 class DearPyGuiErrorHandler:
