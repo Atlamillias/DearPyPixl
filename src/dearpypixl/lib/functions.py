@@ -4,6 +4,7 @@ from dearpygui import  _dearpygui
 
 import dearpypixl.core.appitem as _appitem
 import dearpypixl.core.metautil as _metautil
+from dearpypixl.core.errors import DearPyGuiError
 
 if _typing.TYPE_CHECKING:
     from dearpypixl.lib.items import mvWindowAppItem
@@ -23,9 +24,11 @@ _globals.discard("_globals")
 # [ homebrew ]
 
 def get_interface_type(item: Item, /) -> type[_appitem.ChildItem | _appitem.ContainerItem]:
-    type_name = _dearpygui.get_item_info(item)["type"]
-    return _appitem.AppItem.__item_registry__[type_name]
-
+    try:
+        type_name = _dearpygui.get_item_info(item)["type"]
+        return _appitem.AppItem.__item_registry__[type_name]
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @_typing.overload
 def get_root_parent(item: int | str, /) -> tuple[str, int | str | None]: ...  # pyright: ignore[reportInconsistentOverload]  # ty:ignore[invalid-overload]
@@ -45,15 +48,18 @@ def get_root_parent(item, /, *, __func=_dearpygui.get_item_info):
     item_uuid = item
     type_name = ''
 
-    while True:
-        info =__func(item_uuid)
+    try:
+        while True:
+            info =__func(item_uuid)
 
-        parent = info["parent"]
-        if parent is None:
-            break
+            parent = info["parent"]
+            if parent is None:
+                break
 
-        item_uuid = parent
-        type_name = info["type"]
+            item_uuid = parent
+            type_name = info["type"]
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
     if item_uuid == item:
         return info["type"], item
@@ -78,17 +84,20 @@ def iter_item_parents(item: int | str, /, *, __func=_dearpygui.get_item_info) ->
     """
     item_uuid = item
 
-    while True:
-        info =__func(item_uuid)
+    try:
+        while True:
+            info =__func(item_uuid)
 
-        parent = info["parent"]
-        if parent is None:
-            break
+            parent = info["parent"]
+            if parent is None:
+                break
 
-        item_uuid = parent
-        type_name = info["type"]
+            item_uuid = parent
+            type_name = info["type"]
 
-        yield (type_name, item_uuid)
+            yield (type_name, item_uuid)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 
 def get_item_index(item: int | str, /) -> int:
@@ -103,19 +112,22 @@ def get_item_index(item: int | str, /) -> int:
     :raises `ValueError`: *item* is not a child item
     :raises `SystemError`: DearPyGui-related error.
     """
-    if isinstance(item, str):
-        tag = _dearpygui.get_alias_id(item)
-    else:
-        tag = item
+    try:
+        if isinstance(item, str):
+            tag = _dearpygui.get_alias_id(item)
+        else:
+            tag = item
 
-    item_info = _dearpygui.get_item_info(tag)
+        item_info = _dearpygui.get_item_info(tag)
 
-    parent = item_info["parent"]
-    if not parent:
-        raise ValueError(f"item {item!r} is not a child item")
+        parent = item_info["parent"]
+        if not parent:
+            raise ValueError(f"item {item!r} is not a child item")
 
-    slot_index = item_info["target"]
-    child_slot = _dearpygui.get_item_info(parent)["children"][slot_index]
+        slot_index = item_info["target"]
+        child_slot = _dearpygui.get_item_info(parent)["children"][slot_index]
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
     return child_slot.index(tag)
 
@@ -141,16 +153,19 @@ def insert_item(index: _typing.SupportsIndex, item: int | str, /, *, parent: int
     :raises `ValueError`: *item* is not a child item
     :raises `SystemError`: DearPyGui-related error.
     """
-    item_info = _dearpygui.get_item_info(item)
+    try:
+        item_info = _dearpygui.get_item_info(item)
 
-    old_parent = item_info["parent"]
-    if not old_parent:
-        raise ValueError(f"item {item!r} is not a child item")
+        old_parent = item_info["parent"]
+        if not old_parent:
+            raise ValueError(f"item {item!r} is not a child item")
 
-    slot_index = item_info["target"]
-    child_slot = _dearpygui.get_item_info(parent or old_parent)["children"][slot_index]
+        slot_index = item_info["target"]
+        child_slot = _dearpygui.get_item_info(parent or old_parent)["children"][slot_index]
 
-    _dearpygui.move_item(item, parent=parent, before=child_slot[index])
+        _dearpygui.move_item(item, parent=parent, before=child_slot[index])
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 
 type _AcceptsSender[T: Item, T2, T3] = ItemCallback1[T] | ItemCallback2[T, T2] | ItemCallback3[T, T2, T3]
@@ -324,14 +339,14 @@ def popup(parent: int | str, mousebutton: int = _dearpygui.mvMouseButton_Right, 
         handler_registry = _dearpygui.add_item_handler_registry(label=None, user_data=None, use_internal_label=True, tag=0, show=True)  # ty:ignore[invalid-argument-type]
         _dearpygui.add_item_clicked_handler(mousebutton, parent=handler_registry, callback=lambda: window.configure(show=True))
         _dearpygui.bind_item_handler_registry(parent, handler_registry)
-    except:
+    except Exception as e:
         try:    _dearpygui.delete_item(handler_registry)  # type: ignore
         except: pass
 
         try:    _dearpygui.delete_item(window)
         except: pass
 
-        raise
+        raise DearPyGuiError.from_exception(e)
 
     return window  # ty:ignore[invalid-return-type]
 
