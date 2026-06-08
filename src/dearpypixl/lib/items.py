@@ -8,6 +8,7 @@
 # overwritten.
 #############################################################
 from dearpypixl.core.appitem import *
+from dearpypixl.core.errors import DearPyGuiError
 
 from dearpygui import dearpygui, _dearpygui
 
@@ -24,6 +25,8 @@ def _property__activated(self, /, *, __func=_dearpygui.get_item_state):
         return __func(self)["activated"]
     except KeyError:
         raise AttributeError(f"'activated' not in dict returned from 'get_item_state({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__active(self, /, *, __func=_dearpygui.get_item_state):
@@ -31,6 +34,8 @@ def _property__active(self, /, *, __func=_dearpygui.get_item_state):
         return __func(self)["active"]
     except KeyError:
         raise AttributeError(f"'active' not in dict returned from 'get_item_state({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__clicked(self, /, *, __func=_dearpygui.get_item_state):
@@ -38,6 +43,8 @@ def _property__clicked(self, /, *, __func=_dearpygui.get_item_state):
         return __func(self)["clicked"]
     except KeyError:
         raise AttributeError(f"'clicked' not in dict returned from 'get_item_state({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__content_region_avail(self, /, *, __func=_dearpygui.get_item_state):
@@ -45,6 +52,8 @@ def _property__content_region_avail(self, /, *, __func=_dearpygui.get_item_state
         return __func(self)["content_region_avail"]
     except KeyError:
         raise AttributeError(f"'content_region_avail' not in dict returned from 'get_item_state({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__deactivated(self, /, *, __func=_dearpygui.get_item_state):
@@ -52,6 +61,8 @@ def _property__deactivated(self, /, *, __func=_dearpygui.get_item_state):
         return __func(self)["deactivated"]
     except KeyError:
         raise AttributeError(f"'deactivated' not in dict returned from 'get_item_state({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__deactivated_after_edit(self, /, *, __func=_dearpygui.get_item_state):
@@ -59,6 +70,8 @@ def _property__deactivated_after_edit(self, /, *, __func=_dearpygui.get_item_sta
         return __func(self)["deactivated_after_edit"]
     except KeyError:
         raise AttributeError(f"'deactivated_after_edit' not in dict returned from 'get_item_state({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__edited(self, /, *, __func=_dearpygui.get_item_state):
@@ -66,6 +79,8 @@ def _property__edited(self, /, *, __func=_dearpygui.get_item_state):
         return __func(self)["edited"]
     except KeyError:
         raise AttributeError(f"'edited' not in dict returned from 'get_item_state({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__focused(self, /, *, __func=_dearpygui.get_item_state):
@@ -73,6 +88,8 @@ def _property__focused(self, /, *, __func=_dearpygui.get_item_state):
         return __func(self)["focused"]
     except KeyError:
         raise AttributeError(f"'focused' not in dict returned from 'get_item_state({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__hovered(self, /, *, __func=_dearpygui.get_item_state):
@@ -80,6 +97,8 @@ def _property__hovered(self, /, *, __func=_dearpygui.get_item_state):
         return __func(self)["hovered"]
     except KeyError:
         raise AttributeError(f"'hovered' not in dict returned from 'get_item_state({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__is_scrolling(self, /, *, __func=_dearpygui.get_item_state):
@@ -87,6 +106,8 @@ def _property__is_scrolling(self, /, *, __func=_dearpygui.get_item_state):
         return __func(self)["is_scrolling"]
     except KeyError:
         raise AttributeError(f"'is_scrolling' not in dict returned from 'get_item_state({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__left_clicked(self, /, *, __func=_dearpygui.get_item_state):
@@ -94,6 +115,8 @@ def _property__left_clicked(self, /, *, __func=_dearpygui.get_item_state):
         return __func(self)["left_clicked"]
     except KeyError:
         raise AttributeError(f"'left_clicked' not in dict returned from 'get_item_state({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__middle_clicked(self, /, *, __func=_dearpygui.get_item_state):
@@ -101,6 +124,8 @@ def _property__middle_clicked(self, /, *, __func=_dearpygui.get_item_state):
         return __func(self)["middle_clicked"]
     except KeyError:
         raise AttributeError(f"'middle_clicked' not in dict returned from 'get_item_state({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__pos(self, /, *, __func=_dearpygui.get_item_state):
@@ -108,12 +133,20 @@ def _property__pos(self, /, *, __func=_dearpygui.get_item_state):
         return __func(self)["pos"]
     except KeyError:
         raise AttributeError(f"'pos' not in dict returned from 'get_item_state({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__pos.setter
 def _property__pos(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, pos=value)
+    try:
+        __func(self, pos=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__pos.deleter
 def _property__pos(self, /, *, __func=_dearpygui.configure_item):
-    __func(self, pos=())
+    try:
+        __func(self, pos=())
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__rect_max(self, /, *, __func=_dearpygui.get_item_state):
@@ -121,6 +154,8 @@ def _property__rect_max(self, /, *, __func=_dearpygui.get_item_state):
         return __func(self)["rect_max"]
     except KeyError:
         raise AttributeError(f"'rect_max' not in dict returned from 'get_item_state({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__rect_min(self, /, *, __func=_dearpygui.get_item_state):
@@ -128,6 +163,8 @@ def _property__rect_min(self, /, *, __func=_dearpygui.get_item_state):
         return __func(self)["rect_min"]
     except KeyError:
         raise AttributeError(f"'rect_min' not in dict returned from 'get_item_state({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__rect_size(self, /, *, __func=_dearpygui.get_item_state):
@@ -135,6 +172,8 @@ def _property__rect_size(self, /, *, __func=_dearpygui.get_item_state):
         return __func(self)["rect_size"]
     except KeyError:
         raise AttributeError(f"'rect_size' not in dict returned from 'get_item_state({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__resized(self, /, *, __func=_dearpygui.get_item_state):
@@ -142,6 +181,8 @@ def _property__resized(self, /, *, __func=_dearpygui.get_item_state):
         return __func(self)["resized"]
     except KeyError:
         raise AttributeError(f"'resized' not in dict returned from 'get_item_state({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__right_clicked(self, /, *, __func=_dearpygui.get_item_state):
@@ -149,6 +190,8 @@ def _property__right_clicked(self, /, *, __func=_dearpygui.get_item_state):
         return __func(self)["right_clicked"]
     except KeyError:
         raise AttributeError(f"'right_clicked' not in dict returned from 'get_item_state({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__scroll_max(self, /, *, __func=_dearpygui.get_item_state):
@@ -156,6 +199,8 @@ def _property__scroll_max(self, /, *, __func=_dearpygui.get_item_state):
         return __func(self)["scroll_max"]
     except KeyError:
         raise AttributeError(f"'scroll_max' not in dict returned from 'get_item_state({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__scroll_pos(self, /, *, __func=_dearpygui.get_item_state):
@@ -163,6 +208,8 @@ def _property__scroll_pos(self, /, *, __func=_dearpygui.get_item_state):
         return __func(self)["scroll_pos"]
     except KeyError:
         raise AttributeError(f"'scroll_pos' not in dict returned from 'get_item_state({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__scrolled(self, /, *, __func=_dearpygui.get_item_state):
@@ -170,6 +217,8 @@ def _property__scrolled(self, /, *, __func=_dearpygui.get_item_state):
         return __func(self)["scrolled"]
     except KeyError:
         raise AttributeError(f"'scrolled' not in dict returned from 'get_item_state({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__toggled_open(self, /, *, __func=_dearpygui.get_item_state):
@@ -177,6 +226,8 @@ def _property__toggled_open(self, /, *, __func=_dearpygui.get_item_state):
         return __func(self)["toggled_open"]
     except KeyError:
         raise AttributeError(f"'toggled_open' not in dict returned from 'get_item_state({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__visible(self, /, *, __func=_dearpygui.get_item_state):
@@ -184,14 +235,22 @@ def _property__visible(self, /, *, __func=_dearpygui.get_item_state):
         return __func(self)["visible"]
     except KeyError:
         raise AttributeError(f"'visible' not in dict returned from 'get_item_state({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__rect_min2(self, /, *, __func=_dearpygui.get_item_state):
-    return __func(self)["pos"]
+    try:
+        return __func(self)["pos"]
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__rect_max2(self, /, *, __func=_dearpygui.get_item_state):
-    state = __func(self)
+    try:
+        state = __func(self)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
     x_pos, y_pos  = state["pos"]
     width, height = state["rect_size"]
     return [x_pos + width, y_pos + height]
@@ -201,25 +260,43 @@ def _property__rect_max2(self, /, *, __func=_dearpygui.get_item_state):
 
 @property
 def _property__x_scroll_max(self, /, *, __func=_dearpygui.get_x_scroll_max):
-    return __func(self)
+    try:
+        return __func(self)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__x_scroll_pos(self, /, *, __func=_dearpygui.get_x_scroll):
-    return __func(self)
+    try:
+        return __func(self)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__x_scroll_pos.setter
 def _property__x_scroll_pos(self, value, /, *, __func=dearpygui.set_x_scroll) -> None:
-    __func(self, value)
+    try:
+        __func(self, value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__y_scroll_max(self, /, *, __func=_dearpygui.get_y_scroll_max):
-    return __func(self)
+    try:
+        return __func(self)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__y_scroll_pos(self, /, *, __func=_dearpygui.get_y_scroll):
-    return __func(self)
+    try:
+        return __func(self)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__y_scroll_pos.setter
 def _property__y_scroll_pos(self, value, /, *, __func=dearpygui.set_y_scroll) -> None:
-    __func(self, value)
+    try:
+        __func(self, value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 
 # configuration properties
@@ -230,9 +307,14 @@ def _property__accept_empty_input(self, /, *, __func=_dearpygui.get_item_configu
         return __func(self)["accept_empty_input"]
     except KeyError:
         raise AttributeError(f"'accept_empty_input' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__accept_empty_input.setter
 def _property__accept_empty_input(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, accept_empty_input=value)
+    try:
+        __func(self, accept_empty_input=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__alpha_bar(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -240,9 +322,14 @@ def _property__alpha_bar(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["alpha_bar"]
     except KeyError:
         raise AttributeError(f"'alpha_bar' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__alpha_bar.setter
 def _property__alpha_bar(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, alpha_bar=value)
+    try:
+        __func(self, alpha_bar=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__alpha_preview(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -250,9 +337,14 @@ def _property__alpha_preview(self, /, *, __func=_dearpygui.get_item_configuratio
         return __func(self)["alpha_preview"]
     except KeyError:
         raise AttributeError(f"'alpha_preview' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__alpha_preview.setter
 def _property__alpha_preview(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, alpha_preview=value)
+    try:
+        __func(self, alpha_preview=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__always_auto_resize(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -260,9 +352,14 @@ def _property__always_auto_resize(self, /, *, __func=_dearpygui.get_item_configu
         return __func(self)["always_auto_resize"]
     except KeyError:
         raise AttributeError(f"'always_auto_resize' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__always_auto_resize.setter
 def _property__always_auto_resize(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, always_auto_resize=value)
+    try:
+        __func(self, always_auto_resize=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__always_overwrite(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -270,9 +367,14 @@ def _property__always_overwrite(self, /, *, __func=_dearpygui.get_item_configura
         return __func(self)["always_overwrite"]
     except KeyError:
         raise AttributeError(f"'always_overwrite' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__always_overwrite.setter
 def _property__always_overwrite(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, always_overwrite=value)
+    try:
+        __func(self, always_overwrite=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__always_use_window_padding(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -280,9 +382,14 @@ def _property__always_use_window_padding(self, /, *, __func=_dearpygui.get_item_
         return __func(self)["always_use_window_padding"]
     except KeyError:
         raise AttributeError(f"'always_use_window_padding' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__always_use_window_padding.setter
 def _property__always_use_window_padding(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, always_use_window_padding=value)
+    try:
+        __func(self, always_use_window_padding=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__angle(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -290,9 +397,14 @@ def _property__angle(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["angle"]
     except KeyError:
         raise AttributeError(f"'angle' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__angle.setter
 def _property__angle(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, angle=value)
+    try:
+        __func(self, angle=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__angled_header(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -300,9 +412,14 @@ def _property__angled_header(self, /, *, __func=_dearpygui.get_item_configuratio
         return __func(self)["angled_header"]
     except KeyError:
         raise AttributeError(f"'angled_header' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__angled_header.setter
 def _property__angled_header(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, angled_header=value)
+    try:
+        __func(self, angled_header=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__arrow(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -310,9 +427,14 @@ def _property__arrow(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["arrow"]
     except KeyError:
         raise AttributeError(f"'arrow' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__arrow.setter
 def _property__arrow(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, arrow=value)
+    try:
+        __func(self, arrow=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__attribute_type(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -320,9 +442,14 @@ def _property__attribute_type(self, /, *, __func=_dearpygui.get_item_configurati
         return __func(self)["attribute_type"]
     except KeyError:
         raise AttributeError(f"'attribute_type' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__attribute_type.setter
 def _property__attribute_type(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, attribute_type=value)
+    try:
+        __func(self, attribute_type=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__auto_fit(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -330,9 +457,14 @@ def _property__auto_fit(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["auto_fit"]
     except KeyError:
         raise AttributeError(f"'auto_fit' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__auto_fit.setter
 def _property__auto_fit(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, auto_fit=value)
+    try:
+        __func(self, auto_fit=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__auto_resize_x(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -340,9 +472,14 @@ def _property__auto_resize_x(self, /, *, __func=_dearpygui.get_item_configuratio
         return __func(self)["auto_resize_x"]
     except KeyError:
         raise AttributeError(f"'auto_resize_x' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__auto_resize_x.setter
 def _property__auto_resize_x(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, auto_resize_x=value)
+    try:
+        __func(self, auto_resize_x=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__auto_resize_y(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -350,9 +487,14 @@ def _property__auto_resize_y(self, /, *, __func=_dearpygui.get_item_configuratio
         return __func(self)["auto_resize_y"]
     except KeyError:
         raise AttributeError(f"'auto_resize_y' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__auto_resize_y.setter
 def _property__auto_resize_y(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, auto_resize_y=value)
+    try:
+        __func(self, auto_resize_y=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__auto_rounding(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -360,9 +502,14 @@ def _property__auto_rounding(self, /, *, __func=_dearpygui.get_item_configuratio
         return __func(self)["auto_rounding"]
     except KeyError:
         raise AttributeError(f"'auto_rounding' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__auto_rounding.setter
 def _property__auto_rounding(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, auto_rounding=value)
+    try:
+        __func(self, auto_rounding=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__auto_select_all(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -370,9 +517,14 @@ def _property__auto_select_all(self, /, *, __func=_dearpygui.get_item_configurat
         return __func(self)["auto_select_all"]
     except KeyError:
         raise AttributeError(f"'auto_select_all' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__auto_select_all.setter
 def _property__auto_select_all(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, auto_select_all=value)
+    try:
+        __func(self, auto_select_all=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__autosize(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -380,9 +532,14 @@ def _property__autosize(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["autosize"]
     except KeyError:
         raise AttributeError(f"'autosize' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__autosize.setter
 def _property__autosize(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, autosize=value)
+    try:
+        __func(self, autosize=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__autosize_x(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -390,9 +547,14 @@ def _property__autosize_x(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["autosize_x"]
     except KeyError:
         raise AttributeError(f"'autosize_x' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__autosize_x.setter
 def _property__autosize_x(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, autosize_x=value)
+    try:
+        __func(self, autosize_x=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__autosize_y(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -400,9 +562,14 @@ def _property__autosize_y(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["autosize_y"]
     except KeyError:
         raise AttributeError(f"'autosize_y' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__autosize_y.setter
 def _property__autosize_y(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, autosize_y=value)
+    try:
+        __func(self, autosize_y=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__background_color(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -410,9 +577,14 @@ def _property__background_color(self, /, *, __func=_dearpygui.get_item_configura
         return __func(self)["background_color"]
     except KeyError:
         raise AttributeError(f"'background_color' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__background_color.setter
 def _property__background_color(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, background_color=value)
+    try:
+        __func(self, background_color=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__bar_scale(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -420,9 +592,14 @@ def _property__bar_scale(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["bar_scale"]
     except KeyError:
         raise AttributeError(f"'bar_scale' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__bar_scale.setter
 def _property__bar_scale(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, bar_scale=value)
+    try:
+        __func(self, bar_scale=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__bear_color(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -430,9 +607,14 @@ def _property__bear_color(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["bear_color"]
     except KeyError:
         raise AttributeError(f"'bear_color' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__bear_color.setter
 def _property__bear_color(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, bear_color=value)
+    try:
+        __func(self, bear_color=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__bins(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -440,9 +622,14 @@ def _property__bins(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["bins"]
     except KeyError:
         raise AttributeError(f"'bins' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__bins.setter
 def _property__bins(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, bins=value)
+    try:
+        __func(self, bins=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__border(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -450,9 +637,14 @@ def _property__border(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["border"]
     except KeyError:
         raise AttributeError(f"'border' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__border.setter
 def _property__border(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, border=value)
+    try:
+        __func(self, border=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__border_color(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -460,9 +652,14 @@ def _property__border_color(self, /, *, __func=_dearpygui.get_item_configuration
         return __func(self)["border_color"]
     except KeyError:
         raise AttributeError(f"'border_color' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__border_color.setter
 def _property__border_color(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, border_color=value)
+    try:
+        __func(self, border_color=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__borders_innerH(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -470,9 +667,14 @@ def _property__borders_innerH(self, /, *, __func=_dearpygui.get_item_configurati
         return __func(self)["borders_innerH"]
     except KeyError:
         raise AttributeError(f"'borders_innerH' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__borders_innerH.setter
 def _property__borders_innerH(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, borders_innerH=value)
+    try:
+        __func(self, borders_innerH=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__borders_innerV(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -480,9 +682,14 @@ def _property__borders_innerV(self, /, *, __func=_dearpygui.get_item_configurati
         return __func(self)["borders_innerV"]
     except KeyError:
         raise AttributeError(f"'borders_innerV' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__borders_innerV.setter
 def _property__borders_innerV(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, borders_innerV=value)
+    try:
+        __func(self, borders_innerV=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__borders_outerH(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -490,9 +697,14 @@ def _property__borders_outerH(self, /, *, __func=_dearpygui.get_item_configurati
         return __func(self)["borders_outerH"]
     except KeyError:
         raise AttributeError(f"'borders_outerH' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__borders_outerH.setter
 def _property__borders_outerH(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, borders_outerH=value)
+    try:
+        __func(self, borders_outerH=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__borders_outerV(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -500,9 +712,14 @@ def _property__borders_outerV(self, /, *, __func=_dearpygui.get_item_configurati
         return __func(self)["borders_outerV"]
     except KeyError:
         raise AttributeError(f"'borders_outerV' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__borders_outerV.setter
 def _property__borders_outerV(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, borders_outerV=value)
+    try:
+        __func(self, borders_outerV=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__bounds_max(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -510,9 +727,14 @@ def _property__bounds_max(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["bounds_max"]
     except KeyError:
         raise AttributeError(f"'bounds_max' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__bounds_max.setter
 def _property__bounds_max(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, bounds_max=value)
+    try:
+        __func(self, bounds_max=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__bounds_min(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -520,9 +742,14 @@ def _property__bounds_min(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["bounds_min"]
     except KeyError:
         raise AttributeError(f"'bounds_min' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__bounds_min.setter
 def _property__bounds_min(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, bounds_min=value)
+    try:
+        __func(self, bounds_min=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__box_select_button(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -530,9 +757,14 @@ def _property__box_select_button(self, /, *, __func=_dearpygui.get_item_configur
         return __func(self)["box_select_button"]
     except KeyError:
         raise AttributeError(f"'box_select_button' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__box_select_button.setter
 def _property__box_select_button(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, box_select_button=value)
+    try:
+        __func(self, box_select_button=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__box_select_cancel_button(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -540,9 +772,14 @@ def _property__box_select_cancel_button(self, /, *, __func=_dearpygui.get_item_c
         return __func(self)["box_select_cancel_button"]
     except KeyError:
         raise AttributeError(f"'box_select_cancel_button' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__box_select_cancel_button.setter
 def _property__box_select_cancel_button(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, box_select_cancel_button=value)
+    try:
+        __func(self, box_select_cancel_button=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__box_select_mod(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -550,9 +787,14 @@ def _property__box_select_mod(self, /, *, __func=_dearpygui.get_item_configurati
         return __func(self)["box_select_mod"]
     except KeyError:
         raise AttributeError(f"'box_select_mod' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__box_select_mod.setter
 def _property__box_select_mod(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, box_select_mod=value)
+    try:
+        __func(self, box_select_mod=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__bull_color(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -560,9 +802,14 @@ def _property__bull_color(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["bull_color"]
     except KeyError:
         raise AttributeError(f"'bull_color' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__bull_color.setter
 def _property__bull_color(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, bull_color=value)
+    try:
+        __func(self, bull_color=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__bullet(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -570,9 +817,14 @@ def _property__bullet(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["bullet"]
     except KeyError:
         raise AttributeError(f"'bullet' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__bullet.setter
 def _property__bullet(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, bullet=value)
+    try:
+        __func(self, bullet=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__callback(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -580,12 +832,20 @@ def _property__callback(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["callback"]
     except KeyError:
         raise AttributeError(f"'callback' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__callback.setter
 def _property__callback(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, callback=value)
+    try:
+        __func(self, callback=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__callback.deleter
 def _property__callback(self, /, *, __func=_dearpygui.configure_item):
-    __func(self, callback=None)
+    try:
+        __func(self, callback=None)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__cancel_callback(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -593,12 +853,20 @@ def _property__cancel_callback(self, /, *, __func=_dearpygui.get_item_configurat
         return __func(self)["cancel_callback"]
     except KeyError:
         raise AttributeError(f"'cancel_callback' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__cancel_callback.setter
 def _property__cancel_callback(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, cancel_callback=value)
+    try:
+        __func(self, cancel_callback=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__cancel_callback.deleter
 def _property__cancel_callback(self, /, *, __func=_dearpygui.configure_item):
-    __func(self, cancel_callback=None)
+    try:
+        __func(self, cancel_callback=None)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__catch_nav_left(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -606,9 +874,14 @@ def _property__catch_nav_left(self, /, *, __func=_dearpygui.get_item_configurati
         return __func(self)["catch_nav_left"]
     except KeyError:
         raise AttributeError(f"'catch_nav_left' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__catch_nav_left.setter
 def _property__catch_nav_left(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, catch_nav_left=value)
+    try:
+        __func(self, catch_nav_left=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__category(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -616,9 +889,14 @@ def _property__category(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["category"]
     except KeyError:
         raise AttributeError(f"'category' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__category.setter
 def _property__category(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, category=value)
+    try:
+        __func(self, category=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__check(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -626,9 +904,14 @@ def _property__check(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["check"]
     except KeyError:
         raise AttributeError(f"'check' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__check.setter
 def _property__check(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, check=value)
+    try:
+        __func(self, check=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__circle_count(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -636,9 +919,14 @@ def _property__circle_count(self, /, *, __func=_dearpygui.get_item_configuration
         return __func(self)["circle_count"]
     except KeyError:
         raise AttributeError(f"'circle_count' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__circle_count.setter
 def _property__circle_count(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, circle_count=value)
+    try:
+        __func(self, circle_count=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__clamped(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -646,9 +934,14 @@ def _property__clamped(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["clamped"]
     except KeyError:
         raise AttributeError(f"'clamped' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__clamped.setter
 def _property__clamped(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, clamped=value)
+    try:
+        __func(self, clamped=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__clipper(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -656,9 +949,14 @@ def _property__clipper(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["clipper"]
     except KeyError:
         raise AttributeError(f"'clipper' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__clipper.setter
 def _property__clipper(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, clipper=value)
+    try:
+        __func(self, clipper=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__closable(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -666,9 +964,14 @@ def _property__closable(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["closable"]
     except KeyError:
         raise AttributeError(f"'closable' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__closable.setter
 def _property__closable(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, closable=value)
+    try:
+        __func(self, closable=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__closed(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -676,9 +979,14 @@ def _property__closed(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["closed"]
     except KeyError:
         raise AttributeError(f"'closed' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__closed.setter
 def _property__closed(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, closed=value)
+    try:
+        __func(self, closed=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__col_major(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -686,9 +994,14 @@ def _property__col_major(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["col_major"]
     except KeyError:
         raise AttributeError(f"'col_major' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__col_major.setter
 def _property__col_major(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, col_major=value)
+    try:
+        __func(self, col_major=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__collapsed(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -696,9 +1009,14 @@ def _property__collapsed(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["collapsed"]
     except KeyError:
         raise AttributeError(f"'collapsed' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__collapsed.setter
 def _property__collapsed(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, collapsed=value)
+    try:
+        __func(self, collapsed=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__color(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -706,9 +1024,14 @@ def _property__color(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["color"]
     except KeyError:
         raise AttributeError(f"'color' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__color.setter
 def _property__color(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, color=value)
+    try:
+        __func(self, color=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__column_major(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -716,9 +1039,14 @@ def _property__column_major(self, /, *, __func=_dearpygui.get_item_configuration
         return __func(self)["column_major"]
     except KeyError:
         raise AttributeError(f"'column_major' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__column_major.setter
 def _property__column_major(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, column_major=value)
+    try:
+        __func(self, column_major=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__column_ratios(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -726,9 +1054,14 @@ def _property__column_ratios(self, /, *, __func=_dearpygui.get_item_configuratio
         return __func(self)["column_ratios"]
     except KeyError:
         raise AttributeError(f"'column_ratios' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__column_ratios.setter
 def _property__column_ratios(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, column_ratios=value)
+    try:
+        __func(self, column_ratios=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__context_menu_button(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -736,9 +1069,14 @@ def _property__context_menu_button(self, /, *, __func=_dearpygui.get_item_config
         return __func(self)["context_menu_button"]
     except KeyError:
         raise AttributeError(f"'context_menu_button' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__context_menu_button.setter
 def _property__context_menu_button(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, context_menu_button=value)
+    try:
+        __func(self, context_menu_button=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__context_menu_in_body(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -746,9 +1084,14 @@ def _property__context_menu_in_body(self, /, *, __func=_dearpygui.get_item_confi
         return __func(self)["context_menu_in_body"]
     except KeyError:
         raise AttributeError(f"'context_menu_in_body' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__context_menu_in_body.setter
 def _property__context_menu_in_body(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, context_menu_in_body=value)
+    try:
+        __func(self, context_menu_in_body=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__contribute_to_bounds(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -756,9 +1099,14 @@ def _property__contribute_to_bounds(self, /, *, __func=_dearpygui.get_item_confi
         return __func(self)["contribute_to_bounds"]
     except KeyError:
         raise AttributeError(f"'contribute_to_bounds' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__contribute_to_bounds.setter
 def _property__contribute_to_bounds(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, contribute_to_bounds=value)
+    try:
+        __func(self, contribute_to_bounds=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__copy_contents_shortcut(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -766,9 +1114,14 @@ def _property__copy_contents_shortcut(self, /, *, __func=_dearpygui.get_item_con
         return __func(self)["copy_contents_shortcut"]
     except KeyError:
         raise AttributeError(f"'copy_contents_shortcut' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__copy_contents_shortcut.setter
 def _property__copy_contents_shortcut(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, copy_contents_shortcut=value)
+    try:
+        __func(self, copy_contents_shortcut=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__corner_colors(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -776,9 +1129,14 @@ def _property__corner_colors(self, /, *, __func=_dearpygui.get_item_configuratio
         return __func(self)["corner_colors"]
     except KeyError:
         raise AttributeError(f"'corner_colors' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__corner_colors.setter
 def _property__corner_colors(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, corner_colors=value)
+    try:
+        __func(self, corner_colors=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__crosshairs(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -786,9 +1144,14 @@ def _property__crosshairs(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["crosshairs"]
     except KeyError:
         raise AttributeError(f"'crosshairs' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__crosshairs.setter
 def _property__crosshairs(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, crosshairs=value)
+    try:
+        __func(self, crosshairs=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__ctrl_enter_for_new_line(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -796,9 +1159,14 @@ def _property__ctrl_enter_for_new_line(self, /, *, __func=_dearpygui.get_item_co
         return __func(self)["ctrl_enter_for_new_line"]
     except KeyError:
         raise AttributeError(f"'ctrl_enter_for_new_line' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__ctrl_enter_for_new_line.setter
 def _property__ctrl_enter_for_new_line(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, ctrl_enter_for_new_line=value)
+    try:
+        __func(self, ctrl_enter_for_new_line=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__cull_mode(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -806,9 +1174,14 @@ def _property__cull_mode(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["cull_mode"]
     except KeyError:
         raise AttributeError(f"'cull_mode' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__cull_mode.setter
 def _property__cull_mode(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, cull_mode=value)
+    try:
+        __func(self, cull_mode=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__cumulative(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -816,9 +1189,14 @@ def _property__cumulative(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["cumulative"]
     except KeyError:
         raise AttributeError(f"'cumulative' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__cumulative.setter
 def _property__cumulative(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, cumulative=value)
+    try:
+        __func(self, cumulative=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__custom_text(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -826,12 +1204,20 @@ def _property__custom_text(self, /, *, __func=_dearpygui.get_item_configuration)
         return __func(self)["custom_text"]
     except KeyError:
         raise AttributeError(f"'custom_text' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__custom_text.setter
 def _property__custom_text(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, custom_text=value)
+    try:
+        __func(self, custom_text=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__custom_text.deleter
 def _property__custom_text(self, /, *, __func=_dearpygui.configure_item):
-    __func(self, custom_text='')
+    try:
+        __func(self, custom_text='')
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__decimal(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -839,9 +1225,14 @@ def _property__decimal(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["decimal"]
     except KeyError:
         raise AttributeError(f"'decimal' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__decimal.setter
 def _property__decimal(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, decimal=value)
+    try:
+        __func(self, decimal=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__delay(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -849,9 +1240,14 @@ def _property__delay(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["delay"]
     except KeyError:
         raise AttributeError(f"'delay' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__delay.setter
 def _property__delay(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, delay=value)
+    try:
+        __func(self, delay=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__delayed(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -859,9 +1255,14 @@ def _property__delayed(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["delayed"]
     except KeyError:
         raise AttributeError(f"'delayed' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__delayed.setter
 def _property__delayed(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, delayed=value)
+    try:
+        __func(self, delayed=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__delink_callback(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -869,12 +1270,20 @@ def _property__delink_callback(self, /, *, __func=_dearpygui.get_item_configurat
         return __func(self)["delink_callback"]
     except KeyError:
         raise AttributeError(f"'delink_callback' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__delink_callback.setter
 def _property__delink_callback(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, delink_callback=value)
+    try:
+        __func(self, delink_callback=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__delink_callback.deleter
 def _property__delink_callback(self, /, *, __func=_dearpygui.configure_item):
-    __func(self, delink_callback=None)
+    try:
+        __func(self, delink_callback=None)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__density(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -882,9 +1291,14 @@ def _property__density(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["density"]
     except KeyError:
         raise AttributeError(f"'density' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__density.setter
 def _property__density(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, density=value)
+    try:
+        __func(self, density=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__depth_clipping(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -892,9 +1306,14 @@ def _property__depth_clipping(self, /, *, __func=_dearpygui.get_item_configurati
         return __func(self)["depth_clipping"]
     except KeyError:
         raise AttributeError(f"'depth_clipping' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__depth_clipping.setter
 def _property__depth_clipping(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, depth_clipping=value)
+    try:
+        __func(self, depth_clipping=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__direction(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -902,9 +1321,14 @@ def _property__direction(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["direction"]
     except KeyError:
         raise AttributeError(f"'direction' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__direction.setter
 def _property__direction(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, direction=value)
+    try:
+        __func(self, direction=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__directory_selector(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -912,9 +1336,14 @@ def _property__directory_selector(self, /, *, __func=_dearpygui.get_item_configu
         return __func(self)["directory_selector"]
     except KeyError:
         raise AttributeError(f"'directory_selector' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__directory_selector.setter
 def _property__directory_selector(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, directory_selector=value)
+    try:
+        __func(self, directory_selector=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__disable_popup_close(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -922,9 +1351,14 @@ def _property__disable_popup_close(self, /, *, __func=_dearpygui.get_item_config
         return __func(self)["disable_popup_close"]
     except KeyError:
         raise AttributeError(f"'disable_popup_close' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__disable_popup_close.setter
 def _property__disable_popup_close(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, disable_popup_close=value)
+    try:
+        __func(self, disable_popup_close=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__display_hex(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -932,9 +1366,14 @@ def _property__display_hex(self, /, *, __func=_dearpygui.get_item_configuration)
         return __func(self)["display_hex"]
     except KeyError:
         raise AttributeError(f"'display_hex' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__display_hex.setter
 def _property__display_hex(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, display_hex=value)
+    try:
+        __func(self, display_hex=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__display_hsv(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -942,9 +1381,14 @@ def _property__display_hsv(self, /, *, __func=_dearpygui.get_item_configuration)
         return __func(self)["display_hsv"]
     except KeyError:
         raise AttributeError(f"'display_hsv' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__display_hsv.setter
 def _property__display_hsv(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, display_hsv=value)
+    try:
+        __func(self, display_hsv=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__display_mode(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -952,9 +1396,14 @@ def _property__display_mode(self, /, *, __func=_dearpygui.get_item_configuration
         return __func(self)["display_mode"]
     except KeyError:
         raise AttributeError(f"'display_mode' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__display_mode.setter
 def _property__display_mode(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, display_mode=value)
+    try:
+        __func(self, display_mode=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__display_rgb(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -962,9 +1411,14 @@ def _property__display_rgb(self, /, *, __func=_dearpygui.get_item_configuration)
         return __func(self)["display_rgb"]
     except KeyError:
         raise AttributeError(f"'display_rgb' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__display_rgb.setter
 def _property__display_rgb(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, display_rgb=value)
+    try:
+        __func(self, display_rgb=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__display_type(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -972,9 +1426,14 @@ def _property__display_type(self, /, *, __func=_dearpygui.get_item_configuration
         return __func(self)["display_type"]
     except KeyError:
         raise AttributeError(f"'display_type' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__display_type.setter
 def _property__display_type(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, display_type=value)
+    try:
+        __func(self, display_type=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__drag_callback(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -982,12 +1441,20 @@ def _property__drag_callback(self, /, *, __func=_dearpygui.get_item_configuratio
         return __func(self)["drag_callback"]
     except KeyError:
         raise AttributeError(f"'drag_callback' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__drag_callback.setter
 def _property__drag_callback(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, drag_callback=value)
+    try:
+        __func(self, drag_callback=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__drag_callback.deleter
 def _property__drag_callback(self, /, *, __func=_dearpygui.configure_item):
-    __func(self, drag_callback=None)
+    try:
+        __func(self, drag_callback=None)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__drag_data(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -995,9 +1462,14 @@ def _property__drag_data(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["drag_data"]
     except KeyError:
         raise AttributeError(f"'drag_data' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__drag_data.setter
 def _property__drag_data(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, drag_data=value)
+    try:
+        __func(self, drag_data=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__draggable(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -1005,9 +1477,14 @@ def _property__draggable(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["draggable"]
     except KeyError:
         raise AttributeError(f"'draggable' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__draggable.setter
 def _property__draggable(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, draggable=value)
+    try:
+        __func(self, draggable=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__draw_selected_overline(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -1015,9 +1492,14 @@ def _property__draw_selected_overline(self, /, *, __func=_dearpygui.get_item_con
         return __func(self)["draw_selected_overline"]
     except KeyError:
         raise AttributeError(f"'draw_selected_overline' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__draw_selected_overline.setter
 def _property__draw_selected_overline(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, draw_selected_overline=value)
+    try:
+        __func(self, draw_selected_overline=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__drop_callback(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -1025,12 +1507,20 @@ def _property__drop_callback(self, /, *, __func=_dearpygui.get_item_configuratio
         return __func(self)["drop_callback"]
     except KeyError:
         raise AttributeError(f"'drop_callback' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__drop_callback.setter
 def _property__drop_callback(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, drop_callback=value)
+    try:
+        __func(self, drop_callback=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__drop_callback.deleter
 def _property__drop_callback(self, /, *, __func=_dearpygui.configure_item):
-    __func(self, drop_callback=None)
+    try:
+        __func(self, drop_callback=None)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__drop_data(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -1038,9 +1528,14 @@ def _property__drop_data(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["drop_data"]
     except KeyError:
         raise AttributeError(f"'drop_data' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__drop_data.setter
 def _property__drop_data(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, drop_data=value)
+    try:
+        __func(self, drop_data=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__elide_left(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -1048,9 +1543,14 @@ def _property__elide_left(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["elide_left"]
     except KeyError:
         raise AttributeError(f"'elide_left' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__elide_left.setter
 def _property__elide_left(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, elide_left=value)
+    try:
+        __func(self, elide_left=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__enabled(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -1058,9 +1558,14 @@ def _property__enabled(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["enabled"]
     except KeyError:
         raise AttributeError(f"'enabled' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__enabled.setter
 def _property__enabled(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, enabled=value)
+    try:
+        __func(self, enabled=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__enabled_state(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -1068,9 +1573,14 @@ def _property__enabled_state(self, /, *, __func=_dearpygui.get_item_configuratio
         return __func(self)["enabled_state"]
     except KeyError:
         raise AttributeError(f"'enabled_state' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__enabled_state.setter
 def _property__enabled_state(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, enabled_state=value)
+    try:
+        __func(self, enabled_state=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__equal_aspects(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -1078,9 +1588,14 @@ def _property__equal_aspects(self, /, *, __func=_dearpygui.get_item_configuratio
         return __func(self)["equal_aspects"]
     except KeyError:
         raise AttributeError(f"'equal_aspects' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__equal_aspects.setter
 def _property__equal_aspects(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, equal_aspects=value)
+    try:
+        __func(self, equal_aspects=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__escape_clears_all(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -1088,9 +1603,14 @@ def _property__escape_clears_all(self, /, *, __func=_dearpygui.get_item_configur
         return __func(self)["escape_clears_all"]
     except KeyError:
         raise AttributeError(f"'escape_clears_all' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__escape_clears_all.setter
 def _property__escape_clears_all(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, escape_clears_all=value)
+    try:
+        __func(self, escape_clears_all=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__event_type(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -1098,9 +1618,14 @@ def _property__event_type(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["event_type"]
     except KeyError:
         raise AttributeError(f"'event_type' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__event_type.setter
 def _property__event_type(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, event_type=value)
+    try:
+        __func(self, event_type=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__file_count(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -1108,9 +1633,14 @@ def _property__file_count(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["file_count"]
     except KeyError:
         raise AttributeError(f"'file_count' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__file_count.setter
 def _property__file_count(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, file_count=value)
+    try:
+        __func(self, file_count=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__fill(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -1118,9 +1648,14 @@ def _property__fill(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["fill"]
     except KeyError:
         raise AttributeError(f"'fill' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__fill.setter
 def _property__fill(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, fill=value)
+    try:
+        __func(self, fill=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__filter_key(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -1128,12 +1663,20 @@ def _property__filter_key(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["filter_key"]
     except KeyError:
         raise AttributeError(f"'filter_key' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__filter_key.setter
 def _property__filter_key(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, filter_key=value)
+    try:
+        __func(self, filter_key=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__filter_key.deleter
 def _property__filter_key(self, /, *, __func=_dearpygui.configure_item):
-    __func(self, filter_key='')
+    try:
+        __func(self, filter_key='')
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__fit_button(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -1141,9 +1684,14 @@ def _property__fit_button(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["fit_button"]
     except KeyError:
         raise AttributeError(f"'fit_button' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__fit_button.setter
 def _property__fit_button(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, fit_button=value)
+    try:
+        __func(self, fit_button=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__fit_width(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -1151,9 +1699,14 @@ def _property__fit_width(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["fit_width"]
     except KeyError:
         raise AttributeError(f"'fit_width' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__fit_width.setter
 def _property__fit_width(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, fit_width=value)
+    try:
+        __func(self, fit_width=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__flattened_navigation(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -1161,9 +1714,14 @@ def _property__flattened_navigation(self, /, *, __func=_dearpygui.get_item_confi
         return __func(self)["flattened_navigation"]
     except KeyError:
         raise AttributeError(f"'flattened_navigation' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__flattened_navigation.setter
 def _property__flattened_navigation(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, flattened_navigation=value)
+    try:
+        __func(self, flattened_navigation=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__foreground_grid(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -1171,9 +1729,14 @@ def _property__foreground_grid(self, /, *, __func=_dearpygui.get_item_configurat
         return __func(self)["foreground_grid"]
     except KeyError:
         raise AttributeError(f"'foreground_grid' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__foreground_grid.setter
 def _property__foreground_grid(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, foreground_grid=value)
+    try:
+        __func(self, foreground_grid=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__format(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -1181,9 +1744,14 @@ def _property__format(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["format"]
     except KeyError:
         raise AttributeError(f"'format' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__format.setter
 def _property__format(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, format=value)
+    try:
+        __func(self, format=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__frame_style(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -1191,9 +1759,14 @@ def _property__frame_style(self, /, *, __func=_dearpygui.get_item_configuration)
         return __func(self)["frame_style"]
     except KeyError:
         raise AttributeError(f"'frame_style' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__frame_style.setter
 def _property__frame_style(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, frame_style=value)
+    try:
+        __func(self, frame_style=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__freeze_columns(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -1201,9 +1774,14 @@ def _property__freeze_columns(self, /, *, __func=_dearpygui.get_item_configurati
         return __func(self)["freeze_columns"]
     except KeyError:
         raise AttributeError(f"'freeze_columns' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__freeze_columns.setter
 def _property__freeze_columns(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, freeze_columns=value)
+    try:
+        __func(self, freeze_columns=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__freeze_rows(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -1211,9 +1789,14 @@ def _property__freeze_rows(self, /, *, __func=_dearpygui.get_item_configuration)
         return __func(self)["freeze_rows"]
     except KeyError:
         raise AttributeError(f"'freeze_rows' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__freeze_rows.setter
 def _property__freeze_rows(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, freeze_rows=value)
+    try:
+        __func(self, freeze_rows=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__front(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -1221,9 +1804,14 @@ def _property__front(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["front"]
     except KeyError:
         raise AttributeError(f"'front' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__front.setter
 def _property__front(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, front=value)
+    try:
+        __func(self, front=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__group_width(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -1231,9 +1819,14 @@ def _property__group_width(self, /, *, __func=_dearpygui.get_item_configuration)
         return __func(self)["group_width"]
     except KeyError:
         raise AttributeError(f"'group_width' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__group_width.setter
 def _property__group_width(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, group_width=value)
+    try:
+        __func(self, group_width=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__header_row(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -1241,9 +1834,14 @@ def _property__header_row(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["header_row"]
     except KeyError:
         raise AttributeError(f"'header_row' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__header_row.setter
 def _property__header_row(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, header_row=value)
+    try:
+        __func(self, header_row=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__height(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -1251,9 +1849,14 @@ def _property__height(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["height"]
     except KeyError:
         raise AttributeError(f"'height' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__height.setter
 def _property__height(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, height=value)
+    try:
+        __func(self, height=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__height_mode(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -1261,9 +1864,14 @@ def _property__height_mode(self, /, *, __func=_dearpygui.get_item_configuration)
         return __func(self)["height_mode"]
     except KeyError:
         raise AttributeError(f"'height_mode' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__height_mode.setter
 def _property__height_mode(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, height_mode=value)
+    try:
+        __func(self, height_mode=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__hexadecimal(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -1271,9 +1879,14 @@ def _property__hexadecimal(self, /, *, __func=_dearpygui.get_item_configuration)
         return __func(self)["hexadecimal"]
     except KeyError:
         raise AttributeError(f"'hexadecimal' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__hexadecimal.setter
 def _property__hexadecimal(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, hexadecimal=value)
+    try:
+        __func(self, hexadecimal=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__hide_on_activity(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -1281,9 +1894,14 @@ def _property__hide_on_activity(self, /, *, __func=_dearpygui.get_item_configura
         return __func(self)["hide_on_activity"]
     except KeyError:
         raise AttributeError(f"'hide_on_activity' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__hide_on_activity.setter
 def _property__hide_on_activity(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, hide_on_activity=value)
+    try:
+        __func(self, hide_on_activity=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__hideable(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -1291,9 +1909,14 @@ def _property__hideable(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["hideable"]
     except KeyError:
         raise AttributeError(f"'hideable' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__hideable.setter
 def _property__hideable(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, hideable=value)
+    try:
+        __func(self, hideable=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__hint(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -1301,12 +1924,20 @@ def _property__hint(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["hint"]
     except KeyError:
         raise AttributeError(f"'hint' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__hint.setter
 def _property__hint(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, hint=value)
+    try:
+        __func(self, hint=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__hint.deleter
 def _property__hint(self, /, *, __func=_dearpygui.configure_item):
-    __func(self, hint='')
+    try:
+        __func(self, hint='')
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__histogram(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -1314,9 +1945,14 @@ def _property__histogram(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["histogram"]
     except KeyError:
         raise AttributeError(f"'histogram' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__histogram.setter
 def _property__histogram(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, histogram=value)
+    try:
+        __func(self, histogram=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__horizontal(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -1324,9 +1960,14 @@ def _property__horizontal(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["horizontal"]
     except KeyError:
         raise AttributeError(f"'horizontal' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__horizontal.setter
 def _property__horizontal(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, horizontal=value)
+    try:
+        __func(self, horizontal=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__horizontal_mod(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -1334,9 +1975,14 @@ def _property__horizontal_mod(self, /, *, __func=_dearpygui.get_item_configurati
         return __func(self)["horizontal_mod"]
     except KeyError:
         raise AttributeError(f"'horizontal_mod' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__horizontal_mod.setter
 def _property__horizontal_mod(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, horizontal_mod=value)
+    try:
+        __func(self, horizontal_mod=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__horizontal_scrollbar(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -1344,9 +1990,14 @@ def _property__horizontal_scrollbar(self, /, *, __func=_dearpygui.get_item_confi
         return __func(self)["horizontal_scrollbar"]
     except KeyError:
         raise AttributeError(f"'horizontal_scrollbar' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__horizontal_scrollbar.setter
 def _property__horizontal_scrollbar(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, horizontal_scrollbar=value)
+    try:
+        __func(self, horizontal_scrollbar=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__horizontal_spacing(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -1354,9 +2005,14 @@ def _property__horizontal_spacing(self, /, *, __func=_dearpygui.get_item_configu
         return __func(self)["horizontal_spacing"]
     except KeyError:
         raise AttributeError(f"'horizontal_spacing' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__horizontal_spacing.setter
 def _property__horizontal_spacing(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, horizontal_spacing=value)
+    try:
+        __func(self, horizontal_spacing=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__hour24(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -1364,9 +2020,14 @@ def _property__hour24(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["hour24"]
     except KeyError:
         raise AttributeError(f"'hour24' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__hour24.setter
 def _property__hour24(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, hour24=value)
+    try:
+        __func(self, hour24=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__ignore_hidden(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -1374,9 +2035,14 @@ def _property__ignore_hidden(self, /, *, __func=_dearpygui.get_item_configuratio
         return __func(self)["ignore_hidden"]
     except KeyError:
         raise AttributeError(f"'ignore_hidden' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__ignore_hidden.setter
 def _property__ignore_hidden(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, ignore_hidden=value)
+    try:
+        __func(self, ignore_hidden=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__indent(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -1384,9 +2050,14 @@ def _property__indent(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["indent"]
     except KeyError:
         raise AttributeError(f"'indent' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__indent.setter
 def _property__indent(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, indent=value)
+    try:
+        __func(self, indent=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__indent_disable(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -1394,9 +2065,14 @@ def _property__indent_disable(self, /, *, __func=_dearpygui.get_item_configurati
         return __func(self)["indent_disable"]
     except KeyError:
         raise AttributeError(f"'indent_disable' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__indent_disable.setter
 def _property__indent_disable(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, indent_disable=value)
+    try:
+        __func(self, indent_disable=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__indent_enable(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -1404,9 +2080,14 @@ def _property__indent_enable(self, /, *, __func=_dearpygui.get_item_configuratio
         return __func(self)["indent_enable"]
     except KeyError:
         raise AttributeError(f"'indent_enable' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__indent_enable.setter
 def _property__indent_enable(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, indent_enable=value)
+    try:
+        __func(self, indent_enable=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__inner_width(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -1414,9 +2095,14 @@ def _property__inner_width(self, /, *, __func=_dearpygui.get_item_configuration)
         return __func(self)["inner_width"]
     except KeyError:
         raise AttributeError(f"'inner_width' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__inner_width.setter
 def _property__inner_width(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, inner_width=value)
+    try:
+        __func(self, inner_width=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__input_mode(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -1424,9 +2110,14 @@ def _property__input_mode(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["input_mode"]
     except KeyError:
         raise AttributeError(f"'input_mode' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__input_mode.setter
 def _property__input_mode(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, input_mode=value)
+    try:
+        __func(self, input_mode=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__invert(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -1434,9 +2125,14 @@ def _property__invert(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["invert"]
     except KeyError:
         raise AttributeError(f"'invert' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__invert.setter
 def _property__invert(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, invert=value)
+    try:
+        __func(self, invert=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__items(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -1444,9 +2140,14 @@ def _property__items(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["items"]
     except KeyError:
         raise AttributeError(f"'items' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__items.setter
 def _property__items(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, items=value)
+    try:
+        __func(self, items=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__leading(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -1454,9 +2155,14 @@ def _property__leading(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["leading"]
     except KeyError:
         raise AttributeError(f"'leading' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__leading.setter
 def _property__leading(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, leading=value)
+    try:
+        __func(self, leading=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__leaf(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -1464,9 +2170,14 @@ def _property__leaf(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["leaf"]
     except KeyError:
         raise AttributeError(f"'leaf' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__leaf.setter
 def _property__leaf(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, leaf=value)
+    try:
+        __func(self, leaf=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__level(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -1474,9 +2185,14 @@ def _property__level(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["level"]
     except KeyError:
         raise AttributeError(f"'level' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__level.setter
 def _property__level(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, level=value)
+    try:
+        __func(self, level=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__lines(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -1484,9 +2200,14 @@ def _property__lines(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["lines"]
     except KeyError:
         raise AttributeError(f"'lines' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__lines.setter
 def _property__lines(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, lines=value)
+    try:
+        __func(self, lines=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__link_all_x(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -1494,9 +2215,14 @@ def _property__link_all_x(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["link_all_x"]
     except KeyError:
         raise AttributeError(f"'link_all_x' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__link_all_x.setter
 def _property__link_all_x(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, link_all_x=value)
+    try:
+        __func(self, link_all_x=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__link_all_y(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -1504,9 +2230,14 @@ def _property__link_all_y(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["link_all_y"]
     except KeyError:
         raise AttributeError(f"'link_all_y' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__link_all_y.setter
 def _property__link_all_y(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, link_all_y=value)
+    try:
+        __func(self, link_all_y=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__link_columns(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -1514,9 +2245,14 @@ def _property__link_columns(self, /, *, __func=_dearpygui.get_item_configuration
         return __func(self)["link_columns"]
     except KeyError:
         raise AttributeError(f"'link_columns' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__link_columns.setter
 def _property__link_columns(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, link_columns=value)
+    try:
+        __func(self, link_columns=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__link_rows(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -1524,9 +2260,14 @@ def _property__link_rows(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["link_rows"]
     except KeyError:
         raise AttributeError(f"'link_rows' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__link_rows.setter
 def _property__link_rows(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, link_rows=value)
+    try:
+        __func(self, link_rows=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__location(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -1534,9 +2275,14 @@ def _property__location(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["location"]
     except KeyError:
         raise AttributeError(f"'location' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__location.setter
 def _property__location(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, location=value)
+    try:
+        __func(self, location=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__lock_max(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -1544,9 +2290,14 @@ def _property__lock_max(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["lock_max"]
     except KeyError:
         raise AttributeError(f"'lock_max' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__lock_max.setter
 def _property__lock_max(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, lock_max=value)
+    try:
+        __func(self, lock_max=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__lock_min(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -1554,9 +2305,14 @@ def _property__lock_min(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["lock_min"]
     except KeyError:
         raise AttributeError(f"'lock_min' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__lock_min.setter
 def _property__lock_min(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, lock_min=value)
+    try:
+        __func(self, lock_min=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__loop(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -1564,9 +2320,14 @@ def _property__loop(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["loop"]
     except KeyError:
         raise AttributeError(f"'loop' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__loop.setter
 def _property__loop(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, loop=value)
+    try:
+        __func(self, loop=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__max_clamped(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -1574,9 +2335,14 @@ def _property__max_clamped(self, /, *, __func=_dearpygui.get_item_configuration)
         return __func(self)["max_clamped"]
     except KeyError:
         raise AttributeError(f"'max_clamped' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__max_clamped.setter
 def _property__max_clamped(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, max_clamped=value)
+    try:
+        __func(self, max_clamped=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__max_query_rects(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -1584,9 +2350,14 @@ def _property__max_query_rects(self, /, *, __func=_dearpygui.get_item_configurat
         return __func(self)["max_query_rects"]
     except KeyError:
         raise AttributeError(f"'max_query_rects' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__max_query_rects.setter
 def _property__max_query_rects(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, max_query_rects=value)
+    try:
+        __func(self, max_query_rects=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__max_range(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -1594,9 +2365,14 @@ def _property__max_range(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["max_range"]
     except KeyError:
         raise AttributeError(f"'max_range' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__max_range.setter
 def _property__max_range(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, max_range=value)
+    try:
+        __func(self, max_range=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__max_scale(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -1604,9 +2380,14 @@ def _property__max_scale(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["max_scale"]
     except KeyError:
         raise AttributeError(f"'max_scale' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__max_scale.setter
 def _property__max_scale(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, max_scale=value)
+    try:
+        __func(self, max_scale=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__max_size(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -1614,9 +2395,14 @@ def _property__max_size(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["max_size"]
     except KeyError:
         raise AttributeError(f"'max_size' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__max_size.setter
 def _property__max_size(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, max_size=value)
+    try:
+        __func(self, max_size=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__max_x(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -1624,9 +2410,14 @@ def _property__max_x(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["max_x"]
     except KeyError:
         raise AttributeError(f"'max_x' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__max_x.setter
 def _property__max_x(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, max_x=value)
+    try:
+        __func(self, max_x=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__max_y(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -1634,9 +2425,14 @@ def _property__max_y(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["max_y"]
     except KeyError:
         raise AttributeError(f"'max_y' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__max_y.setter
 def _property__max_y(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, max_y=value)
+    try:
+        __func(self, max_y=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__max_z(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -1644,9 +2440,14 @@ def _property__max_z(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["max_z"]
     except KeyError:
         raise AttributeError(f"'max_z' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__max_z.setter
 def _property__max_z(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, max_z=value)
+    try:
+        __func(self, max_z=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__menubar(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -1654,9 +2455,14 @@ def _property__menubar(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["menubar"]
     except KeyError:
         raise AttributeError(f"'menubar' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__menubar.setter
 def _property__menubar(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, menubar=value)
+    try:
+        __func(self, menubar=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__min_clamped(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -1664,9 +2470,14 @@ def _property__min_clamped(self, /, *, __func=_dearpygui.get_item_configuration)
         return __func(self)["min_clamped"]
     except KeyError:
         raise AttributeError(f"'min_clamped' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__min_clamped.setter
 def _property__min_clamped(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, min_clamped=value)
+    try:
+        __func(self, min_clamped=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__min_query_rects(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -1674,9 +2485,14 @@ def _property__min_query_rects(self, /, *, __func=_dearpygui.get_item_configurat
         return __func(self)["min_query_rects"]
     except KeyError:
         raise AttributeError(f"'min_query_rects' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__min_query_rects.setter
 def _property__min_query_rects(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, min_query_rects=value)
+    try:
+        __func(self, min_query_rects=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__min_range(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -1684,9 +2500,14 @@ def _property__min_range(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["min_range"]
     except KeyError:
         raise AttributeError(f"'min_range' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__min_range.setter
 def _property__min_range(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, min_range=value)
+    try:
+        __func(self, min_range=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__min_scale(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -1694,9 +2515,14 @@ def _property__min_scale(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["min_scale"]
     except KeyError:
         raise AttributeError(f"'min_scale' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__min_scale.setter
 def _property__min_scale(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, min_scale=value)
+    try:
+        __func(self, min_scale=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__min_size(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -1704,9 +2530,14 @@ def _property__min_size(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["min_size"]
     except KeyError:
         raise AttributeError(f"'min_size' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__min_size.setter
 def _property__min_size(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, min_size=value)
+    try:
+        __func(self, min_size=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__min_x(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -1714,9 +2545,14 @@ def _property__min_x(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["min_x"]
     except KeyError:
         raise AttributeError(f"'min_x' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__min_x.setter
 def _property__min_x(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, min_x=value)
+    try:
+        __func(self, min_x=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__min_y(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -1724,9 +2560,14 @@ def _property__min_y(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["min_y"]
     except KeyError:
         raise AttributeError(f"'min_y' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__min_y.setter
 def _property__min_y(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, min_y=value)
+    try:
+        __func(self, min_y=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__min_z(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -1734,9 +2575,14 @@ def _property__min_z(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["min_z"]
     except KeyError:
         raise AttributeError(f"'min_z' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__min_z.setter
 def _property__min_z(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, min_z=value)
+    try:
+        __func(self, min_z=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__minimap(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -1744,9 +2590,14 @@ def _property__minimap(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["minimap"]
     except KeyError:
         raise AttributeError(f"'minimap' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__minimap.setter
 def _property__minimap(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, minimap=value)
+    try:
+        __func(self, minimap=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__minimap_location(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -1754,9 +2605,14 @@ def _property__minimap_location(self, /, *, __func=_dearpygui.get_item_configura
         return __func(self)["minimap_location"]
     except KeyError:
         raise AttributeError(f"'minimap_location' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__minimap_location.setter
 def _property__minimap_location(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, minimap_location=value)
+    try:
+        __func(self, minimap_location=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__mirror(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -1764,9 +2620,14 @@ def _property__mirror(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["mirror"]
     except KeyError:
         raise AttributeError(f"'mirror' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__mirror.setter
 def _property__mirror(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, mirror=value)
+    try:
+        __func(self, mirror=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__modal(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -1774,9 +2635,14 @@ def _property__modal(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["modal"]
     except KeyError:
         raise AttributeError(f"'modal' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__modal.setter
 def _property__modal(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, modal=value)
+    try:
+        __func(self, modal=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__multicolor(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -1784,9 +2650,14 @@ def _property__multicolor(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["multicolor"]
     except KeyError:
         raise AttributeError(f"'multicolor' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__multicolor.setter
 def _property__multicolor(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, multicolor=value)
+    try:
+        __func(self, multicolor=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__multiline(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -1794,9 +2665,14 @@ def _property__multiline(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["multiline"]
     except KeyError:
         raise AttributeError(f"'multiline' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__multiline.setter
 def _property__multiline(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, multiline=value)
+    try:
+        __func(self, multiline=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__no_align(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -1804,9 +2680,14 @@ def _property__no_align(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["no_align"]
     except KeyError:
         raise AttributeError(f"'no_align' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__no_align.setter
 def _property__no_align(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, no_align=value)
+    try:
+        __func(self, no_align=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__no_alpha(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -1814,9 +2695,14 @@ def _property__no_alpha(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["no_alpha"]
     except KeyError:
         raise AttributeError(f"'no_alpha' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__no_alpha.setter
 def _property__no_alpha(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, no_alpha=value)
+    try:
+        __func(self, no_alpha=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__no_arrow_button(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -1824,9 +2710,14 @@ def _property__no_arrow_button(self, /, *, __func=_dearpygui.get_item_configurat
         return __func(self)["no_arrow_button"]
     except KeyError:
         raise AttributeError(f"'no_arrow_button' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__no_arrow_button.setter
 def _property__no_arrow_button(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, no_arrow_button=value)
+    try:
+        __func(self, no_arrow_button=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__no_background(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -1834,9 +2725,14 @@ def _property__no_background(self, /, *, __func=_dearpygui.get_item_configuratio
         return __func(self)["no_background"]
     except KeyError:
         raise AttributeError(f"'no_background' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__no_background.setter
 def _property__no_background(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, no_background=value)
+    try:
+        __func(self, no_background=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__no_border(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -1844,9 +2740,14 @@ def _property__no_border(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["no_border"]
     except KeyError:
         raise AttributeError(f"'no_border' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__no_border.setter
 def _property__no_border(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, no_border=value)
+    try:
+        __func(self, no_border=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__no_box_select(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -1854,9 +2755,14 @@ def _property__no_box_select(self, /, *, __func=_dearpygui.get_item_configuratio
         return __func(self)["no_box_select"]
     except KeyError:
         raise AttributeError(f"'no_box_select' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__no_box_select.setter
 def _property__no_box_select(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, no_box_select=value)
+    try:
+        __func(self, no_box_select=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__no_bring_to_front_on_focus(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -1864,9 +2770,14 @@ def _property__no_bring_to_front_on_focus(self, /, *, __func=_dearpygui.get_item
         return __func(self)["no_bring_to_front_on_focus"]
     except KeyError:
         raise AttributeError(f"'no_bring_to_front_on_focus' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__no_bring_to_front_on_focus.setter
 def _property__no_bring_to_front_on_focus(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, no_bring_to_front_on_focus=value)
+    try:
+        __func(self, no_bring_to_front_on_focus=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__no_buttons(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -1874,9 +2785,14 @@ def _property__no_buttons(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["no_buttons"]
     except KeyError:
         raise AttributeError(f"'no_buttons' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__no_buttons.setter
 def _property__no_buttons(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, no_buttons=value)
+    try:
+        __func(self, no_buttons=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__no_clip(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -1884,9 +2800,14 @@ def _property__no_clip(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["no_clip"]
     except KeyError:
         raise AttributeError(f"'no_clip' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__no_clip.setter
 def _property__no_clip(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, no_clip=value)
+    try:
+        __func(self, no_clip=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__no_close(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -1894,9 +2815,14 @@ def _property__no_close(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["no_close"]
     except KeyError:
         raise AttributeError(f"'no_close' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__no_close.setter
 def _property__no_close(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, no_close=value)
+    try:
+        __func(self, no_close=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__no_close_with_middle_click(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -1904,9 +2830,14 @@ def _property__no_close_with_middle_click(self, /, *, __func=_dearpygui.get_item
         return __func(self)["no_close_with_middle_click"]
     except KeyError:
         raise AttributeError(f"'no_close_with_middle_click' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__no_close_with_middle_click.setter
 def _property__no_close_with_middle_click(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, no_close_with_middle_click=value)
+    try:
+        __func(self, no_close_with_middle_click=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__no_collapse(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -1914,9 +2845,14 @@ def _property__no_collapse(self, /, *, __func=_dearpygui.get_item_configuration)
         return __func(self)["no_collapse"]
     except KeyError:
         raise AttributeError(f"'no_collapse' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__no_collapse.setter
 def _property__no_collapse(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, no_collapse=value)
+    try:
+        __func(self, no_collapse=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__no_cursor(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -1924,9 +2860,14 @@ def _property__no_cursor(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["no_cursor"]
     except KeyError:
         raise AttributeError(f"'no_cursor' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__no_cursor.setter
 def _property__no_cursor(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, no_cursor=value)
+    try:
+        __func(self, no_cursor=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__no_docking(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -1934,9 +2875,14 @@ def _property__no_docking(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["no_docking"]
     except KeyError:
         raise AttributeError(f"'no_docking' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__no_docking.setter
 def _property__no_docking(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, no_docking=value)
+    try:
+        __func(self, no_docking=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__no_drag_drop(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -1944,9 +2890,14 @@ def _property__no_drag_drop(self, /, *, __func=_dearpygui.get_item_configuration
         return __func(self)["no_drag_drop"]
     except KeyError:
         raise AttributeError(f"'no_drag_drop' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__no_drag_drop.setter
 def _property__no_drag_drop(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, no_drag_drop=value)
+    try:
+        __func(self, no_drag_drop=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__no_fit(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -1954,9 +2905,14 @@ def _property__no_fit(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["no_fit"]
     except KeyError:
         raise AttributeError(f"'no_fit' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__no_fit.setter
 def _property__no_fit(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, no_fit=value)
+    try:
+        __func(self, no_fit=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__no_focus_on_appearing(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -1964,9 +2920,14 @@ def _property__no_focus_on_appearing(self, /, *, __func=_dearpygui.get_item_conf
         return __func(self)["no_focus_on_appearing"]
     except KeyError:
         raise AttributeError(f"'no_focus_on_appearing' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__no_focus_on_appearing.setter
 def _property__no_focus_on_appearing(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, no_focus_on_appearing=value)
+    try:
+        __func(self, no_focus_on_appearing=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__no_frame(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -1974,9 +2935,14 @@ def _property__no_frame(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["no_frame"]
     except KeyError:
         raise AttributeError(f"'no_frame' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__no_frame.setter
 def _property__no_frame(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, no_frame=value)
+    try:
+        __func(self, no_frame=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__no_gridlines(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -1984,9 +2950,14 @@ def _property__no_gridlines(self, /, *, __func=_dearpygui.get_item_configuration
         return __func(self)["no_gridlines"]
     except KeyError:
         raise AttributeError(f"'no_gridlines' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__no_gridlines.setter
 def _property__no_gridlines(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, no_gridlines=value)
+    try:
+        __func(self, no_gridlines=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__no_header_label(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -1994,9 +2965,14 @@ def _property__no_header_label(self, /, *, __func=_dearpygui.get_item_configurat
         return __func(self)["no_header_label"]
     except KeyError:
         raise AttributeError(f"'no_header_label' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__no_header_label.setter
 def _property__no_header_label(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, no_header_label=value)
+    try:
+        __func(self, no_header_label=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__no_header_width(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -2004,9 +2980,14 @@ def _property__no_header_width(self, /, *, __func=_dearpygui.get_item_configurat
         return __func(self)["no_header_width"]
     except KeyError:
         raise AttributeError(f"'no_header_width' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__no_header_width.setter
 def _property__no_header_width(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, no_header_width=value)
+    try:
+        __func(self, no_header_width=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__no_hide(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -2014,9 +2995,14 @@ def _property__no_hide(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["no_hide"]
     except KeyError:
         raise AttributeError(f"'no_hide' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__no_hide.setter
 def _property__no_hide(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, no_hide=value)
+    try:
+        __func(self, no_hide=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__no_highlight(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -2024,9 +3010,14 @@ def _property__no_highlight(self, /, *, __func=_dearpygui.get_item_configuration
         return __func(self)["no_highlight"]
     except KeyError:
         raise AttributeError(f"'no_highlight' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__no_highlight.setter
 def _property__no_highlight(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, no_highlight=value)
+    try:
+        __func(self, no_highlight=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__no_highlight_axis(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -2034,9 +3025,14 @@ def _property__no_highlight_axis(self, /, *, __func=_dearpygui.get_item_configur
         return __func(self)["no_highlight_axis"]
     except KeyError:
         raise AttributeError(f"'no_highlight_axis' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__no_highlight_axis.setter
 def _property__no_highlight_axis(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, no_highlight_axis=value)
+    try:
+        __func(self, no_highlight_axis=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__no_highlight_item(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -2044,9 +3040,14 @@ def _property__no_highlight_item(self, /, *, __func=_dearpygui.get_item_configur
         return __func(self)["no_highlight_item"]
     except KeyError:
         raise AttributeError(f"'no_highlight_item' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__no_highlight_item.setter
 def _property__no_highlight_item(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, no_highlight_item=value)
+    try:
+        __func(self, no_highlight_item=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__no_horizontal_scroll(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -2054,9 +3055,14 @@ def _property__no_horizontal_scroll(self, /, *, __func=_dearpygui.get_item_confi
         return __func(self)["no_horizontal_scroll"]
     except KeyError:
         raise AttributeError(f"'no_horizontal_scroll' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__no_horizontal_scroll.setter
 def _property__no_horizontal_scroll(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, no_horizontal_scroll=value)
+    try:
+        __func(self, no_horizontal_scroll=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__no_host_extendX(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -2064,9 +3070,14 @@ def _property__no_host_extendX(self, /, *, __func=_dearpygui.get_item_configurat
         return __func(self)["no_host_extendX"]
     except KeyError:
         raise AttributeError(f"'no_host_extendX' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__no_host_extendX.setter
 def _property__no_host_extendX(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, no_host_extendX=value)
+    try:
+        __func(self, no_host_extendX=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__no_host_extendY(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -2074,9 +3085,14 @@ def _property__no_host_extendY(self, /, *, __func=_dearpygui.get_item_configurat
         return __func(self)["no_host_extendY"]
     except KeyError:
         raise AttributeError(f"'no_host_extendY' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__no_host_extendY.setter
 def _property__no_host_extendY(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, no_host_extendY=value)
+    try:
+        __func(self, no_host_extendY=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__no_initial_fit(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -2084,9 +3100,14 @@ def _property__no_initial_fit(self, /, *, __func=_dearpygui.get_item_configurati
         return __func(self)["no_initial_fit"]
     except KeyError:
         raise AttributeError(f"'no_initial_fit' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__no_initial_fit.setter
 def _property__no_initial_fit(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, no_initial_fit=value)
+    try:
+        __func(self, no_initial_fit=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__no_input(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -2094,9 +3115,14 @@ def _property__no_input(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["no_input"]
     except KeyError:
         raise AttributeError(f"'no_input' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__no_input.setter
 def _property__no_input(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, no_input=value)
+    try:
+        __func(self, no_input=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__no_inputs(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -2104,9 +3130,14 @@ def _property__no_inputs(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["no_inputs"]
     except KeyError:
         raise AttributeError(f"'no_inputs' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__no_inputs.setter
 def _property__no_inputs(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, no_inputs=value)
+    try:
+        __func(self, no_inputs=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__no_keep_columns_visible(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -2114,9 +3145,14 @@ def _property__no_keep_columns_visible(self, /, *, __func=_dearpygui.get_item_co
         return __func(self)["no_keep_columns_visible"]
     except KeyError:
         raise AttributeError(f"'no_keep_columns_visible' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__no_keep_columns_visible.setter
 def _property__no_keep_columns_visible(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, no_keep_columns_visible=value)
+    try:
+        __func(self, no_keep_columns_visible=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__no_label(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -2124,9 +3160,14 @@ def _property__no_label(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["no_label"]
     except KeyError:
         raise AttributeError(f"'no_label' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__no_label.setter
 def _property__no_label(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, no_label=value)
+    try:
+        __func(self, no_label=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__no_menus(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -2134,9 +3175,14 @@ def _property__no_menus(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["no_menus"]
     except KeyError:
         raise AttributeError(f"'no_menus' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__no_menus.setter
 def _property__no_menus(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, no_menus=value)
+    try:
+        __func(self, no_menus=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__no_mouse_pos(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -2144,9 +3190,14 @@ def _property__no_mouse_pos(self, /, *, __func=_dearpygui.get_item_configuration
         return __func(self)["no_mouse_pos"]
     except KeyError:
         raise AttributeError(f"'no_mouse_pos' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__no_mouse_pos.setter
 def _property__no_mouse_pos(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, no_mouse_pos=value)
+    try:
+        __func(self, no_mouse_pos=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__no_move(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -2154,9 +3205,14 @@ def _property__no_move(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["no_move"]
     except KeyError:
         raise AttributeError(f"'no_move' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__no_move.setter
 def _property__no_move(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, no_move=value)
+    try:
+        __func(self, no_move=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__no_open_over_existing_popup(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -2164,9 +3220,14 @@ def _property__no_open_over_existing_popup(self, /, *, __func=_dearpygui.get_ite
         return __func(self)["no_open_over_existing_popup"]
     except KeyError:
         raise AttributeError(f"'no_open_over_existing_popup' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__no_open_over_existing_popup.setter
 def _property__no_open_over_existing_popup(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, no_open_over_existing_popup=value)
+    try:
+        __func(self, no_open_over_existing_popup=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__no_options(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -2174,9 +3235,14 @@ def _property__no_options(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["no_options"]
     except KeyError:
         raise AttributeError(f"'no_options' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__no_options.setter
 def _property__no_options(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, no_options=value)
+    try:
+        __func(self, no_options=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__no_pad_innerX(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -2184,9 +3250,14 @@ def _property__no_pad_innerX(self, /, *, __func=_dearpygui.get_item_configuratio
         return __func(self)["no_pad_innerX"]
     except KeyError:
         raise AttributeError(f"'no_pad_innerX' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__no_pad_innerX.setter
 def _property__no_pad_innerX(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, no_pad_innerX=value)
+    try:
+        __func(self, no_pad_innerX=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__no_pad_outerX(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -2194,9 +3265,14 @@ def _property__no_pad_outerX(self, /, *, __func=_dearpygui.get_item_configuratio
         return __func(self)["no_pad_outerX"]
     except KeyError:
         raise AttributeError(f"'no_pad_outerX' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__no_pad_outerX.setter
 def _property__no_pad_outerX(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, no_pad_outerX=value)
+    try:
+        __func(self, no_pad_outerX=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__no_picker(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -2204,9 +3280,14 @@ def _property__no_picker(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["no_picker"]
     except KeyError:
         raise AttributeError(f"'no_picker' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__no_picker.setter
 def _property__no_picker(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, no_picker=value)
+    try:
+        __func(self, no_picker=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__no_preview(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -2214,9 +3295,14 @@ def _property__no_preview(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["no_preview"]
     except KeyError:
         raise AttributeError(f"'no_preview' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__no_preview.setter
 def _property__no_preview(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, no_preview=value)
+    try:
+        __func(self, no_preview=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__no_reorder(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -2224,9 +3310,14 @@ def _property__no_reorder(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["no_reorder"]
     except KeyError:
         raise AttributeError(f"'no_reorder' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__no_reorder.setter
 def _property__no_reorder(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, no_reorder=value)
+    try:
+        __func(self, no_reorder=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__no_resize(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -2234,9 +3325,14 @@ def _property__no_resize(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["no_resize"]
     except KeyError:
         raise AttributeError(f"'no_resize' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__no_resize.setter
 def _property__no_resize(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, no_resize=value)
+    try:
+        __func(self, no_resize=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__no_saved_settings(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -2244,9 +3340,14 @@ def _property__no_saved_settings(self, /, *, __func=_dearpygui.get_item_configur
         return __func(self)["no_saved_settings"]
     except KeyError:
         raise AttributeError(f"'no_saved_settings' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__no_saved_settings.setter
 def _property__no_saved_settings(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, no_saved_settings=value)
+    try:
+        __func(self, no_saved_settings=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__no_scroll_with_mouse(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -2254,9 +3355,14 @@ def _property__no_scroll_with_mouse(self, /, *, __func=_dearpygui.get_item_confi
         return __func(self)["no_scroll_with_mouse"]
     except KeyError:
         raise AttributeError(f"'no_scroll_with_mouse' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__no_scroll_with_mouse.setter
 def _property__no_scroll_with_mouse(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, no_scroll_with_mouse=value)
+    try:
+        __func(self, no_scroll_with_mouse=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__no_scrollbar(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -2264,9 +3370,14 @@ def _property__no_scrollbar(self, /, *, __func=_dearpygui.get_item_configuration
         return __func(self)["no_scrollbar"]
     except KeyError:
         raise AttributeError(f"'no_scrollbar' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__no_scrollbar.setter
 def _property__no_scrollbar(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, no_scrollbar=value)
+    try:
+        __func(self, no_scrollbar=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__no_scrolling_buttons(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -2274,9 +3385,14 @@ def _property__no_scrolling_buttons(self, /, *, __func=_dearpygui.get_item_confi
         return __func(self)["no_scrolling_buttons"]
     except KeyError:
         raise AttributeError(f"'no_scrolling_buttons' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__no_scrolling_buttons.setter
 def _property__no_scrolling_buttons(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, no_scrolling_buttons=value)
+    try:
+        __func(self, no_scrolling_buttons=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__no_side_preview(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -2284,9 +3400,14 @@ def _property__no_side_preview(self, /, *, __func=_dearpygui.get_item_configurat
         return __func(self)["no_side_preview"]
     except KeyError:
         raise AttributeError(f"'no_side_preview' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__no_side_preview.setter
 def _property__no_side_preview(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, no_side_preview=value)
+    try:
+        __func(self, no_side_preview=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__no_side_switch(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -2294,9 +3415,14 @@ def _property__no_side_switch(self, /, *, __func=_dearpygui.get_item_configurati
         return __func(self)["no_side_switch"]
     except KeyError:
         raise AttributeError(f"'no_side_switch' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__no_side_switch.setter
 def _property__no_side_switch(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, no_side_switch=value)
+    try:
+        __func(self, no_side_switch=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__no_small_preview(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -2304,9 +3430,14 @@ def _property__no_small_preview(self, /, *, __func=_dearpygui.get_item_configura
         return __func(self)["no_small_preview"]
     except KeyError:
         raise AttributeError(f"'no_small_preview' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__no_small_preview.setter
 def _property__no_small_preview(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, no_small_preview=value)
+    try:
+        __func(self, no_small_preview=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__no_sort(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -2314,9 +3445,14 @@ def _property__no_sort(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["no_sort"]
     except KeyError:
         raise AttributeError(f"'no_sort' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__no_sort.setter
 def _property__no_sort(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, no_sort=value)
+    try:
+        __func(self, no_sort=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__no_sort_ascending(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -2324,9 +3460,14 @@ def _property__no_sort_ascending(self, /, *, __func=_dearpygui.get_item_configur
         return __func(self)["no_sort_ascending"]
     except KeyError:
         raise AttributeError(f"'no_sort_ascending' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__no_sort_ascending.setter
 def _property__no_sort_ascending(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, no_sort_ascending=value)
+    try:
+        __func(self, no_sort_ascending=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__no_sort_descending(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -2334,9 +3475,14 @@ def _property__no_sort_descending(self, /, *, __func=_dearpygui.get_item_configu
         return __func(self)["no_sort_descending"]
     except KeyError:
         raise AttributeError(f"'no_sort_descending' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__no_sort_descending.setter
 def _property__no_sort_descending(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, no_sort_descending=value)
+    try:
+        __func(self, no_sort_descending=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__no_spaces(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -2344,9 +3490,14 @@ def _property__no_spaces(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["no_spaces"]
     except KeyError:
         raise AttributeError(f"'no_spaces' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__no_spaces.setter
 def _property__no_spaces(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, no_spaces=value)
+    try:
+        __func(self, no_spaces=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__no_tick_labels(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -2354,9 +3505,14 @@ def _property__no_tick_labels(self, /, *, __func=_dearpygui.get_item_configurati
         return __func(self)["no_tick_labels"]
     except KeyError:
         raise AttributeError(f"'no_tick_labels' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__no_tick_labels.setter
 def _property__no_tick_labels(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, no_tick_labels=value)
+    try:
+        __func(self, no_tick_labels=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__no_tick_marks(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -2364,9 +3520,14 @@ def _property__no_tick_marks(self, /, *, __func=_dearpygui.get_item_configuratio
         return __func(self)["no_tick_marks"]
     except KeyError:
         raise AttributeError(f"'no_tick_marks' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__no_tick_marks.setter
 def _property__no_tick_marks(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, no_tick_marks=value)
+    try:
+        __func(self, no_tick_marks=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__no_title_bar(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -2374,9 +3535,14 @@ def _property__no_title_bar(self, /, *, __func=_dearpygui.get_item_configuration
         return __func(self)["no_title_bar"]
     except KeyError:
         raise AttributeError(f"'no_title_bar' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__no_title_bar.setter
 def _property__no_title_bar(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, no_title_bar=value)
+    try:
+        __func(self, no_title_bar=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__no_tooltip(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -2384,9 +3550,14 @@ def _property__no_tooltip(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["no_tooltip"]
     except KeyError:
         raise AttributeError(f"'no_tooltip' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__no_tooltip.setter
 def _property__no_tooltip(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, no_tooltip=value)
+    try:
+        __func(self, no_tooltip=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__no_undo_redo(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -2394,9 +3565,14 @@ def _property__no_undo_redo(self, /, *, __func=_dearpygui.get_item_configuration
         return __func(self)["no_undo_redo"]
     except KeyError:
         raise AttributeError(f"'no_undo_redo' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__no_undo_redo.setter
 def _property__no_undo_redo(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, no_undo_redo=value)
+    try:
+        __func(self, no_undo_redo=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__normalize(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -2404,9 +3580,14 @@ def _property__normalize(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["normalize"]
     except KeyError:
         raise AttributeError(f"'normalize' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__normalize.setter
 def _property__normalize(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, normalize=value)
+    try:
+        __func(self, normalize=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__num_items(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -2414,9 +3595,14 @@ def _property__num_items(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["num_items"]
     except KeyError:
         raise AttributeError(f"'num_items' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__num_items.setter
 def _property__num_items(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, num_items=value)
+    try:
+        __func(self, num_items=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__offset(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -2424,9 +3610,14 @@ def _property__offset(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["offset"]
     except KeyError:
         raise AttributeError(f"'offset' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__offset.setter
 def _property__offset(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, offset=value)
+    try:
+        __func(self, offset=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__on_close(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -2434,12 +3625,20 @@ def _property__on_close(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["on_close"]
     except KeyError:
         raise AttributeError(f"'on_close' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__on_close.setter
 def _property__on_close(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, on_close=value)
+    try:
+        __func(self, on_close=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__on_close.deleter
 def _property__on_close(self, /, *, __func=_dearpygui.configure_item):
-    __func(self, on_close=None)
+    try:
+        __func(self, on_close=None)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__on_enter(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -2447,9 +3646,14 @@ def _property__on_enter(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["on_enter"]
     except KeyError:
         raise AttributeError(f"'on_enter' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__on_enter.setter
 def _property__on_enter(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, on_enter=value)
+    try:
+        __func(self, on_enter=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__open_on_arrow(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -2457,9 +3661,14 @@ def _property__open_on_arrow(self, /, *, __func=_dearpygui.get_item_configuratio
         return __func(self)["open_on_arrow"]
     except KeyError:
         raise AttributeError(f"'open_on_arrow' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__open_on_arrow.setter
 def _property__open_on_arrow(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, open_on_arrow=value)
+    try:
+        __func(self, open_on_arrow=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__open_on_double_click(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -2467,9 +3676,14 @@ def _property__open_on_double_click(self, /, *, __func=_dearpygui.get_item_confi
         return __func(self)["open_on_double_click"]
     except KeyError:
         raise AttributeError(f"'open_on_double_click' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__open_on_double_click.setter
 def _property__open_on_double_click(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, open_on_double_click=value)
+    try:
+        __func(self, open_on_double_click=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__opposite(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -2477,9 +3691,14 @@ def _property__opposite(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["opposite"]
     except KeyError:
         raise AttributeError(f"'opposite' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__opposite.setter
 def _property__opposite(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, opposite=value)
+    try:
+        __func(self, opposite=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__order_mode(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -2487,9 +3706,14 @@ def _property__order_mode(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["order_mode"]
     except KeyError:
         raise AttributeError(f"'order_mode' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__order_mode.setter
 def _property__order_mode(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, order_mode=value)
+    try:
+        __func(self, order_mode=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__outliers(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -2497,9 +3721,14 @@ def _property__outliers(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["outliers"]
     except KeyError:
         raise AttributeError(f"'outliers' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__outliers.setter
 def _property__outliers(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, outliers=value)
+    try:
+        __func(self, outliers=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__outside(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -2507,9 +3736,14 @@ def _property__outside(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["outside"]
     except KeyError:
         raise AttributeError(f"'outside' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__outside.setter
 def _property__outside(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, outside=value)
+    try:
+        __func(self, outside=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__overlay(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -2517,12 +3751,20 @@ def _property__overlay(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["overlay"]
     except KeyError:
         raise AttributeError(f"'overlay' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__overlay.setter
 def _property__overlay(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, overlay=value)
+    try:
+        __func(self, overlay=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__overlay.deleter
 def _property__overlay(self, /, *, __func=_dearpygui.configure_item):
-    __func(self, overlay='')
+    try:
+        __func(self, overlay='')
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__override_mod(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -2530,9 +3772,14 @@ def _property__override_mod(self, /, *, __func=_dearpygui.get_item_configuration
         return __func(self)["override_mod"]
     except KeyError:
         raise AttributeError(f"'override_mod' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__override_mod.setter
 def _property__override_mod(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, override_mod=value)
+    try:
+        __func(self, override_mod=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__pad_outerX(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -2540,9 +3787,14 @@ def _property__pad_outerX(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["pad_outerX"]
     except KeyError:
         raise AttributeError(f"'pad_outerX' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__pad_outerX.setter
 def _property__pad_outerX(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, pad_outerX=value)
+    try:
+        __func(self, pad_outerX=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__pan_mod(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -2550,9 +3802,14 @@ def _property__pan_mod(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["pan_mod"]
     except KeyError:
         raise AttributeError(f"'pan_mod' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__pan_mod.setter
 def _property__pan_mod(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, pan_mod=value)
+    try:
+        __func(self, pan_mod=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__pan_stretch(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -2560,9 +3817,14 @@ def _property__pan_stretch(self, /, *, __func=_dearpygui.get_item_configuration)
         return __func(self)["pan_stretch"]
     except KeyError:
         raise AttributeError(f"'pan_stretch' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__pan_stretch.setter
 def _property__pan_stretch(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, pan_stretch=value)
+    try:
+        __func(self, pan_stretch=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__password(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -2570,9 +3832,14 @@ def _property__password(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["password"]
     except KeyError:
         raise AttributeError(f"'password' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__password.setter
 def _property__password(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, password=value)
+    try:
+        __func(self, password=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__payload_type(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -2580,9 +3847,14 @@ def _property__payload_type(self, /, *, __func=_dearpygui.get_item_configuration
         return __func(self)["payload_type"]
     except KeyError:
         raise AttributeError(f"'payload_type' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__payload_type.setter
 def _property__payload_type(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, payload_type=value)
+    try:
+        __func(self, payload_type=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__perspective_divide(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -2590,9 +3862,14 @@ def _property__perspective_divide(self, /, *, __func=_dearpygui.get_item_configu
         return __func(self)["perspective_divide"]
     except KeyError:
         raise AttributeError(f"'perspective_divide' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__perspective_divide.setter
 def _property__perspective_divide(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, perspective_divide=value)
+    try:
+        __func(self, perspective_divide=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__picker_mode(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -2600,9 +3877,14 @@ def _property__picker_mode(self, /, *, __func=_dearpygui.get_item_configuration)
         return __func(self)["picker_mode"]
     except KeyError:
         raise AttributeError(f"'picker_mode' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__picker_mode.setter
 def _property__picker_mode(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, picker_mode=value)
+    try:
+        __func(self, picker_mode=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__pixel_snapH(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -2610,9 +3892,14 @@ def _property__pixel_snapH(self, /, *, __func=_dearpygui.get_item_configuration)
         return __func(self)["pixel_snapH"]
     except KeyError:
         raise AttributeError(f"'pixel_snapH' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__pixel_snapH.setter
 def _property__pixel_snapH(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, pixel_snapH=value)
+    try:
+        __func(self, pixel_snapH=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__pixel_snapV(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -2620,9 +3907,14 @@ def _property__pixel_snapV(self, /, *, __func=_dearpygui.get_item_configuration)
         return __func(self)["pixel_snapV"]
     except KeyError:
         raise AttributeError(f"'pixel_snapV' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__pixel_snapV.setter
 def _property__pixel_snapV(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, pixel_snapV=value)
+    try:
+        __func(self, pixel_snapV=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__policy(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -2630,9 +3922,14 @@ def _property__policy(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["policy"]
     except KeyError:
         raise AttributeError(f"'policy' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__policy.setter
 def _property__policy(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, policy=value)
+    try:
+        __func(self, policy=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__popup(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -2640,9 +3937,14 @@ def _property__popup(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["popup"]
     except KeyError:
         raise AttributeError(f"'popup' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__popup.setter
 def _property__popup(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, popup=value)
+    try:
+        __func(self, popup=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__popup_align_left(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -2650,9 +3952,14 @@ def _property__popup_align_left(self, /, *, __func=_dearpygui.get_item_configura
         return __func(self)["popup_align_left"]
     except KeyError:
         raise AttributeError(f"'popup_align_left' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__popup_align_left.setter
 def _property__popup_align_left(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, popup_align_left=value)
+    try:
+        __func(self, popup_align_left=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__pre_step(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -2660,9 +3967,14 @@ def _property__pre_step(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["pre_step"]
     except KeyError:
         raise AttributeError(f"'pre_step' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__pre_step.setter
 def _property__pre_step(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, pre_step=value)
+    try:
+        __func(self, pre_step=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__precise_widths(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -2670,9 +3982,14 @@ def _property__precise_widths(self, /, *, __func=_dearpygui.get_item_configurati
         return __func(self)["precise_widths"]
     except KeyError:
         raise AttributeError(f"'precise_widths' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__precise_widths.setter
 def _property__precise_widths(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, precise_widths=value)
+    try:
+        __func(self, precise_widths=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__prefer_sort_ascending(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -2680,9 +3997,14 @@ def _property__prefer_sort_ascending(self, /, *, __func=_dearpygui.get_item_conf
         return __func(self)["prefer_sort_ascending"]
     except KeyError:
         raise AttributeError(f"'prefer_sort_ascending' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__prefer_sort_ascending.setter
 def _property__prefer_sort_ascending(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, prefer_sort_ascending=value)
+    try:
+        __func(self, prefer_sort_ascending=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__prefer_sort_descending(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -2690,9 +4012,14 @@ def _property__prefer_sort_descending(self, /, *, __func=_dearpygui.get_item_con
         return __func(self)["prefer_sort_descending"]
     except KeyError:
         raise AttributeError(f"'prefer_sort_descending' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__prefer_sort_descending.setter
 def _property__prefer_sort_descending(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, prefer_sort_descending=value)
+    try:
+        __func(self, prefer_sort_descending=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__query(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -2700,9 +4027,14 @@ def _property__query(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["query"]
     except KeyError:
         raise AttributeError(f"'query' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__query.setter
 def _property__query(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, query=value)
+    try:
+        __func(self, query=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__query_color(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -2710,9 +4042,14 @@ def _property__query_color(self, /, *, __func=_dearpygui.get_item_configuration)
         return __func(self)["query_color"]
     except KeyError:
         raise AttributeError(f"'query_color' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__query_color.setter
 def _property__query_color(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, query_color=value)
+    try:
+        __func(self, query_color=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__query_toggle_mod(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -2720,9 +4057,14 @@ def _property__query_toggle_mod(self, /, *, __func=_dearpygui.get_item_configura
         return __func(self)["query_toggle_mod"]
     except KeyError:
         raise AttributeError(f"'query_toggle_mod' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__query_toggle_mod.setter
 def _property__query_toggle_mod(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, query_toggle_mod=value)
+    try:
+        __func(self, query_toggle_mod=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__radius(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -2730,9 +4072,14 @@ def _property__radius(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["radius"]
     except KeyError:
         raise AttributeError(f"'radius' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__radius.setter
 def _property__radius(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, radius=value)
+    try:
+        __func(self, radius=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__range_fit(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -2740,9 +4087,14 @@ def _property__range_fit(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["range_fit"]
     except KeyError:
         raise AttributeError(f"'range_fit' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__range_fit.setter
 def _property__range_fit(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, range_fit=value)
+    try:
+        __func(self, range_fit=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__readonly(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -2750,9 +4102,14 @@ def _property__readonly(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["readonly"]
     except KeyError:
         raise AttributeError(f"'readonly' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__readonly.setter
 def _property__readonly(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, readonly=value)
+    try:
+        __func(self, readonly=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__reorderable(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -2760,9 +4117,14 @@ def _property__reorderable(self, /, *, __func=_dearpygui.get_item_configuration)
         return __func(self)["reorderable"]
     except KeyError:
         raise AttributeError(f"'reorderable' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__reorderable.setter
 def _property__reorderable(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, reorderable=value)
+    try:
+        __func(self, reorderable=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__repeat(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -2770,9 +4132,14 @@ def _property__repeat(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["repeat"]
     except KeyError:
         raise AttributeError(f"'repeat' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__repeat.setter
 def _property__repeat(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, repeat=value)
+    try:
+        __func(self, repeat=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__resizable(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -2780,9 +4147,14 @@ def _property__resizable(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["resizable"]
     except KeyError:
         raise AttributeError(f"'resizable' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__resizable.setter
 def _property__resizable(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, resizable=value)
+    try:
+        __func(self, resizable=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__resizable_x(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -2790,9 +4162,14 @@ def _property__resizable_x(self, /, *, __func=_dearpygui.get_item_configuration)
         return __func(self)["resizable_x"]
     except KeyError:
         raise AttributeError(f"'resizable_x' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__resizable_x.setter
 def _property__resizable_x(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, resizable_x=value)
+    try:
+        __func(self, resizable_x=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__resizable_y(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -2800,9 +4177,14 @@ def _property__resizable_y(self, /, *, __func=_dearpygui.get_item_configuration)
         return __func(self)["resizable_y"]
     except KeyError:
         raise AttributeError(f"'resizable_y' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__resizable_y.setter
 def _property__resizable_y(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, resizable_y=value)
+    try:
+        __func(self, resizable_y=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__reverse_dir(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -2810,9 +4192,14 @@ def _property__reverse_dir(self, /, *, __func=_dearpygui.get_item_configuration)
         return __func(self)["reverse_dir"]
     except KeyError:
         raise AttributeError(f"'reverse_dir' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__reverse_dir.setter
 def _property__reverse_dir(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, reverse_dir=value)
+    try:
+        __func(self, reverse_dir=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__rounding(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -2820,9 +4207,14 @@ def _property__rounding(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["rounding"]
     except KeyError:
         raise AttributeError(f"'rounding' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__rounding.setter
 def _property__rounding(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, rounding=value)
+    try:
+        __func(self, rounding=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__row_background(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -2830,9 +4222,14 @@ def _property__row_background(self, /, *, __func=_dearpygui.get_item_configurati
         return __func(self)["row_background"]
     except KeyError:
         raise AttributeError(f"'row_background' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__row_background.setter
 def _property__row_background(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, row_background=value)
+    try:
+        __func(self, row_background=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__row_ratios(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -2840,9 +4237,14 @@ def _property__row_ratios(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["row_ratios"]
     except KeyError:
         raise AttributeError(f"'row_ratios' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__row_ratios.setter
 def _property__row_ratios(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, row_ratios=value)
+    try:
+        __func(self, row_ratios=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__scale(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -2850,9 +4252,14 @@ def _property__scale(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["scale"]
     except KeyError:
         raise AttributeError(f"'scale' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__scale.setter
 def _property__scale(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, scale=value)
+    try:
+        __func(self, scale=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__scale_max(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -2860,9 +4267,14 @@ def _property__scale_max(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["scale_max"]
     except KeyError:
         raise AttributeError(f"'scale_max' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__scale_max.setter
 def _property__scale_max(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, scale_max=value)
+    try:
+        __func(self, scale_max=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__scale_min(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -2870,9 +4282,14 @@ def _property__scale_min(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["scale_min"]
     except KeyError:
         raise AttributeError(f"'scale_min' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__scale_min.setter
 def _property__scale_min(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, scale_min=value)
+    try:
+        __func(self, scale_min=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__scientific(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -2880,9 +4297,14 @@ def _property__scientific(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["scientific"]
     except KeyError:
         raise AttributeError(f"'scientific' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__scientific.setter
 def _property__scientific(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, scientific=value)
+    try:
+        __func(self, scientific=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__scrollX(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -2890,9 +4312,14 @@ def _property__scrollX(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["scrollX"]
     except KeyError:
         raise AttributeError(f"'scrollX' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__scrollX.setter
 def _property__scrollX(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, scrollX=value)
+    try:
+        __func(self, scrollX=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__scrollY(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -2900,9 +4327,14 @@ def _property__scrollY(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["scrollY"]
     except KeyError:
         raise AttributeError(f"'scrollY' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__scrollY.setter
 def _property__scrollY(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, scrollY=value)
+    try:
+        __func(self, scrollY=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__secondary_color(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -2910,9 +4342,14 @@ def _property__secondary_color(self, /, *, __func=_dearpygui.get_item_configurat
         return __func(self)["secondary_color"]
     except KeyError:
         raise AttributeError(f"'secondary_color' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__secondary_color.setter
 def _property__secondary_color(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, secondary_color=value)
+    try:
+        __func(self, secondary_color=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__segments(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -2920,9 +4357,14 @@ def _property__segments(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["segments"]
     except KeyError:
         raise AttributeError(f"'segments' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__segments.setter
 def _property__segments(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, segments=value)
+    try:
+        __func(self, segments=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__select_on_nav(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -2930,9 +4372,14 @@ def _property__select_on_nav(self, /, *, __func=_dearpygui.get_item_configuratio
         return __func(self)["select_on_nav"]
     except KeyError:
         raise AttributeError(f"'select_on_nav' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__select_on_nav.setter
 def _property__select_on_nav(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, select_on_nav=value)
+    try:
+        __func(self, select_on_nav=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__selectable(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -2940,9 +4387,14 @@ def _property__selectable(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["selectable"]
     except KeyError:
         raise AttributeError(f"'selectable' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__selectable.setter
 def _property__selectable(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, selectable=value)
+    try:
+        __func(self, selectable=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__shaded(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -2950,9 +4402,14 @@ def _property__shaded(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["shaded"]
     except KeyError:
         raise AttributeError(f"'shaded' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__shaded.setter
 def _property__shaded(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, shaded=value)
+    try:
+        __func(self, shaded=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__shape(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -2960,9 +4417,14 @@ def _property__shape(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["shape"]
     except KeyError:
         raise AttributeError(f"'shape' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__shape.setter
 def _property__shape(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, shape=value)
+    try:
+        __func(self, shape=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__share_series(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -2970,9 +4432,14 @@ def _property__share_series(self, /, *, __func=_dearpygui.get_item_configuration
         return __func(self)["share_series"]
     except KeyError:
         raise AttributeError(f"'share_series' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__share_series.setter
 def _property__share_series(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, share_series=value)
+    try:
+        __func(self, share_series=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__shift(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -2980,9 +4447,14 @@ def _property__shift(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["shift"]
     except KeyError:
         raise AttributeError(f"'shift' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__shift.setter
 def _property__shift(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, shift=value)
+    try:
+        __func(self, shift=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__shortcut(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -2990,12 +4462,20 @@ def _property__shortcut(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["shortcut"]
     except KeyError:
         raise AttributeError(f"'shortcut' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__shortcut.setter
 def _property__shortcut(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, shortcut=value)
+    try:
+        __func(self, shortcut=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__shortcut.deleter
 def _property__shortcut(self, /, *, __func=_dearpygui.configure_item):
-    __func(self, shortcut='')
+    try:
+        __func(self, shortcut='')
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__show(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -3003,9 +4483,14 @@ def _property__show(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["show"]
     except KeyError:
         raise AttributeError(f"'show' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__show.setter
 def _property__show(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, show=value)
+    try:
+        __func(self, show=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__show_label(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -3013,9 +4498,14 @@ def _property__show_label(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["show_label"]
     except KeyError:
         raise AttributeError(f"'show_label' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__show_label.setter
 def _property__show_label(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, show_label=value)
+    try:
+        __func(self, show_label=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__size(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -3023,9 +4513,14 @@ def _property__size(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["size"]
     except KeyError:
         raise AttributeError(f"'size' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__size.setter
 def _property__size(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, size=value)
+    try:
+        __func(self, size=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__skip_nan(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -3033,9 +4528,14 @@ def _property__skip_nan(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["skip_nan"]
     except KeyError:
         raise AttributeError(f"'skip_nan' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__skip_nan.setter
 def _property__skip_nan(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, skip_nan=value)
+    try:
+        __func(self, skip_nan=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__small(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -3043,9 +4543,14 @@ def _property__small(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["small"]
     except KeyError:
         raise AttributeError(f"'small' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__small.setter
 def _property__small(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, small=value)
+    try:
+        __func(self, small=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__sort(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -3053,9 +4558,14 @@ def _property__sort(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["sort"]
     except KeyError:
         raise AttributeError(f"'sort' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__sort.setter
 def _property__sort(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, sort=value)
+    try:
+        __func(self, sort=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__sort_multi(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -3063,9 +4573,14 @@ def _property__sort_multi(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["sort_multi"]
     except KeyError:
         raise AttributeError(f"'sort_multi' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__sort_multi.setter
 def _property__sort_multi(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, sort_multi=value)
+    try:
+        __func(self, sort_multi=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__sort_tristate(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -3073,9 +4588,14 @@ def _property__sort_tristate(self, /, *, __func=_dearpygui.get_item_configuratio
         return __func(self)["sort_tristate"]
     except KeyError:
         raise AttributeError(f"'sort_tristate' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__sort_tristate.setter
 def _property__sort_tristate(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, sort_tristate=value)
+    try:
+        __func(self, sort_tristate=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__sortable(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -3083,9 +4603,14 @@ def _property__sortable(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["sortable"]
     except KeyError:
         raise AttributeError(f"'sortable' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__sortable.setter
 def _property__sortable(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, sortable=value)
+    try:
+        __func(self, sortable=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__source(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -3093,12 +4618,20 @@ def _property__source(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["source"]
     except KeyError:
         raise AttributeError(f"'source' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__source.setter
 def _property__source(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, source=value)
+    try:
+        __func(self, source=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__source.deleter
 def _property__source(self, /, *, __func=_dearpygui.configure_item):
-    __func(self, source=0)
+    try:
+        __func(self, source=0)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__span_columns(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -3106,9 +4639,14 @@ def _property__span_columns(self, /, *, __func=_dearpygui.get_item_configuration
         return __func(self)["span_columns"]
     except KeyError:
         raise AttributeError(f"'span_columns' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__span_columns.setter
 def _property__span_columns(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, span_columns=value)
+    try:
+        __func(self, span_columns=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__span_full_width(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -3116,9 +4654,14 @@ def _property__span_full_width(self, /, *, __func=_dearpygui.get_item_configurat
         return __func(self)["span_full_width"]
     except KeyError:
         raise AttributeError(f"'span_full_width' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__span_full_width.setter
 def _property__span_full_width(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, span_full_width=value)
+    try:
+        __func(self, span_full_width=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__span_text_width(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -3126,9 +4669,14 @@ def _property__span_text_width(self, /, *, __func=_dearpygui.get_item_configurat
         return __func(self)["span_text_width"]
     except KeyError:
         raise AttributeError(f"'span_text_width' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__span_text_width.setter
 def _property__span_text_width(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, span_text_width=value)
+    try:
+        __func(self, span_text_width=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__speed(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -3136,9 +4684,14 @@ def _property__speed(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["speed"]
     except KeyError:
         raise AttributeError(f"'speed' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__speed.setter
 def _property__speed(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, speed=value)
+    try:
+        __func(self, speed=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__stacked(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -3146,9 +4699,14 @@ def _property__stacked(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["stacked"]
     except KeyError:
         raise AttributeError(f"'stacked' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__stacked.setter
 def _property__stacked(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, stacked=value)
+    try:
+        __func(self, stacked=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__step(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -3156,9 +4714,14 @@ def _property__step(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["step"]
     except KeyError:
         raise AttributeError(f"'step' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__step.setter
 def _property__step(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, step=value)
+    try:
+        __func(self, step=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__step_fast(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -3166,9 +4729,14 @@ def _property__step_fast(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["step_fast"]
     except KeyError:
         raise AttributeError(f"'step_fast' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__step_fast.setter
 def _property__step_fast(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, step_fast=value)
+    try:
+        __func(self, step_fast=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__style(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -3176,9 +4744,14 @@ def _property__style(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["style"]
     except KeyError:
         raise AttributeError(f"'style' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__style.setter
 def _property__style(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, style=value)
+    try:
+        __func(self, style=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__tab_input(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -3186,9 +4759,14 @@ def _property__tab_input(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["tab_input"]
     except KeyError:
         raise AttributeError(f"'tab_input' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__tab_input.setter
 def _property__tab_input(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, tab_input=value)
+    try:
+        __func(self, tab_input=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__tab_list_popup_button(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -3196,9 +4774,14 @@ def _property__tab_list_popup_button(self, /, *, __func=_dearpygui.get_item_conf
         return __func(self)["tab_list_popup_button"]
     except KeyError:
         raise AttributeError(f"'tab_list_popup_button' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__tab_list_popup_button.setter
 def _property__tab_list_popup_button(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, tab_list_popup_button=value)
+    try:
+        __func(self, tab_list_popup_button=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__thickness(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -3206,9 +4789,14 @@ def _property__thickness(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["thickness"]
     except KeyError:
         raise AttributeError(f"'thickness' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__thickness.setter
 def _property__thickness(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, thickness=value)
+    try:
+        __func(self, thickness=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__tick_format(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -3216,12 +4804,20 @@ def _property__tick_format(self, /, *, __func=_dearpygui.get_item_configuration)
         return __func(self)["tick_format"]
     except KeyError:
         raise AttributeError(f"'tick_format' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__tick_format.setter
 def _property__tick_format(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, tick_format=value)
+    try:
+        __func(self, tick_format=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__tick_format.deleter
 def _property__tick_format(self, /, *, __func=_dearpygui.configure_item):
-    __func(self, tick_format='')
+    try:
+        __func(self, tick_format='')
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__time_unit(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -3229,9 +4825,14 @@ def _property__time_unit(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["time_unit"]
     except KeyError:
         raise AttributeError(f"'time_unit' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__time_unit.setter
 def _property__time_unit(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, time_unit=value)
+    try:
+        __func(self, time_unit=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__tint_color(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -3239,9 +4840,14 @@ def _property__tint_color(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["tint_color"]
     except KeyError:
         raise AttributeError(f"'tint_color' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__tint_color.setter
 def _property__tint_color(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, tint_color=value)
+    try:
+        __func(self, tint_color=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__tooltip(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -3249,9 +4855,14 @@ def _property__tooltip(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["tooltip"]
     except KeyError:
         raise AttributeError(f"'tooltip' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__tooltip.setter
 def _property__tooltip(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, tooltip=value)
+    try:
+        __func(self, tooltip=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__track_offset(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -3259,9 +4870,14 @@ def _property__track_offset(self, /, *, __func=_dearpygui.get_item_configuration
         return __func(self)["track_offset"]
     except KeyError:
         raise AttributeError(f"'track_offset' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__track_offset.setter
 def _property__track_offset(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, track_offset=value)
+    try:
+        __func(self, track_offset=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__tracked(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -3269,9 +4885,14 @@ def _property__tracked(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["tracked"]
     except KeyError:
         raise AttributeError(f"'tracked' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__tracked.setter
 def _property__tracked(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, tracked=value)
+    try:
+        __func(self, tracked=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__trailing(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -3279,9 +4900,14 @@ def _property__trailing(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["trailing"]
     except KeyError:
         raise AttributeError(f"'trailing' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__trailing.setter
 def _property__trailing(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, trailing=value)
+    try:
+        __func(self, trailing=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__two_way(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -3289,9 +4915,14 @@ def _property__two_way(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["two_way"]
     except KeyError:
         raise AttributeError(f"'two_way' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__two_way.setter
 def _property__two_way(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, two_way=value)
+    try:
+        __func(self, two_way=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__unsaved_document(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -3299,9 +4930,14 @@ def _property__unsaved_document(self, /, *, __func=_dearpygui.get_item_configura
         return __func(self)["unsaved_document"]
     except KeyError:
         raise AttributeError(f"'unsaved_document' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__unsaved_document.setter
 def _property__unsaved_document(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, unsaved_document=value)
+    try:
+        __func(self, unsaved_document=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__uppercase(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -3309,9 +4945,14 @@ def _property__uppercase(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["uppercase"]
     except KeyError:
         raise AttributeError(f"'uppercase' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__uppercase.setter
 def _property__uppercase(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, uppercase=value)
+    try:
+        __func(self, uppercase=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__use_24hour_clock(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -3319,9 +4960,14 @@ def _property__use_24hour_clock(self, /, *, __func=_dearpygui.get_item_configura
         return __func(self)["use_24hour_clock"]
     except KeyError:
         raise AttributeError(f"'use_24hour_clock' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__use_24hour_clock.setter
 def _property__use_24hour_clock(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, use_24hour_clock=value)
+    try:
+        __func(self, use_24hour_clock=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__use_ISO8601(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -3329,9 +4975,14 @@ def _property__use_ISO8601(self, /, *, __func=_dearpygui.get_item_configuration)
         return __func(self)["use_ISO8601"]
     except KeyError:
         raise AttributeError(f"'use_ISO8601' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__use_ISO8601.setter
 def _property__use_ISO8601(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, use_ISO8601=value)
+    try:
+        __func(self, use_ISO8601=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__use_local_time(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -3339,9 +4990,14 @@ def _property__use_local_time(self, /, *, __func=_dearpygui.get_item_configurati
         return __func(self)["use_local_time"]
     except KeyError:
         raise AttributeError(f"'use_local_time' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__use_local_time.setter
 def _property__use_local_time(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, use_local_time=value)
+    try:
+        __func(self, use_local_time=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__uv1(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -3349,9 +5005,14 @@ def _property__uv1(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["uv1"]
     except KeyError:
         raise AttributeError(f"'uv1' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__uv1.setter
 def _property__uv1(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, uv1=value)
+    try:
+        __func(self, uv1=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__uv2(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -3359,9 +5020,14 @@ def _property__uv2(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["uv2"]
     except KeyError:
         raise AttributeError(f"'uv2' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__uv2.setter
 def _property__uv2(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, uv2=value)
+    try:
+        __func(self, uv2=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__uv3(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -3369,9 +5035,14 @@ def _property__uv3(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["uv3"]
     except KeyError:
         raise AttributeError(f"'uv3' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__uv3.setter
 def _property__uv3(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, uv3=value)
+    try:
+        __func(self, uv3=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__uv4(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -3379,9 +5050,14 @@ def _property__uv4(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["uv4"]
     except KeyError:
         raise AttributeError(f"'uv4' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__uv4.setter
 def _property__uv4(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, uv4=value)
+    try:
+        __func(self, uv4=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__uv_max(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -3389,9 +5065,14 @@ def _property__uv_max(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["uv_max"]
     except KeyError:
         raise AttributeError(f"'uv_max' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__uv_max.setter
 def _property__uv_max(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, uv_max=value)
+    try:
+        __func(self, uv_max=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__uv_min(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -3399,9 +5080,14 @@ def _property__uv_min(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["uv_min"]
     except KeyError:
         raise AttributeError(f"'uv_min' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__uv_min.setter
 def _property__uv_min(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, uv_min=value)
+    try:
+        __func(self, uv_min=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__vertical(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -3409,9 +5095,14 @@ def _property__vertical(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["vertical"]
     except KeyError:
         raise AttributeError(f"'vertical' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__vertical.setter
 def _property__vertical(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, vertical=value)
+    try:
+        __func(self, vertical=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__vertical_mod(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -3419,9 +5110,14 @@ def _property__vertical_mod(self, /, *, __func=_dearpygui.get_item_configuration
         return __func(self)["vertical_mod"]
     except KeyError:
         raise AttributeError(f"'vertical_mod' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__vertical_mod.setter
 def _property__vertical_mod(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, vertical_mod=value)
+    try:
+        __func(self, vertical_mod=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__weight(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -3429,9 +5125,14 @@ def _property__weight(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["weight"]
     except KeyError:
         raise AttributeError(f"'weight' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__weight.setter
 def _property__weight(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, weight=value)
+    try:
+        __func(self, weight=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__width(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -3439,9 +5140,14 @@ def _property__width(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["width"]
     except KeyError:
         raise AttributeError(f"'width' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__width.setter
 def _property__width(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, width=value)
+    try:
+        __func(self, width=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__width_fixed(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -3449,9 +5155,14 @@ def _property__width_fixed(self, /, *, __func=_dearpygui.get_item_configuration)
         return __func(self)["width_fixed"]
     except KeyError:
         raise AttributeError(f"'width_fixed' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__width_fixed.setter
 def _property__width_fixed(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, width_fixed=value)
+    try:
+        __func(self, width_fixed=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__width_stretch(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -3459,9 +5170,14 @@ def _property__width_stretch(self, /, *, __func=_dearpygui.get_item_configuratio
         return __func(self)["width_stretch"]
     except KeyError:
         raise AttributeError(f"'width_stretch' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__width_stretch.setter
 def _property__width_stretch(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, width_stretch=value)
+    try:
+        __func(self, width_stretch=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__wrap(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -3469,9 +5185,14 @@ def _property__wrap(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["wrap"]
     except KeyError:
         raise AttributeError(f"'wrap' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__wrap.setter
 def _property__wrap(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, wrap=value)
+    try:
+        __func(self, wrap=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__xbins(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -3479,9 +5200,14 @@ def _property__xbins(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["xbins"]
     except KeyError:
         raise AttributeError(f"'xbins' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__xbins.setter
 def _property__xbins(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, xbins=value)
+    try:
+        __func(self, xbins=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__xmax_range(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -3489,9 +5215,14 @@ def _property__xmax_range(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["xmax_range"]
     except KeyError:
         raise AttributeError(f"'xmax_range' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__xmax_range.setter
 def _property__xmax_range(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, xmax_range=value)
+    try:
+        __func(self, xmax_range=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__xmin_range(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -3499,9 +5230,14 @@ def _property__xmin_range(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["xmin_range"]
     except KeyError:
         raise AttributeError(f"'xmin_range' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__xmin_range.setter
 def _property__xmin_range(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, xmin_range=value)
+    try:
+        __func(self, xmin_range=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__xoffset(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -3509,9 +5245,14 @@ def _property__xoffset(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["xoffset"]
     except KeyError:
         raise AttributeError(f"'xoffset' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__xoffset.setter
 def _property__xoffset(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, xoffset=value)
+    try:
+        __func(self, xoffset=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__ybins(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -3519,9 +5260,14 @@ def _property__ybins(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["ybins"]
     except KeyError:
         raise AttributeError(f"'ybins' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__ybins.setter
 def _property__ybins(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, ybins=value)
+    try:
+        __func(self, ybins=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__ymax_range(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -3529,9 +5275,14 @@ def _property__ymax_range(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["ymax_range"]
     except KeyError:
         raise AttributeError(f"'ymax_range' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__ymax_range.setter
 def _property__ymax_range(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, ymax_range=value)
+    try:
+        __func(self, ymax_range=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__ymin_range(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -3539,9 +5290,14 @@ def _property__ymin_range(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["ymin_range"]
     except KeyError:
         raise AttributeError(f"'ymin_range' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__ymin_range.setter
 def _property__ymin_range(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, ymin_range=value)
+    try:
+        __func(self, ymin_range=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__zoom_mod(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -3549,9 +5305,14 @@ def _property__zoom_mod(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["zoom_mod"]
     except KeyError:
         raise AttributeError(f"'zoom_mod' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__zoom_mod.setter
 def _property__zoom_mod(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, zoom_mod=value)
+    try:
+        __func(self, zoom_mod=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 @property
 def _property__zoom_rate(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -3559,9 +5320,14 @@ def _property__zoom_rate(self, /, *, __func=_dearpygui.get_item_configuration):
         return __func(self)["zoom_rate"]
     except KeyError:
         raise AttributeError(f"'zoom_rate' not in dict returned from 'get_item_configuration({self.tag})'`")
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 @_property__zoom_rate.setter
 def _property__zoom_rate(self, value, /, *, __func=_dearpygui.configure_item):
-    __func(self, zoom_rate=value)
+    try:
+        __func(self, zoom_rate=value)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
 
 
 
@@ -3576,7 +5342,10 @@ class mv2dHistogramSeries(SupportsValueArray, ChildItem, command="add_2d_histogr
 
     @classmethod
     def create(cls, /, x, y, *, xbins=-1, ybins=-1, xmin_range=0.0, xmax_range=0.0, ymin_range=0.0, ymax_range=0.0, density=False, outliers=False, col_major=False, label=None, use_internal_label=True, user_data=None, tag=0, parent=0, before=0, source=0, show=True, __func=_dearpygui.add_2d_histogram_series, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(x, y, xbins=xbins, ybins=ybins, xmin_range=xmin_range, xmax_range=xmax_range, ymin_range=ymin_range, ymax_range=ymax_range, density=density, outliers=outliers, col_major=col_major, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, before=before, source=source, show=show))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(x, y, xbins=xbins, ybins=ybins, xmin_range=xmin_range, xmax_range=xmax_range, ymin_range=ymin_range, ymax_range=ymax_range, density=density, outliers=outliers, col_major=col_major, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, before=before, source=source, show=show))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     xbins = _property__xbins
     ybins = _property__ybins
@@ -3598,7 +5367,10 @@ class mvActivatedHandler(ChildItem, command="add_item_activated_handler", slot=1
 
     @classmethod
     def create(cls, /, *, label=None, use_internal_label=True, user_data=None, tag=0, show=True, parent=0, callback=None, __func=_dearpygui.add_item_activated_handler, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, show=show, parent=parent, callback=callback))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, show=show, parent=parent, callback=callback))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     show = _property__show
     callback = _property__callback
@@ -3611,7 +5383,10 @@ class mvActiveHandler(ChildItem, command="add_item_active_handler", slot=1):
 
     @classmethod
     def create(cls, /, *, label=None, use_internal_label=True, user_data=None, tag=0, show=True, parent=0, callback=None, __func=_dearpygui.add_item_active_handler, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, show=show, parent=parent, callback=callback))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, show=show, parent=parent, callback=callback))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     show = _property__show
     callback = _property__callback
@@ -3624,7 +5399,10 @@ class mvAnnotation(SupportsValueArray, ChildItem, command="add_plot_annotation",
 
     @classmethod
     def create(cls, /, *, default_value=(0.0, 0.0), offset=(0.0, 0.0), color=(0, 0, 0, -255), clamped=True, label=None, use_internal_label=True, user_data=None, tag=0, parent=0, before=0, source=0, show=True, __func=_dearpygui.add_plot_annotation, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(default_value=default_value, offset=offset, color=color, clamped=clamped, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, before=before, source=source, show=show))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(default_value=default_value, offset=offset, color=color, clamped=clamped, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, before=before, source=source, show=show))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     offset = _property__offset
     color = _property__color
@@ -3640,7 +5418,10 @@ class mvAreaSeries(SupportsValueArray, ChildItem, command="add_area_series", slo
 
     @classmethod
     def create(cls, /, x, y, *, fill=(0, 0, 0, -255), contribute_to_bounds=True, label=None, use_internal_label=True, user_data=None, tag=0, parent=0, before=0, source=0, show=True, __func=_dearpygui.add_area_series, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(x, y, fill=fill, contribute_to_bounds=contribute_to_bounds, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, before=before, source=source, show=show))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(x, y, fill=fill, contribute_to_bounds=contribute_to_bounds, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, before=before, source=source, show=show))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     fill = _property__fill
     contribute_to_bounds = _property__contribute_to_bounds
@@ -3655,7 +5436,10 @@ class mvAxisTag(ChildItem, command="add_axis_tag", slot=1):
 
     @classmethod
     def create(cls, /, *, default_value=0.0, color=(0, 0, 0, -255), auto_rounding=False, label=None, use_internal_label=True, user_data=None, tag=0, parent=0, before=0, source=0, show=True, __func=_dearpygui.add_axis_tag, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(default_value=default_value, color=color, auto_rounding=auto_rounding, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, before=before, source=source, show=show))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(default_value=default_value, color=color, auto_rounding=auto_rounding, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, before=before, source=source, show=show))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     color = _property__color
     auto_rounding = _property__auto_rounding
@@ -3670,7 +5454,10 @@ class mvBarGroupSeries(SupportsValueArray, ChildItem, command="add_bar_group_ser
 
     @classmethod
     def create(cls, /, values, label_ids, group_size, *, group_width=0.67, shift=0, horizontal=False, stacked=False, label=None, use_internal_label=True, user_data=None, tag=0, parent=0, before=0, source=0, show=True, __func=_dearpygui.add_bar_group_series, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(values, label_ids, group_size, group_width=group_width, shift=shift, horizontal=horizontal, stacked=stacked, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, before=before, source=source, show=show))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(values, label_ids, group_size, group_width=group_width, shift=shift, horizontal=horizontal, stacked=stacked, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, before=before, source=source, show=show))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     @property
     def label_ids(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -3678,6 +5465,8 @@ class mvBarGroupSeries(SupportsValueArray, ChildItem, command="add_bar_group_ser
             return __func(self)["label_ids"]
         except KeyError:
             raise AttributeError(f"'label_ids' not in dict returned from 'get_item_configuration({self.tag})'`")
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
     
     @property
     def group_size(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -3685,6 +5474,8 @@ class mvBarGroupSeries(SupportsValueArray, ChildItem, command="add_bar_group_ser
             return __func(self)["group_size"]
         except KeyError:
             raise AttributeError(f"'group_size' not in dict returned from 'get_item_configuration({self.tag})'`")
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
     
     group_width = _property__group_width
     shift = _property__shift
@@ -3701,7 +5492,10 @@ class mvBarSeries(SupportsValueArray, ChildItem, command="add_bar_series", slot=
 
     @classmethod
     def create(cls, /, x, y, *, weight=1.0, horizontal=False, label=None, use_internal_label=True, user_data=None, tag=0, parent=0, before=0, source=0, show=True, __func=_dearpygui.add_bar_series, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(x, y, weight=weight, horizontal=horizontal, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, before=before, source=source, show=show))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(x, y, weight=weight, horizontal=horizontal, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, before=before, source=source, show=show))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     weight = _property__weight
     horizontal = _property__horizontal
@@ -3716,7 +5510,10 @@ class mvBoolValue(ChildItem, command="add_bool_value", slot=1):
 
     @classmethod
     def create(cls, /, *, default_value=False, parent=_dearpygui.mvReservedUUID_3, label=None, use_internal_label=True, user_data=None, tag=0, source=0, __func=_dearpygui.add_bool_value, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(default_value=default_value, parent=parent, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, source=source))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(default_value=default_value, parent=parent, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, source=source))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     source = _property__source
 
@@ -3728,7 +5525,10 @@ class mvButton(ChildItem, command="add_button", slot=1):
 
     @classmethod
     def create(cls, /, *, small=False, arrow=False, direction=0, repeat=False, label=None, use_internal_label=True, user_data=None, tag=0, width=0, height=0, indent=-1, parent=0, before=0, callback=None, show=True, enabled=True, filter_key="", drop_callback=None, drag_callback=None, payload_type="$$DPG_PAYLOAD", tracked=False, track_offset=0.5, pos=(), __func=_dearpygui.add_button, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(small=small, arrow=arrow, direction=direction, repeat=repeat, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, width=width, height=height, indent=indent, parent=parent, before=before, callback=callback, show=show, enabled=enabled, filter_key=filter_key, drop_callback=drop_callback, drag_callback=drag_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, pos=pos))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(small=small, arrow=arrow, direction=direction, repeat=repeat, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, width=width, height=height, indent=indent, parent=parent, before=before, callback=callback, show=show, enabled=enabled, filter_key=filter_key, drop_callback=drop_callback, drag_callback=drag_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, pos=pos))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     small = _property__small
     arrow = _property__arrow
@@ -3772,7 +5572,10 @@ class mvCandleSeries(SupportsValueArray, ChildItem, command="add_candle_series",
 
     @classmethod
     def create(cls, /, dates, opens, closes, lows, highs, *, bull_color=(0, 255, 113, 255), bear_color=(218, 13, 79, 255), weight=0.25, tooltip=True, time_unit=5, label=None, use_internal_label=True, user_data=None, tag=0, parent=0, before=0, source=0, show=True, __func=_dearpygui.add_candle_series, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(dates, opens, closes, lows, highs, bull_color=bull_color, bear_color=bear_color, weight=weight, tooltip=tooltip, time_unit=time_unit, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, before=before, source=source, show=show))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(dates, opens, closes, lows, highs, bull_color=bull_color, bear_color=bear_color, weight=weight, tooltip=tooltip, time_unit=time_unit, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, before=before, source=source, show=show))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     @property
     def dates(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -3780,6 +5583,8 @@ class mvCandleSeries(SupportsValueArray, ChildItem, command="add_candle_series",
             return __func(self)["dates"]
         except KeyError:
             raise AttributeError(f"'dates' not in dict returned from 'get_item_configuration({self.tag})'`")
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
     
     @property
     def opens(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -3787,6 +5592,8 @@ class mvCandleSeries(SupportsValueArray, ChildItem, command="add_candle_series",
             return __func(self)["opens"]
         except KeyError:
             raise AttributeError(f"'opens' not in dict returned from 'get_item_configuration({self.tag})'`")
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
     
     @property
     def closes(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -3794,6 +5601,8 @@ class mvCandleSeries(SupportsValueArray, ChildItem, command="add_candle_series",
             return __func(self)["closes"]
         except KeyError:
             raise AttributeError(f"'closes' not in dict returned from 'get_item_configuration({self.tag})'`")
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
     
     @property
     def lows(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -3801,6 +5610,8 @@ class mvCandleSeries(SupportsValueArray, ChildItem, command="add_candle_series",
             return __func(self)["lows"]
         except KeyError:
             raise AttributeError(f"'lows' not in dict returned from 'get_item_configuration({self.tag})'`")
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
     
     @property
     def highs(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -3808,6 +5619,8 @@ class mvCandleSeries(SupportsValueArray, ChildItem, command="add_candle_series",
             return __func(self)["highs"]
         except KeyError:
             raise AttributeError(f"'highs' not in dict returned from 'get_item_configuration({self.tag})'`")
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
     
     bull_color = _property__bull_color
     bear_color = _property__bear_color
@@ -3825,7 +5638,10 @@ class mvCharRemap(ChildItem, command="add_char_remap", slot=1):
 
     @classmethod
     def create(cls, /, source, target, *, label=None, use_internal_label=True, user_data=None, tag=0, parent=0, __func=_dearpygui.add_char_remap, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(source, target, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(source, target, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     @property
     def source(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -3833,6 +5649,8 @@ class mvCharRemap(ChildItem, command="add_char_remap", slot=1):
             return __func(self)["source"]
         except KeyError:
             raise AttributeError(f"'source' not in dict returned from 'get_item_configuration({self.tag})'`")
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
     
     @property
     def target(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -3840,6 +5658,8 @@ class mvCharRemap(ChildItem, command="add_char_remap", slot=1):
             return __func(self)["target"]
         except KeyError:
             raise AttributeError(f"'target' not in dict returned from 'get_item_configuration({self.tag})'`")
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
     
 add_char_remap = mvCharRemap.create
 
@@ -3849,7 +5669,10 @@ class mvCheckbox(ChildItem, command="add_checkbox", slot=1):
 
     @classmethod
     def create(cls, /, *, default_value=False, label=None, use_internal_label=True, user_data=None, tag=0, indent=-1, parent=0, before=0, source=0, callback=None, show=True, enabled=True, filter_key="", drop_callback=None, drag_callback=None, payload_type="$$DPG_PAYLOAD", tracked=False, track_offset=0.5, pos=(), __func=_dearpygui.add_checkbox, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(default_value=default_value, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, indent=indent, parent=parent, before=before, source=source, callback=callback, show=show, enabled=enabled, filter_key=filter_key, drop_callback=drop_callback, drag_callback=drag_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, pos=pos))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(default_value=default_value, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, indent=indent, parent=parent, before=before, source=source, callback=callback, show=show, enabled=enabled, filter_key=filter_key, drop_callback=drop_callback, drag_callback=drag_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, pos=pos))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     indent = _property__indent
     source = _property__source
@@ -3889,7 +5712,10 @@ class mvChildWindow(ContainerItem, ChildItem, command="add_child_window", slot=1
 
     @classmethod
     def create(cls, /, *, border=True, autosize_x=False, autosize_y=False, no_scrollbar=False, horizontal_scrollbar=False, menubar=False, no_scroll_with_mouse=False, flattened_navigation=True, always_use_window_padding=False, resizable_x=False, resizable_y=False, always_auto_resize=False, frame_style=False, auto_resize_x=False, auto_resize_y=False, label=None, use_internal_label=True, user_data=None, tag=0, width=0, height=0, indent=-1, parent=0, before=0, show=True, filter_key="", drop_callback=None, payload_type="$$DPG_PAYLOAD", tracked=False, track_offset=0.5, pos=(), __func=_dearpygui.add_child_window, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(border=border, autosize_x=autosize_x, autosize_y=autosize_y, no_scrollbar=no_scrollbar, horizontal_scrollbar=horizontal_scrollbar, menubar=menubar, no_scroll_with_mouse=no_scroll_with_mouse, flattened_navigation=flattened_navigation, always_use_window_padding=always_use_window_padding, resizable_x=resizable_x, resizable_y=resizable_y, always_auto_resize=always_auto_resize, frame_style=frame_style, auto_resize_x=auto_resize_x, auto_resize_y=auto_resize_y, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, width=width, height=height, indent=indent, parent=parent, before=before, show=show, filter_key=filter_key, drop_callback=drop_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, pos=pos))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(border=border, autosize_x=autosize_x, autosize_y=autosize_y, no_scrollbar=no_scrollbar, horizontal_scrollbar=horizontal_scrollbar, menubar=menubar, no_scroll_with_mouse=no_scroll_with_mouse, flattened_navigation=flattened_navigation, always_use_window_padding=always_use_window_padding, resizable_x=resizable_x, resizable_y=resizable_y, always_auto_resize=always_auto_resize, frame_style=frame_style, auto_resize_x=auto_resize_x, auto_resize_y=auto_resize_y, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, width=width, height=height, indent=indent, parent=parent, before=before, show=show, filter_key=filter_key, drop_callback=drop_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, pos=pos))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     border = _property__border
     autosize_x = _property__autosize_x
@@ -3944,7 +5770,10 @@ class mvClickedHandler(ChildItem, command="add_item_clicked_handler", slot=1):
 
     @classmethod
     def create(cls, /, button=-1, *, label=None, use_internal_label=True, user_data=None, tag=0, show=True, parent=0, callback=None, __func=_dearpygui.add_item_clicked_handler, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(button, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, show=show, parent=parent, callback=callback))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(button, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, show=show, parent=parent, callback=callback))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     @property
     def button(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -3952,6 +5781,8 @@ class mvClickedHandler(ChildItem, command="add_item_clicked_handler", slot=1):
             return __func(self)["button"]
         except KeyError:
             raise AttributeError(f"'button' not in dict returned from 'get_item_configuration({self.tag})'`")
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
     
     show = _property__show
     callback = _property__callback
@@ -3964,7 +5795,10 @@ class mvClipper(ContainerItem, ChildItem, command="add_clipper", slot=1):
 
     @classmethod
     def create(cls, /, *, label=None, use_internal_label=True, user_data=None, tag=0, width=0, indent=-1, parent=0, before=0, show=True, __func=_dearpygui.add_clipper, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, width=width, indent=indent, parent=parent, before=before, show=show))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, width=width, indent=indent, parent=parent, before=before, show=show))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     width = _property__width
     indent = _property__indent
@@ -3978,7 +5812,10 @@ class mvCollapsingHeader(ContainerItem, ChildItem, command="add_collapsing_heade
 
     @classmethod
     def create(cls, /, *, closable=False, default_open=False, open_on_double_click=False, open_on_arrow=False, leaf=False, bullet=False, label=None, use_internal_label=True, user_data=None, tag=0, indent=-1, parent=0, before=0, show=True, filter_key="", drop_callback=None, drag_callback=None, payload_type="$$DPG_PAYLOAD", tracked=False, track_offset=0.5, pos=(), __func=_dearpygui.add_collapsing_header, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(closable=closable, default_open=default_open, open_on_double_click=open_on_double_click, open_on_arrow=open_on_arrow, leaf=leaf, bullet=bullet, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, indent=indent, parent=parent, before=before, show=show, filter_key=filter_key, drop_callback=drop_callback, drag_callback=drag_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, pos=pos))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(closable=closable, default_open=default_open, open_on_double_click=open_on_double_click, open_on_arrow=open_on_arrow, leaf=leaf, bullet=bullet, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, indent=indent, parent=parent, before=before, show=show, filter_key=filter_key, drop_callback=drop_callback, drag_callback=drag_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, pos=pos))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     closable = _property__closable
     open_on_double_click = _property__open_on_double_click
@@ -4020,7 +5857,10 @@ class mvColorButton(ChildItem, command="add_color_button", slot=1):
 
     @classmethod
     def create(cls, /, default_value=(0, 0, 0, 255), *, no_alpha=False, no_border=False, no_drag_drop=False, alpha_preview=_dearpygui.mvColorEdit_AlphaPreviewNone, no_tooltip=False, label=None, use_internal_label=True, user_data=None, tag=0, width=0, height=0, indent=-1, parent=0, before=0, callback=None, show=True, enabled=True, filter_key="", drop_callback=None, drag_callback=None, payload_type="$$DPG_PAYLOAD", tracked=False, track_offset=0.5, pos=(), __func=_dearpygui.add_color_button, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(default_value, no_alpha=no_alpha, no_border=no_border, no_drag_drop=no_drag_drop, alpha_preview=alpha_preview, no_tooltip=no_tooltip, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, width=width, height=height, indent=indent, parent=parent, before=before, callback=callback, show=show, enabled=enabled, filter_key=filter_key, drop_callback=drop_callback, drag_callback=drag_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, pos=pos))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(default_value, no_alpha=no_alpha, no_border=no_border, no_drag_drop=no_drag_drop, alpha_preview=alpha_preview, no_tooltip=no_tooltip, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, width=width, height=height, indent=indent, parent=parent, before=before, callback=callback, show=show, enabled=enabled, filter_key=filter_key, drop_callback=drop_callback, drag_callback=drag_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, pos=pos))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     no_alpha = _property__no_alpha
     no_border = _property__no_border
@@ -4065,7 +5905,10 @@ class mvColorEdit(SupportsValueArray, ChildItem, command="add_color_edit", slot=
 
     @classmethod
     def create(cls, /, default_value=(0, 0, 0, 255), *, no_alpha=False, no_picker=False, no_options=False, no_small_preview=False, no_inputs=False, no_tooltip=False, no_label=False, no_drag_drop=False, alpha_bar=False, alpha_preview=_dearpygui.mvColorEdit_AlphaPreviewNone, display_mode=_dearpygui.mvColorEdit_rgb, display_type=_dearpygui.mvColorEdit_uint8, input_mode=_dearpygui.mvColorEdit_input_rgb, label=None, use_internal_label=True, user_data=None, tag=0, width=0, height=0, indent=-1, parent=0, before=0, source=0, callback=None, show=True, enabled=True, filter_key="", drop_callback=None, drag_callback=None, payload_type="$$DPG_PAYLOAD", tracked=False, track_offset=0.5, pos=(), __func=_dearpygui.add_color_edit, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(default_value, no_alpha=no_alpha, no_picker=no_picker, no_options=no_options, no_small_preview=no_small_preview, no_inputs=no_inputs, no_tooltip=no_tooltip, no_label=no_label, no_drag_drop=no_drag_drop, alpha_bar=alpha_bar, alpha_preview=alpha_preview, display_mode=display_mode, display_type=display_type, input_mode=input_mode, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, width=width, height=height, indent=indent, parent=parent, before=before, source=source, callback=callback, show=show, enabled=enabled, filter_key=filter_key, drop_callback=drop_callback, drag_callback=drag_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, pos=pos))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(default_value, no_alpha=no_alpha, no_picker=no_picker, no_options=no_options, no_small_preview=no_small_preview, no_inputs=no_inputs, no_tooltip=no_tooltip, no_label=no_label, no_drag_drop=no_drag_drop, alpha_bar=alpha_bar, alpha_preview=alpha_preview, display_mode=display_mode, display_type=display_type, input_mode=input_mode, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, width=width, height=height, indent=indent, parent=parent, before=before, source=source, callback=callback, show=show, enabled=enabled, filter_key=filter_key, drop_callback=drop_callback, drag_callback=drag_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, pos=pos))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     no_alpha = _property__no_alpha
     no_picker = _property__no_picker
@@ -4121,7 +5964,10 @@ class mvColorMap(ChildItem, command="add_colormap", slot=1):
 
     @classmethod
     def create(cls, /, colors, qualitative, *, parent=_dearpygui.mvReservedUUID_4, label=None, use_internal_label=True, user_data=None, tag=0, show=True, __func=_dearpygui.add_colormap, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(colors, qualitative, parent=parent, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, show=show))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(colors, qualitative, parent=parent, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, show=show))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     @property
     def colors(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -4129,6 +5975,8 @@ class mvColorMap(ChildItem, command="add_colormap", slot=1):
             return __func(self)["colors"]
         except KeyError:
             raise AttributeError(f"'colors' not in dict returned from 'get_item_configuration({self.tag})'`")
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
     
     @property
     def qualitative(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -4136,6 +5984,8 @@ class mvColorMap(ChildItem, command="add_colormap", slot=1):
             return __func(self)["qualitative"]
         except KeyError:
             raise AttributeError(f"'qualitative' not in dict returned from 'get_item_configuration({self.tag})'`")
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
     
     show = _property__show
 
@@ -4147,7 +5997,10 @@ class mvColorMapButton(ChildItem, command="add_colormap_button", slot=1):
 
     @classmethod
     def create(cls, /, default_value=(0, 0, 0, 255), *, label=None, use_internal_label=True, user_data=None, tag=0, width=0, height=0, indent=-1, parent=0, before=0, callback=None, show=True, enabled=True, filter_key="", drop_callback=None, drag_callback=None, payload_type="$$DPG_PAYLOAD", tracked=False, track_offset=0.5, pos=(), __func=_dearpygui.add_colormap_button, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(default_value, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, width=width, height=height, indent=indent, parent=parent, before=before, callback=callback, show=show, enabled=enabled, filter_key=filter_key, drop_callback=drop_callback, drag_callback=drag_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, pos=pos))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(default_value, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, width=width, height=height, indent=indent, parent=parent, before=before, callback=callback, show=show, enabled=enabled, filter_key=filter_key, drop_callback=drop_callback, drag_callback=drag_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, pos=pos))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     width = _property__width
     height = _property__height
@@ -4187,7 +6040,10 @@ class mvColorMapRegistry(ContainerItem, command="add_colormap_registry", slot=1)
 
     @classmethod
     def create(cls, /, *, show=False, label=None, use_internal_label=True, user_data=None, tag=0, __func=_dearpygui.add_colormap_registry, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(show=show, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(show=show, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     show = _property__show
 
@@ -4203,7 +6059,10 @@ class mvColorMapScale(ChildItem, command="add_colormap_scale", slot=1):
 
     @classmethod
     def create(cls, /, *, colormap=0, min_scale=0.0, max_scale=1.0, format='%g', reverse_dir=False, mirror=False, label=None, use_internal_label=True, user_data=None, tag=0, width=0, height=0, indent=-1, parent=0, before=0, source=0, show=True, drop_callback=None, payload_type="$$DPG_PAYLOAD", pos=(), __func=_dearpygui.add_colormap_scale, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(colormap=colormap, min_scale=min_scale, max_scale=max_scale, format=format, reverse_dir=reverse_dir, mirror=mirror, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, width=width, height=height, indent=indent, parent=parent, before=before, source=source, show=show, drop_callback=drop_callback, payload_type=payload_type, pos=pos))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(colormap=colormap, min_scale=min_scale, max_scale=max_scale, format=format, reverse_dir=reverse_dir, mirror=mirror, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, width=width, height=height, indent=indent, parent=parent, before=before, source=source, show=show, drop_callback=drop_callback, payload_type=payload_type, pos=pos))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     min_scale = _property__min_scale
     max_scale = _property__max_scale
@@ -4239,7 +6098,10 @@ class mvColorMapSlider(ChildItem, command="add_colormap_slider", slot=1):
 
     @classmethod
     def create(cls, /, *, default_value=0.0, label=None, use_internal_label=True, user_data=None, tag=0, width=0, height=0, indent=-1, parent=0, before=0, callback=None, show=True, filter_key="", drop_callback=None, payload_type="$$DPG_PAYLOAD", tracked=False, track_offset=0.5, pos=(), __func=_dearpygui.add_colormap_slider, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(default_value=default_value, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, width=width, height=height, indent=indent, parent=parent, before=before, callback=callback, show=show, filter_key=filter_key, drop_callback=drop_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, pos=pos))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(default_value=default_value, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, width=width, height=height, indent=indent, parent=parent, before=before, callback=callback, show=show, filter_key=filter_key, drop_callback=drop_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, pos=pos))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     width = _property__width
     height = _property__height
@@ -4279,7 +6141,10 @@ class mvColorPicker(SupportsValueArray, ChildItem, command="add_color_picker", s
 
     @classmethod
     def create(cls, /, default_value=(0, 0, 0, 255), *, no_alpha=False, no_side_preview=False, no_small_preview=False, no_inputs=False, no_tooltip=False, no_label=False, alpha_bar=False, display_rgb=False, display_hsv=False, display_hex=False, picker_mode=_dearpygui.mvColorPicker_bar, alpha_preview=_dearpygui.mvColorEdit_AlphaPreviewNone, display_type=_dearpygui.mvColorEdit_uint8, input_mode=_dearpygui.mvColorEdit_input_rgb, label=None, use_internal_label=True, user_data=None, tag=0, width=0, height=0, indent=-1, parent=0, before=0, source=0, callback=None, show=True, enabled=True, filter_key="", drop_callback=None, drag_callback=None, payload_type="$$DPG_PAYLOAD", tracked=False, track_offset=0.5, pos=(), __func=_dearpygui.add_color_picker, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(default_value, no_alpha=no_alpha, no_side_preview=no_side_preview, no_small_preview=no_small_preview, no_inputs=no_inputs, no_tooltip=no_tooltip, no_label=no_label, alpha_bar=alpha_bar, display_rgb=display_rgb, display_hsv=display_hsv, display_hex=display_hex, picker_mode=picker_mode, alpha_preview=alpha_preview, display_type=display_type, input_mode=input_mode, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, width=width, height=height, indent=indent, parent=parent, before=before, source=source, callback=callback, show=show, enabled=enabled, filter_key=filter_key, drop_callback=drop_callback, drag_callback=drag_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, pos=pos))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(default_value, no_alpha=no_alpha, no_side_preview=no_side_preview, no_small_preview=no_small_preview, no_inputs=no_inputs, no_tooltip=no_tooltip, no_label=no_label, alpha_bar=alpha_bar, display_rgb=display_rgb, display_hsv=display_hsv, display_hex=display_hex, picker_mode=picker_mode, alpha_preview=alpha_preview, display_type=display_type, input_mode=input_mode, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, width=width, height=height, indent=indent, parent=parent, before=before, source=source, callback=callback, show=show, enabled=enabled, filter_key=filter_key, drop_callback=drop_callback, drag_callback=drag_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, pos=pos))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     no_alpha = _property__no_alpha
     no_side_preview = _property__no_side_preview
@@ -4336,7 +6201,10 @@ class mvColorValue(SupportsValueArray, ChildItem, command="add_color_value", slo
 
     @classmethod
     def create(cls, /, *, default_value=(0.0, 0.0, 0.0, 0.0), parent=_dearpygui.mvReservedUUID_3, label=None, use_internal_label=True, user_data=None, tag=0, source=0, __func=_dearpygui.add_color_value, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(default_value=default_value, parent=parent, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, source=source))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(default_value=default_value, parent=parent, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, source=source))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     source = _property__source
 
@@ -4348,7 +6216,10 @@ class mvCombo(ChildItem, command="add_combo", slot=1):
 
     @classmethod
     def create(cls, /, items=(), *, default_value='', popup_align_left=False, no_arrow_button=False, no_preview=False, fit_width=False, height_mode=1, label=None, use_internal_label=True, user_data=None, tag=0, width=0, indent=-1, parent=0, before=0, source=0, callback=None, show=True, enabled=True, filter_key="", drop_callback=None, drag_callback=None, payload_type="$$DPG_PAYLOAD", tracked=False, track_offset=0.5, pos=(), __func=_dearpygui.add_combo, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(items, default_value=default_value, popup_align_left=popup_align_left, no_arrow_button=no_arrow_button, no_preview=no_preview, fit_width=fit_width, height_mode=height_mode, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, width=width, indent=indent, parent=parent, before=before, source=source, callback=callback, show=show, enabled=enabled, filter_key=filter_key, drop_callback=drop_callback, drag_callback=drag_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, pos=pos))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(items, default_value=default_value, popup_align_left=popup_align_left, no_arrow_button=no_arrow_button, no_preview=no_preview, fit_width=fit_width, height_mode=height_mode, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, width=width, indent=indent, parent=parent, before=before, source=source, callback=callback, show=show, enabled=enabled, filter_key=filter_key, drop_callback=drop_callback, drag_callback=drag_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, pos=pos))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     items = _property__items
     popup_align_left = _property__popup_align_left
@@ -4396,7 +6267,10 @@ class mvCustomSeries(SupportsValueArray, ContainerItem, ChildItem, command="add_
 
     @classmethod
     def create(cls, /, x, y, channel_count, *, y1=(), y2=(), y3=(), tooltip=True, no_fit=False, label=None, use_internal_label=True, user_data=None, tag=0, parent=0, before=0, source=0, callback=None, show=True, __func=_dearpygui.add_custom_series, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(x, y, channel_count, y1=y1, y2=y2, y3=y3, tooltip=tooltip, no_fit=no_fit, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, before=before, source=source, callback=callback, show=show))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(x, y, channel_count, y1=y1, y2=y2, y3=y3, tooltip=tooltip, no_fit=no_fit, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, before=before, source=source, callback=callback, show=show))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     @property
     def channel_count(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -4404,6 +6278,8 @@ class mvCustomSeries(SupportsValueArray, ContainerItem, ChildItem, command="add_
             return __func(self)["channel_count"]
         except KeyError:
             raise AttributeError(f"'channel_count' not in dict returned from 'get_item_configuration({self.tag})'`")
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
     
     tooltip = _property__tooltip
     no_fit = _property__no_fit
@@ -4419,7 +6295,10 @@ class mvDatePicker(ChildItem, command="add_date_picker", slot=1):
 
     @classmethod
     def create(cls, /, *, default_value={'month_day': 14, 'year':20, 'month':5}, level=0, label=None, use_internal_label=True, user_data=None, tag=0, indent=-1, parent=0, before=0, callback=None, show=True, filter_key="", drop_callback=None, drag_callback=None, payload_type="$$DPG_PAYLOAD", tracked=False, track_offset=0.5, pos=(), __func=_dearpygui.add_date_picker, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(default_value=default_value, level=level, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, indent=indent, parent=parent, before=before, callback=callback, show=show, filter_key=filter_key, drop_callback=drop_callback, drag_callback=drag_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, pos=pos))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(default_value=default_value, level=level, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, indent=indent, parent=parent, before=before, callback=callback, show=show, filter_key=filter_key, drop_callback=drop_callback, drag_callback=drag_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, pos=pos))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     level = _property__level
     indent = _property__indent
@@ -4457,7 +6336,10 @@ class mvDeactivatedAfterEditHandler(ChildItem, command="add_item_deactivated_aft
 
     @classmethod
     def create(cls, /, *, label=None, use_internal_label=True, user_data=None, tag=0, show=True, parent=0, callback=None, __func=_dearpygui.add_item_deactivated_after_edit_handler, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, show=show, parent=parent, callback=callback))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, show=show, parent=parent, callback=callback))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     show = _property__show
     callback = _property__callback
@@ -4470,7 +6352,10 @@ class mvDeactivatedHandler(ChildItem, command="add_item_deactivated_handler", sl
 
     @classmethod
     def create(cls, /, *, label=None, use_internal_label=True, user_data=None, tag=0, show=True, parent=0, callback=None, __func=_dearpygui.add_item_deactivated_handler, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, show=show, parent=parent, callback=callback))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, show=show, parent=parent, callback=callback))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     show = _property__show
     callback = _property__callback
@@ -4483,7 +6368,10 @@ class mvDigitalSeries(SupportsValueArray, ChildItem, command="add_digital_series
 
     @classmethod
     def create(cls, /, x, y, *, label=None, use_internal_label=True, user_data=None, tag=0, parent=0, before=0, source=0, show=True, __func=_dearpygui.add_digital_series, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(x, y, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, before=before, source=source, show=show))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(x, y, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, before=before, source=source, show=show))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     source = _property__source
     show = _property__show
@@ -4496,7 +6384,10 @@ class mvDouble4Value(SupportsValueArray, ChildItem, command="add_double4_value",
 
     @classmethod
     def create(cls, /, *, default_value=(0.0, 0.0, 0.0, 0.0), parent=_dearpygui.mvReservedUUID_3, label=None, use_internal_label=True, user_data=None, tag=0, source=0, __func=_dearpygui.add_double4_value, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(default_value=default_value, parent=parent, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, source=source))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(default_value=default_value, parent=parent, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, source=source))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     source = _property__source
 
@@ -4508,7 +6399,10 @@ class mvDoubleClickedHandler(ChildItem, command="add_item_double_clicked_handler
 
     @classmethod
     def create(cls, /, button=-1, *, label=None, use_internal_label=True, user_data=None, tag=0, show=True, parent=0, callback=None, __func=_dearpygui.add_item_double_clicked_handler, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(button, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, show=show, parent=parent, callback=callback))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(button, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, show=show, parent=parent, callback=callback))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     @property
     def button(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -4516,6 +6410,8 @@ class mvDoubleClickedHandler(ChildItem, command="add_item_double_clicked_handler
             return __func(self)["button"]
         except KeyError:
             raise AttributeError(f"'button' not in dict returned from 'get_item_configuration({self.tag})'`")
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
     
     show = _property__show
     callback = _property__callback
@@ -4528,7 +6424,10 @@ class mvDoubleValue(ChildItem, command="add_double_value", slot=1):
 
     @classmethod
     def create(cls, /, *, default_value=0.0, parent=_dearpygui.mvReservedUUID_3, label=None, use_internal_label=True, user_data=None, tag=0, source=0, __func=_dearpygui.add_double_value, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(default_value=default_value, parent=parent, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, source=source))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(default_value=default_value, parent=parent, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, source=source))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     source = _property__source
 
@@ -4540,7 +6439,10 @@ class mvDragDouble(ChildItem, command="add_drag_double", slot=1):
 
     @classmethod
     def create(cls, /, *, default_value=0.0, format='%0.3f', speed=1.0, min_value=0.0, max_value=100.0, no_input=False, clamped=False, label=None, use_internal_label=True, user_data=None, tag=0, width=0, indent=-1, parent=0, before=0, source=0, callback=None, show=True, enabled=True, filter_key="", drop_callback=None, drag_callback=None, payload_type="$$DPG_PAYLOAD", tracked=False, track_offset=0.5, pos=(), __func=_dearpygui.add_drag_double, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(default_value=default_value, format=format, speed=speed, min_value=min_value, max_value=max_value, no_input=no_input, clamped=clamped, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, width=width, indent=indent, parent=parent, before=before, source=source, callback=callback, show=show, enabled=enabled, filter_key=filter_key, drop_callback=drop_callback, drag_callback=drag_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, pos=pos))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(default_value=default_value, format=format, speed=speed, min_value=min_value, max_value=max_value, no_input=no_input, clamped=clamped, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, width=width, indent=indent, parent=parent, before=before, source=source, callback=callback, show=show, enabled=enabled, filter_key=filter_key, drop_callback=drop_callback, drag_callback=drag_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, pos=pos))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     format = _property__format
     speed = _property__speed
@@ -4586,7 +6488,10 @@ class mvDragDoubleMulti(SupportsValueArray, ChildItem, command="add_drag_doublex
 
     @classmethod
     def create(cls, /, *, default_value=(0.0, 0.0, 0.0, 0.0), size=4, format='%0.3f', speed=1.0, min_value=0.0, max_value=100.0, no_input=False, clamped=False, label=None, use_internal_label=True, user_data=None, tag=0, width=0, indent=-1, parent=0, before=0, source=0, callback=None, show=True, enabled=True, filter_key="", drop_callback=None, drag_callback=None, payload_type="$$DPG_PAYLOAD", tracked=False, track_offset=0.5, pos=(), __func=_dearpygui.add_drag_doublex, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(default_value=default_value, size=size, format=format, speed=speed, min_value=min_value, max_value=max_value, no_input=no_input, clamped=clamped, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, width=width, indent=indent, parent=parent, before=before, source=source, callback=callback, show=show, enabled=enabled, filter_key=filter_key, drop_callback=drop_callback, drag_callback=drag_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, pos=pos))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(default_value=default_value, size=size, format=format, speed=speed, min_value=min_value, max_value=max_value, no_input=no_input, clamped=clamped, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, width=width, indent=indent, parent=parent, before=before, source=source, callback=callback, show=show, enabled=enabled, filter_key=filter_key, drop_callback=drop_callback, drag_callback=drag_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, pos=pos))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     size = _property__size
     format = _property__format
@@ -4633,7 +6538,10 @@ class mvDragFloat(ChildItem, command="add_drag_float", slot=1):
 
     @classmethod
     def create(cls, /, *, default_value=0.0, format='%0.3f', speed=1.0, min_value=0.0, max_value=100.0, no_input=False, clamped=False, label=None, use_internal_label=True, user_data=None, tag=0, width=0, indent=-1, parent=0, before=0, source=0, callback=None, show=True, enabled=True, filter_key="", drop_callback=None, drag_callback=None, payload_type="$$DPG_PAYLOAD", tracked=False, track_offset=0.5, pos=(), __func=_dearpygui.add_drag_float, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(default_value=default_value, format=format, speed=speed, min_value=min_value, max_value=max_value, no_input=no_input, clamped=clamped, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, width=width, indent=indent, parent=parent, before=before, source=source, callback=callback, show=show, enabled=enabled, filter_key=filter_key, drop_callback=drop_callback, drag_callback=drag_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, pos=pos))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(default_value=default_value, format=format, speed=speed, min_value=min_value, max_value=max_value, no_input=no_input, clamped=clamped, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, width=width, indent=indent, parent=parent, before=before, source=source, callback=callback, show=show, enabled=enabled, filter_key=filter_key, drop_callback=drop_callback, drag_callback=drag_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, pos=pos))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     format = _property__format
     speed = _property__speed
@@ -4679,7 +6587,10 @@ class mvDragFloatMulti(SupportsValueArray, ChildItem, command="add_drag_floatx",
 
     @classmethod
     def create(cls, /, *, default_value=(0.0, 0.0, 0.0, 0.0), size=4, format='%0.3f', speed=1.0, min_value=0.0, max_value=100.0, no_input=False, clamped=False, label=None, use_internal_label=True, user_data=None, tag=0, width=0, indent=-1, parent=0, before=0, source=0, callback=None, show=True, enabled=True, filter_key="", drop_callback=None, drag_callback=None, payload_type="$$DPG_PAYLOAD", tracked=False, track_offset=0.5, pos=(), __func=_dearpygui.add_drag_floatx, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(default_value=default_value, size=size, format=format, speed=speed, min_value=min_value, max_value=max_value, no_input=no_input, clamped=clamped, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, width=width, indent=indent, parent=parent, before=before, source=source, callback=callback, show=show, enabled=enabled, filter_key=filter_key, drop_callback=drop_callback, drag_callback=drag_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, pos=pos))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(default_value=default_value, size=size, format=format, speed=speed, min_value=min_value, max_value=max_value, no_input=no_input, clamped=clamped, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, width=width, indent=indent, parent=parent, before=before, source=source, callback=callback, show=show, enabled=enabled, filter_key=filter_key, drop_callback=drop_callback, drag_callback=drag_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, pos=pos))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     size = _property__size
     format = _property__format
@@ -4726,7 +6637,10 @@ class mvDragInt(ChildItem, command="add_drag_int", slot=1):
 
     @classmethod
     def create(cls, /, *, default_value=0, format='%d', speed=1.0, min_value=0, max_value=100, no_input=False, clamped=False, label=None, use_internal_label=True, user_data=None, tag=0, width=0, indent=-1, parent=0, before=0, source=0, callback=None, show=True, enabled=True, filter_key="", drop_callback=None, drag_callback=None, payload_type="$$DPG_PAYLOAD", tracked=False, track_offset=0.5, pos=(), __func=_dearpygui.add_drag_int, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(default_value=default_value, format=format, speed=speed, min_value=min_value, max_value=max_value, no_input=no_input, clamped=clamped, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, width=width, indent=indent, parent=parent, before=before, source=source, callback=callback, show=show, enabled=enabled, filter_key=filter_key, drop_callback=drop_callback, drag_callback=drag_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, pos=pos))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(default_value=default_value, format=format, speed=speed, min_value=min_value, max_value=max_value, no_input=no_input, clamped=clamped, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, width=width, indent=indent, parent=parent, before=before, source=source, callback=callback, show=show, enabled=enabled, filter_key=filter_key, drop_callback=drop_callback, drag_callback=drag_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, pos=pos))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     format = _property__format
     speed = _property__speed
@@ -4772,7 +6686,10 @@ class mvDragIntMulti(SupportsValueArray, ChildItem, command="add_drag_intx", slo
 
     @classmethod
     def create(cls, /, *, default_value=(0, 0, 0, 0), size=4, format='%d', speed=1.0, min_value=0, max_value=100, no_input=False, clamped=False, label=None, use_internal_label=True, user_data=None, tag=0, width=0, indent=-1, parent=0, before=0, source=0, callback=None, show=True, enabled=True, filter_key="", drop_callback=None, drag_callback=None, payload_type="$$DPG_PAYLOAD", tracked=False, track_offset=0.5, pos=(), __func=_dearpygui.add_drag_intx, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(default_value=default_value, size=size, format=format, speed=speed, min_value=min_value, max_value=max_value, no_input=no_input, clamped=clamped, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, width=width, indent=indent, parent=parent, before=before, source=source, callback=callback, show=show, enabled=enabled, filter_key=filter_key, drop_callback=drop_callback, drag_callback=drag_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, pos=pos))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(default_value=default_value, size=size, format=format, speed=speed, min_value=min_value, max_value=max_value, no_input=no_input, clamped=clamped, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, width=width, indent=indent, parent=parent, before=before, source=source, callback=callback, show=show, enabled=enabled, filter_key=filter_key, drop_callback=drop_callback, drag_callback=drag_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, pos=pos))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     size = _property__size
     format = _property__format
@@ -4819,7 +6736,10 @@ class mvDragLine(ChildItem, command="add_drag_line", slot=0):
 
     @classmethod
     def create(cls, /, *, default_value=0.0, color=(0, 0, 0, -255), thickness=1.0, show_label=True, vertical=True, delayed=False, no_cursor=False, no_fit=False, no_inputs=False, label=None, use_internal_label=True, user_data=None, tag=0, parent=0, before=0, source=0, callback=None, show=True, __func=_dearpygui.add_drag_line, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(default_value=default_value, color=color, thickness=thickness, show_label=show_label, vertical=vertical, delayed=delayed, no_cursor=no_cursor, no_fit=no_fit, no_inputs=no_inputs, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, before=before, source=source, callback=callback, show=show))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(default_value=default_value, color=color, thickness=thickness, show_label=show_label, vertical=vertical, delayed=delayed, no_cursor=no_cursor, no_fit=no_fit, no_inputs=no_inputs, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, before=before, source=source, callback=callback, show=show))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     color = _property__color
     thickness = _property__thickness
@@ -4841,7 +6761,10 @@ class mvDragPayload(ContainerItem, ChildItem, command="add_drag_payload", slot=3
 
     @classmethod
     def create(cls, /, *, drag_data=None, drop_data=None, payload_type='$$DPG_PAYLOAD', label=None, use_internal_label=True, user_data=None, tag=0, parent=0, show=True, __func=_dearpygui.add_drag_payload, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(drag_data=drag_data, drop_data=drop_data, payload_type=payload_type, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, show=show))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(drag_data=drag_data, drop_data=drop_data, payload_type=payload_type, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, show=show))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     drag_data = _property__drag_data
     drop_data = _property__drop_data
@@ -4856,7 +6779,10 @@ class mvDragPoint(SupportsValueArray, ChildItem, command="add_drag_point", slot=
 
     @classmethod
     def create(cls, /, *, default_value=(0.0, 0.0), color=(0, 0, 0, -255), thickness=1.0, show_label=True, offset=(16.0, 8.0), clamped=True, delayed=False, no_cursor=False, no_fit=False, no_inputs=False, label=None, use_internal_label=True, user_data=None, tag=0, parent=0, before=0, source=0, callback=None, show=True, __func=_dearpygui.add_drag_point, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(default_value=default_value, color=color, thickness=thickness, show_label=show_label, offset=offset, clamped=clamped, delayed=delayed, no_cursor=no_cursor, no_fit=no_fit, no_inputs=no_inputs, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, before=before, source=source, callback=callback, show=show))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(default_value=default_value, color=color, thickness=thickness, show_label=show_label, offset=offset, clamped=clamped, delayed=delayed, no_cursor=no_cursor, no_fit=no_fit, no_inputs=no_inputs, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, before=before, source=source, callback=callback, show=show))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     color = _property__color
     thickness = _property__thickness
@@ -4879,7 +6805,10 @@ class mvDragRect(SupportsValueArray, ChildItem, command="add_drag_rect", slot=0)
 
     @classmethod
     def create(cls, /, *, default_value=(0.0, 0.0, 0.0, 0.0), color=(0, 0, 0, -255), delayed=False, no_cursor=False, no_fit=False, no_inputs=False, label=None, use_internal_label=True, user_data=None, tag=0, parent=0, before=0, source=0, callback=None, show=True, __func=_dearpygui.add_drag_rect, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(default_value=default_value, color=color, delayed=delayed, no_cursor=no_cursor, no_fit=no_fit, no_inputs=no_inputs, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, before=before, source=source, callback=callback, show=show))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(default_value=default_value, color=color, delayed=delayed, no_cursor=no_cursor, no_fit=no_fit, no_inputs=no_inputs, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, before=before, source=source, callback=callback, show=show))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     color = _property__color
     delayed = _property__delayed
@@ -4898,7 +6827,10 @@ class mvDrawArrow(ChildItem, command="draw_arrow", slot=2):
 
     @classmethod
     def create(cls, /, p1, p2, *, color=(255, 255, 255, 255), thickness=1.0, size=4, label=None, use_internal_label=True, user_data=None, tag=0, parent=0, before=0, show=True, __func=_dearpygui.draw_arrow, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(p1, p2, color=color, thickness=thickness, size=size, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, before=before, show=show))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(p1, p2, color=color, thickness=thickness, size=size, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, before=before, show=show))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     color = _property__color
     thickness = _property__thickness
@@ -4913,7 +6845,10 @@ class mvDrawBezierCubic(ChildItem, command="draw_bezier_cubic", slot=2):
 
     @classmethod
     def create(cls, /, p1, p2, p3, p4, *, color=(255, 255, 255, 255), thickness=1.0, segments=0, label=None, use_internal_label=True, user_data=None, tag=0, parent=0, before=0, show=True, __func=_dearpygui.draw_bezier_cubic, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(p1, p2, p3, p4, color=color, thickness=thickness, segments=segments, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, before=before, show=show))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(p1, p2, p3, p4, color=color, thickness=thickness, segments=segments, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, before=before, show=show))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     color = _property__color
     thickness = _property__thickness
@@ -4928,7 +6863,10 @@ class mvDrawBezierQuadratic(ChildItem, command="draw_bezier_quadratic", slot=2):
 
     @classmethod
     def create(cls, /, p1, p2, p3, *, color=(255, 255, 255, 255), thickness=1.0, segments=0, label=None, use_internal_label=True, user_data=None, tag=0, parent=0, before=0, show=True, __func=_dearpygui.draw_bezier_quadratic, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(p1, p2, p3, color=color, thickness=thickness, segments=segments, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, before=before, show=show))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(p1, p2, p3, color=color, thickness=thickness, segments=segments, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, before=before, show=show))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     color = _property__color
     thickness = _property__thickness
@@ -4943,7 +6881,10 @@ class mvDrawCircle(ChildItem, command="draw_circle", slot=2):
 
     @classmethod
     def create(cls, /, center, radius, *, color=(255, 255, 255, 255), fill=(0, 0, 0, -255), thickness=1.0, segments=0, label=None, use_internal_label=True, user_data=None, tag=0, parent=0, before=0, show=True, __func=_dearpygui.draw_circle, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(center, radius, color=color, fill=fill, thickness=thickness, segments=segments, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, before=before, show=show))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(center, radius, color=color, fill=fill, thickness=thickness, segments=segments, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, before=before, show=show))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     @property
     def center(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -4951,6 +6892,8 @@ class mvDrawCircle(ChildItem, command="draw_circle", slot=2):
             return __func(self)["center"]
         except KeyError:
             raise AttributeError(f"'center' not in dict returned from 'get_item_configuration({self.tag})'`")
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
     
     @property
     def radius(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -4958,6 +6901,8 @@ class mvDrawCircle(ChildItem, command="draw_circle", slot=2):
             return __func(self)["radius"]
         except KeyError:
             raise AttributeError(f"'radius' not in dict returned from 'get_item_configuration({self.tag})'`")
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
     
     color = _property__color
     fill = _property__fill
@@ -4973,7 +6918,10 @@ class mvDrawEllipse(ChildItem, command="draw_ellipse", slot=2):
 
     @classmethod
     def create(cls, /, pmin, pmax, *, color=(255, 255, 255, 255), fill=(0, 0, 0, -255), thickness=1.0, segments=32, label=None, use_internal_label=True, user_data=None, tag=0, parent=0, before=0, show=True, __func=_dearpygui.draw_ellipse, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(pmin, pmax, color=color, fill=fill, thickness=thickness, segments=segments, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, before=before, show=show))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(pmin, pmax, color=color, fill=fill, thickness=thickness, segments=segments, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, before=before, show=show))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     @property
     def pmin(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -4981,6 +6929,8 @@ class mvDrawEllipse(ChildItem, command="draw_ellipse", slot=2):
             return __func(self)["pmin"]
         except KeyError:
             raise AttributeError(f"'pmin' not in dict returned from 'get_item_configuration({self.tag})'`")
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
     
     @property
     def pmax(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -4988,6 +6938,8 @@ class mvDrawEllipse(ChildItem, command="draw_ellipse", slot=2):
             return __func(self)["pmax"]
         except KeyError:
             raise AttributeError(f"'pmax' not in dict returned from 'get_item_configuration({self.tag})'`")
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
     
     color = _property__color
     fill = _property__fill
@@ -5003,7 +6955,10 @@ class mvDrawImage(ChildItem, command="draw_image", slot=2):
 
     @classmethod
     def create(cls, /, texture_tag, pmin, pmax, *, uv_min=(0.0, 0.0), uv_max=(1.0, 1.0), color=(255, 255, 255, 255), label=None, use_internal_label=True, user_data=None, tag=0, parent=0, before=0, show=True, __func=_dearpygui.draw_image, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(texture_tag, pmin, pmax, uv_min=uv_min, uv_max=uv_max, color=color, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, before=before, show=show))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(texture_tag, pmin, pmax, uv_min=uv_min, uv_max=uv_max, color=color, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, before=before, show=show))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     @property
     def pmin(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -5011,6 +6966,8 @@ class mvDrawImage(ChildItem, command="draw_image", slot=2):
             return __func(self)["pmin"]
         except KeyError:
             raise AttributeError(f"'pmin' not in dict returned from 'get_item_configuration({self.tag})'`")
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
     
     @property
     def pmax(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -5018,6 +6975,8 @@ class mvDrawImage(ChildItem, command="draw_image", slot=2):
             return __func(self)["pmax"]
         except KeyError:
             raise AttributeError(f"'pmax' not in dict returned from 'get_item_configuration({self.tag})'`")
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
     
     uv_min = _property__uv_min
     uv_max = _property__uv_max
@@ -5032,7 +6991,10 @@ class mvDrawImageQuad(ChildItem, command="draw_image_quad", slot=2):
 
     @classmethod
     def create(cls, /, texture_tag, p1, p2, p3, p4, *, uv1=(0.0, 0.0), uv2=(1.0, 0.0), uv3=(1.0, 1.0), uv4=(0.0, 1.0), color=(255, 255, 255, 255), label=None, use_internal_label=True, user_data=None, tag=0, parent=0, before=0, show=True, __func=_dearpygui.draw_image_quad, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(texture_tag, p1, p2, p3, p4, uv1=uv1, uv2=uv2, uv3=uv3, uv4=uv4, color=color, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, before=before, show=show))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(texture_tag, p1, p2, p3, p4, uv1=uv1, uv2=uv2, uv3=uv3, uv4=uv4, color=color, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, before=before, show=show))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     uv1 = _property__uv1
     uv2 = _property__uv2
@@ -5049,7 +7011,10 @@ class mvDrawLayer(ContainerItem, ChildItem, command="add_draw_layer", slot=2):
 
     @classmethod
     def create(cls, /, *, perspective_divide=False, depth_clipping=False, cull_mode=0, label=None, use_internal_label=True, user_data=None, tag=0, parent=0, before=0, show=True, __func=_dearpygui.add_draw_layer, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(perspective_divide=perspective_divide, depth_clipping=depth_clipping, cull_mode=cull_mode, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, before=before, show=show))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(perspective_divide=perspective_divide, depth_clipping=depth_clipping, cull_mode=cull_mode, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, before=before, show=show))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     perspective_divide = _property__perspective_divide
     depth_clipping = _property__depth_clipping
@@ -5069,7 +7034,10 @@ class mvDrawLine(ChildItem, command="draw_line", slot=2):
 
     @classmethod
     def create(cls, /, p1, p2, *, color=(255, 255, 255, 255), thickness=1.0, label=None, use_internal_label=True, user_data=None, tag=0, parent=0, before=0, show=True, __func=_dearpygui.draw_line, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(p1, p2, color=color, thickness=thickness, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, before=before, show=show))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(p1, p2, color=color, thickness=thickness, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, before=before, show=show))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     color = _property__color
     thickness = _property__thickness
@@ -5083,7 +7051,10 @@ class mvDrawNode(ContainerItem, ChildItem, command="add_draw_node", slot=2):
 
     @classmethod
     def create(cls, /, *, label=None, use_internal_label=True, user_data=None, tag=0, parent=0, before=0, show=True, __func=_dearpygui.add_draw_node, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, before=before, show=show))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, before=before, show=show))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     show = _property__show
 
@@ -5100,7 +7071,10 @@ class mvDrawPolygon(ChildItem, command="draw_polygon", slot=2):
 
     @classmethod
     def create(cls, /, points, *, color=(255, 255, 255, 255), fill=(0, 0, 0, -255), thickness=1.0, label=None, use_internal_label=True, user_data=None, tag=0, parent=0, before=0, show=True, __func=_dearpygui.draw_polygon, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(points, color=color, fill=fill, thickness=thickness, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, before=before, show=show))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(points, color=color, fill=fill, thickness=thickness, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, before=before, show=show))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     @property
     def points(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -5108,6 +7082,8 @@ class mvDrawPolygon(ChildItem, command="draw_polygon", slot=2):
             return __func(self)["points"]
         except KeyError:
             raise AttributeError(f"'points' not in dict returned from 'get_item_configuration({self.tag})'`")
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
     
     color = _property__color
     fill = _property__fill
@@ -5122,7 +7098,10 @@ class mvDrawPolyline(ChildItem, command="draw_polyline", slot=2):
 
     @classmethod
     def create(cls, /, points, *, closed=False, color=(255, 255, 255, 255), thickness=1.0, label=None, use_internal_label=True, user_data=None, tag=0, parent=0, before=0, show=True, __func=_dearpygui.draw_polyline, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(points, closed=closed, color=color, thickness=thickness, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, before=before, show=show))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(points, closed=closed, color=color, thickness=thickness, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, before=before, show=show))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     @property
     def points(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -5130,6 +7109,8 @@ class mvDrawPolyline(ChildItem, command="draw_polyline", slot=2):
             return __func(self)["points"]
         except KeyError:
             raise AttributeError(f"'points' not in dict returned from 'get_item_configuration({self.tag})'`")
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
     
     closed = _property__closed
     color = _property__color
@@ -5144,7 +7125,10 @@ class mvDrawQuad(ChildItem, command="draw_quad", slot=2):
 
     @classmethod
     def create(cls, /, p1, p2, p3, p4, *, color=(255, 255, 255, 255), fill=(0, 0, 0, -255), thickness=1.0, label=None, use_internal_label=True, user_data=None, tag=0, parent=0, before=0, show=True, __func=_dearpygui.draw_quad, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(p1, p2, p3, p4, color=color, fill=fill, thickness=thickness, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, before=before, show=show))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(p1, p2, p3, p4, color=color, fill=fill, thickness=thickness, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, before=before, show=show))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     color = _property__color
     fill = _property__fill
@@ -5159,7 +7143,10 @@ class mvDrawRect(ChildItem, command="draw_rectangle", slot=2):
 
     @classmethod
     def create(cls, /, pmin, pmax, *, color=(255, 255, 255, 255), fill=(0, 0, 0, -255), multicolor=False, rounding=0.0, thickness=1.0, corner_colors=None, label=None, use_internal_label=True, user_data=None, tag=0, parent=0, before=0, show=True, __func=_dearpygui.draw_rectangle, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(pmin, pmax, color=color, fill=fill, multicolor=multicolor, rounding=rounding, thickness=thickness, corner_colors=corner_colors, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, before=before, show=show))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(pmin, pmax, color=color, fill=fill, multicolor=multicolor, rounding=rounding, thickness=thickness, corner_colors=corner_colors, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, before=before, show=show))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     @property
     def pmin(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -5167,6 +7154,8 @@ class mvDrawRect(ChildItem, command="draw_rectangle", slot=2):
             return __func(self)["pmin"]
         except KeyError:
             raise AttributeError(f"'pmin' not in dict returned from 'get_item_configuration({self.tag})'`")
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
     
     @property
     def pmax(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -5174,6 +7163,8 @@ class mvDrawRect(ChildItem, command="draw_rectangle", slot=2):
             return __func(self)["pmax"]
         except KeyError:
             raise AttributeError(f"'pmax' not in dict returned from 'get_item_configuration({self.tag})'`")
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
     
     color = _property__color
     fill = _property__fill
@@ -5191,7 +7182,10 @@ class mvDrawText(ChildItem, command="draw_text", slot=2):
 
     @classmethod
     def create(cls, /, pos, text, *, color=(255, 255, 255, 255), size=10.0, label=None, use_internal_label=True, user_data=None, tag=0, parent=0, before=0, show=True, __func=_dearpygui.draw_text, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(pos, text, color=color, size=size, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, before=before, show=show))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(pos, text, color=color, size=size, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, before=before, show=show))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     @property
     def pos(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -5199,6 +7193,8 @@ class mvDrawText(ChildItem, command="draw_text", slot=2):
             return __func(self)["pos"]
         except KeyError:
             raise AttributeError(f"'pos' not in dict returned from 'get_item_configuration({self.tag})'`")
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
     
     @property
     def text(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -5206,6 +7202,8 @@ class mvDrawText(ChildItem, command="draw_text", slot=2):
             return __func(self)["text"]
         except KeyError:
             raise AttributeError(f"'text' not in dict returned from 'get_item_configuration({self.tag})'`")
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
     
     color = _property__color
     size = _property__size
@@ -5219,7 +7217,10 @@ class mvDrawTriangle(ChildItem, command="draw_triangle", slot=2):
 
     @classmethod
     def create(cls, /, p1, p2, p3, *, color=(255, 255, 255, 255), fill=(0, 0, 0, -255), thickness=1.0, label=None, use_internal_label=True, user_data=None, tag=0, parent=0, before=0, show=True, __func=_dearpygui.draw_triangle, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(p1, p2, p3, color=color, fill=fill, thickness=thickness, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, before=before, show=show))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(p1, p2, p3, color=color, fill=fill, thickness=thickness, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, before=before, show=show))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     color = _property__color
     fill = _property__fill
@@ -5234,7 +7235,10 @@ class mvDrawlist(ContainerItem, ChildItem, command="add_drawlist", slot=1):
 
     @classmethod
     def create(cls, /, width, height, *, label=None, use_internal_label=True, user_data=None, tag=0, parent=0, before=0, callback=None, show=True, filter_key="", tracked=False, track_offset=0.5, pos=(), __func=_dearpygui.add_drawlist, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(width, height, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, before=before, callback=callback, show=show, filter_key=filter_key, tracked=tracked, track_offset=track_offset, pos=pos))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(width, height, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, before=before, callback=callback, show=show, filter_key=filter_key, tracked=tracked, track_offset=track_offset, pos=pos))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     @property
     def width(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -5242,6 +7246,8 @@ class mvDrawlist(ContainerItem, ChildItem, command="add_drawlist", slot=1):
             return __func(self)["width"]
         except KeyError:
             raise AttributeError(f"'width' not in dict returned from 'get_item_configuration({self.tag})'`")
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
     
     @property
     def height(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -5249,6 +7255,8 @@ class mvDrawlist(ContainerItem, ChildItem, command="add_drawlist", slot=1):
             return __func(self)["height"]
         except KeyError:
             raise AttributeError(f"'height' not in dict returned from 'get_item_configuration({self.tag})'`")
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
     
     callback = _property__callback
     show = _property__show
@@ -5283,7 +7291,10 @@ class mvDynamicTexture(SupportsValueArray, ChildItem, command="add_dynamic_textu
 
     @classmethod
     def create(cls, /, width, height, default_value, *, parent=_dearpygui.mvReservedUUID_2, label=None, use_internal_label=True, user_data=None, tag=0, __func=_dearpygui.add_dynamic_texture, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(width, height, default_value, parent=parent, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(width, height, default_value, parent=parent, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     @property
     def width(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -5291,6 +7302,8 @@ class mvDynamicTexture(SupportsValueArray, ChildItem, command="add_dynamic_textu
             return __func(self)["width"]
         except KeyError:
             raise AttributeError(f"'width' not in dict returned from 'get_item_configuration({self.tag})'`")
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
     
     @property
     def height(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -5298,6 +7311,8 @@ class mvDynamicTexture(SupportsValueArray, ChildItem, command="add_dynamic_textu
             return __func(self)["height"]
         except KeyError:
             raise AttributeError(f"'height' not in dict returned from 'get_item_configuration({self.tag})'`")
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
     
     @staticmethod
     def create_from_file(file, /, *, gamma=1.0, gamma_scale_factor=1.0, label=None, use_internal_label=True, user_data=None, tag=0, parent=0, **kwargs):
@@ -5323,7 +7338,10 @@ class mvEditedHandler(ChildItem, command="add_item_edited_handler", slot=1):
 
     @classmethod
     def create(cls, /, *, label=None, use_internal_label=True, user_data=None, tag=0, show=True, parent=0, callback=None, __func=_dearpygui.add_item_edited_handler, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, show=show, parent=parent, callback=callback))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, show=show, parent=parent, callback=callback))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     show = _property__show
     callback = _property__callback
@@ -5336,7 +7354,10 @@ class mvErrorSeries(SupportsValueArray, ChildItem, command="add_error_series", s
 
     @classmethod
     def create(cls, /, x, y, negative, positive, *, contribute_to_bounds=True, horizontal=False, label=None, use_internal_label=True, user_data=None, tag=0, parent=0, before=0, source=0, show=True, __func=_dearpygui.add_error_series, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(x, y, negative, positive, contribute_to_bounds=contribute_to_bounds, horizontal=horizontal, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, before=before, source=source, show=show))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(x, y, negative, positive, contribute_to_bounds=contribute_to_bounds, horizontal=horizontal, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, before=before, source=source, show=show))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     @property
     def negative(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -5344,6 +7365,8 @@ class mvErrorSeries(SupportsValueArray, ChildItem, command="add_error_series", s
             return __func(self)["negative"]
         except KeyError:
             raise AttributeError(f"'negative' not in dict returned from 'get_item_configuration({self.tag})'`")
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
     
     @property
     def positive(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -5351,6 +7374,8 @@ class mvErrorSeries(SupportsValueArray, ChildItem, command="add_error_series", s
             return __func(self)["positive"]
         except KeyError:
             raise AttributeError(f"'positive' not in dict returned from 'get_item_configuration({self.tag})'`")
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
     
     contribute_to_bounds = _property__contribute_to_bounds
     horizontal = _property__horizontal
@@ -5365,7 +7390,10 @@ class mvFileDialog(ContainerItem, command="add_file_dialog", slot=1):
 
     @classmethod
     def create(cls, /, *, default_path='', default_filename='.', file_count=0, modal=False, directory_selector=False, min_size=(100, 100), max_size=(30000, 30000), cancel_callback=None, label=None, use_internal_label=True, user_data=None, tag=0, width=0, height=0, callback=None, show=True, __func=_dearpygui.add_file_dialog, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(default_path=default_path, default_filename=default_filename, file_count=file_count, modal=modal, directory_selector=directory_selector, min_size=min_size, max_size=max_size, cancel_callback=cancel_callback, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, width=width, height=height, callback=callback, show=show))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(default_path=default_path, default_filename=default_filename, file_count=file_count, modal=modal, directory_selector=directory_selector, min_size=min_size, max_size=max_size, cancel_callback=cancel_callback, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, width=width, height=height, callback=callback, show=show))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     file_count = _property__file_count
     modal = _property__modal
@@ -5386,7 +7414,10 @@ class mvFileExtension(ChildItem, command="add_file_extension", slot=0):
 
     @classmethod
     def create(cls, /, extension, *, custom_text='', color=(-255, 0, 0, 255), label=None, use_internal_label=True, user_data=None, tag=0, width=0, height=0, parent=0, before=0, __func=_dearpygui.add_file_extension, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(extension, custom_text=custom_text, color=color, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, width=width, height=height, parent=parent, before=before))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(extension, custom_text=custom_text, color=color, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, width=width, height=height, parent=parent, before=before))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     @property
     def extension(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -5394,6 +7425,8 @@ class mvFileExtension(ChildItem, command="add_file_extension", slot=0):
             return __func(self)["extension"]
         except KeyError:
             raise AttributeError(f"'extension' not in dict returned from 'get_item_configuration({self.tag})'`")
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
     
     custom_text = _property__custom_text
     color = _property__color
@@ -5408,7 +7441,10 @@ class mvFilterSet(ContainerItem, ChildItem, command="add_filter_set", slot=1):
 
     @classmethod
     def create(cls, /, *, label=None, use_internal_label=True, user_data=None, tag=0, width=0, indent=-1, parent=0, before=0, show=True, __func=_dearpygui.add_filter_set, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, width=width, indent=indent, parent=parent, before=before, show=show))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, width=width, indent=indent, parent=parent, before=before, show=show))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     width = _property__width
     indent = _property__indent
@@ -5422,7 +7458,10 @@ class mvFloat4Value(SupportsValueArray, ChildItem, command="add_float4_value", s
 
     @classmethod
     def create(cls, /, *, default_value=(0.0, 0.0, 0.0, 0.0), parent=_dearpygui.mvReservedUUID_3, label=None, use_internal_label=True, user_data=None, tag=0, source=0, __func=_dearpygui.add_float4_value, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(default_value=default_value, parent=parent, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, source=source))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(default_value=default_value, parent=parent, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, source=source))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     source = _property__source
 
@@ -5434,7 +7473,10 @@ class mvFloatValue(ChildItem, command="add_float_value", slot=1):
 
     @classmethod
     def create(cls, /, *, default_value=0.0, parent=_dearpygui.mvReservedUUID_3, label=None, use_internal_label=True, user_data=None, tag=0, source=0, __func=_dearpygui.add_float_value, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(default_value=default_value, parent=parent, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, source=source))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(default_value=default_value, parent=parent, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, source=source))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     source = _property__source
 
@@ -5446,7 +7488,10 @@ class mvFloatVectValue(ChildItem, command="add_float_vect_value", slot=1):
 
     @classmethod
     def create(cls, /, *, default_value=(), parent=_dearpygui.mvReservedUUID_3, label=None, use_internal_label=True, user_data=None, tag=0, source=0, __func=_dearpygui.add_float_vect_value, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(default_value=default_value, parent=parent, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, source=source))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(default_value=default_value, parent=parent, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, source=source))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     source = _property__source
 
@@ -5458,7 +7503,10 @@ class mvFocusHandler(ChildItem, command="add_item_focus_handler", slot=1):
 
     @classmethod
     def create(cls, /, *, event_type=None, label=None, use_internal_label=True, user_data=None, tag=0, show=True, parent=0, callback=None, __func=_dearpygui.add_item_focus_handler, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(event_type=event_type, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, show=show, parent=parent, callback=callback))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(event_type=event_type, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, show=show, parent=parent, callback=callback))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     event_type = _property__event_type
     show = _property__show
@@ -5472,7 +7520,10 @@ class mvFont(ContainerItem, ChildItem, command="add_font", slot=1):
 
     @classmethod
     def create(cls, /, file, size, *, pixel_snapH=False, pixel_snapV=False, parent=_dearpygui.mvReservedUUID_0, label=None, use_internal_label=True, user_data=None, tag=0, __func=_dearpygui.add_font, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(file, size, pixel_snapH=pixel_snapH, pixel_snapV=pixel_snapV, parent=parent, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(file, size, pixel_snapH=pixel_snapH, pixel_snapV=pixel_snapV, parent=parent, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     @property
     def file(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -5480,6 +7531,8 @@ class mvFont(ContainerItem, ChildItem, command="add_font", slot=1):
             return __func(self)["file"]
         except KeyError:
             raise AttributeError(f"'file' not in dict returned from 'get_item_configuration({self.tag})'`")
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
     
     size = _property__size
     pixel_snapH = _property__pixel_snapH
@@ -5500,7 +7553,10 @@ class mvFontRegistry(ContainerItem, command="add_font_registry", slot=1):
 
     @classmethod
     def create(cls, /, *, label=None, use_internal_label=True, user_data=None, tag=0, show=True, __func=_dearpygui.add_font_registry, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, show=show))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, show=show))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     show = _property__show
 
@@ -5516,7 +7572,10 @@ class mvGroup(ContainerItem, ChildItem, command="add_group", slot=1):
 
     @classmethod
     def create(cls, /, *, horizontal=False, horizontal_spacing=-1, xoffset=0.0, label=None, use_internal_label=True, user_data=None, tag=0, width=0, height=0, indent=-1, parent=0, before=0, show=True, filter_key="", drop_callback=None, drag_callback=None, payload_type="$$DPG_PAYLOAD", tracked=False, track_offset=0.5, enabled=True, pos=(), __func=_dearpygui.add_group, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(horizontal=horizontal, horizontal_spacing=horizontal_spacing, xoffset=xoffset, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, width=width, height=height, indent=indent, parent=parent, before=before, show=show, filter_key=filter_key, drop_callback=drop_callback, drag_callback=drag_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, enabled=enabled, pos=pos))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(horizontal=horizontal, horizontal_spacing=horizontal_spacing, xoffset=xoffset, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, width=width, height=height, indent=indent, parent=parent, before=before, show=show, filter_key=filter_key, drop_callback=drop_callback, drag_callback=drag_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, enabled=enabled, pos=pos))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     horizontal = _property__horizontal
     horizontal_spacing = _property__horizontal_spacing
@@ -5560,7 +7619,10 @@ class mvHandlerRegistry(ContainerItem, command="add_handler_registry", slot=1):
 
     @classmethod
     def create(cls, /, *, label=None, use_internal_label=True, user_data=None, tag=0, show=True, __func=_dearpygui.add_handler_registry, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, show=show))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, show=show))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     show = _property__show
 
@@ -5614,7 +7676,10 @@ class mvHeatSeries(SupportsValueArray, ChildItem, command="add_heat_series", slo
 
     @classmethod
     def create(cls, /, x, rows, cols, *, scale_min=0.0, scale_max=1.0, bounds_min=(0.0, 0.0), bounds_max=(1.0, 1.0), format='%0.1f', contribute_to_bounds=True, col_major=False, label=None, use_internal_label=True, user_data=None, tag=0, parent=0, before=0, source=0, show=True, __func=_dearpygui.add_heat_series, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(x, rows, cols, scale_min=scale_min, scale_max=scale_max, bounds_min=bounds_min, bounds_max=bounds_max, format=format, contribute_to_bounds=contribute_to_bounds, col_major=col_major, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, before=before, source=source, show=show))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(x, rows, cols, scale_min=scale_min, scale_max=scale_max, bounds_min=bounds_min, bounds_max=bounds_max, format=format, contribute_to_bounds=contribute_to_bounds, col_major=col_major, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, before=before, source=source, show=show))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     @property
     def rows(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -5622,6 +7687,8 @@ class mvHeatSeries(SupportsValueArray, ChildItem, command="add_heat_series", slo
             return __func(self)["rows"]
         except KeyError:
             raise AttributeError(f"'rows' not in dict returned from 'get_item_configuration({self.tag})'`")
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
     
     @property
     def cols(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -5629,6 +7696,8 @@ class mvHeatSeries(SupportsValueArray, ChildItem, command="add_heat_series", slo
             return __func(self)["cols"]
         except KeyError:
             raise AttributeError(f"'cols' not in dict returned from 'get_item_configuration({self.tag})'`")
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
     
     scale_min = _property__scale_min
     scale_max = _property__scale_max
@@ -5648,7 +7717,10 @@ class mvHistogramSeries(SupportsValueArray, ChildItem, command="add_histogram_se
 
     @classmethod
     def create(cls, /, x, *, bins=-1, bar_scale=1.0, min_range=0.0, max_range=0.0, cumulative=False, density=False, outliers=True, horizontal=False, contribute_to_bounds=True, label=None, use_internal_label=True, user_data=None, tag=0, parent=0, before=0, source=0, show=True, __func=_dearpygui.add_histogram_series, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(x, bins=bins, bar_scale=bar_scale, min_range=min_range, max_range=max_range, cumulative=cumulative, density=density, outliers=outliers, horizontal=horizontal, contribute_to_bounds=contribute_to_bounds, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, before=before, source=source, show=show))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(x, bins=bins, bar_scale=bar_scale, min_range=min_range, max_range=max_range, cumulative=cumulative, density=density, outliers=outliers, horizontal=horizontal, contribute_to_bounds=contribute_to_bounds, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, before=before, source=source, show=show))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     bins = _property__bins
     bar_scale = _property__bar_scale
@@ -5670,7 +7742,10 @@ class mvHoverHandler(ChildItem, command="add_item_hover_handler", slot=1):
 
     @classmethod
     def create(cls, /, *, event_type=None, label=None, use_internal_label=True, user_data=None, tag=0, show=True, parent=0, callback=None, __func=_dearpygui.add_item_hover_handler, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(event_type=event_type, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, show=show, parent=parent, callback=callback))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(event_type=event_type, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, show=show, parent=parent, callback=callback))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     event_type = _property__event_type
     show = _property__show
@@ -5684,7 +7759,10 @@ class mvImage(ChildItem, command="add_image", slot=1):
 
     @classmethod
     def create(cls, /, texture_tag, *, tint_color=(255, 255, 255, 255), border_color=(0, 0, 0, 0), uv_min=(0.0, 0.0), uv_max=(1.0, 1.0), label=None, use_internal_label=True, user_data=None, tag=0, width=0, height=0, indent=-1, parent=0, before=0, source=0, show=True, filter_key="", drop_callback=None, drag_callback=None, payload_type="$$DPG_PAYLOAD", tracked=False, track_offset=0.5, pos=(), __func=_dearpygui.add_image, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(texture_tag, tint_color=tint_color, border_color=border_color, uv_min=uv_min, uv_max=uv_max, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, width=width, height=height, indent=indent, parent=parent, before=before, source=source, show=show, filter_key=filter_key, drop_callback=drop_callback, drag_callback=drag_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, pos=pos))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(texture_tag, tint_color=tint_color, border_color=border_color, uv_min=uv_min, uv_max=uv_max, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, width=width, height=height, indent=indent, parent=parent, before=before, source=source, show=show, filter_key=filter_key, drop_callback=drop_callback, drag_callback=drag_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, pos=pos))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     tint_color = _property__tint_color
     border_color = _property__border_color
@@ -5723,7 +7801,10 @@ class mvImageButton(ChildItem, command="add_image_button", slot=1):
 
     @classmethod
     def create(cls, /, texture_tag, *, tint_color=(255, 255, 255, 255), background_color=(0, 0, 0, 0), uv_min=(0.0, 0.0), uv_max=(1.0, 1.0), label=None, use_internal_label=True, user_data=None, tag=0, width=0, height=0, indent=-1, parent=0, before=0, source=0, callback=None, show=True, enabled=True, filter_key="", drop_callback=None, drag_callback=None, payload_type="$$DPG_PAYLOAD", tracked=False, track_offset=0.5, pos=(), __func=_dearpygui.add_image_button, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(texture_tag, tint_color=tint_color, background_color=background_color, uv_min=uv_min, uv_max=uv_max, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, width=width, height=height, indent=indent, parent=parent, before=before, source=source, callback=callback, show=show, enabled=enabled, filter_key=filter_key, drop_callback=drop_callback, drag_callback=drag_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, pos=pos))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(texture_tag, tint_color=tint_color, background_color=background_color, uv_min=uv_min, uv_max=uv_max, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, width=width, height=height, indent=indent, parent=parent, before=before, source=source, callback=callback, show=show, enabled=enabled, filter_key=filter_key, drop_callback=drop_callback, drag_callback=drag_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, pos=pos))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     tint_color = _property__tint_color
     background_color = _property__background_color
@@ -5768,7 +7849,10 @@ class mvImageSeries(SupportsValueArray, ChildItem, command="add_image_series", s
 
     @classmethod
     def create(cls, /, texture_tag, bounds_min, bounds_max, *, uv_min=(0.0, 0.0), uv_max=(1.0, 1.0), tint_color=(255, 255, 255, 255), label=None, use_internal_label=True, user_data=None, tag=0, parent=0, before=0, source=0, show=True, __func=_dearpygui.add_image_series, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(texture_tag, bounds_min, bounds_max, uv_min=uv_min, uv_max=uv_max, tint_color=tint_color, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, before=before, source=source, show=show))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(texture_tag, bounds_min, bounds_max, uv_min=uv_min, uv_max=uv_max, tint_color=tint_color, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, before=before, source=source, show=show))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     @property
     def bounds_min(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -5776,6 +7860,8 @@ class mvImageSeries(SupportsValueArray, ChildItem, command="add_image_series", s
             return __func(self)["bounds_min"]
         except KeyError:
             raise AttributeError(f"'bounds_min' not in dict returned from 'get_item_configuration({self.tag})'`")
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
     
     @property
     def bounds_max(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -5783,6 +7869,8 @@ class mvImageSeries(SupportsValueArray, ChildItem, command="add_image_series", s
             return __func(self)["bounds_max"]
         except KeyError:
             raise AttributeError(f"'bounds_max' not in dict returned from 'get_item_configuration({self.tag})'`")
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
     
     uv_min = _property__uv_min
     uv_max = _property__uv_max
@@ -5798,7 +7886,10 @@ class mvInfLineSeries(SupportsValueArray, ChildItem, command="add_inf_line_serie
 
     @classmethod
     def create(cls, /, x, *, horizontal=False, label=None, use_internal_label=True, user_data=None, tag=0, parent=0, before=0, source=0, show=True, __func=_dearpygui.add_inf_line_series, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(x, horizontal=horizontal, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, before=before, source=source, show=show))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(x, horizontal=horizontal, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, before=before, source=source, show=show))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     horizontal = _property__horizontal
     source = _property__source
@@ -5812,7 +7903,10 @@ class mvInputDouble(ChildItem, command="add_input_double", slot=1):
 
     @classmethod
     def create(cls, /, *, default_value=0.0, format='%.3f', min_value=0.0, max_value=100.0, step=0.1, step_fast=1.0, min_clamped=False, max_clamped=False, on_enter=False, readonly=False, accept_empty_input=False, display_empty_value=False, label=None, use_internal_label=True, user_data=None, tag=0, width=0, indent=-1, parent=0, before=0, source=0, callback=None, show=True, enabled=True, filter_key="", drop_callback=None, drag_callback=None, payload_type="$$DPG_PAYLOAD", tracked=False, track_offset=0.5, pos=(), __func=_dearpygui.add_input_double, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(default_value=default_value, format=format, min_value=min_value, max_value=max_value, step=step, step_fast=step_fast, min_clamped=min_clamped, max_clamped=max_clamped, on_enter=on_enter, readonly=readonly, accept_empty_input=accept_empty_input, display_empty_value=display_empty_value, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, width=width, indent=indent, parent=parent, before=before, source=source, callback=callback, show=show, enabled=enabled, filter_key=filter_key, drop_callback=drop_callback, drag_callback=drag_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, pos=pos))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(default_value=default_value, format=format, min_value=min_value, max_value=max_value, step=step, step_fast=step_fast, min_clamped=min_clamped, max_clamped=max_clamped, on_enter=on_enter, readonly=readonly, accept_empty_input=accept_empty_input, display_empty_value=display_empty_value, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, width=width, indent=indent, parent=parent, before=before, source=source, callback=callback, show=show, enabled=enabled, filter_key=filter_key, drop_callback=drop_callback, drag_callback=drag_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, pos=pos))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     format = _property__format
     step = _property__step
@@ -5862,7 +7956,10 @@ class mvInputDoubleMulti(SupportsValueArray, ChildItem, command="add_input_doubl
 
     @classmethod
     def create(cls, /, *, default_value=(0.0, 0.0, 0.0, 0.0), format='%.3f', min_value=0.0, max_value=100.0, size=4, min_clamped=False, max_clamped=False, on_enter=False, readonly=False, accept_empty_input=False, display_empty_value=False, label=None, use_internal_label=True, user_data=None, tag=0, width=0, indent=-1, parent=0, before=0, source=0, callback=None, show=True, enabled=True, filter_key="", drop_callback=None, drag_callback=None, payload_type="$$DPG_PAYLOAD", tracked=False, track_offset=0.5, pos=(), __func=_dearpygui.add_input_doublex, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(default_value=default_value, format=format, min_value=min_value, max_value=max_value, size=size, min_clamped=min_clamped, max_clamped=max_clamped, on_enter=on_enter, readonly=readonly, accept_empty_input=accept_empty_input, display_empty_value=display_empty_value, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, width=width, indent=indent, parent=parent, before=before, source=source, callback=callback, show=show, enabled=enabled, filter_key=filter_key, drop_callback=drop_callback, drag_callback=drag_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, pos=pos))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(default_value=default_value, format=format, min_value=min_value, max_value=max_value, size=size, min_clamped=min_clamped, max_clamped=max_clamped, on_enter=on_enter, readonly=readonly, accept_empty_input=accept_empty_input, display_empty_value=display_empty_value, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, width=width, indent=indent, parent=parent, before=before, source=source, callback=callback, show=show, enabled=enabled, filter_key=filter_key, drop_callback=drop_callback, drag_callback=drag_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, pos=pos))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     format = _property__format
     size = _property__size
@@ -5911,7 +8008,10 @@ class mvInputFloat(ChildItem, command="add_input_float", slot=1):
 
     @classmethod
     def create(cls, /, *, default_value=0.0, format='%.3f', min_value=0.0, max_value=100.0, step=0.1, step_fast=1.0, min_clamped=False, max_clamped=False, on_enter=False, readonly=False, accept_empty_input=False, display_empty_value=False, label=None, use_internal_label=True, user_data=None, tag=0, width=0, indent=-1, parent=0, before=0, source=0, callback=None, show=True, enabled=True, filter_key="", drop_callback=None, drag_callback=None, payload_type="$$DPG_PAYLOAD", tracked=False, track_offset=0.5, pos=(), __func=_dearpygui.add_input_float, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(default_value=default_value, format=format, min_value=min_value, max_value=max_value, step=step, step_fast=step_fast, min_clamped=min_clamped, max_clamped=max_clamped, on_enter=on_enter, readonly=readonly, accept_empty_input=accept_empty_input, display_empty_value=display_empty_value, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, width=width, indent=indent, parent=parent, before=before, source=source, callback=callback, show=show, enabled=enabled, filter_key=filter_key, drop_callback=drop_callback, drag_callback=drag_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, pos=pos))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(default_value=default_value, format=format, min_value=min_value, max_value=max_value, step=step, step_fast=step_fast, min_clamped=min_clamped, max_clamped=max_clamped, on_enter=on_enter, readonly=readonly, accept_empty_input=accept_empty_input, display_empty_value=display_empty_value, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, width=width, indent=indent, parent=parent, before=before, source=source, callback=callback, show=show, enabled=enabled, filter_key=filter_key, drop_callback=drop_callback, drag_callback=drag_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, pos=pos))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     format = _property__format
     step = _property__step
@@ -5961,7 +8061,10 @@ class mvInputFloatMulti(SupportsValueArray, ChildItem, command="add_input_floatx
 
     @classmethod
     def create(cls, /, *, default_value=(0.0, 0.0, 0.0, 0.0), format='%.3f', min_value=0.0, max_value=100.0, size=4, min_clamped=False, max_clamped=False, on_enter=False, readonly=False, accept_empty_input=False, display_empty_value=False, label=None, use_internal_label=True, user_data=None, tag=0, width=0, indent=-1, parent=0, before=0, source=0, callback=None, show=True, enabled=True, filter_key="", drop_callback=None, drag_callback=None, payload_type="$$DPG_PAYLOAD", tracked=False, track_offset=0.5, pos=(), __func=_dearpygui.add_input_floatx, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(default_value=default_value, format=format, min_value=min_value, max_value=max_value, size=size, min_clamped=min_clamped, max_clamped=max_clamped, on_enter=on_enter, readonly=readonly, accept_empty_input=accept_empty_input, display_empty_value=display_empty_value, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, width=width, indent=indent, parent=parent, before=before, source=source, callback=callback, show=show, enabled=enabled, filter_key=filter_key, drop_callback=drop_callback, drag_callback=drag_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, pos=pos))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(default_value=default_value, format=format, min_value=min_value, max_value=max_value, size=size, min_clamped=min_clamped, max_clamped=max_clamped, on_enter=on_enter, readonly=readonly, accept_empty_input=accept_empty_input, display_empty_value=display_empty_value, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, width=width, indent=indent, parent=parent, before=before, source=source, callback=callback, show=show, enabled=enabled, filter_key=filter_key, drop_callback=drop_callback, drag_callback=drag_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, pos=pos))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     format = _property__format
     size = _property__size
@@ -6010,7 +8113,10 @@ class mvInputInt(ChildItem, command="add_input_int", slot=1):
 
     @classmethod
     def create(cls, /, *, default_value=0, min_value=0, max_value=100, step=1, step_fast=100, min_clamped=False, max_clamped=False, on_enter=False, readonly=False, accept_empty_input=False, display_empty_value=False, label=None, use_internal_label=True, user_data=None, tag=0, width=0, indent=-1, parent=0, before=0, source=0, callback=None, show=True, enabled=True, filter_key="", drop_callback=None, drag_callback=None, payload_type="$$DPG_PAYLOAD", tracked=False, track_offset=0.5, pos=(), __func=_dearpygui.add_input_int, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(default_value=default_value, min_value=min_value, max_value=max_value, step=step, step_fast=step_fast, min_clamped=min_clamped, max_clamped=max_clamped, on_enter=on_enter, readonly=readonly, accept_empty_input=accept_empty_input, display_empty_value=display_empty_value, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, width=width, indent=indent, parent=parent, before=before, source=source, callback=callback, show=show, enabled=enabled, filter_key=filter_key, drop_callback=drop_callback, drag_callback=drag_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, pos=pos))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(default_value=default_value, min_value=min_value, max_value=max_value, step=step, step_fast=step_fast, min_clamped=min_clamped, max_clamped=max_clamped, on_enter=on_enter, readonly=readonly, accept_empty_input=accept_empty_input, display_empty_value=display_empty_value, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, width=width, indent=indent, parent=parent, before=before, source=source, callback=callback, show=show, enabled=enabled, filter_key=filter_key, drop_callback=drop_callback, drag_callback=drag_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, pos=pos))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     step = _property__step
     step_fast = _property__step_fast
@@ -6059,7 +8165,10 @@ class mvInputIntMulti(SupportsValueArray, ChildItem, command="add_input_intx", s
 
     @classmethod
     def create(cls, /, *, default_value=(0, 0, 0, 0), min_value=0, max_value=100, size=4, min_clamped=False, max_clamped=False, on_enter=False, readonly=False, accept_empty_input=False, display_empty_value=False, label=None, use_internal_label=True, user_data=None, tag=0, width=0, indent=-1, parent=0, before=0, source=0, callback=None, show=True, enabled=True, filter_key="", drop_callback=None, drag_callback=None, payload_type="$$DPG_PAYLOAD", tracked=False, track_offset=0.5, pos=(), __func=_dearpygui.add_input_intx, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(default_value=default_value, min_value=min_value, max_value=max_value, size=size, min_clamped=min_clamped, max_clamped=max_clamped, on_enter=on_enter, readonly=readonly, accept_empty_input=accept_empty_input, display_empty_value=display_empty_value, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, width=width, indent=indent, parent=parent, before=before, source=source, callback=callback, show=show, enabled=enabled, filter_key=filter_key, drop_callback=drop_callback, drag_callback=drag_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, pos=pos))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(default_value=default_value, min_value=min_value, max_value=max_value, size=size, min_clamped=min_clamped, max_clamped=max_clamped, on_enter=on_enter, readonly=readonly, accept_empty_input=accept_empty_input, display_empty_value=display_empty_value, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, width=width, indent=indent, parent=parent, before=before, source=source, callback=callback, show=show, enabled=enabled, filter_key=filter_key, drop_callback=drop_callback, drag_callback=drag_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, pos=pos))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     size = _property__size
     min_clamped = _property__min_clamped
@@ -6107,7 +8216,10 @@ class mvInputText(ChildItem, command="add_input_text", slot=1):
 
     @classmethod
     def create(cls, /, *, default_value='', hint='', multiline=False, no_spaces=False, uppercase=False, tab_input=False, decimal=False, hexadecimal=False, readonly=False, password=False, scientific=False, on_enter=False, auto_select_all=False, ctrl_enter_for_new_line=False, no_horizontal_scroll=False, always_overwrite=False, no_undo_redo=False, escape_clears_all=False, elide_left=False, label=None, use_internal_label=True, user_data=None, tag=0, width=0, height=0, indent=-1, parent=0, before=0, source=0, callback=None, show=True, enabled=True, filter_key="", drop_callback=None, drag_callback=None, payload_type="$$DPG_PAYLOAD", tracked=False, track_offset=0.5, pos=(), __func=_dearpygui.add_input_text, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(default_value=default_value, hint=hint, multiline=multiline, no_spaces=no_spaces, uppercase=uppercase, tab_input=tab_input, decimal=decimal, hexadecimal=hexadecimal, readonly=readonly, password=password, scientific=scientific, on_enter=on_enter, auto_select_all=auto_select_all, ctrl_enter_for_new_line=ctrl_enter_for_new_line, no_horizontal_scroll=no_horizontal_scroll, always_overwrite=always_overwrite, no_undo_redo=no_undo_redo, escape_clears_all=escape_clears_all, elide_left=elide_left, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, width=width, height=height, indent=indent, parent=parent, before=before, source=source, callback=callback, show=show, enabled=enabled, filter_key=filter_key, drop_callback=drop_callback, drag_callback=drag_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, pos=pos))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(default_value=default_value, hint=hint, multiline=multiline, no_spaces=no_spaces, uppercase=uppercase, tab_input=tab_input, decimal=decimal, hexadecimal=hexadecimal, readonly=readonly, password=password, scientific=scientific, on_enter=on_enter, auto_select_all=auto_select_all, ctrl_enter_for_new_line=ctrl_enter_for_new_line, no_horizontal_scroll=no_horizontal_scroll, always_overwrite=always_overwrite, no_undo_redo=no_undo_redo, escape_clears_all=escape_clears_all, elide_left=elide_left, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, width=width, height=height, indent=indent, parent=parent, before=before, source=source, callback=callback, show=show, enabled=enabled, filter_key=filter_key, drop_callback=drop_callback, drag_callback=drag_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, pos=pos))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     hint = _property__hint
     multiline = _property__multiline
@@ -6168,7 +8280,10 @@ class mvInt4Value(SupportsValueArray, ChildItem, command="add_int4_value", slot=
 
     @classmethod
     def create(cls, /, *, default_value=(0, 0, 0, 0), parent=_dearpygui.mvReservedUUID_3, label=None, use_internal_label=True, user_data=None, tag=0, source=0, __func=_dearpygui.add_int4_value, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(default_value=default_value, parent=parent, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, source=source))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(default_value=default_value, parent=parent, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, source=source))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     source = _property__source
 
@@ -6180,7 +8295,10 @@ class mvIntValue(ChildItem, command="add_int_value", slot=1):
 
     @classmethod
     def create(cls, /, *, default_value=0, parent=_dearpygui.mvReservedUUID_3, label=None, use_internal_label=True, user_data=None, tag=0, source=0, __func=_dearpygui.add_int_value, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(default_value=default_value, parent=parent, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, source=source))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(default_value=default_value, parent=parent, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, source=source))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     source = _property__source
 
@@ -6192,7 +8310,10 @@ class mvItemHandlerRegistry(ContainerItem, command="add_item_handler_registry", 
 
     @classmethod
     def create(cls, /, *, label=None, use_internal_label=True, user_data=None, tag=0, show=True, __func=_dearpygui.add_item_handler_registry, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, show=show))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, show=show))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     show = _property__show
 
@@ -6258,7 +8379,10 @@ class mvKeyDownHandler(ChildItem, command="add_key_down_handler", slot=1):
 
     @classmethod
     def create(cls, /, key=_dearpygui.mvKey_None, *, parent=_dearpygui.mvReservedUUID_1, label=None, use_internal_label=True, user_data=None, tag=0, callback=None, show=True, __func=_dearpygui.add_key_down_handler, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(key, parent=parent, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, callback=callback, show=show))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(key, parent=parent, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, callback=callback, show=show))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     @property
     def key(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -6266,6 +8390,8 @@ class mvKeyDownHandler(ChildItem, command="add_key_down_handler", slot=1):
             return __func(self)["key"]
         except KeyError:
             raise AttributeError(f"'key' not in dict returned from 'get_item_configuration({self.tag})'`")
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
     
     callback = _property__callback
     show = _property__show
@@ -6278,7 +8404,10 @@ class mvKeyPressHandler(ChildItem, command="add_key_press_handler", slot=1):
 
     @classmethod
     def create(cls, /, key=_dearpygui.mvKey_None, *, parent=_dearpygui.mvReservedUUID_1, label=None, use_internal_label=True, user_data=None, tag=0, callback=None, show=True, __func=_dearpygui.add_key_press_handler, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(key, parent=parent, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, callback=callback, show=show))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(key, parent=parent, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, callback=callback, show=show))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     @property
     def key(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -6286,6 +8415,8 @@ class mvKeyPressHandler(ChildItem, command="add_key_press_handler", slot=1):
             return __func(self)["key"]
         except KeyError:
             raise AttributeError(f"'key' not in dict returned from 'get_item_configuration({self.tag})'`")
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
     
     callback = _property__callback
     show = _property__show
@@ -6298,7 +8429,10 @@ class mvKeyReleaseHandler(ChildItem, command="add_key_release_handler", slot=1):
 
     @classmethod
     def create(cls, /, key=_dearpygui.mvKey_None, *, parent=_dearpygui.mvReservedUUID_1, label=None, use_internal_label=True, user_data=None, tag=0, callback=None, show=True, __func=_dearpygui.add_key_release_handler, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(key, parent=parent, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, callback=callback, show=show))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(key, parent=parent, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, callback=callback, show=show))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     @property
     def key(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -6306,6 +8440,8 @@ class mvKeyReleaseHandler(ChildItem, command="add_key_release_handler", slot=1):
             return __func(self)["key"]
         except KeyError:
             raise AttributeError(f"'key' not in dict returned from 'get_item_configuration({self.tag})'`")
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
     
     callback = _property__callback
     show = _property__show
@@ -6318,7 +8454,10 @@ class mvKnobFloat(ChildItem, command="add_knob_float", slot=1):
 
     @classmethod
     def create(cls, /, *, default_value=0.0, min_value=0.0, max_value=100.0, label=None, use_internal_label=True, user_data=None, tag=0, width=0, height=0, indent=-1, parent=0, before=0, source=0, callback=None, show=True, filter_key="", enabled=True, drop_callback=None, drag_callback=None, payload_type="$$DPG_PAYLOAD", tracked=False, track_offset=0.5, pos=(), __func=_dearpygui.add_knob_float, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(default_value=default_value, min_value=min_value, max_value=max_value, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, width=width, height=height, indent=indent, parent=parent, before=before, source=source, callback=callback, show=show, filter_key=filter_key, enabled=enabled, drop_callback=drop_callback, drag_callback=drag_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, pos=pos))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(default_value=default_value, min_value=min_value, max_value=max_value, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, width=width, height=height, indent=indent, parent=parent, before=before, source=source, callback=callback, show=show, filter_key=filter_key, enabled=enabled, drop_callback=drop_callback, drag_callback=drag_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, pos=pos))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     width = _property__width
     height = _property__height
@@ -6360,7 +8499,10 @@ class mvLabelSeries(SupportsValueArray, ChildItem, command="add_text_point", slo
 
     @classmethod
     def create(cls, /, x, y, *, offset=(0.0, 0.0), vertical=False, label=None, use_internal_label=True, user_data=None, tag=0, parent=0, before=0, source=0, show=True, __func=_dearpygui.add_text_point, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(x, y, offset=offset, vertical=vertical, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, before=before, source=source, show=show))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(x, y, offset=offset, vertical=vertical, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, before=before, source=source, show=show))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     offset = _property__offset
     vertical = _property__vertical
@@ -6375,7 +8517,10 @@ class mvLineSeries(SupportsValueArray, ChildItem, command="add_line_series", slo
 
     @classmethod
     def create(cls, /, x, y, *, segments=False, loop=False, skip_nan=False, no_clip=False, shaded=False, label=None, use_internal_label=True, user_data=None, tag=0, parent=0, before=0, source=0, show=True, __func=_dearpygui.add_line_series, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(x, y, segments=segments, loop=loop, skip_nan=skip_nan, no_clip=no_clip, shaded=shaded, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, before=before, source=source, show=show))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(x, y, segments=segments, loop=loop, skip_nan=skip_nan, no_clip=no_clip, shaded=shaded, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, before=before, source=source, show=show))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     segments = _property__segments
     loop = _property__loop
@@ -6393,7 +8538,10 @@ class mvListbox(ChildItem, command="add_listbox", slot=1):
 
     @classmethod
     def create(cls, /, items=(), *, default_value='', num_items=3, label=None, use_internal_label=True, user_data=None, tag=0, width=0, indent=-1, parent=0, before=0, source=0, callback=None, show=True, enabled=True, filter_key="", drop_callback=None, drag_callback=None, payload_type="$$DPG_PAYLOAD", tracked=False, track_offset=0.5, pos=(), __func=_dearpygui.add_listbox, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(items, default_value=default_value, num_items=num_items, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, width=width, indent=indent, parent=parent, before=before, source=source, callback=callback, show=show, enabled=enabled, filter_key=filter_key, drop_callback=drop_callback, drag_callback=drag_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, pos=pos))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(items, default_value=default_value, num_items=num_items, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, width=width, indent=indent, parent=parent, before=before, source=source, callback=callback, show=show, enabled=enabled, filter_key=filter_key, drop_callback=drop_callback, drag_callback=drag_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, pos=pos))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     items = _property__items
     num_items = _property__num_items
@@ -6437,7 +8585,10 @@ class mvLoadingIndicator(ChildItem, command="add_loading_indicator", slot=1):
 
     @classmethod
     def create(cls, /, *, style=0, circle_count=8, speed=1.0, radius=3.0, thickness=1.0, color=None, secondary_color=None, label=None, use_internal_label=True, user_data=None, tag=0, width=0, height=0, indent=-1, parent=0, before=0, drop_callback=None, payload_type="$$DPG_PAYLOAD", show=True, pos=(), __func=_dearpygui.add_loading_indicator, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(style=style, circle_count=circle_count, speed=speed, radius=radius, thickness=thickness, color=color, secondary_color=secondary_color, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, width=width, height=height, indent=indent, parent=parent, before=before, drop_callback=drop_callback, payload_type=payload_type, show=show, pos=pos))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(style=style, circle_count=circle_count, speed=speed, radius=radius, thickness=thickness, color=color, secondary_color=secondary_color, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, width=width, height=height, indent=indent, parent=parent, before=before, drop_callback=drop_callback, payload_type=payload_type, show=show, pos=pos))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     style = _property__style
     circle_count = _property__circle_count
@@ -6474,7 +8625,10 @@ class mvMenu(ContainerItem, ChildItem, command="add_menu", slot=1):
 
     @classmethod
     def create(cls, /, *, label=None, use_internal_label=True, user_data=None, tag=0, indent=-1, parent=0, before=0, show=True, filter_key="", drop_callback=None, payload_type="$$DPG_PAYLOAD", tracked=False, track_offset=0.5, enabled=True, __func=_dearpygui.add_menu, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, indent=indent, parent=parent, before=before, show=show, filter_key=filter_key, drop_callback=drop_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, enabled=enabled))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, indent=indent, parent=parent, before=before, show=show, filter_key=filter_key, drop_callback=drop_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, enabled=enabled))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     indent = _property__indent
     show = _property__show
@@ -6503,7 +8657,10 @@ class mvMenuBar(ContainerItem, ChildItem, command="add_menu_bar", slot=1):
 
     @classmethod
     def create(cls, /, *, label=None, use_internal_label=True, user_data=None, tag=0, indent=-1, parent=0, show=True, __func=_dearpygui.add_menu_bar, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, indent=indent, parent=parent, show=show))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, indent=indent, parent=parent, show=show))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     indent = _property__indent
     show = _property__show
@@ -6518,7 +8675,10 @@ class mvMenuItem(ChildItem, command="add_menu_item", slot=1):
 
     @classmethod
     def create(cls, /, *, default_value=False, shortcut='', check=False, label=None, use_internal_label=True, user_data=None, tag=0, indent=-1, parent=0, before=0, callback=None, show=True, filter_key="", drop_callback=None, payload_type="$$DPG_PAYLOAD", tracked=False, track_offset=0.5, enabled=True, __func=_dearpygui.add_menu_item, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(default_value=default_value, shortcut=shortcut, check=check, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, indent=indent, parent=parent, before=before, callback=callback, show=show, filter_key=filter_key, drop_callback=drop_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, enabled=enabled))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(default_value=default_value, shortcut=shortcut, check=check, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, indent=indent, parent=parent, before=before, callback=callback, show=show, filter_key=filter_key, drop_callback=drop_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, enabled=enabled))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     shortcut = _property__shortcut
     check = _property__check
@@ -6540,7 +8700,10 @@ class mvMouseClickHandler(ChildItem, command="add_mouse_click_handler", slot=1):
 
     @classmethod
     def create(cls, /, button=-1, *, parent=_dearpygui.mvReservedUUID_1, label=None, use_internal_label=True, user_data=None, tag=0, callback=None, show=True, __func=_dearpygui.add_mouse_click_handler, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(button, parent=parent, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, callback=callback, show=show))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(button, parent=parent, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, callback=callback, show=show))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     @property
     def button(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -6548,6 +8711,8 @@ class mvMouseClickHandler(ChildItem, command="add_mouse_click_handler", slot=1):
             return __func(self)["button"]
         except KeyError:
             raise AttributeError(f"'button' not in dict returned from 'get_item_configuration({self.tag})'`")
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
     
     callback = _property__callback
     show = _property__show
@@ -6560,7 +8725,10 @@ class mvMouseDoubleClickHandler(ChildItem, command="add_mouse_double_click_handl
 
     @classmethod
     def create(cls, /, button=-1, *, parent=_dearpygui.mvReservedUUID_1, label=None, use_internal_label=True, user_data=None, tag=0, callback=None, show=True, __func=_dearpygui.add_mouse_double_click_handler, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(button, parent=parent, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, callback=callback, show=show))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(button, parent=parent, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, callback=callback, show=show))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     @property
     def button(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -6568,6 +8736,8 @@ class mvMouseDoubleClickHandler(ChildItem, command="add_mouse_double_click_handl
             return __func(self)["button"]
         except KeyError:
             raise AttributeError(f"'button' not in dict returned from 'get_item_configuration({self.tag})'`")
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
     
     callback = _property__callback
     show = _property__show
@@ -6580,7 +8750,10 @@ class mvMouseDownHandler(ChildItem, command="add_mouse_down_handler", slot=1):
 
     @classmethod
     def create(cls, /, button=-1, *, parent=_dearpygui.mvReservedUUID_1, label=None, use_internal_label=True, user_data=None, tag=0, callback=None, show=True, __func=_dearpygui.add_mouse_down_handler, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(button, parent=parent, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, callback=callback, show=show))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(button, parent=parent, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, callback=callback, show=show))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     @property
     def button(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -6588,6 +8761,8 @@ class mvMouseDownHandler(ChildItem, command="add_mouse_down_handler", slot=1):
             return __func(self)["button"]
         except KeyError:
             raise AttributeError(f"'button' not in dict returned from 'get_item_configuration({self.tag})'`")
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
     
     callback = _property__callback
     show = _property__show
@@ -6600,7 +8775,10 @@ class mvMouseDragHandler(ChildItem, command="add_mouse_drag_handler", slot=1):
 
     @classmethod
     def create(cls, /, button=-1, threshold=10.0, *, parent=_dearpygui.mvReservedUUID_1, label=None, use_internal_label=True, user_data=None, tag=0, callback=None, show=True, __func=_dearpygui.add_mouse_drag_handler, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(button, threshold, parent=parent, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, callback=callback, show=show))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(button, threshold, parent=parent, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, callback=callback, show=show))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     @property
     def button(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -6608,6 +8786,8 @@ class mvMouseDragHandler(ChildItem, command="add_mouse_drag_handler", slot=1):
             return __func(self)["button"]
         except KeyError:
             raise AttributeError(f"'button' not in dict returned from 'get_item_configuration({self.tag})'`")
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
     
     @property
     def threshold(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -6615,6 +8795,8 @@ class mvMouseDragHandler(ChildItem, command="add_mouse_drag_handler", slot=1):
             return __func(self)["threshold"]
         except KeyError:
             raise AttributeError(f"'threshold' not in dict returned from 'get_item_configuration({self.tag})'`")
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
     
     callback = _property__callback
     show = _property__show
@@ -6627,7 +8809,10 @@ class mvMouseMoveHandler(ChildItem, command="add_mouse_move_handler", slot=1):
 
     @classmethod
     def create(cls, /, *, parent=_dearpygui.mvReservedUUID_1, label=None, use_internal_label=True, user_data=None, tag=0, show=True, callback=None, __func=_dearpygui.add_mouse_move_handler, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(parent=parent, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, show=show, callback=callback))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(parent=parent, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, show=show, callback=callback))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     show = _property__show
     callback = _property__callback
@@ -6640,7 +8825,10 @@ class mvMouseReleaseHandler(ChildItem, command="add_mouse_release_handler", slot
 
     @classmethod
     def create(cls, /, button=-1, *, parent=_dearpygui.mvReservedUUID_1, label=None, use_internal_label=True, user_data=None, tag=0, callback=None, show=True, __func=_dearpygui.add_mouse_release_handler, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(button, parent=parent, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, callback=callback, show=show))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(button, parent=parent, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, callback=callback, show=show))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     @property
     def button(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -6648,6 +8836,8 @@ class mvMouseReleaseHandler(ChildItem, command="add_mouse_release_handler", slot
             return __func(self)["button"]
         except KeyError:
             raise AttributeError(f"'button' not in dict returned from 'get_item_configuration({self.tag})'`")
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
     
     callback = _property__callback
     show = _property__show
@@ -6660,7 +8850,10 @@ class mvMouseWheelHandler(ChildItem, command="add_mouse_wheel_handler", slot=1):
 
     @classmethod
     def create(cls, /, *, parent=_dearpygui.mvReservedUUID_1, label=None, use_internal_label=True, user_data=None, tag=0, show=True, callback=None, __func=_dearpygui.add_mouse_wheel_handler, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(parent=parent, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, show=show, callback=callback))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(parent=parent, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, show=show, callback=callback))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     show = _property__show
     callback = _property__callback
@@ -6673,7 +8866,10 @@ class mvNode(ContainerItem, ChildItem, command="add_node", slot=1):
 
     @classmethod
     def create(cls, /, *, draggable=True, label=None, use_internal_label=True, user_data=None, tag=0, parent=0, before=0, filter_key="", pos=(), drop_callback=None, drag_callback=None, payload_type="$$DPG_PAYLOAD", tracked=False, track_offset=0.5, show=True, __func=_dearpygui.add_node, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(draggable=draggable, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, before=before, filter_key=filter_key, pos=pos, drop_callback=drop_callback, drag_callback=drag_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, show=show))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(draggable=draggable, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, before=before, filter_key=filter_key, pos=pos, drop_callback=drop_callback, drag_callback=drag_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, show=show))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     draggable = _property__draggable
     filter_key = _property__filter_key
@@ -6704,7 +8900,10 @@ class mvNodeAttribute(ContainerItem, ChildItem, command="add_node_attribute", sl
 
     @classmethod
     def create(cls, /, *, attribute_type=0, shape=1, category='general', label=None, use_internal_label=True, user_data=None, tag=0, indent=-1, parent=0, before=0, filter_key="", tracked=False, track_offset=0.5, show=True, __func=_dearpygui.add_node_attribute, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(attribute_type=attribute_type, shape=shape, category=category, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, indent=indent, parent=parent, before=before, filter_key=filter_key, tracked=tracked, track_offset=track_offset, show=show))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(attribute_type=attribute_type, shape=shape, category=category, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, indent=indent, parent=parent, before=before, filter_key=filter_key, tracked=tracked, track_offset=track_offset, show=show))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     attribute_type = _property__attribute_type
     shape = _property__shape
@@ -6725,7 +8924,10 @@ class mvNodeEditor(ContainerItem, ChildItem, command="add_node_editor", slot=1):
 
     @classmethod
     def create(cls, /, *, delink_callback=None, menubar=False, minimap=False, minimap_location=2, label=None, use_internal_label=True, user_data=None, tag=0, parent=0, before=0, callback=None, filter_key="", width=0, height=0, tracked=False, track_offset=0.5, show=True, __func=_dearpygui.add_node_editor, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(delink_callback=delink_callback, menubar=menubar, minimap=minimap, minimap_location=minimap_location, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, before=before, callback=callback, filter_key=filter_key, width=width, height=height, tracked=tracked, track_offset=track_offset, show=show))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(delink_callback=delink_callback, menubar=menubar, minimap=minimap, minimap_location=minimap_location, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, before=before, callback=callback, filter_key=filter_key, width=width, height=height, tracked=tracked, track_offset=track_offset, show=show))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     delink_callback = _property__delink_callback
     menubar = _property__menubar
@@ -6766,7 +8968,10 @@ class mvNodeLink(ChildItem, command="add_node_link", slot=0):
 
     @classmethod
     def create(cls, /, attr_1, attr_2, *, label=None, use_internal_label=True, user_data=None, tag=0, parent=0, show=True, __func=_dearpygui.add_node_link, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(attr_1, attr_2, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, show=show))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(attr_1, attr_2, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, show=show))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     show = _property__show
 
@@ -6780,7 +8985,10 @@ class mvPieSeries(SupportsValueArray, ChildItem, command="add_pie_series", slot=
 
     @classmethod
     def create(cls, /, x, y, radius, values, labels, *, format='%0.2f', angle=90.0, normalize=False, ignore_hidden=False, label=None, use_internal_label=True, user_data=None, tag=0, parent=0, before=0, source=0, show=True, __func=_dearpygui.add_pie_series, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(x, y, radius, values, labels, format=format, angle=angle, normalize=normalize, ignore_hidden=ignore_hidden, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, before=before, source=source, show=show))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(x, y, radius, values, labels, format=format, angle=angle, normalize=normalize, ignore_hidden=ignore_hidden, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, before=before, source=source, show=show))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     @property
     def radius(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -6788,6 +8996,8 @@ class mvPieSeries(SupportsValueArray, ChildItem, command="add_pie_series", slot=
             return __func(self)["radius"]
         except KeyError:
             raise AttributeError(f"'radius' not in dict returned from 'get_item_configuration({self.tag})'`")
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
     
     @property
     def labels(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -6795,6 +9005,8 @@ class mvPieSeries(SupportsValueArray, ChildItem, command="add_pie_series", slot=
             return __func(self)["labels"]
         except KeyError:
             raise AttributeError(f"'labels' not in dict returned from 'get_item_configuration({self.tag})'`")
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
     
     format = _property__format
     angle = _property__angle
@@ -6811,7 +9023,10 @@ class mvPlot(ContainerItem, ChildItem, command="add_plot", slot=1):
 
     @classmethod
     def create(cls, /, *, no_menus=False, no_box_select=False, no_mouse_pos=False, query=False, query_color=(0, 255, 0, 255), min_query_rects=1, max_query_rects=1, crosshairs=False, equal_aspects=False, no_inputs=False, no_frame=False, use_local_time=False, use_ISO8601=False, use_24hour_clock=False, pan_mod=_dearpygui.mvKey_None, context_menu_button=_dearpygui.mvMouseButton_Right, fit_button=_dearpygui.mvMouseButton_Left, box_select_button=_dearpygui.mvMouseButton_Right, box_select_mod=_dearpygui.mvKey_None, box_select_cancel_button=_dearpygui.mvMouseButton_Left, query_toggle_mod=_dearpygui.mvKey_ModCtrl, horizontal_mod=_dearpygui.mvKey_ModAlt, vertical_mod=_dearpygui.mvKey_ModShift, override_mod=_dearpygui.mvKey_ModCtrl, zoom_mod=_dearpygui.mvKey_None, zoom_rate=0.1, label=None, use_internal_label=True, user_data=None, tag=0, width=0, height=0, indent=-1, parent=0, before=0, show=True, callback=None, drop_callback=None, drag_callback=None, payload_type="$$DPG_PAYLOAD", filter_key="", tracked=False, track_offset=0.5, pos=(), __func=_dearpygui.add_plot, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(no_menus=no_menus, no_box_select=no_box_select, no_mouse_pos=no_mouse_pos, query=query, query_color=query_color, min_query_rects=min_query_rects, max_query_rects=max_query_rects, crosshairs=crosshairs, equal_aspects=equal_aspects, no_inputs=no_inputs, no_frame=no_frame, use_local_time=use_local_time, use_ISO8601=use_ISO8601, use_24hour_clock=use_24hour_clock, pan_mod=pan_mod, context_menu_button=context_menu_button, fit_button=fit_button, box_select_button=box_select_button, box_select_mod=box_select_mod, box_select_cancel_button=box_select_cancel_button, query_toggle_mod=query_toggle_mod, horizontal_mod=horizontal_mod, vertical_mod=vertical_mod, override_mod=override_mod, zoom_mod=zoom_mod, zoom_rate=zoom_rate, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, width=width, height=height, indent=indent, parent=parent, before=before, show=show, callback=callback, drop_callback=drop_callback, drag_callback=drag_callback, payload_type=payload_type, filter_key=filter_key, tracked=tracked, track_offset=track_offset, pos=pos))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(no_menus=no_menus, no_box_select=no_box_select, no_mouse_pos=no_mouse_pos, query=query, query_color=query_color, min_query_rects=min_query_rects, max_query_rects=max_query_rects, crosshairs=crosshairs, equal_aspects=equal_aspects, no_inputs=no_inputs, no_frame=no_frame, use_local_time=use_local_time, use_ISO8601=use_ISO8601, use_24hour_clock=use_24hour_clock, pan_mod=pan_mod, context_menu_button=context_menu_button, fit_button=fit_button, box_select_button=box_select_button, box_select_mod=box_select_mod, box_select_cancel_button=box_select_cancel_button, query_toggle_mod=query_toggle_mod, horizontal_mod=horizontal_mod, vertical_mod=vertical_mod, override_mod=override_mod, zoom_mod=zoom_mod, zoom_rate=zoom_rate, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, width=width, height=height, indent=indent, parent=parent, before=before, show=show, callback=callback, drop_callback=drop_callback, drag_callback=drag_callback, payload_type=payload_type, filter_key=filter_key, tracked=tracked, track_offset=track_offset, pos=pos))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     no_menus = _property__no_menus
     no_box_select = _property__no_box_select
@@ -6916,7 +9131,10 @@ class mvPlotAxis(ContainerItem, ChildItem, command="add_plot_axis", slot=1):
 
     @classmethod
     def create(cls, /, axis, *, no_label=False, no_gridlines=False, no_tick_marks=False, no_tick_labels=False, no_initial_fit=False, no_menus=False, no_side_switch=False, no_highlight=False, opposite=False, foreground_grid=False, tick_format='', scale=_dearpygui.mvPlotScale_Linear, invert=False, auto_fit=False, range_fit=False, pan_stretch=False, lock_min=False, lock_max=False, label=None, use_internal_label=True, user_data=None, tag=0, parent=0, drop_callback=None, payload_type="$$DPG_PAYLOAD", show=True, __func=_dearpygui.add_plot_axis, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(axis, no_label=no_label, no_gridlines=no_gridlines, no_tick_marks=no_tick_marks, no_tick_labels=no_tick_labels, no_initial_fit=no_initial_fit, no_menus=no_menus, no_side_switch=no_side_switch, no_highlight=no_highlight, opposite=opposite, foreground_grid=foreground_grid, tick_format=tick_format, scale=scale, invert=invert, auto_fit=auto_fit, range_fit=range_fit, pan_stretch=pan_stretch, lock_min=lock_min, lock_max=lock_max, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, drop_callback=drop_callback, payload_type=payload_type, show=show))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(axis, no_label=no_label, no_gridlines=no_gridlines, no_tick_marks=no_tick_marks, no_tick_labels=no_tick_labels, no_initial_fit=no_initial_fit, no_menus=no_menus, no_side_switch=no_side_switch, no_highlight=no_highlight, opposite=opposite, foreground_grid=foreground_grid, tick_format=tick_format, scale=scale, invert=invert, auto_fit=auto_fit, range_fit=range_fit, pan_stretch=pan_stretch, lock_min=lock_min, lock_max=lock_max, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, drop_callback=drop_callback, payload_type=payload_type, show=show))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     @property
     def axis(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -6924,6 +9142,8 @@ class mvPlotAxis(ContainerItem, ChildItem, command="add_plot_axis", slot=1):
             return __func(self)["axis"]
         except KeyError:
             raise AttributeError(f"'axis' not in dict returned from 'get_item_configuration({self.tag})'`")
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
     
     no_label = _property__no_label
     no_gridlines = _property__no_gridlines
@@ -7068,7 +9288,10 @@ class mvPlotLegend(ContainerItem, ChildItem, command="add_plot_legend", slot=0):
 
     @classmethod
     def create(cls, /, *, location=5, horizontal=False, sort=False, outside=False, no_highlight_item=False, no_highlight_axis=False, no_menus=False, no_buttons=False, label=None, use_internal_label=True, user_data=None, tag=0, parent=0, drop_callback=None, payload_type="$$DPG_PAYLOAD", show=True, __func=_dearpygui.add_plot_legend, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(location=location, horizontal=horizontal, sort=sort, outside=outside, no_highlight_item=no_highlight_item, no_highlight_axis=no_highlight_axis, no_menus=no_menus, no_buttons=no_buttons, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, drop_callback=drop_callback, payload_type=payload_type, show=show))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(location=location, horizontal=horizontal, sort=sort, outside=outside, no_highlight_item=no_highlight_item, no_highlight_axis=no_highlight_axis, no_menus=no_menus, no_buttons=no_buttons, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, drop_callback=drop_callback, payload_type=payload_type, show=show))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     location = _property__location
     horizontal = _property__horizontal
@@ -7090,7 +9313,10 @@ class mvProgressBar(ChildItem, command="add_progress_bar", slot=1):
 
     @classmethod
     def create(cls, /, *, overlay='', default_value=0.0, label=None, use_internal_label=True, user_data=None, tag=0, width=0, height=0, indent=-1, parent=0, before=0, source=0, show=True, filter_key="", drop_callback=None, drag_callback=None, payload_type="$$DPG_PAYLOAD", tracked=False, track_offset=0.5, pos=(), __func=_dearpygui.add_progress_bar, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(overlay=overlay, default_value=default_value, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, width=width, height=height, indent=indent, parent=parent, before=before, source=source, show=show, filter_key=filter_key, drop_callback=drop_callback, drag_callback=drag_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, pos=pos))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(overlay=overlay, default_value=default_value, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, width=width, height=height, indent=indent, parent=parent, before=before, source=source, show=show, filter_key=filter_key, drop_callback=drop_callback, drag_callback=drag_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, pos=pos))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     overlay = _property__overlay
     width = _property__width
@@ -7114,7 +9340,10 @@ class mvRadioButton(ChildItem, command="add_radio_button", slot=1):
 
     @classmethod
     def create(cls, /, items=(), *, default_value='', horizontal=False, label=None, use_internal_label=True, user_data=None, tag=0, indent=-1, parent=0, before=0, source=0, callback=None, show=True, enabled=True, filter_key="", drop_callback=None, drag_callback=None, payload_type="$$DPG_PAYLOAD", tracked=False, track_offset=0.5, pos=(), __func=_dearpygui.add_radio_button, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(items, default_value=default_value, horizontal=horizontal, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, indent=indent, parent=parent, before=before, source=source, callback=callback, show=show, enabled=enabled, filter_key=filter_key, drop_callback=drop_callback, drag_callback=drag_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, pos=pos))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(items, default_value=default_value, horizontal=horizontal, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, indent=indent, parent=parent, before=before, source=source, callback=callback, show=show, enabled=enabled, filter_key=filter_key, drop_callback=drop_callback, drag_callback=drag_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, pos=pos))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     items = _property__items
     horizontal = _property__horizontal
@@ -7157,7 +9386,10 @@ class mvRawTexture(ChildItem, command="add_raw_texture", slot=1):
 
     @classmethod
     def create(cls, /, width, height, default_value, *, format=_dearpygui.mvFormat_Float_rgba, parent=_dearpygui.mvReservedUUID_2, label=None, use_internal_label=True, user_data=None, tag=0, __func=_dearpygui.add_raw_texture, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(width, height, default_value, format=format, parent=parent, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(width, height, default_value, format=format, parent=parent, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     @property
     def width(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -7165,6 +9397,8 @@ class mvRawTexture(ChildItem, command="add_raw_texture", slot=1):
             return __func(self)["width"]
         except KeyError:
             raise AttributeError(f"'width' not in dict returned from 'get_item_configuration({self.tag})'`")
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
     
     @property
     def height(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -7172,6 +9406,8 @@ class mvRawTexture(ChildItem, command="add_raw_texture", slot=1):
             return __func(self)["height"]
         except KeyError:
             raise AttributeError(f"'height' not in dict returned from 'get_item_configuration({self.tag})'`")
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
     
     @staticmethod
     def create_from_file(file, /, *, gamma=1.0, gamma_scale_factor=1.0, format=_dearpygui.mvFormat_Float_rgba, label=None, use_internal_label=True, user_data=None, tag=0, parent=0, **kwargs):
@@ -7189,7 +9425,10 @@ class mvResizeHandler(ChildItem, command="add_item_resize_handler", slot=1):
 
     @classmethod
     def create(cls, /, *, label=None, use_internal_label=True, user_data=None, tag=0, show=True, parent=0, callback=None, __func=_dearpygui.add_item_resize_handler, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, show=show, parent=parent, callback=callback))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, show=show, parent=parent, callback=callback))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     show = _property__show
     callback = _property__callback
@@ -7202,7 +9441,10 @@ class mvScatterSeries(SupportsValueArray, ChildItem, command="add_scatter_series
 
     @classmethod
     def create(cls, /, x, y, *, no_clip=False, label=None, use_internal_label=True, user_data=None, tag=0, parent=0, before=0, source=0, show=True, __func=_dearpygui.add_scatter_series, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(x, y, no_clip=no_clip, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, before=before, source=source, show=show))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(x, y, no_clip=no_clip, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, before=before, source=source, show=show))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     no_clip = _property__no_clip
     source = _property__source
@@ -7216,7 +9458,10 @@ class mvScrollHandler(ChildItem, command="add_item_scroll_handler", slot=1):
 
     @classmethod
     def create(cls, /, *, label=None, use_internal_label=True, user_data=None, tag=0, show=True, parent=0, callback=None, __func=_dearpygui.add_item_scroll_handler, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, show=show, parent=parent, callback=callback))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, show=show, parent=parent, callback=callback))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     show = _property__show
     callback = _property__callback
@@ -7229,7 +9474,10 @@ class mvSelectable(ChildItem, command="add_selectable", slot=1):
 
     @classmethod
     def create(cls, /, *, default_value=False, span_columns=False, disable_popup_close=False, select_on_nav=False, label=None, use_internal_label=True, user_data=None, tag=0, width=0, height=0, indent=-1, parent=0, before=0, source=0, callback=None, show=True, enabled=True, filter_key="", drop_callback=None, drag_callback=None, payload_type="$$DPG_PAYLOAD", tracked=False, track_offset=0.5, pos=(), __func=_dearpygui.add_selectable, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(default_value=default_value, span_columns=span_columns, disable_popup_close=disable_popup_close, select_on_nav=select_on_nav, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, width=width, height=height, indent=indent, parent=parent, before=before, source=source, callback=callback, show=show, enabled=enabled, filter_key=filter_key, drop_callback=drop_callback, drag_callback=drag_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, pos=pos))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(default_value=default_value, span_columns=span_columns, disable_popup_close=disable_popup_close, select_on_nav=select_on_nav, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, width=width, height=height, indent=indent, parent=parent, before=before, source=source, callback=callback, show=show, enabled=enabled, filter_key=filter_key, drop_callback=drop_callback, drag_callback=drag_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, pos=pos))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     span_columns = _property__span_columns
     disable_popup_close = _property__disable_popup_close
@@ -7276,7 +9524,10 @@ class mvSeparator(ChildItem, command="add_separator", slot=1):
 
     @classmethod
     def create(cls, /, *, label=None, use_internal_label=True, user_data=None, tag=0, indent=-1, parent=0, before=0, show=True, pos=(), __func=_dearpygui.add_separator, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, indent=indent, parent=parent, before=before, show=show, pos=pos))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, indent=indent, parent=parent, before=before, show=show, pos=pos))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     indent = _property__indent
     show = _property__show
@@ -7290,7 +9541,10 @@ class mvSeriesValue(SupportsValueArray, ChildItem, command="add_series_value", s
 
     @classmethod
     def create(cls, /, *, default_value=(), parent=_dearpygui.mvReservedUUID_3, label=None, use_internal_label=True, user_data=None, tag=0, source=0, __func=_dearpygui.add_series_value, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(default_value=default_value, parent=parent, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, source=source))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(default_value=default_value, parent=parent, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, source=source))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     source = _property__source
 
@@ -7302,7 +9556,10 @@ class mvShadeSeries(SupportsValueArray, ChildItem, command="add_shade_series", s
 
     @classmethod
     def create(cls, /, x, y1, *, y2=(), label=None, use_internal_label=True, user_data=None, tag=0, parent=0, before=0, source=0, show=True, __func=_dearpygui.add_shade_series, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(x, y1, y2=y2, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, before=before, source=source, show=show))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(x, y1, y2=y2, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, before=before, source=source, show=show))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     source = _property__source
     show = _property__show
@@ -7315,7 +9572,10 @@ class mvSimplePlot(SupportsValueArray, ChildItem, command="add_simple_plot", slo
 
     @classmethod
     def create(cls, /, *, default_value=(), overlay='', histogram=False, autosize=True, min_scale=0.0, max_scale=0.0, label=None, use_internal_label=True, user_data=None, tag=0, width=0, height=0, indent=-1, parent=0, before=0, source=0, filter_key="", drop_callback=None, drag_callback=None, payload_type="$$DPG_PAYLOAD", tracked=False, track_offset=0.5, show=True, __func=_dearpygui.add_simple_plot, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(default_value=default_value, overlay=overlay, histogram=histogram, autosize=autosize, min_scale=min_scale, max_scale=max_scale, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, width=width, height=height, indent=indent, parent=parent, before=before, source=source, filter_key=filter_key, drop_callback=drop_callback, drag_callback=drag_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, show=show))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(default_value=default_value, overlay=overlay, histogram=histogram, autosize=autosize, min_scale=min_scale, max_scale=max_scale, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, width=width, height=height, indent=indent, parent=parent, before=before, source=source, filter_key=filter_key, drop_callback=drop_callback, drag_callback=drag_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, show=show))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     overlay = _property__overlay
     histogram = _property__histogram
@@ -7342,7 +9602,10 @@ class mvSlider3D(SupportsValueArray, ChildItem, command="add_3d_slider", slot=1)
 
     @classmethod
     def create(cls, /, *, default_value=(0.0, 0.0, 0.0, 0.0), max_x=100.0, max_y=100.0, max_z=100.0, min_x=0.0, min_y=0.0, min_z=0.0, scale=1.0, label=None, use_internal_label=True, user_data=None, tag=0, width=0, height=0, indent=-1, parent=0, before=0, source=0, callback=None, show=True, filter_key="", drop_callback=None, drag_callback=None, payload_type="$$DPG_PAYLOAD", tracked=False, track_offset=0.5, pos=(), __func=_dearpygui.add_3d_slider, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(default_value=default_value, max_x=max_x, max_y=max_y, max_z=max_z, min_x=min_x, min_y=min_y, min_z=min_z, scale=scale, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, width=width, height=height, indent=indent, parent=parent, before=before, source=source, callback=callback, show=show, filter_key=filter_key, drop_callback=drop_callback, drag_callback=drag_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, pos=pos))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(default_value=default_value, max_x=max_x, max_y=max_y, max_z=max_z, min_x=min_x, min_y=min_y, min_z=min_z, scale=scale, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, width=width, height=height, indent=indent, parent=parent, before=before, source=source, callback=callback, show=show, filter_key=filter_key, drop_callback=drop_callback, drag_callback=drag_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, pos=pos))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     max_x = _property__max_x
     max_y = _property__max_y
@@ -7381,7 +9644,10 @@ class mvSliderDouble(ChildItem, command="add_slider_double", slot=1):
 
     @classmethod
     def create(cls, /, *, default_value=0.0, vertical=False, no_input=False, clamped=False, min_value=0.0, max_value=100.0, format='%.3f', label=None, use_internal_label=True, user_data=None, tag=0, width=0, height=0, indent=-1, parent=0, before=0, source=0, callback=None, show=True, enabled=True, filter_key="", drop_callback=None, drag_callback=None, payload_type="$$DPG_PAYLOAD", tracked=False, track_offset=0.5, pos=(), __func=_dearpygui.add_slider_double, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(default_value=default_value, vertical=vertical, no_input=no_input, clamped=clamped, min_value=min_value, max_value=max_value, format=format, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, width=width, height=height, indent=indent, parent=parent, before=before, source=source, callback=callback, show=show, enabled=enabled, filter_key=filter_key, drop_callback=drop_callback, drag_callback=drag_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, pos=pos))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(default_value=default_value, vertical=vertical, no_input=no_input, clamped=clamped, min_value=min_value, max_value=max_value, format=format, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, width=width, height=height, indent=indent, parent=parent, before=before, source=source, callback=callback, show=show, enabled=enabled, filter_key=filter_key, drop_callback=drop_callback, drag_callback=drag_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, pos=pos))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     vertical = _property__vertical
     no_input = _property__no_input
@@ -7428,7 +9694,10 @@ class mvSliderDoubleMulti(SupportsValueArray, ChildItem, command="add_slider_dou
 
     @classmethod
     def create(cls, /, *, default_value=(0.0, 0.0, 0.0, 0.0), size=4, no_input=False, clamped=False, min_value=0.0, max_value=100.0, format='%.3f', label=None, use_internal_label=True, user_data=None, tag=0, width=0, indent=-1, parent=0, before=0, source=0, callback=None, show=True, enabled=True, filter_key="", drop_callback=None, drag_callback=None, payload_type="$$DPG_PAYLOAD", tracked=False, track_offset=0.5, pos=(), __func=_dearpygui.add_slider_doublex, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(default_value=default_value, size=size, no_input=no_input, clamped=clamped, min_value=min_value, max_value=max_value, format=format, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, width=width, indent=indent, parent=parent, before=before, source=source, callback=callback, show=show, enabled=enabled, filter_key=filter_key, drop_callback=drop_callback, drag_callback=drag_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, pos=pos))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(default_value=default_value, size=size, no_input=no_input, clamped=clamped, min_value=min_value, max_value=max_value, format=format, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, width=width, indent=indent, parent=parent, before=before, source=source, callback=callback, show=show, enabled=enabled, filter_key=filter_key, drop_callback=drop_callback, drag_callback=drag_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, pos=pos))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     size = _property__size
     no_input = _property__no_input
@@ -7474,7 +9743,10 @@ class mvSliderFloat(ChildItem, command="add_slider_float", slot=1):
 
     @classmethod
     def create(cls, /, *, default_value=0.0, vertical=False, no_input=False, clamped=False, min_value=0.0, max_value=100.0, format='%.3f', label=None, use_internal_label=True, user_data=None, tag=0, width=0, height=0, indent=-1, parent=0, before=0, source=0, callback=None, show=True, enabled=True, filter_key="", drop_callback=None, drag_callback=None, payload_type="$$DPG_PAYLOAD", tracked=False, track_offset=0.5, pos=(), __func=_dearpygui.add_slider_float, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(default_value=default_value, vertical=vertical, no_input=no_input, clamped=clamped, min_value=min_value, max_value=max_value, format=format, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, width=width, height=height, indent=indent, parent=parent, before=before, source=source, callback=callback, show=show, enabled=enabled, filter_key=filter_key, drop_callback=drop_callback, drag_callback=drag_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, pos=pos))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(default_value=default_value, vertical=vertical, no_input=no_input, clamped=clamped, min_value=min_value, max_value=max_value, format=format, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, width=width, height=height, indent=indent, parent=parent, before=before, source=source, callback=callback, show=show, enabled=enabled, filter_key=filter_key, drop_callback=drop_callback, drag_callback=drag_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, pos=pos))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     vertical = _property__vertical
     no_input = _property__no_input
@@ -7521,7 +9793,10 @@ class mvSliderFloatMulti(SupportsValueArray, ChildItem, command="add_slider_floa
 
     @classmethod
     def create(cls, /, *, default_value=(0.0, 0.0, 0.0, 0.0), size=4, no_input=False, clamped=False, min_value=0.0, max_value=100.0, format='%.3f', label=None, use_internal_label=True, user_data=None, tag=0, width=0, indent=-1, parent=0, before=0, source=0, callback=None, show=True, enabled=True, filter_key="", drop_callback=None, drag_callback=None, payload_type="$$DPG_PAYLOAD", tracked=False, track_offset=0.5, pos=(), __func=_dearpygui.add_slider_floatx, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(default_value=default_value, size=size, no_input=no_input, clamped=clamped, min_value=min_value, max_value=max_value, format=format, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, width=width, indent=indent, parent=parent, before=before, source=source, callback=callback, show=show, enabled=enabled, filter_key=filter_key, drop_callback=drop_callback, drag_callback=drag_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, pos=pos))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(default_value=default_value, size=size, no_input=no_input, clamped=clamped, min_value=min_value, max_value=max_value, format=format, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, width=width, indent=indent, parent=parent, before=before, source=source, callback=callback, show=show, enabled=enabled, filter_key=filter_key, drop_callback=drop_callback, drag_callback=drag_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, pos=pos))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     size = _property__size
     no_input = _property__no_input
@@ -7567,7 +9842,10 @@ class mvSliderInt(ChildItem, command="add_slider_int", slot=1):
 
     @classmethod
     def create(cls, /, *, default_value=0, vertical=False, no_input=False, clamped=False, min_value=0, max_value=100, format='%d', label=None, use_internal_label=True, user_data=None, tag=0, width=0, height=0, indent=-1, parent=0, before=0, source=0, callback=None, show=True, enabled=True, filter_key="", drop_callback=None, drag_callback=None, payload_type="$$DPG_PAYLOAD", tracked=False, track_offset=0.5, pos=(), __func=_dearpygui.add_slider_int, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(default_value=default_value, vertical=vertical, no_input=no_input, clamped=clamped, min_value=min_value, max_value=max_value, format=format, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, width=width, height=height, indent=indent, parent=parent, before=before, source=source, callback=callback, show=show, enabled=enabled, filter_key=filter_key, drop_callback=drop_callback, drag_callback=drag_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, pos=pos))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(default_value=default_value, vertical=vertical, no_input=no_input, clamped=clamped, min_value=min_value, max_value=max_value, format=format, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, width=width, height=height, indent=indent, parent=parent, before=before, source=source, callback=callback, show=show, enabled=enabled, filter_key=filter_key, drop_callback=drop_callback, drag_callback=drag_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, pos=pos))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     vertical = _property__vertical
     no_input = _property__no_input
@@ -7614,7 +9892,10 @@ class mvSliderIntMulti(SupportsValueArray, ChildItem, command="add_slider_intx",
 
     @classmethod
     def create(cls, /, *, default_value=(0, 0, 0, 0), size=4, no_input=False, clamped=False, min_value=0, max_value=100, format='%d', label=None, use_internal_label=True, user_data=None, tag=0, width=0, indent=-1, parent=0, before=0, source=0, callback=None, show=True, enabled=True, filter_key="", drop_callback=None, drag_callback=None, payload_type="$$DPG_PAYLOAD", tracked=False, track_offset=0.5, pos=(), __func=_dearpygui.add_slider_intx, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(default_value=default_value, size=size, no_input=no_input, clamped=clamped, min_value=min_value, max_value=max_value, format=format, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, width=width, indent=indent, parent=parent, before=before, source=source, callback=callback, show=show, enabled=enabled, filter_key=filter_key, drop_callback=drop_callback, drag_callback=drag_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, pos=pos))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(default_value=default_value, size=size, no_input=no_input, clamped=clamped, min_value=min_value, max_value=max_value, format=format, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, width=width, indent=indent, parent=parent, before=before, source=source, callback=callback, show=show, enabled=enabled, filter_key=filter_key, drop_callback=drop_callback, drag_callback=drag_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, pos=pos))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     size = _property__size
     no_input = _property__no_input
@@ -7660,7 +9941,10 @@ class mvSpacer(ChildItem, command="add_spacer", slot=1):
 
     @classmethod
     def create(cls, /, *, label=None, use_internal_label=True, user_data=None, tag=0, width=0, height=0, indent=-1, parent=0, before=0, show=True, pos=(), __func=_dearpygui.add_spacer, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, width=width, height=height, indent=indent, parent=parent, before=before, show=show, pos=pos))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, width=width, height=height, indent=indent, parent=parent, before=before, show=show, pos=pos))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     width = _property__width
     height = _property__height
@@ -7676,7 +9960,10 @@ class mvStage(ContainerItem, command="add_stage", slot=1):
 
     @classmethod
     def create(cls, /, *, label=None, use_internal_label=True, user_data=None, tag=0, __func=_dearpygui.add_stage, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     def unstage(self, /, parent=0):
         if not parent:
@@ -7696,7 +9983,10 @@ class mvStairSeries(SupportsValueArray, ChildItem, command="add_stair_series", s
 
     @classmethod
     def create(cls, /, x, y, *, pre_step=False, shaded=False, label=None, use_internal_label=True, user_data=None, tag=0, parent=0, before=0, source=0, show=True, __func=_dearpygui.add_stair_series, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(x, y, pre_step=pre_step, shaded=shaded, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, before=before, source=source, show=show))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(x, y, pre_step=pre_step, shaded=shaded, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, before=before, source=source, show=show))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     pre_step = _property__pre_step
     shaded = _property__shaded
@@ -7711,7 +10001,10 @@ class mvStaticTexture(SupportsValueArray, ChildItem, command="add_static_texture
 
     @classmethod
     def create(cls, /, width, height, default_value, *, parent=_dearpygui.mvReservedUUID_2, label=None, use_internal_label=True, user_data=None, tag=0, __func=_dearpygui.add_static_texture, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(width, height, default_value, parent=parent, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(width, height, default_value, parent=parent, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     @property
     def width(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -7719,6 +10012,8 @@ class mvStaticTexture(SupportsValueArray, ChildItem, command="add_static_texture
             return __func(self)["width"]
         except KeyError:
             raise AttributeError(f"'width' not in dict returned from 'get_item_configuration({self.tag})'`")
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
     
     @property
     def height(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -7726,6 +10021,8 @@ class mvStaticTexture(SupportsValueArray, ChildItem, command="add_static_texture
             return __func(self)["height"]
         except KeyError:
             raise AttributeError(f"'height' not in dict returned from 'get_item_configuration({self.tag})'`")
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
     
     @staticmethod
     def create_from_file(file, /, *, gamma=1.0, gamma_scale_factor=1.0, label=None, use_internal_label=True, user_data=None, tag=0, parent=0, **kwargs):
@@ -7751,7 +10048,10 @@ class mvStemSeries(SupportsValueArray, ChildItem, command="add_stem_series", slo
 
     @classmethod
     def create(cls, /, x, y, *, horizontal=False, label=None, use_internal_label=True, user_data=None, tag=0, indent=-1, parent=0, before=0, source=0, show=True, __func=_dearpygui.add_stem_series, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(x, y, horizontal=horizontal, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, indent=indent, parent=parent, before=before, source=source, show=show))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(x, y, horizontal=horizontal, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, indent=indent, parent=parent, before=before, source=source, show=show))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     horizontal = _property__horizontal
     indent = _property__indent
@@ -7766,7 +10066,10 @@ class mvStringValue(ChildItem, command="add_string_value", slot=1):
 
     @classmethod
     def create(cls, /, *, default_value='', parent=_dearpygui.mvReservedUUID_3, label=None, use_internal_label=True, user_data=None, tag=0, source=0, __func=_dearpygui.add_string_value, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(default_value=default_value, parent=parent, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, source=source))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(default_value=default_value, parent=parent, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, source=source))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     source = _property__source
 
@@ -7778,7 +10081,10 @@ class mvSubPlots(ContainerItem, ChildItem, command="add_subplots", slot=1):
 
     @classmethod
     def create(cls, /, rows, columns, *, row_ratios=(), column_ratios=(), no_menus=False, no_resize=False, no_align=False, share_series=False, link_rows=False, link_columns=False, link_all_x=False, link_all_y=False, column_major=False, label=None, use_internal_label=True, user_data=None, tag=0, width=0, height=0, indent=-1, parent=0, before=0, show=True, callback=None, filter_key="", tracked=False, track_offset=0.5, pos=(), __func=_dearpygui.add_subplots, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(rows, columns, row_ratios=row_ratios, column_ratios=column_ratios, no_menus=no_menus, no_resize=no_resize, no_align=no_align, share_series=share_series, link_rows=link_rows, link_columns=link_columns, link_all_x=link_all_x, link_all_y=link_all_y, column_major=column_major, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, width=width, height=height, indent=indent, parent=parent, before=before, show=show, callback=callback, filter_key=filter_key, tracked=tracked, track_offset=track_offset, pos=pos))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(rows, columns, row_ratios=row_ratios, column_ratios=column_ratios, no_menus=no_menus, no_resize=no_resize, no_align=no_align, share_series=share_series, link_rows=link_rows, link_columns=link_columns, link_all_x=link_all_x, link_all_y=link_all_y, column_major=column_major, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, width=width, height=height, indent=indent, parent=parent, before=before, show=show, callback=callback, filter_key=filter_key, tracked=tracked, track_offset=track_offset, pos=pos))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     @property
     def rows(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -7786,6 +10092,8 @@ class mvSubPlots(ContainerItem, ChildItem, command="add_subplots", slot=1):
             return __func(self)["rows"]
         except KeyError:
             raise AttributeError(f"'rows' not in dict returned from 'get_item_configuration({self.tag})'`")
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
     
     @property
     def columns(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -7793,6 +10101,8 @@ class mvSubPlots(ContainerItem, ChildItem, command="add_subplots", slot=1):
             return __func(self)["columns"]
         except KeyError:
             raise AttributeError(f"'columns' not in dict returned from 'get_item_configuration({self.tag})'`")
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
     
     row_ratios = _property__row_ratios
     column_ratios = _property__column_ratios
@@ -7823,7 +10133,10 @@ class mvSyncedTables(ContainerItem, ChildItem, command="add_synced_tables", slot
 
     @classmethod
     def create(cls, /, *, label=None, use_internal_label=True, user_data=None, tag=0, parent=0, before=0, filter_key="", show=True, __func=_dearpygui.add_synced_tables, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, before=before, filter_key=filter_key, show=show))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, before=before, filter_key=filter_key, show=show))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     filter_key = _property__filter_key
     show = _property__show
@@ -7838,7 +10151,10 @@ class mvTab(ContainerItem, ChildItem, command="add_tab", slot=1):
 
     @classmethod
     def create(cls, /, *, closable=False, no_tooltip=False, order_mode=0, unsaved_document=False, no_close_with_middle_click=False, no_reorder=False, label=None, use_internal_label=True, user_data=None, tag=0, indent=-1, parent=0, before=0, filter_key="", drop_callback=None, payload_type="$$DPG_PAYLOAD", tracked=False, track_offset=0.5, show=True, __func=_dearpygui.add_tab, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(closable=closable, no_tooltip=no_tooltip, order_mode=order_mode, unsaved_document=unsaved_document, no_close_with_middle_click=no_close_with_middle_click, no_reorder=no_reorder, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, indent=indent, parent=parent, before=before, filter_key=filter_key, drop_callback=drop_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, show=show))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(closable=closable, no_tooltip=no_tooltip, order_mode=order_mode, unsaved_document=unsaved_document, no_close_with_middle_click=no_close_with_middle_click, no_reorder=no_reorder, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, indent=indent, parent=parent, before=before, filter_key=filter_key, drop_callback=drop_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, show=show))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     closable = _property__closable
     no_tooltip = _property__no_tooltip
@@ -7878,7 +10194,10 @@ class mvTabBar(ContainerItem, ChildItem, command="add_tab_bar", slot=1):
 
     @classmethod
     def create(cls, /, *, reorderable=False, tab_list_popup_button=False, no_close_with_middle_click=False, no_scrolling_buttons=False, no_tooltip=False, draw_selected_overline=False, label=None, use_internal_label=True, user_data=None, tag=0, indent=-1, parent=0, before=0, callback=None, show=True, filter_key="", tracked=False, track_offset=0.5, pos=(), __func=_dearpygui.add_tab_bar, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(reorderable=reorderable, tab_list_popup_button=tab_list_popup_button, no_close_with_middle_click=no_close_with_middle_click, no_scrolling_buttons=no_scrolling_buttons, no_tooltip=no_tooltip, draw_selected_overline=draw_selected_overline, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, indent=indent, parent=parent, before=before, callback=callback, show=show, filter_key=filter_key, tracked=tracked, track_offset=track_offset, pos=pos))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(reorderable=reorderable, tab_list_popup_button=tab_list_popup_button, no_close_with_middle_click=no_close_with_middle_click, no_scrolling_buttons=no_scrolling_buttons, no_tooltip=no_tooltip, draw_selected_overline=draw_selected_overline, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, indent=indent, parent=parent, before=before, callback=callback, show=show, filter_key=filter_key, tracked=tracked, track_offset=track_offset, pos=pos))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     reorderable = _property__reorderable
     tab_list_popup_button = _property__tab_list_popup_button
@@ -7912,7 +10231,10 @@ class mvTabButton(ChildItem, command="add_tab_button", slot=1):
 
     @classmethod
     def create(cls, /, *, no_reorder=False, leading=False, trailing=False, no_tooltip=False, unsaved_document=False, label=None, use_internal_label=True, user_data=None, tag=0, indent=-1, parent=0, before=0, callback=None, filter_key="", drop_callback=None, drag_callback=None, payload_type="$$DPG_PAYLOAD", tracked=False, track_offset=0.5, show=True, __func=_dearpygui.add_tab_button, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(no_reorder=no_reorder, leading=leading, trailing=trailing, no_tooltip=no_tooltip, unsaved_document=unsaved_document, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, indent=indent, parent=parent, before=before, callback=callback, filter_key=filter_key, drop_callback=drop_callback, drag_callback=drag_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, show=show))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(no_reorder=no_reorder, leading=leading, trailing=trailing, no_tooltip=no_tooltip, unsaved_document=unsaved_document, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, indent=indent, parent=parent, before=before, callback=callback, filter_key=filter_key, drop_callback=drop_callback, drag_callback=drag_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, show=show))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     no_reorder = _property__no_reorder
     leading = _property__leading
@@ -7937,7 +10259,10 @@ class mvTable(ContainerItem, ChildItem, command="add_table", slot=1):
 
     @classmethod
     def create(cls, /, *, header_row=True, clipper=False, inner_width=0, policy=0, freeze_rows=0, freeze_columns=0, sort_multi=False, sort_tristate=False, resizable=False, reorderable=False, hideable=False, sortable=False, context_menu_in_body=False, row_background=False, borders_innerH=False, borders_outerH=False, borders_innerV=False, borders_outerV=False, no_host_extendX=False, no_host_extendY=False, no_keep_columns_visible=False, precise_widths=False, no_clip=False, pad_outerX=False, no_pad_outerX=False, no_pad_innerX=False, scrollX=False, scrollY=False, no_saved_settings=False, label=None, use_internal_label=True, user_data=None, tag=0, width=0, height=0, indent=-1, parent=0, before=0, source=0, callback=None, show=True, filter_key="", pos=(), __func=_dearpygui.add_table, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(header_row=header_row, clipper=clipper, inner_width=inner_width, policy=policy, freeze_rows=freeze_rows, freeze_columns=freeze_columns, sort_multi=sort_multi, sort_tristate=sort_tristate, resizable=resizable, reorderable=reorderable, hideable=hideable, sortable=sortable, context_menu_in_body=context_menu_in_body, row_background=row_background, borders_innerH=borders_innerH, borders_outerH=borders_outerH, borders_innerV=borders_innerV, borders_outerV=borders_outerV, no_host_extendX=no_host_extendX, no_host_extendY=no_host_extendY, no_keep_columns_visible=no_keep_columns_visible, precise_widths=precise_widths, no_clip=no_clip, pad_outerX=pad_outerX, no_pad_outerX=no_pad_outerX, no_pad_innerX=no_pad_innerX, scrollX=scrollX, scrollY=scrollY, no_saved_settings=no_saved_settings, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, width=width, height=height, indent=indent, parent=parent, before=before, source=source, callback=callback, show=show, filter_key=filter_key, pos=pos))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(header_row=header_row, clipper=clipper, inner_width=inner_width, policy=policy, freeze_rows=freeze_rows, freeze_columns=freeze_columns, sort_multi=sort_multi, sort_tristate=sort_tristate, resizable=resizable, reorderable=reorderable, hideable=hideable, sortable=sortable, context_menu_in_body=context_menu_in_body, row_background=row_background, borders_innerH=borders_innerH, borders_outerH=borders_outerH, borders_innerV=borders_innerV, borders_outerV=borders_outerV, no_host_extendX=no_host_extendX, no_host_extendY=no_host_extendY, no_keep_columns_visible=no_keep_columns_visible, precise_widths=precise_widths, no_clip=no_clip, pad_outerX=pad_outerX, no_pad_outerX=no_pad_outerX, no_pad_innerX=no_pad_innerX, scrollX=scrollX, scrollY=scrollY, no_saved_settings=no_saved_settings, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, width=width, height=height, indent=indent, parent=parent, before=before, source=source, callback=callback, show=show, filter_key=filter_key, pos=pos))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     header_row = _property__header_row
     clipper = _property__clipper
@@ -8057,7 +10382,10 @@ class mvTableCell(ContainerItem, ChildItem, command="add_table_cell", slot=1):
 
     @classmethod
     def create(cls, /, *, label=None, use_internal_label=True, user_data=None, tag=0, parent=0, before=0, height=0, filter_key="", show=True, __func=_dearpygui.add_table_cell, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, before=before, height=height, filter_key=filter_key, show=show))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, before=before, height=height, filter_key=filter_key, show=show))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     height = _property__height
     filter_key = _property__filter_key
@@ -8071,7 +10399,10 @@ class mvTableColumn(ChildItem, command="add_table_column", slot=0):
 
     @classmethod
     def create(cls, /, *, init_width_or_weight=0.0, default_hide=False, default_sort=False, width_stretch=False, width_fixed=False, no_resize=False, no_reorder=False, no_hide=False, no_clip=False, no_sort=False, no_sort_ascending=False, no_sort_descending=False, no_header_width=False, prefer_sort_ascending=True, prefer_sort_descending=False, indent_enable=False, indent_disable=False, angled_header=False, no_header_label=False, label=None, use_internal_label=True, user_data=None, tag=0, parent=0, width=0, before=0, enabled=True, show=True, __func=_dearpygui.add_table_column, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(init_width_or_weight=init_width_or_weight, default_hide=default_hide, default_sort=default_sort, width_stretch=width_stretch, width_fixed=width_fixed, no_resize=no_resize, no_reorder=no_reorder, no_hide=no_hide, no_clip=no_clip, no_sort=no_sort, no_sort_ascending=no_sort_ascending, no_sort_descending=no_sort_descending, no_header_width=no_header_width, prefer_sort_ascending=prefer_sort_ascending, prefer_sort_descending=prefer_sort_descending, indent_enable=indent_enable, indent_disable=indent_disable, angled_header=angled_header, no_header_label=no_header_label, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, width=width, before=before, enabled=enabled, show=show))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(init_width_or_weight=init_width_or_weight, default_hide=default_hide, default_sort=default_sort, width_stretch=width_stretch, width_fixed=width_fixed, no_resize=no_resize, no_reorder=no_reorder, no_hide=no_hide, no_clip=no_clip, no_sort=no_sort, no_sort_ascending=no_sort_ascending, no_sort_descending=no_sort_descending, no_header_width=no_header_width, prefer_sort_ascending=prefer_sort_ascending, prefer_sort_descending=prefer_sort_descending, indent_enable=indent_enable, indent_disable=indent_disable, angled_header=angled_header, no_header_label=no_header_label, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, width=width, before=before, enabled=enabled, show=show))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     width_stretch = _property__width_stretch
     width_fixed = _property__width_fixed
@@ -8108,7 +10439,10 @@ class mvTableRow(ContainerItem, ChildItem, command="add_table_row", slot=1):
 
     @classmethod
     def create(cls, /, *, label=None, use_internal_label=True, user_data=None, tag=0, parent=0, before=0, height=0, filter_key="", show=True, __func=_dearpygui.add_table_row, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, before=before, height=height, filter_key=filter_key, show=show))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, before=before, height=height, filter_key=filter_key, show=show))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     height = _property__height
     filter_key = _property__filter_key
@@ -8132,7 +10466,10 @@ class mvTemplateRegistry(ContainerItem, command="add_template_registry", slot=1)
 
     @classmethod
     def create(cls, /, *, label=None, use_internal_label=True, user_data=None, tag=0, __func=_dearpygui.add_template_registry, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
 template_registry = add_template_registry = mvTemplateRegistry.create
 
@@ -8142,7 +10479,10 @@ class mvText(ChildItem, command="add_text", slot=1):
 
     @classmethod
     def create(cls, /, default_value='', *, wrap=-1, bullet=False, color=(-255, 0, 0, 255), show_label=False, label=None, use_internal_label=True, user_data=None, tag=0, indent=-1, parent=0, before=0, source=0, show=True, filter_key="", drop_callback=None, drag_callback=None, payload_type="$$DPG_PAYLOAD", tracked=False, track_offset=0.5, pos=(), __func=_dearpygui.add_text, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(default_value, wrap=wrap, bullet=bullet, color=color, show_label=show_label, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, indent=indent, parent=parent, before=before, source=source, show=show, filter_key=filter_key, drop_callback=drop_callback, drag_callback=drag_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, pos=pos))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(default_value, wrap=wrap, bullet=bullet, color=color, show_label=show_label, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, indent=indent, parent=parent, before=before, source=source, show=show, filter_key=filter_key, drop_callback=drop_callback, drag_callback=drag_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, pos=pos))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     wrap = _property__wrap
     bullet = _property__bullet
@@ -8179,7 +10519,10 @@ class mvTextureRegistry(ContainerItem, command="add_texture_registry", slot=1):
 
     @classmethod
     def create(cls, /, *, show=False, label=None, use_internal_label=True, user_data=None, tag=0, __func=_dearpygui.add_texture_registry, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(show=show, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(show=show, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     show = _property__show
 
@@ -8211,7 +10554,10 @@ class mvTheme(ContainerItem, command="add_theme", slot=1):
 
     @classmethod
     def create(cls, /, *, label=None, use_internal_label=True, user_data=None, tag=0, __func=_dearpygui.add_theme, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     def add_theme_component(self, item_type=0, /, *, label=None, user_data=None, use_internal_label=True, tag=0, before=0, enabled_state=True, **kwargs):
         kwargs['parent'] = self
@@ -8225,7 +10571,10 @@ class mvThemeColor(SupportsValueArray, ChildItem, command="add_theme_color", slo
 
     @classmethod
     def create(cls, /, target=0, value=(0, 0, 0, 255), *, category=0, label=None, use_internal_label=True, user_data=None, tag=0, parent=0, __func=_dearpygui.add_theme_color, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(target, value, category=category, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(target, value, category=category, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     @property
     def target(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -8233,6 +10582,8 @@ class mvThemeColor(SupportsValueArray, ChildItem, command="add_theme_color", slo
             return __func(self)["target"]
         except KeyError:
             raise AttributeError(f"'target' not in dict returned from 'get_item_configuration({self.tag})'`")
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
     
     @property
     def category(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -8240,6 +10591,8 @@ class mvThemeColor(SupportsValueArray, ChildItem, command="add_theme_color", slo
             return __func(self)["category"]
         except KeyError:
             raise AttributeError(f"'category' not in dict returned from 'get_item_configuration({self.tag})'`")
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
     
     identify = _ElementItem.identify
 
@@ -8251,7 +10604,10 @@ class mvThemeComponent(ContainerItem, ChildItem, command="add_theme_component", 
 
     @classmethod
     def create(cls, /, item_type=0, *, enabled_state=True, label=None, use_internal_label=True, user_data=None, tag=0, parent=0, before=0, __func=_dearpygui.add_theme_component, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(int(item_type), enabled_state=enabled_state, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, before=before))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(item_type, enabled_state=enabled_state, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, before=before))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     @property
     def item_type(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -8259,6 +10615,8 @@ class mvThemeComponent(ContainerItem, ChildItem, command="add_theme_component", 
             return __func(self)["item_type"]
         except KeyError:
             raise AttributeError(f"'item_type' not in dict returned from 'get_item_configuration({self.tag})'`")
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
     
     enabled_state = _property__enabled_state
 
@@ -8286,7 +10644,10 @@ class mvThemeStyle(SupportsValueArray, ChildItem, command="add_theme_style", slo
 
     @classmethod
     def create(cls, /, target=0, x=1.0, y=-1.0, *, category=0, label=None, use_internal_label=True, user_data=None, tag=0, parent=0, __func=_dearpygui.add_theme_style, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(target, x, y, category=category, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(target, x, y, category=category, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     @property
     def target(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -8294,6 +10655,8 @@ class mvThemeStyle(SupportsValueArray, ChildItem, command="add_theme_style", slo
             return __func(self)["target"]
         except KeyError:
             raise AttributeError(f"'target' not in dict returned from 'get_item_configuration({self.tag})'`")
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
     
     @property
     def category(self, /, *, __func=_dearpygui.get_item_configuration):
@@ -8301,6 +10664,8 @@ class mvThemeStyle(SupportsValueArray, ChildItem, command="add_theme_style", slo
             return __func(self)["category"]
         except KeyError:
             raise AttributeError(f"'category' not in dict returned from 'get_item_configuration({self.tag})'`")
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
     
     identify = _ElementItem.identify
 
@@ -8312,7 +10677,10 @@ class mvTimePicker(ChildItem, command="add_time_picker", slot=1):
 
     @classmethod
     def create(cls, /, *, default_value={'hour': 14, 'min': 32, 'sec': 23}, hour24=False, label=None, use_internal_label=True, user_data=None, tag=0, indent=-1, parent=0, before=0, callback=None, show=True, filter_key="", drop_callback=None, drag_callback=None, payload_type="$$DPG_PAYLOAD", tracked=False, track_offset=0.5, pos=(), __func=_dearpygui.add_time_picker, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(default_value=default_value, hour24=hour24, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, indent=indent, parent=parent, before=before, callback=callback, show=show, filter_key=filter_key, drop_callback=drop_callback, drag_callback=drag_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, pos=pos))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(default_value=default_value, hour24=hour24, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, indent=indent, parent=parent, before=before, callback=callback, show=show, filter_key=filter_key, drop_callback=drop_callback, drag_callback=drag_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, pos=pos))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     hour24 = _property__hour24
     indent = _property__indent
@@ -8340,7 +10708,10 @@ class mvToggledOpenHandler(ChildItem, command="add_item_toggled_open_handler", s
 
     @classmethod
     def create(cls, /, *, two_way=False, label=None, use_internal_label=True, user_data=None, tag=0, show=True, parent=0, callback=None, __func=_dearpygui.add_item_toggled_open_handler, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(two_way=two_way, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, show=show, parent=parent, callback=callback))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(two_way=two_way, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, show=show, parent=parent, callback=callback))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     two_way = _property__two_way
     show = _property__show
@@ -8354,7 +10725,10 @@ class mvTooltip(ContainerItem, ChildItem, command="add_tooltip", slot=1):
 
     @classmethod
     def create(cls, /, parent, *, delay=0.0, hide_on_activity=False, label=None, use_internal_label=True, user_data=None, tag=0, show=True, __func=_dearpygui.add_tooltip, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(parent, delay=delay, hide_on_activity=hide_on_activity, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, show=show))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(parent, delay=delay, hide_on_activity=hide_on_activity, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, show=show))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     delay = _property__delay
     hide_on_activity = _property__hide_on_activity
@@ -8375,7 +10749,10 @@ class mvTreeNode(ContainerItem, ChildItem, command="add_tree_node", slot=1):
 
     @classmethod
     def create(cls, /, *, default_open=False, open_on_double_click=False, open_on_arrow=False, leaf=False, bullet=False, selectable=False, span_text_width=False, span_full_width=False, catch_nav_left=False, lines=_dearpygui.mvTreeLines_None, label=None, use_internal_label=True, user_data=None, tag=0, indent=-1, parent=0, before=0, show=True, filter_key="", drop_callback=None, drag_callback=None, payload_type="$$DPG_PAYLOAD", tracked=False, track_offset=0.5, pos=(), __func=_dearpygui.add_tree_node, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(default_open=default_open, open_on_double_click=open_on_double_click, open_on_arrow=open_on_arrow, leaf=leaf, bullet=bullet, selectable=selectable, span_text_width=span_text_width, span_full_width=span_full_width, catch_nav_left=catch_nav_left, lines=lines, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, indent=indent, parent=parent, before=before, show=show, filter_key=filter_key, drop_callback=drop_callback, drag_callback=drag_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, pos=pos))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(default_open=default_open, open_on_double_click=open_on_double_click, open_on_arrow=open_on_arrow, leaf=leaf, bullet=bullet, selectable=selectable, span_text_width=span_text_width, span_full_width=span_full_width, catch_nav_left=catch_nav_left, lines=lines, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, indent=indent, parent=parent, before=before, show=show, filter_key=filter_key, drop_callback=drop_callback, drag_callback=drag_callback, payload_type=payload_type, tracked=tracked, track_offset=track_offset, pos=pos))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     open_on_double_click = _property__open_on_double_click
     open_on_arrow = _property__open_on_arrow
@@ -8421,7 +10798,10 @@ class mvValueRegistry(ContainerItem, command="add_value_registry", slot=1):
 
     @classmethod
     def create(cls, /, *, label=None, use_internal_label=True, user_data=None, tag=0, __func=_dearpygui.add_value_registry, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     def add_bool_value(self, /, default_value=False, *, label=None, use_internal_label=True, user_data=None, tag=0, source=0, **kwargs):
         kwargs['parent'] = self
@@ -8475,7 +10855,10 @@ class mvViewportDrawlist(ContainerItem, command="add_viewport_drawlist", slot=1)
 
     @classmethod
     def create(cls, /, *, front=True, label=None, use_internal_label=True, user_data=None, tag=0, filter_key="", show=True, __func=_dearpygui.add_viewport_drawlist, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(front=front, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, filter_key=filter_key, show=show))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(front=front, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, filter_key=filter_key, show=show))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     front = _property__front
     filter_key = _property__filter_key
@@ -8553,7 +10936,10 @@ class mvViewportMenuBar(ContainerItem, command="add_viewport_menu_bar", slot=1):
 
     @classmethod
     def create(cls, /, *, label=None, use_internal_label=True, user_data=None, tag=0, indent=-1, parent=0, show=True, __func=_dearpygui.add_viewport_menu_bar, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, indent=indent, parent=parent, show=show))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, indent=indent, parent=parent, show=show))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     indent = _property__indent
     show = _property__show
@@ -8574,7 +10960,10 @@ class mvVisibleHandler(ChildItem, command="add_item_visible_handler", slot=1):
 
     @classmethod
     def create(cls, /, *, label=None, use_internal_label=True, user_data=None, tag=0, show=True, parent=0, callback=None, __func=_dearpygui.add_item_visible_handler, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, show=show, parent=parent, callback=callback))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, show=show, parent=parent, callback=callback))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     show = _property__show
     callback = _property__callback
@@ -8587,7 +10976,10 @@ class mvWindowAppItem(ContainerItem, command="add_window", slot=1):
 
     @classmethod
     def create(cls, /, *, min_size=(100, 100), max_size=(30000, 30000), menubar=False, collapsed=False, autosize=False, no_resize=False, unsaved_document=False, no_title_bar=False, no_move=False, no_scrollbar=False, no_collapse=False, horizontal_scrollbar=False, no_focus_on_appearing=False, no_bring_to_front_on_focus=False, no_close=False, no_background=False, modal=False, popup=False, no_saved_settings=False, no_open_over_existing_popup=True, no_scroll_with_mouse=False, no_docking=False, copy_contents_shortcut=False, on_close=None, label=None, use_internal_label=True, user_data=None, tag=0, width=0, height=0, indent=-1, show=True, pos=(), __func=_dearpygui.add_window, **kwargs):  # ty: ignore[invalid-method-override]
-        return cls(tag=__func(min_size=min_size, max_size=max_size, menubar=menubar, collapsed=collapsed, autosize=autosize, no_resize=no_resize, unsaved_document=unsaved_document, no_title_bar=no_title_bar, no_move=no_move, no_scrollbar=no_scrollbar, no_collapse=no_collapse, horizontal_scrollbar=horizontal_scrollbar, no_focus_on_appearing=no_focus_on_appearing, no_bring_to_front_on_focus=no_bring_to_front_on_focus, no_close=no_close, no_background=no_background, modal=modal, popup=popup, no_saved_settings=no_saved_settings, no_open_over_existing_popup=no_open_over_existing_popup, no_scroll_with_mouse=no_scroll_with_mouse, no_docking=no_docking, copy_contents_shortcut=copy_contents_shortcut, on_close=on_close, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, width=width, height=height, indent=indent, show=show, pos=pos))  # ty: ignore[invalid-argument-type]
+        try:
+            return cls(tag=__func(min_size=min_size, max_size=max_size, menubar=menubar, collapsed=collapsed, autosize=autosize, no_resize=no_resize, unsaved_document=unsaved_document, no_title_bar=no_title_bar, no_move=no_move, no_scrollbar=no_scrollbar, no_collapse=no_collapse, horizontal_scrollbar=horizontal_scrollbar, no_focus_on_appearing=no_focus_on_appearing, no_bring_to_front_on_focus=no_bring_to_front_on_focus, no_close=no_close, no_background=no_background, modal=modal, popup=popup, no_saved_settings=no_saved_settings, no_open_over_existing_popup=no_open_over_existing_popup, no_scroll_with_mouse=no_scroll_with_mouse, no_docking=no_docking, copy_contents_shortcut=copy_contents_shortcut, on_close=on_close, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, width=width, height=height, indent=indent, show=show, pos=pos))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     min_size = _property__min_size
     max_size = _property__max_size

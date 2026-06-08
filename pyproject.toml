@@ -58,6 +58,7 @@ bad-override = false
 matches = "./src/dearpypixl/lib/items.py"
 [tool.pyrefly.sub-config.errors]
 invalid-decorator = false
+bad-argument-type = false
 
 [[tool.pyrefly.sub-config]]
 matches = "./src/libgen/dearpypixl_lib_items.py"

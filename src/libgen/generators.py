@@ -337,23 +337,30 @@ class ItemsCodeGenerator(_ItemsGenerator):
             f"        return __func(self)[\"{name}\"]",
             f"    except KeyError:",
             f"        raise AttributeError(f\"'{name}' not in dict returned from '{getter}({{self.tag}})'`\")",
+            f'    except SystemError as e:',
+            f'        raise DearPyGuiError.from_exception(e)',
         ]
 
         if setter is not None:
             if not isinstance(setter, str):
                 setter = setter.__name__
-
             buffer.extend((
                 f"@{identifier}.setter",
                 f"def {identifier}(self, value, /, *, __func=_dearpygui.{setter}):",
-                f"    __func(self, {name}=value)",
+                f'    try:',
+                f"        __func(self, {name}=value)",
+                f'    except SystemError as e:',
+                f'        raise DearPyGuiError.from_exception(e)',
             ))
 
             if default is not MISSING:
                 buffer.extend((
                     f"@{identifier}.deleter",
                     f"def {identifier}(self, /, *, __func=_dearpygui.{setter}):",
-                    f"    __func(self, {name}={default})",
+                    f'    try:',
+                    f"        __func(self, {name}={default})",
+                    f'    except SystemError as e:',
+                    f'        raise DearPyGuiError.from_exception(e)',
                 ))
 
         buffer.append('')
@@ -414,7 +421,10 @@ class ItemsCodeGenerator(_ItemsGenerator):
 
         buffer.append(f"    @classmethod")
         buffer.append(f"    def create(cls, /, {signature}, __func=_dearpygui.{type_info.command}, **kwargs):  # ty: ignore[invalid-method-override]")
-        buffer.append(f"        return cls(tag=__func({", ".join(arguments)}))  # ty: ignore[invalid-argument-type]")
+        buffer.append(f"        try:")
+        buffer.append(f"            return cls(tag=__func({", ".join(arguments)}))")
+        buffer.append(f"        except SystemError as e:")
+        buffer.append(f"            raise DearPyGuiError.from_exception(e)")
         # HACK: make the `item_type` argument of `mvThemeComponent.create()` compatible
         # with item type classes
         if type_name == "mvThemeComponent":
@@ -508,6 +518,7 @@ class ItemsCodeGenerator(_ItemsGenerator):
 
 
         content.append("from dearpypixl.core.appitem import *")
+        content.append("from dearpypixl.core.errors import DearPyGuiError")
         content.append("")
         content.append("from dearpygui import dearpygui, _dearpygui")
         content.append("")
@@ -547,18 +558,25 @@ class ItemsCodeGenerator(_ItemsGenerator):
             else:
                 content.extend(self._generate_property(state, "get_item_state"))
 
+
+
         content.append('@property')
         content.append('def _property__rect_min2(self, /, *, __func=_dearpygui.get_item_state):')
-        content.append('    return __func(self)["pos"]')
+        content.append('    try:')
+        content.append('        return __func(self)["pos"]')
+        content.append('    except SystemError as e:')
+        content.append('        raise DearPyGuiError.from_exception(e)')
         content.append('')
         content.append('@property')
         content.append('def _property__rect_max2(self, /, *, __func=_dearpygui.get_item_state):')
-        content.append('    state = __func(self)')
+        content.append('    try:')
+        content.append('        state = __func(self)')
+        content.append('    except SystemError as e:')
+        content.append('        raise DearPyGuiError.from_exception(e)')
         content.append('    x_pos, y_pos  = state["pos"]')
         content.append('    width, height = state["rect_size"]')
         content.append('    return [x_pos + width, y_pos + height]')
         content.append('')
-
         content.append('')
 
 
@@ -567,14 +585,24 @@ class ItemsCodeGenerator(_ItemsGenerator):
         for s in ("x", "y"):
             content.append(f'@property')
             content.append(f'def _property__{s}_scroll_max(self, /, *, __func=_dearpygui.get_{s}_scroll_max):')
-            content.append(f'    return __func(self)')
+            content.append(f'    try:')
+            content.append(f'        return __func(self)')
+            content.append(f'    except SystemError as e:')
+            content.append(f'        raise DearPyGuiError.from_exception(e)')
             content.append('')
+
             content.append(f'@property')
             content.append(f'def _property__{s}_scroll_pos(self, /, *, __func=_dearpygui.get_{s}_scroll):')
-            content.append(f'    return __func(self)')
+            content.append(f'    try:')
+            content.append(f'        return __func(self)')
+            content.append(f'    except SystemError as e:')
+            content.append(f'        raise DearPyGuiError.from_exception(e)')
             content.append(f'@_property__{s}_scroll_pos.setter')
             content.append(f'def _property__{s}_scroll_pos(self, value, /, *, __func=dearpygui.set_{s}_scroll) -> None:')
-            content.append(f'    __func(self, value)')
+            content.append(f'    try:')
+            content.append(f'        __func(self, value)')
+            content.append(f'    except SystemError as e:')
+            content.append(f'        raise DearPyGuiError.from_exception(e)')
             content.append('')
 
         content.append("")
