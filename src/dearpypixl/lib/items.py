@@ -7024,7 +7024,10 @@ class mvDrawLayer(ContainerItem, ChildItem, command="add_draw_layer", slot=2):
     __item_index_slot__ = 2
 
     def set_clip_space(self, top_left_x, top_left_y, width, height, min_depth, max_depth, /):
-        _dearpygui.set_clip_space(self, top_left_x, top_left_y, width, height, min_depth, max_depth)
+        try:
+            _dearpygui.set_clip_space(self, top_left_x, top_left_y, width, height, min_depth, max_depth)
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
 draw_layer = add_draw_layer = mvDrawLayer.create
 
@@ -7061,7 +7064,10 @@ class mvDrawNode(ContainerItem, ChildItem, command="add_draw_node", slot=2):
     __item_index_slot__ = 2
 
     def apply_transform(self, transform, /):
-        _dearpygui.apply_transform(self, transform)
+        try:
+            _dearpygui.apply_transform(self, transform)
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
 draw_node = add_draw_node = mvDrawNode.create
 
@@ -7320,15 +7326,20 @@ class mvDynamicTexture(SupportsValueArray, ChildItem, command="add_dynamic_textu
             wt, ht, ch, im = dearpygui.load_image(file, gamma=gamma, gamma_scale_factor=gamma_scale_factor)
         except ValueError:
             raise IOError(f'failed to load {file!r}') from None
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
         return __class__.create(wt, ht, im, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, **kwargs)
 
     def save(self, file, /, *, components=4, quality=50, **kwargs):
-        buffer = _dearpygui.get_value(self)
-        if (b_size := len(buffer)) > 0 and isinstance(buffer[0], float):
-            trunc = float.__trunc__
-            buffer = [trunc(buffer[i] * 255.0) for i in range(b_size)]
-        config = _dearpygui.get_item_configuration(self)
-        dearpygui.save_image(file, config['width'], config['height'], buffer, components=components, quality=quality, **kwargs)
+        try:
+            buffer = _dearpygui.get_value(self)
+            if (b_size := len(buffer)) > 0 and isinstance(buffer[0], float):
+                trunc = float.__trunc__
+                buffer = [trunc(buffer[i] * 255.0) for i in range(b_size)]
+            config = _dearpygui.get_item_configuration(self)
+            dearpygui.save_image(file, config['width'], config['height'], buffer, components=components, quality=quality, **kwargs)
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
 add_dynamic_texture = mvDynamicTexture.create
 
@@ -7543,7 +7554,10 @@ class mvFont(ContainerItem, ChildItem, command="add_font", slot=1):
         return mvCharRemap.create(source, target, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, **kwargs)
 
     def get_text_size(self, text, /, *, wrap_width=-1):
-        return _dearpygui.get_text_size(text, wrap_width=wrap_width, font=self)
+        try:
+            return _dearpygui.get_text_size(text, wrap_width=wrap_width, font=self)
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
 font = add_font = mvFont.create
 
@@ -8949,16 +8963,28 @@ class mvNodeEditor(ContainerItem, ChildItem, command="add_node_editor", slot=1):
     rect_max = _property__rect_max
 
     def selected_nodes(self, /):
-        return _dearpygui.get_selected_nodes(self)
+        try:
+            return _dearpygui.get_selected_nodes(self)
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     def selected_links(self, /):
-        return _dearpygui.get_selected_links(self)
+        try:
+            return _dearpygui.get_selected_links(self)
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     def clear_selected_nodes(self, /):
-        _dearpygui.clear_selected_nodes(self)
+        try:
+            _dearpygui.clear_selected_nodes(self)
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     def clear_selected_links(self, /):
-        _dearpygui.clear_selected_links(self)
+        try:
+            _dearpygui.clear_selected_links(self)
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
 node_editor = add_node_editor = mvNodeEditor.create
 
@@ -9096,32 +9122,59 @@ class mvPlot(ContainerItem, ChildItem, command="add_plot", slot=1):
         return mvPlotLegend.create(location=location, horizontal=horizontal, sort=sort, outside=outside, no_highlight_item=no_highlight_item, no_highlight_axis=no_highlight_axis, no_menus=no_menus, no_buttons=no_buttons, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, drop_callback=drop_callback, payload_type=payload_type, show=show, **kwargs)
 
     def bind_colormap(self, colormap, /):
-        _dearpygui.bind_colormap(self, colormap or 0)
+        try:
+            _dearpygui.bind_colormap(self, colormap or 0)
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     @property
     def query_rects(self):
-        return _dearpygui.get_plot_query_rects(self)
+        try:
+            return _dearpygui.get_plot_query_rects(self)
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     def _axis_from_index(self, index, /):
-        return _dearpygui.get_item_info(self)['children'][1][index]
+        try:
+            return _dearpygui.get_item_info(self)['children'][1][index]
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     def auto_fit_data(self, iaxis, /):
-        return _dearpygui.fit_axis_data(self._axis_from_index(iaxis))
+        try:
+            return _dearpygui.fit_axis_data(self._axis_from_index(iaxis))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     def get_axis_limits(self, iaxis, /):
-        return _dearpygui.get_axis_limits(self._axis_from_index(iaxis))
+        try:
+            return _dearpygui.get_axis_limits(self._axis_from_index(iaxis))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     def set_axis_limits(self, iaxis, ymin, ymax, /):
-        _dearpygui.set_axis_limits(self._axis_from_index(iaxis), ymin, ymax)
+        try:
+            _dearpygui.set_axis_limits(self._axis_from_index(iaxis), ymin, ymax)
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     def reset_axis_limits(self, iaxis, /):
-        _dearpygui.set_axis_limits_auto(self._axis_from_index(iaxis))
+        try:
+            _dearpygui.set_axis_limits_auto(self._axis_from_index(iaxis))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     def set_axis_ticks(self, iaxis, label_pairs, /):
-        return _dearpygui.set_axis_ticks(self._axis_from_index(iaxis), label_pairs)
+        try:
+            return _dearpygui.set_axis_ticks(self._axis_from_index(iaxis), label_pairs)
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     def reset_axis_ticks(self, iaxis, /):
-        return _dearpygui.reset_axis_ticks(self._axis_from_index(iaxis))
+        try:
+            return _dearpygui.reset_axis_ticks(self._axis_from_index(iaxis))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
 plot = add_plot = mvPlot.create
 
@@ -9249,36 +9302,66 @@ class mvPlotAxis(ContainerItem, ChildItem, command="add_plot_axis", slot=1):
 
     @property
     def limits(self, /):
-        return _dearpygui.get_axis_limits(self)
+        try:
+            return _dearpygui.get_axis_limits(self)
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     @limits.setter
     def limits(self, value, /):
-        _dearpygui.set_axis_limits(self, *value)
+        try:
+            _dearpygui.set_axis_limits(self, *value)
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     @limits.deleter
     def limits(self, /):
-        _dearpygui.set_axis_limits_auto(self)
+        try:
+            _dearpygui.set_axis_limits_auto(self)
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     def set_pan_limits(self, vmin, vmax, /):
-        _dearpygui.set_axis_limits_constraints(self, vmin, vmax)
+        try:
+            _dearpygui.set_axis_limits_constraints(self, vmin, vmax)
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     def reset_pan_limits(self, /):
-        _dearpygui.reset_axis_limits_constraints(self)
+        try:
+            _dearpygui.reset_axis_limits_constraints(self)
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     def set_zoom_limits(self, vmin, vmax, /):
-        _dearpygui.set_axis_zoom_constraints(self, vmin, vmax)
+        try:
+            _dearpygui.set_axis_zoom_constraints(self, vmin, vmax)
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     def reset_zoom_limits(self, /):
-        _dearpygui.reset_axis_zoom_constraints(self)
+        try:
+            _dearpygui.reset_axis_zoom_constraints(self)
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     def set_ticks(self, label_pairs, /):
-        return _dearpygui.set_axis_ticks(self, label_pairs)
+        try:
+            return _dearpygui.set_axis_ticks(self, label_pairs)
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     def reset_ticks(self, /):
-        return _dearpygui.reset_axis_ticks(self)
+        try:
+            return _dearpygui.reset_axis_ticks(self)
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     def auto_fit_data(self, /):
-        return _dearpygui.fit_axis_data(self)
+        try:
+            return _dearpygui.fit_axis_data(self)
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
 plot_axis = add_plot_axis = mvPlotAxis.create
 
@@ -9415,6 +9498,8 @@ class mvRawTexture(ChildItem, command="add_raw_texture", slot=1):
             wt, ht, ch, im = dearpygui.load_image(file, gamma=gamma, gamma_scale_factor=gamma_scale_factor)
         except ValueError:
             raise IOError(f'failed to load {file!r}') from None
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
         return __class__.create(wt, ht, im, format=format, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, **kwargs)
 
 add_raw_texture = mvRawTexture.create
@@ -9966,14 +10051,17 @@ class mvStage(ContainerItem, command="add_stage", slot=1):
             raise DearPyGuiError.from_exception(e)
 
     def unstage(self, /, parent=0):
-        if not parent:
-            _dearpygui.unstage(self)
-            return
-        _dearpygui.push_container_stack(parent)
         try:
-            _dearpygui.unstage(self)
-        finally:
-            _dearpygui.pop_container_stack()
+            if not parent:
+                _dearpygui.unstage(self)
+                return
+            _dearpygui.push_container_stack(parent)
+            try:
+                _dearpygui.unstage(self)
+            finally:
+                _dearpygui.pop_container_stack()
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
 stage = add_stage = mvStage.create
 
@@ -10033,12 +10121,15 @@ class mvStaticTexture(SupportsValueArray, ChildItem, command="add_static_texture
         return __class__.create(wt, ht, im, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, **kwargs)
 
     def save(self, file, /, *, components=4, quality=50, **kwargs):
-        buffer = _dearpygui.get_value(self)
-        if (b_size := len(buffer)) > 0 and isinstance(buffer[0], float):
-            trunc = float.__trunc__
-            buffer = [trunc(buffer[i] * 255.0) for i in range(b_size)]
-        config = _dearpygui.get_item_configuration(self)
-        dearpygui.save_image(file, config['width'], config['height'], buffer, components=components, quality=quality, **kwargs)
+        try:
+            buffer = _dearpygui.get_value(self)
+            if (b_size := len(buffer)) > 0 and isinstance(buffer[0], float):
+                trunc = float.__trunc__
+                buffer = [trunc(buffer[i] * 255.0) for i in range(b_size)]
+            config = _dearpygui.get_item_configuration(self)
+            dearpygui.save_image(file, config['width'], config['height'], buffer, components=components, quality=quality, **kwargs)
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
 add_static_texture = mvStaticTexture.create
 
@@ -10342,37 +10433,58 @@ class mvTable(ContainerItem, ChildItem, command="add_table", slot=1):
             raise ValueError(f'{item!r} is not a row or column parented by this table') from None
 
     def is_cell_highlighted(self, irow, icol, /):
-        return _dearpygui.is_table_cell_highlighted(self, irow, icol)
+        try:
+            return _dearpygui.is_table_cell_highlighted(self, irow, icol)
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     def is_column_highlighted(self, icol, /):
-        return _dearpygui.is_table_column_highlighted(self, icol)
+        try:
+            return _dearpygui.is_table_column_highlighted(self, icol)
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     def is_row_highlighted(self, irow, /):
-        return _dearpygui.is_table_row_highlighted(self, irow)
+        try:
+            return _dearpygui.is_table_row_highlighted(self, irow)
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     def set_cell_highlight(self, irow, icol, color, /):
-        if color is None:
-            _dearpygui.unhighlight_table_cell(self, irow, icol)
-        else:
-            _dearpygui.highlight_table_cell(self, irow, icol, color)
+        try:
+            if color is None:
+                _dearpygui.unhighlight_table_cell(self, irow, icol)
+            else:
+                _dearpygui.highlight_table_cell(self, irow, icol, color)
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     def set_column_highlight(self, icol, color, /):
-        if color is None:
-            _dearpygui.unhighlight_table_column(self, icol)
-        else:
-            _dearpygui.highlight_table_column(self, icol, color)
+        try:
+            if color is None:
+                _dearpygui.unhighlight_table_column(self, icol)
+            else:
+                _dearpygui.highlight_table_column(self, icol, color)
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     def set_row_highlight(self, irow, color, /):
-        if color is None:
-            _dearpygui.unhighlight_table_row(self, irow)
-        else:
-            _dearpygui.highlight_table_row(self, irow, color)
+        try:
+            if color is None:
+                _dearpygui.unhighlight_table_row(self, irow)
+            else:
+                _dearpygui.highlight_table_row(self, irow, color)
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     def set_row_color(self, irow, color, /):
-        if color is None:
-            _dearpygui.unset_table_row_color(self, irow)
-        else:
-            _dearpygui.set_table_row_color(self, irow, color)
+        try:
+            if color is None:
+                _dearpygui.unset_table_row_color(self, irow)
+            else:
+                _dearpygui.set_table_row_color(self, irow, color)
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
 table = add_table = mvTable.create
 
@@ -10528,11 +10640,17 @@ class mvTextureRegistry(ContainerItem, command="add_texture_registry", slot=1):
 
     @staticmethod
     def load_image(file, /, *, gamma=1.0, gamma_scale_factor=1.0, **kwargs):
-        return dearpygui.load_image(file, gamma=gamma, gamma_scale_factor=gamma_scale_factor, **kwargs)
+        try:
+            return dearpygui.load_image(file, gamma=gamma, gamma_scale_factor=gamma_scale_factor, **kwargs)
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     @staticmethod
     def save_image(file, width, height, data, /, *, components=4, quality=50, **kwargs):
-        dearpygui.save_image(file, width, height, data, components=components, quality=quality, **kwargs)
+        try:
+            dearpygui.save_image(file, width, height, data, components=components, quality=quality, **kwargs)
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     def add_static_texture(self, width, height, default_value, /, *, label=None, user_data=None, use_internal_label=True, tag=0, **kwargs):
         kwargs['parent'] = self

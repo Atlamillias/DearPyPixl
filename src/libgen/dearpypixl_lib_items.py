@@ -1,6 +1,7 @@
 from typing import *
 
 from dearpypixl.core.protocols import *
+from dearpypixl.core.errors import DearPyGuiError
 from dearpypixl.core.appitem import _ElementItem, _HandlerItem
 
 from dearpygui import _dearpygui, dearpygui
@@ -126,7 +127,10 @@ class mvFont:
 
         :raises `SystemError`: DearPyGui-related error.
         """
-        return _dearpygui.get_text_size(text, wrap_width=wrap_width, font=self)  # type: ignore
+        try:
+            return _dearpygui.get_text_size(text, wrap_width=wrap_width, font=self)  # type: ignore
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
 
 class mvFontRegistry:
@@ -516,7 +520,10 @@ class mvTextureRegistry:
 
         :raises `SystemError`: DearPyGui-related error.
         """
-        return dearpygui.load_image(file, gamma=gamma, gamma_scale_factor=gamma_scale_factor, **kwargs)
+        try:
+            return dearpygui.load_image(file, gamma=gamma, gamma_scale_factor=gamma_scale_factor, **kwargs)
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     @staticmethod
     def save_image(file: str, width: int, height: int, data: Array[int, Any], /, *, components: Literal[1, 2, 3, 4] = 4, quality: int = 50, **kwargs) -> None:
@@ -546,7 +553,10 @@ class mvTextureRegistry:
 
         :raises `SystemError`: DearPyGui-related error.
         """
-        dearpygui.save_image(file, width, height, data, components=components, quality=quality, **kwargs)
+        try:
+            dearpygui.save_image(file, width, height, data, components=components, quality=quality, **kwargs)
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     def add_static_texture[T](self, width: int, height: int, default_value: Array[int | float, Any], /, *, label: str | None = None, user_data: T = None, use_internal_label: bool = True, tag: Item = 0, **kwargs) -> mvStaticTexture[T]:  # ty:ignore[invalid-parameter-default]
         """Creates a static texture as a child of this registry
@@ -619,14 +629,16 @@ class mvStaticTexture:
 
         :raises `SystemError`: DearPyGui-related error.
         """
-        buffer = _dearpygui.get_value(self)
-        if (b_size := len(buffer)) > 0 and isinstance(buffer[0], float):
-            trunc  = float.__trunc__
-            buffer = [trunc(buffer[i] * 255.0) for i in range(b_size)]
+        try:
+            buffer = _dearpygui.get_value(self)
+            if (b_size := len(buffer)) > 0 and isinstance(buffer[0], float):
+                trunc  = float.__trunc__
+                buffer = [trunc(buffer[i] * 255.0) for i in range(b_size)]
 
-        config = _dearpygui.get_item_configuration(self)
-        dearpygui.save_image(file, config["width"], config["height"], buffer, components=components, quality=quality, **kwargs)
-
+            config = _dearpygui.get_item_configuration(self)
+            dearpygui.save_image(file, config["width"], config["height"], buffer, components=components, quality=quality, **kwargs)
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
 class mvDynamicTexture:
     @staticmethod
@@ -654,6 +666,8 @@ class mvDynamicTexture:
             wt, ht, ch, im = dearpygui.load_image(file, gamma=gamma, gamma_scale_factor=gamma_scale_factor)
         except ValueError:
             raise IOError(f"failed to load {file!r}") from None
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
         return __class__.create(wt, ht, im, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, **kwargs)
 
     def save(self, file: str, /, *, components: Literal[1, 2, 3, 4] = 4, quality: int = 50, **kwargs) -> None:
@@ -674,14 +688,16 @@ class mvDynamicTexture:
 
         :raises `SystemError`: DearPyGui-related error.
         """
-        buffer = _dearpygui.get_value(self)
-        if (b_size := len(buffer)) > 0 and isinstance(buffer[0], float):
-            trunc  = float.__trunc__
-            buffer = [trunc(buffer[i] * 255.0) for i in range(b_size)]
+        try:
+            buffer = _dearpygui.get_value(self)
+            if (b_size := len(buffer)) > 0 and isinstance(buffer[0], float):
+                trunc  = float.__trunc__
+                buffer = [trunc(buffer[i] * 255.0) for i in range(b_size)]
 
-        config = _dearpygui.get_item_configuration(self)
-        dearpygui.save_image(file, config["width"], config["height"], buffer, components=components, quality=quality, **kwargs)
-
+            config = _dearpygui.get_item_configuration(self)
+            dearpygui.save_image(file, config["width"], config["height"], buffer, components=components, quality=quality, **kwargs)
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
 class mvRawTexture:
     @staticmethod
@@ -709,6 +725,8 @@ class mvRawTexture:
             wt, ht, ch, im = dearpygui.load_image(file, gamma=gamma, gamma_scale_factor=gamma_scale_factor)
         except ValueError:
             raise IOError(f"failed to load {file!r}") from None
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
         return __class__.create(wt, ht, im, format=format, label=label, use_internal_label=use_internal_label, user_data=user_data, tag=tag, parent=parent, **kwargs)
 
 
@@ -894,7 +912,10 @@ class mvDrawLayer:
 
         :raises `SystemError`: DearPyGui-related error.
         """
-        _dearpygui.set_clip_space(self, top_left_x, top_left_y, width, height, min_depth, max_depth)
+        try:
+            _dearpygui.set_clip_space(self, top_left_x, top_left_y, width, height, min_depth, max_depth)
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
 
 class mvDrawNode:
@@ -925,7 +946,10 @@ class mvDrawNode:
         :param transform: A flat 4x4 matrix that will be used in the
             transformation.
         """
-        _dearpygui.apply_transform(self, transform)
+        try:
+            _dearpygui.apply_transform(self, transform)
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
 
 
@@ -938,28 +962,40 @@ class mvNodeEditor:
 
         :raises `SystemError`: DearPyGui-related error.
         """
-        return _dearpygui.get_selected_nodes(self)  # type:ignore
+        try:
+            return _dearpygui.get_selected_nodes(self)  # type:ignore
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     def selected_links(self, /) -> list[Item]:
         """Return the editor's selected links.
 
         :raises `SystemError`: DearPyGui-related error.
         """
-        return _dearpygui.get_selected_links(self)  # type:ignore
+        try:
+            return _dearpygui.get_selected_links(self)  # type:ignore
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     def clear_selected_nodes(self, /) -> None:
         """Clear the editor's selected nodes.
 
         :raises `SystemError`: DearPyGui-related error.
         """
-        _dearpygui.clear_selected_nodes(self)
+        try:
+            _dearpygui.clear_selected_nodes(self)
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     def clear_selected_links(self, /) -> None:
         """Clear the editor's selected links.
 
         :raises `SystemError`: DearPyGui-related error.
         """
-        _dearpygui.clear_selected_links(self)
+        try:
+            _dearpygui.clear_selected_links(self)
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
 
 
@@ -1133,13 +1169,22 @@ class mvPlotAxis:
 
     @property
     def limits(self, /) -> list[float]:
-        return _dearpygui.get_axis_limits(self)  # type: ignore
+        try:
+            return _dearpygui.get_axis_limits(self)  # type: ignore
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
     @limits.setter
     def limits(self, value: Sequence[float] | tuple[float, float], /) -> None:
-        _dearpygui.set_axis_limits(self, *value)
+        try:
+            _dearpygui.set_axis_limits(self, *value)
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
     @limits.deleter
     def limits(self, /) -> None:
-        _dearpygui.set_axis_limits_auto(self)
+        try:
+            _dearpygui.set_axis_limits_auto(self)
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     def set_pan_limits(self, vmin: float, vmax: float, /) -> None:
         """Apply pan constraints.
@@ -1152,14 +1197,20 @@ class mvPlotAxis:
 
         :raises `SystemError`: DearPyGui-related error.
         """
-        _dearpygui.set_axis_limits_constraints(self, vmin, vmax)
+        try:
+            _dearpygui.set_axis_limits_constraints(self, vmin, vmax)
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     def reset_pan_limits(self, /) -> None:
         """Remove the axis' pan limit constraints.
 
         :raises `SystemError`: DearPyGui-related error.
         """
-        _dearpygui.reset_axis_limits_constraints(self)
+        try:
+            _dearpygui.reset_axis_limits_constraints(self)
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     def set_zoom_limits(self, vmin: float, vmax: float, /) -> None:
         """Apply zoom constraints.
@@ -1172,14 +1223,20 @@ class mvPlotAxis:
 
         :raises `SystemError`: DearPyGui-related error.
         """
-        _dearpygui.set_axis_zoom_constraints(self, vmin, vmax)
+        try:
+            _dearpygui.set_axis_zoom_constraints(self, vmin, vmax)
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     def reset_zoom_limits(self, /) -> None:
         """Remove the axis' zoom constraints.
 
         :raises `SystemError`: DearPyGui-related error.
         """
-        _dearpygui.reset_axis_zoom_constraints(self)
+        try:
+            _dearpygui.reset_axis_zoom_constraints(self)
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     def set_ticks(self, label_pairs: Sequence[tuple[str, int | str]], /):
         """Update the axis' tick labels and values.
@@ -1190,14 +1247,20 @@ class mvPlotAxis:
 
         :raises `SystemError`: DearPyGui-related error.
         """
-        return _dearpygui.set_axis_ticks(self, label_pairs)
+        try:
+            return _dearpygui.set_axis_ticks(self, label_pairs)
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     def reset_ticks(self, /) -> None:
         """Clear explicitly set tick labels and values.
 
         :raises `SystemError`: DearPyGui-related error.
         """
-        return _dearpygui.reset_axis_ticks(self)
+        try:
+            return _dearpygui.reset_axis_ticks(self)
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     def auto_fit_data(self, /) -> None:
         """Set the viewing area of the plot to the boundries of
@@ -1205,7 +1268,10 @@ class mvPlotAxis:
 
         :raises `SystemError`: DearPyGui-related error.
         """
-        return _dearpygui.fit_axis_data(self)
+        try:
+            return _dearpygui.fit_axis_data(self)
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
 
 class mvPlot:
@@ -1249,14 +1315,23 @@ class mvPlot:
 
         :raises `SystemError`: DearPyGui-related error.
         """
-        _dearpygui.bind_colormap(self, colormap or 0)
+        try:
+            _dearpygui.bind_colormap(self, colormap or 0)
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     @property
     def query_rects(self) -> list[list[float]]:
-        return _dearpygui.get_plot_query_rects(self)
+        try:
+            return _dearpygui.get_plot_query_rects(self)
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     def _axis_from_index(self, index: SupportsIndex, /) -> int:
-        return _dearpygui.get_item_info(self)["children"][1][index]
+        try:
+            return _dearpygui.get_item_info(self)["children"][1][index]
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     def auto_fit_data(self, iaxis: SupportsIndex, /) -> None:
         """Set the viewing area of the plot to the boundries of
@@ -1267,7 +1342,10 @@ class mvPlot:
 
         :raises `SystemError`: DearPyGui-related error.
         """
-        return _dearpygui.fit_axis_data(self._axis_from_index(iaxis))
+        try:
+            return _dearpygui.fit_axis_data(self._axis_from_index(iaxis))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     def get_axis_limits(self, iaxis: SupportsIndex, /) -> list[float]:
         """Return the lower and upper limits of the axis.
@@ -1277,7 +1355,10 @@ class mvPlot:
 
         :raises `SystemError`: DearPyGui-related error.
         """
-        return _dearpygui.get_axis_limits(self._axis_from_index(iaxis))  # type: ignore
+        try:
+            return _dearpygui.get_axis_limits(self._axis_from_index(iaxis))  # type: ignore
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     def set_axis_limits(self, iaxis: SupportsIndex, ymin: float, ymax: float, /):
         """Set the axis' lower and upper limits.
@@ -1293,7 +1374,10 @@ class mvPlot:
 
         :raises `SystemError`: DearPyGui-related error.
         """
-        _dearpygui.set_axis_limits(self._axis_from_index(iaxis), ymin, ymax)
+        try:
+            _dearpygui.set_axis_limits(self._axis_from_index(iaxis), ymin, ymax)
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     def reset_axis_limits(self, iaxis: SupportsIndex, /):
         """Clear any set lower and upper limits.
@@ -1303,7 +1387,10 @@ class mvPlot:
 
         :raises `SystemError`: DearPyGui-related error.
         """
-        _dearpygui.set_axis_limits_auto(self._axis_from_index(iaxis))
+        try:
+            _dearpygui.set_axis_limits_auto(self._axis_from_index(iaxis))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     def set_axis_ticks(self, iaxis: SupportsIndex, label_pairs: Sequence[tuple[str, int | str]], /):
         """Update the axis' tick labels and values.
@@ -1317,7 +1404,10 @@ class mvPlot:
 
         :raises `SystemError`: DearPyGui-related error.
         """
-        return _dearpygui.set_axis_ticks(self._axis_from_index(iaxis), label_pairs)
+        try:
+            return _dearpygui.set_axis_ticks(self._axis_from_index(iaxis), label_pairs)
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     def reset_axis_ticks(self, iaxis: SupportsIndex, /):
         """Clear custom tick labels and values.
@@ -1327,7 +1417,10 @@ class mvPlot:
 
         :raises `SystemError`: DearPyGui-related error.
         """
-        return _dearpygui.reset_axis_ticks(self._axis_from_index(iaxis))
+        try:
+            return _dearpygui.reset_axis_ticks(self._axis_from_index(iaxis))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
 
 
@@ -1429,7 +1522,10 @@ class mvTable:
 
         :raises `SystemError`: DearPyGui-related error.
         """
-        return _dearpygui.is_table_cell_highlighted(self, irow, icol)
+        try:
+            return _dearpygui.is_table_cell_highlighted(self, irow, icol)
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     def is_column_highlighted(self, icol: int, /) -> bool:
         """Return True if a specific column is highlighted.
@@ -1439,7 +1535,10 @@ class mvTable:
 
         :raises `SystemError`: DearPyGui-related error.
         """
-        return _dearpygui.is_table_column_highlighted(self, icol)
+        try:
+            return _dearpygui.is_table_column_highlighted(self, icol)
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     def is_row_highlighted(self, irow: int, /) -> bool:
         """Return True if a specific row is highlighted.
@@ -1449,7 +1548,10 @@ class mvTable:
 
         :raises `SystemError`: DearPyGui-related error.
         """
-        return _dearpygui.is_table_row_highlighted(self, irow)
+        try:
+            return _dearpygui.is_table_row_highlighted(self, irow)
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     def set_cell_highlight(self, irow: int, icol: int, color: Array[int, Literal[3, 4]] | None, /) -> None:
         """Highlight or remove the highlight of a specific cell in
@@ -1467,10 +1569,13 @@ class mvTable:
 
         :raises `SystemError`: DearPyGui-related error.
         """
-        if color is None:
-            _dearpygui.unhighlight_table_cell(self, irow, icol)
-        else:
-            _dearpygui.highlight_table_cell(self, irow, icol, color)  # type: ignore
+        try:
+            if color is None:
+                _dearpygui.unhighlight_table_cell(self, irow, icol)
+            else:
+                _dearpygui.highlight_table_cell(self, irow, icol, color)  # type: ignore
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     def set_column_highlight(self, icol: int, color: Array[int, Literal[3, 4]] | None, /) -> None:
         """Highlight or remove the highlight of a specific column in
@@ -1485,10 +1590,13 @@ class mvTable:
 
         :raises `SystemError`: DearPyGui-related error.
         """
-        if color is None:
-            _dearpygui.unhighlight_table_column(self, icol)
-        else:
-            _dearpygui.highlight_table_column(self, icol, color)  # type: ignore
+        try:
+            if color is None:
+                _dearpygui.unhighlight_table_column(self, icol)
+            else:
+                _dearpygui.highlight_table_column(self, icol, color)  # type: ignore
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     def set_row_highlight(self, irow: int, color: Array[int, Literal[3, 4]] | None, /) -> None:
         """Highlight or remove the highlight of a specific row in
@@ -1503,10 +1611,13 @@ class mvTable:
 
         :raises `SystemError`: DearPyGui-related error.
         """
-        if color is None:
-            _dearpygui.unhighlight_table_row(self, irow)
-        else:
-            _dearpygui.highlight_table_row(self, irow, color)  # type: ignore
+        try:
+            if color is None:
+                _dearpygui.unhighlight_table_row(self, irow)
+            else:
+                _dearpygui.highlight_table_row(self, irow, color)  # type: ignore
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     def set_row_color(self, irow: int, color: Array[int, Literal[3, 4]] | None, /) -> None:
         """Update the background color of a row in the table.
@@ -1520,11 +1631,13 @@ class mvTable:
 
         :raises `SystemError`: DearPyGui-related error.
         """
-        if color is None:
-            _dearpygui.unset_table_row_color(self, irow)
-        else:
-            _dearpygui.set_table_row_color(self, irow, color)  # type: ignore
-
+        try:
+            if color is None:
+                _dearpygui.unset_table_row_color(self, irow)
+            else:
+                _dearpygui.set_table_row_color(self, irow, color)  # type: ignore
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
 
 
@@ -1623,12 +1736,15 @@ class mvStage:
 
         :raises `SystemError`: DearPyGui-related error.
         """
-        if not parent:
-            _dearpygui.unstage(self)
-            return
-
-        _dearpygui.push_container_stack(parent)
         try:
-            _dearpygui.unstage(self)
-        finally:
-            _dearpygui.pop_container_stack()
+            if not parent:
+                _dearpygui.unstage(self)
+                return
+
+            _dearpygui.push_container_stack(parent)
+            try:
+                _dearpygui.unstage(self)
+            finally:
+                _dearpygui.pop_container_stack()
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
