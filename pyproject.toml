@@ -75,9 +75,11 @@ inconsistent-inheritance = 'warn'
 
 
 #[ruff]
+[tool.ruff]
+extend-exclude = ["*.pyi"]
 [tool.ruff.lint]
 ignore = [
-    "E702",  # "2+ statements per-line (semicolon-delimited)"
-    "E402",  # "module import(s) not at top of file"
-    "E722",  # "do not use bare try-except blocks"
+    "E702",  # 2+ statements per-line (semicolon-delimited)
+    "E402",  # module import(s) not at top of file
+    "E722",  # do not use bare try-except blocks
 ]

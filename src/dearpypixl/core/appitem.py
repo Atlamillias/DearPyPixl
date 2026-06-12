@@ -160,9 +160,9 @@ class AppItem[U = typing.Any, V = typing.Any, P = typing.Any, C = typing.Any](in
                 _dearpygui.delete_item(self, children_only=children_only, slot=slot)
             except SystemError:
                 if children_only not in (0, 1, True, False):
-                    raise TypeError(f"`children_only` must be a boolean") from None
+                    raise TypeError("`children_only` must be a boolean") from None
                 if slot not in (-1, 0, 1, 2, 3):
-                    raise ValueError(f"`slot` must be 0, 1, 2, 3, or -1 (all child slots)") from None
+                    raise ValueError("`slot` must be 0, 1, 2, 3, or -1 (all child slots)") from None
                 raise
         except SystemError as e:
             raise DearPyGuiError.from_exception(e)

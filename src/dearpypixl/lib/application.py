@@ -183,9 +183,9 @@ _PROPERTY_LOCALS = {
 def _config_property(name):
     fget = metautil.create_function(
         name, ("self",), (
-            f"try:",
+            f"try:",  # noqa: F541
             f"    return getter()['{name}']",
-            f"except KeyError:",
+            f"except KeyError:",  # noqa: F541
             f"    raise AttributeError(f\"{name!r} not in dict returned from 'get_app_configuration()'\")"
         ),
         module=__name__, globals=globals(), locals=_PROPERTY_LOCALS,

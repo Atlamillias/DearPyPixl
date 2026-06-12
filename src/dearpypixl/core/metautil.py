@@ -20,7 +20,7 @@ _MISSING = object()
 
 type _SourceStrings = typing.Sequence[str]
 
-_DEFAULT_MODULE = types.ModuleType(f"<module>")
+_DEFAULT_MODULE = types.ModuleType("<module>")
 _DEFAULT_MODULE.__dict__.update(globals())
 
 _DEFAULT_LOCALS = {}

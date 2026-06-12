@@ -76,7 +76,7 @@ class mvErrorInfo:
         try:
             errno = mvErrorCode.from_message(message)
         except TypeError:
-            raise ValueError(f"cannot parse `message` — no error code found")
+            raise ValueError("cannot parse `message` — no error code found")
 
         text, _, message = message.partition("]")[2].strip().replace("mvAppItemType::", '').rpartition("Message:")
 
