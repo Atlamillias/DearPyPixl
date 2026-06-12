@@ -1,6 +1,10 @@
-""":meta private:"""
+"""Internal module containing various utilities for creating
+or extending interface types."""
 import sys
 import types
+import threading
+import collections.abc
+
 import typing
 if typing.TYPE_CHECKING:
     from dearpypixl.core.protocols import ItemCallback
@@ -304,3 +308,320 @@ ITEM_CALLBACK_CODE_0 = (lambda: None).__code__
 ITEM_CALLBACK_CODE_1 = (lambda sender=0: None).__code__
 ITEM_CALLBACK_CODE_2 = (lambda sender=0, app_data=None: None).__code__
 ITEM_CALLBACK_CODE_3 = (lambda sender=0, app_data=None, user_data=None: None).__code__
+
+
+class EventContainer[**P](collections.abc.MutableSequence):
+    """Creates a sequence-like callable that stores other like-signature
+    callables. Calling the container calls every object within it in
+    FIFO order; they receive any arguments passed to the container.
+
+    Instead of iterating over each object in the container, the delegation
+    procedure uses a vectorized function where calls to objects are in-lined.
+    This function is (re)compiled lazily when calling the container following
+    any mutations, so it is recommended to perform mutations enmasse to limit
+    how often the function gets re-compiled.
+
+    Container operations are thread-safe, iteration withstanding. The
+    :py:attr:`lock` is reentrant, so a user can acquire it themselves when
+    commiting several changes to ensure the lock is not released between
+    operations. Note that under certain conditions, holding the lock may
+    block other threads attempting to call the container until it is released.
+
+    Unlike a normal mutable sequence, `EventContainer` objects will ignore
+    any additions that are already present in the container (via `__eq__()`).
+    For example, `self.append(print)` will add the `print()` function as
+    expected, but `self.append(print)` again becomes a no-op because `print()`
+    is already registered.
+
+    A container can be serialized and copied. Copying a container creates
+    a shallow copy with a new internal lock.
+
+    The :py:meth:`remove()` method works similarly to `set().discard()`
+    where it will not throw an error if the input callable is not in the
+    container.
+
+    The :py:meth:`append()` returns the input callable instead of `None`,
+    allowing it to be used as a decorator.
+
+    :type iterable: `Iterable[Callable]` (optional)
+    :param iterable: Callables to initialize the container with.
+
+    :type positional_only: `bool` (optional)
+    :param positional_only: If `True`, callables in the container will
+        not receive keyword arguments during delegation. This optimizes
+        the procedure by omitting keyword argument unpacking during the
+        process. Recommended if the container will delegate to callables
+        only expecting positional arguments. Defaults to `False`.
+
+    :type parg_count: `int` (optional)
+    :param parg_count: Sets the container's call signature so that it requires
+        *n* positional arguments instead of accepting any number of positional
+        arguments. This optimizes the delegation procedure by telling the
+        compiler to inline positional argument references directly instead of
+        unpacking the argument tuple for each object called at runtime e.g.
+        `object(arg1, arg2)` vs `object(*args)`. Defaults to -1.
+    """
+    __slots__ = ("_lock", "_delegate", "_events", "_pargs_only", "_parg_count")
+
+    type T = typing.Callable[P, typing.Any]
+
+    @property
+    def events(self, /) -> tuple[T, ...]:
+        """[***get**, **set***] callables within the container.
+
+        Returns a snapshot of the container's contents as a tuple
+        on-access. On set, the container is emptied first, then
+        updated with the new contents.
+        """
+        return (*self._events,)
+    @events.setter
+    def events(self, value: typing.Iterable[T], /) -> None:
+        with self._lock:
+            self._events.clear()
+            self._events.extend(value)
+            self._delegate = None
+
+    _lock: threading.RLock
+
+    @property
+    def lock(self, /) -> threading.RLock:
+        """[***get**] the reentrant lock used internally to maintain
+        thread safety.
+
+        Managing code can hold the lock to ensure it is not released
+        in between operations.
+        """
+        return self._lock
+
+    _delegate: typing.Any
+
+    def __new__(cls, *args, **kwargs):
+        self = object.__new__(cls)
+        self._lock     = threading.RLock()
+        self._delegate = None
+        return self
+
+    def __init__(self, iterable: typing.Iterable[T] | None = None, *, positional_only: bool = True, parg_count: int = -1) -> None:
+        self._events = []
+        self._pargs_only = positional_only
+        self._parg_count = None if parg_count < 0 else parg_count
+
+        if iterable is not None:
+            self.extend(iterable)
+
+    def __getstate__(self, /) -> tuple[dict | None, dict]:
+        state = object.__getstate__(self)
+
+        slot_state = state[1]  # type: ignore
+        try:
+            del slot_state["_lock"]  # type: ignore
+        except KeyError:
+            pass
+        try:
+            del slot_state["_delegate"]  # type: ignore
+        except KeyError:
+            pass
+        return state  # type: ignore
+
+    def __setstate__(self, state: tuple[dict | None, dict], /):
+        dict_state, slot_state = state
+
+        if dict_state is not None:
+            assert hasattr(self, "__dict__")
+            self.__dict__.update(dict_state)
+
+        setattr = self.__setattr__
+        for attr, obj in slot_state.items():
+            setattr(attr, obj)
+
+    def __copy__(self, memo=None, /):
+        state = self.__getstate__()
+        state[1]["_events"] = self._events.copy()
+
+        copy = self.__new__(type(self))
+        copy.__setstate__(state)
+        return copy
+
+    def copy(self, /):
+        """Return a shallow copy of the container with a new internal lock."""
+        return self.__copy__()
+
+    def _compile_delegate(self, /, *, __no_op=lambda *args, **kwargs: None) -> typing.Callable[..., typing.Any]:
+        if len(self._events) == 0:
+            return __no_op
+
+        if self._parg_count is not None:
+            s_args = [f"arg{i}" for i in range(self._parg_count)]
+        else:
+            s_args = ("*args",)
+
+        if self._pargs_only:
+            s_kwds = ()
+        else:
+            s_kwds = ("**kwargs",)
+
+        fn_lcls = {f"func{i}":func for i,func in enumerate(self._events)}
+        fn_args = (*s_args, *s_kwds)
+        fn_body = f"({', '.join(fn_args)})\n".join(fn_lcls).split("\n")
+        fn_body[-1] = fn_body[-1] + f"({', '.join(fn_args)})"
+
+        return create_function("callback", fn_args, fn_body, module=__name__, locals=fn_lcls)
+
+    def compile(self, /) -> None:
+        """Compile or re-compile the internal, vectorized delegator function.
+
+        This is normally a lazy, implicit procedure. However, compiling the
+        function pre-emptively is more performant as it avoids exception
+        handling overhead.
+        """
+        with self._lock:
+            self._delegate = self._compile_delegate()
+
+    def __call__(self, *args: P.args, **kwargs: P.kwargs) -> None:
+        callback = self._delegate
+        try:
+            callback(*args, **kwargs)
+            return
+        except TypeError:
+            if callback is not None:
+                raise
+
+        with self._lock:
+            if self._delegate is not None:
+                callback = self._delegate
+            else:
+                callback = self._delegate = self._compile_delegate()
+
+        callback(*args, **kwargs)
+
+    def __repr__(self, /):
+        return f"{type(self).__name__}({self._events})"
+
+    # mutable sequence protocol
+
+    def __len__(self, /):
+        return len(self._events)
+
+    def __contains__(self, other, /):
+        try:
+            return other in self._events
+        except TypeError:
+            return False
+
+    def __iter__(self, /):
+        return iter(self._events)
+
+    def __reversed__(self, /):
+        return reversed(self._events)
+
+    @typing.overload
+    def __getitem__(self, index: typing.SupportsIndex, /) -> T: ...
+    @typing.overload
+    def __getitem__(self, slice: slice, /) -> typing.Self: ...
+    def __getitem__(self, index, /):
+        res = self._events[index]
+        if type(res) is list:
+            state = self.__getstate__()
+            state[1]["_events"] = res
+
+            copy = self.__new__(type(self))
+            copy.__setstate__(state)
+            return self
+
+        return res
+
+    @typing.overload
+    def __setitem__(self, index: typing.SupportsIndex, value: T, /) -> None: ...
+    @typing.overload
+    def __setitem__(self, slice: slice, value: typing.Iterable[T], /) -> None: ...
+    def __setitem__(self, index, value, /) -> None:
+        with self._lock:
+            if isinstance(index, slice):
+                buffer = self._events.copy()
+                buffer[index] = value
+
+                events = []
+                for obj in buffer:
+                    if obj not in events: events.append(obj)
+
+                self._events.clear()
+                self._events.extend(events)
+            else:
+                self._events[index] = value
+            self._delegate = None
+
+    @typing.overload
+    def __delitem__(self, index: typing.SupportsIndex, /) -> None: ...
+    @typing.overload
+    def __delitem__(self, slice: slice, /) -> None: ...
+    def __delitem__(self, index, /):
+        with self._lock:
+            del self._events[index]
+            self._delegate = None
+
+    def reverse(self, /) -> typing.Self:  # pyrefly: ignore [bad-override]
+        with self._lock:
+            self._events.reverse()
+            self._delegate = None
+        return self
+
+    def sort(self, /, *, key: typing.Callable[[T], typing.Any], reverse: bool = False) -> typing.Self:
+        with self._lock:
+            self._events.sort(key=key, reverse=reverse)
+            self._delegate = None
+        return self
+
+    def index(self, value: str, /, start: typing.SupportsIndex = 0, stop: typing.SupportsIndex | None = None) -> int:
+        if stop is not None:
+            return self._events.index(value, start, stop)
+        return self._events.index(value, start)
+
+    def insert(self, index: typing.SupportsIndex, value: str, /) -> None:
+        with self._lock:
+            if value in self._events:
+                return
+            self._events.insert(index, value)
+            self._delegate = None
+
+    def append(self, callback: T, /) -> T:  # pyrefly: ignore [bad-override]
+        with self._lock:
+            if callback not in self._events:
+                self._events.append(callback)
+                self._delegate = None
+        return callback
+
+    def extend(self, iterable: typing.Iterable[T], /) -> None:
+        with self._lock:
+            events = self._events
+            length = len(events)
+            events.extend((obj for obj in iterable if obj not in events))
+            if len(events) != length:
+                self._delegate = None
+
+    def __add__(self, other: typing.Iterable[T], /) -> typing.Self:
+        copy = self.__copy__()
+        copy.extend(other)
+        return copy
+
+    def __iadd__(self, other: typing.Iterable[T], /) -> typing.Self:
+        self.extend(other)
+        return self
+
+    def remove(self, callback: typing.Any, /) -> None:
+        with self._lock:
+            try:
+                self._events.remove(callback)
+            except ValueError:
+                pass
+            self._delegate = None
+
+    def pop(self, index: typing.SupportsIndex = -1, /) -> T:
+        with self._lock:
+            res = self._events.pop(index)
+            self._delegate = None
+        return res
+
+    def clear(self, /) -> None:
+        with self._lock:
+            self._events.clear()
+            self._delegate = None
