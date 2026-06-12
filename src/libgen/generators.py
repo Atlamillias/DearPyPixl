@@ -1,3 +1,5 @@
+# ruff: noqa: F541
+import os
 import types
 import typing
 import re
@@ -14,11 +16,11 @@ import importlib.metadata
 
 from dearpygui import dearpygui
 
-import metadata
-from metadata import FeatureFlag, ParameterFlag, DearPyGuiMetadata, ItemTypeInfo
+import metadata  # pyrefly: ignore [missing-import]
+from metadata import FeatureFlag, ParameterFlag, DearPyGuiMetadata, ItemTypeInfo  # pyrefly: ignore [missing-import]
 
 
-
+os.environ["DPX_NO_WARNINGS"] = '1'
 
 try:
     DPX_VERSION = importlib.metadata.version('dearpypixl')
@@ -164,8 +166,6 @@ class FileSpec[T1: type[FileGenerator], T2: type[FileGenerator]]:
 # [ item type library generators ]
 
 class _ItemsGenerator(FileGenerator):
-    __slots__ = ("metadata",)
-
     mimetype = "text/x-python"
     module_name = "dearpypixl_lib_items.py"
 
@@ -198,7 +198,7 @@ class _ItemsGenerator(FileGenerator):
 
     def __init__(self, metadata: DearPyGuiMetadata, /) -> None:
         super().__init__(metadata)
-        self._shared_properties = dict()
+        self.shared_properties = dict()
 
     @staticmethod
     def _get_configuration_null_value(parameter: metadata.Parameter, /) -> str | None:
@@ -333,24 +333,34 @@ class ItemsCodeGenerator(_ItemsGenerator):
         buffer = [
             f"@property",
             f"def {identifier}(self, /, *, __func=_dearpygui.{getter}):",
-            f"    return __func(self)[\"{name}\"]",
+            f"    try:",
+            f"        return __func(self)[\"{name}\"]",
+            f"    except KeyError:",
+            f"        raise AttributeError(f\"'{name}' not in dict returned from '{getter}({{self.tag}})'`\")",
+            f'    except SystemError as e:',
+            f'        raise DearPyGuiError.from_exception(e)',
         ]
 
         if setter is not None:
             if not isinstance(setter, str):
                 setter = setter.__name__
-
             buffer.extend((
                 f"@{identifier}.setter",
                 f"def {identifier}(self, value, /, *, __func=_dearpygui.{setter}):",
-                f"    __func(self, {name}=value)",
+                f'    try:',
+                f"        __func(self, {name}=value)",
+                f'    except SystemError as e:',
+                f'        raise DearPyGuiError.from_exception(e)',
             ))
 
             if default is not MISSING:
                 buffer.extend((
                     f"@{identifier}.deleter",
                     f"def {identifier}(self, /, *, __func=_dearpygui.{setter}):",
-                    f"    __func(self, {name}={default})",
+                    f'    try:',
+                    f"        __func(self, {name}={default})",
+                    f'    except SystemError as e:',
+                    f'        raise DearPyGuiError.from_exception(e)',
                 ))
 
         buffer.append('')
@@ -411,7 +421,10 @@ class ItemsCodeGenerator(_ItemsGenerator):
 
         buffer.append(f"    @classmethod")
         buffer.append(f"    def create(cls, /, {signature}, __func=_dearpygui.{type_info.command}, **kwargs):  # ty: ignore[invalid-method-override]")
-        buffer.append(f"        return cls(tag=__func({", ".join(arguments)}))  # ty: ignore[invalid-argument-type]")
+        buffer.append(f"        try:")
+        buffer.append(f"            return cls(tag=__func({", ".join(arguments)}))")
+        buffer.append(f"        except SystemError as e:")
+        buffer.append(f"            raise DearPyGuiError.from_exception(e)")
         # HACK: make the `item_type` argument of `mvThemeComponent.create()` compatible
         # with item type classes
         if type_name == "mvThemeComponent":
@@ -437,7 +450,7 @@ class ItemsCodeGenerator(_ItemsGenerator):
 
                 if p.name not in self._SKIPPED_ASSIGNMENTS:
                     buffer.append(f"    {p.name} = _property__{p.name}")
-                    self._shared_properties[p.name] = p
+                    self.shared_properties[p.name] = p
 
                 members_seen.add(p.name)
 
@@ -481,7 +494,8 @@ class ItemsCodeGenerator(_ItemsGenerator):
                         continue
                     elif isinstance(child_node, ast.Name) and child_node.id.startswith("mv"):
                         for name_node in node.targets:
-                            self._late_assignments[type_name][name_node.id] = s.partition("=")[-1].strip()
+                            name_node_id = name_node.id  # type: ignore
+                            self._late_assignments[type_name][name_node_id] = s.partition("=")[-1].strip()
                         continue
 
                 elif isinstance(node, ast.FunctionDef):
@@ -505,6 +519,7 @@ class ItemsCodeGenerator(_ItemsGenerator):
 
 
         content.append("from dearpypixl.core.appitem import *")
+        content.append("from dearpypixl.core.errors import DearPyGuiError")
         content.append("")
         content.append("from dearpygui import dearpygui, _dearpygui")
         content.append("")
@@ -544,18 +559,25 @@ class ItemsCodeGenerator(_ItemsGenerator):
             else:
                 content.extend(self._generate_property(state, "get_item_state"))
 
+
+
         content.append('@property')
         content.append('def _property__rect_min2(self, /, *, __func=_dearpygui.get_item_state):')
-        content.append('    return __func(self)["pos"]')
+        content.append('    try:')
+        content.append('        return __func(self)["pos"]')
+        content.append('    except SystemError as e:')
+        content.append('        raise DearPyGuiError.from_exception(e)')
         content.append('')
         content.append('@property')
         content.append('def _property__rect_max2(self, /, *, __func=_dearpygui.get_item_state):')
-        content.append('    state = __func(self)')
+        content.append('    try:')
+        content.append('        state = __func(self)')
+        content.append('    except SystemError as e:')
+        content.append('        raise DearPyGuiError.from_exception(e)')
         content.append('    x_pos, y_pos  = state["pos"]')
         content.append('    width, height = state["rect_size"]')
         content.append('    return [x_pos + width, y_pos + height]')
         content.append('')
-
         content.append('')
 
 
@@ -564,21 +586,33 @@ class ItemsCodeGenerator(_ItemsGenerator):
         for s in ("x", "y"):
             content.append(f'@property')
             content.append(f'def _property__{s}_scroll_max(self, /, *, __func=_dearpygui.get_{s}_scroll_max):')
-            content.append(f'    return __func(self)')
+            content.append(f'    try:')
+            content.append(f'        return __func(self)')
+            content.append(f'    except SystemError as e:')
+            content.append(f'        raise DearPyGuiError.from_exception(e)')
             content.append('')
+
             content.append(f'@property')
             content.append(f'def _property__{s}_scroll_pos(self, /, *, __func=_dearpygui.get_{s}_scroll):')
-            content.append(f'    return __func(self)')
+            content.append(f'    try:')
+            content.append(f'        return __func(self)')
+            content.append(f'    except SystemError as e:')
+            content.append(f'        raise DearPyGuiError.from_exception(e)')
             content.append(f'@_property__{s}_scroll_pos.setter')
             content.append(f'def _property__{s}_scroll_pos(self, value, /, *, __func=dearpygui.set_{s}_scroll) -> None:')
-            content.append(f'    __func(self, value)')
+            content.append(f'    try:')
+            content.append(f'        __func(self, value)')
+            content.append(f'    except SystemError as e:')
+            content.append(f'        raise DearPyGuiError.from_exception(e)')
             content.append('')
 
         content.append("")
 
         content.extend(("# configuration properties", ""))
-        for name in sorted(self._shared_properties):
-            param = self._shared_properties[name]
+        for name in sorted(self.shared_properties):
+            if name == "pos":
+                continue
+            param = self.shared_properties[name]
             null  = self._get_configuration_null_value(param)
 
             if null is not None:
@@ -701,6 +735,7 @@ class ItemsStubGenerator(_ItemsGenerator):
         return buffer
 
     _RE_DOCPARAM = re.compile(r"(?P<name>[a-zA-Z][a-zA-Z0-9_]*)\s*(\(.+\))?:(?P<desc>.*)\n")
+    _RE_ARGVAL_ASSIGN = re.compile(r"(?P<chr1>[^\s])=(?P<chr2>[^\s])")
 
     def _generate_class_entry(self, type_info: ItemTypeInfo, /, *, level: int = 0):
         buffer = []
@@ -748,7 +783,6 @@ class ItemsStubGenerator(_ItemsGenerator):
 
         if flags & FeatureFlag.PARENT:
             C = ", C"
-            bases.append("ContainerItem")
             buffer.append(", C: ")
             if type_name.endswith("HandlerRegistry"):
                 buffer.append(f"_HandlerItem[Any, {type_name}] = _HandlerItem")
@@ -756,7 +790,12 @@ class ItemsStubGenerator(_ItemsGenerator):
                 buffer.append(f"_ElementItem[Any, Any, {type_name}] = _ElementItem")
             else:
                 buffer.append(f"ChildItem[Any, Any, {type_name}, Any] = ChildItem")
-            bases.append("ContainerItem[U{V}{P}{C}]")
+
+            # list `ContainerItem` before `ChildItem`
+            if "ChildItem[U{V}{P}{C}]" in bases:
+                bases.insert(bases.index("ChildItem[U{V}{P}{C}]"), "ContainerItem[U{V}{P}{C}]")
+            else:
+                bases.append("ContainerItem[U{V}{P}{C}]")
 
         buffer.append(']')
         del flags
@@ -778,11 +817,14 @@ class ItemsStubGenerator(_ItemsGenerator):
 
             head, _, tail = head.partition("Args:\n")
 
-            docstring_desc = textwrap.wrap(' '.join(head.split()).strip(), initial_indent="    ", subsequent_indent="    ")
+            docstring_desc = textwrap.wrap(' '.join(head.split()).strip(), subsequent_indent="    ")
             if docstring_desc:  # class-level docstring
-                buffer.append('    """')
-                buffer.extend(docstring_desc)
-                buffer.append('    """')
+                if len(docstring_desc) == 1:
+                    buffer.append(f'    """{docstring_desc[0]}"""')
+                else:
+                    buffer.append(f'    """{docstring_desc[0]}')
+                    buffer.extend(docstring_desc[1:])
+                    buffer.append(f'    """')
 
             for m in self._RE_DOCPARAM.finditer(tail):
                 p_name = m.group('name')
@@ -813,7 +855,6 @@ class ItemsStubGenerator(_ItemsGenerator):
 
             docstring_params.append(f"    :type {name}: `{anno}`{' *(optional)*' if anno is not p.empty else ''}")
             docstring_params.extend(textwrap.wrap(f"    :param {name}: {param_doc_map.get(name, '')}", subsequent_indent="        "))
-            docstring_params.append('')
 
         # HACK: make the `item_type` argument of `mvThemeComponent.create()` compatible with item type classes
         if type_name == "mvThemeComponent":
@@ -960,7 +1001,7 @@ class ItemsStubGenerator(_ItemsGenerator):
 
                 if isinstance(node, ast.Assign):
                     assert len(node.targets) == 1
-                    name = node.targets[0].id
+                    name = node.targets[0].id  # type: ignore
 
                     if name.startswith("__") and name.endswith("__"):
                         continue
@@ -991,7 +1032,8 @@ class ItemsStubGenerator(_ItemsGenerator):
                             # skip the actual implementation for funcs with overloads
                             continue
 
-                        if doc_params and not isinstance(node.body[0].value.value, str):
+                        _node_doc = node.body[0].value.value  # type: ignore
+                        if doc_params and not isinstance(_node_doc, str):
                             s = s.rstrip("... \n") + f'\n    """{doc_params}"""'
 
                 if doc_params:
@@ -999,15 +1041,42 @@ class ItemsStubGenerator(_ItemsGenerator):
                 else:
                     s = s.rpartition("    ...")[0].rstrip() + " ..."
 
-                for ln in s.splitlines():
-                    buffer.append(f"    {ln}")
+                # do some last-minute formatting
+                lines = []
+
+                sig, _, doc = s.partition('"""')
+
+                sig = sig.rstrip()
+                # `ast.unparse()` doesn't include whitespace in default arg assignments
+                sig = self._RE_ARGVAL_ASSIGN.sub(r"\g<chr1> = \g<chr2>", sig)
+                # quiets the type checker (doesn't like the `None` default)
+                sig = sig.replace('user_data: T = None', 'user_data: T = ...', 1)
+                for ln in sig.splitlines():
+                    lines.append(f"    {ln}")
+
+                # `ast.unparse()` indents all but the first docstring line one additional
+                # level -- remove these (rather, DON'T indent them further)
+                if doc:
+                    doc = '        """' + doc.lstrip()
+
+                    doclines = doc.splitlines()
+                    lines.append(doclines.pop(0))
+
+                    for ln in doclines:
+                        lines.append(ln)
+
+                buffer.extend(lines)
 
         buffer.append("")
 
 
         # functional API
 
-        docstring = ['    """', *docstring_desc, '', *docstring_params, ''] if docstring_desc else ['    """', *docstring_params, '']
+        if docstring_desc:
+            docstring = [f'    """{docstring_desc[0]}', *docstring_desc[1:], '', *docstring_params]
+        else:
+            docstring = ['    """', *docstring_params]
+
         docstring.append('    :raises `SystemError`: DearPyGui-related error.')
         docstring.append('    """')
 
@@ -1180,9 +1249,13 @@ class ConstantsCodeGenerator(FileGenerator):
 
         content.append('import enum')
         content.append('')
+        content.append('from dearpypixl.core.errors import mvErrorCode as mvErrorCode')
+        content.append('')
         content.append('from dearpygui import _dearpygui')
         content.append('')
         content.append('')
+
+        self._exports.append("mvErrorCode")
 
         namespace_map = self._get_const_namespace_map(self.metadata.constants)
 

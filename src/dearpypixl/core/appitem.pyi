@@ -51,7 +51,7 @@ class _ItemStateDict(TypedDict):
     rect_size: NotRequired[Annotated[list[int], 2]]
     content_region_avail: NotRequired[Annotated[list[int], 2]]
 
-type _ItemStateDict = _ItemStateDict | Any
+type _ItemStateDict = _ItemStateDict | Any  # pyrefly: ignore [redefinition]
 
 class _ItemInfoDict(TypedDict):
     children: Mapping[Literal[0, 1, 2, 3], list[Item]]
@@ -74,7 +74,7 @@ class _ItemInfoDict(TypedDict):
     toggled_open_handler_applicable: bool
     resized_handler_applicable: bool
 
-type _ItemInfoDict = _ItemInfoDict | Any
+type _ItemInfoDict = _ItemInfoDict | Any  # pyrefly: ignore [redefinition]
 
 
 class AppItemType(type):
@@ -155,7 +155,7 @@ class AppItem[U = Any, V = Any, P: ContainerItem[Any, Any, Any, Any] | None = An
         attempt will result in `SystemError`.
         """
     @property
-    def tag(self, /) -> Item:
+    def tag(self, /) -> Item:  # pyrefly: ignore [bad-override]
         """**[*get*]** the associated item's unique integer or string
         identifier (integer by default)."""
     @property
@@ -415,19 +415,6 @@ class ChildItem[U = Any, V = Any, P: ContainerItem[Any, Any, Any, Any] = Any, C:
 
         :raises `SystemError`: DearPyGui-related error.
         """
-    def unstage(self, /) -> None:
-        """Remove this item from its stage parent and move it to the
-        item currently atop the container stack.
-
-        The child's current parent must be a `myAppItemType::mvStage`
-        item. Additionally, the container stack cannot be empty.
-        Finally, the top-most item on the container stack must be a
-        suitable parent for the item.
-
-        Similar to `dearpygui.unstage_item(self)`.
-
-        :raises `SystemError`: DearPyGui-related error.
-        """
 
 
 class ContainerItem[U = Any, V = Any, P: ContainerItem[Any, Any, Any, Any] | None = Any, C: ChildItem[Any, Any, Any, Any] = Any](AppItem[U, V, P, C]):
@@ -479,7 +466,7 @@ class ContainerItem[U = Any, V = Any, P: ContainerItem[Any, Any, Any, Any] | Non
     def __delitem__(self, index: SupportsIndex, /) -> None: ...
     @overload
     def __delitem__(self, slice: slice, /) -> None: ...
-    def index(self, item: Item, /, *, slot: Literal[0, 1, 2, 3, -1, -2, -3, -4] | None = ...) -> int:
+    def index(self, item: Item, /, slot: Literal[0, 1, 2, 3, -1, -2, -3, -4] | None = ...) -> int:
         """Get the position of *item* within the specified child slot.
 
         :type item: `Item`
@@ -548,69 +535,297 @@ class ContainerItem[U = Any, V = Any, P: ContainerItem[Any, Any, Any, Any] | Non
 
 
 class CompositeItem:
-    """A mixin class for creating interfaces of custom or complex items.
+    """A mixin class for creating and managing complex, self-contained,
+    and standalone items, widgets, or larger components involving several
+    other items. They are the "useful" things you create using DearPyGui's
+    built-in items.
 
-    A composite item is an item that requires one or more other items
-    to function. They are the higher-level, more "complete" components
-    of a user interface. The item, item dependencies, and other resources
-    required by the item are created and freed via :py:meth:`create()`
-    and :py:meth:`destroy()` methods, respectively.
+    While typical built-in items can be managed using DearPyGui's functional
+    and/or DearPyPixl's object-oriented APIs at the user's discretion, items
+    created via the `create()` method of a dedicated :py:class:`CompositeItem`
+    class are expected to be managed using interfaces (instances) of that
+    class. Using DearPyGui's functional API may put the item in an
+    undesirable state. However, the item is not bound to a single specific
+    interface similarly to basic items and built-in item types. This works
+    by having all interfaces operating on the same item reference a single
+    state dictionary -- one it finds as the composite item's `user_data`.
 
-    The state of a composite item interface is stored in their associated
-    item's `user_data`. When an interface is created, it checks the item's
-    `user_data` field. If the value is not a Python `dict` object, it is
-    set to the interface's `__dict__` attribute. Otherwise, the interface's
-    `__dict__` is set to the returned dictionary. This behavior:
-    * allows users to implement their own custom item classes the way
-    they typically would — implementing :py:meth:`AppItem.create()` instead
-    of `__new__()` or `__init__()` is the only difference
-    * removes the need to synchronize the item's state with that of a specific
-    object
-    * keeps the relationship between DearPyGui items and DearPyPixl
-    interfaces consistent — items are stateful, interfaces are not, and any
-    number of interfaces can exist for any one item
-    * reduces Python reference management and object coupling — if your code can
-    access the composite item's identifier, it has access your custom API just
-    by creating a new interface object
-    * is transparent — this class overrides :py:property:`AppItem.user_data`,
-    :py:meth:`AppItem.configure()`, and :py:meth:`AppItem.configuration()` so
-    your own `user_data` can be managed as normal
+    To create a composite item type class, your class must derive from at
+    least two classes -- :py:class:`CompositeItem` and any :py:class:`AppItem`
+    class or subclass -- where the former is listed *before* the latter
+    in the class' list of base classes. Then, you need to define your
+    constructor. In DearPyPixl, this is almost always the
+    :py:meth:`AppItem.create()` class method, *not* `__new__()` or `__init__().
+    However, it is implemented similarly -- create your interface, your item(s),
+    set your state, and return an instance of the class:
+    ```python
+    import dearpypixl as dpx
 
-    Since any additional state is tied to a specific item, :py:meth:`AppItem.delete()`
-    or `dearpygui.delete_item(item)` is enough to free most resources *eventually*.
-    Lingering interface references may prevent Python from deallocating the state
-    dictionary in a timely manner, and resources like database connections may
-    remain alive longer than desired if not explicitly closed. The interface
-    destructor method :py:meth:`CompositeItem.destroy()` facilitates this clean up
-    by:
-    - calling the `destroy()` method (if applicable, otherwise `dearpygui.delete_item(item)`)
-    on every object in the :py:attr:`components` collection
-    - deleting the associated item via `dearpygui.delete_item(item)`
-    - clearing the interface's state dictionary
-    :py:meth:~`CompositeItem.destroy()` can be overriden as necessary.
+    class DynamicCombo(dpx.CompositeItem, dpx.mvGroup):
+        '''Creates a combo box with a left-aligned label that updates the list of
+        available choices immediately before displaying them via a callback.'''
 
-    ***NOTE**: :py:class:`CompositeItem` is **not** a subclass of :py:class:`AppItem`.
-    However, the resulting class that uses it as a base should be a subclass of
-    :py:class:`AppItem`. Additionally, this solid base class should be listed before
-    other :py:class:`AppItem` bases. When compile-time optimizations are disabled (e.g.
-    `__debug__ = True`), a warning will be issued when creating the class with an
-    incorrect order of bases, or when the resulting class is not a subclass of
+        @classmethod
+        def create(
+            cls,
+            items = (),
+            *,
+            default_value = '',
+            update_callback = None,
+            callback = None,
+            width = 0,
+            horizontal_spacing = 0.0,
+            label = None,
+            tag = 0,
+            parent = 0,
+            before = 0,
+            use_internal_label = True,
+            user_data = None,
+        ):
+            # invoke `mvGroup.create()`, creating our item & interface
+            self = super().create(
+                horizontal=True,
+                width=width,
+                horizontal_spacing=horizontal_spacing,
+                label=label,
+                width=width,
+                use_internal_label=use_internal_label,
+                user_data=user_data,
+                tag=tag,
+                parent=parent,
+                before=before,
+            )
+
+            # add our children (creating our actual "widget")
+            with self:
+                self.text  = dpx.add_text(label)
+                self.combo = dpx.add_combo(items, width=-1, default_value=value, callback=callback)
+
+            self.update_callback = update_callback
+            # set up our handler for our additional event
+            with dpx.item_handler_registry() as self.combo.handlers:
+                dpx.add_item_clicked_handler(callback=update_callback)
+
+            return self
+
+    # optional -- add an "functional" alias for our constructor
+    add_dynamic_combo = DynamicCombo.create
+
+    ```
+    Now we can use it like any other built-in item interface type:
+    ```python
+
+    ...  # DPG setup boilerplate
+
+    # we rotate between these two sets
+    choices = [('apple', 'orange', 'banana'), ('potato', 'cabbage', 'carrot')]
+
+    def update_choices():
+        # get the appropriate interface
+        item = DynamicCombo('food_combo')
+        item.combo.value = choices[0]
+
+        # rotate our sets
+        choices.append(choices.pop(0))
+
+    def on_choice(sender, value):
+        print(value)
+
+    with dpx.window() as w:
+        item = add_dynamic_combo(
+            label="Food", tag='food_combo', update_callback=update_choices, callback=on_choice,
+        )
+    ```
+    While this works, our widget is not very transparent. In `update_choices()`,
+    we need to set the combo box's value explicitly. Additionally,
+    `update_callback` cannot easily be changed, and trying to update some
+    settings like `label` doesn't quite work the way a typical user might expect.
+    As-is, a user still must be aware of how our item is made so they can access
+    and manage the parts individually. All we really did was make what *could*
+    have been a function, a class. If you're OK with that, then just write
+    a function instead and save yourself the complexity.
+
+    Anyway, let's make some adjustments:
+    ```python
+    class DynamicCombo(dpx.CompositeItem, dpx.mvGroup):
+
+        @classmethod
+        def create(
+            cls,
+            items = (),
+            *,
+            default_value = '',
+            update_callback = None,
+            callback = None,
+            width = 0,
+            horizontal_spacing = 0.0,
+            tag = 0,
+            parent = 0,
+            before = 0,
+            use_internal_label = True,
+            user_data = None,
+        ):
+            self = super().create(
+                horizontal=True,
+                width=width,
+                horizontal_spacing=horizontal_spacing,
+                width=width,
+                use_internal_label=use_internal_label,
+                user_data=user_data,
+                tag=tag,
+                parent=parent,
+                before=before,
+            )
+
+            with self:
+                self.text  = dpx.add_text()
+                self.combo = dpx.add_combo(width=-1, callback=self._on_value_updated)
+
+            with dpx.item_handler_registry() as self.combo.handlers:
+                dpx.add_item_clicked_handler(callback=self._on_display_items)
+
+            self.label = label
+            self.items = items
+            self.value = default_value
+            self.callback = callback
+            self.update_callback = update_callback
+
+            return self
+
+        def _on_display_items(self):
+            callback = self.update_callback
+            if callback is not None:
+                callback(self)
+
+        def _on_value_updated(self):
+            callback = self.callback
+            if callback is not None:
+                callback(self, value)
+
+        @property
+        def label(self):
+            return dpx.get_item_configuration(self)["label"]
+        @label.setter
+        def label(self, value):
+            dpx.configure_item(self, label=value)
+            self.text.value = value or ''
+        @label.deleter
+        def label(self):
+            dpx.configure_item(self, label=None)
+            self.text.value = ''
+
+        @property
+        def items(self):
+            return self.combo.items
+        @items.setter
+        def items(self, value):
+            self.combo.items = value
+
+        @property
+        def value(self):
+            return self.combo.value
+        @value.setter
+        def value(self, value):
+            self.combo.value = value
+
+        def configure(self, **kwargs):
+            for attr in ('label', 'callback', 'update_callback', 'items'):
+                if attr in kwargs:
+                    setattr(self, attr, kwargs.pop(attr))
+            super().configure(**kwargs)
+
+        def configuration(self):
+            config = super().configuration()
+            config['callback'] = self.callback
+            config['update_callback'] = self.update_callback
+            config['items'] = self.items
+            return config
+
+    ```
+    In this version, we add a few additional members and override a few
+    others. Now, anyone who uses the class does not need to be aware of
+    the `text` and `combo` items as we've exposed ways of managing any
+    relevant settings on the interface. We've also added a layer of
+    indirection for both callbacks, allowing users to access and set
+    them without calling the DearPyGui library. We've covered up most
+    of our implementation details, making the instance fairly transparent
+    to anything expecting a "flat" item interface.
+
+    We still have a loose end, though. What happens when we delete the
+    item? Well, the exact same thing that happens when you delete any
+    DearPyGui item. If the composite item's dependencies only consist
+    of its own children and you *don't* keep **strong interface references**,
+    then simply deleting the item (by any means) is enough. In the case
+    of *our* item, however, the item handler registry formerly bound to
+    our underlying combo box will persist. This memory leak is more
+    problematic than it appears -- the handler and handler registry
+    are one thing, but we gave the handler an instance method as its
+    callback. Bound methods **keep a strong reference** to the object
+    they are bound to, which prevents Python from deallocating our item's
+    state dictionary! Rather than expecting users to keep track of our
+    resources, we expect them to call the interface's :py:meth:`destroy()`
+    method instead.
+
+    The :py:meth:`AppItem.destroy()` method is the dedicated destructor for
+    interfaces and their associated items. For interfaces of built-in
+    item type classes, :py:meth:`AppItem.destroy()` is nearly identical to
+    :py:meth:`delete()` and `delete_item()` except it does not raise an
+    error if the item does not exist. All we need to do to on our end is
+    ensure that our handler registry gets destroyed when `destroy()` is
+    called. We could override it, but there's an easier way --
+    :py:meth:`CompositeItem.destroy()` will also iterate through
+    the :py:attr:`components` attribute when possible, explicitly
+    destroying every item it finds. For interfaces, this involves calling
+    their respective `destroy()` methods. Other items are destroyed via the
+    `delete_item()` function. So, we simply add our registry to a collection
+    and assign it to the :py:attr:`components` attribute:
+    ```python
+            # in DynamicCombo.create()
+            ...
+
+            with dpx.item_handler_registry() as handlers:
+                dpx.add_item_clicked_handler(callback=self._on_display_items)
+
+            self.combo.handlers = handlers
+            self.components = (handlers,)
+
+            ...
+
+            return self
+    ```
+    :py:meth:`CompositeItem.destroy()` does one additional thing at the very
+    end of the call -- it clears the item's state dictionary. This means that
+    even if the state dictionary is kept alive via lingering interface
+    references, it will no longer be responsible for keeping its resources
+    alive as well.
+
+
+    ***NOTE**: When compile-time optimizations are disabled
+    (e.g. `__debug__ = True`), a warning is issued when creating a subclass
+    where an :py:class:`AppItem` class is listed as a parent before
+    :py:class:`CompositeItem`, or when the resulting class is not a subclass of
     :py:class:`AppItem`.*
 
-    ***NOTE**: The `__dict__` attribute of :py:class`ComponentItem` objects must be
-    writable. This is mostly redundant, however, as a subclass cannot declare non-empty
-    `__slots__` as a consequence of deriving from :py:class:`AppItem` (a subclass of
-    `int`).*
+    ***NOTE**: The `__dict__` attribute of :py:class`ComponentItem` instances
+    must be writable. This is mostly redundant, however, as a subclass cannot
+    declare non-empty `__slots__` as a consequence of deriving from
+    :py:class:`AppItem` (a subclass of `int`).*
 
     :vartype components: `Collection[AppItem | Item]`
     :var components: Other items that should be destroyed when calling
-        the interface's :py:meth:`AppItem.destroy()` method. These are
+        the interface's :py:meth:`destroy()` method. These are
         dependencies created along with the associated item and interface via
         :py:meth:`create()` that would not otherwise be destroyed when the item
         is deleted e.g. theme, handler registry, etc.
     """
     components: Collection = ()
     def __init__(self: Any, /, tag: Item = ...) -> None: ...
+    def refresh(self, /) -> Any:
+        """Update the item's display if its states are dirty.
+
+        The default implementation of this method is a no-op. It should be
+        overridden as needed.
+        """
 
 
 class SupportsValueArray[T]:

@@ -1,7 +1,6 @@
 """:meta private:"""
-import sys
 import typing
-from typing import Never
+import sys
 
 from dearpygui import dearpygui as _dearpygui
 
@@ -142,11 +141,13 @@ type Mappable[KT: typing.Hashable, VT] = SupportsKeysAndGetItem[KT, VT] | typing
 type Item = int | str
 
 
-class ItemCommand[**P](typing.Protocol):
+class ItemCommand[T: Item](typing.Protocol):
     __name__: str
-    __defaults__: tuple
-    __kwdefaults__: dict[str, typing.Any] | None
-    def __call__(self, /, *args: P.args, **kwargs: P.kwargs) -> Item: ...
+    def __call__(self, /, *, tag: Item = ..., **kwargs) -> Item: ...
+
+class ItemChildCommand[T: Item](typing.Protocol):
+    __name__: str
+    def __call__(self, /, *, tag: Item = ..., parent: Item = ..., before: Item = ..., **kwargs) -> T: ...
 
 
 class ItemCallback0(Function, typing.Protocol):
@@ -219,71 +220,3 @@ class mvMat4:
     def __rmul__(self, other: typing.Self | float, /) -> mvMat4: ...
 
 mvMat4 = typing.cast(type[mvMat4], _dearpygui.mvMat4)  # ty:ignore[invalid-assignment]
-
-
-
-
-# [ other types ]
-
-type true = typing.Literal[True]
-type false = typing.Literal[False]
-
-
-type _FGet[GT] = typing.Callable[[typing.Any], GT]
-type _FSet[ST] = typing.Callable[[typing.Any, ST], None]
-type _FDel = typing.Callable[[typing.Any], None]
-
-type _NoDeleter = typing.Literal[False] | None | Never
-
-# XXX: As a protocol, type checkers flag this as incompatible with
-# `property()` due to the overloads for `__new__()`. Since type checkers
-# handle `property()` uniquely anyway, it's better to just inherit from
-# `property()`
-class PropertyType(type):
-    def __instancecheck__(self, instance: typing.Any, /) -> bool:
-        return property.__instancecheck__(instance)
-
-    def __subclasscheck__(self, subclass: type, /) -> bool:
-        return property.__subclasscheck__(subclass)
-
-class Property[GT: typing.Any = Never, ST: typing.Any = Never, D: bool = false](property, metaclass=PropertyType):
-    __slots__ = ("__doc__",)
-
-    fget: _FGet[GT] | None
-    fset: _FSet[ST] | None
-    fdel: _FDel | None
-
-    @typing.overload
-    def __new__(cls, /, fget: _FGet[GT] | None = None, fset: _FSet[ST] | None = None, fdel: None = None, doc: str | None = None) -> Property[GT, ST, false]: ...
-    @typing.overload
-    def __new__(cls, /, fget: _FGet[GT] | None, fset: _FSet[ST] | None, fdel: _FDel, doc: str | None = None) -> Property[GT, ST, true]: ...
-    @typing.overload
-    def __new__(cls, /, fget: _FGet[GT] | None = None, fset: _FSet[ST] | None = None, fdel: _FDel | None = None, doc: str | None = None) -> Property[GT, ST, bool]: ...
-    def __new__(cls, *args, **kwargs) -> typing.Any: ...
-    @typing.overload
-    def __get__(self, instance: None, owner: type, /) -> typing.Self: ...
-    @typing.overload
-    def __get__(self, instance: typing.Any, owner: type | None = None, /) -> GT: ...
-    @typing.overload
-    def __get__(self: Property[Never, typing.Any, typing.Any], instance: typing.Any, owner: type | None = None, /) -> typing.NoReturn: ...
-    def __get__(self, *args) -> typing.Any: ...
-    @typing.overload
-    def __set__(self, instance: typing.Any, value: ST, /) -> None: ...
-    @typing.overload
-    def __set__(self: Property[typing.Any, Never, typing.Any], instance: typing.Any, value: Never, /) -> typing.NoReturn: ...
-    def __set__(self, *args) -> typing.Any: ...
-    @typing.overload
-    def __delete__(self: Property[typing.Any, typing.Any, true], instance: typing.Any, /) -> None: ...
-    @typing.overload
-    def __delete__(self: Property[typing.Any, typing.Any, false], instance: typing.Any, /) -> typing.NoReturn: ...
-    def __delete__(self, instance, /) -> typing.Any: ...  # type: ignore
-    del __new__, __get__, __set__, __delete__
-
-    def getter[_GT](self: Property[typing.Any, ST, D], getter: _FGet[_GT], /) -> Property[_GT, ST, D]:
-        return __class__(getter, self.fset, self.fdel, self.__doc__)
-
-    def setter[_ST](self: Property[GT, typing.Any, D], setter: _FSet[_ST], /) -> Property[GT, _ST, D]:
-        return __class__(self.fget, setter, self.fdel, self.__doc__)
-
-    def deleter(self: Property[GT, ST, typing.Any], deleter: _FDel, /) -> Property[GT, ST, true]:
-        return __class__(self.fget, self.fset, deleter, self.__doc__)

@@ -186,7 +186,7 @@ def _unwrap_initializers():
     def noop():
         pass
 
-    _initialize_dearpygui = _unwrap_initializers = unwrap_initializers = noop  # ty:ignore[invalid-assignment]
+    _initialize_dearpygui = _unwrap_initializers = noop
 
     del _init_lock, _init_wrapped
 

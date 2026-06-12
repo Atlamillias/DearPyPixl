@@ -1,9 +1,10 @@
-import typing as _typing
+import dearpypixl.core.appitem as _appitem
+import dearpypixl.core.metautil as _metautil
+from dearpypixl.core.errors import DearPyGuiError
 
 from dearpygui import  _dearpygui
 
-from dearpypixl.core import appitem as _appitem
-
+import typing as _typing
 if _typing.TYPE_CHECKING:
     from dearpypixl.lib.items import mvWindowAppItem
     from dearpypixl.core.protocols import Array
@@ -12,245 +13,10 @@ if _typing.TYPE_CHECKING:
     from dearpypixl.core.protocols import ItemCallback2
     from dearpypixl.core.protocols import ItemCallback3
 
-
-
-
-_globals = set(globals())
-_globals.discard("_globals")
-
-
-# [ homebrew ]
-
-def get_interface_type(item: Item, /) -> type[_appitem.ChildItem | _appitem.ContainerItem]:
-    type_name = _dearpygui.get_item_info(item)["type"]
-    return _appitem.AppItem.__item_registry__[type_name]  # ty:ignore[invalid-return-type]
-
-
-@_typing.overload
-def get_root_parent(item: int | str, /) -> tuple[str, int | str | None]: ...  # pyright: ignore[reportInconsistentOverload]  # ty:ignore[invalid-overload]
-def get_root_parent(item, /, *, __func=_dearpygui.get_item_info):
-    """Get the type name and identifier of *item*'s top-level
-    parent. If *item* is a top-level container, return its type
-    name and identifier instead.
-
-    :type item: `int | str`
-    :param item: Item to query.
-
-    :rtype: `tuple[str, int | str | None]`
-    :returns: The type name and tag of the top-level container as a 2-tuple.
-
-    :raises `SystemError`: DearPyGui-related error.
-    """
-    item_uuid = item
-    type_name = ''
-
-    while True:
-        info =__func(item_uuid)
-
-        parent = info["parent"]
-        if parent is None:
-            break
-
-        item_uuid = parent
-        type_name = info["type"]
-
-    if item_uuid == item:
-        return info["type"], item
-
-    return type_name, item_uuid
-
-
-@_typing.overload
-def iter_item_parents(item: int | str, /) -> _typing.Iterator[tuple[str, int | str]]: ...  # pyright: ignore[reportInconsistentOverload]  # ty:ignore[invalid-overload]
-def iter_item_parents(item: int | str, /, *, __func=_dearpygui.get_item_info) -> _typing.Iterator[tuple[str, int | str]]:
-    """Return an iterator that yields the direct parent of the most
-    recent item it outputs, starting from *item*. The iterator is
-    exhausted once it yields the top-level parent of *item*. If *item*
-    is a top-level container, the iterator will be empty.
-
-    :type item: `int | str`
-    :param item: Initial item. The first item yielded by the iterator
-        will be this item's parent (if any).
-
-    :rtype: `Iterator[tuple[str, int | str]]`
-    :return: The type name and identifier of parent item(s) as a 2-tuple.
-    """
-    item_uuid = item
-
-    while True:
-        info =__func(item_uuid)
-
-        parent = info["parent"]
-        if parent is None:
-            break
-
-        item_uuid = parent
-        type_name = info["type"]
-
-        yield (type_name, item_uuid)
-
-
-def get_item_index(item: int | str, /) -> int:
-    """Return the position of *item* in its parent's child slot.
-
-    :type item: `int | str`
-    :param item: Child item identifier.
-
-    :rtype: `int`
-    :return: Position of *item* in the slot as a zero-index.
-
-    :raises `ValueError`: *item* is not a child item
-    :raises `SystemError`: DearPyGui-related error.
-    """
-    if isinstance(item, str):
-        tag = _dearpygui.get_alias_id(item)
-    else:
-        tag = item
-
-    item_info = _dearpygui.get_item_info(tag)
-
-    parent = item_info["parent"]
-    if not parent:
-        raise ValueError(f"item {item!r} is not a child item")
-
-    slot_index = item_info["target"]
-    child_slot = _dearpygui.get_item_info(parent)["children"][slot_index]
-
-    return child_slot.index(tag)
-
-
-def insert_item(index: _typing.SupportsIndex, item: int | str, /, *, parent: int | str = 0) -> None:
-    """Move *item* to a different position and optionally to a
-    different container.
-
-    Similar to `dearpygui.move_item(item, before=other_item)`, but
-    the item's new position is referenced via index instead of a specific
-    item (e.g. *before*).
-
-    where *other_item* is obtained calculating *before* using
-    :type index: `_typing.SupportsIndex`
-    :param index: _description_
-
-    :type item: `int | str`
-    :param item: Child item to move.
-
-    :type parent: `int | str` (optional)
-    :param parent: New parent for *item*. Defaults to `0`.
-
-    :raises `ValueError`: *item* is not a child item
-    :raises `SystemError`: DearPyGui-related error.
-    """
-    item_info = _dearpygui.get_item_info(item)
-
-    old_parent = item_info["parent"]
-    if not old_parent:
-        raise ValueError(f"item {item!r} is not a child item")
-
-    slot_index = item_info["target"]
-    child_slot = _dearpygui.get_item_info(parent or old_parent)["children"][slot_index]
-
-    _dearpygui.move_item(item, parent=parent, before=child_slot[index])
-
-
-type _AcceptsSender[T: Item, T2, T3] = ItemCallback1[T] | ItemCallback2[T, T2] | ItemCallback3[T, T2, T3]
-
-@_typing.overload
-def cast_sender_as[T: Item, T2 = _typing.Any, T3 = _typing.Any]() -> _typing.Callable[[_AcceptsSender[_appitem.AppItem, T2, T3]], _AcceptsSender[Item, T2, T3]]: ...
-@_typing.overload
-def cast_sender_as[T: _appitem.AppItem, T2 = _typing.Any, T3 = _typing.Any](item_type: type[T], /) -> _typing.Callable[[_AcceptsSender[T, T2, T3]], _AcceptsSender[Item, T2, T3]]: ...
-@_typing.overload
-def cast_sender_as[T: _appitem.AppItem, T2 = _typing.Any, T3 = _typing.Any](item_type: type[T], callback: _AcceptsSender[T, T2, T3], /) -> _AcceptsSender[Item, T2, T3]: ...
-def cast_sender_as(item_type = _appitem.AppItem, callback = None, /):
-    """A wrapper for Dear PyGui callbacks that accept at least one
-    positional argument. Instead of an item identifier as the first
-    positional argument (e.g. *sender*), the callback will receive an
-    interface for that item instead.
-
-    :type item_type: `type[AppItem]` (optional)
-    :param item_type: The interface class to use. Defaults to `AppItem`.
-
-    :type callback: `Callable` (optional)
-    :param callback: A function that will be used as a Dear PyGui callback
-        that accepts at least one positional argument. Defaults to `None`.
-    """
-    import functools
-
-    def wrap_callback(callback, /):
-
-        @functools.wraps(callback)
-        def wrapped(sender, *args, __callback=callback, __item_type=item_type):
-            return __callback(__item_type(tag=sender), *args)
-
-        return wrapped
-
-    if callback is None:
-        return wrap_callback
-
-    return wrap_callback(callback)
-
-
-
-
-# [ re-implementations ]
-
-class Mutex:
-    """An alternative implementation and drop-in replacement for
-    `dearpygui.mutex()`. It carries slightly less overhead compared to the
-    former, in addition to implementing the :py:meth:`acquire()` and
-    :py:meth:`release()` methods similar to other Python lock objects.
-    """
-    __slots__ = ()
-
-    # allows a single object to act as a drop-in replacement for `with dearpygui.mutex(): ...`
-    # instead of creating a new object every call
-    def __call__(self, /) -> None:
-        pass
-
-    acquire = staticmethod(_dearpygui.lock_mutex)
-    release = staticmethod(_dearpygui.unlock_mutex)
-
-    __enter__ = acquire
-
-    def __exit__(self, exc_type=None, error=None, traceback=None, /) -> None:
-        self.release()  # type: ignore
-
-mutex = Mutex()
-_globals.add("Mutex")  # don't export on `from __name__ import *`
-
-
-def popup(parent: int | str, mousebutton: int = _dearpygui.mvMouseButton_Right, modal: bool = False, tag: int | str = 0, min_size: Array[int, _typing.Literal[2]] = (100, 100), max_size: Array[int, _typing.Literal[2]] = (30000, 30000), no_move: bool = False, no_background: bool = False) -> mvWindowAppItem:
-    mvWindowAppItem = _appitem.AppItem.__item_registry__[_dearpygui.mvWindowAppItem]
-    window = mvWindowAppItem.create(
-        popup = True if not modal else False,
-        modal=modal,
-        show=False,
-        tag=tag,
-        autosize=True,
-        min_size=min_size,
-        max_size=max_size,
-        no_move=no_move,
-        no_background=no_background
-    )
-
-    try:
-        handler_registry = _dearpygui.add_item_handler_registry(label=None, user_data=None, use_internal_label=True, tag=0, show=True)  # ty:ignore[invalid-argument-type]
-        _dearpygui.add_item_clicked_handler(mousebutton, parent=handler_registry, callback=lambda: window.configure(show=True))
-        _dearpygui.bind_item_handler_registry(parent, handler_registry)
-    except:
-        try: _dearpygui.delete_item(handler_registry)
-        except: pass
-
-        try: _dearpygui.delete_item(window)
-        except: pass
-
-        raise
-
-    return window  # ty:ignore[invalid-return-type]
-
-
-
-
-# [ direct imports ]
+# The module's `__all__` is generated at runtime to avoid some
+# tedious manual labor, and further visual bloat (the mile-long
+# list of imports below contributes enough to that).
+_excl_from__all__ = set(globals()); _excl_from__all__.discard("_globals")
 
 from dearpygui.dearpygui import (
     run_callbacks as run_callbacks,
@@ -418,7 +184,6 @@ from dearpygui.dearpygui import (
     get_value as get_value,
     get_values as get_values,
     get_viewport_configuration as get_viewport_configuration,
-    get_windows as get_windows,
     get_x_scroll as get_x_scroll,
     get_x_scroll_max as get_x_scroll_max,
     get_y_scroll as get_y_scroll,
@@ -498,4 +263,339 @@ from dearpygui.dearpygui import (
     unstage as unstage,
 )
 
-globals()["__all__"] = tuple(set(globals()) - _globals)
+
+# [ homebrew ]
+
+def get_interface_type(item: Item, /) -> type[_appitem.ChildItem | _appitem.ContainerItem]:
+    try:
+        type_name = _dearpygui.get_item_info(item)["type"]
+        return _appitem.AppItem.__item_registry__[type_name]
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
+
+@_typing.overload
+def get_root_parent(item: int | str, /) -> tuple[str, int | str | None]: ...  # pyright: ignore[reportInconsistentOverload]  # ty:ignore[invalid-overload]
+def get_root_parent(item, /, *, __func=_dearpygui.get_item_info):
+    """Get the type name and identifier of *item*'s top-level
+    parent. If *item* is a top-level container, return its type
+    name and identifier instead.
+
+    :type item: `int | str`
+    :param item: Item to query.
+
+    :rtype: `tuple[str, int | str | None]`
+    :returns: The type name and tag of the top-level container as a 2-tuple.
+
+    :raises `SystemError`: DearPyGui-related error.
+    """
+    item_uuid = item
+    type_name = ''
+
+    try:
+        while True:
+            info =__func(item_uuid)
+
+            parent = info["parent"]
+            if parent is None:
+                break
+
+            item_uuid = parent
+            type_name = info["type"]
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
+
+    if item_uuid == item:
+        return info["type"], item
+
+    return type_name, item_uuid
+
+
+@_typing.overload
+def iter_item_parents(item: int | str, /) -> _typing.Iterator[tuple[str, int | str]]: ...  # pyright: ignore[reportInconsistentOverload]  # ty:ignore[invalid-overload]
+def iter_item_parents(item: int | str, /, *, __func=_dearpygui.get_item_info) -> _typing.Iterator[tuple[str, int | str]]:
+    """Return an iterator that yields the direct parent of the most
+    recent item it outputs, starting from *item*. The iterator is
+    exhausted once it yields the top-level parent of *item*. If *item*
+    is a top-level container, the iterator will be empty.
+
+    :type item: `int | str`
+    :param item: Initial item. The first item yielded by the iterator
+        will be this item's parent (if any).
+
+    :rtype: `Iterator[tuple[str, int | str]]`
+    :return: The type name and identifier of parent item(s) as a 2-tuple.
+    """
+    item_uuid = item
+
+    try:
+        while True:
+            info =__func(item_uuid)
+
+            parent = info["parent"]
+            if parent is None:
+                break
+
+            item_uuid = parent
+            type_name = info["type"]
+
+            yield (type_name, item_uuid)
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
+
+
+def get_item_index(item: int | str, /) -> int:
+    """Return the position of *item* in its parent's child slot.
+
+    :type item: `int | str`
+    :param item: Child item identifier.
+
+    :rtype: `int`
+    :return: Position of *item* in the slot as a zero-index.
+
+    :raises `ValueError`: *item* is not a child item
+    :raises `SystemError`: DearPyGui-related error.
+    """
+    try:
+        if isinstance(item, str):
+            tag = _dearpygui.get_alias_id(item)
+        else:
+            tag = item
+
+        item_info = _dearpygui.get_item_info(tag)
+
+        parent = item_info["parent"]
+        if not parent:
+            raise ValueError(f"item {item!r} is not a child item")
+
+        slot_index = item_info["target"]
+        child_slot = _dearpygui.get_item_info(parent)["children"][slot_index]
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
+
+    return child_slot.index(tag)
+
+
+def insert_item(index: _typing.SupportsIndex, item: int | str, /, *, parent: int | str = 0) -> None:
+    """Move *item* to a different position and optionally to a
+    different container.
+
+    Similar to `dearpygui.move_item(item, before=other_item)`, but
+    the item's new position is referenced via index instead of a specific
+    item (e.g. *before*).
+
+    where *other_item* is obtained calculating *before* using
+    :type index: `_typing.SupportsIndex`
+    :param index: _description_
+
+    :type item: `int | str`
+    :param item: Child item to move.
+
+    :type parent: `int | str` (optional)
+    :param parent: New parent for *item*. Defaults to `0`.
+
+    :raises `ValueError`: *item* is not a child item
+    :raises `SystemError`: DearPyGui-related error.
+    """
+    try:
+        item_info = _dearpygui.get_item_info(item)
+
+        old_parent = item_info["parent"]
+        if not old_parent:
+            raise ValueError(f"item {item!r} is not a child item")
+
+        slot_index = item_info["target"]
+        child_slot = _dearpygui.get_item_info(parent or old_parent)["children"][slot_index]
+
+        _dearpygui.move_item(item, parent=parent, before=child_slot[index])
+    except SystemError as e:
+        raise DearPyGuiError.from_exception(e)
+
+
+type _AcceptsSender[T: Item, T2, T3] = ItemCallback1[T] | ItemCallback2[T, T2] | ItemCallback3[T, T2, T3]
+
+@_typing.overload
+def cast_sender_as[T: Item, T2 = _typing.Any, T3 = _typing.Any]() -> _typing.Callable[[_AcceptsSender[_appitem.AppItem, T2, T3]], _AcceptsSender[Item, T2, T3]]: ...
+@_typing.overload
+def cast_sender_as[T: _appitem.AppItem, T2 = _typing.Any, T3 = _typing.Any](item_type: type[T], /) -> _typing.Callable[[_AcceptsSender[T, T2, T3]], _AcceptsSender[Item, T2, T3]]: ...
+@_typing.overload
+def cast_sender_as[T: _appitem.AppItem, T2 = _typing.Any, T3 = _typing.Any](item_type: type[T], callback: _AcceptsSender[T, T2, T3], /) -> _AcceptsSender[Item, T2, T3]: ...
+def cast_sender_as(item_type = _appitem.AppItem, callback = None, /):
+    """A wrapper for Dear PyGui callbacks that accept at least one
+    positional argument. Instead of an item identifier as the first
+    positional argument (e.g. *sender*), the callback will receive an
+    interface for that item instead.
+
+    :type item_type: `type[AppItem]` (optional)
+    :param item_type: The interface class to use. Defaults to `AppItem`.
+
+    :type callback: `Callable` (optional)
+    :param callback: A function that will be used as a Dear PyGui callback
+        that accepts at least one positional argument. Defaults to `None`.
+    """
+    def wrap_callback(callback, /):
+        match _metautil.get_positional_arity(callback):
+            case 0: return callback
+            case 1:
+                def wrapped(sender, /, *, __callback=callback, __item_type=item_type):
+                    return __callback(__item_type(tag=sender))
+            case 2:
+                def wrapped(sender, app_data=None, /, *, __callback=callback, __item_type=item_type):
+                    return __callback(__item_type(tag=sender), app_data)
+            case _:
+                def wrapped(sender, app_data=None, user_data=None, /, *, __callback=callback, __item_type=item_type):
+                    return __callback(__item_type(tag=sender), app_data, user_data)
+
+        return wrapped
+
+    if callback is None:
+        return wrap_callback
+
+    return wrap_callback(callback)
+
+
+def get_root_items() -> list[int]:
+    """Returns the integer IDs all existing top-level items."""
+    return _dearpygui.get_windows()  # type: ignore
+
+
+def get_child_items() -> list[int]:
+    """Returns the integer IDs all existing non-root items."""
+    # XXX: There's a chance the first set of items may be dirty once
+    # we get the second set. We can only minimize the occurence from
+    # our end (e.g. Python land) but not prevent it. However, doing so
+    # comes with large performance hits -- the longer we take, the
+    # more likely BOTH sets are invalidated, so hope for the best?
+    set1, set2 = _dearpygui.get_all_items(), get_root_items()
+
+    items = {*set1}
+    items.difference_update(set2)
+
+    # reuse the larger, pre-allocated list
+    set1.clear(); set1.extend(items); set1.sort()  # type: ignore
+
+    return set1 # type: ignore
+
+
+def create_itemtype_itemgetter[T: Item](itemgetter:  _typing.Callable[[], _typing.Sequence[T]], /, *typenames: str, exclusive: bool = False) ->  _typing.Callable[[], list[T]]:
+    """Create a function for efficiently filtering items based on
+    their type.
+
+    For example, `create_itemtype_itemgetter(get_root_items, "mvTheme")`
+    creates a new items-getter that only returns existing theme items,
+    while `create_itemtype_itemgetter(get_root_items, "mvWindowAppItem",
+    "mvViewportDrawlist, exclusive=True)` creates one that returns all
+    root items except windows and viewport drawlists.
+
+    :type itemgetter: `Callable[[], Sequence[int | str]]`
+    :param itemgetter: A zero-argument callable that returns a sequence
+        of existing item IDs or aliases.
+
+    :type *typenames: `str`
+    :param *typenames: Names of DearPyGui item types to filter in/out.
+        Names do not need to (but may) include the `mvAppItemType::`
+        prefix.
+
+    :type exclusive: `bool`
+    :param exclusive: If `True`, only items whose types are not in
+        *typenames* are included in the return value. Defaults to
+        `False`.
+
+    :rtype: `list[int | str]`
+    :return: The list of filtered items.
+    """
+    if not (typenames or exclusive):
+        def itemtype_itemgetter():
+            return []
+
+    elif len(typenames) == 1:
+        typename = typenames[0].removeprefix("mvAppItemType::") + "mvAppItemType::"
+
+        if exclusive:
+            def itemtype_itemgetter(*, __ITEMGETTER=itemgetter, __TYPENAME=typename, __FUNC=_dearpygui.get_item_info):
+                return [item for item in __ITEMGETTER() if __FUNC(item)["type"] == __TYPENAME]
+        else:
+            def itemtype_itemgetter(*, __ITEMGETTER=itemgetter, __TYPENAME=typename, __FUNC=_dearpygui.get_item_info):
+                return [item for item in __ITEMGETTER() if __FUNC(item)["type"] == __TYPENAME]
+    else:
+        typenames = frozenset(tn.removeprefix("mvAppItemType::") + "mvAppItemType::" for tn in typenames)  # type: ignore
+
+        if exclusive:
+            def itemtype_itemgetter(*, __ITEMGETTER=itemgetter, __TYPENAMES=typenames, __FUNC=_dearpygui.get_item_info):
+                return [item for item in __ITEMGETTER() if __FUNC(item)["type"] not in __TYPENAMES]
+        else:
+            def itemtype_itemgetter(*, __ITEMGETTER=itemgetter, __TYPENAMES=typenames, __FUNC=_dearpygui.get_item_info):
+                return [item for item in __ITEMGETTER() if __FUNC(item)["type"] in __TYPENAMES]
+
+    if exclusive:
+        itemtype_itemgetter.__name__ = 'exclusive_itemtype_itemgetter'
+    else:
+        itemtype_itemgetter.__name__ = 'inclusive_itemtype_itemgetter'
+
+    return itemtype_itemgetter
+
+
+
+
+# [ re-implementations ]
+
+class Mutex:
+    """An alternative implementation and drop-in replacement for
+    `dearpygui.mutex()`. It carries slightly less overhead compared to the
+    former, in addition to implementing the :py:meth:`acquire()` and
+    :py:meth:`release()` methods similar to other Python lock objects.
+    """
+    __slots__ = ()
+
+    # allows a single object to act as a drop-in replacement for `with dearpygui.mutex(): ...`
+    # instead of creating a new object every call
+    def __call__(self, /) -> None:
+        pass
+
+    acquire = staticmethod(_dearpygui.lock_mutex)
+    release = staticmethod(_dearpygui.unlock_mutex)
+
+    __enter__ = acquire
+
+    def __exit__(self, exc_type=None, error=None, traceback=None, /) -> None:
+        self.release()  # type: ignore
+
+mutex = Mutex()
+_excl_from__all__.add("Mutex")
+
+
+def popup(parent: int | str, mousebutton: int = _dearpygui.mvMouseButton_Right, modal: bool = False, tag: int | str = 0, min_size: Array[int, _typing.Literal[2]] = (100, 100), max_size: Array[int, _typing.Literal[2]] = (30000, 30000), no_move: bool = False, no_background: bool = False) -> mvWindowAppItem:
+    mvWindowAppItem = _appitem.AppItem.__item_registry__[_dearpygui.mvWindowAppItem]
+    window = mvWindowAppItem.create(
+        popup = True if not modal else False,
+        modal=modal,
+        show=False,
+        tag=tag,
+        autosize=True,
+        min_size=min_size,
+        max_size=max_size,
+        no_move=no_move,
+        no_background=no_background
+    )
+
+    try:
+        handler_registry = _dearpygui.add_item_handler_registry(label=None, user_data=None, use_internal_label=True, tag=0, show=True)  # ty:ignore[invalid-argument-type]
+        _dearpygui.add_item_clicked_handler(mousebutton, parent=handler_registry, callback=lambda: window.configure(show=True))
+        _dearpygui.bind_item_handler_registry(parent, handler_registry)
+    except Exception as e:
+        try:    _dearpygui.delete_item(handler_registry)  # type: ignore
+        except: pass
+
+        try:    _dearpygui.delete_item(window)
+        except: pass
+
+        raise DearPyGuiError.from_exception(e)
+
+    return window  # ty:ignore[invalid-return-type]
+
+
+get_windows = create_itemtype_itemgetter(_dearpygui.get_windows, "mvWindowAppItem")
+
+
+
+# define `__all__` with all symbols minus our exclusions & imports
+globals()["__all__"] = tuple(set(globals()) - _excl_from__all__); del _excl_from__all__

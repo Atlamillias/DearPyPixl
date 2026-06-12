@@ -6,12 +6,11 @@ from dearpygui import dearpygui, _dearpygui
 
 from dearpypixl.core import management
 from dearpypixl.core import interface
-from dearpypixl.core import codegen
-from dearpypixl.core import management
+from dearpypixl.core import metautil
 from dearpypixl.core.protocols import ItemCallback
 
 
-__all__ = ("Viewport",)
+__all__ = ("Viewport", "viewport",)
 
 
 
@@ -296,7 +295,7 @@ def _set_vp_callback(callback: typing.Any = _MISSING, user_data: typing.Any = _M
 
 
 
-_GLOBAL_STATE = dict.fromkeys(("ok", "visible", "fullscreen"), False)
+_GLOBAL_STATE: dict = dict.fromkeys(("ok", "visible", "fullscreen"), False)
 
 
 def _get_vp_ok():
@@ -492,26 +491,28 @@ _PROPERTY_LOCALS = {
     "setter": _dearpygui.configure_viewport,
 }
 
-def _create_config_property( name, /):
-    fget = codegen.create_function(
-        name, ("self",), (f"return getter(uuid)['{name}']",),
+@metautil.create_named_desc_factory
+def _config_property( name, /):
+    fget = metautil.create_function(
+        name, ("self",), (
+            f"try:",  # noqa: F541
+            f"    return getter(uuid)['{name}']",
+            f"except KeyError:",  # noqa: F541
+            f"    raise AttributeError(f\"{name!r} not in dict returned from 'get_viewport_configuration()'\")",
+        ),
         module=__name__, globals=globals(), locals=_PROPERTY_LOCALS,
     )
-    fset = codegen.create_function(
+    fset = metautil.create_function(
         name, ("self", "value"), (f"setter(uuid, {name}=value)",),
         module=__name__, globals=globals(), locals=_PROPERTY_LOCALS,
     )
     return property(fget, fset)
 
-def _config_property() -> typing.Any:
-    return codegen.DescriptorDelegate(_create_config_property)
-
-
 class Viewport(interface.Interface):
     __slots__ = ()
 
     @property
-    def tag(self, /):
+    def tag(self, /):  # pyrefly: ignore [bad-override]
         return _VIEWPORT_UUID
 
     @classmethod
@@ -527,6 +528,11 @@ class Viewport(interface.Interface):
         with _GLOBAL_LOCK:
             if _get_vp_ok():
                 _set_vp_ok(False)
+
+    def exists(self, /):
+        with _GLOBAL_LOCK:
+            value = _get_vp_ok()
+        return value
 
     @property
     def client_width(self):
@@ -698,6 +704,21 @@ class Viewport(interface.Interface):
         return _dearpygui.get_drawing_mouse_pos()  # type: ignore
 
     def output_frame_buffer(self, file = "", *, callback = None):
+        if not isinstance(file, str):
+            file = file.__fspath__()  # type: ignore
         dearpygui.output_frame_buffer(file, callback=callback)  # type: ignore
 
 Viewport.create = management.initializer(Viewport.create)  # ty:ignore[invalid-assignment]
+
+
+def viewport(*, __inst=Viewport(), **kwargs):
+    # holding the lock for this check is pointless since we *can't*
+    # hold it when calling `create()` as the lock is non-reentrant,
+    # so just catch the potential error caused by a race condition
+    if not _get_vp_ok():
+        try:
+            __inst.create(**kwargs)
+        except SystemError:
+            assert _get_vp_ok()
+
+    return __inst

@@ -4,6 +4,7 @@ from dearpygui import _dearpygui
 
 from . import interface
 from . import management
+from .errors import DearPyGuiError
 
 
 __all__ = (
@@ -52,21 +53,21 @@ class AppItemType(type):
 
     def __int__(self, /, *, __cache=_dearpygui.__dict__):
         try:
-            return __cache[self.__item_type__.__name__]  # ty:ignore[unresolved-attribute]
+            return __cache[self.__item_type__.__name__]  # type: ignore
         except AttributeError, KeyError:
             return __cache["mvAll"]
 
     __index__ = __int__
 
-    def __str__(self, /, *, __missing=_MISSING):
+    def __str__(self, /):
         try:
-            return f"mvAppItemType::{self.__item_type__.__name__}"  # ty:ignore[unresolved-attribute]
+            return f"mvAppItemType::{self.__item_type__.__name__}"  # type: ignore
         except AttributeError:
             return f"<class {self.__name__!r}>"
 
     __hash__ = type.__hash__
 
-    def __eq__(self, other, /, *, __type=type, __type_eq=type.__eq__, __isinstance=isinstance) -> bool:
+    def __eq__(self, other, /) -> bool:
         if self is other:
             return True
 
@@ -152,16 +153,19 @@ class AppItem[U = typing.Any, V = typing.Any, P = typing.Any, C = typing.Any](in
         return
 
     def delete(self, /, *, children_only: bool = False, slot: int = -1):
-        if not children_only:
-            return _dearpygui.delete_item(self, children_only=False, slot=-1)
         try:
-            _dearpygui.delete_item(self, children_only=children_only, slot=slot)
-        except SystemError:
-            if children_only not in (0, 1, True, False):
-                raise TypeError(f"`children_only` must be a boolean") from None
-            if slot not in (-1, 0, 1, 2, 3):
-                raise ValueError(f"`slot` must be 0, 1, 2, 3, or -1 (all child slots)") from None
-            raise
+            if not children_only:
+                return _dearpygui.delete_item(self, children_only=False, slot=-1)
+            try:
+                _dearpygui.delete_item(self, children_only=children_only, slot=slot)
+            except SystemError:
+                if children_only not in (0, 1, True, False):
+                    raise TypeError("`children_only` must be a boolean") from None
+                if slot not in (-1, 0, 1, 2, 3):
+                    raise ValueError("`slot` must be 0, 1, 2, 3, or -1 (all child slots)") from None
+                raise
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     def exists(self, /, *, __func=_dearpygui.does_item_exist):
         try:
@@ -170,7 +174,7 @@ class AppItem[U = typing.Any, V = typing.Any, P = typing.Any, C = typing.Any](in
             return False
 
     @property
-    def tag(self):
+    def tag(self):  # pyrefly: ignore [bad-override]
         return self.real
 
     @property
@@ -179,60 +183,105 @@ class AppItem[U = typing.Any, V = typing.Any, P = typing.Any, C = typing.Any](in
 
     @property
     def alias(self):
-        return _dearpygui.get_item_alias(self)
+        try:
+            return _dearpygui.get_item_alias(self)
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
     @alias.setter
     def alias(self, value, /):
-        if value is None:
-            alias = _dearpygui.get_item_alias(self)
-            if alias is not None:
-                _dearpygui.remove_alias(alias)
-        else:
-            _dearpygui.set_item_alias(self, value)
+        try:
+            if value is None:
+                alias = _dearpygui.get_item_alias(self)
+                if alias is not None:
+                    _dearpygui.remove_alias(alias)
+            else:
+                _dearpygui.set_item_alias(self, value)
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
     @alias.deleter
     def alias(self):
-        _dearpygui.remove_alias(_dearpygui.get_item_alias(self))
+        try:
+            _dearpygui.remove_alias(_dearpygui.get_item_alias(self))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     @property
     def value(self, /, *, __func=_dearpygui.get_value):
-        return __func(self)
+        try:
+            return __func(self)
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
     @value.setter
     def value(self, value, /, *, __func=_dearpygui.set_value):
-        __func(self, value)
+        try:
+            __func(self, value)
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     # configuration
 
     @property
     def label(self, /, *, __func=_dearpygui.get_item_configuration):
-        return __func(self)["label"]
+        try:
+            return __func(self)["label"]
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
     @label.setter
     def label(self, value, /, __func=_dearpygui.configure_item):
-        __func(self, label=value)
+        try:
+            __func(self, label=value)
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
     @label.deleter
     def label(self, /, __func=_dearpygui.configure_item):
-        __func(self, label=None)
+        try:
+            __func(self, label=None)
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     @property
     def use_internal_label(self, /, *, __func=_dearpygui.get_item_configuration):
-        return __func(self)["use_internal_label"]
+        try:
+            return __func(self)["use_internal_label"]
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
     @use_internal_label.setter
     def use_internal_label(self, value, /, __func=_dearpygui.configure_item):
-        __func(self, use_internal_label=value)
+        try:
+            __func(self, use_internal_label=value)
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     @property
     def user_data(self, /, *, __func=_dearpygui.get_item_configuration):
-        return __func(self)["user_data"]
+        try:
+            return __func(self)["user_data"]
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
     @user_data.setter
     def user_data(self, value, /, __func=_dearpygui.configure_item):
-        __func(self, user_data=value)
+        try:
+            __func(self, user_data=value)
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
     @user_data.deleter
     def user_data(self, /, __func=_dearpygui.configure_item):
-        __func(self, user_data=None)
+        try:
+            __func(self, user_data=None)
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     def configure(self, **kwargs):
-        _dearpygui.configure_item(self, **kwargs)
+        try:
+            _dearpygui.configure_item(self, **kwargs)
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     def configuration(self, /):
-        return _dearpygui.get_item_configuration(self)
+        try:
+            return _dearpygui.get_item_configuration(self)
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     # information
 
@@ -240,16 +289,27 @@ class AppItem[U = typing.Any, V = typing.Any, P = typing.Any, C = typing.Any](in
     def _create_bound_info_property(type_key: int | str, field_key: str, setter, /) -> property:
 
         def fget(self, /, __type_key=type_key, __field_key=field_key, __func=_dearpygui.get_item_info, __int_new=int.__new__, __registry=_ITEM_REGISTRY):
-            item = __func(self)[__field_key]
+            try:
+                item = __func(self)[__field_key]
+            except KeyError:
+                raise AttributeError(f"{__field_key!r} not in dict returned from 'get_item_info({self.tag})'")
+            except SystemError as e:
+                raise DearPyGuiError.from_exception(e)
             if not item:
                 return None
             return __int_new(__registry[__type_key], item)
 
         def fset(self, value, /, __func=setter):
-            __func(self, value or 0)
+            try:
+                __func(self, value or 0)
+            except SystemError as e:
+                raise DearPyGuiError.from_exception(e)
 
         def fdel(self, /, __func=setter):
-            __func(self, 0)
+            try:
+                __func(self, 0)
+            except SystemError as e:
+                raise DearPyGuiError.from_exception(e)
 
         fget.__name__ = fset.__name__ = fdel.__name__ = field_key
 
@@ -263,11 +323,15 @@ class AppItem[U = typing.Any, V = typing.Any, P = typing.Any, C = typing.Any](in
 
     @property
     def parent(self, /, *, __func=_dearpygui.get_item_info, __int_new=int.__new__, __registry=_ITEM_REGISTRY):
-        item = __func(self)["parent"]
-        if item is None:
-            return None
+        try:
+            item = __func(self)["parent"]
 
-        type_name = __func(item)["type"]
+            if item is None:
+                return None
+
+            type_name = __func(item)["type"]
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
         try:
             item_type = __registry[type_name]
@@ -282,22 +346,24 @@ class AppItem[U = typing.Any, V = typing.Any, P = typing.Any, C = typing.Any](in
 
         item_uuid = self
 
-        while True:
-            info =__func(item_uuid)
+        try:
+            while True:
+                info =__func(item_uuid)
 
-            parent = info["parent"]
-            if parent is None:
-                break
+                parent = info["parent"]
+                if parent is None:
+                    break
 
-            item_uuid = parent
-            type_name = info["type"]
+                item_uuid = parent
+                type_name = info["type"]
 
-            try:
-                item_type = __registry[type_name]
-            except KeyError:
-                item_type = ContainerItem
-
-            parents.append(__int_new(item_type, item_uuid))
+                try:
+                    item_type = __registry[type_name]
+                except KeyError:
+                    item_type = ContainerItem
+                parents.append(__int_new(item_type, item_uuid))
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
         parents.reverse()
 
@@ -308,15 +374,18 @@ class AppItem[U = typing.Any, V = typing.Any, P = typing.Any, C = typing.Any](in
         item_uuid = self
         type_name = ''
 
-        while True:
-            info =__func(item_uuid)
+        try:
+            while True:
+                info =__func(item_uuid)
 
-            parent = info["parent"]
-            if parent is None:
-                break
+                parent = info["parent"]
+                if parent is None:
+                    break
 
-            item_uuid = parent
-            type_name = info["type"]
+                item_uuid = parent
+                type_name = info["type"]
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
         if item_uuid == self.real:
             return None
@@ -329,21 +398,33 @@ class AppItem[U = typing.Any, V = typing.Any, P = typing.Any, C = typing.Any](in
         return __int_new(item_type, item_uuid)
 
     def information(self, /, *, __func=_dearpygui.get_item_info):
-        return __func(self)
+        try:
+            return __func(self)
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     # state
 
     @property
     def pos(self, /, *, __func=_dearpygui.get_item_state):
-        return __func(self)["pos"]
+        try:
+            return __func(self)["pos"]
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     def state(self, /, *, __func=_dearpygui.get_item_state):
-        return __func(self)
+        try:
+            return __func(self)
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     # other methods
 
     def children(self, /, slot=-1, *, __func=_dearpygui.get_item_info, __int_new=int.__new__):
-        items = __func(self)["children"]
+        try:
+            items = __func(self)["children"]
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
         if slot == -1:
             return items
 
@@ -351,7 +432,10 @@ class AppItem[U = typing.Any, V = typing.Any, P = typing.Any, C = typing.Any](in
         return [__int_new(item_type, item_uuid) for item_uuid in items[slot]]
 
     def focus(self, /, *, __func=_dearpygui.focus_item):
-        __func(self)
+        try:
+            __func(self)
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
 
 class ChildItem[U = typing.Any, V = typing.Any, P = typing.Any, C = typing.Any](AppItem):
@@ -370,8 +454,7 @@ class ChildItem[U = typing.Any, V = typing.Any, P = typing.Any, C = typing.Any](
     def move_down(self, /, *, __func=_dearpygui.move_item_down):
         __func(self)
 
-    def unstage(self, /, *, __func=_dearpygui.unstage):
-        __func(self)
+    def unstage(self, /): pass
 
 
 class ContainerItem[U = typing.Any, V = typing.Any, P = typing.Any, C = typing.Any](AppItem):
@@ -511,12 +594,19 @@ class CompositeItem:
         return super().create(user_data={"user_data": user_data}, **kwargs)  # ty:ignore[unresolved-attribute]
 
     def __init__(self: typing.Any, /, tag=0):
-        user_data = _dearpygui.get_item_configuration(self)["user_data"]
         try:
-            self.__dict__ = user_data
-        except TypeError:
-            self.__dict__["user_data"] = user_data
-            _dearpygui.configure_item(self, user_data=self.__dict__)
+            user_data = _dearpygui.get_item_configuration(self)["user_data"]
+            try:
+                self.__dict__ = user_data  # type: ignore
+            except TypeError:
+                self.__dict__["user_data"] = user_data
+                _dearpygui.configure_item(self, user_data=self.__dict__)
+            except AttributeError:
+                raise RuntimeError(
+                    f"cannot assign `__dict__` of composite interface object {type(self).__name__!r}"
+                )
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     def __repr__(self: typing.Any, /):
         # uses the concrete class name, whereas `AppItem.__repr__()` always
@@ -552,24 +642,33 @@ class CompositeItem:
         super().destroy()  # type: ignore
 
     def configure(self: typing.Any, /, user_data=_MISSING, __missing=_MISSING, **kwargs):
-        super().configure(**kwargs)
+        super().configure(**kwargs)  # type: ignore
         if user_data is not __missing:
             self.user_data = user_data
 
     def configuration(self: typing.Any, /):
-        config = super().configuration()
+        config = super().configuration()  # type: ignore
         config["user_data"] = self.user_data
         return config
+
+    def refresh(self, /):
+        return
 
 
 class SupportsValueArray[T]:
     __slots__ = ()
 
     def get_value(self: typing.Any) -> list[T]:
-        return _dearpygui.get_value(self) or []
+        try:
+            return _dearpygui.get_value(self) or []
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     def set_value(self: typing.Any, value, /) -> None:
-        _dearpygui.set_value(self, value)
+        try:
+            _dearpygui.set_value(self, value)
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     def __len__(self, /) -> int:
         value = self.get_value()
@@ -654,11 +753,17 @@ class _ElementItem[U = typing.Any, P = typing.Any](SupportsValueArray, ChildItem
 
     @property
     def category(self, /) -> int:
-        return _dearpygui.get_item_configuration(self)["category"]
+        try:
+            return _dearpygui.get_item_configuration(self)["category"]
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     @property
     def target(self, /) -> int:
-        return _dearpygui.get_item_configuration(self)["target"]
+        try:
+            return _dearpygui.get_item_configuration(self)["target"]
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     def identify(self, /) -> '_ElementInfo':
         """Return a `_ElementInfo` object -- a tuple-like object with information
@@ -675,8 +780,8 @@ class _ElementItem[U = typing.Any, P = typing.Any](SupportsValueArray, ChildItem
         - `target`: The value returned via `get_item_configuration(element)["target"]`.
         """
         try:
-            registry = __class__._ELEMENT_REGISTRY
-            name_map = __class__._ELEMENT_NAME_MAP
+            registry = __class__._ELEMENT_REGISTRY  # type: ignore
+            name_map = __class__._ELEMENT_NAME_MAP  # type: ignore
         except AttributeError:
             import re
 
@@ -735,8 +840,11 @@ class _ElementItem[U = typing.Any, P = typing.Any](SupportsValueArray, ChildItem
             __class__._ELEMENT_REGISTRY = registry
             __class__._ELEMENT_NAME_MAP = name_map
 
-        info   = _dearpygui.get_item_info(self)
-        config = _dearpygui.get_item_configuration(self)
+        try:
+            info   = _dearpygui.get_item_info(self)
+            config = _dearpygui.get_item_configuration(self)
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
         e_type     = info["type"]
         e_category = config["category"]
@@ -760,17 +868,32 @@ class _HandlerItem[U = typing.Any, P = typing.Any](ChildItem):
 
     @property
     def callback(self, /, *, __func=_dearpygui.get_item_configuration):
-        return __func(self)["callback"]
+        try:
+            return __func(self)["callback"]
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
     @callback.setter
     def callback(self, value, /, *, __func=_dearpygui.configure_item) -> None:
-        __func(self, callback=value)
+        try:
+            __func(self, callback=value)
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
     @callback.deleter
     def callback(self, /, *, __func=_dearpygui.configure_item):
-        __func(self, callback=None)
+        try:
+            __func(self, callback=None)
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
 
     @property
     def show(self, /, *, __func=_dearpygui.get_item_configuration) -> bool:
-        return __func(self)["show"]
+        try:
+            return __func(self)["show"]
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)
     @show.setter
     def show(self, value, /, *, __func=_dearpygui.configure_item) -> None:
-        __func(self, show=value)
+        try:
+            __func(self, show=value)
+        except SystemError as e:
+            raise DearPyGuiError.from_exception(e)

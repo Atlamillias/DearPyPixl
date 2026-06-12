@@ -1,0 +1,194 @@
+from typing import *
+
+from dearpypixl.core.interface import Interface
+from dearpypixl.core.protocols import Item
+
+if TYPE_CHECKING:
+    from dearpypixl.lib.items import mvTheme, mvFont
+    from dearpypixl.core.appitem import _ItemInfoDict
+
+
+__all__ = (
+    "Application", "application",
+    "get_app_theme", "get_app_font", "is_app_ok", "get_app_info", "get_app_state",
+)
+
+
+
+
+def get_app_theme() -> mvTheme | None:
+    """Return the application-level theme item."""
+def get_app_font() -> mvFont | None:
+    """Return the application-level font item."""
+def is_app_ok() -> bool:
+    """Return `True` if DearPyGui has been initialized via
+    `create_context()` and `setup_dearpygui()` *or* the
+    :py:meth:`Application.create()` method, provided that
+    `destroy_context()` or :py:meth:`Application.destroy()`
+    has not been called.
+    """
+def get_app_info() -> _ItemInfoDict: ...
+def get_app_state() -> dict[Literal["ok"], bool]: ...
+
+
+class _AppConfigDict(TypedDict, total=False):
+    docking                   : bool
+    docking_space             : bool
+    load_init_file            : str
+    init_file                 : str
+    auto_save_init_file       : bool
+    device                    : int
+    auto_device               : bool
+    allow_alias_overwrites    : bool
+    manual_alias_management   : bool
+    skip_required_args        : bool
+    skip_positional_args      : bool
+    skip_keyword_args         : bool
+    wait_for_input            : bool
+    manual_callback_management: bool
+    docking_shift_only        : bool
+    keyboard_navigation       : bool
+    anti_aliasing             : bool
+    anti_aliased_lines        : bool
+    anti_aliased_lines_use_tex: bool
+    anti_aliased_fill         : bool
+
+class Application(Interface):
+    @classmethod
+    def create(cls, /, **configuration: Unpack[_AppConfigDict]) -> Self: ...
+    def destroy(self, /) -> None: ...
+    def exists(self, /) -> bool:
+        """Return `True` if DearPyGui has been initialized via
+        `create_context()` and `setup_dearpygui()` *or* the
+        :py:meth:`Application.create()` method, provided that
+        `destroy_context()` or :py:meth:`Application.destroy()`
+        has not been called.
+        """
+    def configure(self, /, **kwargs: Unpack[_AppConfigDict]) -> None: ...
+    def configuration(self, /) -> _AppConfigDict: ...
+    def information(self, /) -> _ItemInfoDict: ...
+    def state(self, /) -> dict[Literal['ok'], bool]: ...
+    def save_init_file(self, file: str, /) -> None:
+        """Dump identity, position, and docking information of root
+        windows to a file.
+
+        An item is excluded if its' `no_saved_settings` configuration
+        option is set to True.
+        """
+    @property
+    def tag(self, /) -> int | str: ...  # pyrefly: ignore[bad-override]
+    @property
+    def version(self, /) -> tuple[int, ...]: ...
+    @property
+    def platform(self, /) -> str: ...
+    @property
+    def device_name(self, /) -> str: ...
+    @property
+    def docking(self, /) -> bool: ...
+    @docking.setter
+    def docking(self, value: bool, /) -> None: ...
+    @property
+    def docking_space(self, /) -> bool: ...
+    @docking_space.setter
+    def docking_space(self, value: bool, /) -> None: ...
+    @property
+    def load_init_file(self, /) -> bool: ...
+    @load_init_file.setter
+    def load_init_file(self, value: bool, /) -> None: ...
+    @property
+    def init_file(self, /) -> bool: ...
+    @init_file.setter
+    def init_file(self, value: bool, /) -> None: ...
+    @property
+    def auto_save_init_file(self, /) -> bool: ...
+    @auto_save_init_file.setter
+    def auto_save_init_file(self, value: bool, /) -> None: ...
+    @property
+    def device(self, /) -> bool: ...
+    @device.setter
+    def device(self, value: bool, /) -> None: ...
+    @property
+    def auto_device(self, /) -> bool: ...
+    @auto_device.setter
+    def auto_device(self, value: bool, /) -> None: ...
+    @property
+    def allow_alias_overwrites(self, /) -> bool: ...
+    @allow_alias_overwrites.setter
+    def allow_alias_overwrites(self, value: bool, /) -> None: ...
+    @property
+    def manual_alias_management(self, /) -> bool: ...
+    @manual_alias_management.setter
+    def manual_alias_management(self, value: bool, /) -> None: ...
+    @property
+    def skip_required_args(self, /) -> bool: ...
+    @skip_required_args.setter
+    def skip_required_args(self, value: bool, /) -> None: ...
+    @property
+    def skip_positional_args(self, /) -> bool: ...
+    @skip_positional_args.setter
+    def skip_positional_args(self, value: bool, /) -> None: ...
+    @property
+    def skip_keyword_args(self, /) -> bool: ...
+    @skip_keyword_args.setter
+    def skip_keyword_args(self, value: bool, /) -> None: ...
+    @property
+    def wait_for_input(self, /) -> bool: ...
+    @wait_for_input.setter
+    def wait_for_input(self, value: bool, /) -> None: ...
+    @property
+    def manual_callback_management(self, /) -> bool: ...
+    @manual_callback_management.setter
+    def manual_callback_management(self, value: bool, /) -> None: ...
+    @property
+    def docking_shift_only(self, /) -> bool: ...
+    @docking_shift_only.setter
+    def docking_shift_only(self, value: bool, /) -> None: ...
+    @property
+    def keyboard_navigation(self, /) -> bool: ...
+    @keyboard_navigation.setter
+    def keyboard_navigation(self, value: bool, /) -> None: ...
+    @property
+    def anti_aliasing(self, /) -> bool: ...
+    @anti_aliasing.setter
+    def anti_aliasing(self, value: bool, /) -> None: ...
+    @property
+    def anti_aliased_lines(self, /) -> bool: ...
+    @anti_aliased_lines.setter
+    def anti_aliased_lines(self, value: bool, /) -> None: ...
+    @property
+    def anti_aliased_lines_use_tex(self, /) -> bool: ...
+    @anti_aliased_lines_use_tex.setter
+    def anti_aliased_lines_use_tex(self, value: bool, /) -> None: ...
+    @property
+    def anti_aliased_fill(self, /) -> bool: ...
+    @anti_aliased_fill.setter
+    def anti_aliased_fill(self, value: bool, /) -> None: ...
+    @property
+    def theme(self, /) -> mvTheme | None:
+        """[***get***, ***set***, ***del***] the application-level theme item."""
+    @theme.setter
+    def theme(self, value: Item | None, /) -> None: ...
+    @theme.deleter
+    def theme(self, /) -> None: ...
+    @property
+    def font(self, /) -> mvFont | None:
+        """[***get***, ***set***, ***del***] the application-level font."""
+    @font.setter
+    def font(self, value: Item | None, /) -> None: ...
+    @font.deleter
+    def font(self, /) -> None: ...
+    @property
+    def clipboard_text(self, /) -> str:
+        """[***get***, ***set***] the text value on the system's clipboard."""
+    @clipboard_text.setter
+    def clipboard_text(self, text: str, /) -> None: ...
+
+
+def application(**configuration: Unpack[_AppConfigDict]) -> Application:
+    """Return an application interface, implicitly initializing
+    DearPyGui if necessary.
+
+    :param **kwargs: Initial application settings to apply after
+        initializing DearPyGui. Only used when it is necessary to
+        initialize DearPyGui.
+    """

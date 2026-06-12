@@ -6,7 +6,7 @@ from array import array
 from dearpygui import dearpygui, _dearpygui
 
 from dearpypixl.core import management
-from dearpypixl.core import codegen
+from dearpypixl.core import metautil
 
 
 __all__ = ("ItemData", "Slot", "Axis", "Grid")
@@ -71,7 +71,7 @@ def _float_arr_property(name: str, length: int, default: float | None = None) ->
     if default is None:
         default = "NaN"  # type: ignore
 
-    return codegen.create_property(
+    return metautil.create_property(
         (
             f"try:",
             f"  return self._{name}",
@@ -102,7 +102,7 @@ def _min_number_property(name: str, floor: int | float = 0.0, default = None) ->
         else:
             default = 0
 
-    return codegen.create_property(
+    return metautil.create_property(
         (
             f"return self._{name}",
         ),

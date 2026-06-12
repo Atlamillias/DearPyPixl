@@ -9,7 +9,7 @@ import collections
 
 from dearpypixl.core.protocols import Item, ItemCommand, ItemCallback
 from dearpypixl.core import appitem
-from dearpypixl.core import codegen
+from dearpypixl.core import metautil
 from dearpypixl.core import management
 from dearpypixl import color
 from dearpypixl import style
@@ -58,7 +58,7 @@ class _Event[T: typing.Callable]:
         fn_body = f"({', '.join(fn_args)})\n".join(fn_lcls).split("\n")
         fn_body[-1] = fn_body[-1] + f"({', '.join(fn_args)})"
 
-        return codegen.create_function(
+        return metautil.create_function(
             "callback", fn_args, fn_body, module=__name__, globals=globals(), locals=fn_lcls,
         )
 
