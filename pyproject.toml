@@ -72,3 +72,12 @@ bad-argument-type = false
 matches = "./src/dearpypixl/lib/items.pyi"
 [tool.pyrefly.sub-config.errors]
 inconsistent-inheritance = 'warn'
+
+
+#[ruff]
+[tool.ruff.lint]
+ignore = [
+    "E702",  # "2+ statements per-line (semicolon-delimited)"
+    "E402",  # "module import(s) not at top of file"
+    "E722",  # "do not use bare try-except blocks"
+]
