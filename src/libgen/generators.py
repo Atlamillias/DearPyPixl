@@ -1,3 +1,4 @@
+# ruff: noqa: F541
 import types
 import typing
 import re
@@ -14,8 +15,8 @@ import importlib.metadata
 
 from dearpygui import dearpygui
 
-import metadata
-from metadata import FeatureFlag, ParameterFlag, DearPyGuiMetadata, ItemTypeInfo
+import metadata  # pyrefly: ignore [missing-import]
+from metadata import FeatureFlag, ParameterFlag, DearPyGuiMetadata, ItemTypeInfo  # pyrefly: ignore [missing-import]
 
 
 
@@ -164,8 +165,6 @@ class FileSpec[T1: type[FileGenerator], T2: type[FileGenerator]]:
 # [ item type library generators ]
 
 class _ItemsGenerator(FileGenerator):
-    __slots__ = ("metadata",)
-
     mimetype = "text/x-python"
     module_name = "dearpypixl_lib_items.py"
 
@@ -198,7 +197,7 @@ class _ItemsGenerator(FileGenerator):
 
     def __init__(self, metadata: DearPyGuiMetadata, /) -> None:
         super().__init__(metadata)
-        self._shared_properties = dict()
+        self.shared_properties = dict()
 
     @staticmethod
     def _get_configuration_null_value(parameter: metadata.Parameter, /) -> str | None:
@@ -450,7 +449,7 @@ class ItemsCodeGenerator(_ItemsGenerator):
 
                 if p.name not in self._SKIPPED_ASSIGNMENTS:
                     buffer.append(f"    {p.name} = _property__{p.name}")
-                    self._shared_properties[p.name] = p
+                    self.shared_properties[p.name] = p
 
                 members_seen.add(p.name)
 
@@ -494,7 +493,8 @@ class ItemsCodeGenerator(_ItemsGenerator):
                         continue
                     elif isinstance(child_node, ast.Name) and child_node.id.startswith("mv"):
                         for name_node in node.targets:
-                            self._late_assignments[type_name][name_node.id] = s.partition("=")[-1].strip()
+                            name_node_id = name_node.id  # type: ignore
+                            self._late_assignments[type_name][name_node_id] = s.partition("=")[-1].strip()
                         continue
 
                 elif isinstance(node, ast.FunctionDef):
@@ -608,10 +608,10 @@ class ItemsCodeGenerator(_ItemsGenerator):
         content.append("")
 
         content.extend(("# configuration properties", ""))
-        for name in sorted(self._shared_properties):
+        for name in sorted(self.shared_properties):
             if name == "pos":
                 continue
-            param = self._shared_properties[name]
+            param = self.shared_properties[name]
             null  = self._get_configuration_null_value(param)
 
             if null is not None:
@@ -1000,7 +1000,7 @@ class ItemsStubGenerator(_ItemsGenerator):
 
                 if isinstance(node, ast.Assign):
                     assert len(node.targets) == 1
-                    name = node.targets[0].id
+                    name = node.targets[0].id  # type: ignore
 
                     if name.startswith("__") and name.endswith("__"):
                         continue
@@ -1031,7 +1031,8 @@ class ItemsStubGenerator(_ItemsGenerator):
                             # skip the actual implementation for funcs with overloads
                             continue
 
-                        if doc_params and not isinstance(node.body[0].value.value, str):
+                        _node_doc = node.body[0].value.value  # type: ignore
+                        if doc_params and not isinstance(_node_doc, str):
                             s = s.rstrip("... \n") + f'\n    """{doc_params}"""'
 
                 if doc_params:
