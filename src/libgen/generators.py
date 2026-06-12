@@ -1,4 +1,5 @@
 # ruff: noqa: F541
+import os
 import types
 import typing
 import re
@@ -19,7 +20,7 @@ import metadata  # pyrefly: ignore [missing-import]
 from metadata import FeatureFlag, ParameterFlag, DearPyGuiMetadata, ItemTypeInfo  # pyrefly: ignore [missing-import]
 
 
-
+os.environ["DPX_NO_WARNINGS"] = '1'
 
 try:
     DPX_VERSION = importlib.metadata.version('dearpypixl')

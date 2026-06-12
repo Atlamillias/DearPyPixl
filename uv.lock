@@ -4,21 +4,22 @@ requires-python = ">=3.14"
 
 [[package]]
 name = "dearpygui"
-version = "2.2"
+version = "2.3.1"
 source = { registry = "https://pypi.org/simple" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/8b/76/3ccaec465021b647f13c83be42a635043a08255076984a658ed691701498/dearpygui-2.2-cp314-cp314-macosx_13_0_arm64.whl", hash = "sha256:22451146968729429ba37afa2602957dfefc03ff92dcc627dd4d85ba3f93e771", size = 1931385, upload-time = "2026-02-17T14:21:58.193Z" },
-    { url = "https://files.pythonhosted.org/packages/52/ac/8e591f33a712563742fe77b0731c1c900fe2fcc3d3e75bd4c7d8e60057a8/dearpygui-2.2-cp314-cp314-manylinux1_x86_64.whl", hash = "sha256:dcc9377d8d9fe27f659ae6b016fe96aa37d8b26b57ce60c47985290e1be7801e", size = 2592691, upload-time = "2026-02-17T14:22:05.191Z" },
-    { url = "https://files.pythonhosted.org/packages/f8/03/aeb4ebe09a0240c8c9337018d2ac3e087fd911f6051a3bb0131248fbd942/dearpygui-2.2-cp314-cp314-win_amd64.whl", hash = "sha256:fe3c8dc37be3ddce0356afb0c16721c0e485a4c94a831886935a0692bb9a9966", size = 1889279, upload-time = "2026-02-17T14:21:46.16Z" },
+    { url = "https://files.pythonhosted.org/packages/4a/08/68ce3ba941cf09bcf288f2603d7178c936d473172fd545e0665b885cb840/dearpygui-2.3.1-cp314-cp314-macosx_13_0_arm64.whl", hash = "sha256:e2cbabd8d383308ea3520360e100d1e95c9a957cd26247431cd4920b23c3b56e", size = 2003034, upload-time = "2026-05-01T22:46:02.736Z" },
+    { url = "https://files.pythonhosted.org/packages/f3/3f/ac003b6d636c9f5aae910a62d00b6c119403212cf2d7772d7c59ca8ef6dd/dearpygui-2.3.1-cp314-cp314-manylinux1_x86_64.whl", hash = "sha256:953442c7272e57f3686e393edc5cf6ce73cc2f47142739735dfabed403e33770", size = 2678545, upload-time = "2026-05-01T22:46:10.181Z" },
+    { url = "https://files.pythonhosted.org/packages/1a/6b/657a2f1e2f604f356c39ed5b870aaed5d07fdeac3139fae2a455473b64ca/dearpygui-2.3.1-cp314-cp314-manylinux2014_aarch64.whl", hash = "sha256:43a561b5dc589944a3a2b469e5e68f1ab35ae38b3dcdf1f813ed9d6e024153f8", size = 2501699, upload-time = "2026-05-01T22:46:21.497Z" },
+    { url = "https://files.pythonhosted.org/packages/8c/56/93b2310891589063e0226cb07fe05e08fbdb3f409f80f9edefb1cebea84e/dearpygui-2.3.1-cp314-cp314-win_amd64.whl", hash = "sha256:272cc52c66bc5a4a332f13a3af5e603070d47ca7cc4976e6a8c247594e2b3dd0", size = 1943067, upload-time = "2026-05-01T22:45:52.255Z" },
 ]
 
 [[package]]
 name = "dearpypixl"
-version = "2.2.0"
+version = "2.3.0"
 source = { editable = "." }
 dependencies = [
     { name = "dearpygui" },
 ]
 
 [package.metadata]
-requires-dist = [{ name = "dearpygui", specifier = ">=2.2,<3.0" }]
+requires-dist = [{ name = "dearpygui", specifier = ">=2.3" }]
