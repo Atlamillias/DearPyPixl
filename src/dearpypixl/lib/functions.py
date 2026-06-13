@@ -598,4 +598,4 @@ get_windows = create_itemtype_itemgetter(_dearpygui.get_windows, "mvWindowAppIte
 
 
 # define `__all__` with all symbols minus our exclusions & imports
-globals()["__all__"] = tuple(set(globals()) - _excl_from__all__); del _excl_from__all__
+globals()["__all__"] = tuple(set(globals()) - _excl_from__all__)
