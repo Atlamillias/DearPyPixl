@@ -16,7 +16,7 @@ if _typing.TYPE_CHECKING:
 # The module's `__all__` is generated at runtime to avoid some
 # tedious manual labor, and further visual bloat (the mile-long
 # list of imports below contributes enough to that).
-_excl_from__all__ = set(globals()); _excl_from__all__.discard("_globals")
+_excl_from__all__ = set(globals()); _excl_from__all__.discard("_excl_from__all__")
 
 from dearpygui.dearpygui import (
     run_callbacks as run_callbacks,
@@ -598,4 +598,4 @@ get_windows = create_itemtype_itemgetter(_dearpygui.get_windows, "mvWindowAppIte
 
 
 # define `__all__` with all symbols minus our exclusions & imports
-globals()["__all__"] = tuple(set(globals()) - _excl_from__all__); del _excl_from__all__
+globals()["__all__"] = tuple(set(globals()) - _excl_from__all__)
